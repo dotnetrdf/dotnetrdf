@@ -267,7 +267,8 @@ internal class EvaluationBuilder
             ZeroOrOne zeroOrOne => new AsyncRepeatablePathEvaluation(0, 1, Build(zeroOrOne.Path, pathStart, pathEnd, context), pathEnd),
             ZeroOrMore zeroOrMore => new AsyncRepeatablePathEvaluation(0, -1, Build(zeroOrMore.Path, pathStart, pathEnd, context), pathEnd),
             OneOrMore oneOrMore => new AsyncRepeatablePathEvaluation(1, -1, Build(oneOrMore.Path, pathStart, pathEnd, context), pathEnd),
-            _ => throw new RdfQueryException($"Unsupported query algebra {path}")
+            NegatedSet negatedSet => new AsyncNegatedSetPathEvaluation(negatedSet, pathStart, pathEnd),
+            _ => throw new RdfQueryException($"Unsupported query algebra {path} ({path.GetType()})")
         };
     }
 
