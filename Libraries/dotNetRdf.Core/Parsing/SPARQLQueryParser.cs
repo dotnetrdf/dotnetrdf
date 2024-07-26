@@ -704,7 +704,7 @@ namespace VDS.RDF.Parsing
                             throw ParserHelper.Error("Can't use the * symbol to specify Select All and specify Variables in the SELECT Clause", next);
                         }
 
-                        context.Query.AddVariable(next.Value, true);
+                        TryAddVariable(context, next, next.Value, true);
                         break;
 
                     case Token.AVG:
@@ -725,7 +725,7 @@ namespace VDS.RDF.Parsing
 
                         context.Tokens.Dequeue();
                         SparqlVariable aggVar = TryParseAggregate(context, next);
-                        context.Query.AddVariable(aggVar);
+                        TryAddVariable(context, next, aggVar);
                         firstToken = false;
                         continue;
 
@@ -800,7 +800,7 @@ namespace VDS.RDF.Parsing
                             throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a Variable as an alias after an AS Keyword", next);
                         }
 
-                        context.Query.AddVariable(new SparqlVariable(next.Value.Substring(1), expr));
+                        TryAddVariable(context, next, new SparqlVariable(next.Value.Substring(1), expr));
                         firstToken = false;
                         continue;
 
@@ -856,13 +856,13 @@ namespace VDS.RDF.Parsing
                         }
 
                         // Turn into the appropriate type of Variable
-                        if (expr is AggregateTerm)
+                        if (expr is AggregateTerm aggregate)
                         {
-                            context.Query.AddVariable(new SparqlVariable(next.Value.Substring(1), ((AggregateTerm)expr).Aggregate));
+                            TryAddVariable(context, next, new SparqlVariable(next.Value.Substring(1), aggregate.Aggregate));
                         }
                         else
                         {
-                            context.Query.AddVariable(new SparqlVariable(next.Value.Substring(1), expr));
+                            TryAddVariable(context, next, new SparqlVariable(next.Value.Substring(1), expr));
                         }
                         
                         firstToken = false;
@@ -898,13 +898,13 @@ namespace VDS.RDF.Parsing
                         }
 
                         // Turn into the appropriate type of Variable
-                        if (expr is AggregateTerm)
+                        if (expr is AggregateTerm aggregateTerm)
                         {
-                            context.Query.AddVariable(new SparqlVariable(next.Value.Substring(1), ((AggregateTerm)expr).Aggregate));
+                            TryAddVariable(context, next, new SparqlVariable(next.Value.Substring(1), aggregateTerm.Aggregate));
                         }
                         else
                         {
-                            context.Query.AddVariable(new SparqlVariable(next.Value.Substring(1), expr));
+                            TryAddVariable(context, next,new SparqlVariable(next.Value.Substring(1), expr));
                         }
 
                         firstToken = false;
@@ -958,6 +958,42 @@ namespace VDS.RDF.Parsing
                 context.Tokens.Dequeue();
                 firstToken = false;
             } while (true);
+        }
+
+        private void TryAddVariable(SparqlQueryParserContext context, IToken t, SparqlVariable var)
+        {
+            try
+            {
+                context.Query.AddVariable(var);
+            }
+            catch (RdfQueryException ex)
+            {
+                throw ParserHelper.Error($"Cannot add variable {var} to query: {ex.Message}", t);
+            }
+        }
+
+        private void TryAddVariable(SparqlQueryParserContext context, IToken t, string var)
+        {
+            try
+            {
+                context.Query.AddVariable(var);
+            }
+            catch (RdfQueryException ex)
+            {
+                throw ParserHelper.Error($"Cannot add variable {var} to query: {ex.Message}", t);
+            }
+        }
+
+        private void TryAddVariable(SparqlQueryParserContext context, IToken t, string var, bool isResultVar)
+        {
+            try
+            {
+                context.Query.AddVariable(var, isResultVar);
+            }
+            catch (RdfQueryException ex)
+            {
+                throw ParserHelper.Error($"Cannot add variable {var} to query: {ex.Message}", t);
+            }
         }
 
         private SparqlVariable TryParseAggregate(SparqlQueryParserContext context, IToken agg)
@@ -1079,7 +1115,7 @@ namespace VDS.RDF.Parsing
                         {
                             throw ParserHelper.Error("Can't use the * symbol to specify Describe All and specify Variables/URIs/QNames in the DESCRIBE Clause", next);
                         }
-                        context.Query.AddVariable(next.Value, true);
+                        TryAddVariable(context, next, next.Value, true);
                         context.Query.AddDescribeVariable(next);
                         break;
 
@@ -1490,7 +1526,7 @@ namespace VDS.RDF.Parsing
                 case Token.VARIABLE:
                     // Variable
                     context.LocalTokens.Push(next);
-                    context.Query.AddVariable(next.Value);
+                    TryAddVariable(context, next, next.Value);
                     TryParsePredicateObjectList(context, p,2);
                     break;
 
@@ -1688,7 +1724,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.VARIABLE:
                         context.LocalTokens.Push(next);
-                        context.Query.AddVariable(next.Value);
+                        TryAddVariable(context, next, next.Value);
                         context.Tokens.Dequeue();
                         break;
 
@@ -2587,7 +2623,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                context.Query.AddVariable(graphspec.Value);
+                TryAddVariable(context, graphspec, graphspec.Value);
             }
 
             GraphPattern child = TryParseGraphPattern(context);
@@ -3371,7 +3407,7 @@ namespace VDS.RDF.Parsing
                 if (next.TokenType == Token.VARIABLE)
                 {
                     variable = next;
-                    context.Query.AddVariable(variable.Value, false);
+                    TryAddVariable(context, variable, variable.Value, false);
                     next = context.Tokens.Dequeue();
                     if (next.TokenType == Token.ASSIGNMENT)
                     {
@@ -3898,7 +3934,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.VARIABLE:
                         // Variable
-                        context.Query.AddVariable(next.Value);
+                        TryAddVariable(context, next, next.Value);
                         return TryCreatePatternItem(context, next);
 
                     case Token.URI:
@@ -3963,7 +3999,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.VARIABLE:
-                        context.Query.AddVariable(next.Value);
+                        TryAddVariable(context, next, next.Value);
                         return TryCreatePatternItem(context, next);
 
                     case Token.URI:

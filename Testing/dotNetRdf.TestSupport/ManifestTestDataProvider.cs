@@ -13,9 +13,9 @@ namespace VDS.RDF
     {
         private readonly Manifest _manifest;
 
-        public ManifestTestDataProvider(Uri baseUri, string manifestPath)
+        public ManifestTestDataProvider(Uri baseUri, string manifestPath, Func<IGraph, INode, bool> testNodeFilter = null)
         {
-            _manifest = new Manifest(baseUri, manifestPath);
+            _manifest = new Manifest(baseUri, manifestPath, testNodeFilter);
         }
 
         public IEnumerator<object[]> GetEnumerator()
@@ -30,6 +30,12 @@ namespace VDS.RDF
             return new ManifestTestData(_manifest, testNode);
         }
 
+        public ManifestTestData GetTestData(string testId)
+        {
+            ManifestTestData data = _manifest.GetTestData().SingleOrDefault(x => x.Id == testId);
+            Assert.NotNull(data);
+            return data;
+        }
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

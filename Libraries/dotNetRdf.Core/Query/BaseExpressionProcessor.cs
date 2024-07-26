@@ -1165,52 +1165,42 @@ namespace VDS.RDF.Query
             INode s = strDt.LeftExpression.Accept(this, context, binding);
             INode dt = strDt.RightExpression.Accept(this, context, binding);
 
-            if (s != null)
-            {
-                if (dt != null)
-                {
-                    Uri dtUri;
-                    if (dt.NodeType == NodeType.Uri)
-                    {
-                        dtUri = ((IUriNode)dt).Uri;
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot create a datatyped literal when the datatype is a non-URI Node");
-                    }
-                    if (s.NodeType == NodeType.Literal)
-                    {
-                        var lit = (ILiteralNode)s;
-                        if (lit.DataType == null)
-                        {
-                            if (lit.Language.Equals(string.Empty))
-                            {
-                                return new StringNode(lit.Value, dtUri);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot create a datatyped literal from a language specified literal");
-                            }
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot create a datatyped literal from a typed literal");
-                        }
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot create a datatyped literal from a non-literal Node");
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Cannot create a datatyped literal from a null string");
-                }
-            }
-            else
+            if (s == null)
             {
                 throw new RdfQueryException("Cannot create a datatyped literal from a null string");
             }
+
+            if (dt == null)
+            {
+                throw new RdfQueryException("Cannot create a datatyped literal from a null string");
+            }
+
+            Uri dtUri;
+            if (dt.NodeType == NodeType.Uri)
+            {
+                dtUri = ((IUriNode)dt).Uri;
+            }
+            else
+            {
+                throw new RdfQueryException("Cannot create a datatyped literal when the datatype is a non-URI Node");
+            }
+            if (s.NodeType == NodeType.Literal)
+            {
+                var lit = (ILiteralNode)s;
+                switch (lit.DataType?.AbsoluteUri)
+                {
+                    case null:
+                    case XmlSpecsHelper.XmlSchemaDataTypeString:
+                        return new StringNode(lit.Value, dtUri);
+                    case RdfSpecsHelper.RdfLangString:
+                        throw new RdfQueryException("Cannot create a datatyped literal from a language specified literal");
+                    default:
+                        throw new RdfQueryException("Cannot create a datatyped literal from a typed literal");
+                }
+            }
+
+            throw new RdfQueryException("Cannot create a datatyped literal from a non-literal Node");
+
         }
 
         public virtual IValuedNode ProcessStrLangFunction(StrLangFunction strLang, TContext context, TBinding binding)
@@ -1495,40 +1485,38 @@ namespace VDS.RDF.Query
         public virtual IValuedNode ProcessConcatFunction(ConcatFunction concat, TContext context, TBinding binding)
         {
             string langTag = null;
+            var allLangTagged = true;
             var allString = true;
             var allSameTag = true;
 
             var output = new StringBuilder();
             foreach (ISparqlExpression expr in concat.Arguments)
             {
-                INode temp = expr.Accept(this, context, binding);
+                INode temp = expr?.Accept(this, context, binding) ?? new StringNode(String.Empty);
                 if (temp == null) throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument evaluates to a Null");
-
-                switch (temp.NodeType)
+                if (temp is not ILiteralNode lit)
                 {
-                    case NodeType.Literal:
-                        // Check whether the Language Tags and Types are the same
-                        // We need to do this so that we can produce the appropriate output
-                        var lit = (ILiteralNode)temp;
-                        if (langTag == null)
-                        {
-                            langTag = lit.Language;
-                        }
-                        else
-                        {
-                            allSameTag = allSameTag && langTag.Equals(lit.Language);
-                        }
-
-                        // Have to ensure that if Typed is an xsd:string
-                        if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument is a Typed Literal which is not an xsd:string");
-                        allString = allString && lit.DataType != null;
-
-                        output.Append(lit.Value);
-                        break;
-
-                    default:
-                        throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument is not a Literal Node");
+                    throw new RdfQueryException(
+                        "Cannot evaluate the SPARQL CONCAT() function when an argument is not a Literal Node");
                 }
+
+                switch (lit.DataType?.AbsoluteUri)
+                {
+                    case null:
+                    case XmlSpecsHelper.XmlSchemaDataTypeString:
+                        allLangTagged = false;
+                        break;
+                    case RdfSpecsHelper.RdfLangString:
+                        langTag ??= lit.Language;
+                        allSameTag = allSameTag && langTag.Equals(lit.Language);
+                        allString = false;
+                        break;
+                    default:
+                        throw new RdfQueryException(
+                            "Cannot evaluate the SPARQL CONCAT() function when an argument is not a string literal");
+                }
+
+                output.Append(lit.Value);
             }
 
             // Produce the appropriate literal form depending on our inputs
@@ -1536,14 +1524,13 @@ namespace VDS.RDF.Query
             {
                 return new StringNode(output.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
-            else if (allSameTag)
+
+            if (allLangTagged && allSameTag)
             {
                 return new StringNode(output.ToString(), langTag);
             }
-            else
-            {
-                return new StringNode(output.ToString());
-            }
+
+            return new StringNode(output.ToString());
         }
 
 
@@ -1649,66 +1636,19 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         protected bool IsValidArgumentPair(ILiteralNode stringLit, ILiteralNode argLit)
         {
-            if (stringLit.DataType != null)
+            var arg1Datatype = stringLit.DataType?.AbsoluteUri;
+            var arg2Datatype = argLit.DataType?.AbsoluteUri;
+            switch (arg1Datatype)
             {
-                // If 1st argument has a DataType must be an xsd:string or not valid
-                if (!stringLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) return false;
-
-                if (argLit.DataType != null)
-                {
-                    // If 2nd argument also has a DataType must also be an xsd:string or not valid
-                    if (!argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) return false;
-                    return true;
-                }
-                else if (argLit.Language.Equals(string.Empty))
-                {
-                    // If 2nd argument does not have a DataType but 1st does then 2nd argument must have no
-                    // Language Tag
-                    return true;
-                }
-                else
-                {
-                    // 2nd argument does not have a DataType but 1st does BUT 2nd has a Language Tag so invalid
+                case null:
+                case XmlSpecsHelper.XmlSchemaDataTypeString:
+                    return arg2Datatype == null || arg2Datatype == XmlSpecsHelper.XmlSchemaDataTypeString;
+                case RdfSpecsHelper.RdfLangString:
+                    return arg2Datatype == null || arg2Datatype == XmlSpecsHelper.XmlSchemaDataTypeString ||
+                           (arg2Datatype == RdfSpecsHelper.RdfLangString && stringLit.Language.Equals(argLit.Language));
+                default:
+                    // First argument is not a string literal
                     return false;
-                }
-            }
-            else if (!stringLit.Language.Equals(string.Empty))
-            {
-                if (argLit.DataType != null)
-                {
-                    // If 1st argument has a Language Tag and 2nd Argument is typed then must be xsd:string
-                    // to be valid
-                    return argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
-                }
-                else if (argLit.Language.Equals(string.Empty) || stringLit.Language.Equals(argLit.Language))
-                {
-                    // If 1st argument has a Language Tag then 2nd Argument must have same Language Tag 
-                    // or no Language Tag in order to be valid
-                    return true;
-                }
-                else
-                {
-                    // Otherwise Invalid
-                    return false;
-                }
-            }
-            else
-            {
-                if (argLit.DataType != null)
-                {
-                    // If 1st argument is plain literal then 2nd argument must be xsd:string if typed
-                    return argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
-                }
-                else if (argLit.Language.Equals(string.Empty))
-                {
-                    // If 1st argument is plain literal then 2nd literal cannot have a language tag to be valid
-                    return true;
-                }
-                else
-                {
-                    // If 1st argument is plain literal and 2nd has language tag then invalid
-                    return false;
-                }
             }
         }
 
@@ -1784,36 +1724,28 @@ namespace VDS.RDF.Query
             TBinding binding, Func<ILiteralNode, IValuedNode> valueFunc)
         {
             IValuedNode temp = function.InnerExpression.Accept(this, context, binding);
-            if (temp != null)
-            {
-                if (temp.NodeType == NodeType.Literal)
-                {
-                    var lit = (ILiteralNode)temp;
-                    if (lit.DataType != null)
-                    {
-                        if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                        {
-                            return valueFunc(lit);
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evaluate an XPath String function on a non-string typed Literal");
-                        }
-                    }
-                    else
-                    {
-                        return valueFunc(lit);
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Unable to evaluate an XPath String function on a non-Literal input");
-                }
-            }
-            else
+            if (temp == null)
             {
                 throw new RdfQueryException("Unable to evaluate an XPath String function on a null input");
             }
+
+            if (temp.NodeType != NodeType.Literal)
+            {
+                throw new RdfQueryException("Unable to evaluate an XPath String function on a non-Literal input");
+            }
+
+            var lit = (ILiteralNode)temp;
+            if (lit.DataType == null)
+            {
+                return valueFunc(lit);
+            }
+
+            return lit.DataType.AbsoluteUri switch
+            {
+                XmlSpecsHelper.XmlSchemaDataTypeString or RdfSpecsHelper.RdfLangString => valueFunc(lit),
+                _ => throw new RdfQueryException(
+                    "Unable to evaluate an XPath String function on a non-string typed Literal")
+            };
         }
         public virtual IValuedNode ProcessEncodeForUriFunction(EncodeForUriFunction encodeForUri, TContext context, TBinding binding)
         {
@@ -1928,7 +1860,11 @@ namespace VDS.RDF.Query
 
             // Execute
             var lit = (ILiteralNode)textNode;
-            if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) throw new RdfQueryException("Text Argument to Replace must be of type xsd:string if a datatype is specified");
+            if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString) &&
+                !lit.DataType.AbsoluteUri.Equals(RdfSpecsHelper.RdfLangString))
+            {
+                throw new RdfQueryException("Text Argument to Replace must be of type xsd:string if a datatype is specified");
+            }
             var text = lit.Value;
             var output = Regex.Replace(text, findPattern, replacePattern, options);
 
@@ -2189,7 +2125,7 @@ namespace VDS.RDF.Query
 
         public virtual IValuedNode ProcessUuidFunction(UUIDFunction uuid, TContext context, TBinding binding)
         {
-            return new UriNode(new Uri("urn:uri:" + Guid.NewGuid()));
+            return new UriNode(new Uri("urn:uuid:" + Guid.NewGuid()));
         }
 
         public virtual IValuedNode ProcessStrUuidFunction(StrUUIDFunction uuid, TContext context, TBinding binding)
@@ -2309,10 +2245,20 @@ namespace VDS.RDF.Query
                             {
                                 return new BooleanNode(b);
                             }
-                            else
-                            {
-                                throw new RdfQueryException("Invalid Lexical Form for xsd:boolean");
-                            }
+
+                            if (lit.Value == "true" || lit.Value == "1") { return new BooleanNode(true); }
+
+                            if (lit.Value == "false" || lit.Value == "0") { return new BooleanNode(false); }
+
+                            throw new RdfQueryException("Invalid Lexical Form for xsd:boolean");
+                        }
+
+                        if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                        {
+                            // Can cast if lexical form matches xsd:boolean's lexical space
+                            if (lit.Value.Equals("0") || lit.Value.Equals("false")) return new BooleanNode(false);
+                            if (lit.Value.Equals("1") || lit.Value.Equals("true")) return new BooleanNode(true);
+                            throw new RdfQueryException("Invalid string value for casting to xsd:boolean");
                         }
 
                         // Cast based on Numeric Type
@@ -2336,6 +2282,16 @@ namespace VDS.RDF.Query
                                 {
                                     throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal as an intermediate stage in casting to a xsd:boolean");
                                 }
+
+                            case SparqlNumericType.Float:
+                                if (float.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                        out var fl))
+                                {
+                                    return float.IsNaN(fl) || fl == 0.0d
+                                        ? new BooleanNode(false)
+                                        : new BooleanNode(true);
+                                }
+                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:float as an intermediate stage in casting to a xsd:boolean");
 
                             case SparqlNumericType.Double:
                                 if (double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out var dbl))
@@ -2513,49 +2469,39 @@ namespace VDS.RDF.Query
                     if (lit.DataType != null)
                     {
                         var dt = lit.DataType.ToString();
-                        if (NumericTypesHelper.IntegerDataTypes.Contains(dt))
+                        switch (dt)
                         {
-                            // Already an integer type so valid as a xsd:decimal
-                            if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out var d))
-                            {
-                                // Parsed OK
-                                return new DecimalNode(d);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Invalid lexical form for xsd:decimal");
-                            }
-                        }
-                        else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
-                        {
-                            // DateTime cast forbidden
-                            throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:decimal");
-                        }
-                        else
-                        {
-                            if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out var d))
-                            {
-                                // Parsed OK
-                                return new DecimalNode(d);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal");
-                            }
+                            case XmlSpecsHelper.XmlSchemaDataTypeBoolean when lit.AsValuedNode() is BooleanNode booleanNode:
+                                return new DecimalNode(booleanNode.AsBoolean() ? 1.0m : 0.0m);
+                            case XmlSpecsHelper.XmlSchemaDataTypeFloat when lit.AsValuedNode() is FloatNode floatNode:
+                                return new DecimalNode(floatNode.AsDecimal());
+                            case XmlSpecsHelper.XmlSchemaDataTypeFloat:
+                                throw new RdfQueryException("Invalid lexical form for xsd:float");
+                            case XmlSpecsHelper.XmlSchemaDataTypeDouble when lit.AsValuedNode() is DoubleNode doubleNode:
+                                return new DecimalNode(doubleNode.AsDecimal());
+                            case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                                // DateTime cast forbidden
+                                throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:decimal");
+                            default:
+                                {
+                                    if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out var d))
+                                    {
+                                        // Parsed OK
+                                        return new DecimalNode(d);
+                                    }
+
+                                    throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal");
+                                }
                         }
                     }
-                    else
+
+                    if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out var decimalValue))
                     {
-                        if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out var d))
-                        {
-                            // Parsed OK
-                            return new DecimalNode(d);
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal");
-                        }
+                        // Parsed OK
+                        return new DecimalNode(decimalValue);
                     }
+
+                    throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal");
                 default:
                     throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:decimal");
             }
@@ -2584,6 +2530,8 @@ namespace VDS.RDF.Query
                 case NodeType.Literal:
                     if (n is DoubleNode) return n;
                     if (n is FloatNode) return new DoubleNode(n.AsDouble());
+                    if (n is DecimalNode) return new DoubleNode(n.AsDouble());
+                    if (n is BooleanNode) return new DoubleNode(n.AsBoolean() ? 1.0E0 : 0.0E0);
                     // See if the value can be cast
                     var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
@@ -2658,6 +2606,9 @@ namespace VDS.RDF.Query
 
                 case NodeType.Literal:
                     if (n is FloatNode) return n;
+                    if (n is DoubleNode) return new FloatNode(n.AsFloat());
+                    if (n is DecimalNode) return new FloatNode(n.AsFloat());
+                    if (n is BooleanNode) return new FloatNode(n.AsBoolean() ? 1.0f : 0.0f);
                     // See if the value can be cast
                     var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
@@ -2732,6 +2683,9 @@ namespace VDS.RDF.Query
                 case NodeType.Literal:
                     // See if the value can be cast
                     if (n is LongNode) return n;
+                    if (n is DecimalNode || n is DoubleNode || n is FloatNode) return new LongNode(n.AsInteger());
+                    if (n is BooleanNode) return new LongNode(n.AsBoolean() ? 1 : 0);
+                    
                     var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {

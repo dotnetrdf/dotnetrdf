@@ -17,10 +17,13 @@ namespace VDS.RDF
 
         private readonly List<Manifest> _childManifests = new List<Manifest>();
 
-        public Manifest(Uri baseUri, string localFilePath)
+        private readonly Func<IGraph, INode, bool> _testNodeFilter;
+
+        public Manifest(Uri baseUri, string localFilePath, Func<IGraph, INode, bool> testNodeFilter)
         {
             BaseUri = baseUri;
             Graph = new Graph { BaseUri = baseUri };
+            _testNodeFilter = testNodeFilter;
             Graph.NamespaceMap.AddNamespace("mf", UriFactory.Root.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
             Graph.NamespaceMap.AddNamespace("qt", UriFactory.Root.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-query#"));
             Graph.NamespaceMap.AddNamespace("ut", UriFactory.Root.Create("http://www.w3.org/2009/sparql/tests/test-update#"));
@@ -43,14 +46,14 @@ namespace VDS.RDF
                     // Load included manifests
                     case IUriNode manifestRef:
                         {
-                            _childManifests.Add(new Manifest(manifestRef.Uri, ResolveResourcePath(manifestRef.Uri)));
+                            _childManifests.Add(new Manifest(manifestRef.Uri, ResolveResourcePath(manifestRef.Uri), _testNodeFilter));
                             break;
                         }
                     case IBlankNode manifestList:
                         {
                             foreach (IUriNode manifestItem in Graph.GetListItems(manifestList).OfType<IUriNode>())
                             {
-                                _childManifests.Add(new Manifest(manifestItem.Uri, ResolveResourcePath(manifestItem.Uri)));
+                                _childManifests.Add(new Manifest(manifestItem.Uri, ResolveResourcePath(manifestItem.Uri), _testNodeFilter));
                             }
                             break;
                         }
@@ -71,6 +74,7 @@ namespace VDS.RDF
         {
             INode testApproval = Graph.CreateUriNode("test:approval");
             INode testWithdrawn = Graph.CreateUriNode("test:withdrawn");
+            INode rdfType = Graph.CreateUriNode("rdf:type");
             IEnumerable<INode> manifests = Graph.GetTriplesWithPredicateObject(Graph.CreateUriNode("rdf:type"), Graph.CreateUriNode("mf:Manifest")).Select(t => t.Subject);
             foreach (INode manifest in manifests)
             {
@@ -79,7 +83,9 @@ namespace VDS.RDF
                 {
                     foreach (IUriNode testNode in Graph.GetListItems(testList).OfType<IUriNode>())
                     {
-                        if (!Graph.ContainsTriple(new Triple(testNode, testApproval, testWithdrawn)))
+                        if (!Graph.ContainsTriple(new Triple(testNode, testApproval, testWithdrawn))
+                            && Graph.Triples.WithSubjectPredicate(testNode, rdfType).Any()
+                            && (_testNodeFilter == null || _testNodeFilter(Graph, testNode)))
                         {
                             yield return new ManifestTestData(this, testNode);
                         }
