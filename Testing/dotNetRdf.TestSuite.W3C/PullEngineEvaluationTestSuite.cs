@@ -1,5 +1,5 @@
 #if NET6_0_OR_GREATER
-using dotNetRdf.Query.PullEvaluation;
+using dotNetRdf.Query.Pull;
 using System.Threading.Tasks;
 using VDS.RDF.Query;
 using Xunit;

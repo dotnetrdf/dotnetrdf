@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Libraries\dotNetRdf.Query.PullEvaluation\dotNetRdf.Query.PullEvaluation.csproj" />
+      <ProjectReference Include="..\..\Libraries\dotNetRdf.Query.Pull\dotNetRdf.Query.Pull.csproj" />
     </ItemGroup>
 
     <ItemGroup>
