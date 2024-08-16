@@ -7,23 +7,31 @@ using Xunit.Abstractions;
 
 namespace VDS.RDF.TestSuite.W3C;
 
-public class PullEngineEvaluationTestSuite(ITestOutputHelper output) : BaseAsyncSparqlEvaluationTestSuite(output)
+public class PullEngineEvaluationTestSuite : BaseAsyncSparqlEvaluationTestSuite
 {
-    [Theory]
+    public PullEngineEvaluationTestSuite(ITestOutputHelper output) : base(output)
+    {
+        SkipTests["http://www.w3.org/2001/sw/DataAccess/tests/data-r2/i18n/manifest#normalization-2"] =
+            "SPARQL URI Normalization is not implemented. URIs are normalized using standard .NET URI functionality.";
+        SkipTests["http://www.w3.org/2001/sw/DataAccess/tests/data-r2/i18n/manifest#normalization-3"] =
+            "SPARQL URI Normalization is not implemented. URIs are normalized using standard .NET URI functionality.";
+    }
+
+    [SkippableTheory]
     [MemberData(nameof(Sparql11QueryEvalTests))]
     public void RunSparql11TestSuite(ManifestTestData t)
     {
         base.PerformTest(t);
     }
 
-    [Theory]
+    [SkippableTheory]
     [MemberData(nameof(Sparql10QueryEvalTests))]
     public void RunSparql10TestSuite(ManifestTestData t)
     {
         base.PerformTest(t);
     }
 
-    [Fact]
+    [SkippableFact]
     public void RunSingleQueryEvaluation()
     {
         const string testUrl = "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-10";

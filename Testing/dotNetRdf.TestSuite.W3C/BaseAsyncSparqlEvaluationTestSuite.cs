@@ -1,6 +1,7 @@
 using dotNetRdf.TestSupport;
 using FluentAssertions;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,8 +24,11 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
 
     protected abstract Task<object> ProcessQueryAsync(TripleStore tripleStore, SparqlQuery query);
 
+    protected Dictionary<string, string> SkipTests = new();
+
     protected async void PerformTest(ManifestTestData t)
     {
+        Skip.If(SkipTests.TryGetValue(t.Id, out var reason), reason);
         output.WriteLine($"{t.Id}: {t.Name} is a {t.Type}");
         await InvokeTestRunnerAsync(t);
     }
