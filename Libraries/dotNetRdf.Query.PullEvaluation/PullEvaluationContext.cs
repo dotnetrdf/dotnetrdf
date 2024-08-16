@@ -25,13 +25,40 @@ internal class PullEvaluationContext : IPatternEvaluationContext
     public INodeFactory NodeFactory { get; private set; }
     public Uri? BaseUri { get; private set; }
     public IUriFactory UriFactory { get; private set; }
-    
-    public PullEvaluationContext(ITripleStore data, bool unionDefaultGraph = true, IEnumerable<IRefNode?>? defaultGraphNames = null, IEnumerable<IRefNode>? namedGraphs = null, string? autoVarPrefix = null, INodeFactory? nodeFactory = null, IUriFactory? uriFactory = null, Uri? baseUri = null)
+
+    private PullEvaluationContext(
+        PullEvaluationContext parent,
+        bool unionDefaultGraph,
+        IEnumerable<IRefNode> defaultGraphNames,
+        IEnumerable<IRefNode> namedGraphs):
+    this(
+        parent.Data,
+        unionDefaultGraph,
+        defaultGraphNames,
+        namedGraphs,
+        parent.AutoVarFactory.Prefix,
+        parent.NodeFactory,
+        parent.UriFactory,
+        parent.NodeComparer,
+        parent.BaseUri)
+    {
+        
+    }
+    public PullEvaluationContext(
+        ITripleStore data,
+        bool unionDefaultGraph = true,
+        IEnumerable<IRefNode?>? defaultGraphNames = null,
+        IEnumerable<IRefNode>? namedGraphs = null,
+        string? autoVarPrefix = null,
+        INodeFactory? nodeFactory = null,
+        IUriFactory? uriFactory = null,
+        ISparqlNodeComparer? nodeComparer = null,
+        Uri? baseUri = null)
     {
         NodeFactory = nodeFactory ?? new NodeFactory();
         Data = data;
         UnionDefaultGraph = unionDefaultGraph;
-        NodeComparer = new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
+        NodeComparer = nodeComparer ?? new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
         OrderingComparer = new SparqlOrderingComparer(NodeComparer);
         AutoVarFactory = new VariableFactory(autoVarPrefix ?? "_auto");
         BaseUri = baseUri;
@@ -72,6 +99,11 @@ internal class PullEvaluationContext : IPatternEvaluationContext
             UriFactory,
             RigorousEvaluation);
 
+    }
+
+    internal PullEvaluationContext MakeSubContext(IEnumerable<IRefNode> defaultGraphNames, IEnumerable<IRefNode> namedGraphs)
+    {
+        return new PullEvaluationContext(this, UnionDefaultGraph, defaultGraphNames, namedGraphs);
     }
 
     private static INode? GetNode(PatternItem patternItem, ISet? inputBindings)

@@ -35,7 +35,7 @@ public class PullEngineEvaluationTestSuite(ITestOutputHelper output) : BaseAsync
     
     protected override async Task<object> ProcessQueryAsync(TripleStore tripleStore, SparqlQuery query)
     {
-            var queryEngine = new PullQueryProcessor(tripleStore) { Timeout = 0 };
+        var queryEngine = new PullQueryProcessor(tripleStore, (options => { options.QueryExecutionTimeout = 0; }));
             return await queryEngine.ProcessQueryAsync(query);
     }
 }

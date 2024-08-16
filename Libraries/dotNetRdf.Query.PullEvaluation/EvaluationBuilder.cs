@@ -230,9 +230,8 @@ internal class EvaluationBuilder
         {
             autoVarPrefix = "_" + autoVarPrefix;
         }
-        var subContext = new PullEvaluationContext(context.Data, context.UnionDefaultGraph,
-            subQuery.Query.DefaultGraphNames, subQuery.Query.NamedGraphNames, autoVarPrefix);
-        var queryAlgebra = subQuery.Query.ToAlgebra(true, new[] { new PushDownAggregatesOptimiser(autoVarPrefix) });
+        PullEvaluationContext subContext = context.MakeSubContext(subQuery.Query.DefaultGraphNames, subQuery.Query.NamedGraphNames);
+        ISparqlAlgebra? queryAlgebra = subQuery.Query.ToAlgebra(true, new[] { new PushDownAggregatesOptimiser(autoVarPrefix) });
         return new AsyncSubQueryEvaluation(subQuery,Build(queryAlgebra, subContext), subContext);
     }
 
@@ -243,8 +242,7 @@ internal class EvaluationBuilder
         {
             autoVarPrefix = "_" + autoVarPrefix;
         }
-        var subContext = new PullEvaluationContext(context.Data, context.UnionDefaultGraph,
-            subQueryPattern.SubQuery.DefaultGraphNames, subQueryPattern.SubQuery.NamedGraphNames, autoVarPrefix);
+        PullEvaluationContext subContext = context.MakeSubContext(subQueryPattern.SubQuery.DefaultGraphNames, subQueryPattern.SubQuery.NamedGraphNames);
         ISparqlAlgebra? queryAlgebra = subQueryPattern.SubQuery.ToAlgebra(true, new[] { new PushDownAggregatesOptimiser(autoVarPrefix) });
         return new AsyncSubQueryEvaluation( subQueryPattern,Build(queryAlgebra, subContext), subContext);
     }
