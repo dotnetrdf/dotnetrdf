@@ -10,7 +10,21 @@ jobs:
     strategy:
       matrix:
         framework: ["net6.0", "net8.0", "net472"]
-        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests", "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.TestSuite.Rdfa", "dotNetRdf.TestSuite.RdfCanon", "dotNetRdf.Data.DataTables.Tests", "dotNetRdf.Ldf.Tests"]
+        suite: 
+          - "dotNetRdf.Tests"
+          - "dotNetRdf.Dynamic.Tests"
+          - "dotNetRdf.Inferencing.Tests"
+          - "dotNetRdf.Ontology.Tests"
+          - "dotNetRdf.Shacl.Tests"
+          - "dotNetRdf.Skos.Tests"
+          - "dotNetRdf.Query.FullText.Tests"
+          - "dotNetRdf.Writing.HtmlSchema.Tests"
+          - "dotNetRdf.TestSuite.RdfStar"
+          - "dotNetRdf.TestSuite.Rdfa"
+          - "dotNetRdf.TestSuite.RdfCanon"
+          - "dotNetRdf.TestSuite.W3C"
+          - "dotNetRdf.Data.DataTables.Tests"
+          - "dotNetRdf.Ldf.Tests"
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -29,7 +43,21 @@ jobs:
     strategy:
       matrix: 
         framework: ["net6.0", "net8.0"]
-        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests", "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.TestSuite.Rdfa", "dotNetRdf.TestSuite.RdfCanon", "dotNetRdf.Data.DataTables.Tests", "dotNetRdf.Ldf.Tests"]
+        suite: 
+          - "dotNetRdf.Tests"
+          - "dotNetRdf.Dynamic.Tests"
+          - "dotNetRdf.Inferencing.Tests"
+          - "dotNetRdf.Ontology.Tests"
+          - "dotNetRdf.Shacl.Tests"
+          - "dotNetRdf.Skos.Tests"
+          - "dotNetRdf.Query.FullText.Tests"
+          - "dotNetRdf.Writing.HtmlSchema.Tests"
+          - "dotNetRdf.TestSuite.RdfStar"
+          - "dotNetRdf.TestSuite.Rdfa"
+          - "dotNetRdf.TestSuite.RdfCanon"
+          - "dotNetRdf.TestSuite.W3C"
+          - "dotNetRdf.Data.DataTables.Tests"
+          - "dotNetRdf.Ldf.Tests"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
