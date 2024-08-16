@@ -1,6 +1,6 @@
 using VDS.RDF;
 
-namespace dotNetRdf.Query.PullEvaluation.Tests;
+namespace dotNetRdf.Query.Pull.Tests;
 
 public class EnumeratorTestBase
 {

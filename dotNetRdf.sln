@@ -84,7 +84,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.TestSuite.Rdfa", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.Query.Pull", "Libraries\dotNetRdf.Query.Pull\dotNetRdf.Query.Pull.csproj", "{0A0205F2-A991-456F-997F-FD1CB323C3C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.Query.PullEvaluation.Tests", "Testing\dotNetRdf.Query.PullEvaluation.Tests\dotNetRdf.Query.PullEvaluation.Tests.csproj", "{E1A752CC-C840-4410-9DDF-23CA641A8E07}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.Query.Pull.Tests", "Testing\dotNetRdf.Query.Pull.Tests\dotNetRdf.Query.Pull.Tests.csproj", "{E1A752CC-C840-4410-9DDF-23CA641A8E07}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Ldf", "Libraries\dotNetRdf.Ldf\dotNetRdf.Ldf.csproj", "{A533FBB5-C8AE-456C-9F0D-258793F9C08C}"
 EndProject

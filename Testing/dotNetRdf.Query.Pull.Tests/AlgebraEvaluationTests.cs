@@ -5,7 +5,7 @@ using VDS.RDF.Query.Patterns;
 using Xunit.Abstractions;
 using Graph = VDS.RDF.Graph;
 
-namespace dotNetRdf.Query.PullEvaluation.Tests;
+namespace dotNetRdf.Query.Pull.Tests;
 
 public class AlgebraEvaluationTests
 {

@@ -4,7 +4,7 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 
-namespace dotNetRdf.Query.PullEvaluation.Tests;
+namespace dotNetRdf.Query.Pull.Tests;
 
 internal class AsyncIntegerEnumeration : IAsyncEvaluation
 {

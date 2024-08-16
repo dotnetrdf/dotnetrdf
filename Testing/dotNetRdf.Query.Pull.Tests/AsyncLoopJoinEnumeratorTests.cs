@@ -1,6 +1,7 @@
+using dotNetRdf.Query.Pull.Algebra;
 using VDS.RDF.Nodes;
 
-namespace dotNetRdf.Query.PullEvaluation.Tests;
+namespace dotNetRdf.Query.Pull.Tests;
 
 public class AsyncLoopJoinEnumeratorTests : EnumeratorTestBase
 {

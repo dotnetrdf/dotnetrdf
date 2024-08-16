@@ -1,8 +1,9 @@
+using dotNetRdf.Query.Pull.Algebra;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
 
-namespace dotNetRdf.Query.PullEvaluation.Tests;
+namespace dotNetRdf.Query.Pull.Tests;
 
 public class LeftJoinEnumeratorTests : EnumeratorTestBase
 {
