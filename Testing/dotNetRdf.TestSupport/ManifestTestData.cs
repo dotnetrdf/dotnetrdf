@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace VDS.RDF
@@ -39,6 +40,9 @@ namespace VDS.RDF
         public Uri Data => Graph.GetTriplesWithSubjectPredicate(ActionNode, Graph.CreateUriNode("qt:data"))
             .Select(t => t.Object).OfType<IUriNode>().Select(n => n.Uri).FirstOrDefault();
 
+        public IEnumerable<Uri> GraphData => Graph.GetTriplesWithSubjectPredicate(ActionNode, Graph.CreateUriNode("qt:graphData"))
+            .Select(t => t.Object).OfType<IUriNode>().Select(n => n.Uri);
+        
         public Uri UpdateData => Graph.GetTriplesWithSubjectPredicate(ActionNode, Graph.CreateUriNode("ut:data"))
             .Select(t => t.Object).OfType<IUriNode>().Select(n => n.Uri).FirstOrDefault();
 
@@ -54,8 +58,11 @@ namespace VDS.RDF
             .Select(t => t.Object).OfType<ILiteralNode>().Select(t => t.Value).FirstOrDefault();
 
         public string HashAlgorithm => Graph
-            .GetTriplesWithSubjectPredicate(TestNode, Graph.GetUriNode("rdfc:hashAlgorithm"))
+            .GetTriplesWithSubjectPredicate(TestNode, Graph.CreateUriNode("rdfc:hashAlgorithm"))
             .Select(t => t.Object).OfType<ILiteralNode>().Select(lit => lit.Value).FirstOrDefault();
+
+        public bool LaxCardinality => Graph.ContainsTriple(new Triple(TestNode,
+            Graph.CreateUriNode("mf:resultCardinality"), Graph.CreateUriNode("mf:LaxCardinality")));
 
         public override string ToString()
         {

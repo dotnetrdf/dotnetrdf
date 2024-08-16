@@ -39,6 +39,7 @@ namespace VDS.RDF.Query.Construct
         private static readonly ThreadIsolatedReference<NodeFactory> GlobalFactory = new(() => new NodeFactory(new NodeFactoryOptions()));
         private Dictionary<string, INode> _bnodeMap;
         private MultiDictionary<INode, INode> _nodeMap;
+        private ISet _set;
 
         /// <summary>
         /// Creates a new Construct Context.
@@ -79,7 +80,16 @@ namespace VDS.RDF.Query.Construct
         /// <summary>
         /// Gets the Set that this Context pertains to.
         /// </summary>
-        public ISet Set { get; internal set; }
+        public ISet Set
+        {
+            get => _set;
+            internal set
+            {
+                _set = value;
+                // Reset the blank node map for each solution
+                _bnodeMap?.Clear();
+            }
+        }
 
         /// <summary>
         /// Gets the Graph that Triples should be constructed in.

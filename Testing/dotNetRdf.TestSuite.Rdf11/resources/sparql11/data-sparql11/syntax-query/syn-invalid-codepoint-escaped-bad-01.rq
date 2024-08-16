@@ -1,3 +1,0 @@
-SELECT * WHERE {
-	?s <http://a.example/p1> '\uD800'
-}

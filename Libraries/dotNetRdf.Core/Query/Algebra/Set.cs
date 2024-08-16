@@ -138,11 +138,13 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="value">Value.</param>
         public override void Add(string variable, INode value)
         {
-            if (!_values.ContainsKey(variable))
+            if (!_values.TryGetValue(variable, out INode existingValue))
             {
                 _values.Add(variable, value);
             }
-            else if (!_values[variable].Equals(value))
+            else if ((existingValue == null && value != null) || 
+                     (value == null && existingValue != null) ||
+                     (existingValue != null && !existingValue.Equals(value)))
             {
                 throw new RdfQueryException("The value of a variable in a Set cannot be changed");
             }
