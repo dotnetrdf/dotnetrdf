@@ -1,6 +1,16 @@
 ﻿Change Log
 ==========
 
+Next release (3.3)
+------------------
+
+NEW: A new SPARQL query processor that works on an asynchronous enumeration approach which aims to minimize the number 
+     and size of internal lookups with a view to being able to support queries over larger in-memory datasets as well as
+     queries which generate a large number of intermediate results (e.g. via cross-joins). The new implementation should
+     also support more parallel processing of complex queries by handling each branch of a join as its own separate
+     async enumerable.
+     The new implementation makes use of .NET async enumerables and thus is not supported under .NET Framework.
+
 3.2.1
 -----
 
