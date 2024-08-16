@@ -19,6 +19,7 @@ namespace VDS.RDF.TestSuite.W3C
             new Uri("http://example/base/manifest.ttl"),
             Path.Combine("resources", "rdf-tests", "sparql", "sparql10", "manifest-evaluation.ttl"));
 
+        [Trait("Category", "explicit")]
         [Theory]
         [MemberData(nameof(Sparql10QueryEvalTests))]
         public void RunSparql10EvaluationTests(ManifestTestData t)
@@ -27,6 +28,7 @@ namespace VDS.RDF.TestSuite.W3C
             InvokeTestRunner(t);
         }
 
+        [Trait("Category", "explicit")]
         [Theory]
         [MemberData(nameof(Sparql11QueryEvalTests))]
         public void RunSparql11EvaluationTests(ManifestTestData t)
