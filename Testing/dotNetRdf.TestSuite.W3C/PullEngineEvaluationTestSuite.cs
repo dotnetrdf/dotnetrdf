@@ -1,7 +1,7 @@
 #if NET6_0_OR_GREATER
-using dotNetRdf.Query.Pull;
 using System.Threading.Tasks;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Pull;
 using Xunit;
 using Xunit.Abstractions;
 

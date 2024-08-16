@@ -1,10 +1,7 @@
-using VDS.RDF;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 
-namespace dotNetRdf.Query.Pull.Aggregation;
+namespace VDS.RDF.Query.Pull.Aggregation;
 
 public class AsyncSumAggregate : IAsyncAggregation
 {

@@ -1,7 +1,6 @@
-using VDS.RDF;
 using VDS.RDF.Query.Algebra;
 
-namespace dotNetRdf.Query.Pull.Aggregation;
+namespace VDS.RDF.Query.Pull.Aggregation;
 
 /// <summary>
 /// An interface to be implemented by classes providing aggregation over an ISet enumeration

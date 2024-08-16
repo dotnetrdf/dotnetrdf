@@ -25,13 +25,11 @@
 */
 
 using System.Globalization;
-using VDS.RDF;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Describe;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Utils.Describe;
 
-namespace dotNetRdf.Query.Pull;
+namespace VDS.RDF.Query.Pull;
 
 /// <summary>
 /// A class encapsulation the runtime options that can be configured for a <see cref="PullQueryProcessor"/>.

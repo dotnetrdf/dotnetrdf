@@ -1,11 +1,9 @@
 using System.Text;
-using VDS.RDF;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace dotNetRdf.Query.Pull.Aggregation;
+namespace VDS.RDF.Query.Pull.Aggregation;
 
 internal class AsyncGroupConcatAggregate : IAsyncAggregation
 {

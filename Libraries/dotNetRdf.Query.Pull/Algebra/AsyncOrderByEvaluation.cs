@@ -1,10 +1,8 @@
 using System.Runtime.CompilerServices;
-using VDS.RDF;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Ordering;
 
-namespace dotNetRdf.Query.Pull.Algebra;
+namespace VDS.RDF.Query.Pull.Algebra;
 
 internal class AsyncOrderByEvaluation(OrderBy orderBy, IAsyncEvaluation inner) : IAsyncEvaluation
 {

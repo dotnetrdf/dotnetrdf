@@ -1,9 +1,7 @@
-using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Aggregates.Sparql;
-using VDS.RDF.Query.Algebra;
 
-namespace dotNetRdf.Query.Pull.Aggregation;
+namespace VDS.RDF.Query.Pull.Aggregation;
 
 public class AsyncCountAllAggregate : IAsyncAggregation
 {

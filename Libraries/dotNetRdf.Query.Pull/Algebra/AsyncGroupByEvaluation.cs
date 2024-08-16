@@ -1,10 +1,9 @@
-using dotNetRdf.Query.Pull.Aggregation;
 using System.Runtime.CompilerServices;
-using VDS.RDF;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Grouping;
+using VDS.RDF.Query.Pull.Aggregation;
 
-namespace dotNetRdf.Query.Pull.Algebra;
+namespace VDS.RDF.Query.Pull.Algebra;
 
 internal class AsyncGroupByEvaluation : IAsyncEvaluation
 {

@@ -3,6 +3,7 @@ using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Pull;
 
 namespace dotNetRdf.Query.Pull.Tests;
 

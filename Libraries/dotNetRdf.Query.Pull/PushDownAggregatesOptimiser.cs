@@ -1,4 +1,3 @@
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
@@ -6,7 +5,7 @@ using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Update;
 
-namespace dotNetRdf.Query.Pull;
+namespace VDS.RDF.Query.Pull;
 
 /// <summary>
 /// Transforms a query algebra for the async pull evaluation processor by ensuring that all aggregate expressions

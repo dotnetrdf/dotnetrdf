@@ -1,16 +1,12 @@
-using dotNetRdf.Query.Pull;
-using System.Xml.XPath;
-using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace dotNetRdf.Query.Pull;
+namespace VDS.RDF.Query.Pull;
 
 internal class PullExpressionProcessor(
     ISparqlNodeComparer nodeComparer,

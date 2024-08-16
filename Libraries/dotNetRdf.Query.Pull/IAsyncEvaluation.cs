@@ -1,7 +1,6 @@
-using VDS.RDF;
 using VDS.RDF.Query.Algebra;
 
-namespace dotNetRdf.Query.Pull;
+namespace VDS.RDF.Query.Pull;
 
 internal interface IAsyncEvaluation
 {

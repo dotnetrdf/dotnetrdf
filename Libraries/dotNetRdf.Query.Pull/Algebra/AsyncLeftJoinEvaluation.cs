@@ -1,10 +1,8 @@
-using VDS.RDF;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Filters;
 
-namespace dotNetRdf.Query.Pull.Algebra;
+namespace VDS.RDF.Query.Pull.Algebra;
 
 internal class AsyncLeftJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, string[] joinVars, string[] rhsVars, ISparqlFilter? filter)
     : AbstractAsyncJoinEvaluation(lhs, rhs)

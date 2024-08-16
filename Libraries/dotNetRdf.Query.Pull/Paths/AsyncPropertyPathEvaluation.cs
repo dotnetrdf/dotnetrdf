@@ -1,9 +1,8 @@
 using System.Runtime.CompilerServices;
-using VDS.RDF;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
-namespace dotNetRdf.Query.Pull.Paths;
+namespace VDS.RDF.Query.Pull.Paths;
 
 internal class AsyncPropertyPathEvaluation(INode predicate, PatternItem pathStart, PatternItem pathEnd) : IAsyncPathEvaluation
 {

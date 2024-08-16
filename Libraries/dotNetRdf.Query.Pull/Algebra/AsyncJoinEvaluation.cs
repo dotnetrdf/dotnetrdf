@@ -1,7 +1,6 @@
-using VDS.RDF;
 using VDS.RDF.Query.Algebra;
 
-namespace dotNetRdf.Query.Pull.Algebra;
+namespace VDS.RDF.Query.Pull.Algebra;
 
 internal class AsyncJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, string[] joinVars)
     : AbstractAsyncJoinEvaluation(lhs, rhs)

@@ -1,17 +1,14 @@
-using dotNetRdf.Query.Pull.Aggregation;
-using dotNetRdf.Query.Pull.Algebra;
-using dotNetRdf.Query.Pull.Paths;
 using System.Runtime.CompilerServices;
-using VDS.RDF;
 using VDS.RDF.Parsing.Tokens;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
-using Graph = VDS.RDF.Query.Algebra.Graph;
+using VDS.RDF.Query.Pull.Aggregation;
+using VDS.RDF.Query.Pull.Algebra;
+using VDS.RDF.Query.Pull.Paths;
 
-namespace dotNetRdf.Query.Pull;
+namespace VDS.RDF.Query.Pull;
 
 internal class EvaluationBuilder
 {
@@ -20,7 +17,7 @@ internal class EvaluationBuilder
         return algebra switch
         {
             Filter filter => BuildFilter(filter, context),
-            Graph graph => BuildGraph(graph, context),
+            Query.Algebra.Graph graph => BuildGraph(graph, context),
             IBgp bgp => BuildBgp(bgp, context),
             Join join => BuildJoin(join, context),
             LeftJoin leftJoin => BuildLeftJoin(leftJoin, context),
@@ -134,7 +131,7 @@ internal class EvaluationBuilder
         return new AsyncUnionEvaluation(Build(union.Lhs, context), Build(union.Rhs, context));
     }
 
-    private IAsyncEvaluation BuildGraph(Graph graph, PullEvaluationContext context)
+    private IAsyncEvaluation BuildGraph(Query.Algebra.Graph graph, PullEvaluationContext context)
     {
         if (graph.GraphSpecifier.TokenType == Token.VARIABLE)
         {

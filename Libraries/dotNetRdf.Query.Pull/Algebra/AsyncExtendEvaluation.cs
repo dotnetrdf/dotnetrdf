@@ -1,9 +1,7 @@
 using System.Runtime.CompilerServices;
-using VDS.RDF;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 
-namespace dotNetRdf.Query.Pull.Algebra;
+namespace VDS.RDF.Query.Pull.Algebra;
 
 internal class AsyncExtendEvaluation(Extend extend, PullEvaluationContext context, IAsyncEvaluation inner)
     : IAsyncEvaluation

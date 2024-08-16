@@ -1,9 +1,8 @@
 using System.Runtime.CompilerServices;
-using VDS.RDF;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
-namespace dotNetRdf.Query.Pull.Algebra;
+namespace VDS.RDF.Query.Pull.Algebra;
 
 internal class AsyncBindingsEvaluation(Bindings bindings) : IAsyncEvaluation
 {

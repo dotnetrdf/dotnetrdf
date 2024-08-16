@@ -1,8 +1,7 @@
-using VDS.RDF;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
-namespace dotNetRdf.Query.Pull.Algebra;
+namespace VDS.RDF.Query.Pull.Algebra;
 
 /// <summary>
 /// Implements evaluation of a TriplePattern against a PullEvaluationContext returning all matching solution bindings.

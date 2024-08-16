@@ -1,4 +1,4 @@
-namespace dotNetRdf.Query.Pull;
+namespace VDS.RDF.Query.Pull;
 
 /// <summary>
 /// Provides extensions to <see cref="IEnumerable{T}"/>

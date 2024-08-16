@@ -1,4 +1,4 @@
-namespace dotNetRdf.Query.Pull;
+namespace VDS.RDF.Query.Pull;
 
 internal class VariableFactory(string prefix)
 {

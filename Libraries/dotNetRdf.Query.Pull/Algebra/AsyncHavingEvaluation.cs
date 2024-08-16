@@ -1,9 +1,8 @@
 using System.Runtime.CompilerServices;
-using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
 
-namespace dotNetRdf.Query.Pull.Algebra;
+namespace VDS.RDF.Query.Pull.Algebra;
 
 internal class AsyncHavingEvaluation(Having having, IAsyncEvaluation inner) : IAsyncEvaluation
 {

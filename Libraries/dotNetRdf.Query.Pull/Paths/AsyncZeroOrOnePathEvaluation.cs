@@ -1,10 +1,8 @@
 using System.Runtime.CompilerServices;
-using VDS.RDF;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
-namespace dotNetRdf.Query.Pull.Paths;
+namespace VDS.RDF.Query.Pull.Paths;
 
 internal class AsyncZeroOrOnePathEvaluation(IAsyncEvaluation pathEvaluation, PatternItem pathStart, PatternItem pathEnd)
     : IAsyncEvaluation

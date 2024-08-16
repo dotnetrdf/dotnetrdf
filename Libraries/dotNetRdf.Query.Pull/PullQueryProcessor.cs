@@ -1,12 +1,10 @@
-﻿using VDS.RDF;
-using VDS.RDF.Parsing;
+﻿using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Patterns;
 
-namespace dotNetRdf.Query.Pull;
+namespace VDS.RDF.Query.Pull;
 
 /// A SPARQL query processor that uses asynchronous pull-based processing.
 public class PullQueryProcessor : ISparqlQueryProcessor

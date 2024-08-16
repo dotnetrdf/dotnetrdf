@@ -1,8 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
-using VDS.RDF;
-using VDS.RDF.Query;
 
-namespace dotNetRdf.Query.Pull.Paths;
+namespace VDS.RDF.Query.Pull.Paths;
 
 internal class PathResult
 {

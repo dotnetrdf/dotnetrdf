@@ -1,10 +1,8 @@
 using System.Runtime.CompilerServices;
-using VDS.RDF;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 
-namespace dotNetRdf.Query.Pull.Algebra;
+namespace VDS.RDF.Query.Pull.Algebra;
 
 internal class AsyncFilterEvaluation(Filter filter, IAsyncEvaluation inner) : IAsyncEvaluation
 {

@@ -1,11 +1,9 @@
 using System.Globalization;
-using VDS.RDF;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
-namespace dotNetRdf.Query.Pull;
+namespace VDS.RDF.Query.Pull;
 
 internal class PullEvaluationContext : IPatternEvaluationContext
 {

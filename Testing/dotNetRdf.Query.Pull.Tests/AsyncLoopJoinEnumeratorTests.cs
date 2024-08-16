@@ -1,5 +1,5 @@
-using dotNetRdf.Query.Pull.Algebra;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Pull.Algebra;
 
 namespace dotNetRdf.Query.Pull.Tests;
 

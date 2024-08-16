@@ -1,9 +1,6 @@
-using VDS.RDF;
-using VDS.RDF.Query;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
 
-namespace dotNetRdf.Query.Pull.Aggregation;
+namespace VDS.RDF.Query.Pull.Aggregation;
 
 internal class AsyncMaxAggregate(
     ISparqlExpression valueExpression,

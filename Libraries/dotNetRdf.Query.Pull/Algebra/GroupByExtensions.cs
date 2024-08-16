@@ -1,6 +1,6 @@
 using VDS.RDF.Query.Grouping;
 
-namespace dotNetRdf.Query.Pull.Algebra;
+namespace VDS.RDF.Query.Pull.Algebra;
 
 internal static class GroupByExtensions {
     public static IEnumerable<string?> GroupingKeyNames(this ISparqlGroupBy grouping)
