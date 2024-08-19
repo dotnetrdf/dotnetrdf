@@ -23,6 +23,7 @@ public class PushDownAggregatesOptimiser(string varPrefix) : IAlgebraOptimiser, 
     /// </summary>
     public string AutoVarPrefix { get; private set; } = varPrefix;
 
+    /// <inheritdoc />
     public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
     {
         if (AutoVarPrefix == String.Empty)

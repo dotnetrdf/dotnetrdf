@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Pull.Algebra;
@@ -8,8 +9,8 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
     private readonly IAsyncEvaluation _rhs;
     protected bool _lhsHasMore;
     protected bool _rhsHasMore;
-    private IAsyncEnumerator<ISet> _lhsResults;
-    private IAsyncEnumerator<ISet> _rhsResults;
+    private IAsyncEnumerator<ISet>? _lhsResults;
+    private IAsyncEnumerator<ISet>? _rhsResults;
 
     protected AbstractAsyncJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs)
     {
@@ -17,7 +18,7 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
         _rhs = rhs;
     }
 
-    public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph = default, CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         _lhsHasMore = true;
         _rhsHasMore = true;

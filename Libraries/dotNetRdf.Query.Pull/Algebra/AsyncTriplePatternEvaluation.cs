@@ -25,6 +25,8 @@ internal class AsyncTriplePatternEvaluation : IAsyncEvaluation
     /// </summary>
     /// <param name="context">Evaluation context</param>
     /// <param name="input">Optional input solution</param>
+    /// <param name="activeGraph">Optional active graph name</param>
+    /// <param name="cancellationToken">Cancellation token for the enumeration</param>
     /// <returns></returns>
     public IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, CancellationToken cancellationToken = default)
     {

@@ -6,7 +6,7 @@ namespace VDS.RDF.Query.Pull.Algebra;
 
 internal class AsyncFilterEvaluation(Filter filter, IAsyncEvaluation inner) : IAsyncEvaluation
 {
-    public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode activeGraph, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         await foreach (ISet innerResult in inner.Evaluate(context, input, activeGraph, cancellationToken))
         {

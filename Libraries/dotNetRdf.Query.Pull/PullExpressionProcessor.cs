@@ -73,7 +73,7 @@ internal class PullExpressionProcessor(
                 "Cannot create a Blank Node when the argument Expression evaluates to a literal node typed as anything other than xsd:string");
         }
 
-        if (expressionContext.TryGetBlankNode(lit.Value, out IBlankNode mappedBlankNode))
+        if (expressionContext.TryGetBlankNode(lit.Value, out IBlankNode? mappedBlankNode))
         {
             return mappedBlankNode.AsValuedNode();
         }
