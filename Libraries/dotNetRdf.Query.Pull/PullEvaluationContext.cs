@@ -127,6 +127,11 @@ internal class PullEvaluationContext : IPatternEvaluationContext
         return _defaultGraph.Contains(t);
     }
 
+    internal bool HasAnyTriples(IRefNode? activeGraph)
+    {
+        BaseTripleCollection tripleCollection = activeGraph != null ? _namedGraphs[activeGraph] : _defaultGraph;
+        return tripleCollection.Any();
+    }
     internal IEnumerable<Triple> GetTriples(IMatchTriplePattern triplePattern, ISet? inputBindings, IRefNode? activeGraph)
     {
         BaseTripleCollection tripleCollection = activeGraph != null ? _namedGraphs[activeGraph] : _defaultGraph;

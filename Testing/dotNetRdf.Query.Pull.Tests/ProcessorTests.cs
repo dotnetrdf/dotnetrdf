@@ -88,7 +88,7 @@ public class ProcessorTests
         Assert.Equal(3, handler.Count);
     }
     
-    [Fact(Skip = "AskAnyTriples algebra not implemented yet")]
+    [Fact]
     public async void AsyncAskQueryWithHandler()
     {
         TripleStore store = MakeTestTripleStore();
