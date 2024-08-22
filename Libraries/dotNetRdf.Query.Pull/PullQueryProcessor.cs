@@ -31,10 +31,17 @@ public class PullQueryProcessor : ISparqlQueryProcessor
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <remarks>Used primarily for internal test purposes.</remarks>
-    internal IAsyncEnumerable<ISet> Evaluate(ISparqlAlgebra algebra, PullEvaluationContext? context = null, CancellationToken cancellationToken = default)
+    internal IAsyncEnumerable<ISet> Evaluate(ISparqlAlgebra algebra, PullEvaluationContext? context = null,
+        CancellationToken cancellationToken = default)
     {
         var builder = new EvaluationBuilder();
-        context ??= new PullEvaluationContext(_tripleStore, unionDefaultGraph: false);
+        context ??= new PullEvaluationContext(
+            _tripleStore,
+            _options.UnionDefaultGraph,
+            defaultGraphNames: _options.DefaultGraphNames,
+            uriFactory: _options.UriFactory,
+            nodeComparer: _options.NodeComparer
+        );
         IAsyncEvaluation evaluation = builder.Build(algebra, context);
         return evaluation.Evaluate(context, null, null, cancellationToken);
     }
@@ -62,7 +69,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
             case SparqlQueryType.Construct:
             case SparqlQueryType.Describe:
             case SparqlQueryType.DescribeAll:
-                var g = new VDS.RDF.Graph();
+                var g = new Graph();
                 ProcessQuery(new GraphHandler(g), null, query);
                 return g;
             default:
@@ -149,7 +156,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
     /// </summary>
     /// <param name="rdfHandler">The handler to invoke for CONSTRUCT/DESCRIBE query results.</param>
     /// <param name="resultsHandler">The handler to invoke for SELECT/ASK query results.</param>
-    /// <param name="query">The parsed SPARQL query to be procssed.</param>
+    /// <param name="query">The parsed SPARQL query to be processed.</param>
     /// <param name="callback">The callback method to be invoked on completion of query processing.</param>
     /// <param name="state">Additional state to pass to <paramref name="callback"/>.</param>
     public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query,
@@ -182,7 +189,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
             case SparqlQueryType.Construct:
             case SparqlQueryType.Describe:
             case SparqlQueryType.DescribeAll:
-                var g = new VDS.RDF.Graph();
+                var g = new Graph();
                 await ProcessQueryAsync(new GraphHandler(g), null, query);
                 return g;
             default:
@@ -227,8 +234,8 @@ public class PullQueryProcessor : ISparqlQueryProcessor
             var evaluationContext =
                 new PullEvaluationContext(
                     _tripleStore,
-                    unionDefaultGraph: false,
-                    defaultGraphNames: query.DefaultGraphNames, 
+                    unionDefaultGraph: _options.UnionDefaultGraph,
+                    defaultGraphNames: query.DefaultGraphNames.Any() ? query.DefaultGraphNames : _options.DefaultGraphNames, 
                     namedGraphs: query.NamedGraphNames,
                     autoVarPrefix: autoVarPrefix,
                     baseUri: query.BaseUri,
@@ -306,7 +313,6 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                             {
                                 // If we get an error here this means we couldn't construct for this solution so the
                                 // entire solution is discarded
-                                continue;
                             }
                         }
 
