@@ -24,6 +24,7 @@ internal class EvaluationBuilder
             Select select => BuildSelect(select, context),
             Union union => BuildUnion(union, context),
             Ask ask => BuildAsk(ask, context),
+            AskAnyTriples => BuildAskAnyTriples(),
             Distinct distinct => BuildDistinct(distinct, context),
             OrderBy orderBy => BuildOrderBy(orderBy, context),
             Slice slice => BuildSlice(slice, context),
@@ -150,6 +151,11 @@ internal class EvaluationBuilder
     private IAsyncEvaluation BuildAsk(Ask ask, PullEvaluationContext context)
     {
         return new AsyncAskEvaluation(Build(ask.InnerAlgebra, context));
+    }
+
+    private IAsyncEvaluation BuildAskAnyTriples()
+    {
+        return new AsyncAskAnyTriplesEvaluation();
     }
 
     private IAsyncEvaluation BuildDistinct(Distinct distinct, PullEvaluationContext context)
