@@ -1,9 +1,10 @@
+using System.Diagnostics;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Pull.Aggregation;
 
-public class AsyncSumAggregate : IAsyncAggregation
+internal class AsyncSumAggregate : IAsyncAggregation
 {
     private readonly ISparqlExpression _expression;
 
@@ -16,7 +17,7 @@ public class AsyncSumAggregate : IAsyncAggregation
     private SparqlNumericType _maxtype = SparqlNumericType.NaN;
     private SparqlNumericType _numtype = SparqlNumericType.NaN;
     private readonly bool _distinct;
-    private readonly HashSet<INode> _values;
+    private readonly HashSet<INode>? _values;
     
     internal AsyncSumAggregate(ISparqlExpression valueExpression, bool distinct, string varName, PullEvaluationContext context)
     {
@@ -63,6 +64,7 @@ public class AsyncSumAggregate : IAsyncAggregation
 
         if (_distinct)
         {
+            Debug.Assert(_values != null, nameof(_values) + " != null");
             if (!_values.Add(tmp))
             {
                 return true;

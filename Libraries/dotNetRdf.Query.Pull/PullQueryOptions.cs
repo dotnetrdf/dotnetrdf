@@ -72,4 +72,22 @@ public class PullQueryOptions
     /// that are passed to a <see cref="ISparqlResultsHandler"/>.
     /// </summary>
     public ISparqlResultFactory SparqlResultFactory { get; set; } = new SparqlResultFactory();
+    
+    /// <summary>
+    /// Get/Sets whether the processor treats the union of all graphs in the store as the default graph.
+    /// </summary>
+    /// <remarks>If this option is set to <code>true</code> then the default graph for the query will be the union
+    /// of all graphs in the store. If this option is set to <code>false</code> (the default) then the default graph
+    /// of the query will be the list of graphs named by <see cref="DefaultGraphNames"/>, or the unnamed graph if
+    /// <see cref="DefaultGraphNames"/> is null or empty.</remarks>
+    public bool UnionDefaultGraph { get; set; }
+    
+    /// <summary>
+    /// Get/Sets the list of names of graphs whose union is the default graph for the query, unless overridden by the
+    /// query.
+    /// </summary>
+    /// <remarks>Any FROM clauses in the processed query will always take precedence over the value specified here.
+    /// Specifying the value <code>true</code> for <see cref="UnionDefaultGraph"/> will also take precedence
+    /// over this list.</remarks>
+    public IEnumerable<IRefNode>? DefaultGraphNames { get; set; }
 }

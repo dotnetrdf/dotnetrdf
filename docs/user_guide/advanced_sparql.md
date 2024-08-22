@@ -2,7 +2,7 @@
 
 This portion of the user guide is dedicated to advanced SPARQL topics, if you were looking for an introduction to SPARQL with dotNetRDF please see [Querying with SPARQL](querying_with_sparql.md) and [Updating with SPARQL](updating_with_sparql.md).  If you are having problems with a query not returning results you may want to look at the [Debugging SPARQL Queries](howto/debug_sparql_queries.md) page.
 
-Currently the following topics are covered:
+Currently, the following topics are covered:
 
 * [SPARQL Datasets](sparql_datasets.md)
 * [Result Formatting](result_formatting.md)

@@ -1,11 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <AssemblyName>dotNetRdf.Query.Pull</AssemblyName>
+        <AssemblyTitle>dotNetRDF Asynchronous Pull Evaluation SPARQL Engine</AssemblyTitle>
         <TargetFramework>netstandard2.1</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>VDS.RDF.Query.Pull</RootNamespace>
     </PropertyGroup>
+    
+    <PropertyGroup>
+        <PackageId>dotNetRdf.Query.Pull</PackageId>
+        <Title>dotNetRDF Asynchronous Pull Evaluation SPARQL Engine</Title>
+        <Description>Provides an alterante SPARQL query engine which uses asynchronous pull-based evaluation.</Description>
+        <PackageTags>RDF;SPARQL;Query</PackageTags>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="../../README.md" Pack="true" PackagePath="/" />
+    </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\dotNetRdf.Core\dotNetRdf.Core.csproj" />

@@ -3,7 +3,7 @@ using VDS.RDF.Query.Aggregates.Sparql;
 
 namespace VDS.RDF.Query.Pull.Aggregation;
 
-public class AsyncCountAllAggregate : IAsyncAggregation
+internal class AsyncCountAllAggregate : IAsyncAggregation
 {
     private long _count = 0;
     public AsyncCountAllAggregate(CountAllAggregate ca, string variableName)
