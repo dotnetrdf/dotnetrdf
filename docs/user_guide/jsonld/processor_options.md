@@ -43,3 +43,12 @@ The RemoteDocument class has three properties of which two MUST be set and one M
 | Document                | REQUIRED. The JSON document. The value may be either a `Newtonsoft.Json.Linq.JToken` or a string. If the value is a string, the document will be parsed from the string provided.
 | DocumentUrl             | REQUIRED. The final URL of the loaded document, taking into account any redirects. This is required for proper relative URI resolution during processing.
 | ContextUrl              | OPTIONAL. If the response from the remote server contains an HTTP Link Header (RFC5988) using the http://www.w3.org/ns/json-ld#context link relation in the response, then the ContextUrl property should be set to that value *unless* the response content type is `application/ld+json` (in which case the link header is ignored). NOTE: it is an error for the server to return multiple context link headers and this should be indicated by having the loader raise a [`JsonLdProcessorException`](xref:VDS.RDF.JsonLd.JsonLdProcessorException) with the error code [`JsonLdErrorCode.MultipleContextLinkHeaders`](xref:VDS.RDF.JsonLd.JsonLdErrorCode)
+
+## Default JSON loader
+
+The default implementation of the Loader is the `LoadJson` static method of the [`DefaultDocumentLoader`](xref:VDS.RDF.JsonLd.DefaultDocumentLoader) class. This implementation exposes two additional configuration properties to limit the size and number of requests made when loading JSON-LD from remote sources:
+
+| Property                     | Purpose |
+|------------------------------|---------|
+| MaxResponseContentBufferSize | The maximum size (in bytes) of the response content to be handled by the document loader. This defaults to 2097152 (2MB) |
+| MaxRedirects                 | The maximum number of redirects to automatically follow when loading remote JSON-LD content. This defaults to 5. Setting this property to 0 disables the automatic following of redirects. |

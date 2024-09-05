@@ -8,8 +8,10 @@ NEW: A new SPARQL query processor that works on an asynchronous enumeration appr
      and size of internal lookups with a view to being able to support queries over larger in-memory datasets as well as
      queries which generate a large number of intermediate results (e.g. via cross-joins). The new implementation should
      also support more parallel processing of complex queries by handling each branch of a join as its own separate
-     async enumerable.
-     The new implementation makes use of .NET async enumerables and thus is not supported under .NET Framework.
+     async enumerable. The new implementation makes use of .NET async enumerables and thus is not supported under .NET Framework.
+ENHANCEMENT: The DefaultDocumentLoader static class now exposes properties to configure the maximum allowed response size
+    and maximum number of redirects to follow when loading JSON-LD documents from the web. Under the hood the implementation
+    has been updated to use the more modern HttpClient stack in .NET. Thanks to @zotanmew for the report. (#650)
 
 3.2.1
 -----
