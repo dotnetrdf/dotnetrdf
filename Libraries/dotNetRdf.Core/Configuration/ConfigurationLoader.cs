@@ -1062,7 +1062,39 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the 64 bit Integer value or a given default of the first instance of a property for a given Object in the Configuration Graph.
+        /// Gets the unsigned 64-bit Integer value or a given default of the first instance of a property for a given Object in the Configuration Graph.
+        /// </summary>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="property">Property Node.</param>
+        /// <param name="defValue">Default Value to return if there is no valid boolean value.</param>
+        /// <returns>
+        /// If there is a valid unsigned integer value for the property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned.
+        /// </returns>
+        public static ulong GetConfigurationUInt64(IGraph g, INode objNode, INode property, ulong defValue)
+        {
+            INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+            if(n == null) return defValue;
+            // Resolve AppSettings
+            if (n.NodeType != NodeType.Literal)
+            {
+                n = ResolveAppSetting(g, n);
+                if (n == null) return defValue;
+            }
+
+            if (n.NodeType == NodeType.Literal)
+            {
+                if (ulong.TryParse(((ILiteralNode)n).Value, out var temp))
+                {
+                    return temp;
+                }
+                return defValue;
+            }
+            return defValue;
+        }
+
+        /// <summary>
+        /// Gets the 64-bit Integer value or a given default of the first instance of a property for a given Object in the Configuration Graph.
         /// </summary>
         /// <param name="g">Configuration Graph.</param>
         /// <param name="objNode">Object Node.</param>
@@ -1095,7 +1127,7 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the 64 bit Integer value or a given default of the first instance of the first property for a given Object in the Configuration Graph.
+        /// Gets the 64-bit Integer value or a given default of the first instance of the first property for a given Object in the Configuration Graph.
         /// </summary>
         /// <param name="g">Configuration Graph.</param>
         /// <param name="objNode">Object Node.</param>
@@ -1130,7 +1162,7 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the 64 bit Integer value or a given default of the first instance of a property for a given Object in the Configuration Graph.
+        /// Gets the 32-bit Integer value or a given default of the first instance of a property for a given Object in the Configuration Graph.
         /// </summary>
         /// <param name="g">Configuration Graph.</param>
         /// <param name="objNode">Object Node.</param>
@@ -1163,7 +1195,7 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the 64 bit Integer value or a given default of the first instance of the first property for a given Object in the Configuration Graph.
+        /// Gets the 32-bit Integer value or a given default of the first instance of the first property for a given Object in the Configuration Graph.
         /// </summary>
         /// <param name="g">Configuration Graph.</param>
         /// <param name="objNode">Object Node.</param>
