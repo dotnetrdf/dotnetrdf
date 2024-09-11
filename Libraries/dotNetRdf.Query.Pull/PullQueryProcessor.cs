@@ -13,6 +13,16 @@ public class PullQueryProcessor : ISparqlQueryProcessor
     private readonly PullQueryOptions _options = new();
 
     /// <summary>
+    /// Gets the query execution timeout (in ms) configured for this processor.
+    /// </summary>
+    public ulong QueryExecutionTimeout { get { return _options.QueryExecutionTimeout; } }
+    
+    /// <summary>
+    /// Gets the union default graph setting configured for this processor.
+    /// </summary>
+    public bool UnionDefaultGraph {get {return _options.UnionDefaultGraph;}}
+    
+    /// <summary>
     /// Construct a new query processor instance.
     /// </summary>
     /// <param name="tripleStore">The store to query against</param>

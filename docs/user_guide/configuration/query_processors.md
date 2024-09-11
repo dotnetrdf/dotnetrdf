@@ -94,19 +94,28 @@ _:endpoint a dnr:SparqlQueryClient ;
 
 The above configures a Remote Query Processor which passes queries to the endpoint at `http://example.org/sparql`
 
-## Pellet Query Processor 
+## Pull Query Processor
 
-The Pellet Query Processor is used to pass queries to the SPARQL service provided by a knowledge base on some remote Pellet Server.
-It is configured by adding the `dnr:server` and `dnr:storeID` properties to the basic configuration like so:
+The Pull Query Processor is an alternate in-memory SPARQL query engine implementation which aims to minimize the size
+of intermediate results sets during processing by using a streaming approach to query evaluation.
+
+The Pull Query Processor must be configured with a [Triple Store](triple_stores.md) instance to query against and accepts
+options for setting the default query execution timeout and whether the default graph is the union of all graphs.
 
 ```turtle
 
 @prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 
-_:proc a dnr:SparqlQueryProcessor ;
-  dnr:type "VDS.RDF.Query.PelletQueryProcessor" ;
-  dnr:server "http://ps.clarkparsia.com" ;
-  dnr:storeID "wine" .
+_:proc a dnr:SparqlQueryProcessor
+  dnr:type "VDS.RDF.Query.Pull.PullQueryProcessor" ;
+  dnr:usingStore _:store ;
+  dnr:timeout 60000 ;
+  dnr:unionDefaultGraph true ;
+.
+
+_:store a dnr:TripleStore ;
+  dnr:type "VDS.RDF.TripleStore" .
 ```
 
-This would configure a Pellet Query Processor which sends queries to the SPARQL service of the `wine` knowledge base on the Pellet Server at `http://ps.clarkparsia.com`
+The example above configures a Pull Query Processor to query over an (initially empty) in-memory triple store using
+the union of all graphs as the default graph and with a query execution timeout set to 1 minute (60 000ms).

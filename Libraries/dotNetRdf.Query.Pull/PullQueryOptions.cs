@@ -37,6 +37,11 @@ namespace VDS.RDF.Query.Pull;
 public class PullQueryOptions
 {
     /// <summary>
+    /// The default query timeout in milliseconds.
+    /// </summary>
+    public static ulong DefaultQueryExecutionTimeout = 180000;
+    
+    /// <summary>
     /// Get or set the node comparer to use in evaluation. 
     /// </summary>
     public ISparqlNodeComparer NodeComparer = new SparqlNodeComparer(
@@ -45,8 +50,8 @@ public class PullQueryOptions
     /// <summary>
     /// Get or set the hard timeout limit for SPARQL query execution (in milliseconds).
     /// </summary>
-    /// <remarks>Defaults to 180 000 (3 minutes). When set to 0, no timeout limit is applied to query evaluation.</remarks>
-    public ulong QueryExecutionTimeout { get; set; } 
+    /// <remarks>Defaults to <see cref="DefaultQueryExecutionTimeout"/>. When set to 0, no timeout limit is applied to query evaluation.</remarks>
+    public ulong QueryExecutionTimeout { get; set; } = DefaultQueryExecutionTimeout;
 
     /// <summary>
     /// Get or set the optimisers to be applied to a query algebra prior to evaluation.
