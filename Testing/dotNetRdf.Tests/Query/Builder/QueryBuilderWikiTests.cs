@@ -199,7 +199,7 @@ namespace VDS.RDF.Query.Builder
             b.Prefixes.AddNamespace("dc", new Uri("http://purl.org/dc/elements/1.1/"));
 
             // when
-            var q = b.BuildQuery();
+            var q = b.BuildQuery(false);
 
             // then
             Assert.NotNull(q.RootGraphPattern.Filter);
@@ -224,7 +224,7 @@ namespace VDS.RDF.Query.Builder
             b.Prefixes.AddNamespace("ns", new Uri("http://example.org/ns#"));
 
             // when
-            var q = b.BuildQuery();
+            var q = b.BuildQuery(false);
 
             // then
             Assert.Single(q.RootGraphPattern.ChildGraphPatterns);
@@ -334,7 +334,7 @@ namespace VDS.RDF.Query.Builder
             b.Prefixes.AddNamespace("ns", new Uri("http://example.com/ns#"));
 
             // when
-            var q = b.BuildQuery();
+            var q = b.BuildQuery(false);
 
             // then
             Assert.False(q.RootGraphPattern.HasChildGraphPatterns);

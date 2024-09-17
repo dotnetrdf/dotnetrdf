@@ -26,11 +26,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Linq;
 using FluentAssertions;
+using Moq;
+using System.Collections.Generic;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
 using Xunit;
@@ -820,6 +823,35 @@ namespace VDS.RDF.Query.Builder
                 .BuildQuery();
             query.GroupBy.Variables.Count().Should().Be(3);
             query.GroupBy.ToString().Should().Be("?x ?a ?b");
+        }
+
+        [Fact]
+        public void ItBuildsAnOptimisedQueryByDefault()
+        {
+            SparqlQuery query = QueryBuilder.Select("s", "p", "o")
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                .BuildQuery();
+            query.IsOptimised.Should().BeTrue();
+        }
+        
+        [Fact]
+        public void QueryOptimisationCanBeDisabled()
+        {
+            SparqlQuery query = QueryBuilder.Select("s", "p", "o")
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                .BuildQuery(false);
+            query.IsOptimised.Should().BeFalse();
+        }
+
+        [Fact]
+        public void ItCanUseALocallyDefinedQueryOptimiser()
+        {
+            var optimiserMock = new Mock<IQueryOptimiser>();
+            SparqlQuery query = QueryBuilder.Select("s", "p", "o")
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                .BuildQuery(true, optimiserMock.Object);
+            query.IsOptimised.Should().BeTrue();
+            optimiserMock.Verify(optim => optim.Optimise(It.IsAny<GraphPattern>(), It.IsAny<IEnumerable<string>>()), Times.Once);
         }
     }
 }

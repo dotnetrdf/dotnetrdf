@@ -31,6 +31,7 @@ using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Grouping;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
 
@@ -294,7 +295,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <inheritdoc />
-        public SparqlQuery BuildQuery()
+        public SparqlQuery BuildQuery(bool applyOptimisation = true, IQueryOptimiser queryOptimiser = null)
         {
             var query = new SparqlQuery
             {
@@ -303,7 +304,20 @@ namespace VDS.RDF.Query.Builder
                 Offset = _queryOffset,
             };
 
-            return BuildQuery(query);
+            SparqlQuery ret = BuildQuery(query);
+            if (applyOptimisation)
+            {
+                if (queryOptimiser != null)
+                {
+                    ret.Optimise(queryOptimiser);
+                }
+                else
+                {
+                    ret.Optimise();
+                }
+            }
+
+            return ret;
         }
 
         /// <summary>

@@ -26,6 +26,7 @@
 
 using System;
 using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Optimisation;
 
 namespace VDS.RDF.Query.Builder
 {
@@ -103,7 +104,9 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Builds and returns a <see cref="SparqlQuery"/>.
         /// </summary>
-        SparqlQuery BuildQuery();
+        /// <param name="applyOptimisation">Whether to apply query optimisation to the generated <see cref="SparqlQuery"/> before returning it.</param>
+        /// <param name="queryOptimiser">The optimiser to apply to the query if <paramref name="applyOptimisation"/> is set to true. If not specified, defaults to the globally scoped SPARQL query optimiser.</param>
+        SparqlQuery BuildQuery(bool applyOptimisation = true, IQueryOptimiser queryOptimiser = null);
         /// <summary>
         /// Adds a BIND variable assignment to the root graph pattern.
         /// </summary>

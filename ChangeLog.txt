@@ -12,6 +12,7 @@ NEW: A new SPARQL query processor that works on an asynchronous enumeration appr
 ENHANCEMENT: The DefaultDocumentLoader static class now exposes properties to configure the maximum allowed response size
     and maximum number of redirects to follow when loading JSON-LD documents from the web. Under the hood the implementation
     has been updated to use the more modern HttpClient stack in .NET. Thanks to @zotanmew for the report. (#650)
+ENHANCEMENT: The QueryBuilder now optimises the generated `SparqlQuery` by default. Whether or not to optimize the generated query, and which optimisers to apply can be controlled through arguments to the `Build` method. Thanks to @RetYn for the report. (#658)
 
 3.2.1
 -----
