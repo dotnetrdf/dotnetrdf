@@ -248,6 +248,11 @@ A key thing to notice here is that we create a [ISparqlDataset](xref:VDS.RDF.Que
 
 In this example we have only printed results in full to the Console, to learn more about how to format results for display see [Result Formatting](result_formatting.md).
 
+Once created, an instance of `LeviathanQueryProcessor` is thread-safe for the execution of SPARQL queries and will wrap 
+any accesses to the underlying dataset in its own read/write lock primitives if no locking is provided by the dataset 
+implementation itself. This functionality makes it possible to reuse a single instance of `LeviathanQueryProcessor` to
+process multiple queries against the same dataset (including queries made in parallel).
+
 ### Using the PullQueryProcessor
 
 The [PullQueryProcessor](xref:VDS.RDF.Query.Pull.PullQueryProcessor) was introduced in version 3.3 of dotNetRDF.
