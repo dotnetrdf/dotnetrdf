@@ -11,10 +11,18 @@ internal class AsyncOrderByEvaluation(OrderBy orderBy, IAsyncEvaluation inner) :
     {
         IComparer<ISet> comparer = new NoEqualityComparer<ISet>(MakeSetComparer(orderBy.Ordering, context, activeGraph), 1);
         var sorted = new SortedSet<ISet>(comparer);
-      
+        ISet? lastElem = null;
         await foreach (ISet solution in inner.Evaluate(context, input, activeGraph, cancellationToken))
         {
+            if (lastElem != null && comparer.Compare(solution, lastElem) > 0)
+            {
+                continue;
+            }
             sorted.Add(solution);
+            if (context.SliceLength.HasValue && sorted.Count == context.SliceLength.Value)
+            {
+                lastElem = sorted.ElementAt(context.SliceLength.Value - 1);
+            }
         }
 
         foreach (ISet s in sorted) { yield return s;}
@@ -81,7 +89,7 @@ internal class AsyncOrderByEvaluation(OrderBy orderBy, IAsyncEvaluation inner) :
         private readonly IComparer<ISet>? _child;
         private readonly IRefNode? _activeGraph;
 
-        internal OrderByExpressionSetComparer(OrderByExpression ordering, PullEvaluationContext context, IRefNode activeGraph)
+        internal OrderByExpressionSetComparer(OrderByExpression ordering, PullEvaluationContext context, IRefNode? activeGraph)
         {
             _ordering = ordering;
             _context = context;

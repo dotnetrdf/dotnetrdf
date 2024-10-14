@@ -30,7 +30,7 @@ internal class EvaluationBuilder
             Slice slice => BuildSlice(slice, context),
             Extend extend => BuildExtend(extend, context),
             Reduced reduced => BuildReduced(reduced, context),
-            Bindings bindings => BuildBindings(bindings, context),
+            Bindings bindings => BuildBindings(bindings),
             GroupBy groupBy => BuildGroupBy(groupBy, context),
             Having having => BuildHaving(having, context),
             SubQuery subQuery => BuildSubQuery(subQuery, context),
@@ -170,6 +170,12 @@ internal class EvaluationBuilder
 
     private IAsyncEvaluation BuildSlice(Slice slice, PullEvaluationContext context)
     {
+        if (slice.Limit > 0)
+        {
+            context.SliceLength = slice.Limit;
+            if (slice.Offset > 0) context.SliceLength += slice.Offset;
+        }
+
         return new AsyncSliceEvaluation(slice, Build(slice.InnerAlgebra, context));
     }
 
@@ -183,7 +189,7 @@ internal class EvaluationBuilder
         return new AsyncReducedEvaluation(Build(reduced.InnerAlgebra, context));
     }
 
-    private IAsyncEvaluation BuildBindings(Bindings bindings, PullEvaluationContext context)
+    private IAsyncEvaluation BuildBindings(Bindings bindings)
     {
         return new AsyncBindingsEvaluation(bindings);
     }
@@ -285,12 +291,6 @@ internal class EvaluationBuilder
             joinVar);
     }
 
-    private IAsyncEvaluation BuildPropertyPath(INode predicate, PatternItem pathStart, PatternItem pathEnd,
-        PullEvaluationContext _)
-    {
-        return new AsyncTriplePatternEvaluation(new TriplePattern(pathStart, new NodeMatchPattern(predicate), pathEnd));
-    }
-    
     private IAsyncEvaluation BuildMinus(Minus minus, PullEvaluationContext context)
     {
         IAsyncEvaluation lhsEval = Build(minus.Lhs, context);
@@ -307,41 +307,3 @@ internal class IdentityEvaluation : IAsyncEvaluation
         yield return input ?? new Set();
     }
 }
-
-/*
-internal class PushDownAggregatesTransformer : IExpressionTransformer
-{
-    private readonly List<SparqlVariable> _havingVars = new();
-    private readonly string _autoPrefix = "_" + Guid.NewGuid().ToString("N");
-    private int _autoId = 0;
-    
-    public List<SparqlVariable> HavingVars { get { return _havingVars; } }
-    public Having Transform(Having having)
-    {
-        if (having.InnerAlgebra is GroupBy groupBy)
-        {
-            ISparqlExpression havingExpression = having.HavingClause.Expression.Transform(this);
-            var havingPattern = new GroupBy(groupBy.InnerAlgebra, groupBy.Grouping, groupBy.Aggregates.Union(this._havingVars));
-            return new Having(havingPattern, new UnaryExpressionFilter(havingExpression));
-        }
-
-        return having;
-    }
-
-    public ISparqlExpression Transform(ISparqlExpression expr)
-    {
-        if (expr is AggregateTerm aggregateTerm)
-        {
-            var sv = new SparqlVariable(NextId(), aggregateTerm.Aggregate);
-            this._havingVars.Add(sv);
-            return new VariableTerm(sv.Name);
-        }
-        return expr.Transform(this);
-    }
-
-    private string NextId()
-    {
-        return _autoPrefix + _autoId++;
-    }
-}
-*/

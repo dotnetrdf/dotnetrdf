@@ -18,6 +18,11 @@ internal class PullEvaluationContext : IPatternEvaluationContext
     internal IEnumerable<IRefNode> NamedGraphNames => _namedGraphs.Keys;
     public VariableFactory AutoVarFactory { get; private set; }
     internal ISparqlExpressionProcessor<IValuedNode, PullEvaluationContext, ExpressionContext> ExpressionProcessor { get; }
+
+    /// <summary>
+    /// Get or set the total length of the slice of results that the processor will return (offset + limit).
+    /// </summary>
+    internal int? SliceLength { get; set; } 
     public ITripleStore Data { get; private set; }
     public bool UnionDefaultGraph { get; private set; }
     public INodeFactory NodeFactory { get; private set; }
