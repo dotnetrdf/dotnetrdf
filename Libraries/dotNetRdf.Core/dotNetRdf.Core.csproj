@@ -40,7 +40,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.61" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.67" />
     <PackageReference Include="VDS.Common" Version="2.0.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>All</PrivateAssets>
@@ -50,7 +50,7 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="AngleSharp" Version="1.1.2" />
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.1" />
     <PackageReference Include="System.Globalization.Extensions" Version="4.3.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
