@@ -7,7 +7,7 @@ namespace VDS.RDF.Query.Pull;
 
 internal class PullEvaluationContext : IPatternEvaluationContext
 {
-    private readonly BaseTripleCollection _defaultGraph;
+    internal readonly BaseTripleCollection _defaultGraph;
     private readonly IDictionary<IRefNode, BaseTripleCollection> _namedGraphs;
     
     public bool RigorousEvaluation { get; }
