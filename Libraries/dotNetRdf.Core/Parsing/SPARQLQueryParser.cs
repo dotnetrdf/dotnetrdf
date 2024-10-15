@@ -1102,6 +1102,7 @@ namespace VDS.RDF.Parsing
                 switch (next.TokenType)
                 {
                     case Token.ALL:
+                    case Token.MULTIPLY:
                         if (context.Query.DescribeVariables.Count() > 0)
                         {
                             throw ParserHelper.Error("Can't use the * symbol to specify Describe All and specify Variables/URIs/QNames in the DESCRIBE Clause", next);

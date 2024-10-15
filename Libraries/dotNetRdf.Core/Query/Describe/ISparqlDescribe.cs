@@ -24,6 +24,8 @@
 // </copyright>
 */
 
+using System;
+
 namespace VDS.RDF.Query.Describe
 {
     /// <summary>
@@ -41,6 +43,7 @@ namespace VDS.RDF.Query.Describe
         /// </summary>
         /// <param name="context">SPARQL Evaluation Context.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by Describe(ISparqlDescribeContext).")]
         IGraph Describe(SparqlEvaluationContext context);
 
         /// <summary>
@@ -48,6 +51,21 @@ namespace VDS.RDF.Query.Describe
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
         /// <param name="context">SPARQL Evaluation Context.</param>
+        [Obsolete("Replaced by Describe(IRdfHandler, ISparqlDescribeContext).")]
         void Describe(IRdfHandler handler, SparqlEvaluationContext context);
+        
+        /// <summary>
+        /// Generates a Graph which is the description of the resources resulting from the Query.
+        /// </summary>
+        /// <param name="context">SPARQL Describe evaluation context.</param>
+        /// <returns></returns>
+        IGraph Describe(ISparqlDescribeContext context);
+
+        /// <summary>
+        /// Generates the Description Graph based on the Query Results from the given context passing the resulting Triples to the given RDF Handler.
+        /// </summary>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="context">SPARQL Describe evaluation context.</param>
+        void Describe(IRdfHandler handler, ISparqlDescribeContext context);
     }
 }

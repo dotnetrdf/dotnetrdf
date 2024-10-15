@@ -24,11 +24,8 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using VDS.RDF.Parsing.Handlers;
-using VDS.RDF.Parsing.Tokens;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Utils.Describe;
 
 namespace VDS.RDF.Query.Describe
@@ -59,7 +56,7 @@ namespace VDS.RDF.Query.Describe
         public IGraph Describe(SparqlEvaluationContext context)
         {
             var g = new Graph();
-            Describe(new GraphHandler(g), context);
+            Describe(new GraphHandler(g), (ISparqlDescribeContext)context);
             return g;
         }
 
@@ -70,63 +67,23 @@ namespace VDS.RDF.Query.Describe
         /// <param name="context">SPARQL Evaluation Context.</param>
         public void Describe(IRdfHandler handler, SparqlEvaluationContext context)
         {
-            List<INode> nodes = GetNodes(handler, context);
-            if (nodes.Count > 0)
-            {
-                _describeAlgorithm.Describe(handler, context.Data, nodes, context.Query?.BaseUri,
-                    context.Query?.NamespaceMap);
-            }
+            Describe(handler, (ISparqlDescribeContext)context);
         }
 
-        /// <summary>
-        /// Gets the Nodes that the algorithm should generate the descriptions for.
-        /// </summary>
-        /// <param name="factory">Factory to create Nodes in.</param>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        /// <returns></returns>
-        private List<INode> GetNodes(INodeFactory factory, SparqlEvaluationContext context)
+        /// <inheritdoc />
+        public IGraph Describe(ISparqlDescribeContext context)
         {
-            INamespaceMapper nsmap = (context.Query != null ? context.Query.NamespaceMap : new NamespaceMapper(true));
-            Uri baseUri = context.Query?.BaseUri;
+            var g = new Graph();
+            Describe(new GraphHandler(g), context);
+            return g;
+        }
 
-            // Build a list of INodes to describe
-            var nodes = new List<INode>();
-            if (context.Query == null)
-            {
-                return nodes;
-            }
-
-            foreach (IToken t in context.Query.DescribeVariables)
-            {
-                switch (t.TokenType)
-                {
-                    case Token.QNAME:
-                    case Token.URI:
-                        // Resolve Uri/QName
-                        nodes.Add(factory.CreateUriNode(
-                            context.UriFactory.Create(Tools.ResolveUriOrQName(t, nsmap, baseUri))));
-                        break;
-
-                    case Token.VARIABLE:
-                        // Get Variable Values
-                        var var = t.Value.Substring(1);
-                        if (context.OutputMultiset.ContainsVariable(var))
-                        {
-                            foreach (ISet s in context.OutputMultiset.Sets)
-                            {
-                                INode temp = s[var];
-                                if (temp != null) nodes.Add(temp);
-                            }
-                        }
-
-                        break;
-
-                    default:
-                        throw new RdfQueryException($"Unexpected Token '{t.GetType()}' in DESCRIBE Variables list");
-                }
-            }
-
-            return nodes;
+        /// <inheritdoc />
+        public void Describe(IRdfHandler handler, ISparqlDescribeContext context)
+        {
+            IEnumerable<INode> nodes = context.GetNodes(handler);
+            _describeAlgorithm.Describe(handler, context.TripleIndex, nodes, context.Query?.BaseUri,
+                context.Query?.NamespaceMap);
         }
 
     }

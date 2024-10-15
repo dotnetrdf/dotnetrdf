@@ -29,16 +29,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Describe;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Stores information about the Evaluation of a Query during it's evaluation.
+    /// Stores information about the Evaluation of a Query during its evaluation.
     /// </summary>
-    public class SparqlEvaluationContext : IPatternEvaluationContext
+    public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescribeContext
     {
         private readonly Stopwatch _timer = new Stopwatch();
         private readonly Dictionary<string, object> _functionContexts = new Dictionary<string, object>();
@@ -696,6 +698,57 @@ namespace VDS.RDF.Query
                 }
             }
         }
+        
+        #region ISparqlDescribeContext implementation
+        /// <inheritdoc />
+        public ITripleIndex TripleIndex { get {return Data; } }
+
+        /// <inheritdoc />
+        public IEnumerable<INode> GetNodes(INodeFactory factory)
+        {
+            INamespaceMapper nsmap = (Query != null ? Query.NamespaceMap : new NamespaceMapper(true));
+            Uri baseUri = Query?.BaseUri;
+
+            // Build a list of INodes to describe
+            var nodes = new List<INode>();
+            if (Query == null)
+            {
+                return nodes;
+            }
+
+            foreach (IToken t in Query.DescribeVariables)
+            {
+                switch (t.TokenType)
+                {
+                    case Token.QNAME:
+                    case Token.URI:
+                        // Resolve Uri/QName
+                        nodes.Add(factory.CreateUriNode(
+                            UriFactory.Create(Tools.ResolveUriOrQName(t, nsmap, baseUri))));
+                        break;
+
+                    case Token.VARIABLE:
+                        // Get Variable Values
+                        var var = t.Value.Substring(1);
+                        if (OutputMultiset.ContainsVariable(var))
+                        {
+                            foreach (ISet s in OutputMultiset.Sets)
+                            {
+                                INode temp = s[var];
+                                if (temp != null) nodes.Add(temp);
+                            }
+                        }
+
+                        break;
+
+                    default:
+                        throw new RdfQueryException($"Unexpected Token '{t.GetType()}' in DESCRIBE Variables list");
+                }
+            }
+
+            return nodes;
+        }
+        #endregion
 
     }
 }

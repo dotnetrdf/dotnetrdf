@@ -300,7 +300,7 @@ namespace VDS.RDF.Query
                         case SparqlQueryType.DescribeAll:
                             // For DESCRIBE we retrieve the Describe algorithm and apply it
                             ISparqlDescribe describer = context.Options.Describer;
-                            describer.Describe(rdfHandler, context);
+                            describer.Describe(rdfHandler, (ISparqlDescribeContext)context);
                             break;
 
                         default:

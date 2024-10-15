@@ -109,4 +109,41 @@ public class ProcessorTests
         var processor = new PullQueryProcessor(store, options => {options.UnionDefaultGraph = true;});
         await Assert.ThrowsAsync<ArgumentNullException>( () => processor.ProcessQueryAsync(null, null, query));
     }
+
+    [Fact]
+    public async void DescribeQueryWithHandler()
+    {
+        TripleStore store = MakeTestTripleStore();
+        var sparqlParser= new SparqlQueryParser();
+        SparqlQuery? query = sparqlParser.ParseFromString("DESCRIBE ?s WHERE {?s <http://example.org/p> <http://example.org/o> }");
+        var processor = new PullQueryProcessor(store, options => {options.UnionDefaultGraph = false;});
+        var graph = new Graph();
+        await processor.ProcessQueryAsync(new GraphHandler(graph), null, query);
+        Assert.Equal(1, graph.Triples.Count);
+    }
+    
+    [Fact]
+    public async void DescribeQueryUnionDefaultGraphWithHandler()
+    {
+        TripleStore store = MakeTestTripleStore();
+        var sparqlParser= new SparqlQueryParser();
+        SparqlQuery? query = sparqlParser.ParseFromString("DESCRIBE ?s WHERE {?s <http://example.org/p> <http://example.org/o> }");
+        var processor = new PullQueryProcessor(store, options => {options.UnionDefaultGraph = true;});
+        var graph = new Graph();
+        await processor.ProcessQueryAsync(new GraphHandler(graph), null, query);
+        Assert.Equal(3, graph.Triples.Count);
+    }
+
+    [Fact]
+    public async void DescribeAllQueryWithHandler()
+    {
+        TripleStore store = MakeTestTripleStore();
+        var sparqlParser= new SparqlQueryParser();
+        SparqlQuery? query = sparqlParser.ParseFromString("DESCRIBE * WHERE {?s <http://example.org/p> <http://example.org/o> }");
+        var processor = new PullQueryProcessor(store, options => {options.UnionDefaultGraph = false;});
+        var graph = new Graph();
+        await processor.ProcessQueryAsync(new GraphHandler(graph), null, query);
+        Assert.Equal(1, graph.Triples.Count);
+    }
+
 }

@@ -2,6 +2,7 @@
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
+using VDS.RDF.Query.Describe;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Pull;
@@ -339,6 +340,11 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                     }
                     break;
 
+                case SparqlQueryType.Describe:
+                case SparqlQueryType.DescribeAll:
+                    ISparqlDescribe describer = _options.Describer;
+                    describer.Describe(rdfHandler, new DescriberContext(query, evaluationContext, solutionBindings));
+                    break;
                 default:
                     throw new NotImplementedException(
                         $"Support for query type {query.QueryType} has not yet been implemented.");
