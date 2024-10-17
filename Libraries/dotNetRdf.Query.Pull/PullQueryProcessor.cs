@@ -7,7 +7,13 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Pull;
 
-/// A SPARQL query processor that uses asynchronous pull-based processing.
+/**
+ * A SPARQL query processor that attempts to perform a more streaming style of SPARQL query processing
+ * utilising a pull processing model where the stages of processing are represented as asynchronous
+ * enumerations.
+ *
+ * WARNING: This processor should be considered EXPERIMENTAL and not suitable for production use.
+ */
 public class PullQueryProcessor : ISparqlQueryProcessor
 {
     private readonly ITripleStore _tripleStore;
