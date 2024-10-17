@@ -254,6 +254,10 @@ This functionality makes it possible to reuse a single instance of `LeviathanQue
 ### Using the PullQueryProcessor
 
 The [PullQueryProcessor](xref:VDS.RDF.Query.Pull.PullQueryProcessor) was introduced in version 3.3 of dotNetRDF.
+
+> [!WARNING]
+> **Warning:** The PullQueryProcessor is currently considered EXPERIMENTAL and may be significantly modified or even withdrawn in a future release of dotNetRDF.
+
 This processor is provided in a separate package (`dotNetRdf.Query.Pull` on NuGet) as it makes use of features not present in .NET Standard 2.0 and is only supported on .NET 6.0 or later.
 The processor is built to make more use of asynchronous parallel processing and this means that it cannot use the [ISparqlDataset](xref:VDS.RDF.Query.Datasets.ISparqlDataset) interface for wrapping the source data to be queried.
 Instead, you can initialise the processor with any class that implements the [ITripleStore](xref:VDS.RDF.ITripleStore) interface, and then use options to configure the initial default graph for the processor (see [Customizing Query Processor Behaviour](#customizing-query-processor-behaviour), below).

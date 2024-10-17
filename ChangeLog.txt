@@ -5,14 +5,15 @@
 ---
 
 NEW: A new SPARQL query processor that works on an asynchronous enumeration approach which aims to minimize the number 
-     and size of internal lookups with a view to being able to support queries over larger in-memory datasets as well as
-     queries which generate a large number of intermediate results (e.g. via cross-joins). The new implementation should
-     also support more parallel processing of complex queries by handling each branch of a join as its own separate
-     async enumerable. The new implementation makes use of .NET async enumerables and thus is not supported under .NET Framework,
+     and size of intermediate result sets with a view to being able to support queries over larger in-memory datasets.
+     The new implementation makes use of .NET async enumerables and thus is not supported under .NET Framework.
      As a result of this compatibility issue, the processor is provided in a separate NuGet package (dotNetRdf.Query.Pull)
+     This new processor should be considered EXPERIMENTAL with this release and is not recommended for production use.
+
 ENHANCEMENT: The DefaultDocumentLoader static class now exposes properties to configure the maximum allowed response size
     and maximum number of redirects to follow when loading JSON-LD documents from the web. Under the hood the implementation
     has been updated to use the more modern HttpClient stack in .NET. Thanks to @zotanmew for the report. (#650)
+
 ENHANCEMENT: The QueryBuilder now optimises the generated `SparqlQuery` by default. Whether or not to optimize the generated query, and which optimisers to apply can be controlled through arguments to the `Build` method. Thanks to @RetYn for the report. (#658)
 
 3.2.1
