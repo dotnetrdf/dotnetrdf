@@ -11,8 +11,8 @@
     
     <PropertyGroup>
         <PackageId>dotNetRdf.Query.Pull</PackageId>
-        <Title>dotNetRDF Asynchronous Pull Evaluation SPARQL Engine</Title>
-        <Description>Provides an alterante SPARQL query engine which uses asynchronous pull-based evaluation.</Description>
+        <Title>dotNetRDF EXPERIMENTAL Asynchronous Pull Evaluation SPARQL Engine</Title>
+        <Description>Provides an alterante SPARQL query engine which uses asynchronous pull-based evaluation. This package is experimental and may be signficantly altered or even withdrawn in a future dotNetRDF release.</Description>
         <PackageTags>RDF;SPARQL;Query</PackageTags>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
