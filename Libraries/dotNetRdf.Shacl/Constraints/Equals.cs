@@ -51,7 +51,7 @@ namespace VDS.RDF.Shacl.Constraints
 
         internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
-            IEnumerable<INode> values = this.ObjectsOf(focusNode);
+            IEnumerable<INode> values = this.ObjectsOf(focusNode, dataGraph);
 
             IEnumerable<INode> invalidValues = (
                 from valueNode in valueNodes
