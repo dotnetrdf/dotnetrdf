@@ -53,7 +53,7 @@ namespace VDS.RDF.Shacl.Constraints
         {
             IEnumerable<INode> invalidValues =
                 from valueNode in valueNodes
-                from sibling in this.ObjectsOf(focusNode)
+                from sibling in this.ObjectsOf(focusNode, dataGraph)
                 where valueNode.Equals(sibling)
                 select valueNode;
 

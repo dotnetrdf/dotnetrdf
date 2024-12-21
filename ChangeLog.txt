@@ -1,6 +1,11 @@
 ﻿Change Log
 ==========
 
+3.3.1
+-----
+
+FIX: Fix for processing of sh:equals and sh:disjoint in the SHACL processor. Thanks to @aemnathanclinton for the report and fix. (#670)
+
 3.3
 ---
 

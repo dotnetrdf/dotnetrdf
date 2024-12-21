@@ -48,5 +48,59 @@ namespace VDS.RDF.Shacl
 
             new ShapesGraph(shapesGraph).Validate(dataGraph);
         }
+
+        // https://github.com/dotnetrdf/dotnetrdf/issues/670
+        [Fact]
+        public void Issue670()
+        {
+            var shapesGraph = new Graph();
+            shapesGraph.LoadFromString(@"
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <http://schema.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix : <http://example.com/> .
+:UserShape a sh:NodeShape ;
+sh:targetClass :User ;
+sh:property [
+sh:path schema:givenName ;
+sh:equals foaf:firstName
+];
+sh:property [
+sh:path schema:givenName ;
+sh:disjoint schema:lastName
+] .");
+            var dataGraph1 = new Graph();
+            dataGraph1.LoadFromString(@"
+@prefix schema: <http://schema.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix : <http://example.com/> .
+:alice a :User ; #Passes as a :UserShape
+schema:givenName ""Alice"";
+schema:lastName ""Cooper"";
+foaf:firstName ""Alice"" .");
+            var dataGraph2 = new Graph();
+            dataGraph2.LoadFromString(@"
+@prefix schema: <http://schema.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix : <http://example.com/> .
+:bob a :User ; #Fails as a :UserShape
+schema:givenName ""Bob"";
+schema:lastName ""Smith"" ;
+foaf:firstName ""Robert"" .
+");
+            var dataGraph3 = new Graph();
+            dataGraph3.LoadFromString(@"
+@prefix schema: <http://schema.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix : <http://example.com/> .
+:carol a :User ; #Fails as a :UserShape
+schema:givenName ""Carol"";
+schema:lastName ""Carol"" ;
+foaf:firstName ""Carol"" .");
+            var shaclGraph = new ShapesGraph(shapesGraph);
+            Assert.True(shaclGraph.Validate(dataGraph1).Conforms);
+            Assert.False(shaclGraph.Validate(dataGraph2).Conforms);
+            Assert.False(shaclGraph.Validate(dataGraph3).Conforms);
+        }
     }
 }
