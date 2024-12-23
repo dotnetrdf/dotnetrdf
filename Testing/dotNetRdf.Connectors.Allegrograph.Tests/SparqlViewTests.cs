@@ -6,6 +6,7 @@ using Xunit;
 
 namespace VDS.RDF.Storage
 {
+    [Collection("AllegroGraph Test Collection")]
     public class SparqlViewTests
     {
         [SkippableFact]

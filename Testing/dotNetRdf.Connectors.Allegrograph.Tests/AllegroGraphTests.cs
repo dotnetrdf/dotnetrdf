@@ -33,7 +33,7 @@ using VDS.RDF.Storage.Management.Provisioning;
 
 namespace VDS.RDF.Storage
 {
-    
+    [Collection("AllegroGraph Test Collection")]
     public class AllegroGraphTests
     {
         public static AllegroGraphConnector GetConnection()
