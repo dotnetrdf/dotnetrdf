@@ -107,7 +107,7 @@ jobs:
           path: Testing/dotNetRdf.Connectors.Allegrograph.Tests/TestResults/*/coverage.cobertura.xml
 
   report:
-    needs: [ "test", "test-linux", "fusekiTests" ]
+    needs: [ "test", "test-linux", "fusekiTests", "allegrographTests" ]
     runs-on: windows-latest
     steps:
     - name: Checkout
