@@ -5,6 +5,7 @@
 -----
 
 FIX: Fix for processing of sh:equals and sh:disjoint in the SHACL processor. Thanks to @aemnathanclinton for the report and fix. (#670)
+FIX: Fix for the AllegroGraph connector to not request JSON results in XML which .NET cannot parse due to an XML 1.1 version declaration. Thanks to @mayfairstrange for the report. (#668)
 
 3.3
 ---
