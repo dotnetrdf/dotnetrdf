@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.IO;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -32,7 +33,7 @@ using VDS.RDF.Storage.Management.Provisioning;
 
 namespace VDS.RDF.Storage
 {
-    
+    [Collection("AllegroGraph Test Collection")]
     public class AllegroGraphTests
     {
         public static AllegroGraphConnector GetConnection()
@@ -58,7 +59,7 @@ namespace VDS.RDF.Storage
         public void StorageAllegroGraphSaveLoad()
         {
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources","InferenceTest.ttl"));
             g.BaseUri = new Uri("http://example.org/AllegroGraphTest");
 
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -94,9 +95,8 @@ namespace VDS.RDF.Storage
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
             var graphUri = new Uri("http://example.org/AllegroGraph/empty2");
-            Console.WriteLine("Deleting any existing graph");
+            // Delete any existing graph
             agraph.DeleteGraph(graphUri);
-            Console.WriteLine("Existing graph deleted");
 
             // First create a non-empty graph
             var g = new Graph
@@ -104,9 +104,7 @@ namespace VDS.RDF.Storage
                 BaseUri = graphUri
             };
             g.Assert(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(new Uri("http://example.org/BNode")));
-            Console.WriteLine("Saving non-empty graph");
             agraph.SaveGraph(g);
-            Console.WriteLine("Non-empty graph saved");
 
             var h = new Graph();
             agraph.LoadGraph(h, graphUri);
@@ -119,9 +117,7 @@ namespace VDS.RDF.Storage
             {
                 BaseUri = graphUri
             };
-            Console.WriteLine("Attempting to save empty graph with same name");
             agraph.SaveGraph(g);
-            Console.WriteLine("Empty graph saved");
 
             h = new Graph();
             agraph.LoadGraph(h, graphUri);
@@ -133,11 +129,10 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageAllegroGraphSaveEmptyGraph3()
         {
-            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+            AllegroGraphConnector agraph = GetConnection();
             Uri graphUri = null;
-            Console.WriteLine("Deleting any existing graph");
+            // Delete existing graph
             agraph.DeleteGraph(graphUri);
-            Console.WriteLine("Existing graph deleted");
 
             // First create a non-empty graph
             var g = new Graph
@@ -145,9 +140,7 @@ namespace VDS.RDF.Storage
                 BaseUri = graphUri
             };
             g.Assert(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(new Uri("http://example.org/BNode")));
-            Console.WriteLine("Saving non-empty graph");
             agraph.SaveGraph(g);
-            Console.WriteLine("Non-empty graph saved");
 
             var h = new Graph();
             agraph.LoadGraph(h, graphUri);
@@ -160,9 +153,7 @@ namespace VDS.RDF.Storage
             {
                 BaseUri = graphUri
             };
-            Console.WriteLine("Attempting to save empty graph with same name");
             agraph.SaveGraph(g);
-            Console.WriteLine("Empty graph saved");
 
             h = new Graph();
             agraph.LoadGraph(h, graphUri);
@@ -175,7 +166,7 @@ namespace VDS.RDF.Storage
         public void StorageAllegroGraphDeleteTriples()
         {
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources","InferenceTest.ttl"));
             g.BaseUri = new Uri("http://example.org/AllegroGraphTest");
 
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -205,7 +196,7 @@ namespace VDS.RDF.Storage
             var graphUri = new Uri("http://example.org/AllegroGraph/delete");
 
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources","InferenceTest.ttl"));
             g.BaseUri = graphUri;
 
             agraph.SaveGraph(g);
@@ -231,7 +222,7 @@ namespace VDS.RDF.Storage
             agraph.DeleteGraph(graphUri);
 
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources","InferenceTest.ttl"));
             g.BaseUri = graphUri;
 
             agraph.SaveGraph(g);

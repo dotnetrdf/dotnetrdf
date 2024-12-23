@@ -1,10 +1,12 @@
 ﻿using FluentAssertions;
+using System.IO;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using Xunit;
 
 namespace VDS.RDF.Storage
 {
+    [Collection("AllegroGraph Test Collection")]
     public class SparqlViewTests
     {
         [SkippableFact]
@@ -15,7 +17,7 @@ namespace VDS.RDF.Storage
 
             //Load a Graph into the Store to ensure there is some data for the view to retrieve
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources","InferenceTest.ttl"));
             agraph.SaveGraph(g);
 
             //Create the SPARQL View

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <AssemblyTitle>dotNetRdf.Connectors.Allegrograph.Tests</AssemblyTitle>
     <AssemblyName>dotNetRdf.Connectors.Allegrograph.Tests</AssemblyName>
+    <RootNamespace>VDS.RDF.Storage</RootNamespace>
 	<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
