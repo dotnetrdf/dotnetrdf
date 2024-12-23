@@ -244,6 +244,31 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Return the string to use as the value of the HTTP Accept header when retrieving SPARQL tabular results.
+        /// </summary>
+        protected virtual string SparqlAcceptHeader
+        {
+            get { return MimeTypesHelper.HttpSparqlAcceptHeader; }
+        }
+
+        /// <summary>
+        /// Return the string to use as the value of the HTTP Accept header when retrieving an RDF graph.
+        /// </summary>
+        protected virtual string RdfAcceptHeader
+        {
+            get { return MimeTypesHelper.HttpAcceptHeader; }
+        }
+
+        /// <summary>
+        /// Return the string to use as the value of the HTTP Accept header when retrieving results which could be
+        /// either SPARQL tabular results or an RDF graph.
+        /// </summary>
+        protected virtual string RdfOrSparqlAcceptHeader
+        {
+            get { return MimeTypesHelper.HttpRdfOrSparqlAcceptHeader; }
+        }
+
+        /// <summary>
         /// Makes a SPARQL Query against the underlying Store.
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
@@ -292,12 +317,12 @@ namespace VDS.RDF.Storage
                 if (q != null)
                 {
                     accept = (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask
-                        ? MimeTypesHelper.HttpSparqlAcceptHeader
-                        : MimeTypesHelper.HttpAcceptHeader);
+                        ? SparqlAcceptHeader
+                        : RdfAcceptHeader);
                 }
                 else
                 {
-                    accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
+                    accept = RdfOrSparqlAcceptHeader;
                 }
 
                 // Create the Request
@@ -470,7 +495,7 @@ namespace VDS.RDF.Storage
                     serviceParams.Add("context", "null");
                 }
 
-                HttpRequestMessage request = CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, HttpMethod.Get, serviceParams);
+                HttpRequestMessage request = CreateRequest(requestUri, RdfAcceptHeader, HttpMethod.Get, serviceParams);
 
                 using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
                 if (!response.IsSuccessStatusCode)
@@ -897,7 +922,7 @@ namespace VDS.RDF.Storage
             }
 
             HttpRequestMessage request =
-                CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, HttpMethod.Get, serviceParams);
+                CreateRequest(requestUri, RdfAcceptHeader, HttpMethod.Get, serviceParams);
             return request;
         }
 
@@ -1213,12 +1238,12 @@ namespace VDS.RDF.Storage
             if (q != null)
             {
                 accept = (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask
-                    ? MimeTypesHelper.HttpSparqlAcceptHeader
-                    : MimeTypesHelper.HttpAcceptHeader);
+                    ? SparqlAcceptHeader
+                    : RdfAcceptHeader);
             }
             else
             {
-                accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
+                accept = RdfOrSparqlAcceptHeader;
             }
 
             // Create the Request, for simplicity async requests are always POST

@@ -87,6 +87,25 @@ jobs:
         name: code-coverage dotNetRdf.Connectors.Fuseki.Tests net8.0
         path: Testing/dotNetRdf.Connectors.Fuseki.Tests/TestResults/*/coverage.cobertura.xml
         
+  allegrographTests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Start Allegrograph
+        run: docker run -d -e AGRAPH_SUPER_USER=test -e AGRAPH_SUPER_PASSWORD=test -p 10000-10035:10000-10035 --shm-size 1g --name agraph --restart=always franzinc/agraph
+      - name: Test Allegrograph Connector
+        run: dotnet test -c Release --framework net8.0 --collect:"XPlat Code Coverage" Testing/dotNetRdf.Connectors.Allegrograph.Tests/dotNetRdf.Connectors.Allegrograph.Tests.csproj
+      - name: Stop Allegrograph
+        run: docker stop agraph
+      - name: Upload Code Coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage dotNetRdf.Connectors.Allegrograph.Tests net8.0
+          path: Testing/dotNetRdf.Connectors.Allegrograph.Tests/TestResults/*/coverage.cobertura.xml
+
   report:
     needs: [ "test", "test-linux", "fusekiTests" ]
     runs-on: windows-latest

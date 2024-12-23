@@ -27,8 +27,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF.Configuration;
@@ -161,6 +163,27 @@ namespace VDS.RDF.Storage
         /// </summary>
         [Description("The Catalog under which the repository is located.  If using the Root Catalog on AllegroGrah 4+ <ROOT> will be displayed.")]
         public string Catalog => _catalog ?? "<ROOT>";
+
+        /// <summary>
+        /// Return the string to use as the value of the HTTP Accept header when retrieving SPARQL tabular results.
+        /// </summary>
+        /// <remarks>Allegrograph servers return XML results with a declared version of XML 1.1 which cannot be
+        /// handled by the .NET XML parser. To work around this, we only request JSON SPARQL results.</remarks>
+        protected override string SparqlAcceptHeader
+        {
+            get
+            {
+                var accept = new HashSet<MediaTypeWithQualityHeaderValue>(
+                    MimeTypesHelper.SparqlResultsJson.Select(r => new MediaTypeWithQualityHeaderValue(r)));
+                HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> header = new HttpRequestMessage().Headers.Accept;
+                foreach (MediaTypeWithQualityHeaderValue mt in accept)
+                {
+                    header.Add(mt);
+                }
+
+                return header.ToString();
+            }
+        }
 
         /// <summary>
         /// Makes a SPARQL Update request to the Allegro Graph server.
