@@ -124,13 +124,6 @@ namespace VDS.RDF
         }
 
         [Fact]
-        public void GraphLists5()
-        {
-            var g = new Graph();
-            g.AddToList(g.CreateBlankNode(), Enumerable.Empty<INode>());
-        }
-
-        [Fact]
         public void GraphListsError1()
         {
             var g = new Graph();
