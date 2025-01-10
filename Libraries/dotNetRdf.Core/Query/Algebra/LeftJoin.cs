@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            var filter = Filter.ToString();
+            var filter = Filter.ToString().TrimEnd();
             filter = filter.Substring(7, filter.Length - 8);
             return "LeftJoin(" + Lhs + ", " + Rhs + ", " + filter + ")";
         }
