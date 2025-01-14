@@ -34,7 +34,8 @@ public class LeftJoinTests
         var rhs = new Multiset();
         rhs.Add(y2);
         rhs.Add(y3);
-        // The matching set in the right hand side should have an index higher than the count of the left hand side to reproduce the error
+        // The matching set in the right hand side should have an index higher than the count of the left hand side to 
+        // test the regression of the original error fixed by PR #677:
         rhs.Add(y1);
             
         var mockContext = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
