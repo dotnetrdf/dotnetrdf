@@ -362,7 +362,7 @@ namespace VDS.RDF.Query.Algebra
                 else
                 {
                     // Don't forget that a null will be potentially compatible with everything
-                    possMatches = (possMatches == null ? SetIDs : possMatches.Intersect(SetIDs));
+                    possMatches = (possMatches == null ? other.SetIDs : possMatches.Intersect(other.SetIDs));
                 }
                 i++;
             }
