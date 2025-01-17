@@ -6,6 +6,8 @@
 
 FIX: Fix for processing of sh:equals and sh:disjoint in the SHACL processor. Thanks to @aemnathanclinton for the report and fix. (#670)
 FIX: Fix for the AllegroGraph connector to not request JSON results in XML which .NET cannot parse due to an XML 1.1 version declaration. Thanks to @mayfairstrange for the report. (#668)
+FIX: Fix for the LeftJoin algebra to correctly process a join where the right-hand side has more items than the left-hand side. Thanks to @joost-morsink for the report and fix. (#677)
+FIX: Fix for the ToString of the LeftJoin algebra to ensure parentheses are correctly balanced. Thanks to @joost-morsink for the report and fix. (#676)
 
 3.3
 ---
