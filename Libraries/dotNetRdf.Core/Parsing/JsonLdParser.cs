@@ -35,6 +35,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using VDS.RDF.JsonLd.Processors;
 using VDS.RDF.JsonLd.Syntax;
+using System.Collections.Generic;
 
 namespace VDS.RDF.Parsing
 {
@@ -135,8 +136,15 @@ namespace VDS.RDF.Parsing
             {
                 element = JToken.ReadFrom(reader);
             }
-
-            JArray expandedElement = JsonLdProcessor.Expand(element, ParserOptions);
+            var warnings = new List<JsonLdProcessorWarning>();
+            JArray expandedElement = JsonLdProcessor.Expand(element, ParserOptions, warnings);
+            if (warnings.Any())
+            {
+                foreach (var warning in warnings)
+                {
+                    RaiseWarning(warning.Message);
+                }
+            }
             Load(handler, expandedElement, uriFactory);
         }
         
@@ -205,10 +213,13 @@ namespace VDS.RDF.Parsing
                                 foreach (JToken type in values)
                                 {
                                     INode typeNode = MakeNode(handler, type, graphNode);
-                                    if (typeNode != null)
+                                    if (typeNode is null)
                                     {
-                                        handler.HandleQuad(new Triple(subjectNode, rdfTypeNode, typeNode), graphNode);
+                                        RaiseWarning(
+                                            $"Unable to generate a well-formed absolute IRI for type `{type}`. This type will be ignored.");
+                                        continue;
                                     }
+                                    handler.HandleQuad(new Triple(subjectNode, rdfTypeNode, typeNode), graphNode);
                                 }
                             }
                             else if ((JsonLdUtils.IsBlankNodeIdentifier(property) && ParserOptions.ProduceGeneralizedRdf) ||

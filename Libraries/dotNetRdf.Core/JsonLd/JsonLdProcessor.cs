@@ -156,12 +156,21 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <param name="contextUrl">The URL to load the source context from.</param>
         /// <param name="options">Options to apply during the expansion processing.</param>
+        /// <param name="warnings"></param>
         /// <returns>The expanded JSON-LD context.</returns>
-        public static JArray Expand(Uri contextUrl, JsonLdProcessorOptions options = null)
+        public static JArray Expand(Uri contextUrl, JsonLdProcessorOptions options = null, IList<JsonLdProcessorWarning> warnings = null)
         {
             RemoteDocument parsedJson = LoadJson(contextUrl, null, options);
             var processor = new JsonLdProcessor(options);
-            return processor.Expand(parsedJson, contextUrl, null, options);
+            var expanded = processor.Expand(parsedJson, contextUrl, null, options);
+            if (processor.Warnings.Any() && warnings is not null)
+            {
+                foreach (var warning in processor.Warnings)
+                {
+                    warnings.Add(warning);
+                }
+            }
+            return expanded;
         }
 
         /// <summary>
@@ -169,15 +178,24 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <param name="input">The context JSON object to be expanded.</param>
         /// <param name="options">Options to apply during the expansion processing.</param>
+        /// <param name="warnings"></param>
         /// <returns>The expanded JSON-LD context.</returns>
-        public static JArray Expand(JToken input, JsonLdProcessorOptions options = null)
+        public static JArray Expand(JToken input, JsonLdProcessorOptions options = null, IList<JsonLdProcessorWarning> warnings = null)
         {
             var remoteDoc = new RemoteDocument
             {
                 Document = input is JValue v && v.Type == JTokenType.String ? v.Value<string>() : input,
             };
             var processor = new JsonLdProcessor(options);
-            return processor.Expand(remoteDoc, null, null, options);
+            var expanded = processor.Expand(remoteDoc, null, null, options);
+            if (processor.Warnings.Any() && warnings is not null)
+            {
+                foreach (var warning in processor.Warnings)
+                {
+                    warnings.Add(warning);
+                }
+            }
+            return expanded;
         }
 
         private JArray Expand(RemoteDocument doc, Uri documentLocation,
