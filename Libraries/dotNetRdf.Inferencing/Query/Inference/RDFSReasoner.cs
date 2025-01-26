@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.Collections.Generic;
 using VDS.Common.Collections;
 
@@ -47,8 +48,8 @@ namespace VDS.RDF.Query.Inference
     /// </remarks>
     public class StaticRdfsReasoner : IInferenceEngine
     {
-        private readonly Dictionary<INode, INode> _classMappings = new Dictionary<INode, INode>();
-        private readonly Dictionary<INode, INode> _propertyMappings = new Dictionary<INode, INode>();
+        private readonly Dictionary<INode, List<INode>> _classMappings = new();
+        private readonly Dictionary<INode, List<INode>> _propertyMappings = new();
         private readonly MultiDictionary<INode, List<INode>> _domainMappings = new MultiDictionary<INode, List<INode>>(new FastVirtualNodeComparer());
         private readonly MultiDictionary<INode, List<INode>> _rangeMappings = new MultiDictionary<INode, List<INode>>(new FastVirtualNodeComparer());
         private readonly IUriNode _rdfType, _rdfsClass, _rdfsSubClass, _rdfProperty, _rdfsSubProperty, _rdfsRange, _rdfsDomain;
@@ -108,24 +109,7 @@ namespace VDS.RDF.Query.Inference
                 }
                 else if (_propertyMappings.ContainsKey(t.Predicate))
                 {
-                    INode property = t.Predicate;
-                    ISet<INode> visited = new HashSet<INode>();
-
-                    // Navigate up the property hierarchy asserting additional properties if able
-                    while (_propertyMappings.ContainsKey(property) && !visited.Contains(property))
-                    {
-                        if (_propertyMappings[property] != null)
-                        {
-                            // Assert additional properties
-                            inferences.Add(new Triple(t.Subject, _propertyMappings[property], t.Object));
-                            visited.Add(property);
-                            property = _propertyMappings[property];
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
+                    InferPredicates(t, inferences);
                 }
 
                 // Apply Domain and Range inferencing on Predicates
@@ -196,24 +180,26 @@ namespace VDS.RDF.Query.Inference
                     // The Triple defines a Sub Class
                     if (!_classMappings.ContainsKey(t.Subject))
                     {
-                        _classMappings.Add(t.Subject, t.Object);
+                        _classMappings.Add(t.Subject, new List<INode>());
                     }
                     else if (_classMappings[t.Subject] == null)
                     {
-                        _classMappings[t.Subject] = t.Object;
+                        _classMappings[t.Subject] = new List<INode>();
                     }
+                    _classMappings[t.Subject].Add(t.Object);
                 }
                 else if (t.Predicate.Equals(_rdfsSubProperty))
                 {
                     // The Triple defines a Sub property
                     if (!_propertyMappings.ContainsKey(t.Subject))
                     {
-                        _propertyMappings.Add(t.Subject, t.Object);
+                        _propertyMappings.Add(t.Subject, new List<INode>());
                     }
                     else if (_propertyMappings[t.Subject] == null)
                     {
-                        _propertyMappings[t.Subject] = t.Object;
+                        _propertyMappings[t.Subject] = new List<INode>();
                     }
+                    _propertyMappings[t.Subject].Add(t.Object);
                 }
                 else if (t.Predicate.Equals(_rdfsRange))
                 {
@@ -265,22 +251,27 @@ namespace VDS.RDF.Query.Inference
         /// <param name="inferences">List of Inferences.</param>
         private void InferClasses(Triple t, List<Triple> inferences)
         {
-            INode type = t.Object;
-            ISet<INode> visited = new HashSet<INode>();
+            InferFromMappings(_classMappings, t.Object, (node) => new Triple(t.Subject, t.Predicate, node), inferences, new HashSet<INode>());
+        }
+        
+        private void InferPredicates(Triple t, List<Triple> inferences)
+        {
+            InferFromMappings(_propertyMappings, t.Predicate, (node) => new Triple(t.Subject, node, t.Object), inferences, new HashSet<INode>());
+        }
 
-            // Navigate up the class hierarchy asserting additional types if able
-            while (_classMappings.ContainsKey(type))
+        private void InferFromMappings(IDictionary<INode, List<INode>> mappings, INode mappingKey,
+            Func<INode, Triple> inferenceFn, List<Triple> inferences, HashSet<INode> visited)
+        {
+            visited.Add(mappingKey);
+            if (mappings.TryGetValue(mappingKey, out List<INode> mappingValues) && mappingValues != null)
             {
-                if (_classMappings[type] != null && !visited.Contains(_classMappings[type]))
+                foreach (INode mappingValue in mappingValues)
                 {
-                    // Assert additional type information
-                    inferences.Add(new Triple(t.Subject, t.Predicate, _classMappings[type]));
-                    visited.Add(type);
-                    type = _classMappings[type];
-                }
-                else
-                {
-                    break;
+                    if (!visited.Contains(mappingValue))
+                    {
+                        inferences.Add(inferenceFn(mappingValue));
+                        InferFromMappings(mappings, mappingValue, inferenceFn, inferences, visited);
+                    }
                 }
             }
         }

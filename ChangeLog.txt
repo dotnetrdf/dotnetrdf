@@ -5,6 +5,7 @@ Development
 -----------
 
 FIX: Fix for running the StaticRdfsReasoner against a graph containing circular rdfs:subPropertyOf or rdfs:subClassOf relationships. Thanks to @leifjantzen for the report. (#680)
+FIX: Fix for applying the StaticRdfsReasoner against a graph containing polymorphic rdfs:subPropertyOf or rdfs:subClassOf relationsips. (#682)
 
 3.3.1
 -----
