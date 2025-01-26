@@ -1,6 +1,11 @@
 ﻿Change Log
 ==========
 
+Development
+-----------
+
+FIX: Fix for running the StaticRdfsReasoner against a graph containing circular rdfs:subPropertyOf or rdfs:subClassOf relationships. Thanks to @leifjantzen for the report. (#680)
+
 3.3.1
 -----
 
