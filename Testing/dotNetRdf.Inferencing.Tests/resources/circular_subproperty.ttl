@@ -1,0 +1,16 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://example.com/ontology/predicate#a> a rdf:Property .
+<http://example.com/ontology/predicate#b> a rdf:Property .
+
+<http://example.com/ontology/predicate#b> rdfs:subPropertyOf <http://example.com/ontology/predicate#a> .
+<http://example.com/ontology/predicate#a> rdfs:subPropertyOf <http://example.com/ontology/predicate#b> .
+
+<http://example.com/source/predicate#c> a rdf:Property .
+<http://example.com/source/predicate#d> a rdf:Property .
+
+<http://example.com/source/predicate#c> rdfs:subPropertyOf <http://example.com/ontology/predicate#a> .
+
+<http://example.com/ontology/predicate#test> rdfs:subPropertyOf <http://example.com/source/predicate#c> .
+<http://example.com/s> <http://example.com/ontology/predicate#test> <http://example.com/o> .

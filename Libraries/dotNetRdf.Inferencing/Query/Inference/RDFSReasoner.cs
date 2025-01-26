@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Inference
                 {
                     if (!t.Object.Equals(_rdfsClass) && !t.Object.Equals(_rdfProperty))
                     {
-                        InferClasses(t, input, output, inferences);
+                        InferClasses(t, inferences);
                     }
                 }
                 else if (t.Predicate.Equals(_rdfsSubClass))
@@ -109,14 +109,16 @@ namespace VDS.RDF.Query.Inference
                 else if (_propertyMappings.ContainsKey(t.Predicate))
                 {
                     INode property = t.Predicate;
+                    ISet<INode> visited = new HashSet<INode>();
 
                     // Navigate up the property hierarchy asserting additional properties if able
-                    while (_propertyMappings.ContainsKey(property))
+                    while (_propertyMappings.ContainsKey(property) && !visited.Contains(property))
                     {
                         if (_propertyMappings[property] != null)
                         {
                             // Assert additional properties
                             inferences.Add(new Triple(t.Subject, _propertyMappings[property], t.Object));
+                            visited.Add(property);
                             property = _propertyMappings[property];
                         }
                         else
@@ -127,27 +129,27 @@ namespace VDS.RDF.Query.Inference
                 }
 
                 // Apply Domain and Range inferencing on Predicates
-                if (_rangeMappings.ContainsKey(t.Predicate))
+                if (_rangeMappings.TryGetValue(t.Predicate, out List<INode> rangeMapping))
                 {
                     // Assert additional type information
-                    foreach (INode n in _rangeMappings[t.Predicate])
+                    foreach (INode n in rangeMapping)
                     {
                         inferences.Add(new Triple(t.Object, _rdfType, n));
                     }
 
                     // Call InferClasses to get extra type information
-                    InferClasses(inferences[inferences.Count - 1], input, output, inferences);
+                    InferClasses(inferences[inferences.Count - 1], inferences);
                 }
-                if (_domainMappings.ContainsKey(t.Predicate))
+                if (_domainMappings.TryGetValue(t.Predicate, out List<INode> domainMapping))
                 {
                     // Assert additional type information
-                    foreach (INode n in _domainMappings[t.Predicate])
+                    foreach (INode n in domainMapping)
                     {
                         inferences.Add(new Triple(t.Subject, _rdfType, n));
                     }
                     
                     // Call InferClasses to get extra type information
-                    InferClasses(inferences[inferences.Count - 1], input, output, inferences);
+                    InferClasses(inferences[inferences.Count - 1], inferences);
                 }
             }
 
@@ -160,7 +162,7 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Imports any Class heirarchy information from the given Graph into the Reasoners Knowledge Base in order to initialise the Reasoner.
+        /// Imports any Class hierarchy information from the given Graph into the Reasoners Knowledge Base in order to initialise the Reasoner.
         /// </summary>
         /// <param name="g">Graph to import from.</param>
         /// <remarks>
@@ -260,20 +262,20 @@ namespace VDS.RDF.Query.Inference
         /// Helper method which applies Class hierarchy inferencing.
         /// </summary>
         /// <param name="t">Triple defining the type for something.</param>
-        /// <param name="input">Input Graph.</param>
-        /// <param name="output">Output Graph.</param>
         /// <param name="inferences">List of Inferences.</param>
-        private void InferClasses(Triple t, IGraph input, IGraph output, List<Triple> inferences)
+        private void InferClasses(Triple t, List<Triple> inferences)
         {
             INode type = t.Object;
+            ISet<INode> visited = new HashSet<INode>();
 
             // Navigate up the class hierarchy asserting additional types if able
             while (_classMappings.ContainsKey(type))
             {
-                if (_classMappings[type] != null)
+                if (_classMappings[type] != null && !visited.Contains(_classMappings[type]))
                 {
                     // Assert additional type information
                     inferences.Add(new Triple(t.Subject, t.Predicate, _classMappings[type]));
+                    visited.Add(type);
                     type = _classMappings[type];
                 }
                 else
