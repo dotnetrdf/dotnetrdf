@@ -198,8 +198,11 @@ namespace VDS.RDF.Parsing
                             if (!(Uri.TryCreate(subject, UriKind.Absolute, out Uri subjectIri) &&
                                   subjectIri.IsWellFormedOriginalString()))
                             {
-                                RaiseWarning(
-                                    $"Unable to generate a well-formed absolute IRI for subject `{subjectIri}`. This subject will be ignored.");
+                                if (ParserOptions.SafeMode)
+                                {
+                                    RaiseWarning(
+                                        $"Unable to generate a well-formed absolute IRI for subject `{subjectIri}`. This subject will be ignored.");
+                                }
                                 continue;
                             }
                             subjectNode = handler.CreateUriNode(subjectIri);
@@ -215,8 +218,11 @@ namespace VDS.RDF.Parsing
                                     INode typeNode = MakeNode(handler, type, graphNode);
                                     if (typeNode is null)
                                     {
-                                        RaiseWarning(
-                                            $"Unable to generate a well-formed absolute IRI for type `{type}`. This type will be ignored.");
+                                        if (ParserOptions.SafeMode)
+                                        {
+                                            RaiseWarning(
+                                                $"Unable to generate a well-formed absolute IRI for type `{type}`. This type will be ignored.");
+                                        }
                                         continue;
                                     }
                                     handler.HandleQuad(new Triple(subjectNode, rdfTypeNode, typeNode), graphNode);

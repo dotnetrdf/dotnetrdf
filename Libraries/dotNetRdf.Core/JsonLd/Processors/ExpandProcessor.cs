@@ -326,12 +326,18 @@ namespace VDS.RDF.JsonLd.Processors
                 // 13.3 - If expanded property is null or it neither contains a colon (:) nor it is a keyword, drop key by continuing to the next key.
                 if (expandedProperty == null)
                 {
-                    Warn(JsonLdErrorCode.InvalidIriMapping, $"Unable to generate a well-formed absolute IRI for predicate `{key}`. This property will be ignored.");
+                    if (Options.SafeMode)
+                    {
+                        Warn(JsonLdErrorCode.InvalidIriMapping, $"Unable to generate a well-formed absolute IRI for predicate `{key}`. This property will be ignored.");
+                    }
                     continue;
                 }
                 if (!expandedProperty.Contains(':') && !JsonLdUtils.IsKeyword(expandedProperty))
                 {
-                    Warn(JsonLdErrorCode.InvalidIriMapping, $"Unable to generate a well-formed absolute IRI for predicate `{key}`. This property will be ignored.");
+                    if (Options.SafeMode)
+                    {
+                        Warn(JsonLdErrorCode.InvalidIriMapping, $"Unable to generate a well-formed absolute IRI for predicate `{key}`. This property will be ignored.");
+                    }
                     continue;
                 }
                 JToken expandedValue = null;
