@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Inference;
 using Xunit;
@@ -61,5 +63,6 @@ namespace VDS.RDF.Ontology
                 _output.WriteLine(t.ToString());
             }
         }
+
     }
 }
