@@ -40,7 +40,7 @@ namespace VDS.RDF.JsonLd
                 }
                 """;
             var ts = new TripleStore();
-            var parser = new JsonLdParser();
+            var parser = new JsonLdParser(new JsonLdProcessorOptions{SafeMode = true});
             var warnings = new List<string>();
             parser.Warning += m => warnings.Add(m);
             ts.LoadFromString(input, parser);

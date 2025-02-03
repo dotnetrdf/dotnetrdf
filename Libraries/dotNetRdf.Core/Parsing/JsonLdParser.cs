@@ -198,11 +198,8 @@ namespace VDS.RDF.Parsing
                             if (!(Uri.TryCreate(subject, UriKind.Absolute, out Uri subjectIri) &&
                                   subjectIri.IsWellFormedOriginalString()))
                             {
-                                if (ParserOptions.SafeMode)
-                                {
-                                    RaiseWarning(
-                                        $"Unable to generate a well-formed absolute IRI for subject `{subjectIri}`. This subject will be ignored.");
-                                }
+                                RaiseWarning(
+                                    $"Unable to generate a well-formed absolute IRI for subject `{subjectIri}`. This subject will be ignored.");
                                 continue;
                             }
                             subjectNode = handler.CreateUriNode(subjectIri);
@@ -234,7 +231,19 @@ namespace VDS.RDF.Parsing
                                 foreach (JToken item in values)
                                 {
                                     var predicateNode = MakeNode(handler, property, graphNode) as IRefNode;
+                                    if (ParserOptions.SafeMode && predicateNode is null)
+                                    {
+                                        RaiseWarning(
+                                            $"Unable to generate a predicate node for property `{property}`. This property will be ignored.");
+                                        continue;
+                                    }
                                     INode objectNode = MakeNode(handler, item, graphNode);
+                                    if (ParserOptions.SafeMode && objectNode is null)
+                                    {
+                                        RaiseWarning(
+                                            $"Unable to generate an object node for value `{item}` of property `{property}`. This value will be ignored.");
+                                        continue;
+                                    }
                                     if (predicateNode != null && objectNode != null)
                                     {
                                         handler.HandleQuad(new Triple(subjectNode, predicateNode, objectNode), graphNode);
