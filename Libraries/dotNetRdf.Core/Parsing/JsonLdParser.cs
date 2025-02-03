@@ -35,6 +35,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using VDS.RDF.JsonLd.Processors;
 using VDS.RDF.JsonLd.Syntax;
+using System.Collections.Generic;
 
 namespace VDS.RDF.Parsing
 {
@@ -135,8 +136,15 @@ namespace VDS.RDF.Parsing
             {
                 element = JToken.ReadFrom(reader);
             }
-
-            JArray expandedElement = JsonLdProcessor.Expand(element, ParserOptions);
+            var warnings = new List<JsonLdProcessorWarning>();
+            JArray expandedElement = JsonLdProcessor.Expand(element, ParserOptions, warnings);
+            if (warnings.Any())
+            {
+                foreach (var warning in warnings)
+                {
+                    RaiseWarning(warning.Message);
+                }
+            }
             Load(handler, expandedElement, uriFactory);
         }
         
@@ -205,10 +213,16 @@ namespace VDS.RDF.Parsing
                                 foreach (JToken type in values)
                                 {
                                     INode typeNode = MakeNode(handler, type, graphNode);
-                                    if (typeNode != null)
+                                    if (typeNode is null)
                                     {
-                                        handler.HandleQuad(new Triple(subjectNode, rdfTypeNode, typeNode), graphNode);
+                                        if (ParserOptions.SafeMode)
+                                        {
+                                            RaiseWarning(
+                                                $"Unable to generate a well-formed absolute IRI for type `{type}`. This type will be ignored.");
+                                        }
+                                        continue;
                                     }
+                                    handler.HandleQuad(new Triple(subjectNode, rdfTypeNode, typeNode), graphNode);
                                 }
                             }
                             else if ((JsonLdUtils.IsBlankNodeIdentifier(property) && ParserOptions.ProduceGeneralizedRdf) ||
@@ -217,7 +231,19 @@ namespace VDS.RDF.Parsing
                                 foreach (JToken item in values)
                                 {
                                     var predicateNode = MakeNode(handler, property, graphNode) as IRefNode;
+                                    if (ParserOptions.SafeMode && predicateNode is null)
+                                    {
+                                        RaiseWarning(
+                                            $"Unable to generate a predicate node for property `{property}`. This property will be ignored.");
+                                        continue;
+                                    }
                                     INode objectNode = MakeNode(handler, item, graphNode);
+                                    if (ParserOptions.SafeMode && objectNode is null)
+                                    {
+                                        RaiseWarning(
+                                            $"Unable to generate an object node for value `{item}` of property `{property}`. This value will be ignored.");
+                                        continue;
+                                    }
                                     if (predicateNode != null && objectNode != null)
                                     {
                                         handler.HandleQuad(new Triple(subjectNode, predicateNode, objectNode), graphNode);

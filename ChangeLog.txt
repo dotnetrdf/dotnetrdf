@@ -1,6 +1,11 @@
 ﻿Change Log
 ==========
 
+Next release
+------------
+
+NEW: Added a new `SafeMode` option for the JSONLD Parser. Setting this option to true will cause additional warnings to be raised when an invalid type, subject, predicate or object is encountered when parsing JSON-LD rather than silently ignoring them. Thanks to @BigBlueHat for the suggestion and @sdml for the initial implementation (#675)
+ 
 3.3.2
 -----
 

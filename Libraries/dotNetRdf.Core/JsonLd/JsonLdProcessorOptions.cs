@@ -209,6 +209,11 @@ namespace VDS.RDF.JsonLd
         public int RemoteContextLimit { get; set; } = 10;
 
         /// <summary>
+        /// If json-ld processing results in a data drop, a warning is raised.
+        /// </summary>
+        public bool SafeMode { get; set; }
+
+        /// <summary>
         /// Create a copy of this instance, cloning all of its values.
         /// </summary>
         /// <returns></returns>
