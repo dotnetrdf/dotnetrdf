@@ -772,8 +772,7 @@ namespace VDS.RDF.JsonLd.Processors
                         $"Invalid Term Definition. The @index property on '{term}' must expand to an IRI.");
                 }
                 var index = indexValue.Value<string>();
-                index = ExpandIri(activeContext, index, vocab: true);
-                if (!JsonLdUtils.IsAbsoluteIri(index))
+                if (!JsonLdUtils.IsAbsoluteIri(ExpandIri(activeContext, index, vocab: true)))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
                         $"Invalid Term Definition. The expansion of the @index property of '{term}' resulted in a value ({index}) which is not an IRI.");
