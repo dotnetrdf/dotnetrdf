@@ -1,0 +1,16 @@
+{
+  "@context": {
+    "@protected": true,
+    "foo": {
+      "@id": "ex:foo"
+    }
+  },
+  "@id": "ex:outer",
+  "foo": {
+    "@context": {
+      "@protected": true,
+      "foo": "ex:foo"
+    },
+    "@id": "ex:inner"
+  }
+}

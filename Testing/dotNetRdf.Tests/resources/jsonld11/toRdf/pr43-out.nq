@@ -1,0 +1,2 @@
+<ex:outer> <ex:unprotected> _:b0 .
+<ex:inner> <ex:protected2> "p === ex:protected2" _:b0 .

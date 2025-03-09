@@ -1,0 +1,19 @@
+[
+  {
+    "@id": "ex:outer",
+    "ex:unprotected": [
+      {
+        "@graph": [
+          {
+            "@id": "ex:inner",
+            "ex:protected2": [
+              {
+                "@value": "p === ex:protected2"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

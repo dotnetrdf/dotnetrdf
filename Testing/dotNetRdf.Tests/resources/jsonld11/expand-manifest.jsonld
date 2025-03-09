@@ -291,7 +291,8 @@
     }, {
       "@id": "#t0041",
       "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
-      "name": "@language: null resets the default language",
+      "name": "@language: null",
+      "purpose": "@language: null resets the default language",
       "input": "expand/0041-in.jsonld",
       "expect": "expand/0041-out.jsonld"
     }, {
@@ -979,6 +980,14 @@
       "input": "expand/0130-in.jsonld",
       "expect": "expand/0130-out.jsonld"
     }, {
+      "@id": "#t0131",
+      "@type": [ "jld:PositiveEvaluationTest", "jld:ExpandTest" ],
+      "name": "Reverse term with property based indexed container",
+      "purpose": "Expanding a reverse term using @container: @index and @index set to a property",
+      "input": "expand/0131-in.jsonld",
+      "expect": "expand/0131-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
       "@id": "#tc001",
       "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
       "name": "adding new term",
@@ -1257,6 +1266,30 @@
       "purpose": "Terms should make use of @vocab relative to the scope in which the term was defined.",
       "input": "expand/c035-in.jsonld",
       "expect": "expand/c035-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc036",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expansion with empty property-scoped context.",
+      "purpose": "Adding a minimal/empty property-scoped context should not affect expansion of terms defined in the outer scope.",
+      "input": "expand/c036-in.jsonld",
+      "expect": "expand/c036-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc037",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "property-scoped contexts which are alias of @nest",
+      "purpose": "Nesting terms may have property-scoped contexts defined.",
+      "input": "expand/c037-in.jsonld",
+      "expect": "expand/c037-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc038",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Bibframe example (poor-mans inferrence)",
+      "purpose": "Nesting terms may have property-scoped contexts defined.",
+      "input": "expand/c038-in.jsonld",
+      "expect": "expand/c038-out.jsonld",
       "option": {"specVersion": "json-ld-1.1"}
     }, {
       "@id": "#tdi01",
@@ -1758,7 +1791,7 @@
       "purpose": "Verifies that an exception is raised in Expansion when an invalid value object value is found using a value alias",
       "input": "expand/er51-in.jsonld",
       "expectErrorCode": "invalid value object value"
-     }, {
+    }, {
       "@id": "#ter52",
       "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
       "name": "Definition for the empty term",
@@ -1766,13 +1799,35 @@
       "input": "expand/er52-in.jsonld",
       "expectErrorCode": "invalid term definition"
     }, {
-     "@id": "#ter53",
-     "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
-     "name": "Invalid prefix value",
-     "purpose": "Verifies that an exception is raised on expansion when a context contains an invalid @prefix value",
-     "input": "expand/er53-in.jsonld",
-     "expectErrorCode": "invalid @prefix value"
-   }, {
+      "@id": "#ter53",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid prefix value",
+      "purpose": "Verifies that an exception is raised on expansion when a context contains an invalid @prefix value",
+      "input": "expand/er53-in.jsonld",
+      "expectErrorCode": "invalid @prefix value",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#ter54",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid value object, multiple values for @type.",
+      "purpose": "The value of @type in a value object MUST be a string or null.",
+      "input": "expand/er54-in.jsonld",
+      "expectErrorCode": "invalid typed value"
+    }, {
+      "@id": "#ter55",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid term definition, multiple values for @type.",
+      "purpose": "The value of @type in an expanded term definition object MUST be a string or null.",
+      "input": "expand/er55-in.jsonld",
+      "expectErrorCode": "invalid type mapping"
+    }, {
+      "@id": "#ter56",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid redefinition of @context keyword.",
+      "purpose": "Verifies that an exception is raised when attempting to redefine @context.",
+      "input": "expand/er56-in.jsonld",
+      "expectErrorCode": "keyword redefinition"
+    }, {
       "@id": "#tes01",
       "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
       "name": "Using an array value for @context is illegal in JSON-LD 1.0",
@@ -2788,6 +2843,30 @@
       "option": {"specVersion": "json-ld-1.1"},
       "input": "expand/pr40-in.jsonld",
       "expect": "expand/pr40-out.jsonld"
+    }, {
+      "@id": "#tpr41",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Allows protected redefinition of equivalent id terms",
+      "purpose": "Check protected redefinition of equivalent id terms in different forms.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr41-in.jsonld",
+      "expect": "expand/pr41-out.jsonld"
+    }, {
+      "@id": "#tpr42",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Fail if protected flag not retained during redefinition",
+      "purpose": "Check protected redefinition retains protected flag.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr42-in.jsonld",
+      "expectErrorCode": "protected term redefinition"
+    }, {
+      "@id": "#tpr43",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Clear protection in @graph @container with null context.",
+      "purpose": "Clear protection in @graph @container with null context.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr43-in.jsonld",
+      "expect": "expand/pr43-out.jsonld"
     }, {
       "@id": "#tso01",
       "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],

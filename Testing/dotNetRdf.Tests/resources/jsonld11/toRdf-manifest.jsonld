@@ -397,6 +397,13 @@
       "input": "toRdf/0132-in.jsonld",
       "expect": "toRdf/0132-out.nq"
     }, {
+      "@id": "#t0133",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Reverse term with property based indexed container",
+      "purpose": "Expanding a reverse term using @container: @index and @index set to a property (from expand#t0131)",
+      "input": "toRdf/0133-in.jsonld",
+      "expect": "toRdf/0133-out.nq"
+    }, {
       "@id": "#tc001",
       "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
       "name": "adding new term",
@@ -675,6 +682,30 @@
       "purpose": "Terms should make use of @vocab relative to the scope in which the term was defined.",
       "input": "toRdf/c035-in.jsonld",
       "expect": "toRdf/c035-out.nq",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc036",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Expansion with empty property-scoped context.",
+      "purpose": "Adding a minimal/empty property-scoped context should not affect expansion of terms defined in the outer scope.",
+      "input": "toRdf/c036-in.jsonld",
+      "expect": "toRdf/c036-out.nq",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc037",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "property-scoped contexts which are alias of @nest",
+      "purpose": "Nesting terms may have property-scoped contexts defined.",
+      "input": "toRdf/c037-in.jsonld",
+      "expect": "toRdf/c037-out.nq",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc038",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Bibframe example (poor-mans inferrence)",
+      "purpose": "Nesting terms may have property-scoped contexts defined.",
+      "input": "toRdf/c038-in.jsonld",
+      "expect": "toRdf/c038-out.nq",
       "option": {"specVersion": "json-ld-1.1"}
     }, {
       "@id": "#tdi01",
@@ -1701,7 +1732,7 @@
       "expectErrorCode": "invalid typed value",
       "option": {"specVersion": "json-ld-1.1"}
     }, {
-      "@id": "#t0124",
+      "@id": "#te124",
       "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
       "name": "compact IRI as @vocab",
       "purpose": "Verifies that @vocab defined as a compact IRI expands properly",
@@ -1709,7 +1740,7 @@
       "expect": "toRdf/e124-out.nq",
       "option": {"specVersion": "json-ld-1.1"}
     }, {
-      "@id": "#t0125",
+      "@id": "#te125",
       "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
       "name": "term as @vocab",
       "purpose": "Verifies that @vocab defined as a term expands properly",
@@ -2197,7 +2228,29 @@
       "name": "Invalid prefix value",
       "purpose": "Verifies that an exception is raised on expansion when a context contains an invalid @prefix value",
       "input": "toRdf/er53-in.jsonld",
-      "expectErrorCode": "invalid @prefix value"
+      "expectErrorCode": "invalid @prefix value",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#ter54",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ToRDFTest" ],
+      "name": "Invalid value object, multiple values for @type.",
+      "purpose": "The value of @type in a value object MUST be a string or null.",
+      "input": "toRdf/er54-in.jsonld",
+      "expectErrorCode": "invalid typed value"
+    }, {
+      "@id": "#ter55",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ToRDFTest" ],
+      "name": "Invalid term definition, multiple values for @type.",
+      "purpose": "The value of @type in an expanded term definition object MUST be a string or null.",
+      "input": "toRdf/er55-in.jsonld",
+      "expectErrorCode": "invalid type mapping"
+    }, {
+      "@id": "#ter56",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ToRDFTest" ],
+      "name": "Invalid redefinition of @context keyword.",
+      "purpose": "Verifies that an exception is raised when attempting to redefine @context.",
+      "input": "expand/er56-in.jsonld",
+      "expectErrorCode": "keyword redefinition"
     }, {
       "@id": "#tin01",
       "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
@@ -2534,6 +2587,38 @@
       "option": {"specVersion": "json-ld-1.1"},
       "input": "toRdf/li10-in.jsonld",
       "expect": "toRdf/li10-out.nq"
+    }, {
+      "@id": "#tli11",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "List with good @base.",
+      "purpose": "Tests list elements expanded to IRIs with a good @base.",
+      "option": {"specVersion": "json-ld-1.1", "base": "http://example.com/"},
+      "input": "toRdf/li11-in.jsonld",
+      "expect": "toRdf/li11-out.nq"
+    }, {
+      "@id": "#tli12",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "List with bad @base.",
+      "purpose": "Tests list elements expanded to IRIs with a bad @base.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "toRdf/li12-in.jsonld",
+      "expect": "toRdf/li12-out.nq"
+    }, {
+      "@id": "#tli13",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "List with empty @base.",
+      "purpose": "Tests list elements expanded to IRIs with an empty @base.",
+      "option": {"specVersion": "json-ld-1.1", "base": "http://example.com/"},
+      "input": "toRdf/li13-in.jsonld",
+      "expect": "toRdf/li13-out.nq"
+    }, {
+      "@id": "#tli14",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "List with null @base.",
+      "purpose": "Tests list elements expanded to IRIs with a null @base.",
+      "option": {"specVersion": "json-ld-1.1", "base": "http://example.com/"},
+      "input": "toRdf/li14-in.jsonld",
+      "expect": "toRdf/li14-out.nq"
     }, {
       "@id": "#tm001",
       "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
@@ -3286,6 +3371,30 @@
       "option": {"specVersion": "json-ld-1.1"},
       "input": "toRdf/pr40-in.jsonld",
       "expect": "toRdf/pr40-out.nq"
+    }, {
+      "@id": "#tpr41",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Allows protected redefinition of equivalent id terms",
+      "purpose": "Check protected redefinition of equivalent id terms in different forms.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "toRdf/pr41-in.jsonld",
+      "expect": "toRdf/pr41-out.nq"
+    }, {
+      "@id": "#tpr42",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ToRDFTest"],
+      "name": "Fail if protected flag not retained during redefinition",
+      "purpose": "Check protected redefinition retains protected flag.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "toRdf/pr42-in.jsonld",
+      "expectErrorCode": "protected term redefinition"
+    }, {
+      "@id": "#tpr43",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Clear protection in @graph @container with null context.",
+      "purpose": "Clear protection in @graph @container with null context.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "toRdf/pr43-in.jsonld",
+      "expect": "toRdf/pr43-out.nq"
     }, {
       "@id": "#trt01",
       "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],

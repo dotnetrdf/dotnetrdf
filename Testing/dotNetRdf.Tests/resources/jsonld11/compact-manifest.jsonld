@@ -907,8 +907,6 @@
     }, {
       "@id": "#t0108",
       "@type": ["jld:PositiveEvaluationTest", "jld:CompactTest"],
-      "name": "Relative propererty IRIs with @vocab: ''",
-      "purpose": "Complex use cases for relative IRI compaction or properties",
       "name": "context with JavaScript Object property names",
       "purpose": "Compact with context including JavaScript Object property names",
       "input": "compact/0108-in.jsonld",
@@ -932,6 +930,40 @@
       "context": "compact/0110-context.jsonld",
       "expect": "compact/0110-out.jsonld",
       "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0111",
+      "@type": ["jld:PositiveEvaluationTest", "jld:CompactTest"],
+      "name": "Keyword-like relative IRIs",
+      "purpose": "Relative IRIs must not have the form a of keyword",
+      "input": "compact/0111-in.jsonld",
+      "context": "compact/0111-context.jsonld",
+      "expect": "compact/0111-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0112",
+      "@type": ["jld:PositiveEvaluationTest", "jld:CompactTest"],
+      "name": "Compact property index using Compact IRI index",
+      "purpose": "With @container: @index and @index a compact IRI, ensure round-tripping of compacted representation",
+      "input": "compact/0112-in.jsonld",
+      "context": "compact/0112-context.jsonld",
+      "expect": "compact/0112-out.jsonld"
+    }, {
+      "@id": "#t0113",
+      "@type": ["jld:PositiveEvaluationTest", "jld:CompactTest"],
+      "name": "Compact property index using Absolute IRI index",
+      "purpose": "With @container: @index and @index an absolute IRI, ensure round-tripping of compacted representation",
+      "input": "compact/0113-in.jsonld",
+      "context": "compact/0113-context.jsonld",
+      "expect": "compact/0113-out.jsonld"
+    }, {
+      "@id": "#t0114",
+      "@type": ["jld:PositiveEvaluationTest", "jld:CompactTest"],
+      "name": "Reverse term with property based indexed container",
+      "purpose": "Compaction using a reverse term with @container indexed on a property (round-trip test of expand#t0131)",
+      "input": "compact/0114-in.jsonld",
+      "context": "compact/0114-context.jsonld",
+      "expect": "compact/0114-out.jsonld",
+      "option": {"base": "https://example.org/", "specVersion": "json-ld-1.1"}
     }, {
       "@id": "#tc001",
       "@type": ["jld:PositiveEvaluationTest", "jld:CompactTest"],
@@ -1174,6 +1206,15 @@
       "input": "compact/c027-in.jsonld",
       "context": "compact/c027-context.jsonld",
       "expect": "compact/c027-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc028",
+      "@type": ["jld:PositiveEvaluationTest", "jld:CompactTest"],
+      "name": "Empty-property scoped context does not affect term selection.",
+      "purpose": "Adding a minimal/empty property-scoped context should not affect the using terms defined in outer context.",
+      "input": "compact/c028-in.jsonld",
+      "context": "compact/c028-context.jsonld",
+      "expect": "compact/c028-out.jsonld",
       "option": {"specVersion": "json-ld-1.1"}
     }, {
       "@id": "#tdi01",
@@ -1758,6 +1799,15 @@
       "input": "compact/m022-in.jsonld",
       "context": "compact/m022-context.jsonld",
       "expect": "compact/m022-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm023",
+      "@type": ["jld:PositiveEvaluationTest", "jld:CompactTest"],
+      "name": "compact IRI with container: @type",
+      "purpose": "Uses @none when compacted item is an IRI string",
+      "input": "compact/m023-in.jsonld",
+      "context": "compact/m023-context.jsonld",
+      "expect": "compact/m023-out.jsonld",
       "option": {"specVersion": "json-ld-1.1"}
     }, {
       "@id": "#tn001",

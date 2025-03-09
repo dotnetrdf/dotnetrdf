@@ -1,5 +1,6 @@
 require 'bundler/setup'
 require 'haml'
+require 'htmlbeautifier'
 require 'json'
 task default: %w(
   manifest.html
@@ -15,8 +16,9 @@ task default: %w(
 rule '.html' => ['.jsonld', 'template.haml'] do |task|
   puts "build #{task.name} from #{task.prerequisites.first}"
   @template ||= File.read(File.expand_path('../template.haml', __FILE__))
-  @engine ||= Haml::Engine.new(@template, format: :html5)
+  @engine ||= Haml::Template.new(format: :html5) {@template}
   manifest = JSON.parse File.read(File.expand_path("../#{task.prerequisites.first}", __FILE__))
   html = @engine.render(self, manifest: manifest, json_file: task.prerequisites.first)
+  html = HtmlBeautifier.beautify(html) if defined?(::HtmlBeautifier)
   File.open(File.expand_path("../#{task.name}", __FILE__), "w") {|f| f.write(html)}
 end

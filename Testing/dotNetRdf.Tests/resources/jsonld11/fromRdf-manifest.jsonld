@@ -196,6 +196,16 @@
       "input": "fromRdf/0026-in.nq",
       "expect": "fromRdf/0026-out.jsonld"
     }, {
+      "@id": "#t0027",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "use native types flag with values that cannot be serialized to JSON",
+      "purpose": "useNativeTypes flag being true is disregarded for a value that cannot be serialized into a native JSON value.",
+      "option": {
+        "useNativeTypes": true
+      },
+      "input": "fromRdf/0027-in.nq",
+      "expect": "fromRdf/0027-out.jsonld"
+    }, {
       "@id": "#tdi01",
       "@type": [ "jld:PositiveEvaluationTest", "jld:FromRDFTest" ],
       "name": "rdfDirection: null with i18n literal with direction and no language",

@@ -1,0 +1,56 @@
+{
+  "@graph": [
+    {
+      "@id": "http://example.com/boolean-native",
+      "http://example.com/example": [
+        {
+          "@type": "http://www.w3.org/2001/XMLSchema#boolean",
+          "@value": true
+        },
+        {
+          "@type": "http://www.w3.org/2001/XMLSchema#boolean",
+          "@value": false
+        }
+      ]
+    },
+    {
+      "@id": "http://example.com/boolean-object",
+      "http://example.com/example": [
+        {
+          "@type": "http://www.w3.org/2001/XMLSchema#boolean",
+          "@value": "True"
+        },
+        {
+          "@type": "http://www.w3.org/2001/XMLSchema#boolean",
+          "@value": "False"
+        }
+      ]
+    },
+    {
+      "@id": "http://example.com/number-native",
+      "http://example.com/example": [
+        {
+          "@type": "http://www.w3.org/2001/XMLSchema#integer",
+          "@value": 1
+        }
+      ]
+    },
+    {
+      "@id": "http://example.com/number-object",
+      "http://example.com/example": [
+        {
+          "@type": "http://www.w3.org/2001/XMLSchema#double",
+          "@value": "0.1e999999999999999"
+        },
+        {
+          "@type": "http://www.w3.org/2001/XMLSchema#double",
+          "@value": "+INF"
+        },
+        {
+          "@type": "http://www.w3.org/2001/XMLSchema#double",
+          "@value": "-INF"
+        }
+      ]
+    }
+  ]
+}
