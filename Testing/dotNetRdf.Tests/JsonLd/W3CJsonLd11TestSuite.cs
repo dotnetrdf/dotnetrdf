@@ -51,6 +51,7 @@ namespace VDS.RDF.JsonLd
             {"#t0126", "Test fails due to .NET URI parsing library"},
             {"#te075", "Test uses a blank-node property"},
             {"#tjs12", "Test depends on decimal representation of a float"},
+            {"#tli12", "Test is broken (see https://github.com/w3c/json-ld-api/issues/533)"}
         };
 
         [SkippableTheory(typeof(SkipException))]
