@@ -65,11 +65,17 @@ namespace VDS.RDF.JsonLd
                 expectedErrorCode, baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
         }
 
-        [Theory]
+        private readonly Dictionary<string, string> _skippedWriterTests = new Dictionary<string, string>
+        {
+            {"#t0027", "Test depends on decimal representation of a float"},
+        };
+
+        [SkippableTheory(typeof(SkipException))]
         [MemberData(nameof(JsonLdTestSuiteDataSource.W3CFromRdfTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public override void JsonLdWriterTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
             string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool useNativeTypes, bool useRdfType, bool ordered, string rdfDirection)
         {
+            if (_skippedWriterTests.ContainsKey(testId)) throw new SkipException(_skippedWriterTests[testId]);
             base.JsonLdWriterTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectErrorCode, useNativeTypes, useRdfType, ordered, rdfDirection);
         }
 
