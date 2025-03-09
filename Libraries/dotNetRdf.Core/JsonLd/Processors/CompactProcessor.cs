@@ -564,7 +564,10 @@ namespace VDS.RDF.JsonLd.Processors
                             // 12.8.9.8.1 - Set map key to the first value of container key in compacted item, if any.
                             // 12.8.9.8.2 - If there are remaining values in compacted item for container key, use add value to add those remaining values to the container key in compacted item.
                             // 12.8.9.8.3 - Otherwise, remove that entry from compacted item.
-                            JArray array = JsonLdUtils.EnsureArray(compactedItem[containerKey]);
+                            JArray array = compactedItem.HasValues
+                                ? JsonLdUtils.EnsureArray(compactedItem[containerKey])
+                                : [];
+
                             if (array.Count > 0)
                             {
                                 mapKey = array[0].Value<string>();
