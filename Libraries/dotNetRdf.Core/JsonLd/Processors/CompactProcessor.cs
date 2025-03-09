@@ -527,8 +527,9 @@ namespace VDS.RDF.JsonLd.Processors
                         // 12.8.9.6 - Otherwise, if container includes @index and index key is not @index: 
                         else if (container.Contains(JsonLdContainer.Index) && compactedItem is JObject)
                         {
-                            // 12.8.9.6.1 - Reinitialize container key by IRI compacting index key.
-                            containerKey = CompactIri(activeContext, indexKey, vocab: true);
+                            // 12.8.9.6.1 - Reinitialize container key by IRI compacting index key after first IRI expanding it.
+                            var expandedIndexKey = _contextProcessor.ExpandIri(activeContext, indexKey, vocab: true);
+                            containerKey = CompactIri(activeContext, expandedIndexKey, vocab: true);
                             // 12.8.9.6.2 - Set map key to the first value of container key in compacted item, if any.
                             // 12.8.9.6.3 - If there are remaining values in compacted item for container key, use add value to add those remaining values to the container key in compacted item.
                             // Otherwise, remove that entry from compacted item.
