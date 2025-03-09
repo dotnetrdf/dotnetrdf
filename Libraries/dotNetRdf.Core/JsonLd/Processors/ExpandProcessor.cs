@@ -881,13 +881,13 @@ namespace VDS.RDF.JsonLd.Processors
                             if (containerMapping.Contains(JsonLdContainer.Index) && !indexKey.Equals("@index") &&
                                 !expandedIndex.Equals("@none"))
                             {
-                                // 13.8.7.2.1 - Initialize re-expanded index to the result of calling the Value Expansion algorithm, passing the active context, index key as active property, and index as value.
+                                // 13.8.3.7.2.1 - Initialize re-expanded index to the result of calling the Value Expansion algorithm, passing the active context, index key as active property, and index as value.
                                 JToken reExpandedIndex = ExpandValue(activeContext, indexKey, index);
 
-                                // 13.8.7.2.2 - Initialize expanded index key to the result of IRI expanding index key.
+                                // 13.8.3.7.2.2 - Initialize expanded index key to the result of IRI expanding index key.
                                 var expandedIndexKey = _contextProcessor.ExpandIri(activeContext, indexKey, true);
 
-                                // 13.8.7.2.3 - Initialize index property values to an array consisting of re-expanded index followed by the existing values of the concatenation of expanded index key in item, if any.
+                                // 13.8.3.7.2.3 - Initialize index property values to an array consisting of re-expanded index followed by the existing values of the concatenation of expanded index key in item, if any.
                                 var indexPropertyValues = new JArray(reExpandedIndex);
                                 if (item.ContainsKey(expandedIndexKey))
                                 {
@@ -895,11 +895,11 @@ namespace VDS.RDF.JsonLd.Processors
                                         JsonLdUtils.ConcatenateValues(indexPropertyValues, item[expandedIndexKey]);
                                 }
 
-                                // 13.8.7.2.4 - Add the key - value pair(expanded index key - index property values) to item.
+                                // 13.8.3.7.2.4 - Add the key - value pair(expanded index key - index property values) to item.
                                 item.Remove(expandedIndexKey); // Overwriting any existing value (which should have been appended to indexPropertyValues
                                 item.Add(new JProperty(expandedIndexKey, indexPropertyValues));
 
-                                // 13.8.7.2.5 - If item is a value object, it MUST NOT contain any extra properties; an invalid value object error has been detected and processing is aborted.
+                                // 13.8.3.7.2.5 - If item is a value object, it MUST NOT contain any extra properties; an invalid value object error has been detected and processing is aborted.
                                 if (item.ContainsKey("@value") && item.Count > 1)
                                 {
                                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObject,
