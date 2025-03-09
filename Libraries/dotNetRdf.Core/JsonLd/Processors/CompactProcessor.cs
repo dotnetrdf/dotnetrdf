@@ -1012,13 +1012,21 @@ namespace VDS.RDF.JsonLd.Processors
                 }
                 var parsedIri = new Uri(iri);
                 Uri relativeIri = activeContext.Base.MakeRelativeUri(parsedIri);
+
+                var relativeIriString = relativeIri.ToString();
+
                 // KA: If IRI is equivalent to base IRI just return last path segment rather than an empty string
-                if (string.Empty.Equals(relativeIri.ToString()))
+                if (string.Empty.Equals(relativeIriString))
                 {
                     var lastSlashIx = parsedIri.PathAndQuery.LastIndexOf('/');
-                    return parsedIri.PathAndQuery.Substring(lastSlashIx + 1);
+                    relativeIriString = parsedIri.PathAndQuery.Substring(lastSlashIx + 1);
                 }
-                return relativeIri.ToString();
+
+                // To avoid confusion with a keyword, if var has the form of a keyword, prepend to it a period followed by a a slash (./).
+                if (JsonLdUtils.MatchesKeywordProduction(relativeIriString))
+                    relativeIriString = "./" + relativeIriString;
+
+                return relativeIriString;
             }
 
             // 11 - Finally, return var as is.
