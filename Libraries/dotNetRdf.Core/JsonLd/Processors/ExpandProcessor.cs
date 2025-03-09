@@ -307,6 +307,31 @@ namespace VDS.RDF.JsonLd.Processors
             return result;
         }
 
+        private void ExpandNestedElement(
+            JObject resultObject, JToken inputType, JsonLdContext activeContext, string activeProperty, Uri baseUrl,
+            bool frameExpansion,
+            bool ordered, JObject elementObject, JsonLdContext typeScopedContext
+        )
+        {
+            // 3 - If active property has a term definition in active context with a local context, initialize property-scoped context to that local context.
+            JsonLdTermDefinition activePropertyTermDefinition = null;
+            var hasTermDefinition = activeProperty != null && activeContext.TryGetTerm(activeProperty,
+                out activePropertyTermDefinition);
+            JToken propertyScopedContext = null;
+            if (hasTermDefinition && activePropertyTermDefinition.LocalContext != null)
+            {
+                propertyScopedContext = activePropertyTermDefinition.LocalContext;
+            }
+
+            // 8 - If property-scoped context is defined, set active context to the result of the Context Processing algorithm, passing active context, property-scoped context as local context, base URL from the term definition for active property, in active context and true for override protected.
+            if (propertyScopedContext != null)
+            {
+                activeContext = _contextProcessor.ProcessContext(activeContext, propertyScopedContext, baseUrl, overrideProtected: true);
+            }
+
+            ExpandElement(resultObject, inputType, activeContext, activeProperty, baseUrl, frameExpansion, ordered, elementObject, typeScopedContext);
+        }
+
         private void ExpandElement(JObject resultObject, JToken inputType, JsonLdContext activeContext, string activeProperty, Uri baseUrl, bool frameExpansion,
             bool ordered, JObject elementObject, JsonLdContext typeScopedContext)
         {
@@ -993,7 +1018,7 @@ namespace VDS.RDF.JsonLd.Processors
                 foreach (JToken nestedValue in nestedValues)
                 {
                     // 14.2.1 - If nested value is not a map, or any key within nested value expands to @value, an invalid @nest value error has been detected and processing is aborted.
-                    // 14.2.2 - Recursively repeat steps 13 and 14 using nested value for element. 
+                    // 14.2.2 - Recursively repeat steps 3, 8, 13 and 14 using nesting-key for active property, and nested value for element.
                     if (nestedValue is JObject nestedValueObject)
                     {
                         if (nestedValueObject.Properties()
@@ -1003,7 +1028,7 @@ namespace VDS.RDF.JsonLd.Processors
                                 $"Invalid nest value. Invalid value found when expanding the nesting property {nestingKey} of {activeProperty}. The nested value contains a property which is, or which expands to @value.");
                         }
 
-                        ExpandElement(resultObject, inputType, activeContext, activeProperty, baseUrl, frameExpansion, ordered, nestedValueObject, typeScopedContext);
+                        ExpandNestedElement(resultObject, inputType, activeContext, nestingKey, baseUrl, frameExpansion, ordered, nestedValueObject, typeScopedContext);
                     }
                     else
                     {
