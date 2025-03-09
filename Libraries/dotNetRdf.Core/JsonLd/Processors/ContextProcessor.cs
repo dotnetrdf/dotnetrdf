@@ -600,15 +600,12 @@ namespace VDS.RDF.JsonLd.Processors
                 // 13.6 - Set the reverse property flag of definition to true.
                 definition.Reverse = true;
 
-                // 13.7 - Set the term definition of term in active context to definition and the value associated with defined's key term to true and return.
+                // 13.7 - Set the term definition of term in active context to definition and the value associated with defined's key term to true.
                 activeContext.SetTerm(term, definition);
                 defined[term] = true;
-                return;
             }
-
-            // 14 - If value contains the key @id and its value does not equal term:
-            JToken idValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@id");
-            if (idValue != null && !term.Equals(idValue.Value<string>()))
+            // 14 - Otherwise, if value contains the key @id and its value does not equal term:
+            else if (JsonLdUtils.GetPropertyValue(activeContext, value, "@id") is { } idValue && !term.Equals(idValue.Value<string>()))
             {
                 // 14.1 - If the @id entry of value is null, the term is not used for IRI expansion, but is retained to be able to detect future redefinitions of this term.
                 // 14.2 - Otherwise:
