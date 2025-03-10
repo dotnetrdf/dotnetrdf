@@ -1,0 +1,23 @@
+{
+  "@context": {
+    "@protected": true,
+    "protected": {
+      "@id": "ex:protected1",
+      "@type": "@id"
+    },
+    "unprotected": {
+      "@id": "ex:unprotected",
+      "@type": "@id",
+      "@container": "@graph",
+      "@context": null
+    }
+  },
+  "@id": "ex:outer",
+  "unprotected": {
+    "@context": {
+      "protected": "ex:protected2"
+    },
+    "@id": "ex:inner",
+    "protected": "p === ex:protected2"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@base": "https://example.org/",
+    "@vocab": "https://example.net/ns#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "statement": {"@reverse": "rdf:subject", "@container": "@index", "@index": "predicate"},
+    "predicate": {"@id": "rdf:predicate", "@type": "@vocab"},
+    "term": {"@id": "rdf:object", "@type": "@vocab"},
+    "addedIn": {"@type": "@id"}
+  },
+  "@id": "item/1",
+  "statement": {
+    "rdf:type": {"term": "A", "addedIn": "v1"}
+  }
+}

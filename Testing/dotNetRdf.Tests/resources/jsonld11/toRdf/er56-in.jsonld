@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@context": {
+      "p": "ex:p"
+    }
+  },
+  "@id": "ex:1",
+  "p": "value"
+}
+

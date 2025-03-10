@@ -1,0 +1,11 @@
+<http://example.com/boolean-native> <http://example.com/example> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://example.com/boolean-native> <http://example.com/example> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+
+<http://example.com/boolean-object> <http://example.com/example> "True"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://example.com/boolean-object> <http://example.com/example> "False"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+
+<http://example.com/number-native> <http://example.com/example> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+
+<http://example.com/number-object> <http://example.com/example> "0.1e999999999999999"^^<http://www.w3.org/2001/XMLSchema#double> .
+<http://example.com/number-object> <http://example.com/example> "+INF"^^<http://www.w3.org/2001/XMLSchema#double> .
+<http://example.com/number-object> <http://example.com/example> "-INF"^^<http://www.w3.org/2001/XMLSchema#double> .

@@ -1,0 +1,15 @@
+{
+  "@context": [
+    {
+      "@protected": true,
+      "protected": "ex:protected"
+    },
+    {
+      "protected": "ex:protected"
+    },
+    {
+      "protected": "ex:unprotected"
+    }
+  ],
+  "protected": "fail / should retain protection during redefinition"
+}

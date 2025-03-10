@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "@vocab": "http://schema.org/"
+  },
+  "@type": "Event",
+  "location": {
+    "@id": "http://kg.artsdata.ca/resource/K11-200"
+  }
+}

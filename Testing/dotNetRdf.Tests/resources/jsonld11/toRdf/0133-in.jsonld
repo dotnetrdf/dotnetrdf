@@ -1,0 +1,26 @@
+[
+  {
+    "@id": "https://example.org/item/1",
+    "@reverse": {
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject": [
+        {
+          "https://example.net/ns#addedIn": [
+            {
+              "@id": "https://example.org/v1"
+            }
+          ],
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#object": [
+            {
+              "@id": "https://example.net/ns#A"
+            }
+          ],
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate": [
+            {
+              "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

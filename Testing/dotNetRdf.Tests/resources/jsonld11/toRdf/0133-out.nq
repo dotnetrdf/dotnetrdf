@@ -1,0 +1,4 @@
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <https://example.net/ns#A> .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://example.org/item/1> .
+_:b0 <https://example.net/ns#addedIn> <https://example.org/v1> .

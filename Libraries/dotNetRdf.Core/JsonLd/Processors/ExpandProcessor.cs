@@ -307,6 +307,31 @@ namespace VDS.RDF.JsonLd.Processors
             return result;
         }
 
+        private void ExpandNestedElement(
+            JObject resultObject, JToken inputType, JsonLdContext activeContext, string activeProperty, Uri baseUrl,
+            bool frameExpansion,
+            bool ordered, JObject elementObject, JsonLdContext typeScopedContext
+        )
+        {
+            // 3 - If active property has a term definition in active context with a local context, initialize property-scoped context to that local context.
+            JsonLdTermDefinition activePropertyTermDefinition = null;
+            var hasTermDefinition = activeProperty != null && activeContext.TryGetTerm(activeProperty,
+                out activePropertyTermDefinition);
+            JToken propertyScopedContext = null;
+            if (hasTermDefinition && activePropertyTermDefinition.LocalContext != null)
+            {
+                propertyScopedContext = activePropertyTermDefinition.LocalContext;
+            }
+
+            // 8 - If property-scoped context is defined, set active context to the result of the Context Processing algorithm, passing active context, property-scoped context as local context, base URL from the term definition for active property, in active context and true for override protected.
+            if (propertyScopedContext != null)
+            {
+                activeContext = _contextProcessor.ProcessContext(activeContext, propertyScopedContext, baseUrl, overrideProtected: true);
+            }
+
+            ExpandElement(resultObject, inputType, activeContext, activeProperty, baseUrl, frameExpansion, ordered, elementObject, typeScopedContext);
+        }
+
         private void ExpandElement(JObject resultObject, JToken inputType, JsonLdContext activeContext, string activeProperty, Uri baseUrl, bool frameExpansion,
             bool ordered, JObject elementObject, JsonLdContext typeScopedContext)
         {
@@ -856,13 +881,13 @@ namespace VDS.RDF.JsonLd.Processors
                             if (containerMapping.Contains(JsonLdContainer.Index) && !indexKey.Equals("@index") &&
                                 !expandedIndex.Equals("@none"))
                             {
-                                // 13.8.7.2.1 - Initialize re-expanded index to the result of calling the Value Expansion algorithm, passing the active context, index key as active property, and index as value.
+                                // 13.8.3.7.2.1 - Initialize re-expanded index to the result of calling the Value Expansion algorithm, passing the active context, index key as active property, and index as value.
                                 JToken reExpandedIndex = ExpandValue(activeContext, indexKey, index);
 
-                                // 13.8.7.2.2 - Initialize expanded index key to the result of IRI expanding index key.
+                                // 13.8.3.7.2.2 - Initialize expanded index key to the result of IRI expanding index key.
                                 var expandedIndexKey = _contextProcessor.ExpandIri(activeContext, indexKey, true);
 
-                                // 13.8.7.2.3 - Initialize index property values to an array consisting of re-expanded index followed by the existing values of the concatenation of expanded index key in item, if any.
+                                // 13.8.3.7.2.3 - Initialize index property values to an array consisting of re-expanded index followed by the existing values of the concatenation of expanded index key in item, if any.
                                 var indexPropertyValues = new JArray(reExpandedIndex);
                                 if (item.ContainsKey(expandedIndexKey))
                                 {
@@ -870,11 +895,11 @@ namespace VDS.RDF.JsonLd.Processors
                                         JsonLdUtils.ConcatenateValues(indexPropertyValues, item[expandedIndexKey]);
                                 }
 
-                                // 13.8.7.2.4 - Add the key - value pair(expanded index key - index property values) to item.
+                                // 13.8.3.7.2.4 - Add the key - value pair(expanded index key - index property values) to item.
                                 item.Remove(expandedIndexKey); // Overwriting any existing value (which should have been appended to indexPropertyValues
                                 item.Add(new JProperty(expandedIndexKey, indexPropertyValues));
 
-                                // 13.8.7.2.5 - If item is a value object, it MUST NOT contain any extra properties; an invalid value object error has been detected and processing is aborted.
+                                // 13.8.3.7.2.5 - If item is a value object, it MUST NOT contain any extra properties; an invalid value object error has been detected and processing is aborted.
                                 if (item.ContainsKey("@value") && item.Count > 1)
                                 {
                                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObject,
@@ -993,7 +1018,7 @@ namespace VDS.RDF.JsonLd.Processors
                 foreach (JToken nestedValue in nestedValues)
                 {
                     // 14.2.1 - If nested value is not a map, or any key within nested value expands to @value, an invalid @nest value error has been detected and processing is aborted.
-                    // 14.2.2 - Recursively repeat steps 13 and 14 using nested value for element. 
+                    // 14.2.2 - Recursively repeat steps 3, 8, 13 and 14 using nesting-key for active property, and nested value for element.
                     if (nestedValue is JObject nestedValueObject)
                     {
                         if (nestedValueObject.Properties()
@@ -1003,7 +1028,7 @@ namespace VDS.RDF.JsonLd.Processors
                                 $"Invalid nest value. Invalid value found when expanding the nesting property {nestingKey} of {activeProperty}. The nested value contains a property which is, or which expands to @value.");
                         }
 
-                        ExpandElement(resultObject, inputType, activeContext, activeProperty, baseUrl, frameExpansion, ordered, nestedValueObject, typeScopedContext);
+                        ExpandNestedElement(resultObject, inputType, activeContext, nestingKey, baseUrl, frameExpansion, ordered, nestedValueObject, typeScopedContext);
                     }
                     else
                     {

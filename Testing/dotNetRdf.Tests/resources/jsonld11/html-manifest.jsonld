@@ -275,12 +275,25 @@
   }, {
     "@id": "#tf004",
     "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest", "jld:HtmlTest"],
-    "name": "Flattens all script elements by default",
+    "name": "Flattens first script element by default",
     "purpose": "Tests embedded JSON-LD in HTML multiple script elements",
     "input": "html/f004-in.html",
     "context": "html/f004-context.jsonld",
     "expect": "html/f004-out.jsonld",
     "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tf005",
+    "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest", "jld:HtmlTest"],
+    "name": "Flattens all script elements if extractAllScripts set to true",
+    "purpose": "Tests embedded JSON-LD in HTML multiple script elements",
+    "input": "html/f005-in.html",
+    "context": "html/f005-context.jsonld",
+    "expect": "html/f005-out.jsonld",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "processorFeature": "HTML Script Extraction",
+      "extractAllScripts": true
+    }
   }, {
     "@id": "#tr001",
     "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],

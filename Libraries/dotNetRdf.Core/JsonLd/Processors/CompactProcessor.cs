@@ -527,8 +527,9 @@ namespace VDS.RDF.JsonLd.Processors
                         // 12.8.9.6 - Otherwise, if container includes @index and index key is not @index: 
                         else if (container.Contains(JsonLdContainer.Index) && compactedItem is JObject)
                         {
-                            // 12.8.9.6.1 - Reinitialize container key by IRI compacting index key.
-                            containerKey = CompactIri(activeContext, indexKey, vocab: true);
+                            // 12.8.9.6.1 - Reinitialize container key by IRI compacting index key after first IRI expanding it.
+                            var expandedIndexKey = _contextProcessor.ExpandIri(activeContext, indexKey);
+                            containerKey = CompactIri(activeContext, expandedIndexKey, vocab: true);
                             // 12.8.9.6.2 - Set map key to the first value of container key in compacted item, if any.
                             // 12.8.9.6.3 - If there are remaining values in compacted item for container key, use add value to add those remaining values to the container key in compacted item.
                             // Otherwise, remove that entry from compacted item.
@@ -563,7 +564,10 @@ namespace VDS.RDF.JsonLd.Processors
                             // 12.8.9.8.1 - Set map key to the first value of container key in compacted item, if any.
                             // 12.8.9.8.2 - If there are remaining values in compacted item for container key, use add value to add those remaining values to the container key in compacted item.
                             // 12.8.9.8.3 - Otherwise, remove that entry from compacted item.
-                            JArray array = JsonLdUtils.EnsureArray(compactedItem[containerKey]);
+                            JArray array = compactedItem.HasValues
+                                ? JsonLdUtils.EnsureArray(compactedItem[containerKey])
+                                : [];
+
                             if (array.Count > 0)
                             {
                                 mapKey = array[0].Value<string>();
@@ -1011,13 +1015,21 @@ namespace VDS.RDF.JsonLd.Processors
                 }
                 var parsedIri = new Uri(iri);
                 Uri relativeIri = activeContext.Base.MakeRelativeUri(parsedIri);
+
+                var relativeIriString = relativeIri.ToString();
+
                 // KA: If IRI is equivalent to base IRI just return last path segment rather than an empty string
-                if (string.Empty.Equals(relativeIri.ToString()))
+                if (string.Empty.Equals(relativeIriString))
                 {
                     var lastSlashIx = parsedIri.PathAndQuery.LastIndexOf('/');
-                    return parsedIri.PathAndQuery.Substring(lastSlashIx + 1);
+                    relativeIriString = parsedIri.PathAndQuery.Substring(lastSlashIx + 1);
                 }
-                return relativeIri.ToString();
+
+                // To avoid confusion with a keyword, if var has the form of a keyword, prepend to it a period followed by a a slash (./).
+                if (JsonLdUtils.MatchesKeywordProduction(relativeIriString))
+                    relativeIriString = "./" + relativeIriString;
+
+                return relativeIriString;
             }
 
             // 11 - Finally, return var as is.
