@@ -38,5 +38,16 @@ internal interface IAsyncEvaluation
     /// <param name="activeGraph">Overrides the active graph(s) in the context dataset.</param>
     /// <param name="cancellationToken">The cancellation token that can be used to cancel the evaluation.</param>
     /// <returns>An async enumerable over the results of the evaluation.</returns>
+    [Obsolete("Replaced by EvaluateBatch()")]
     IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Run the evaluation in batch mode
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="input"></param>
+    /// <param name="activeGraph"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> input, IRefNode? activeGraph, CancellationToken cancellationToken = default);
 }

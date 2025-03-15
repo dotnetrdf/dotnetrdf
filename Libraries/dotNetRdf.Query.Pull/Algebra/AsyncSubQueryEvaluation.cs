@@ -51,6 +51,7 @@ internal class AsyncSubQueryEvaluation: IAsyncEvaluation
         _innerContext = subContext;
     }
 
+    [Obsolete("Replaced by EvaluateBatch()")]
     public IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         CancellationToken cancellationToken = default)
     {
@@ -67,5 +68,28 @@ internal class AsyncSubQueryEvaluation: IAsyncEvaluation
         }
 
         return _inner.Evaluate(_innerContext, innerInput, activeGraph, cancellationToken);
+    }
+
+    public IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> batch, IRefNode? activeGraph,
+        CancellationToken cancellationToken = default)
+    {
+        IEnumerable<ISet> innerBatch = batch.Select(MakeInnerInput).ToList();
+        return _inner.EvaluateBatch(_innerContext, innerBatch, activeGraph, cancellationToken);
+    }
+
+    private ISet MakeInnerInput(ISet? input)
+    {
+        ISet innerInput = new Set();
+        if (input != null)
+        {
+            foreach (var v in _subQueryVariables)
+            {
+                if (input.ContainsVariable(v))
+                {
+                    innerInput.Add(v, input[v]);
+                }
+            }
+        }
+        return innerInput;
     }
 }

@@ -34,28 +34,46 @@ internal class AsyncExtendEvaluation(Extend extend, PullEvaluationContext contex
 {
     private readonly PullEvaluationContext _context = context;
 
+    [Obsolete("Replaced by EvaluateBatch()")]
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         await foreach (ISet solution in inner.Evaluate(context, input, activeGraph, cancellationToken))
         {
-            if (solution.ContainsVariable(extend.VariableName))
-            {
-                throw new RdfQueryException(
-                    $"Cannot assign to the variable ?{extend.VariableName} since it has previously been used in the query.");
-            }
-
-            try
-            {
-                INode value = extend.AssignExpression.Accept(context.ExpressionProcessor, context, new ExpressionContext(solution, activeGraph));
-                solution.Add(extend.VariableName, value);
-            }
-            catch
-            {
-                // No assignment if there is an error, but the solution is preserved.
-            }
-
-            yield return solution;
+            yield return Extend(context, solution, activeGraph);
         }
+    }
+
+    public async IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(
+        PullEvaluationContext context,
+        IEnumerable<ISet?> input,
+        IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        await foreach (IEnumerable<ISet> batch in inner.EvaluateBatch(context, input, activeGraph, cancellationToken))
+        {
+            yield return batch.Select(s => Extend(context, s, activeGraph));
+        }
+    }
+
+    private ISet Extend(PullEvaluationContext context, ISet solution, IRefNode? activeGraph)
+    {
+        if (solution.ContainsVariable(extend.VariableName))
+        {
+            throw new RdfQueryException(
+                $"Cannot assign to the variable ?{extend.VariableName} since it has previously been used in the query.");
+        }
+
+        try
+        {
+            INode value = extend.AssignExpression.Accept(context.ExpressionProcessor, context, new ExpressionContext(solution, activeGraph));
+            solution.Add(extend.VariableName, value);
+        }
+        catch
+        {
+            // No assignment if there is an error, but the solution is preserved.
+        }
+
+        return solution;
     }
 }

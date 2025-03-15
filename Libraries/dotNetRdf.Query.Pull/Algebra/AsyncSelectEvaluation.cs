@@ -31,6 +31,7 @@ namespace VDS.RDF.Query.Pull.Algebra;
 
 internal class AsyncSelectEvaluation(Select select, IAsyncEvaluation inner) : IAsyncEvaluation
 {
+    [Obsolete("Replaced by EvaluateBatch()")]
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
@@ -38,6 +39,17 @@ internal class AsyncSelectEvaluation(Select select, IAsyncEvaluation inner) : IA
         {
             cancellationToken.ThrowIfCancellationRequested();
             yield return ProcessInnerResult(innerResult, context, activeGraph);
+        }
+    }
+
+    public async IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> input, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        await foreach (IEnumerable<ISet> innerBatch in inner.EvaluateBatch(context, input, activeGraph,
+                           cancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return innerBatch.Select(s => ProcessInnerResult(s, context, activeGraph));
         }
     }
 

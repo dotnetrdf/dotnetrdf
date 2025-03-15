@@ -48,35 +48,53 @@ internal class AsyncGroupByEvaluation : IAsyncEvaluation
     }
 
 
+    [Obsolete("Replaced by EvaluateBatch()")]
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         await foreach (ISet solutionBinding in _inner.Evaluate(context, input, activeGraph, cancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var groupingKey = new GroupingKey(EvaluateGroupingKey(solutionBinding, context, _groupBy.Grouping, activeGraph));
-            if (_groups.TryGetValue(groupingKey, out AsyncGroupEvaluation? group))
+            ApplyGrouping(context, solutionBinding, activeGraph);
+        }
+
+        foreach (ISet result in GetGroupResults())
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return result;
+        }
+    }
+
+    public async IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> batch, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        await foreach (IEnumerable<ISet> innerBatch in _inner.EvaluateBatch(context, batch, activeGraph,
+                           cancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            foreach (ISet result in innerBatch)
             {
-                group.Accept(solutionBinding, activeGraph);
-            }
-            else
-            {
-                var age = new AsyncGroupEvaluation(_groupBy, context,
-                    _aggregationProviders.Select(provider => provider()));
-                age.Accept(solutionBinding, activeGraph);
-                _groups.Add(groupingKey, age);
+                ApplyGrouping(context, result, activeGraph);
             }
         }
 
+        foreach (IEnumerable<ISet> resultBatch in GetGroupResults().ChunkBy((int)context.TargetBatchSize))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return resultBatch;
+        }
+    }
+
+    private IEnumerable<ISet> GetGroupResults()
+    {
         if (_groups.Count == 0 && _groupBy.Grouping == null)
         {
-            var age = new AsyncGroupEvaluation(_groupBy, context, _aggregationProviders.Select(provider => provider()));
+            var age = new AsyncGroupEvaluation(_aggregationProviders.Select(provider => provider()));
             _groups.Add(new GroupingKey(Array.Empty<INode?>()), age);
         }
 
         foreach (GroupingKey groupingKey in _groups.Keys)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             ISet groupResult = groupingKey.ToSet(_groupVars);
             AsyncGroupEvaluation aggregationGroup = _groups[groupingKey];
             ISet aggregationResult = aggregationGroup.GetBindings();
@@ -84,14 +102,27 @@ internal class AsyncGroupByEvaluation : IAsyncEvaluation
             {
                 groupResult.Add(v, aggregationResult[v]);
             }
-
             yield return groupResult;
         }
     }
-
     public void AddAggregateProvider(Func<IAsyncAggregation> aggregationProvider)
     {
         _aggregationProviders.Add(aggregationProvider);
+    }
+
+    private void ApplyGrouping(PullEvaluationContext context, ISet solutionBinding, IRefNode? activeGraph)
+    {
+        var groupingKey = new GroupingKey(EvaluateGroupingKey(solutionBinding, context, _groupBy.Grouping, activeGraph));
+        if (_groups.TryGetValue(groupingKey, out AsyncGroupEvaluation? group))
+        {
+            group.Accept(solutionBinding, activeGraph);
+        }
+        else
+        {
+            var age = new AsyncGroupEvaluation(_aggregationProviders.Select(provider => provider()));
+            age.Accept(solutionBinding, activeGraph);
+            _groups.Add(groupingKey, age);
+        }
     }
 
     private IEnumerable<INode?> EvaluateGroupingKey(ISet solutionBinding, PullEvaluationContext context,
@@ -120,8 +151,8 @@ internal class AsyncGroupByEvaluation : IAsyncEvaluation
 
 internal class AsyncGroupEvaluation
 {
-    private List<IAsyncAggregation> _aggregations = new List<IAsyncAggregation>();
-    public AsyncGroupEvaluation(GroupBy groupBy, PullEvaluationContext context, IEnumerable<IAsyncAggregation> aggregations)
+    private readonly List<IAsyncAggregation> _aggregations = new();
+    public AsyncGroupEvaluation(IEnumerable<IAsyncAggregation> aggregations)
     {
         _aggregations.AddRange(aggregations);
         foreach (IAsyncAggregation agg in _aggregations)

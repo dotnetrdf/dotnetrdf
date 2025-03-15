@@ -54,6 +54,31 @@ internal class AsyncOrderByEvaluation(OrderBy orderBy, IAsyncEvaluation inner) :
         foreach (ISet s in sorted) { yield return s;}
     }
 
+    public async IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> input, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        IComparer<ISet> comparer = new NoEqualityComparer<ISet>(MakeSetComparer(orderBy.Ordering, context, activeGraph), 1);
+        var sorted = new SortedSet<ISet>(comparer);
+        ISet? lastElem = null;
+        await foreach (IEnumerable<ISet> solutionBatch in inner.EvaluateBatch(context, input, activeGraph, cancellationToken))
+        {
+            foreach (ISet solution in solutionBatch)
+            {
+                if (lastElem != null && comparer.Compare(solution, lastElem) > 0)
+                {
+                    continue;
+                }
+
+                sorted.Add(solution);
+                if (context.SliceLength.HasValue && sorted.Count == context.SliceLength.Value)
+                {
+                    lastElem = sorted.ElementAt(context.SliceLength.Value - 1);
+                }
+            }
+        }
+        foreach(IEnumerable<ISet> chunk in sorted.ChunkBy(context.TargetBatchSize)) { yield return chunk; }
+    }
+
     private class NoEqualityComparer<T>(IComparer<T> inner, int valueIfEqual) : IComparer<T>
     {
         public int Compare(T x, T y)

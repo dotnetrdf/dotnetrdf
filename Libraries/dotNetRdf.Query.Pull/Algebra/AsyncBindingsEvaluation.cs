@@ -35,6 +35,23 @@ internal class AsyncBindingsEvaluation(Bindings bindings) : IAsyncEvaluation
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+        foreach (ISet result in GenerateBindings(input))
+        {
+            yield return result;
+        }
+    }
+
+    public async IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(
+        PullEvaluationContext context,
+        IEnumerable<ISet?> batch,
+        IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        yield return batch.SelectMany(GenerateBindings);
+    }
+
+    private IEnumerable<ISet> GenerateBindings(ISet? input)
+    {
         if (!bindings.Variables.Any())
         {
             yield return new Set();
@@ -46,8 +63,8 @@ internal class AsyncBindingsEvaluation(Bindings bindings) : IAsyncEvaluation
             {
                 s.Add(binding.Key, t[binding.Key]);
             }
-
-            yield return s;
+            yield return s;                
         }
     }
+    
 }

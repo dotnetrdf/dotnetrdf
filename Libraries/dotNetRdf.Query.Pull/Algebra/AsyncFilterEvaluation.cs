@@ -32,6 +32,7 @@ namespace VDS.RDF.Query.Pull.Algebra;
 
 internal class AsyncFilterEvaluation(Filter filter, IAsyncEvaluation inner) : IAsyncEvaluation
 {
+    [Obsolete("Replaced by EvaluateBatch()")]
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         await foreach (ISet innerResult in inner.Evaluate(context, input, activeGraph, cancellationToken))
@@ -52,6 +53,31 @@ internal class AsyncFilterEvaluation(Filter filter, IAsyncEvaluation inner) : IA
             }
 
             if (filterResult) yield return innerResult;
+        }
+    }
+
+    public async IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> input, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        await foreach (IEnumerable<ISet> innerResult in inner.EvaluateBatch(context, input, activeGraph,
+                           cancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return innerResult.Where(s => ApplyFilter(context, s, activeGraph)).ToList();
+        }
+    }
+
+    private bool ApplyFilter(PullEvaluationContext context, ISet set, IRefNode? activeGraph)
+    {
+        try
+        {
+            return filter.SparqlFilter.Expression.Accept(context.ExpressionProcessor, context, new ExpressionContext(set, activeGraph))
+                .AsSafeBoolean();
+        }
+        catch (RdfQueryException)
+        {
+            // Swallow the error
+            return false;
         }
     }
 }

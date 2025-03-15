@@ -288,30 +288,30 @@ internal class EvaluationBuilder
         return new AsyncPropertyPathPatternEvaluation(Build(ppPattern.Path, ppPattern.Subject, ppPattern.Object, context), ppPattern.Subject, ppPattern.Object);
     }
 
-    private IAsyncPathEvaluation Build(ISparqlPath path, PatternItem pathStart, PatternItem pathEnd,
+    private IPathEvaluation Build(ISparqlPath path, PatternItem pathStart, PatternItem pathEnd,
         PullEvaluationContext context)
     {
         return path switch
         {
             SequencePath sequencePath => BuildSequencePath(sequencePath, pathStart, pathEnd, context),
-            Property propertyPath => new AsyncPropertyPathEvaluation(propertyPath.Predicate, pathStart, pathEnd),
-            InversePath inversePath => new AsyncInversePathEvaluation(Build(inversePath.Path, pathStart, pathEnd, context), pathStart, pathEnd),
-            AlternativePath altPath => new AsyncPathUnionEvaluation(Build(altPath.LhsPath, pathStart, pathEnd, context),
+            Property propertyPath => new PropertyPathEvaluation(propertyPath.Predicate, pathStart, pathEnd),
+            InversePath inversePath => new InversePathEvaluation(Build(inversePath.Path, pathStart, pathEnd, context), pathStart, pathEnd),
+            AlternativePath altPath => new PathUnionEvaluation(Build(altPath.LhsPath, pathStart, pathEnd, context),
                 Build(altPath.RhsPath, pathStart, pathEnd, context)),
-            ZeroOrOne zeroOrOne => new AsyncRepeatablePathEvaluation(0, 1, Build(zeroOrOne.Path, pathStart, pathEnd, context), pathEnd),
-            ZeroOrMore zeroOrMore => new AsyncRepeatablePathEvaluation(0, -1, Build(zeroOrMore.Path, pathStart, pathEnd, context), pathEnd),
-            OneOrMore oneOrMore => new AsyncRepeatablePathEvaluation(1, -1, Build(oneOrMore.Path, pathStart, pathEnd, context), pathEnd),
-            NegatedSet negatedSet => new AsyncNegatedSetPathEvaluation(negatedSet, pathStart, pathEnd),
+            ZeroOrOne zeroOrOne => new RepeatablePathEvaluation(0, 1, Build(zeroOrOne.Path, pathStart, pathEnd, context), pathEnd),
+            ZeroOrMore zeroOrMore => new RepeatablePathEvaluation(0, -1, Build(zeroOrMore.Path, pathStart, pathEnd, context), pathEnd),
+            OneOrMore oneOrMore => new RepeatablePathEvaluation(1, -1, Build(oneOrMore.Path, pathStart, pathEnd, context), pathEnd),
+            NegatedSet negatedSet => new NegatedSetPathEvaluation(negatedSet, pathStart, pathEnd),
             _ => throw new RdfQueryException($"Unsupported query algebra {path} ({path.GetType()})")
         };
     }
 
-    private IAsyncPathEvaluation BuildSequencePath(SequencePath sequencePath,PatternItem pathStart, PatternItem pathEnd,
+    private IPathEvaluation BuildSequencePath(SequencePath sequencePath,PatternItem pathStart, PatternItem pathEnd,
         PullEvaluationContext context)
     {
         var joinVar = context.AutoVarFactory.NextId();
         var joinVarPattern = new VariablePattern(joinVar);
-        return new AsyncSequencePathEvaluation(
+        return new SequencePathEvaluation(
             Build(sequencePath.LhsPath, pathStart, joinVarPattern, context),
             Build(sequencePath.RhsPath, joinVarPattern, pathEnd, context),
             joinVar);
@@ -327,9 +327,17 @@ internal class EvaluationBuilder
 
 internal class IdentityEvaluation : IAsyncEvaluation
 {
+    [Obsolete("Replaced by EvaluateBatch()")]
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         yield return input ?? new Set();
+    }
+
+    public async IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context,
+        IEnumerable<ISet?> batch, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        yield return batch.Select(input => input ?? new Set());
     }
 }

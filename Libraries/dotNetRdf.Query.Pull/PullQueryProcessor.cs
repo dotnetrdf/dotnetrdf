@@ -74,21 +74,37 @@ public class PullQueryProcessor : ISparqlQueryProcessor
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <remarks>Used primarily for internal test purposes.</remarks>
+    [Obsolete("Replaced by EvaluateBatch()")]
     internal IAsyncEnumerable<ISet> Evaluate(ISparqlAlgebra algebra, PullEvaluationContext? context = null,
         CancellationToken cancellationToken = default)
     {
         var builder = new EvaluationBuilder();
-        context ??= new PullEvaluationContext(
+        context ??= MakeDefaultContext();
+        IAsyncEvaluation evaluation = builder.Build(algebra, context);
+        return evaluation.Evaluate(context, null, null, cancellationToken);
+    }
+
+    internal IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(
+        ISparqlAlgebra algebra,
+        PullEvaluationContext? context = null,
+        CancellationToken cancellationToken = default)
+    {
+        var builder = new EvaluationBuilder();
+        context ??= MakeDefaultContext();
+        IAsyncEvaluation evaluation = builder.Build(algebra, context);
+        return evaluation.EvaluateBatch(context, [null], null, cancellationToken);
+    }
+
+    private PullEvaluationContext MakeDefaultContext()
+    {
+        return new PullEvaluationContext(
             _tripleStore,
             _options.UnionDefaultGraph,
             defaultGraphNames: _options.DefaultGraphNames,
             uriFactory: _options.UriFactory,
             nodeComparer: _options.NodeComparer
         );
-        IAsyncEvaluation evaluation = builder.Build(algebra, context);
-        return evaluation.Evaluate(context, null, null, cancellationToken);
     }
-
     /// <summary>
     /// Process a SPARQL query against the triple store configured for this query processor.
     /// </summary>
@@ -284,7 +300,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                     baseUri: query.BaseUri,
                     uriFactory: _options.UriFactory,
                     nodeComparer: _options.NodeComparer);
-            IAsyncEnumerable<ISet> solutionBindings = Evaluate(algebra, evaluationContext, cts.Token);
+            IAsyncEnumerable<IEnumerable<ISet>> solutionBindings = EvaluateBatch(algebra, evaluationContext, cts.Token);
             switch (query.QueryType)
             {
                 case SparqlQueryType.SelectAll:
@@ -305,10 +321,10 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                         throw new ArgumentNullException(nameof(resultsHandler), "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
                     }
                     resultsHandler.StartResults();
-                    await using (IAsyncEnumerator<ISet>? enumerator = solutionBindings.GetAsyncEnumerator(cts.Token))
+                    await using (IAsyncEnumerator<IEnumerable<ISet>>? enumerator = solutionBindings.GetAsyncEnumerator(cts.Token))
                     {
                         var hasNext = await enumerator.MoveNextAsync();
-                        resultsHandler.HandleBooleanResult(hasNext);
+                        resultsHandler.HandleBooleanResult(hasNext && enumerator.Current.Any());
                     }
                     resultsHandler.EndResults(true);
                     break;
@@ -330,32 +346,35 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                         }
 
                         var constructContext = new ConstructContext(rdfHandler, false);
-                        await foreach (ISet? s in solutionBindings)
+                        await foreach (IEnumerable<ISet>? batch in solutionBindings)
                         {
-                            try
+                            foreach (ISet s in batch)
                             {
-                                constructContext.Set = s;
-                                foreach (IConstructTriplePattern p in query.ConstructTemplate.TriplePatterns
-                                             .OfType<IConstructTriplePattern>())
+                                try
                                 {
-                                    try
+                                    constructContext.Set = s;
+                                    foreach (IConstructTriplePattern p in query.ConstructTemplate.TriplePatterns
+                                                 .OfType<IConstructTriplePattern>())
                                     {
-                                        if (!rdfHandler.HandleTriple(p.Construct(constructContext)))
+                                        try
                                         {
-                                            ParserHelper.Stop();
+                                            if (!rdfHandler.HandleTriple(p.Construct(constructContext)))
+                                            {
+                                                ParserHelper.Stop();
+                                            }
+                                        }
+                                        catch (RdfQueryException)
+                                        {
+                                            // If we get an error here then we could not construct a specific triple
+                                            // so we continue anyway
                                         }
                                     }
-                                    catch (RdfQueryException)
-                                    {
-                                        // If we get an error here then we could not construct a specific triple
-                                        // so we continue anyway
-                                    }
                                 }
-                            }
-                            catch (RdfQueryException)
-                            {
-                                // If we get an error here this means we couldn't construct for this solution so the
-                                // entire solution is discarded
+                                catch (RdfQueryException)
+                                {
+                                    // If we get an error here this means we couldn't construct for this solution so the
+                                    // entire solution is discarded
+                                }
                             }
                         }
 
@@ -412,6 +431,35 @@ public class PullQueryProcessor : ISparqlQueryProcessor
         {
             ok = resultsHandler.HandleResult(this._options.SparqlResultFactory.MakeResult(solutionBinding, projectionVars));
             if (!ok) break;
+        }
+
+        resultsHandler.EndResults(ok);
+    }
+    
+    private async Task ProcessSelectQueryAsync(ISparqlResultsHandler? resultsHandler, List<string> projectionVars, IAsyncEnumerable<IEnumerable<ISet>> solutionBindings)
+    {
+        if (resultsHandler == null)
+        {
+            // Should already be handled above, but this keeps the compiler happy that we have checked the nullable argument.
+            throw new ArgumentNullException(nameof(resultsHandler),
+                "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
+        }
+
+        resultsHandler.StartResults();
+        foreach (var v in projectionVars)
+        {
+            resultsHandler.HandleVariable(v);
+        }
+
+        var ok = true;
+        await foreach (IEnumerable<ISet> batch in solutionBindings)
+        {
+            foreach (ISet? solutionBinding in batch)
+            {
+                ok = resultsHandler.HandleResult(
+                    this._options.SparqlResultFactory.MakeResult(solutionBinding, projectionVars));
+                if (!ok) break;
+            }
         }
 
         resultsHandler.EndResults(ok);

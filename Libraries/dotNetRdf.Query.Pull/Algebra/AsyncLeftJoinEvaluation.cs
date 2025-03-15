@@ -36,10 +36,10 @@ internal class AsyncLeftJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rh
     private readonly LinkedList<LhsSolution> _leftSolutions = new();
     private readonly LinkedList<ISet> _rightSolutions = new();
     
-    protected override  IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhSolutionSet, IRefNode? activeGraph)
+    protected override  IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhSolutionSet, IRefNode? activeGraph, bool lhsHasMore, bool rhsHasMore)
     {
         var lhSolution = new LhsSolution(lhSolutionSet);
-        if (_rhsHasMore)
+        if (rhsHasMore)
         {
             _leftSolutions.AddLast(lhSolution);
             return _rightSolutions.Where((rhSolution) => lhSolution.IsCompatibleWith(rhSolution, joinVars))
@@ -55,9 +55,9 @@ internal class AsyncLeftJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rh
         return joinSolutions.Count == 0 ? lhSolutionSet.AsEnumerable() : joinSolutions;
     }
 
-    protected override IEnumerable<ISet> ProcessRhs(PullEvaluationContext context, ISet rhSolution, IRefNode? activeGraph)
+    protected override IEnumerable<ISet> ProcessRhs(PullEvaluationContext context, ISet rhSolution, IRefNode? activeGraph, bool lhsHasMore, bool rhsHasMore)
     {
-        if (_lhsHasMore)
+        if (lhsHasMore)
         {
             _rightSolutions.AddLast(rhSolution);
         }

@@ -24,17 +24,30 @@
 // </copyright>
 */
 
+using System.Runtime.CompilerServices;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Pull.Paths;
 
-internal class AsyncInversePathEvaluation(IAsyncPathEvaluation inner, PatternItem pathStart, PatternItem pathEnd) : IAsyncPathEvaluation
+internal class PropertyPathEvaluation(INode predicate, PatternItem pathStart, PatternItem pathEnd) : IPathEvaluation
 {
-    public IAsyncEnumerable<PathResult> Evaluate(PatternItem stepStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
+    public IEnumerable<PathResult> Evaluate(PatternItem stepStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         CancellationToken cancellationToken)
     {
-        return inner.Evaluate(pathEnd, context, input, activeGraph, cancellationToken)
-            .Select(r => new PathResult(r.EndNode, r.StartNode));
+        return context
+            .GetTriples(new TriplePattern(stepStart, new NodeMatchPattern(predicate), pathEnd), input, activeGraph)
+            .Select(t => new PathResult(t.Subject, t.Object));
+    }
+
+    public async IAsyncEnumerable<PathResult> EvaluateAsync(PatternItem stepStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        foreach (Triple t in context.GetTriples(new TriplePattern(stepStart, new NodeMatchPattern(predicate), pathEnd),
+                     input, activeGraph))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return new PathResult(t.Subject, t.Object);
+        }
     }
 }

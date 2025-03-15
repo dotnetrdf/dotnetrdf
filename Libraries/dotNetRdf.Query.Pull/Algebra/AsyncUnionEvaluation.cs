@@ -30,9 +30,18 @@ namespace VDS.RDF.Query.Pull.Algebra;
 
 internal class AsyncUnionEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs) : IAsyncEvaluation
 {
+    [Obsolete("Replaced by EvaluateBatch()")]
     public IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, CancellationToken cancellationToken = default)
     {
         return AsyncEnumerableEx.Merge(lhs.Evaluate(context, input, activeGraph, cancellationToken),
             rhs.Evaluate(context, input, activeGraph, cancellationToken));
+    }
+
+    public IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> input, IRefNode? activeGraph,
+        CancellationToken cancellationToken = default)
+    {
+        IList<ISet?> inputList = input.ToList();
+        return AsyncEnumerableEx.Merge(lhs.EvaluateBatch(context, inputList, activeGraph, cancellationToken),
+            rhs.EvaluateBatch(context, inputList, activeGraph, cancellationToken));
     }
 }

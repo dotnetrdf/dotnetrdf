@@ -34,9 +34,9 @@ internal class AsyncJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, s
     private readonly LinkedList<ISet> _leftSolutions = new();
     private readonly LinkedList<ISet> _rightSolutions = new();
 
-    protected override IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhsResult, IRefNode? activeGraph)
+    protected override IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhsResult, IRefNode? activeGraph, bool lhsHasMore, bool rhsHasMore)
     {
-        if (_rhsHasMore)
+        if (rhsHasMore)
         {
             _leftSolutions.AddLast(lhsResult);
         }
@@ -49,9 +49,9 @@ internal class AsyncJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, s
         }
     }
 
-    protected override IEnumerable<ISet> ProcessRhs(PullEvaluationContext context, ISet rhsResult, IRefNode? activeGraph)
+    protected override IEnumerable<ISet> ProcessRhs(PullEvaluationContext context, ISet rhsResult, IRefNode? activeGraph, bool lhsHasMore, bool rhsHasMore)
     {
-        if (_lhsHasMore)
+        if (lhsHasMore)
         {
             _rightSolutions.AddLast(rhsResult);
         }

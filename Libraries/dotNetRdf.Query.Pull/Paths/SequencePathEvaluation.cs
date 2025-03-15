@@ -30,16 +30,32 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Pull.Paths;
 
-internal class AsyncPropertyPathEvaluation(INode predicate, PatternItem pathStart, PatternItem pathEnd) : IAsyncPathEvaluation
+internal class SequencePathEvaluation(IPathEvaluation lhs, IPathEvaluation rhs, string joinVar)
+    : IPathEvaluation
 {
-    public async IAsyncEnumerable<PathResult> Evaluate(PatternItem stepStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
+    public IEnumerable<PathResult> Evaluate(PatternItem pathStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
+        CancellationToken cancellationToken)
+    {
+        foreach (PathResult leftResult in lhs.Evaluate(pathStart, context, input, activeGraph, cancellationToken))
+        {
+            foreach (PathResult rightResult in rhs.Evaluate(new NodeMatchPattern(leftResult.EndNode), context,
+                               input, activeGraph, cancellationToken))
+            {
+                yield return new PathResult(leftResult.StartNode, rightResult.EndNode);
+            }
+        }
+    }
+
+    public async IAsyncEnumerable<PathResult> EvaluateAsync(PatternItem pathStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        foreach (Triple t in context.GetTriples(new TriplePattern(stepStart, new NodeMatchPattern(predicate), pathEnd),
-                     input, activeGraph))
+        await foreach (PathResult leftResult in lhs.EvaluateAsync(pathStart, context, input, activeGraph, cancellationToken))
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            yield return new PathResult(t.Subject, t.Object);
+            await foreach (PathResult rightResult in rhs.EvaluateAsync(new NodeMatchPattern(leftResult.EndNode), context,
+                               input, activeGraph, cancellationToken))
+            {
+                yield return new PathResult(leftResult.StartNode, rightResult.EndNode);
+            }
         }
     }
 }

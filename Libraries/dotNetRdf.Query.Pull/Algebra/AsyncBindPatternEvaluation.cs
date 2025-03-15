@@ -38,33 +38,63 @@ internal class AsyncBindPatternEvaluation(BindPattern bindPattern, IAsyncEvaluat
         if (inner == null)
         {
             ISet result = new Set();
-            result.Add(bindPattern.Variable, bindPattern.InnerExpression.Accept(context.ExpressionProcessor, context, new ExpressionContext(result, activeGraph)));
+            result.Add(bindPattern.Variable,
+                bindPattern.InnerExpression.Accept(context.ExpressionProcessor, context,
+                    new ExpressionContext(result, activeGraph)));
             yield return result;
         }
         else
         {
             await foreach (ISet solution in inner.Evaluate(context, input, activeGraph, cancellationToken))
             {
-                if (solution.ContainsVariable(bindPattern.Variable))
-                {
-                    throw new RdfQueryException(
-                        $"Cannot use BIND to assign a value to ?{bindPattern.Variable} a bound value for the variable already exists.");
-                }
-
-                cancellationToken.ThrowIfCancellationRequested();
-                INode? bindValue = null;
-                try
-                {
-                    bindValue = bindPattern.InnerExpression.Accept(context.ExpressionProcessor, context, new ExpressionContext(solution, activeGraph));
-                }
-                catch
-                {
-                    // pass
-                }
-
-                solution.Add(bindPattern.Variable, bindValue);
-                yield return solution;
+                yield return ApplyBinding(solution, context, activeGraph, cancellationToken);
             }
         }
+    }
+
+    public async IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> input, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        if (inner == null)
+        {
+            yield return input.Select(s =>
+            {
+                ISet result = new Set();
+                result.Add(bindPattern.Variable,
+                    bindPattern.InnerExpression.Accept(context.ExpressionProcessor, context,
+                        new ExpressionContext(result, activeGraph)));
+                return result;
+            });
+        }
+        else
+        {
+            await foreach (IEnumerable<ISet> resultBatch in inner.EvaluateBatch(context, input, activeGraph, cancellationToken))
+            {
+                yield return resultBatch.Select(s=>ApplyBinding(s, context, activeGraph, cancellationToken));
+            }
+        }
+    }
+
+    private ISet ApplyBinding(ISet input, PullEvaluationContext context, IRefNode? activeGraph, CancellationToken cancellationToken = default)
+    {
+        if (input.ContainsVariable(bindPattern.Variable))
+        {
+            throw new RdfQueryException(
+                $"Cannot use BIND to assign a value to ?{bindPattern.Variable} a bound value for the variable already exists.");
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+        INode? bindValue = null;
+        try
+        {
+            bindValue = bindPattern.InnerExpression.Accept(context.ExpressionProcessor, context, new ExpressionContext(input, activeGraph));
+        }
+        catch
+        {
+            // pass
+        }
+
+        input.Add(bindPattern.Variable, bindValue);
+        return input;
     }
 }

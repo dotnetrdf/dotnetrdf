@@ -30,9 +30,16 @@ namespace VDS.RDF.Query.Pull.Algebra;
 
 internal class AsyncDistinctEvaluation(IAsyncEvaluation inner): IAsyncEvaluation
 {
+    [Obsolete("Replaced by EvaluateBatch()")]
     public IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         CancellationToken cancellationToken = default)
     {
         return inner.Evaluate(context, input, activeGraph, cancellationToken).Distinct();
+    }
+
+    public IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> input, IRefNode? activeGraph,
+        CancellationToken cancellationToken = default)
+    {
+        return inner.EvaluateBatch(context, input, activeGraph, cancellationToken).Select(x=>x.Distinct());
     }
 }

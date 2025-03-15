@@ -42,6 +42,8 @@ internal class AsyncMinusEvaluation : IAsyncEvaluation
         _lhs = lhs;
         _rhs = rhs;
     }
+    
+    [Obsolete("Replaced by EvaluateBatch()")]
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
@@ -54,6 +56,37 @@ internal class AsyncMinusEvaluation : IAsyncEvaluation
                 continue;
             }
             yield return lhsSolution;
+        }
+    }
+
+    public async IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> input, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var results = new List<ISet>();
+        var inputList = input.ToList();
+        var rhSolutions = new List<ISet>();
+        await foreach (IEnumerable<ISet>? solutionsList in _rhs.EvaluateBatch(context, inputList, activeGraph, cancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            rhSolutions.AddRange(solutionsList);
+        }
+        await foreach (IEnumerable<ISet> lhBatch in _lhs.EvaluateBatch(context, inputList, activeGraph,
+                           cancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            foreach (ISet lhsSolution in lhBatch)
+            {
+                if (rhSolutions.Any(r => IsCompatible(lhsSolution, r, _minusVars)))
+                {
+                    continue;
+                }
+                results.Add(lhsSolution);
+            }
+        }
+
+        foreach (ISet[] chunk in results.ChunkBy((int)context.TargetBatchSize))
+        {
+            yield return chunk;
         }
     }
 

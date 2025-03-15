@@ -31,12 +31,12 @@ using VDS.RDF.Query.Pull.Paths;
 
 namespace VDS.RDF.Query.Pull.Algebra;
 
-internal class AsyncPropertyPathPatternEvaluation(IAsyncPathEvaluation pathEvaluation, PatternItem pathStart, PatternItem pathEnd) : IAsyncEvaluation
+internal class AsyncPropertyPathPatternEvaluation(IPathEvaluation pathEvaluation, PatternItem pathStart, PatternItem pathEnd) : IAsyncEvaluation
 {
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        await foreach (PathResult pathResult in pathEvaluation.Evaluate(pathStart, context, input, activeGraph,
+        await foreach (PathResult pathResult in pathEvaluation.EvaluateAsync(pathStart, context, input, activeGraph,
                            cancellationToken).Distinct().WithCancellation(cancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -47,5 +47,29 @@ internal class AsyncPropertyPathPatternEvaluation(IAsyncPathEvaluation pathEvalu
                 yield return output;
             }
         }
+    }
+
+    public IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(
+        PullEvaluationContext context,
+        IEnumerable<ISet?> batch,
+        IRefNode? activeGraph,
+        CancellationToken cancellationToken = default)
+    {
+        IList<ISet> results = new List<ISet>();
+        foreach (ISet? input in batch)
+        {
+            foreach (PathResult? pathResult in pathEvaluation
+                         .Evaluate(pathStart, context, input, activeGraph, cancellationToken).Distinct())
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                Set output = input != null ? new Set(input) : new Set();
+                if (pathStart.Accepts(context, pathResult.StartNode, output) &&
+                    pathEnd.Accepts(context, pathResult.EndNode, output))
+                {
+                    results.Add(output);
+                }
+            }
+        }
+        return results.AsEnumerable().ToAsyncEnumerable();
     }
 }

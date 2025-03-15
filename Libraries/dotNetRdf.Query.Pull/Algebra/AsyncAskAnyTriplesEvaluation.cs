@@ -39,4 +39,17 @@ internal class AsyncAskAnyTriplesEvaluation : IAsyncEvaluation
         }
         return AsyncEnumerable.Empty<ISet>();
     }
+
+    public IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(
+        PullEvaluationContext context,
+        IEnumerable<ISet?> batch,
+        IRefNode? activeGraph,
+        CancellationToken cancellationToken = default)
+    {
+        if (context.HasAnyTriples(activeGraph))
+        {
+            return batch.Select(input => input ?? new Set()).AsEnumerable().ToAsyncEnumerable();
+        }
+        return AsyncEnumerable.Empty<IEnumerable<ISet>>();
+    }
 }

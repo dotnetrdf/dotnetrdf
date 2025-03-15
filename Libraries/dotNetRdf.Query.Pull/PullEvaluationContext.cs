@@ -55,6 +55,9 @@ internal class PullEvaluationContext : IPatternEvaluationContext
     public Uri? BaseUri { get; private set; }
     public IUriFactory UriFactory { get; private set; }
 
+    public int TargetBatchSize { get; private set; } = DefaultTargetBatchSize;
+    public static readonly int DefaultTargetBatchSize = 1000;
+    
     private PullEvaluationContext(
         PullEvaluationContext parent,
         bool unionDefaultGraph,
@@ -94,7 +97,9 @@ internal class PullEvaluationContext : IPatternEvaluationContext
         var customDefaultGraph = false;
         if (unionDefaultGraph)
         {
-            _defaultGraph = new UnionTripleCollection(data.Graphs.First().Triples, data.Graphs.Skip(1).Select(g=>g.Triples));
+            _defaultGraph = data.Graphs.Count > 0
+                ? new UnionTripleCollection(data.Graphs.First().Triples, data.Graphs.Skip(1).Select(g => g.Triples))
+                : new TripleCollection();
         }
         else
         {

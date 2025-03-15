@@ -44,6 +44,7 @@ internal class AsyncAskEvaluation : IAsyncEvaluation
     }
 
     /// <inheritdoc />
+    [Obsolete("Replaced by EvaluateBatch()")]
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
@@ -52,5 +53,20 @@ internal class AsyncAskEvaluation : IAsyncEvaluation
             .GetAsyncEnumerator(cancellationToken);
         var hasNext = await innerEnumerator.MoveNextAsync();
         if (hasNext) yield return new Set();
+    }
+
+    public async IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> batch, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        IList<ISet> results = new List<ISet>();
+        foreach (ISet? input in batch)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            using IEnumerator<IAsyncEnumerable<IEnumerable<ISet>>> enumerator = _inner.EvaluateBatch(context, input.AsEnumerable(), activeGraph, cancellationToken).AsEnumerable().GetEnumerator();
+            var hasNext = enumerator.MoveNext();
+            if (hasNext) results.Add(new Set());
+        }
+
+        yield return results;
     }
 }

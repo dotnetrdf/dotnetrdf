@@ -31,6 +31,7 @@ namespace VDS.RDF.Query.Pull.Algebra;
 
 internal class AsyncLoopJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, bool leftJoin) : IAsyncEvaluation
 {
+    [Obsolete("Replaced by EvaluateBatch()")]
     public IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, CancellationToken cancellationToken = default)
     {
         return leftJoin 
@@ -38,6 +39,15 @@ internal class AsyncLoopJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rh
             : lhs.Evaluate(context, input, activeGraph, cancellationToken).SelectMany(lhsSolution => rhs.Evaluate(context, lhsSolution, activeGraph, cancellationToken));
     }
 
+    public IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> input, IRefNode? activeGraph,
+        CancellationToken cancellationToken = default)
+    {
+        return leftJoin
+            ? EvaluateLoopLeftJoinBatch(context, input, activeGraph, cancellationToken)
+            : lhs.EvaluateBatch(context, input, activeGraph, cancellationToken).SelectMany(lhsSolutions => rhs.EvaluateBatch(context, lhsSolutions, activeGraph, cancellationToken));
+    }
+
+    [Obsolete("Replaced by EvaluateLoopLeftJoinBatch()")]
     private async IAsyncEnumerable<ISet> EvaluateLoopLeftJoin(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         await foreach (ISet lhSolution in lhs.Evaluate(context, input, activeGraph, cancellationToken))
@@ -54,6 +64,40 @@ internal class AsyncLoopJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rh
             {
                 yield return lhSolution;
             }
+        }
+    }
+
+    private async IAsyncEnumerable<IEnumerable<ISet>> EvaluateLoopLeftJoinBatch(PullEvaluationContext context,
+        IEnumerable<ISet?> input, IRefNode? activeGraph, [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        await foreach (IEnumerable<ISet> lhSolutionBatch in lhs.EvaluateBatch(context, input, activeGraph,
+                           cancellationToken))
+        {
+            List<ISet> joinResults = new ();
+            foreach (ISet lhSolution in lhSolutionBatch)
+            {
+                await using IAsyncEnumerator<IEnumerable<ISet>> joinEnumerator =
+                    rhs.EvaluateBatch(context, lhSolution.AsEnumerable(), activeGraph, cancellationToken)
+                        .GetAsyncEnumerator(cancellationToken);
+                if (await joinEnumerator.MoveNextAsync())
+                {
+                    do
+                    {
+                        joinResults.AddRange(joinEnumerator.Current);
+                    } while (await joinEnumerator.MoveNextAsync());
+                }
+                else
+                {
+                    joinResults.Add(lhSolution);
+                }
+
+                if (joinResults.Count > PullEvaluationContext.DefaultTargetBatchSize)
+                {
+                    yield return joinResults;
+                    joinResults= new List<ISet>();
+                }
+            }
+            if (joinResults.Count > 0) yield return joinResults;
         }
     }
 }

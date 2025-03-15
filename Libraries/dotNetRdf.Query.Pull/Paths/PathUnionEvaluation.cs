@@ -24,25 +24,28 @@
 // </copyright>
 */
 
-using System.Runtime.CompilerServices;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Pull.Paths;
 
-internal class AsyncSequencePathEvaluation(IAsyncPathEvaluation lhs, IAsyncPathEvaluation rhs, string joinVar)
-    : IAsyncPathEvaluation
+internal class PathUnionEvaluation(IPathEvaluation lhs, IPathEvaluation rhs) : IPathEvaluation
 {
-    public async IAsyncEnumerable<PathResult> Evaluate(PatternItem pathStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
-        [EnumeratorCancellation] CancellationToken cancellationToken)
+    public IEnumerable<PathResult> Evaluate(PatternItem stepStart, PullEvaluationContext context, ISet? input,
+        IRefNode? activeGraph,
+        CancellationToken cancellationToken)
     {
-        await foreach (PathResult leftResult in lhs.Evaluate(pathStart, context, input, activeGraph, cancellationToken))
-        {
-            await foreach (PathResult rightResult in rhs.Evaluate(new NodeMatchPattern(leftResult.EndNode), context,
-                               input, activeGraph, cancellationToken))
-            {
-                yield return new PathResult(leftResult.StartNode, rightResult.EndNode);
-            }
-        }
+        return lhs.Evaluate(stepStart, context, input, activeGraph, cancellationToken)
+            .Concat(rhs.Evaluate(stepStart, context, input, activeGraph, cancellationToken));
+    }
+
+    public IAsyncEnumerable<PathResult> EvaluateAsync(PatternItem stepStart, PullEvaluationContext context, ISet? input,
+        IRefNode? activeGraph,
+        CancellationToken cancellationToken)
+    {
+        return AsyncEnumerableEx.Merge(
+            lhs.EvaluateAsync(stepStart, context, input, activeGraph, cancellationToken),
+            rhs.EvaluateAsync(stepStart, context, input, activeGraph, cancellationToken));
     }
 }
+ 

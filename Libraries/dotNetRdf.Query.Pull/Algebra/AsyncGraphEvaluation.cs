@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System.Runtime.CompilerServices;
 using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Pull.Algebra;
@@ -33,6 +34,7 @@ internal class AsyncGraphEvaluation : IAsyncEvaluation
     private readonly IAsyncEvaluation _inner;
     private readonly string? _graphVarName;
     private readonly IRefNode? _graphName;
+    private readonly IRefNode _unboundGraphName = new UriNode(new Uri("urn:x-dotNetRdf:unbound"));
 
     public AsyncGraphEvaluation(IRefNode graphName, IAsyncEvaluation inner)
     {
@@ -45,6 +47,8 @@ internal class AsyncGraphEvaluation : IAsyncEvaluation
         _graphVarName = variableName;
         _inner = inner;
     }
+    
+    [Obsolete("Replaced by EvaluateBatch()")]
     public IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, CancellationToken cancellationToken = default)
     {
         if (_graphName != null)
@@ -69,5 +73,62 @@ internal class AsyncGraphEvaluation : IAsyncEvaluation
                 return _inner.Evaluate(context, inputWithGraphBinding, gn, cancellationToken);
             })
             .Merge();
+    }
+
+    public async IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> batch, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        if (_graphName != null)
+        {
+            await foreach (IEnumerable<ISet>? result in _inner.EvaluateBatch(context, batch, _graphName, cancellationToken))
+            {
+                yield return result;
+            }
+        }
+        else
+        {
+            IEnumerable<IGrouping<IRefNode, ISet?>> groupedBatches = batch.GroupBy(GetBoundGraphName);
+            foreach (IGrouping<IRefNode, ISet?> group in groupedBatches)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (group.Key.Equals(_unboundGraphName))
+                {
+                    foreach (IRefNode? gn in context.NamedGraphNames)
+                    {
+                        IEnumerable<ISet> graphBatch = group.Select(s =>
+                        {
+                            ISet inputWithGraphBinding = s?.Copy() ?? new Set();
+                            if (_graphVarName != null)
+                            {
+                                inputWithGraphBinding.Add(_graphVarName, gn);
+                            }
+
+                            return inputWithGraphBinding;
+                        });
+                        await foreach (IEnumerable<ISet> innerBatchResult in _inner.EvaluateBatch(context, graphBatch, gn,
+                                           cancellationToken))
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+                            yield return innerBatchResult;
+                        }
+                    }
+                }
+                else
+                {
+                    await foreach (IEnumerable<ISet> innerBatchResult in _inner.EvaluateBatch(context, group, group.Key,
+                                       cancellationToken))
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        yield return innerBatchResult;
+                    }
+                }
+            }
+        }
+    }
+
+    private IRefNode GetBoundGraphName(ISet? s)
+    {
+        if (s != null && s.ContainsVariable(_graphVarName) && s[_graphVarName] is IRefNode graphName) return graphName;
+        return _unboundGraphName;
     }
 }

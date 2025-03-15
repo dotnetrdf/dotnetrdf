@@ -47,4 +47,35 @@ internal class AsyncIntegerEnumeration : IAsyncEvaluation
             }
         }
     }
+
+    public async IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> batch, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var resultBatch = new List<ISet>();
+        foreach (var input in batch)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var mustMatch = input?[_varName]?.AsValuedNode().AsInteger();
+            for (long i = _start; i <= _stop; i += _step)
+            {
+                if (_wait > 0)
+                {
+                    await Task.Delay(_wait, cancellationToken);
+                }
+
+                if (mustMatch == null || mustMatch == i)
+                {
+                    ISet s = new Set();
+                    s.Add(_varName, _nodeFactory.CreateLiteralNode(i.ToString(), _xsdInteger));
+                    resultBatch.Add(s);
+                    if (resultBatch.Count >= context.TargetBatchSize)
+                    {
+                        yield return resultBatch;
+                        resultBatch = new List<ISet>();
+                    }
+                }
+            }
+        }
+        if (resultBatch.Count > 0) yield return resultBatch;
+    }
 }

@@ -33,7 +33,7 @@ namespace VDS.RDF.Query.Pull;
 internal class DescriberContext(
     SparqlQuery query,
     PullEvaluationContext evaluationContext,
-    IAsyncEnumerable<ISet> solutionBindings)
+    IAsyncEnumerable<IEnumerable<ISet>> solutionBindings)
     : ISparqlDescribeContext
 {
     private readonly SparqlQuery _query = query;
@@ -57,14 +57,17 @@ internal class DescriberContext(
                 _query.DescribeVariables.Where(v=>v.TokenType == Token.VARIABLE).Select(t=>t.Value.Substring(1)).ToList();
         if (descVars.Any())
         {
-            foreach (ISet? solution in solutionBindings.ToEnumerable())
+            foreach (IEnumerable<ISet> batch in solutionBindings.ToEnumerable())
             {
-                if (solution != null)
+                foreach (ISet? solution in batch)
                 {
-                    foreach (var dv in descVars)
+                    if (solution != null)
                     {
-                        INode? tmp = solution[dv];
-                        if (tmp != null) yield return tmp;
+                        foreach (var dv in descVars)
+                        {
+                            INode? tmp = solution[dv];
+                            if (tmp != null) yield return tmp;
+                        }
                     }
                 }
             }

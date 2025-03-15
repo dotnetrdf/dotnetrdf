@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System.Runtime.CompilerServices;
 using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Pull.Algebra;
@@ -41,5 +42,38 @@ internal class AsyncSliceEvaluation(Slice slice, IAsyncEvaluation inner) : IAsyn
         if (slice.Offset > 0) sliced = sliced.Skip(slice.Offset);
         if (slice.Limit >= 0) sliced = sliced.Take(slice.Limit);
         return sliced;
+    }
+
+    public async IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> input, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        if (slice.Limit == 0)
+        {
+            yield return [];
+        }
+        else
+        {
+            var resultIndex = 0;
+            await foreach (IEnumerable<ISet> batch in inner.EvaluateBatch(context, input, activeGraph,
+                               cancellationToken))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (resultIndex > slice.Offset + slice.Limit && slice.Limit > 0) yield break;
+                if (resultIndex < slice.Offset)
+                {
+                    resultIndex += batch.Take(slice.Limit).Count();
+                }
+
+                if (resultIndex >= slice.Offset)
+                {
+                    var result = (slice.Limit > 0 ? batch.Take(slice.Limit - (resultIndex - slice.Offset)) : batch).ToList();
+                    if (result.Count > 0)
+                    {
+                        resultIndex += result.Count;
+                        yield return result;
+                    }
+                }
+            }
+        }
     }
 }

@@ -56,10 +56,20 @@ internal class AsyncTriplePatternEvaluation : IAsyncEvaluation
     /// <returns></returns>
     public IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, CancellationToken cancellationToken = default)
     {
+        return GetTriplePatternMatches(context, input, activeGraph).ToAsyncEnumerable();
+    }
+
+    public IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context, IEnumerable<ISet?> batch, IRefNode? activeGraph,
+        CancellationToken cancellationToken = default)
+    {
+        return batch.SelectMany(s=> GetTriplePatternMatches(context, s, activeGraph)).ChunkBy((int)context.TargetBatchSize).ToAsyncEnumerable();
+    }
+
+    private IEnumerable<ISet> GetTriplePatternMatches(PullEvaluationContext context, ISet? input, IRefNode? activeGraph)
+    {
         return context.GetTriples(_triplePattern, input, activeGraph)
-            .Select(t=>_triplePattern.Evaluate(context,t))
+            .Select(t => _triplePattern.Evaluate(context, t))
             .Where(set => set != null)
-            .Select(set => input != null ? set.Join(input) : set)
-            .ToAsyncEnumerable();
+            .Select(set => input != null ? set.Join(input) : set);
     }
 }
