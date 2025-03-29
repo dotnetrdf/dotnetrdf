@@ -263,12 +263,20 @@ namespace VDS.RDF
 
         #region IDisposable Members
 
-        /// <summary>
-        /// Disposes of a Triple Collection.
-        /// </summary>
-        public override void Dispose()
+        private bool _isDisposed;
+
+        /// <inheritdoc />
+        protected override void Dispose(bool disposing)
         {
-            Triples.Clear();
+            if (!_isDisposed)
+            {
+                _isDisposed = true;
+                if (disposing)
+                {
+                    Triples.Clear();
+                }
+            }
+            base.Dispose(disposing);
         }
 
         #endregion

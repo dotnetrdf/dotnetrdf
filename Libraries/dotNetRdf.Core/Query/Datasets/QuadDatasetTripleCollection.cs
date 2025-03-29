@@ -151,12 +151,6 @@ namespace VDS.RDF.Query.Datasets
             _dataset.GetQuoted(_graphName).Select(t => t.Subject).Distinct();
 
         /// <inheritdoc />
-        public override void Dispose()
-        {
-            // No dispose actions needed
-        }
-
-        /// <inheritdoc />
         public override IEnumerator<Triple> GetEnumerator()
         {
             return _dataset.GetQuads(_graphName).GetEnumerator();

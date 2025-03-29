@@ -45,17 +45,17 @@ namespace VDS.RDF
     {
         // Indexes
         private readonly MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>>
-            _sp = new MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>>(new FastVirtualNodeComparer()),
-            _po = new MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>>(new FastVirtualNodeComparer()),
-            _os = new MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>>(new FastVirtualNodeComparer()),
-            _qsp = new MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>>(new FastVirtualNodeComparer()),
-            _qpo = new MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>>(new FastVirtualNodeComparer()),
-            _qos = new MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>>(new FastVirtualNodeComparer());
+            _sp = new(new FastVirtualNodeComparer()),
+            _po = new(new FastVirtualNodeComparer()),
+            _os = new(new FastVirtualNodeComparer()),
+            _qsp = new(new FastVirtualNodeComparer()),
+            _qpo = new(new FastVirtualNodeComparer()),
+            _qos = new(new FastVirtualNodeComparer());
 
         // Placeholder Variables for compound lookups
-        private readonly VariableNode _subjVar = new VariableNode("s"),
-                             _predVar = new VariableNode("p"),
-                             _objVar = new VariableNode("o");
+        private readonly VariableNode _subjVar = new("s"),
+                             _predVar = new("p"),
+                             _objVar = new("o");
 
         // Hash Functions
         private readonly Func<Triple, int> _sHash = t => Tools.CombineHashCodes(t.Subject, t.Predicate),
@@ -318,16 +318,29 @@ namespace VDS.RDF
         /// <inheritdoc/>
         public override IEnumerable<INode> QuotedSubjectNodes => _qsp.Keys;
 
+        private bool _isDisposed;
+
         /// <summary>
         /// Disposes of the collection.
         /// </summary>
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            Triples.Clear();
-            _sp.Clear();
-            _po.Clear();
-            _os.Clear();
-        }
+            if (!_isDisposed)
+            {
+                _isDisposed = true;
+                if (disposing)
+                {
+                    Triples.Clear();
+                    _sp.Clear();
+                    _po.Clear();
+                    _os.Clear();
+                    _qos.Clear();
+                    _qpo.Clear();
+                    _qsp.Clear();
+                }
+            }
 
+            base.Dispose(disposing);
+        }
     }
 }

@@ -204,17 +204,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Disposes of the collection.
-        /// </summary>
-        /// <remarks>
-        /// This does nothing since we don't know where and how the collections we are the union of are being used and therefore to dispose of them could have unwanted/unexpected results.
-        /// </remarks>
-        public override void Dispose()
-        {
-            // Do Nothing
-        }
-
-        /// <summary>
         /// Gets the enumeration of Triples in the union.
         /// </summary>
         /// <returns></returns>

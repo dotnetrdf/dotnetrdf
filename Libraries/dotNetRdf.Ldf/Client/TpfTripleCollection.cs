@@ -72,8 +72,6 @@ internal class TpfTripleCollection : BaseTripleCollection
 
     public override bool Contains(Triple t) => TpfEnumerable(t.Subject, t.Predicate, t.Object).Any();
 
-    public override void Dispose() { }
-
     public override IEnumerator<Triple> GetEnumerator() => new TpfEnumerator(new TpfParameters(template), reader, loader);
 
     public override IEnumerable<Triple> WithObject(INode o) => TpfEnumerable(o: o);

@@ -49,7 +49,7 @@ public class TripleStoreTripleIndex : ITripleIndex
     }
 
     /// <summary>
-    /// Create a triple index over the specified graph of the specified store
+    /// Create a triple index over the specified graph of the specified store.
     /// </summary>
     /// <param name="store">The store to expose as a triple index.</param>
     /// <param name="defaultGraph">The name of the graph to expose in the index.</param>

@@ -70,6 +70,9 @@ namespace VDS.RDF
         private readonly TripleEventHandler TripleAddedHandler;
         private readonly TripleEventHandler TripleRemovedHandler;
 
+        private bool _disposeTriples = false;
+        private bool _disposed = false;
+
         #endregion
 
         #region Constructor
@@ -84,6 +87,7 @@ namespace VDS.RDF
         protected BaseGraph(BaseTripleCollection tripleCollection, IRefNode graphName = null, INodeFactory nodeFactory = null, IUriFactory uriFactory = null)
         {
             _triples = tripleCollection ?? new TreeIndexedTripleCollection();
+            _disposeTriples = tripleCollection == null;
             _bnodemapper = new BlankNodeMapper();
             NodeFactory = nodeFactory ?? new NodeFactory(new NodeFactoryOptions(), uriFactory:uriFactory);
             UriFactory = uriFactory ?? NodeFactory.UriFactory;
@@ -100,7 +104,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphName">The name to assign to the new graph.</param>
         protected BaseGraph(IRefNode graphName = null)
-            : this(new TreeIndexedTripleCollection(), graphName)
+            : this(null, graphName)
         {
         }
 
@@ -990,12 +994,31 @@ namespace VDS.RDF
         /// <summary>
         /// Disposes of a Graph.
         /// </summary>
-        public virtual void Dispose()
+        public void Dispose()
         {
-            DetachEventHandlers(_triples);
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        
+        /// <summary>
+        /// Disposes of the graph and any resources it owns.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                _disposed = true;
+                if (disposing)
+                {
+                    DetachEventHandlers(_triples);
+                    if (_disposeTriples)
+                    {
+                        _triples.Dispose();
+                    }
+                }
+            }
+        }
     }
 
 }

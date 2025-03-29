@@ -42,7 +42,7 @@ namespace VDS.RDF
         /// <summary>
         /// Locking Manager for the Graph.
         /// </summary>
-        protected ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        protected ReaderWriterLockSlim _lockManager = new(LockRecursionPolicy.SupportsRecursion);
 
         /// <summary>
         /// Creates a new Thread Safe Graph.
@@ -222,14 +222,24 @@ namespace VDS.RDF
             return id;
         }
 
+        #region IDisposable Members
+        private bool _isDisposed;
         /// <summary>
         /// Disposes of a Graph.
         /// </summary>
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
+            if (!_isDisposed)
+            {
+                _isDisposed = true;
+                if (disposing)
+                {
+                    _lockManager.Dispose();
+                }
+            }
             base.Dispose();
-            _lockManager.Dispose();
         }
+        #endregion
 
         #region Node Selection
 

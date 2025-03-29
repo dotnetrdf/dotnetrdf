@@ -40,21 +40,25 @@ namespace VDS.RDF
         /// </summary>
         protected readonly BaseTripleCollection _triples;
 
+        private bool _disposeTriples;
+
         /// <summary>
         /// Creates a new decorator over the default <see cref="TreeIndexedTripleCollection"/>.
         /// </summary>
         public WrapperTripleCollection()
-            : this(new TreeIndexedTripleCollection(true)) { }
+            : this(new TreeIndexedTripleCollection(true), true) { }
 
         /// <summary>
         /// Creates a new decorator around the given triple collection.
         /// </summary>
         /// <param name="tripleCollection">Triple Collection.</param>
-        public WrapperTripleCollection(BaseTripleCollection tripleCollection)
+        /// <param name="disposeTriples">Whether to invoke the Dispose method of <paramref name="tripleCollection"/> when this wrapper collection is disposed.</param>
+        public WrapperTripleCollection(BaseTripleCollection tripleCollection, bool disposeTriples = true)
         {
             _triples = tripleCollection ?? throw new ArgumentNullException(nameof(tripleCollection));
             _triples.TripleAdded += HandleTripleAdded;
             _triples.TripleRemoved += HandleTripleRemoved;
+            _disposeTriples = disposeTriples;
         }
 
         private void HandleTripleAdded(object sender, TripleEventArgs args)
@@ -155,14 +159,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Disposes of the collection.
-        /// </summary>
-        public override void Dispose()
-        {
-            _triples.Dispose();
-        }
-
-        /// <summary>
         /// Gets the enumerator for the collection.
         /// </summary>
         /// <returns></returns>
@@ -233,5 +229,28 @@ namespace VDS.RDF
         {
             return _triples.WithSubjectPredicate(subj, pred);
         }
+        
+        #region IDisposable Members
+        private bool _isDisposed;
+        /// <summary>
+        /// Disposes of the collection.
+        /// </summary>
+        protected override void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                _isDisposed = true;
+                if (disposing)
+                {
+                    if (_disposeTriples)
+                    {
+                        _triples.Dispose();
+                    }
+                }
+            }
+            base.Dispose(disposing);
+        }
+        
+        #endregion
     }
 }

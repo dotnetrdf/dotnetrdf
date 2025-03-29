@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF
 {
@@ -40,6 +39,8 @@ namespace VDS.RDF
     public abstract class BaseTripleCollection
         : IEnumerable<Triple>, IDisposable
     {
+        private bool _isDisposed = false;
+        
         /// <summary>
         /// Adds a Triple to the Collection.
         /// </summary>
@@ -291,7 +292,22 @@ namespace VDS.RDF
         /// <summary>
         /// Disposes of a Triple Collection.
         /// </summary>
-        public abstract void Dispose();
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes of a Triple Collection.
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                _isDisposed = true;
+            }
+        }
 
         /// <summary>
         /// Gets the typed Enumerator for the Triple Collection.
