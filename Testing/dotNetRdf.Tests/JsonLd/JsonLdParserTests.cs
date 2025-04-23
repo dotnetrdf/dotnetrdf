@@ -38,13 +38,35 @@ namespace VDS.RDF.JsonLd
         {
             var jsonLdParser = new JsonLdParser();
             ITripleStore tStore = new TripleStore();
-            using (var reader = new System.IO.StringReader(@"{
-            ""@context"": ""http://json-ld.org/contexts/person.jsonld"",
-            ""@id"": ""http://dbpedia.org/resource/John_Lennon"",
-            ""name"": ""John Lennon"",
-            ""born"": ""1940-10-09"",
-            ""spouse"": ""http://dbpedia.org/resource/Cynthia_Lennon""
-            }"))
+            _server.Given(Request.Create().WithPath("/contexts/person.jsonld"))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/ld+json")
+                    .WithBody($$"""
+                        {
+                          '@context': { 
+                            'name': 'http://xmlns.com/foaf/0.1/name',
+                            'born': { 
+                              '@id': 'http://schema.org/birthDate',
+                              '@type': 'http://www.w3.org/2001/XMLSchema#date'
+                            },
+                            'spouse': {
+                              '@id': 'http://schema.org/spouse',
+                              '@type': '@id'
+                            }
+                          }
+                        }
+                    """));
+
+            using (var reader = new StringReader($$"""
+                 {
+                     "@context": "{{_server.Urls[0]}}/contexts/person.jsonld",
+                     "@id": "http://dbpedia.org/resource/John_Lennon",
+                     "name": "John Lennon",
+                     "born": "1940-10-09",
+                     "spouse": "http://dbpedia.org/resource/Cynthia_Lennon"
+                }
+            """))
             {
                 jsonLdParser.Load(tStore, reader);
             }
