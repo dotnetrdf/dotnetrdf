@@ -34,7 +34,7 @@ namespace VDS.RDF.LDF.Client;
 
 internal class TpfParameters
 {
-    private Uri uri;
+    private Uri _uri;
 
     internal TpfParameters(IriTemplate template, INode subject = null, INode predicate = null, INode @object = null)
     {
@@ -85,8 +85,8 @@ internal class TpfParameters
             variables.Add(template.ObjectVariable, formatter.Format(@object));
         }
 
-        uri = new UriTemplate(template.Template).ResolveUri(variables);
+        _uri = new UriTemplate(template.Template).ResolveUri(variables);
     }
 
-    public static implicit operator Uri(TpfParameters parameters) => parameters.uri;
+    public static implicit operator Uri(TpfParameters parameters) => parameters._uri;
 }

@@ -32,12 +32,12 @@ namespace VDS.RDF.LDF;
 
 internal static class Queries
 {
-    private static readonly string preamble = """
+    private static readonly string Preamble = """
         PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
         PREFIX void:  <http://rdfs.org/ns/void#>
         """;
 
-    private static readonly string shape = """
+    private static readonly string Shape = """
         ?fragment ^void:subset   ?dataset  .
         ?page     ^void:subset   ?fragment .
         ?search   ^hydra:search  ?dataset  .
@@ -45,16 +45,16 @@ internal static class Queries
         """;
 
     internal static SparqlQuery Select { get; } = new SparqlQueryParser().ParseFromString($$"""
-            {{preamble}}
+            {{Preamble}}
 
             SELECT DISTINCT ?page ?search
             WHERE {
-                {{shape}}
+                {{Shape}}
             }
             """);
 
     internal static SparqlUpdateCommandSet Delete { get; } = new SparqlUpdateParser().ParseFromString($$"""
-            {{preamble}}
+            {{Preamble}}
                         
             DELETE {
             	?datasetContainer ?datasetInverseProperty ?dataset       .
@@ -65,7 +65,7 @@ internal static class Queries
             	?mapping          ?mappingProperty        ?mappingValue  .
             }
             WHERE {
-                {{shape}}
+                {{Shape}}
                         
             	?dataset  ?datasetProperty  ?datasetValue  .
             	?fragment ?fragmentProperty ?fragmentValue .

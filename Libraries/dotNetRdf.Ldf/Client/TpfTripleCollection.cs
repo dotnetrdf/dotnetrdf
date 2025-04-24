@@ -34,23 +34,23 @@ namespace VDS.RDF.LDF.Client;
 
 internal class TpfTripleCollection : BaseTripleCollection
 {
-    private readonly IriTemplate template;
-    private readonly IRdfReader reader;
-    private readonly Loader loader;
+    private readonly IriTemplate _template;
+    private readonly IRdfReader _reader;
+    private readonly Loader _loader;
 
     internal TpfTripleCollection(IriTemplate template, IRdfReader reader = null, Loader loader = null)
     {
-        this.template = template ?? throw new ArgumentNullException(nameof(template));
-        this.reader = reader;
-        this.loader = loader;
+        this._template = template ?? throw new ArgumentNullException(nameof(template));
+        this._reader = reader;
+        this._loader = loader;
     }
 
-    /// <remarks>Caution: When the LDF response has no triple count statement in the metadata section then every invocation of this property enumerates the collection which potentially involves numerous network requests.</remarks>
+    /// <remarks>Caution: When the LDF response has no triple count statement in the metadata section, then every invocation of this property enumerates the collection which potentially involves numerous network requests.</remarks>
     public override int Count
     {
         get
         {
-            using var fragment = new TpfLoader(new TpfParameters(template), reader, loader);
+            using var fragment = new TpfLoader(new TpfParameters(_template), _reader, _loader);
 
             return fragment.Metadata.TripleCount switch
             {
@@ -72,7 +72,7 @@ internal class TpfTripleCollection : BaseTripleCollection
 
     public override bool Contains(Triple t) => TpfEnumerable(t.Subject, t.Predicate, t.Object).Any();
 
-    public override IEnumerator<Triple> GetEnumerator() => new TpfEnumerator(new TpfParameters(template), reader, loader);
+    public override IEnumerator<Triple> GetEnumerator() => new TpfEnumerator(new TpfParameters(_template), _reader, _loader);
 
     public override IEnumerable<Triple> WithObject(INode o) => TpfEnumerable(o: o);
 
@@ -88,7 +88,7 @@ internal class TpfTripleCollection : BaseTripleCollection
 
     public override IEnumerable<Triple> Asserted => this;
 
-    private IEnumerable<Triple> TpfEnumerable(INode s = null, INode p = null, INode o = null) => new TpfEnumerable(new TpfParameters(template, s, p, o), reader, loader);
+    private IEnumerable<Triple> TpfEnumerable(INode s = null, INode p = null, INode o = null) => new TpfEnumerable(new TpfParameters(_template, s, p, o), _reader, _loader);
 
     #region Mutation methods throw because this triple collection is read-only
 

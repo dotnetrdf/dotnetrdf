@@ -33,61 +33,79 @@ namespace VDS.RDF.LDF.Client;
 
 internal class TpfEnumerator : IEnumerator<Triple>
 {
-    private readonly IRdfReader reader;
-    private readonly Loader loader;
-    private Uri nextPage;
-    private Triple current;
-    private IEnumerator<Triple> underlyingTriples;
+    private readonly IRdfReader _reader;
+    private readonly Loader _loader;
+    private Uri _nextPage;
+    private Triple _current;
+    private TpfLoader _fragment;
+    private IEnumerator<Triple> _underlyingTriples;
 
     internal TpfEnumerator(Uri firstPage, IRdfReader reader = null, Loader loader = null)
     {
-        nextPage = firstPage ?? throw new ArgumentNullException(nameof(firstPage));
-        this.reader = reader;
-        this.loader = loader;
+        _nextPage = firstPage ?? throw new ArgumentNullException(nameof(firstPage));
+        this._reader = reader;
+        this._loader = loader;
     }
 
-    Triple IEnumerator<Triple>.Current => current;
+    Triple IEnumerator<Triple>.Current => _current;
 
     object IEnumerator.Current => (this as IEnumerator<Triple>).Current;
 
     bool IEnumerator.MoveNext()
     {
-        if (underlyingTriples is null)
+        if (_underlyingTriples is null)
         {
             InitializeCurrentPage();
         }
 
-        if (underlyingTriples.MoveNext())
+        if (_underlyingTriples != null && _underlyingTriples.MoveNext())
         {
-            current = underlyingTriples.Current;
+            _current = _underlyingTriples.Current;
             return true;
         }
 
-        if (nextPage is null)
+        if (_nextPage is null)
         {
-            current = null;
+            _current = null;
             return false;
         }
 
         return AdvanceToNextPage();
     }
 
-    void IDisposable.Dispose() => underlyingTriples?.Dispose();
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _underlyingTriples?.Dispose();
+            _underlyingTriples = null;
+            _fragment?.Dispose();
+            _fragment = null;
+        }
+    }
 
     void IEnumerator.Reset() => throw new NotSupportedException("This enumerator cannot be reset.");
 
     private void InitializeCurrentPage()
     {
-        using var fragment = new TpfLoader(nextPage, reader, loader);
+        _fragment = new TpfLoader(_nextPage, _reader, _loader);
 
-        underlyingTriples = fragment.Data.Triples.GetEnumerator();
-        nextPage = fragment.Metadata.NextPageUri;
+        _underlyingTriples = _fragment.Data.Triples.GetEnumerator();
+        _nextPage = _fragment.Metadata.NextPageUri;
     }
 
     private bool AdvanceToNextPage()
     {
-        underlyingTriples.Dispose();
-        underlyingTriples = null;
+        _underlyingTriples.Dispose();
+        _underlyingTriples = null;
+        _fragment.Dispose();
+        _fragment = null;
 
         return (this as IEnumerator).MoveNext();
     }

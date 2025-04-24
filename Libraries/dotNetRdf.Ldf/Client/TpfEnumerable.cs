@@ -33,18 +33,18 @@ namespace VDS.RDF.LDF.Client;
 
 internal class TpfEnumerable : IEnumerable<Triple>
 {
-    private readonly Uri firstPage;
-    private readonly IRdfReader reader;
-    private readonly Loader loader;
+    private readonly Uri _firstPage;
+    private readonly IRdfReader _reader;
+    private readonly Loader _loader;
 
     internal TpfEnumerable(Uri firstPage, IRdfReader reader = null, Loader loader = null)
     {
-        this.firstPage = firstPage ?? throw new ArgumentNullException(nameof(firstPage));
-        this.reader = reader;
-        this.loader = loader;
+        this._firstPage = firstPage ?? throw new ArgumentNullException(nameof(firstPage));
+        this._reader = reader;
+        this._loader = loader;
     }
 
-    IEnumerator<Triple> IEnumerable<Triple>.GetEnumerator() => new TpfEnumerator(firstPage, reader, loader);
+    IEnumerator<Triple> IEnumerable<Triple>.GetEnumerator() => new TpfEnumerator(_firstPage, _reader, _loader);
 
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Triple>)this).GetEnumerator();
 }
