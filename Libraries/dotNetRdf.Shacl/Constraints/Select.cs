@@ -131,11 +131,12 @@ namespace VDS.RDF.Shacl.Constraints
         {
             for (var i = 0; i < pattern.TriplePatterns.Count(); i++)
             {
-                if (pattern.TriplePatterns[i] is TriplePattern triplePattern && triplePattern.Predicate.Variables.All(x=>x.Equals("PATH")))
-                {
-                    pattern.TriplePatterns.RemoveAt(i);
-                    pattern.TriplePatterns.Insert(i, new PropertyPathPattern(triplePattern.Subject, path, triplePattern.Object));
-                }
+                if (pattern.TriplePatterns[i] is not TriplePattern triplePattern) { continue; }
+                if (triplePattern.Predicate is not VariablePattern variablePattern) { continue; }
+                if (variablePattern.VariableName != "PATH") { continue; }
+
+                pattern.TriplePatterns.RemoveAt(i);
+                pattern.TriplePatterns.Insert(i, new PropertyPathPattern(triplePattern.Subject, path, triplePattern.Object));
             }
 
             foreach (GraphPattern subPattern in pattern.ChildGraphPatterns)

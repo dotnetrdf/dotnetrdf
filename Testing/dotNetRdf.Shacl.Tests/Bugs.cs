@@ -102,5 +102,62 @@ foaf:firstName ""Carol"" .");
             Assert.False(shaclGraph.Validate(dataGraph2).Conforms);
             Assert.False(shaclGraph.Validate(dataGraph3).Conforms);
         }
+
+        // https://github.com/dotnetrdf/dotnetrdf/issues/692
+        [Fact]
+        public void Issue692()
+        {
+            var dataGraph = new Graph();
+            dataGraph.LoadFromString("""
+                @prefix ex: <http://example.org/> .
+                @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+                ex:Alice
+                    a foaf:Person ;
+                    foaf:knows ex:Bob .
+
+                ex:Bob a ex:Person .
+                """);
+
+            var shapesGraph = new Graph();
+            shapesGraph.LoadFromString(""""
+                @prefix ex: <http://example.org/> .
+                @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+                @prefix sh: <http://www.w3.org/ns/shacl#> .
+
+                ex:doesNotKnowSomeoneShape
+                    sh:targetClass foaf:Person ;
+                    sh:property [
+                        sh:path foaf:knows ;
+                        ex:someone ex:Bob ;
+                    ]
+                .
+    
+                ex:doesNotKnowSomeoneComponent
+                    a sh:ConstraintComponent ;
+                    sh:parameter [
+                        sh:path ex:someone ;
+                    ] ;
+                    sh:propertyValidator [
+                        sh:select """
+                            PREFIX ex: <http://example.org/>
+                            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+                            SELECT DISTINCT $this
+                            WHERE {
+                                $this
+                                    a foaf:Person ;
+                                    $PATH $someone ;
+                                .
+                            }
+                        """ ;
+                    ] .
+                """");
+
+
+
+            var shaclGraph = new ShapesGraph(shapesGraph);
+
+            Assert.False(shaclGraph.Validate(dataGraph).Conforms);
+        }
     }
 }
