@@ -646,19 +646,33 @@ namespace VDS.RDF
         }
 
 
-
+        private bool _isDisposed;
         /// <summary>
         /// Disposes of the collection.
         /// </summary>
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            Triples.Clear();
-            _s?.Clear();
-            _p?.Clear();
-            _o?.Clear();
-            _so?.Clear();
-            _sp?.Clear();
-            _po?.Clear();
+            if (!_isDisposed)
+            {
+                _isDisposed = true;
+                if (disposing)
+                {
+                    Triples.Clear();
+                    _s?.Clear();
+                    _p?.Clear();
+                    _o?.Clear();
+                    _so?.Clear();
+                    _sp?.Clear();
+                    _po?.Clear();
+                    _qs?.Clear();
+                    _qp?.Clear();
+                    _qo?.Clear();
+                    _qso?.Clear();
+                    _qsp?.Clear();
+                    _qpo?.Clear();
+                }
+            }
+            base.Dispose(disposing);
         }
 
         

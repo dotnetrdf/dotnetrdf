@@ -35,8 +35,8 @@ namespace VDS.RDF.LDF.Hydra;
 
 internal class ExplicitRepresentationFormatter : INodeFormatter
 {
-    private readonly static Uri xsdString = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
-    private readonly static Uri langString = UriFactory.Create(RdfSpecsHelper.RdfLangString);
+    private readonly static Uri XsdString = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
+    private readonly static Uri LangString = UriFactory.Create(RdfSpecsHelper.RdfLangString);
 
     string INodeFormatter.Format(INode node) => node switch
     {
@@ -54,7 +54,7 @@ internal class ExplicitRepresentationFormatter : INodeFormatter
         var builder = new StringBuilder();
         builder.AppendFormat(CultureInfo.InvariantCulture, "\"{0}\"", literalNode.Value);
 
-        if (literalNode.DataType is not null && literalNode.DataType != xsdString && literalNode.DataType != langString)
+        if (literalNode.DataType is not null && literalNode.DataType != XsdString && literalNode.DataType != LangString)
         {
             builder.AppendFormat(CultureInfo.InvariantCulture, "^^{0}", literalNode.DataType.AbsoluteUri);
         }

@@ -508,20 +508,29 @@ namespace VDS.RDF
             return triples;
         }
 
+        private bool _isDisposed;
         /// <summary>
         /// Disposes of a Triple Collection.
         /// </summary>
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            try
+            if (!_isDisposed)
             {
-                EnterWriteLock();
-                _triples.Dispose();
+                _isDisposed = true;
+                if (disposing)
+                {
+                    try
+                    {
+                        EnterWriteLock();
+                        _triples.Dispose();
+                    }
+                    finally
+                    {
+                        ExitWriteLock();
+                    }
+                }
             }
-            finally
-            {
-                ExitWriteLock();
-            }
+            base.Dispose(disposing);
         }
     }
 }
