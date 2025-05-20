@@ -287,44 +287,44 @@ namespace VDS.RDF.Writing
             Assert.Throws<ObjectDisposedException>(() => writer.Write("\n"));
         }
 
-        public static IEnumerable<object[]> RoundTripTestData()
+        public static IEnumerable<TheoryDataRow<IRdfWriter, IRdfReader>> RoundTripTestData()
         {
             return RoundTripTestData(Formats.All);
         }
 
-        public static IEnumerable<object[]> RoundTripTestData(Formats formats)
+        public static IEnumerable<TheoryDataRow<IRdfWriter, IRdfReader>> RoundTripTestData(Formats formats)
         {
             if (formats.HasFlag(Formats.Turtle))
             {
-                yield return new object[] { new CompressingTurtleWriter(TurtleSyntax.Original), new TurtleParser(TurtleSyntax.Original) };
-                yield return new object[] { new CompressingTurtleWriter(TurtleSyntax.W3C), new TurtleParser(TurtleSyntax.W3C) };
-                yield return new object[] { new CompressingTurtleWriter(TurtleSyntax.Rdf11Star), new TurtleParser(TurtleSyntax.Rdf11Star) };
-                yield return new object[] { new Notation3Writer(),new Notation3Parser() };
+                yield return new(new CompressingTurtleWriter(TurtleSyntax.Original), new TurtleParser(TurtleSyntax.Original));
+                yield return new(new CompressingTurtleWriter(TurtleSyntax.W3C), new TurtleParser(TurtleSyntax.W3C));
+                yield return new(new CompressingTurtleWriter(TurtleSyntax.Rdf11Star), new TurtleParser(TurtleSyntax.Rdf11Star));
+                yield return new(new Notation3Writer(), new Notation3Parser());
             }
 
             if (formats.HasFlag(Formats.RdfXml))
             {
-                yield return new object[] { new PrettyRdfXmlWriter(), new RdfXmlParser() };
-                yield return new object[] { new RdfXmlWriter(),new RdfXmlParser() };
-                yield return new object[] { new PrettyRdfXmlWriter(),new RdfXmlParser() };
+                yield return new(new PrettyRdfXmlWriter(), new RdfXmlParser());
+                yield return new(new RdfXmlWriter(), new RdfXmlParser());
+                yield return new(new PrettyRdfXmlWriter(), new RdfXmlParser());
             }
 
             if (formats.HasFlag(Formats.NTriples))
             {
-                yield return new object[] { new NTriplesWriter(NTriplesSyntax.Original),new NTriplesParser(NTriplesSyntax.Original) };
-                yield return new object[] { new NTriplesWriter(NTriplesSyntax.Rdf11),new NTriplesParser(NTriplesSyntax.Rdf11) };
-                yield return new object[] { new NTriplesWriter(NTriplesSyntax.Rdf11Star), new NTriplesParser(NTriplesSyntax.Rdf11Star) };
+                yield return new(new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Original));
+                yield return new(new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Rdf11));
+                yield return new(new NTriplesWriter(NTriplesSyntax.Rdf11Star), new NTriplesParser(NTriplesSyntax.Rdf11Star));
             }
 
             if (formats.HasFlag(Formats.RdfA))
             {
-                yield return new object[] { new HtmlWriter(),new RdfAParser() };
+                yield return new(new HtmlWriter(), new RdfAParser());
             }
 
 
             if (formats.HasFlag(Formats.RdfJson))
             {
-                yield return new object[] { new RdfJsonWriter(), new RdfJsonParser() };
+                yield return new(new RdfJsonWriter(), new RdfJsonParser());
             }
         }
 
