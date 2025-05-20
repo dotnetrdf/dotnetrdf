@@ -20,7 +20,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.IsType<Graph>(algebra);
 
             var g = (Graph) algebra;
-            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
+            Assert.IsType<IBgp>(g.InnerAlgebra, exactMatch: false);
         }
 
         [Fact]
@@ -48,9 +48,9 @@ namespace VDS.RDF.Query.Algebra
             Assert.IsType<Graph>(u.Lhs);
 
             var g = (Graph)u.Lhs;
-            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
+            Assert.IsType<IBgp>(g.InnerAlgebra, exactMatch: false);
 
-            Assert.IsAssignableFrom<IBgp>(u.Rhs);
+            Assert.IsType<IBgp>(u.Rhs, exactMatch: false);
         }
 
         [Fact]
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Algebra
 
             Assert.IsType<Service>(u.Lhs);
 
-            Assert.IsAssignableFrom<IBgp>(u.Rhs);
+            Assert.IsType<IBgp>(u.Rhs, exactMatch: false);
         }
 
         [Fact]
@@ -104,15 +104,15 @@ namespace VDS.RDF.Query.Algebra
             gp.AddInlineData(new BindingsPattern());
 
             ISparqlAlgebra algebra = gp.ToAlgebra();
-            Assert.IsAssignableFrom<IJoin>(algebra);
+            Assert.IsType<IJoin>(algebra, exactMatch: false);
 
             var join = (IJoin) algebra;
 
             Assert.IsType<Graph>(join.Lhs);
             var g = (Graph)join.Lhs;
-            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
+            Assert.IsType<IBgp>(g.InnerAlgebra, exactMatch: false);
 
-            Assert.IsAssignableFrom<Bindings>(join.Rhs);
+            Assert.IsType<Bindings>(join.Rhs, exactMatch: false);
         }
 
         [Fact]
@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.Algebra
             gp.AddInlineData(new BindingsPattern());
 
             ISparqlAlgebra algebra = gp.ToAlgebra();
-            Assert.IsAssignableFrom<IJoin>(algebra);
+            Assert.IsType<IJoin>(algebra, exactMatch: false);
 
             var join = (IJoin)algebra;
             Assert.IsType<Service>(join.Lhs);
@@ -146,7 +146,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.IsType<Graph>(algebra);
 
             var g = (Graph)algebra;
-            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
+            Assert.IsType<IBgp>(g.InnerAlgebra, exactMatch: false);
 
             // Nest in another graph pattern with same specifier
             var parent = new GraphPattern
@@ -161,7 +161,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.IsType<Graph>(algebra);
 
             g = (Graph)algebra;
-            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
+            Assert.IsType<IBgp>(g.InnerAlgebra, exactMatch: false);
         }
 
         [Fact]
@@ -177,7 +177,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.IsType<Graph>(algebra);
 
             var g = (Graph)algebra;
-            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
+            Assert.IsType<IBgp>(g.InnerAlgebra, exactMatch: false);
 
             // Nest in another graph pattern with different specifier
             var parent = new GraphPattern
@@ -197,7 +197,7 @@ namespace VDS.RDF.Query.Algebra
 
             g = (Graph) g.InnerAlgebra;
             Assert.Equal(gp.GraphSpecifier.Value, g.GraphSpecifier.Value);
-            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
+            Assert.IsType<IBgp>(g.InnerAlgebra, exactMatch: false);
         }
 
         [Fact]
@@ -213,7 +213,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.IsType<Graph>(algebra);
 
             var g = (Graph)algebra;
-            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
+            Assert.IsType<IBgp>(g.InnerAlgebra, exactMatch: false);
 
             // Nest in another graph pattern with same specifier but also with another BGP
             var parent = new GraphPattern
@@ -237,7 +237,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.IsType<Graph>(join.Lhs);
 
             g = (Graph)join.Lhs;
-            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
+            Assert.IsType<IBgp>(g.InnerAlgebra, exactMatch: false);
         }
     }
 }

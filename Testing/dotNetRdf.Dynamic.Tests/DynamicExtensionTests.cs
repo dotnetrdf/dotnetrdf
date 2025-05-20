@@ -151,8 +151,8 @@ WHERE {
                 item => Assert.IsType<TimeSpan>(item),
                 item => Assert.IsType<long>(item),
                 item => Assert.IsType<string>(item),
-                item => Assert.IsAssignableFrom<ILiteralNode>(item),
-                item => Assert.IsAssignableFrom<ILiteralNode>(item));
+                item => Assert.IsType<ILiteralNode>(item, exactMatch: false),
+                item => Assert.IsType<ILiteralNode>(item, exactMatch: false));
         }
 
         [Fact]
@@ -190,9 +190,9 @@ WHERE {
 
             Assert.Collection(
                 d,
-                item => Assert.IsAssignableFrom<IBlankNode>(item["o"]),
+                item => Assert.IsType<IBlankNode>(item["o"], exactMatch: false),
                 item => Assert.IsType<Uri>(item["o"]),
-                item => Assert.IsAssignableFrom<ILiteralNode>(item["o"]),
+                item => Assert.IsType<ILiteralNode>(item["o"], exactMatch: false),
                 item => Assert.IsType<string>(item["o"]),
                 item => Assert.IsType<double>(item["o"]),
                 item => Assert.IsType<float>(item["o"]),
@@ -201,7 +201,7 @@ WHERE {
                 item => Assert.IsType<bool>(item["o"]),
                 item => Assert.IsType<DateTimeOffset>(item["o"]),
                 item => Assert.IsType<TimeSpan>(item["o"]),
-                item => Assert.IsAssignableFrom<ILiteralNode>(item["o"]));
+                item => Assert.IsType<ILiteralNode>(item["o"], exactMatch: false));
         }
 
         [Fact]

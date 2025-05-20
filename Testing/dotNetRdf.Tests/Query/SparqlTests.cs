@@ -204,7 +204,7 @@ namespace VDS.RDF.Query
             store.Add(g);
 
             object results = ExecuteQuery(store, query);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet)
             {
                 var rset = (SparqlResultSet)results;
@@ -364,7 +364,7 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             SparqlQuery query = parser.ParseFromFile(Path.Combine("resources", "anton.rq"));
 
             var results = g.ExecuteQuery(query);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (ISparqlResult sparqlResult in rset)
@@ -658,7 +658,7 @@ WHERE  { ?s ?p ?o. BIND(?o / 2 AS ?a) }
             var store = new WebDemandTripleStore();
             var queryProcessor = new LeviathanQueryProcessor(store);
             var result = q.Process(queryProcessor);
-            SparqlResultSet resultSet = Assert.IsAssignableFrom<SparqlResultSet>(result);
+            SparqlResultSet resultSet = Assert.IsType<SparqlResultSet>(result, exactMatch: false);
             Assert.Equal(2, resultSet.Count);
         }
 

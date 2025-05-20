@@ -63,7 +63,7 @@ namespace VDS.RDF.Query
 
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
             Object results = endpoint.QueryWithResultSet(input.ToString());
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet)
             {
                 TestTools.ShowResults(results);

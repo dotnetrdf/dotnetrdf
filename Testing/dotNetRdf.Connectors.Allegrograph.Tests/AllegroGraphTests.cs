@@ -248,7 +248,7 @@ namespace VDS.RDF.Storage
             var ask = "ASK WHERE { ?s ?p ?o }";
 
             var results = agraph.Query(ask);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
         }
 
         [Fact]
@@ -259,7 +259,7 @@ namespace VDS.RDF.Storage
             var describe = "DESCRIBE <http://example.org/Vehicles/FordFiesta>";
 
             var results = agraph.Query(describe);
-            Assert.IsAssignableFrom<IGraph>(results);
+            Assert.IsType<IGraph>(results, exactMatch: false);
         }
 
         [Fact]

@@ -93,7 +93,7 @@ namespace VDS.RDF.Query
             g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
             object results = g.ExecuteQuery(query);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
         }
 
         [Fact]

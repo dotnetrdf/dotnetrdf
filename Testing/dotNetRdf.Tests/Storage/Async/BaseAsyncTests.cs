@@ -678,7 +678,7 @@ namespace VDS.RDF.Storage.Async
                 var results = await ((IAsyncQueryableStorage)provider).QueryAsync(
                     "SELECT * WHERE { GRAPh <" + QueryGraphUri + "> { ?s a ?type } }", CancellationToken.None);
                 Assert.NotNull(results);
-                SparqlResultSet resultSet = Assert.IsAssignableFrom<SparqlResultSet>(results);
+                SparqlResultSet resultSet = Assert.IsType<SparqlResultSet>(results, exactMatch: false);
                 foreach (SparqlResult r in resultSet)
                 {
                     Assert.True(g.GetTriplesWithSubjectObject(r["s"], r["type"]).Any(),

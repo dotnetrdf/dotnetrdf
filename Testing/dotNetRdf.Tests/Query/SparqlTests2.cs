@@ -66,7 +66,7 @@ namespace VDS.RDF.Query
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query
             var processor = new LeviathanQueryProcessor(AsDataset(store),
                 options => options.AlgebraOptimisers = optimisers);
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -133,7 +133,7 @@ namespace VDS.RDF.Query
             var processor = new LeviathanQueryProcessor(AsDataset(store),
                 options => options.AlgebraOptimisers = optimisers);
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -169,7 +169,7 @@ namespace VDS.RDF.Query
             var processor =
                 new LeviathanQueryProcessor(AsDataset(store), options => options.AlgebraOptimisers = optimisers);
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -344,10 +344,10 @@ WHERE
 
             ISparqlAlgebra algebra = q.ToAlgebra();
             _output.WriteLine(algebra.ToString());
-            Assert.IsAssignableFrom<Select>(algebra);
+            Assert.IsType<Select>(algebra, exactMatch: false);
 
             algebra = ((IUnaryOperator)algebra).InnerAlgebra;
-            Assert.IsAssignableFrom<Extend>(algebra);
+            Assert.IsType<Extend>(algebra, exactMatch: false);
         }
 
         [Fact]
@@ -375,17 +375,17 @@ WHERE
 
             ISparqlAlgebra algebra = q.ToAlgebra();
             _output.WriteLine(algebra.ToString());
-            Assert.IsAssignableFrom<Select>(algebra);
+            Assert.IsType<Select>(algebra, exactMatch: false);
 
             algebra = ((IUnaryOperator)algebra).InnerAlgebra;
-            Assert.IsAssignableFrom<Union>(algebra);
+            Assert.IsType<Union>(algebra, exactMatch: false);
 
             IUnion union = (Union)algebra;
             ISparqlAlgebra lhs = union.Lhs;
-            Assert.IsAssignableFrom<Extend>(lhs);
+            Assert.IsType<Extend>(lhs, exactMatch: false);
 
             ISparqlAlgebra rhs = union.Rhs;
-            Assert.IsAssignableFrom<Join>(rhs);
+            Assert.IsType<Join>(rhs, exactMatch: false);
         }
 
         [Fact]
@@ -403,7 +403,7 @@ WHERE
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -613,7 +613,7 @@ WHERE
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -641,7 +641,7 @@ WHERE
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -669,7 +669,7 @@ WHERE
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -697,7 +697,7 @@ WHERE
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -725,7 +725,7 @@ WHERE
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -753,7 +753,7 @@ WHERE
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -782,7 +782,7 @@ WHERE
 
             ISparqlQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -819,7 +819,7 @@ WHERE
             timer.Stop();
             _output.WriteLine("Took " + timer.Elapsed + " to execute when Optimised");
             timer.Reset();
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset1)
             {
                 foreach (SparqlResult r in rset1)
@@ -835,7 +835,7 @@ WHERE
             results = processor.ProcessQuery(q);
             timer.Stop();
             _output.WriteLine("Took " + timer.Elapsed + " to execute when Unoptimised");
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -863,7 +863,7 @@ WHERE
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -896,7 +896,7 @@ WHERE
             var processor = new LeviathanQueryProcessor(AsDataset(store),
                 options => options.AlgebraOptimisers = optimisers);
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -933,7 +933,7 @@ WHERE
             var processor =
                 new LeviathanQueryProcessor(AsDataset(store), options => options.AlgebraOptimisers = optimisers);
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -972,7 +972,7 @@ WHERE
                     options.AlgebraOptimisers = optimisers;
                 });
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -1006,7 +1006,7 @@ WHERE
             var processor =
                 new LeviathanQueryProcessor(AsDataset(store), options => options.AlgebraOptimisers = optimisers);
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -1042,7 +1042,7 @@ WHERE
             var processor =
                 new LeviathanQueryProcessor(AsDataset(store), options => options.AlgebraOptimisers = optimisers);
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -1081,7 +1081,7 @@ WHERE
             var processor =
                 new LeviathanQueryProcessor(AsDataset(store), options => options.AlgebraOptimisers = optimisers);
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 foreach (SparqlResult r in rset)
@@ -1092,7 +1092,7 @@ WHERE
                 Assert.True(rset.Count == 3, "Expected exactly 3 results");
 
                 var results2 = processor.ProcessQuery(q2);
-                Assert.IsAssignableFrom<SparqlResultSet>(results2);
+                Assert.IsType<SparqlResultSet>(results2, exactMatch: false);
                 if (results2 is SparqlResultSet rset2)
                 {
                     foreach (SparqlResult r in rset2)

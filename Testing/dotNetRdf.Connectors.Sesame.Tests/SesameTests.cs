@@ -233,7 +233,7 @@ namespace VDS.RDF.Storage
             var ask = "ASK WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
 
             var results = sesame.Query(ask);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet)
             {
                 Assert.True(((SparqlResultSet) results).Result);
@@ -244,7 +244,7 @@ namespace VDS.RDF.Storage
 
             // Re-issue ASK to check deletion
             results = sesame.Query(ask);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet)
             {
                 Assert.False(((SparqlResultSet) results).Result);
@@ -316,7 +316,7 @@ namespace VDS.RDF.Storage
             var ask = "ASK WHERE { GRAPH <http://example.org/sesame/cyrillic> { ?s ?p 'литерал' } }";
 
             var results = sesame.Query(ask);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet)
             {
                 Assert.True(((SparqlResultSet) results).Result);
@@ -337,7 +337,7 @@ namespace VDS.RDF.Storage
             var ask = "ASK WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
 
             var results = sesame.Query(ask);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet)
             {
                 Assert.True(((SparqlResultSet) results).Result);
@@ -352,7 +352,7 @@ namespace VDS.RDF.Storage
             var ask = "ASK WHERE { ?s ?p ?o }";
 
             var results = sesame.Query(ask);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
         }
 
         [Fact]
@@ -363,7 +363,7 @@ namespace VDS.RDF.Storage
             var describe = "DESCRIBE <http://example.org/vehicles/FordFiesta>";
 
             var results = sesame.Query(describe);
-            Assert.IsAssignableFrom<IGraph>(results);
+            Assert.IsType<IGraph>(results, exactMatch: false);
         }
 
         [Fact]
@@ -428,7 +428,7 @@ DELETE WHERE
 
             // Issue query to validate data was added
             var results = sesame.Query(ask);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet)
             {
                 Assert.True(((SparqlResultSet) results).Result);
@@ -440,7 +440,7 @@ DELETE WHERE
 
             // Re-issue query to validate triple was deleted
             results = sesame.Query(ask);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet)
             {
                 Assert.False(((SparqlResultSet) results).Result);
@@ -466,7 +466,7 @@ DELETE WHERE
 
             // Issue query to validate data was added
             var results = sesame.Query(ask);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet)
             {
                 Assert.True(((SparqlResultSet) results).Result);
