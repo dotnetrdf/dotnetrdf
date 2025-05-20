@@ -12,7 +12,7 @@ namespace VDS.RDF.Storage
 
         public StardogStoreFixture()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog), "Test Config marks Stardog as unavailable, test cannot be run");
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog), "Test Config marks Stardog as unavailable, test cannot be run");
             var connector = new StardogConnector(TestConfigManager.GetSetting(TestConfigManager.StardogServer),
                 TestConfigManager.GetSetting(TestConfigManager.StardogDatabase),
                 TestConfigManager.GetSetting(TestConfigManager.StardogUser),
@@ -28,7 +28,7 @@ namespace VDS.RDF.Storage
 
         public StardogServer GetServer()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog), "Test Config marks Stardog as unavailable, test cannot be run");
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog), "Test Config marks Stardog as unavailable, test cannot be run");
             return new StardogServer(TestConfigManager.GetSetting(TestConfigManager.StardogServer),
                 TestConfigManager.GetSetting(TestConfigManager.StardogUser),
                 TestConfigManager.GetSetting(TestConfigManager.StardogPassword));

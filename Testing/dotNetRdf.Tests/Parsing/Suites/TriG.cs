@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing.Suites
             _testOutputHelper.WriteLine((((double)Passed / (double)Count) * 100) + "% Passed");
 
             if (Failed > 0) Assert.True(false, Failed + " Tests failed");
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Xunit;
+using Xunit.Sdk;
 
 namespace VDS.RDF.JsonLd
 {
@@ -59,7 +60,7 @@ namespace VDS.RDF.JsonLd
             string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri, string processorMode,
             string expandContextPath, bool compactArrays, string rdfDirection)
         {
-            if (_skippedParserTests.ContainsKey(testId)) throw new SkipException(_skippedParserTests[testId]);
+            if (_skippedParserTests.ContainsKey(testId)) throw SkipException.ForSkip(_skippedParserTests[testId]);
             base.JsonLdParserTests(testId, testType, inputPath, contextPath, expectedOutputPath,
                 expectedErrorCode, baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
         }
@@ -74,7 +75,7 @@ namespace VDS.RDF.JsonLd
         public override void JsonLdWriterTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
             string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool useNativeTypes, bool useRdfType, bool ordered, string rdfDirection)
         {
-            if (_skippedWriterTests.ContainsKey(testId)) throw new SkipException(_skippedWriterTests[testId]);
+            if (_skippedWriterTests.ContainsKey(testId)) throw SkipException.ForSkip(_skippedWriterTests[testId]);
             base.JsonLdWriterTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectErrorCode, useNativeTypes, useRdfType, ordered, rdfDirection);
         }
 

@@ -59,7 +59,7 @@ namespace VDS.RDF.Parsing.Suites
             {
                 Assert.True(false, Failed + " Tests failed: " + string.Join(", ", FailedTests));
             }
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate: " + string.Join(", ", IndeterminateTests));
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate: " + string.Join(", ", IndeterminateTests));
         }
 
         [Fact]

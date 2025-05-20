@@ -27,7 +27,7 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
 
     protected async void PerformTest(ManifestTestData t)
     {
-        Skip.If(SkipTests.TryGetValue(t.Id, out var reason), reason);
+        Assert.SkipWhen(SkipTests.TryGetValue(t.Id, out var reason), reason);
         output.WriteLine($"{t.Id}: {t.Name} is a {t.Type}");
         await InvokeTestRunnerAsync(t);
     }

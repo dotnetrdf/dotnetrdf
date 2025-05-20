@@ -556,7 +556,7 @@ namespace VDS.RDF.Storage.Async
             IAsyncStorageProvider provider = GetAsyncProvider();
             if (!provider.DeleteSupported)
             {
-                throw new SkipException("[" + provider.GetType().Name +
+                throw SkipException.ForSkip("[" + provider.GetType().Name +
                                         "] IO Behaviour required for this test is not supported, skipping test for this provider");
             }
 
@@ -582,7 +582,7 @@ namespace VDS.RDF.Storage.Async
             IAsyncStorageProvider provider = GetAsyncProvider();
             if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0)
             {
-                throw new SkipException("[" + provider.GetType().Name +
+                throw SkipException.ForSkip("[" + provider.GetType().Name +
                                         "] IO Behaviour required for this test is not supported, skipping test for this provider");
             }
 
@@ -612,7 +612,7 @@ namespace VDS.RDF.Storage.Async
             IAsyncStorageProvider provider = GetAsyncProvider();
             if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0)
             {
-                throw new SkipException(
+                throw SkipException.ForSkip(
                     $"[{provider.GetType().Name}] IO Behaviour required for this test is not supported, skipping test for this provider");
             }
 
@@ -645,7 +645,7 @@ namespace VDS.RDF.Storage.Async
             IAsyncStorageProvider provider = GetAsyncProvider();
             if (!provider.ListGraphsSupported)
             {
-                throw new SkipException("[" + provider.GetType().Name +
+                throw SkipException.ForSkip("[" + provider.GetType().Name +
                                         "] IO Behaviour required for this test is not supported, skipping test for this provider");
             }
 
@@ -667,7 +667,7 @@ namespace VDS.RDF.Storage.Async
             IAsyncStorageProvider provider = GetAsyncProvider();
             if (!(provider is IAsyncQueryableStorage))
             {
-                throw new SkipException("[" + provider.GetType().Name +
+                throw SkipException.ForSkip("[" + provider.GetType().Name +
                                         "] IO Behaviour required for this test is not supported, skipping test for this provider");
             }
 

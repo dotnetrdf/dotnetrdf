@@ -139,7 +139,7 @@ namespace VDS.RDF
 
         private static void Fail()
         {
-            Skip.IfNot(true, "UnitTestConfig.properties cannot be found, to configure your test environment please make a copy of UnitTestConfig.template under the resources directory, add it to this project as a Content item and then edit it to match your test environment");
+            Assert.SkipUnless(true, "UnitTestConfig.properties cannot be found, to configure your test environment please make a copy of UnitTestConfig.template under the resources directory, add it to this project as a Content item and then edit it to match your test environment");
         }
 
         /// <summary>
