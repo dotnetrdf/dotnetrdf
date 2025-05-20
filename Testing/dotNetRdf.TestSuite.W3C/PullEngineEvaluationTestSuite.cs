@@ -18,26 +18,26 @@ public class PullEngineEvaluationTestSuite : BaseAsyncSparqlEvaluationTestSuite
 
     [Theory]
     [MemberData(nameof(Sparql11QueryEvalTests))]
-    public void RunSparql11TestSuite(ManifestTestData t)
+    public async Task RunSparql11TestSuite(ManifestTestData t)
     {
-        base.PerformTest(t);
+        await base.PerformTest(t);
     }
 
     [Theory]
     [MemberData(nameof(Sparql10QueryEvalTests))]
-    public void RunSparql10TestSuite(ManifestTestData t)
+    public async Task RunSparql10TestSuite(ManifestTestData t)
     {
-        base.PerformTest(t);
+        await base.PerformTest(t);
     }
 
     [Fact]
-    public void RunSingleQueryEvaluation()
+    public async Task RunSingleQueryEvaluation()
     {
         const string testUrl = "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#offset-4";
 
         ManifestTestDataProvider provider = testUrl.Contains("data-r2") ? Sparql10QueryEvalTests : Sparql11QueryEvalTests;
         ManifestTestData t = provider.GetTestData(testUrl);
-        base.PerformTest(t);
+        await base.PerformTest(t);
     }
     
     protected override async Task<object> ProcessQueryAsync(TripleStore tripleStore, SparqlQuery query)
