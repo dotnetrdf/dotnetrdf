@@ -131,7 +131,7 @@ namespace VDS.RDF.Writing
                 {
                     _output.WriteLine("Failed as expected - " + ex.Message);
                 }
-                if (failed) Assert.True(false, writer.GetType().Name + " produced output when failure was expected");
+                if (failed) Assert.Fail(writer.GetType().Name + " produced output when failure was expected");
                 _output.WriteLine(string.Empty);
             }
         }

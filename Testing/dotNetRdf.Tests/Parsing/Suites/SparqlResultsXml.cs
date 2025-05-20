@@ -51,12 +51,12 @@ namespace VDS.RDF.Parsing.Suites
             RunDirectory(f => Path.GetExtension(f).Equals(".srx") && !f.Contains("bad"), true);
             RunDirectory(f => Path.GetExtension(f).Equals(".srx") && f.Contains("bad"), false);
 
-            if (Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.Fail("No tests found");
 
             _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
             _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
-            if (Failed > 0) Assert.True(false, Failed + " Tests failed");
+            if (Failed > 0) Assert.Fail(Failed + " Tests failed");
             Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
         }
 

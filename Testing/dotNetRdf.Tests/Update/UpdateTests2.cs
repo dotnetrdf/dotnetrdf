@@ -69,7 +69,7 @@ namespace VDS.RDF.Update
             try
             {
                 store.ExecuteUpdate(create1);
-                Assert.True(false, "Executing a CREATE command twice without the SILENT modifier should error");
+                Assert.Fail("Executing a CREATE command twice without the SILENT modifier should error");
             }
             catch (SparqlUpdateException)
             {
@@ -85,7 +85,7 @@ namespace VDS.RDF.Update
             }
             catch (SparqlUpdateException)
             {
-                Assert.True(false, "Executing a CREATE for an existing Graph with the SILENT modifier should not error");
+                Assert.Fail("Executing a CREATE for an existing Graph with the SILENT modifier should not error");
             }
 
             var drop1 = new DropCommand(g1);
@@ -95,7 +95,7 @@ namespace VDS.RDF.Update
             try
             {
                 store.ExecuteUpdate(drop1);
-                Assert.True(false, "Trying to DROP a non-existent Graph should error");
+                Assert.Fail("Trying to DROP a non-existent Graph should error");
             }
             catch (SparqlUpdateException)
             {
@@ -110,7 +110,7 @@ namespace VDS.RDF.Update
             }
             catch (SparqlUpdateException)
             {
-                Assert.True(false, "Trying to DROP a non-existent Graph with the SILENT modifier should suppress the error");
+                Assert.Fail("Trying to DROP a non-existent Graph with the SILENT modifier should suppress the error");
             }
         }
 

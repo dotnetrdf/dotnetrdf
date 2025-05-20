@@ -57,7 +57,7 @@ namespace VDS.RDF.Parsing.Suites
 
             if (Count == 0)
             {
-                Assert.True(false, "No tests found");
+                Assert.Fail("No tests found");
             }
 
             _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
@@ -65,7 +65,7 @@ namespace VDS.RDF.Parsing.Suites
 
             if (Failed > 0)
             {
-                Assert.True(false, Failed + " Tests failed: \n\t" + string.Join("\n\t", FailedTests));
+                Assert.Fail(Failed + " Tests failed: \n\t" + string.Join("\n\t", FailedTests));
             }
 
             Assert.SkipWhen(Indeterminate> 0,$"{Indeterminate} Tests are indeterminate: " + string.Join(", ", IndeterminateTests));
@@ -107,12 +107,12 @@ namespace VDS.RDF.Parsing.Suites
             //Run manifests
             RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error") && !SkipTests.Any(f.EndsWith), true);
             RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error") && !SkipTests.Any(f.EndsWith), false);
-            if (Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.Fail("No tests found");
 
             _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
             _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
-            if (Failed > 0) Assert.True(false, Failed + " Tests failed: " + string.Join(", ", FailedTests));
+            if (Failed > 0) Assert.Fail(Failed + " Tests failed: " + string.Join(", ", FailedTests));
             Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate" + string.Join(", ", PassedTests));
         }
 

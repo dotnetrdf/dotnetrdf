@@ -76,7 +76,7 @@ namespace VDS.RDF.Parsing
 
                         if (!parseExpected[i])
                         {
-                            Assert.True(false, "Expected Parsing to Fail but succeeded");
+                            Assert.Fail("Expected Parsing to Fail but succeeded");
                         }
                     }
                     catch (RdfParseException parseEx)

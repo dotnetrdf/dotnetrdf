@@ -98,8 +98,8 @@ namespace VDS.RDF.Query
             var bindingsResults = processor.ProcessQuery(bindingsQuery) as SparqlResultSet;
             var noBindingsResults = processor.ProcessQuery(noBindingsQuery) as SparqlResultSet;
 
-            if (bindingsResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Bindings Query");
-            if (noBindingsResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Non-Bindings Query");
+            if (bindingsResults == null) Assert.Fail("Did not get a SPARQL Result Set for the Bindings Query");
+            if (noBindingsResults == null) Assert.Fail("Did not get a SPARQL Result Set for the Non-Bindings Query");
 
             Console.WriteLine("Bindings Results");
             TestTools.ShowResults(bindingsResults);
@@ -118,7 +118,7 @@ namespace VDS.RDF.Query
 
             var bindingsResults = processor.ProcessQuery(bindingsQuery) as SparqlResultSet;
 
-            if (bindingsResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Bindings Query");
+            if (bindingsResults == null) Assert.Fail("Did not get a SPARQL Result Set for the Bindings Query");
 
             Console.WriteLine("Bindings Results");
             TestTools.ShowResults(bindingsResults);

@@ -76,7 +76,7 @@ namespace VDS.RDF.Writing
             }
             else
             {
-                Assert.True(false, "Query did not return a Result Set as expected");
+                Assert.Fail("Query did not return a Result Set as expected");
             }
         }
 
@@ -119,7 +119,7 @@ namespace VDS.RDF.Writing
             }
             else
             {
-                Assert.True(false, "Query did not return a Result Set as expected");
+                Assert.Fail("Query did not return a Result Set as expected");
             }
         }
 

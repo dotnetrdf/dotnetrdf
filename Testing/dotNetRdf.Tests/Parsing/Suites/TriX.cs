@@ -45,7 +45,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             RunManifests();
 
-            if (Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.Fail("No tests found");
 
             _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
             _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
@@ -53,7 +53,7 @@ namespace VDS.RDF.Parsing.Suites
             if (Failed > 0)
             {
                 foreach(var failure in FailedTests) { _testOutputHelper.WriteLine(failure.ToString());}
-                Assert.True(false, Failed + " Tests failed");
+                Assert.Fail(Failed + " Tests failed");
             }
             Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
         }

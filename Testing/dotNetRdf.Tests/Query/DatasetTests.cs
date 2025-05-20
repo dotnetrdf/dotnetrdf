@@ -86,7 +86,7 @@ namespace VDS.RDF.Query
                         Dump(expectedCount, count, expected, found);
                         dumped = true;
                     }
-                    Assert.True(false, "Did not find expected result " + e);
+                    Assert.Fail("Did not find expected result " + e);
                 }
             }
         }

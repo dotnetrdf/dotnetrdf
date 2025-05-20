@@ -85,7 +85,7 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
+                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
@@ -109,7 +109,7 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.True(false, "Did not throw a SparqlUpdateException as expected");
+                Assert.Fail("Did not throw a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
@@ -122,7 +122,7 @@ namespace VDS.RDF.Update
             try
             {
                 processor.Flush();
-                Assert.True(false, "Did not throw a SparqlUpdateException as expected on call to Flush()");
+                Assert.Fail("Did not throw a SparqlUpdateException as expected on call to Flush()");
             }
             catch (SparqlUpdateException upEx)
             {
@@ -163,7 +163,7 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
+                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
@@ -199,7 +199,7 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
+                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
@@ -249,7 +249,7 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.True(false, "Expected SPARQL Update Exception was not thrown");
+                Assert.Fail("Expected SPARQL Update Exception was not thrown");
             }
             catch (SparqlUpdateException upEx)
             {
@@ -299,7 +299,7 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
+                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
@@ -322,7 +322,7 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
+                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
@@ -344,7 +344,7 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
+                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
@@ -381,7 +381,7 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
+                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
@@ -422,7 +422,7 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
+                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {

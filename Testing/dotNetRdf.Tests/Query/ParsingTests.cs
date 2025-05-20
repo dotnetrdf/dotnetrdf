@@ -448,7 +448,7 @@ SELECT * WHERE
             try
             {
                 _parser.ParseFromString(query);
-                Assert.True(false, "Did not error as expected");
+                Assert.Fail("Did not error as expected");
             }
             catch (RdfParseException parseEx)
             {
@@ -473,7 +473,7 @@ SELECT * WHERE
             try
             {
                 _parser.ParseFromString(query);
-                Assert.True(false, "Did not error as expected");
+                Assert.Fail("Did not error as expected");
             }
             catch (RdfParseException parseEx)
             {
@@ -498,7 +498,7 @@ SELECT * WHERE
             try
             {
                 _parser.ParseFromString(query);
-                Assert.True(false, "Did not error as expected");
+                Assert.Fail("Did not error as expected");
             }
             catch (RdfParseException parseEx)
             {
@@ -523,7 +523,7 @@ SELECT * WHERE
             try
             {
                 _parser.ParseFromString(query);
-                Assert.True(false, "Did not error as expected");
+                Assert.Fail("Did not error as expected");
             }
             catch (RdfParseException parseEx)
             {

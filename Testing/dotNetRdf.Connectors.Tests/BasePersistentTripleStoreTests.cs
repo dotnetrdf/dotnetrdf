@@ -588,7 +588,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var results = store.ExecuteQuery(query) as SparqlResultSet;
-                if (results == null) Assert.True(false, "Did not get a SPARQL Result Set as expected");
+                if (results == null) Assert.Fail("Did not get a SPARQL Result Set as expected");
 
                 //TestTools.ShowResults(results);
             }
@@ -606,7 +606,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var results = store.ExecuteQuery(query) as SparqlResultSet;
-                if (results == null) Assert.True(false, "Did not get a SPARQL Result Set as expected");
+                if (results == null) Assert.Fail("Did not get a SPARQL Result Set as expected");
 
                 //TestTools.ShowResults(results);
 
@@ -627,7 +627,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var g = store.ExecuteQuery(query) as IGraph;
-                if (g == null) Assert.True(false, "Did not get a Graph as expected");
+                if (g == null) Assert.Fail("Did not get a Graph as expected");
 
                 //TestTools.ShowResults(g);
             }
@@ -645,7 +645,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var g = store.ExecuteQuery(query) as IGraph;
-                if (g == null) Assert.True(false, "Did not get a Graph as expected");
+                if (g == null) Assert.Fail("Did not get a Graph as expected");
 
                 //TestTools.ShowResults(g);
             }

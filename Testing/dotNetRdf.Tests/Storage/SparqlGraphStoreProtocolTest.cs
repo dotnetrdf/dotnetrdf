@@ -251,7 +251,7 @@ namespace VDS.RDF.Storage
                     SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
                     sparql.UpdateGraph("http://example.org/sparqlTest", null, g.Triples);
 
-                    Assert.True(false, "SPARQL Uniform HTTP Protocol does not support removing Triples");
+                    Assert.Fail("SPARQL Uniform HTTP Protocol does not support removing Triples");
                 }
                 catch (RdfStorageException storeEx)
                 {
@@ -294,7 +294,7 @@ namespace VDS.RDF.Storage
                 //Should get a 201 Created response
                 if (response.StatusCode == HttpStatusCode.Created)
                 {
-                    if (response.Headers["Location"] == null) Assert.True(false, "A Location: Header containing the URI of the newly created Graph should have been returned");
+                    if (response.Headers["Location"] == null) Assert.Fail("A Location: Header containing the URI of the newly created Graph should have been returned");
                     var graphUri = new Uri(response.Headers["Location"]);
 
                     Console.WriteLine("New Graph URI is " + graphUri.ToString());
@@ -309,7 +309,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    Assert.True(false, "A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
+                    Assert.Fail("A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
                 }
                 response.Close();
             }
@@ -342,7 +342,7 @@ namespace VDS.RDF.Storage
                     //Should get a 201 Created response
                     if (response.StatusCode == HttpStatusCode.Created)
                     {
-                        if (response.Headers["Location"] == null) Assert.True(false, "A Location: Header containing the URI of the newly created Graph should have been returned");
+                        if (response.Headers["Location"] == null) Assert.Fail("A Location: Header containing the URI of the newly created Graph should have been returned");
                         var graphUri = new Uri(response.Headers["Location"]);
                         uris.Add(graphUri);
 
@@ -357,7 +357,7 @@ namespace VDS.RDF.Storage
                     }
                     else
                     {
-                        Assert.True(false, "A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
+                        Assert.Fail("A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
                     }
                     response.Close();
                 }

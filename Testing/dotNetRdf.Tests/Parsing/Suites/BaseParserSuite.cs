@@ -113,7 +113,7 @@ namespace VDS.RDF.Parsing.Suites
                         return Path.Combine(_baseDir, lastSegment);
                     }
                 default:
-                    Assert.True(false, "Malformed manifest file, input file must be a  URI");
+                    Assert.Fail("Malformed manifest file, input file must be a  URI");
                     break;
             }
             //Keep compiler happy
@@ -175,7 +175,7 @@ namespace VDS.RDF.Parsing.Suites
             catch (Exception ex)
             {
                 TestTools.ReportError("Bad Manifest", ex);
-                Assert.True(false, "Failed to load Manifest " + file);
+                Assert.Fail("Failed to load Manifest " + file);
             }
 
             const string findTests = @"prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
@@ -230,7 +230,7 @@ WHERE
             catch (Exception ex)
             {
                 TestTools.ReportError("Bad Manifest", ex);
-                Assert.True(false, "Failed to load Manifest " + file);
+                Assert.Fail("Failed to load Manifest " + file);
             }
             manifest.NamespaceMap.AddNamespace("rdf", UriFactory.Root.Create("http://www.w3.org/ns/rdftest#"));
 

@@ -49,7 +49,7 @@ namespace VDS.RDF.Parsing.Handlers
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
                 var results = g.ExecuteQuery("SELECT * WHERE { ?s ?p ?o }") as SparqlResultSet;
-                if (results == null) Assert.True(false, "Failed to generate sample SPARQL Results");
+                if (results == null) Assert.Fail("Failed to generate sample SPARQL Results");
 
                 writer.Save(results, file);
             }

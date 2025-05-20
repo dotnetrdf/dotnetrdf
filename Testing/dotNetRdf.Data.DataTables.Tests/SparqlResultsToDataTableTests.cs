@@ -78,7 +78,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.True(false, "Query should have returned a Result Set");
+                Assert.Fail("Query should have returned a Result Set");
             }
         }
 
@@ -124,7 +124,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.True(false, "Query should have returned a Result Set");
+                Assert.Fail("Query should have returned a Result Set");
             }
         }
 
@@ -147,7 +147,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.True(false, "Query should have returned a Result Set");
+                Assert.Fail("Query should have returned a Result Set");
             }
         }
 
@@ -170,7 +170,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.True(false, "Query should have returned a Result Set");
+                Assert.Fail("Query should have returned a Result Set");
             }
         }
 
@@ -195,7 +195,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.True(false, "Query should have returned a Result Set");
+                Assert.Fail("Query should have returned a Result Set");
             }
         }
 
@@ -221,7 +221,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.True(false, "Query should have returned a Result Set");
+                Assert.Fail("Query should have returned a Result Set");
             }
         }
 

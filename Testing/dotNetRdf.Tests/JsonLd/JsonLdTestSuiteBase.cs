@@ -85,7 +85,7 @@ namespace VDS.RDF.JsonLd
                     Assert.Equal(expectedErrorCode, exception.ErrorCode);
                     break;
                 default:
-                    Assert.True(false, $"Test type {testType} has not been implemented for Compact tests");
+                    Assert.Fail($"Test type {testType} has not been implemented for Compact tests");
                     break;
             }
         }
@@ -117,7 +117,7 @@ namespace VDS.RDF.JsonLd
                     Assert.Equal(expectedErrorCode, exception.ErrorCode);
                     break;
                 default:
-                    Assert.True(false, $"Test type {testType} has not been implemented for Flatten tests");
+                    Assert.Fail($"Test type {testType} has not been implemented for Flatten tests");
                     break;
             }
         }
@@ -159,7 +159,7 @@ namespace VDS.RDF.JsonLd
                     break;
 
                 default:
-                    Assert.True(false, $"Test type {testType} is not currently supported for the JSON-LD Parser tests");
+                    Assert.Fail($"Test type {testType} is not currently supported for the JSON-LD Parser tests");
                     break;
             }
         }
@@ -206,8 +206,7 @@ namespace VDS.RDF.JsonLd
                     }
                     catch (DeepEqualityFailure ex)
                     {
-                        Assert.True(false,
-                            $"Test failed for input {Path.GetFileName(inputPath)}\nExpected:\n{expectedOutput}\nActual:\n{actualOutput}\nMatch Failured: {ex}");
+                        Assert.Fail($"Test failed for input {Path.GetFileName(inputPath)}\nExpected:\n{expectedOutput}\nActual:\n{actualOutput}\nMatch Failured: {ex}");
                     }
 
                     break;

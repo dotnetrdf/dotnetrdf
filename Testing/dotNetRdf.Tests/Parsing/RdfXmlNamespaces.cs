@@ -38,7 +38,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 g.LoadFromFile(Path.Combine("resources", "rdfxml-namespaces.rdf"));
-                Assert.True(false, "Parsing should fail as namespaces are not properly defined in the RDF/XML");
+                Assert.Fail("Parsing should fail as namespaces are not properly defined in the RDF/XML");
             }
             catch (RdfParseException parseEx)
             {

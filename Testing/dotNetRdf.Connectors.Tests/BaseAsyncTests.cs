@@ -57,7 +57,7 @@ namespace VDS.RDF.Storage
 
         protected void Fail(IAsyncStorageProvider provider, string msg)
         {
-            Assert.True(false, "[" + provider.GetType().Name + "] " + msg);
+            Assert.Fail("[" + provider.GetType().Name + "] " + msg);
         }
 
         protected void Fail(IAsyncStorageProvider provider, string msg, Exception e)

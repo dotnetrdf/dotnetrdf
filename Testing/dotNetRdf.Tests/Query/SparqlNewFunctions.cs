@@ -81,7 +81,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Expected a non-null result");
+                Assert.Fail("Expected a non-null result");
             }
         }
 

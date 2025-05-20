@@ -86,7 +86,7 @@ namespace VDS.RDF.Query
             try
             {
                 SparqlQuery q = _parser11.ParseFromString(query);
-                Assert.True(false, "Query Parsed under SPARQL 1.1 when it should have failed to parse");
+                Assert.Fail("Query Parsed under SPARQL 1.1 when it should have failed to parse");
             }
             catch (Exception)
             {
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query
             try
             {
                 SparqlQuery q = _parserExt.ParseFromString(query);
-                Assert.True(false, "Query Parsed under SPARQL 1.1 with Extensions when it should have failed to parse");
+                Assert.Fail("Query Parsed under SPARQL 1.1 with Extensions when it should have failed to parse");
             }
             catch (Exception)
             {

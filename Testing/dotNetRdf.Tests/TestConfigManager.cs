@@ -156,7 +156,7 @@ namespace VDS.RDF
                 var value = _settings[key];
                 if (String.IsNullOrEmpty(value))
                 {
-                    Assert.True(false,
+                    Assert.Fail(
                         "Configuration setting '" + key + "' in your UnitTestConfig.properties file is empty/null");
                     return null;
                 }
@@ -167,7 +167,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.True(false,
+                Assert.Fail(
                     "Required configuration setting '" + key +
                     "' not found in your UnitTestConfig.properties file");
                 return null;
@@ -191,7 +191,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.True(false,
+                Assert.Fail(
                     "Configuration setting '" + key +
                     "' in your UnitTestConfig.properties file is not a valid integer");
                 return 0;
@@ -215,7 +215,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.True(false,
+                Assert.Fail(
                     "Configuration setting '" + key +
                     "' in your UnitTestConfig.properties file is not a valid boolean");
                 return false;

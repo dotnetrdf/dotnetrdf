@@ -70,7 +70,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Didn't get a Result Set as expected");
+                Assert.Fail("Didn't get a Result Set as expected");
             }
         }
 
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Didn't get a Result Set as expected");
+                Assert.Fail("Didn't get a Result Set as expected");
             }
         }
 
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Didn't get a Result Set as expected");
+                Assert.Fail("Didn't get a Result Set as expected");
             }
         }
 
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Didn't get a Result Set as expected");
+                Assert.Fail("Didn't get a Result Set as expected");
             }
         }
 
@@ -152,7 +152,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Didn't get a Result Set as expected");
+                Assert.Fail("Didn't get a Result Set as expected");
             }
         }
 
@@ -177,7 +177,7 @@ WHERE {
             var processor = new LeviathanQueryProcessor(new TripleStore());
 
             var results = processor.ProcessQuery(q) as SparqlResultSet;
-            if (results == null) Assert.True(false, "Null results");
+            if (results == null) Assert.Fail("Null results");
 
             Assert.False(results.IsEmpty, "Results should not be empty");
             Assert.Equal(1, results.Count);

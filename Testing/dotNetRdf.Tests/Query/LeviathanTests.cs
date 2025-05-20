@@ -466,7 +466,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             }
             else
             {
-                Assert.True(false, "Query should have returned a SPARQL Result Set");
+                Assert.Fail("Query should have returned a SPARQL Result Set");
             }
         }
 

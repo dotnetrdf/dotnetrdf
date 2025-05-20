@@ -50,14 +50,14 @@ namespace VDS.RDF.Parsing.Suites
             RunManifest(Path.Combine("resources", "turtle", "manifest.ttl"), true);
             RunManifest(Path.Combine("resources", "turtle", "manifest-bad.ttl"), false);
 
-            if (Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.Fail("No tests found");
 
             _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
             _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
             if (Failed > 0)
             {
-                Assert.True(false, Failed + " Tests failed: " + string.Join(", ", FailedTests));
+                Assert.Fail(Failed + " Tests failed: " + string.Join(", ", FailedTests));
             }
             Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate: " + string.Join(", ", IndeterminateTests));
         }

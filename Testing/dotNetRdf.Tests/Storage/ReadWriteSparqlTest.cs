@@ -284,7 +284,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                Assert.True(false, "Did not get a SPARQL Result Set as expected");
+                Assert.Fail("Did not get a SPARQL Result Set as expected");
             }
         }
 
@@ -332,7 +332,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                Assert.True(false, "Did not return a Graph as expected");
+                Assert.Fail("Did not return a Graph as expected");
             }
         }
 

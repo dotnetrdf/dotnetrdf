@@ -235,7 +235,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Query did not produce a Graph as expected");
+                Assert.Fail("Query did not produce a Graph as expected");
             }
             return null;
         }
@@ -258,7 +258,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Query did not produce a Result Set as expected");
+                Assert.Fail("Query did not produce a Result Set as expected");
             }
             return null;
         }
