@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Xunit;
 
@@ -469,6 +470,7 @@ namespace VDS.RDF.Dynamic
         }
 
         [Fact]
+        [SuppressMessage("Assertions", "xUnit2017:Do not use Contains() to check if a value exists in a collection", Justification = "We are testing a specific `contains` method")]
         public void Contains_handles_pairs()
         {
             var g = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
@@ -479,7 +481,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
 
-            Assert.Contains(new KeyValuePair<INode, object>(s, new { p = o }), g);
+            Assert.True(g.Contains(new KeyValuePair<INode, object>(s, new { p = o })));
         }
 
         [Fact]
