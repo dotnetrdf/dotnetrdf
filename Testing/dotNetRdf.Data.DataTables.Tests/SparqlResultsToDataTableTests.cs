@@ -188,7 +188,7 @@ namespace VDS.RDF
             if (results is SparqlResultSet resultSet)
             {
                 var table = resultSet.ToDataTable();
-                Assert.True(resultSet.ResultsType == SparqlResultsType.Boolean);
+                Assert.Equal(SparqlResultsType.Boolean, resultSet.ResultsType);
                 Assert.Single(table.Columns);
                 Assert.Single(table.Rows);
                 Assert.True((bool)table.Rows[0]["ASK"], "Should be true");
@@ -214,7 +214,7 @@ namespace VDS.RDF
             {
                 var table = resultSet.ToDataTable();
 
-                Assert.True(resultSet.ResultsType == SparqlResultsType.Boolean);
+                Assert.Equal(SparqlResultsType.Boolean, resultSet.ResultsType);
                 Assert.Single(table.Columns);
                 Assert.Single(table.Rows);
                 Assert.False((bool)table.Rows[0]["ASK"], "Should be false");
@@ -232,7 +232,7 @@ namespace VDS.RDF
 
             var table = resultSet.ToDataTable();
 
-            Assert.True(resultSet.ResultsType == SparqlResultsType.Boolean);
+            Assert.Equal(SparqlResultsType.Boolean, resultSet.ResultsType);
             Assert.Single(table.Columns);
             Assert.Single(table.Rows);
             Assert.True((bool)table.Rows[0]["ASK"], "Should be true");
@@ -245,7 +245,7 @@ namespace VDS.RDF
 
             var table = resultSet.ToDataTable();
 
-            Assert.True(resultSet.ResultsType == SparqlResultsType.Boolean);
+            Assert.Equal(SparqlResultsType.Boolean, resultSet.ResultsType);
             Assert.Single(table.Columns);
             Assert.Single(table.Rows);
             Assert.False((bool)table.Rows[0]["ASK"], "Should be false");
