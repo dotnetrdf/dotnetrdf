@@ -74,7 +74,7 @@ namespace VDS.RDF.Storage
             var h = new Graph();
             readWrite.LoadGraph(h, "http://example.org/readWriteTest");
 
-            _testOutputHelper.WriteLine(string.Empty);
+            _testOutputHelper.WriteLine();
             foreach (Triple t in h.Triples)
             {
                 _testOutputHelper.WriteLine(t.ToString(_formatter));
@@ -99,7 +99,7 @@ namespace VDS.RDF.Storage
             var h = new Graph();
             readWrite.LoadGraph(h, (Uri)null);
 
-            _testOutputHelper.WriteLine(string.Empty);
+            _testOutputHelper.WriteLine();
             foreach (Triple t in h.Triples)
             {
                 _testOutputHelper.WriteLine(t.ToString(_formatter));
@@ -125,7 +125,7 @@ namespace VDS.RDF.Storage
             var h = new Graph();
             readWrite.LoadGraph(h, (String)null);
 
-            _testOutputHelper.WriteLine(string.Empty);
+            _testOutputHelper.WriteLine();
             foreach (Triple t in h.Triples)
             {
                 _testOutputHelper.WriteLine(t.ToString(_formatter));
@@ -151,7 +151,7 @@ namespace VDS.RDF.Storage
             var h = new Graph();
             readWrite.LoadGraph(h, "http://example.org/readWriteTest");
 
-            _testOutputHelper.WriteLine(string.Empty);
+            _testOutputHelper.WriteLine();
             foreach (Triple t in h.Triples)
             {
                 _testOutputHelper.WriteLine(t.ToString(_formatter));
@@ -178,7 +178,7 @@ namespace VDS.RDF.Storage
                 _testOutputHelper.WriteLine("Errored as expected since the Graph was deleted");
                 TestTools.ReportError("Error", ex);
             }
-            _testOutputHelper.WriteLine(string.Empty);
+            _testOutputHelper.WriteLine();
 
             //If we do get here without erroring then the Graph should be empty
             Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
@@ -202,7 +202,7 @@ namespace VDS.RDF.Storage
                 _testOutputHelper.WriteLine("Errored as expected since the Graph was deleted");
                 TestTools.ReportError("Error", ex);
             }
-            _testOutputHelper.WriteLine(string.Empty);
+            _testOutputHelper.WriteLine();
 
             //If we do get here without erroring then the Graph should be empty
             Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
@@ -226,7 +226,7 @@ namespace VDS.RDF.Storage
                 _testOutputHelper.WriteLine("Errored as expected since the Graph was deleted");
                 TestTools.ReportError("Error", ex);
             }
-            _testOutputHelper.WriteLine(string.Empty);
+            _testOutputHelper.WriteLine();
 
             //If we do get here without erroring then the Graph should be empty
             Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
@@ -308,7 +308,7 @@ namespace VDS.RDF.Storage
             {
                 _testOutputHelper.WriteLine(t.ToString(_formatter));
             }
-            _testOutputHelper.WriteLine(string.Empty);
+            _testOutputHelper.WriteLine();
 
             //Try a DROP Graph to see if that works
             command = "DROP GRAPH <http://example.org/Ilson>";
