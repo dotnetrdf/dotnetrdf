@@ -7,7 +7,7 @@ namespace dotNetRdf.Query.Pull.Tests;
 public class JoinEnumeratorTests : EnumeratorTestBase
 {
     [Fact]
-    public async void TestIntegerSequence()
+    public async Task TestIntegerSequence()
     {
         var enumeration = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 6, 3);
         IAsyncEnumerator<ISet> seq = enumeration.Evaluate(null, null, null).GetAsyncEnumerator();
@@ -21,7 +21,7 @@ public class JoinEnumeratorTests : EnumeratorTestBase
     }
 
     [Fact]
-    public async void SimpleJoinLhsCompletesFirst()
+    public async Task SimpleJoinLhsCompletesFirst()
     {
         var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3);
         var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5, wait:100);
@@ -34,7 +34,7 @@ public class JoinEnumeratorTests : EnumeratorTestBase
     }
 
     [Fact]
-    public async void SimpleJoinRhsCompletesFirst()
+    public async Task SimpleJoinRhsCompletesFirst()
     {
         var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3, wait:100);
         var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5);
@@ -47,7 +47,7 @@ public class JoinEnumeratorTests : EnumeratorTestBase
     }
     
     [Fact]
-    public async void SimpleJoinLhsInterleaved()
+    public async Task SimpleJoinLhsInterleaved()
     {
         var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3);
         var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5);

@@ -8,7 +8,7 @@ namespace dotNetRdf.Query.Pull.Tests;
 public class LeftJoinEnumeratorTests : EnumeratorTestBase
 {
     [Fact]
-    public async void WhenRhsCompletesFirst()
+    public async Task WhenRhsCompletesFirst()
     {
         var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3, 100);
         var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5);
@@ -21,7 +21,7 @@ public class LeftJoinEnumeratorTests : EnumeratorTestBase
     }
 
     [Fact]
-    public async void WhenLhsCompletesFirst()
+    public async Task WhenLhsCompletesFirst()
     {
         var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3);
         var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5, 100);
@@ -34,7 +34,7 @@ public class LeftJoinEnumeratorTests : EnumeratorTestBase
     }
 
     [Fact]
-    public async void WhenInterleaved()
+    public async Task WhenInterleaved()
     {
         var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3, 5);
         var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 100, 5, 5);

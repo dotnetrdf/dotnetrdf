@@ -77,7 +77,7 @@ public class ProcessorTests
     }
 
     [Fact]
-    public async void AsyncSelectQueryWithHandler()
+    public async Task AsyncSelectQueryWithHandler()
     {
         TripleStore store = MakeTestTripleStore();
         var sparqlParser = new SparqlQueryParser();
@@ -89,7 +89,7 @@ public class ProcessorTests
     }
     
     [Fact]
-    public async void AsyncAskQueryWithHandler()
+    public async Task AsyncAskQueryWithHandler()
     {
         TripleStore store = MakeTestTripleStore();
         var sparqlParser = new SparqlQueryParser();
@@ -101,7 +101,7 @@ public class ProcessorTests
     }
 
     [Fact]
-    public async void AsyncSelectQueryWithoutHandler()
+    public async Task AsyncSelectQueryWithoutHandler()
     {
         TripleStore store = MakeTestTripleStore();
         var sparqlParser = new SparqlQueryParser();
@@ -111,7 +111,7 @@ public class ProcessorTests
     }
 
     [Fact]
-    public async void DescribeQueryWithHandler()
+    public async Task DescribeQueryWithHandler()
     {
         TripleStore store = MakeTestTripleStore();
         var sparqlParser= new SparqlQueryParser();
@@ -123,7 +123,7 @@ public class ProcessorTests
     }
     
     [Fact]
-    public async void DescribeQueryUnionDefaultGraphWithHandler()
+    public async Task DescribeQueryUnionDefaultGraphWithHandler()
     {
         TripleStore store = MakeTestTripleStore();
         var sparqlParser= new SparqlQueryParser();
@@ -135,7 +135,7 @@ public class ProcessorTests
     }
 
     [Fact]
-    public async void DescribeAllQueryWithHandler()
+    public async Task DescribeAllQueryWithHandler()
     {
         TripleStore store = MakeTestTripleStore();
         var sparqlParser= new SparqlQueryParser();

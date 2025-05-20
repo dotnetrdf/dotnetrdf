@@ -40,7 +40,7 @@ public class AlgebraEvaluationTests
     }
 
     [Fact]
-    public async void SingleTriplePatternMatch()
+    public async Task SingleTriplePatternMatch()
     {
         var algebra = new Bgp(new TriplePattern(new NodeMatchPattern(_alice), new NodeMatchPattern(_foafKnows), new VariablePattern("x")));
         var p = new PullQueryProcessor(_dataset);
@@ -53,7 +53,7 @@ public class AlgebraEvaluationTests
         Assert.Single(results);
     }
     [Fact]
-    public async void SingleVarTriplePatternJoin()
+    public async Task SingleVarTriplePatternJoin()
     {
         var algebra = new Bgp(new[]
         {
@@ -79,7 +79,7 @@ public class AlgebraEvaluationTests
     }
 
     [Fact]
-    public async void SingleVarTriplePatternExtend()
+    public async Task SingleVarTriplePatternExtend()
     {
         var algebra = new Bgp(new[]
         {
@@ -110,7 +110,7 @@ public class AlgebraEvaluationTests
     }
 
     [Fact]
-    public async void TestOptional()
+    public async Task TestOptional()
     {
         var algebra = new LeftJoin(
             new Bgp(

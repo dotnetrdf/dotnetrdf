@@ -6,7 +6,7 @@ namespace dotNetRdf.Query.Pull.Tests;
 public class AsyncLoopJoinEnumeratorTests : EnumeratorTestBase
 {
     [Fact]
-    public async void ItRunsALoopInnerJoin()
+    public async Task ItRunsALoopInnerJoin()
     {
         var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3);
         var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5);
@@ -16,7 +16,7 @@ public class AsyncLoopJoinEnumeratorTests : EnumeratorTestBase
     }
     
     [Fact]
-    public async void ItRunsALoopLeftJoin()
+    public async Task ItRunsALoopLeftJoin()
     {
         var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5);
         var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3);

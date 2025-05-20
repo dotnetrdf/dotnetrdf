@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 using FluentAssertions;
 using VDS.RDF.Parsing.Handlers;
 using Xunit;
@@ -23,7 +24,7 @@ namespace VDS.RDF.Query
 
 
         [Fact]
-        public async void SelectWithResultSet()
+        public async Task SelectWithResultSet()
         {
             SparqlQueryClient client = GetQueryClient();
             SparqlResultSet resultSet = await client.QueryWithResultSetAsync(_fixture.SelectQuery);
@@ -31,7 +32,7 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public async void SelectWithCountHandler()
+        public async Task SelectWithCountHandler()
         {
             SparqlQueryClient client = GetQueryClient();
             var handler = new ResultCountHandler();
@@ -40,7 +41,7 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public async void SelectRaisesExceptionOnServerError()
+        public async Task SelectRaisesExceptionOnServerError()
         {
             SparqlQueryClient client = GetQueryClient();
             RdfQueryException ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultSetAsync(_fixture.ErrorSelectQuery));
@@ -48,7 +49,7 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public async void ConstructWithResultGraph()
+        public async Task ConstructWithResultGraph()
         {
             SparqlQueryClient client = GetQueryClient();
             IGraph resultGraph = await client.QueryWithResultGraphAsync(_fixture.ConstructQuery);
@@ -56,7 +57,7 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public async void ConstructWithCountHandler()
+        public async Task ConstructWithCountHandler()
         {
             SparqlQueryClient client = GetQueryClient();
             var handler = new CountHandler();
@@ -65,7 +66,7 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public async void ConstructRaisesExceptionOnServerError()
+        public async Task ConstructRaisesExceptionOnServerError()
         {
             SparqlQueryClient client = GetQueryClient();
             RdfQueryException ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultGraphAsync(_fixture.ErrorConstructQuery));

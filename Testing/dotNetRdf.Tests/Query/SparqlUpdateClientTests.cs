@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using FluentAssertions;
 using VDS.RDF.Update;
 using WireMock.Matchers;
@@ -27,7 +28,7 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public async void ItDefaultsToPostForAShortUpdate()
+        public async Task ItDefaultsToPostForAShortUpdate()
         {
             const string input = "LOAD <http://dbpedia.org/resource/Ilkeston>";
 
@@ -39,7 +40,7 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public async void ItDefaultsToPostForALongUpdate()
+        public async Task ItDefaultsToPostForALongUpdate()
         {
             var input = new StringBuilder();
             input.AppendLine("LOAD <http://dbpedia.org/resource/Ilkeston>");
@@ -53,7 +54,7 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public async void ItPropagatesHttpErrorsAsExceptions()
+        public async Task ItPropagatesHttpErrorsAsExceptions()
         {
             const string input = "DELETE <http://dbpedia.org/resource/Ilkeston>";
             var client = GetUpdateClient();
