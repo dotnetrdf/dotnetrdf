@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.FullText
                 }
                 else
                 {
-                    Assert.True(false, "Did not get a SPARQL Result Set as expected");
+                    Assert.Fail("Did not get a SPARQL Result Set as expected");
                 }
             }
             finally
