@@ -112,9 +112,11 @@ namespace VDS.RDF.Writing
             TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Rdf11), true);
         }
 
-        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
+        [Fact]
         public void WritingNQuadsMixedBad()
         {
+            Assert.SkipUnless(System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows), "Only supported on Windows");
+
             Assert.Throws<RdfParseException>(() => TestTools.TestInMTAThread(WritingNQuadsMixedBadActual));
         }
 
