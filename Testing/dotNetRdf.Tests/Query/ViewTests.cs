@@ -28,7 +28,6 @@ using System.IO;
 using System.Threading;
 using Xunit;
 using VDS.RDF.Parsing;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {

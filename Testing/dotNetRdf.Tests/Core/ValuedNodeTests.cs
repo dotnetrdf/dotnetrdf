@@ -28,7 +28,6 @@ using System.Globalization;
 using Xunit;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
-using Xunit.Abstractions;
 
 namespace VDS.RDF
 {

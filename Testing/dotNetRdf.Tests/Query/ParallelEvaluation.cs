@@ -36,7 +36,6 @@ using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Writing.Formatting;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {

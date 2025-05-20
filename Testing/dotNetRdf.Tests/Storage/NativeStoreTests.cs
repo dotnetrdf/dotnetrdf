@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.IO;
 using VDS.RDF.Parsing;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Storage
 {

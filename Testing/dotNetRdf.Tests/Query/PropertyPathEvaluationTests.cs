@@ -34,7 +34,6 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {

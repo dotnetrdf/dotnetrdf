@@ -28,7 +28,6 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Writing.Formatting;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {

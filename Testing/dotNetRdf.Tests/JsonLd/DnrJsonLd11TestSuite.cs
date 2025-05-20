@@ -1,5 +1,4 @@
 ﻿using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.JsonLd
 {

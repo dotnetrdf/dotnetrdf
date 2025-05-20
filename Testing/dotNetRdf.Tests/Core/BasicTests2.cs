@@ -30,7 +30,6 @@ using System.Linq;
 using FluentAssertions;
 using Xunit;
 using VDS.RDF.Parsing;
-using Xunit.Abstractions;
 
 #pragma warning disable CS1718 // Comparison made to same variable
 

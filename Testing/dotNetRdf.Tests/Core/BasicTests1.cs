@@ -32,7 +32,6 @@ using Xunit;
 using VDS.RDF.Writing;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using Xunit.Abstractions;
 
 #pragma warning disable 252,253
 

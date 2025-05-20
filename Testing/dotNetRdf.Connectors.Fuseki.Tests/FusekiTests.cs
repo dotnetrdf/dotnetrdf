@@ -30,7 +30,6 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
-using Xunit.Abstractions;
 using System.IO;
 
 namespace VDS.RDF.Storage

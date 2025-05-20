@@ -3,7 +3,6 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Pull;
-using Xunit.Abstractions;
 using Graph = VDS.RDF.Graph;
 
 namespace dotNetRdf.Query.Pull.Tests;

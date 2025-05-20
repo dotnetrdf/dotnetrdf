@@ -30,7 +30,6 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update.Commands;
-using Xunit.Abstractions;
 using FluentAssertions;
 using System.IO;
 

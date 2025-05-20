@@ -27,7 +27,6 @@ using System;
 using System.IO;
 using System.Linq;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
 {

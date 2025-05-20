@@ -36,7 +36,6 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {

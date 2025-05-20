@@ -30,7 +30,6 @@ using System.Linq;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
 {

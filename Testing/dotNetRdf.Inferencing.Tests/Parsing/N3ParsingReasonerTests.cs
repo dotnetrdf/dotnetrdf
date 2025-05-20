@@ -2,7 +2,6 @@
 using System.IO;
 using VDS.RDF.Query.Inference;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing
 {

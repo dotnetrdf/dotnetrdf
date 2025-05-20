@@ -7,7 +7,6 @@ using VDS.RDF.JsonLd.Syntax;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.JsonLd
 {

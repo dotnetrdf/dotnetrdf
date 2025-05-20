@@ -29,7 +29,6 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.LDF.Client;
 

@@ -33,7 +33,6 @@ using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 using System.Net.Http;
 using VDS.RDF.Update;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Storage
 {

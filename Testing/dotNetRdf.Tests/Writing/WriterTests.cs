@@ -30,7 +30,6 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
-using Xunit.Abstractions;
 
 #pragma warning disable 618
 

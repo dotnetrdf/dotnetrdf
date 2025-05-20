@@ -6,7 +6,6 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.TestSuite.RdfStar
 {

@@ -3,8 +3,6 @@ using dotNetRdf.TestSupport;
 using System.Collections.Generic;
 using System.IO;
 using Xunit;
-using Xunit.Abstractions;
-
 
 namespace VDS.RDF.Parsing.Suites
 {

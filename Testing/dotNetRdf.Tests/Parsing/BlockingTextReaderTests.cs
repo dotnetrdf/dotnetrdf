@@ -31,7 +31,6 @@ using System.Text;
 using System.Threading;
 using FluentAssertions;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing
 {

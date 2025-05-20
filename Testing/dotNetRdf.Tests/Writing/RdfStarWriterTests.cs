@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using VDS.RDF.Parsing;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Writing
 {

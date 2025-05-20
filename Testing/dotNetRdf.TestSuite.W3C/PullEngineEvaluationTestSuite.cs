@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Pull;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.TestSuite.W3C;
 

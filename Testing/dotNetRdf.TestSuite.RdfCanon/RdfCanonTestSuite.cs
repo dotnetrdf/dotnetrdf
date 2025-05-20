@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Writing.Formatting;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.TestSuite.Rdf11;
 

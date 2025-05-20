@@ -33,7 +33,6 @@ using Xunit;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Writing.Formatting;
-using Xunit.Abstractions;
 
 namespace VDS.RDF
 {

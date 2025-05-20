@@ -34,7 +34,6 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Optimisation;
-using Xunit.Abstractions;
 
 
 namespace VDS.RDF.Query

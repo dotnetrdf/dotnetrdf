@@ -5,7 +5,6 @@ using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Inference;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Ontology
 {

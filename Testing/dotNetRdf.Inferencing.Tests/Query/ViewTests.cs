@@ -4,7 +4,6 @@ using System.Threading;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Inference;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
