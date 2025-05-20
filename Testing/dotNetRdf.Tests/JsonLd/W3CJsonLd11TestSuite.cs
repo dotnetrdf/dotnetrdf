@@ -53,8 +53,7 @@ namespace VDS.RDF.JsonLd
             {"#tli12", "Test is broken (see https://github.com/w3c/json-ld-api/issues/533)"}
         };
 
-        [SkippableTheory(typeof(SkipException))]
-        //[Theory]
+        [Theory(SkipExceptions = [typeof(SkipException)])]
         [MemberData(nameof(JsonLdTestSuiteDataSource.W3CToRdfTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public override void JsonLdParserTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
             string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri, string processorMode,
@@ -70,7 +69,7 @@ namespace VDS.RDF.JsonLd
             {"#t0027", "Test depends on decimal representation of a float"},
         };
 
-        [SkippableTheory(typeof(SkipException))]
+        [Theory(SkipExceptions = [typeof(SkipException)])]
         [MemberData(nameof(JsonLdTestSuiteDataSource.W3CFromRdfTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public override void JsonLdWriterTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
             string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool useNativeTypes, bool useRdfType, bool ordered, string rdfDirection)

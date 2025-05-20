@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing.Suites
             _testOutputHelper.WriteLine(((Passed/(double) Count)*100) + "% Passed");
 
             if (Failed > 0) Assert.True(false, Failed + " Tests failed");
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
         }
 
         [Fact]
@@ -110,7 +110,7 @@ namespace VDS.RDF.Parsing.Suites
             Parser.Warning += TestTools.WarningPrinter;
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingSuiteNTriples11()
         {
             //Nodes for positive and negative tests
@@ -128,7 +128,7 @@ namespace VDS.RDF.Parsing.Suites
             Console.WriteLine(((Passed/(double) Count)*100) + "% Passed");
 
             if (Failed > 0) Assert.True(false, Failed + " Tests failed");
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
         }
 
         [Fact]
@@ -177,7 +177,7 @@ namespace VDS.RDF.Parsing.Suites
             Parser.Warning += TestTools.WarningPrinter;
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingSuiteNTriples11()
         {
             //Nodes for positive and negative tests
@@ -195,7 +195,7 @@ namespace VDS.RDF.Parsing.Suites
             Console.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
             if (Failed > 0) Assert.True(false, Failed + " Tests failed: " + string.Join("\n", FailedTests.Select(f=>f.ToString())));
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
         }
 
     }

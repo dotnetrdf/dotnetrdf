@@ -49,7 +49,7 @@ namespace VDS.RDF.Storage
 
         public static ReadWriteSparqlConnector GetConnection()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS),
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS),
                 "Test Config marks IIS as unavailable, cannot run test");
             return new ReadWriteSparqlConnector(
                 new SparqlQueryClient(HttpClient,
@@ -58,7 +58,7 @@ namespace VDS.RDF.Storage
                     new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUpdateUri))));
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageReadWriteSparqlSaveGraph()
         {
             var g = new Graph();
@@ -74,7 +74,7 @@ namespace VDS.RDF.Storage
             var h = new Graph();
             readWrite.LoadGraph(h, "http://example.org/readWriteTest");
 
-            _testOutputHelper.WriteLine();
+            _testOutputHelper.WriteLine(string.Empty);
             foreach (Triple t in h.Triples)
             {
                 _testOutputHelper.WriteLine(t.ToString(_formatter));
@@ -83,7 +83,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageReadWriteSparqlSaveDefaultGraph()
         {
             var g = new Graph();
@@ -99,7 +99,7 @@ namespace VDS.RDF.Storage
             var h = new Graph();
             readWrite.LoadGraph(h, (Uri)null);
 
-            _testOutputHelper.WriteLine();
+            _testOutputHelper.WriteLine(string.Empty);
             foreach (Triple t in h.Triples)
             {
                 _testOutputHelper.WriteLine(t.ToString(_formatter));
@@ -109,7 +109,7 @@ namespace VDS.RDF.Storage
             Assert.Null(h.BaseUri);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageReadWriteSparqlSaveDefaultGraph2()
         {
             var g = new Graph();
@@ -125,7 +125,7 @@ namespace VDS.RDF.Storage
             var h = new Graph();
             readWrite.LoadGraph(h, (String)null);
 
-            _testOutputHelper.WriteLine();
+            _testOutputHelper.WriteLine(string.Empty);
             foreach (Triple t in h.Triples)
             {
                 _testOutputHelper.WriteLine(t.ToString(_formatter));
@@ -135,7 +135,7 @@ namespace VDS.RDF.Storage
             Assert.Null(h.BaseUri);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageReadWriteSparqlLoadGraph()
         {
             //Ensure that the Graph will be there using the SaveGraph() test
@@ -151,7 +151,7 @@ namespace VDS.RDF.Storage
             var h = new Graph();
             readWrite.LoadGraph(h, "http://example.org/readWriteTest");
 
-            _testOutputHelper.WriteLine();
+            _testOutputHelper.WriteLine(string.Empty);
             foreach (Triple t in h.Triples)
             {
                 _testOutputHelper.WriteLine(t.ToString(_formatter));
@@ -160,7 +160,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageReadWriteSparqlDeleteGraph()
         {
             StorageReadWriteSparqlSaveGraph();
@@ -178,13 +178,13 @@ namespace VDS.RDF.Storage
                 _testOutputHelper.WriteLine("Errored as expected since the Graph was deleted");
                 TestTools.ReportError("Error", ex);
             }
-            _testOutputHelper.WriteLine();
+            _testOutputHelper.WriteLine(string.Empty);
 
             //If we do get here without erroring then the Graph should be empty
             Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageReadWriteSparqlDeleteDefaultGraph()
         {
             StorageReadWriteSparqlSaveDefaultGraph();
@@ -202,13 +202,13 @@ namespace VDS.RDF.Storage
                 _testOutputHelper.WriteLine("Errored as expected since the Graph was deleted");
                 TestTools.ReportError("Error", ex);
             }
-            _testOutputHelper.WriteLine();
+            _testOutputHelper.WriteLine(string.Empty);
 
             //If we do get here without erroring then the Graph should be empty
             Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageReadWriteSparqlDeleteDefaultGraph2()
         {
             StorageReadWriteSparqlSaveDefaultGraph();
@@ -226,13 +226,13 @@ namespace VDS.RDF.Storage
                 _testOutputHelper.WriteLine("Errored as expected since the Graph was deleted");
                 TestTools.ReportError("Error", ex);
             }
-            _testOutputHelper.WriteLine();
+            _testOutputHelper.WriteLine(string.Empty);
 
             //If we do get here without erroring then the Graph should be empty
             Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageReadWriteSparqlAddTriples()
         {
             StorageReadWriteSparqlSaveGraph();
@@ -252,7 +252,7 @@ namespace VDS.RDF.Storage
             Assert.True(ts.All(t => g.ContainsTriple(t)), "Added Triple should have been in the Graph");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageReadWriteSparqlRemoveTriples()
         {
             StorageReadWriteSparqlSaveGraph();
@@ -272,7 +272,7 @@ namespace VDS.RDF.Storage
             Assert.True(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageReadWriteSparqlQuery()
         {
             ReadWriteSparqlConnector readWrite = GetConnection();
@@ -288,10 +288,10 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageReadWriteSparqlUpdate()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             ReadWriteSparqlConnector readWrite = GetConnection();
@@ -308,7 +308,7 @@ namespace VDS.RDF.Storage
             {
                 _testOutputHelper.WriteLine(t.ToString(_formatter));
             }
-            _testOutputHelper.WriteLine();
+            _testOutputHelper.WriteLine(string.Empty);
 
             //Try a DROP Graph to see if that works
             command = "DROP GRAPH <http://example.org/Ilson>";
@@ -320,7 +320,7 @@ namespace VDS.RDF.Storage
             
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageReadWriteSparqlDescribe()
         {
             ReadWriteSparqlConnector readWrite = GetConnection();
@@ -336,7 +336,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageReadWriteSparqlConfigSerialization1()
         {
             ReadWriteSparqlConnector connector = GetConnection();

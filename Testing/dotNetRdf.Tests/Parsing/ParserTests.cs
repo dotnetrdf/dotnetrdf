@@ -103,10 +103,10 @@ namespace VDS.RDF.Parsing
                 }
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingRdfXmlNamespaceAttributes()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             var g = new Graph();

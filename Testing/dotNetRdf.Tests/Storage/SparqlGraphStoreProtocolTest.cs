@@ -43,11 +43,11 @@ namespace VDS.RDF.Storage
 
         public static SparqlHttpProtocolConnector GetConnection()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS), "Test Config marks IIS as unavailable, cannot run test");
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS), "Test Config marks IIS as unavailable, cannot run test");
             return new SparqlHttpProtocolConnector(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolSaveGraph()
         {
             try
@@ -82,7 +82,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolSaveGraph2()
         {
             try
@@ -117,7 +117,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolLoadGraph()
         {
             try
@@ -152,7 +152,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolGraphExists()
         {
             try
@@ -171,7 +171,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolDeleteGraph()
         {
             try
@@ -205,7 +205,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolAddTriples()
         {
             try
@@ -237,7 +237,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolRemoveTriples()
         {
             try
@@ -270,7 +270,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolPostCreate()
         {
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
@@ -315,7 +315,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolPostCreateMultiple()
         {
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();

@@ -28,9 +28,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using Xunit;
+using Xunit.Sdk;
 
 namespace VDS.RDF.Storage
 {
@@ -119,7 +120,7 @@ namespace VDS.RDF.Storage
                     Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                 }
             }
-            finally 
+            finally
             {
                 provider.Dispose();
             }
@@ -414,7 +415,7 @@ namespace VDS.RDF.Storage
             finally
             {
                 provider.Dispose();
-            }            
+            }
         }
 
         protected void TestAsyncQuery(IGraph g)
@@ -481,7 +482,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAsyncSaveLoad()
         {
             var g = new Graph(new Uri(SaveGraphUri));
@@ -489,15 +490,15 @@ namespace VDS.RDF.Storage
             TestAsyncSaveLoad(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAsyncDeleteGraph()
         {
             var g = new Graph(new Uri(DeleteGraphUri + "/" + Guid.NewGuid()));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             TestAsyncDelete(g);
         }
-        
-        [SkippableFact]
+
+        [Fact]
         public void StorageAsyncRemoveTriples()
         {
             var g = new Graph(new Uri(RemoveTriplesUri));
@@ -505,7 +506,7 @@ namespace VDS.RDF.Storage
             TestAsyncDeleteTriples(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAsyncAddTriples()
         {
             var g = new Graph(new Uri(AddTripleUri));
@@ -513,13 +514,13 @@ namespace VDS.RDF.Storage
             TestAsyncAddTriples(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAsyncListGraphs()
         {
             TestAsyncListGraphs();
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAsyncQuery()
         {
             var g = new Graph(new Uri(QueryGraphUri));
@@ -689,7 +690,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task StorageSaveLoadAsync()
         {
             var g = new Graph(new Uri(SaveGraphUri2));
@@ -697,7 +698,7 @@ namespace VDS.RDF.Storage
             await TestSaveLoadAsync(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task StorageDeleteGraphAsync()
         {
             var g = new Graph(new Uri(DeleteGraphUri + "/" + Guid.NewGuid()));
@@ -705,7 +706,7 @@ namespace VDS.RDF.Storage
             await TestDeleteGraphAsync(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task StorageDeleteTriplesAsync()
         {
             var g = new Graph(new Uri(RemoveTriplesUri));
@@ -713,7 +714,7 @@ namespace VDS.RDF.Storage
             await TestDeleteTriplesAsync(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task StorageAddTriplesAsync()
         {
             var g = new Graph();
@@ -721,7 +722,7 @@ namespace VDS.RDF.Storage
             await TestAddTriplesAsync(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task StorageListGraphsAsync()
         {
             var g = new Graph(new Uri(ListGraphsUri));
@@ -729,7 +730,7 @@ namespace VDS.RDF.Storage
             await TestListGraphsAsync(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task StorageQueryAsync()
         {
             var g = new Graph();

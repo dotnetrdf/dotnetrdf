@@ -36,7 +36,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [Obsolete("Tests for obsolete classes")]
+   [Obsolete("Tests for obsolete classes")]
    public class RemoteEndpoints
     {
         const int AsyncTimeout = 45000;
@@ -44,17 +44,17 @@ namespace VDS.RDF.Query
 
         public static SparqlRemoteEndpoint GetQueryEndpoint()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS), "Test Config marks IIS as unavailable, cannot run test");
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS), "Test Config marks IIS as unavailable, cannot run test");
             return new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreQueryUri)));
         }
 
         public static SparqlRemoteUpdateEndpoint GetUpdateEndpoint()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS), "Test Config marks IIS as unavailable, cannot run test");
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS), "Test Config marks IIS as unavailable, cannot run test");
             return new SparqlRemoteUpdateEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUpdateUri)));
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlRemoteEndpointLongQuery()
         {
             var input = new StringBuilder();
@@ -70,10 +70,10 @@ namespace VDS.RDF.Query
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlRemoteEndpointLongUpdate()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             var input = new StringBuilder();
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query
             endpoint.Update(input.ToString());
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlRemoteEndpointCountHandler()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query
             Assert.NotEqual(0, handler.Count);
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlRemoteEndpointResultCountHandler()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query
             Assert.NotEqual(0, handler.Count);
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlRemoteEndpointMemoryLeak1()
         {
             /*
@@ -155,7 +155,7 @@ results.Dispose()
             Debug.WriteLine("Memory Usage after " + totalRuns + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlRemoteEndpointMemoryLeak2()
         {
             //Do a GC before attempting the test
@@ -193,7 +193,7 @@ results.Dispose()
             Debug.WriteLine("Memory Usage after " + totalRuns + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlRemoteEndpointWriteThroughHandler()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
@@ -201,7 +201,7 @@ results.Dispose()
             endpoint.QueryWithResultGraph(handler, "CONSTRUCT WHERE { ?s ?p ?o }");
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlRemoteEndpointAsyncApiQueryWithResultSet()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
@@ -217,7 +217,7 @@ results.Dispose()
             Assert.True(signal.SafeWaitHandle.IsClosed, "WaitHandle should be closed");
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlRemoteEndpointAsyncApiQueryWithResultGraph()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
@@ -233,10 +233,10 @@ results.Dispose()
             Assert.True(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlRemoteEndpointAsyncApiUpdate()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             SparqlRemoteUpdateEndpoint endpoint = RemoteEndpoints.GetUpdateEndpoint();
@@ -256,10 +256,10 @@ results.Dispose()
             Assert.False(g.IsEmpty, "Graph should not be empty");
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlRemoteEndpointSyncVsAsyncTimeDBPedia()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             String query;
@@ -311,7 +311,7 @@ results.Dispose()
             Assert.Equal(syncGetResults, asyncResults);
         }
 
-        [SkippableFact(Skip = "TP: I think that we should either ignore or remove redundant tests")]
+        [Fact(Skip = "TP: I think that we should either ignore or remove redundant tests")]
         public void SparqlRemoteEndpointSyncVsAsyncTimeOpenLinkLOD()
         {
             String query;
@@ -366,7 +366,7 @@ results.Dispose()
             Assert.Equal(syncGetResults, asyncResults);
         }
 
-        [SkippableFact(Skip = "TP: I think that we should either ignore or remove redundant tests")]
+        [Fact(Skip = "TP: I think that we should either ignore or remove redundant tests")]
         public void SparqlRemoteEndpointSyncVsAsyncTimeFactforge()
         {
             String query;
@@ -421,7 +421,7 @@ results.Dispose()
             Assert.Equal(syncGetResults, asyncResults);
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlRemoteEndpointSyncVsAsyncTimeLocal()
         {
             String query;
@@ -473,10 +473,10 @@ results.Dispose()
             Assert.Equal(syncGetResults, asyncResults);
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlRemoteEndpointSyncVsAsyncTimeLocalVirtuoso()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             String query;

@@ -187,14 +187,14 @@ namespace VDS.RDF.Storage
 
         protected abstract IStorageProvider GetConnection();
 
-        [SkippableFact]
+        [Fact]
         public void ParsingWriteToStoreHandler()
         {
             IStorageProvider store = GetConnection();
             TestWriteToStoreHandler(store);
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatches()
         {
             IStorageProvider store = GetConnection();

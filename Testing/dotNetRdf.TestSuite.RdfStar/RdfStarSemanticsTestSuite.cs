@@ -21,7 +21,7 @@ namespace VDS.RDF.TestSuite.RdfStar
             _output = output;
         }
 
-        [SkippableTheory]
+        [Theory]
         [MemberData(nameof(RdfStarSemantics))]
         public void RunTest(ManifestTestData t)
         {

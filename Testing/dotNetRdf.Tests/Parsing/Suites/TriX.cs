@@ -40,7 +40,7 @@ namespace VDS.RDF.Parsing.Suites
             CheckResults = false;
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingSuiteTriX()
         {
             RunManifests();
@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing.Suites
                 foreach(var failure in FailedTests) { _testOutputHelper.WriteLine(failure.ToString());}
                 Assert.True(false, Failed + " Tests failed");
             }
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
         }
 
         private void RunManifests()

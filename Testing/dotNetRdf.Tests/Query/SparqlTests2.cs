@@ -35,7 +35,6 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Optimisation;
 
-
 namespace VDS.RDF.Query
 {
     public class SparqlTests2

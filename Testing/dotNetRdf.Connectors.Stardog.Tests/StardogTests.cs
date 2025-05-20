@@ -46,7 +46,7 @@ namespace VDS.RDF.Storage
         }
 
         // Many of these tests require a synchronous API
-        [SkippableFact]
+        [Fact]
         public void StorageStardogLoadDefaultGraph()
         {
             StardogConnector stardog = _fixture.Connector;
@@ -61,7 +61,7 @@ namespace VDS.RDF.Storage
             Assert.False(h.IsEmpty);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogLoadNamedGraph()
         {
             StardogConnector stardog = _fixture.Connector;
@@ -79,7 +79,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogSaveToDefaultGraph()
         {
             StardogConnector stardog = _fixture.Connector;
@@ -102,7 +102,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogSaveToNamedGraph()
         {
             StardogConnector stardog = _fixture.Connector;
@@ -117,7 +117,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogSaveToNamedGraph2()
         {
             StardogConnector stardog = _fixture.Connector;
@@ -133,7 +133,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogSaveToNamedGraphOverwrite()
         {
             StardogConnector stardog = _fixture.Connector;
@@ -159,7 +159,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(i, j);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogUpdateNamedGraphRemoveTriples()
         {
             try
@@ -198,7 +198,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogUpdateNamedGraphAddTriples()
         {
             try
@@ -248,7 +248,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogDeleteNamedGraph()
         {
             StardogConnector stardog = _fixture.Connector;
@@ -276,11 +276,11 @@ namespace VDS.RDF.Storage
             Assert.True(i.IsEmpty, "Retrieved Graph should be empty since it has been deleted");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogReasoningQL()
         {
             StardogConnector stardog = _fixture.Connector;
-            Skip.If(stardog.Reasoning == StardogReasoningMode.DatabaseControlled, 
+            Assert.SkipWhen(stardog.Reasoning == StardogReasoningMode.DatabaseControlled, 
                     "Version of Stardog being tested does not support configuring reasoning mode at connection level");
 
             var g = new Graph();
@@ -303,11 +303,11 @@ namespace VDS.RDF.Storage
         }
 
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogReasoningByQuery1()
         {
             StardogConnector stardog = _fixture.Connector;
-            Skip.If(stardog.Reasoning == StardogReasoningMode.DatabaseControlled, 
+            Assert.SkipWhen(stardog.Reasoning == StardogReasoningMode.DatabaseControlled, 
                     "Version of Stardog being tested does not support configuring reasoning mode at connection level");
 
             var g = new Graph();
@@ -322,11 +322,11 @@ namespace VDS.RDF.Storage
         }
 
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogReasoningByQuery2()
         {
             StardogConnector stardog = _fixture.Connector;
-            Skip.If(stardog.Reasoning == StardogReasoningMode.DatabaseControlled, 
+            Assert.SkipWhen(stardog.Reasoning == StardogReasoningMode.DatabaseControlled, 
                     "Version of Stardog being tested does not support configuring reasoning mode at connection level");
 
             var g = new Graph();
@@ -341,7 +341,7 @@ namespace VDS.RDF.Storage
         }
 
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogReasoningMode()
         {
             StardogConnector connector = _fixture.Connector;
@@ -358,7 +358,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogTransactionTest()
         {
             StardogConnector stardog = _fixture.Connector;
@@ -368,7 +368,7 @@ namespace VDS.RDF.Storage
             
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogAmpersandsInDataTest()
         {
             StardogConnector stardog = _fixture.Connector;
@@ -399,7 +399,7 @@ namespace VDS.RDF.Storage
             Assert.NotEqual(h, i);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogCreateNewStore()
         {
             Guid guid;
@@ -416,7 +416,7 @@ namespace VDS.RDF.Storage
             
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogSparqlUpdate1()
         {
             StardogConnector stardog = _fixture.Connector;
@@ -440,7 +440,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(1, g.Triples.Count);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogSparqlUpdate2()
         {
             StardogConnector stardog = _fixture.Connector;
@@ -459,7 +459,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(1, g.Triples.Count);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogSparqlUpdate3()
         {
             StardogConnector stardog = _fixture.Connector;
@@ -480,7 +480,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(1, g.Triples.Count);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogSparqlUpdate4()
         {
             StardogConnector stardog = _fixture.Connector;
@@ -504,7 +504,7 @@ namespace VDS.RDF.Storage
             
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogSparqlUpdate5()
         {
             StardogConnector stardog = _fixture.Connector;
@@ -526,7 +526,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(1, g.Triples.Count);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogIsReadyValidDb()
         {
             StardogConnector stardog = _fixture.Connector;
@@ -535,10 +535,10 @@ namespace VDS.RDF.Storage
             
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageStardogIsReadyInvalidDb()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog), "Test Config marks Stardog as unavailable, test cannot be run");
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog), "Test Config marks Stardog as unavailable, test cannot be run");
             var stardog =  new StardogConnector(TestConfigManager.GetSetting(TestConfigManager.StardogServer),
                 "i_dont_exist",
                 TestConfigManager.GetSetting(TestConfigManager.StardogUser),

@@ -39,11 +39,11 @@ namespace VDS.RDF.Storage
     {
         public static SesameHttpProtocolConnector GetConnection()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseSesame), "Test Config marks Sesame as unavailable, cannot run test");
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseSesame), "Test Config marks Sesame as unavailable, cannot run test");
             return new SesameHttpProtocolConnector(TestConfigManager.GetSetting(TestConfigManager.SesameServer), TestConfigManager.GetSetting(TestConfigManager.SesameRepository));
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameSaveLoad()
         {
             var g = new Graph();
@@ -63,7 +63,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameSaveEmptyGraph1()
         {
             var g = new Graph
@@ -81,7 +81,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameSaveEmptyGraph2()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -122,7 +122,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameSaveEmptyGraph3()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -163,7 +163,7 @@ namespace VDS.RDF.Storage
             Assert.True(h.HasSubGraph(g));
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameDeleteTriples1()
         {
             var g = new Graph();
@@ -190,7 +190,7 @@ namespace VDS.RDF.Storage
             Assert.False(g.Equals(h), "Graph retrieved should not be equal to original Graph");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameDeleteTriples2()
         {
             var g = new Graph
@@ -219,7 +219,7 @@ namespace VDS.RDF.Storage
             Assert.False(g.Equals(h), "Graph retrieved should not be equal to original Graph");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameDeleteTriples3()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -251,7 +251,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameDeleteGraph1()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -276,7 +276,7 @@ namespace VDS.RDF.Storage
             Assert.NotEqual(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameDeleteGraph2()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -302,7 +302,7 @@ namespace VDS.RDF.Storage
             Assert.NotEqual(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameCyrillic()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -323,7 +323,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameChinese()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -344,7 +344,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameAsk()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -355,7 +355,7 @@ namespace VDS.RDF.Storage
             Assert.IsAssignableFrom<SparqlResultSet>(results);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameDescribe()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -366,10 +366,10 @@ namespace VDS.RDF.Storage
             Assert.IsAssignableFrom<IGraph>(results);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameSparqlUpdate1()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
             sesame.Update(@"DROP GRAPH <http://example.org/sparqlUpdateLoad>;
@@ -394,7 +394,7 @@ DELETE WHERE
             Assert.Equal(orig, actual);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameSparqlUpdate2()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -411,7 +411,7 @@ DELETE WHERE
             Assert.False(h.GetTriplesWithPredicate(rdfType).Any(), "Should not be any rdf:type triples after SPARQL Update operation");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameSparqlUpdate3()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -447,7 +447,7 @@ DELETE WHERE
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSesameSparqlUpdate4()
         {
             // Test case adapted from CORE-374 sample update

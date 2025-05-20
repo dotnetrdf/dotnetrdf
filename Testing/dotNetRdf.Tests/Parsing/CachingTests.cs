@@ -88,10 +88,10 @@ namespace VDS.RDF.Parsing
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingUriLoaderResponseUriCaching()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             var defaultTimeout = UriLoader.Timeout;

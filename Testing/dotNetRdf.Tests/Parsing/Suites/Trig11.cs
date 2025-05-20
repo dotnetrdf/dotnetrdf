@@ -22,7 +22,7 @@ namespace VDS.RDF.Parsing.Suites
                 Path.Combine("resources", "trig11", "manifest.ttl"));
         }
 
-        [SkippableTheory]
+        [Theory]
         [MemberData(nameof(GetTestData))]
         public void RunTest(ManifestTestData t)
         {
@@ -84,7 +84,7 @@ namespace VDS.RDF.Parsing.Suites
         }
 
 
-        [SkippableFact]
+        [Fact]
         public void RunSingle()
         {
             InvokeTestRunner(new ManifestTestDataProvider(

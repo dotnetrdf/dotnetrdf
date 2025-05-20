@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing.Suites
             CheckResults = false;
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingSuiteRdfXmlDom()
         {
             //Run manifests
@@ -68,7 +68,7 @@ namespace VDS.RDF.Parsing.Suites
                 Assert.True(false, Failed + " Tests failed: \n\t" + string.Join("\n\t", FailedTests));
             }
 
-            Skip.If(Indeterminate> 0,$"{Indeterminate} Tests are indeterminate: " + string.Join(", ", IndeterminateTests));
+            Assert.SkipWhen(Indeterminate> 0,$"{Indeterminate} Tests are indeterminate: " + string.Join(", ", IndeterminateTests));
         }
 
         [Fact]
@@ -113,7 +113,7 @@ namespace VDS.RDF.Parsing.Suites
             _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
             if (Failed > 0) Assert.True(false, Failed + " Tests failed: " + string.Join(", ", FailedTests));
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate" + string.Join(", ", PassedTests));
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate" + string.Join(", ", PassedTests));
         }
 
         [Fact]

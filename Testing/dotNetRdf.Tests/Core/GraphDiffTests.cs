@@ -136,7 +136,7 @@ namespace VDS.RDF
             Assert.True(report.AddedMSGs.Any(), "Difference should have reported some Added MSGs");
         }
 
-        [SkippableFact]
+        [Fact]
         public void GraphDiffRemovedMSG()
         {
             var g = new Graph();
@@ -146,7 +146,7 @@ namespace VDS.RDF
 
             //Remove MSG from 2nd Graph
             INode toRemove = h.Nodes.BlankNodes().FirstOrDefault();
-            Skip.If(toRemove == null, "No MSGs in test graph");
+            Assert.SkipWhen(toRemove == null, "No MSGs in test graph");
             h.Retract(h.GetTriplesWithSubject(toRemove).ToList());
 
             GraphDiffReport report = g.Difference(h);

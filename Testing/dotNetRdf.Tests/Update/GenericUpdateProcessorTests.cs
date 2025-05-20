@@ -41,7 +41,7 @@ namespace VDS.RDF.Update
 
         protected abstract IStorageProvider GetManager();
 
-        [SkippableFact]
+        [Fact]
         public void SparqlUpdateGenericCreateAndInsertData()
         {
             IStorageProvider manager = GetManager();
@@ -59,7 +59,7 @@ namespace VDS.RDF.Update
             Assert.Equal(1, g.Triples.Count);
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlUpdateGenericCreateInsertDeleteData()
         {
             IStorageProvider manager = GetManager();

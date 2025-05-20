@@ -39,7 +39,7 @@ namespace VDS.RDF.Storage
         {
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageNativeGraph()
         {
             //Load in our Test Graph

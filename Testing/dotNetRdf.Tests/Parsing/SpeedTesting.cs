@@ -214,7 +214,7 @@ namespace VDS.RDF.Parsing
             CalculateSpeed(500000, watch);
         }
 
-        [SkippableFact(typeof(OutOfMemoryException))]
+        [Fact(SkipExceptions = [typeof(OutOfMemoryException)])]
         [Trait("Category", "explicit")]
         public void ParsingSpeedNTriples1Million()
         {

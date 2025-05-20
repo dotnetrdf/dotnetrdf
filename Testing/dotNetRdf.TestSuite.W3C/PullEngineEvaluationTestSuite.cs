@@ -16,21 +16,21 @@ public class PullEngineEvaluationTestSuite : BaseAsyncSparqlEvaluationTestSuite
             "SPARQL URI Normalization is not implemented. URIs are normalized using standard .NET URI functionality.";
     }
 
-    [SkippableTheory]
+    [Theory]
     [MemberData(nameof(Sparql11QueryEvalTests))]
     public void RunSparql11TestSuite(ManifestTestData t)
     {
         base.PerformTest(t);
     }
 
-    [SkippableTheory]
+    [Theory]
     [MemberData(nameof(Sparql10QueryEvalTests))]
     public void RunSparql10TestSuite(ManifestTestData t)
     {
         base.PerformTest(t);
     }
 
-    [SkippableFact]
+    [Fact]
     public void RunSingleQueryEvaluation()
     {
         const string testUrl = "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#offset-4";

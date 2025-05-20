@@ -39,7 +39,7 @@ namespace VDS.RDF.Parsing.Suites
         public Turtle11Unofficial()
             : base(new TurtleParser(TurtleSyntax.W3C, false), new NTriplesParser(), "turtle11-unofficial") { }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingSuiteTurtleW3CUnofficialTests()
         {
             //Run manifests
@@ -52,7 +52,7 @@ namespace VDS.RDF.Parsing.Suites
             Console.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
             if (Failed > 0) Assert.True(false, Failed + " Tests failed");
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
         }
     }
 
@@ -98,7 +98,7 @@ namespace VDS.RDF.Parsing.Suites
                     Assert.True(false, Failed + " Test failed, " + Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
                 }
             }
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
         }
 
         [Fact]
@@ -475,7 +475,7 @@ namespace VDS.RDF.Parsing.Suites
                     Assert.True(false, Failed + " Test failed, " + Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed\n\t" + string.Join("\n\t", FailedTests));
                 }
             }
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
         }
 
         [Fact]
