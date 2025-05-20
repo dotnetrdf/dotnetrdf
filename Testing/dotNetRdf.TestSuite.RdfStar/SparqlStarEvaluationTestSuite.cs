@@ -114,7 +114,7 @@ namespace VDS.RDF.TestSuite.RdfStar
             }
             else
             {
-                Assert.True(false, $"Unexpected data input path: {dataInputPath}");
+                Assert.Fail($"Unexpected data input path: {dataInputPath}");
             }
 
             var updateEngine = new LeviathanUpdateProcessor(tripleStore, options =>

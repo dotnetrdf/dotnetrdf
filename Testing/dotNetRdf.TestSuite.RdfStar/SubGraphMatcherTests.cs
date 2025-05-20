@@ -16,7 +16,7 @@ namespace VDS.RDF.TestSuite.RdfStar
             "<< _:x :p :o >> :p :o . _:x :p :o .",
             "<< _:a :p :o >> :p :o . _:b :p :o .",
             false)]
-        public void ItMatchesQuotedBlankNodes(string name, string parentData, string subgraphData, bool expectSubgraph, params string[] expectMappings)
+        public void ItMatchesQuotedBlankNodes(string _, string parentData, string subgraphData, bool expectSubgraph, params string[] expectMappings)
         {
             IGraph parent = new Graph();
             IGraph subGraph = new Graph();
