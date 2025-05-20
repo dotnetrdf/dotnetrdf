@@ -45,7 +45,7 @@ public class AlgebraEvaluationTests
         var algebra = new Bgp(new TriplePattern(new NodeMatchPattern(_alice), new NodeMatchPattern(_foafKnows), new VariablePattern("x")));
         var p = new PullQueryProcessor(_dataset);
         var results = new List<ISet>();
-        await foreach (ISet result in p.Evaluate(algebra))
+        await foreach (ISet result in p.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
         {
             results.Add(result);
         }
@@ -68,7 +68,7 @@ public class AlgebraEvaluationTests
         });
         var processor = new PullQueryProcessor(_dataset);
         var results = new List<ISet>();
-        await foreach (ISet result in processor.Evaluate(algebra))
+        await foreach (ISet result in processor.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
         {
             results.Add(result);
         }
@@ -98,7 +98,7 @@ public class AlgebraEvaluationTests
         });
         var processor = new PullQueryProcessor(_dataset);
         var results = new List<ISet>();
-        await foreach (ISet result in processor.Evaluate(algebra))
+        await foreach (ISet result in processor.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
         {
             results.Add(result);
         }
@@ -127,7 +127,7 @@ public class AlgebraEvaluationTests
                     new VariablePattern("xname")))
         );
         var processor =  new PullQueryProcessor(_dataset);
-        IList<ISet> results = await processor.Evaluate(algebra).ToListAsync();
+        IList<ISet> results = await processor.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken).ToListAsync(cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(2, results.Count);
         var expectResult1 = new Set();
         expectResult1.Add("x", _carol);

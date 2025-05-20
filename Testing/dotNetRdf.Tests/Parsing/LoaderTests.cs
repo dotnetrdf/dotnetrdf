@@ -254,7 +254,7 @@ namespace VDS.RDF.Parsing
             var graph = new Graph();
             var loader = new Loader(_serverFixture.Client);
             Uri resourceUri = _serverFixture.UriFor("/resource");
-            await loader.LoadGraphAsync(graph, resourceUri, new TurtleParser(TurtleSyntax.W3C, false));
+            await loader.LoadGraphAsync(graph, resourceUri, new TurtleParser(TurtleSyntax.W3C, false), TestContext.Current.CancellationToken);
             ILogEntry requestLog = _serverFixture.Server.LogEntries.FirstOrDefault(e => e.RequestMessage.Path.EndsWith("/resource"));
             requestLog.Should().NotBeNull();
             requestLog.RequestMessage.Headers["Accept"].Should().Contain(v => v.Contains("text/turtle"));

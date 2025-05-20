@@ -27,7 +27,7 @@ namespace VDS.RDF.Query
         public async Task SelectWithResultSet()
         {
             SparqlQueryClient client = GetQueryClient();
-            SparqlResultSet resultSet = await client.QueryWithResultSetAsync(_fixture.SelectQuery);
+            SparqlResultSet resultSet = await client.QueryWithResultSetAsync(_fixture.SelectQuery, TestContext.Current.CancellationToken);
             resultSet.Count.Should().Be(1);
         }
 
@@ -36,7 +36,7 @@ namespace VDS.RDF.Query
         {
             SparqlQueryClient client = GetQueryClient();
             var handler = new ResultCountHandler();
-            await client.QueryWithResultSetAsync(_fixture.SelectQuery, handler);
+            await client.QueryWithResultSetAsync(_fixture.SelectQuery, handler, TestContext.Current.CancellationToken);
             handler.Count.Should().Be(1);
         }
 
@@ -44,7 +44,7 @@ namespace VDS.RDF.Query
         public async Task SelectRaisesExceptionOnServerError()
         {
             SparqlQueryClient client = GetQueryClient();
-            RdfQueryException ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultSetAsync(_fixture.ErrorSelectQuery));
+            RdfQueryException ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultSetAsync(_fixture.ErrorSelectQuery, TestContext.Current.CancellationToken));
             ex.Message.Should().Contain("400");
         }
 
@@ -52,7 +52,7 @@ namespace VDS.RDF.Query
         public async Task ConstructWithResultGraph()
         {
             SparqlQueryClient client = GetQueryClient();
-            IGraph resultGraph = await client.QueryWithResultGraphAsync(_fixture.ConstructQuery);
+            IGraph resultGraph = await client.QueryWithResultGraphAsync(_fixture.ConstructQuery, TestContext.Current.CancellationToken);
             resultGraph.Triples.Count.Should().Be(1);
         }
 
@@ -61,7 +61,7 @@ namespace VDS.RDF.Query
         {
             SparqlQueryClient client = GetQueryClient();
             var handler = new CountHandler();
-            await client.QueryWithResultGraphAsync(_fixture.ConstructQuery, handler);
+            await client.QueryWithResultGraphAsync(_fixture.ConstructQuery, handler, TestContext.Current.CancellationToken);
             handler.Count.Should().Be(1);
         }
 
@@ -69,7 +69,7 @@ namespace VDS.RDF.Query
         public async Task ConstructRaisesExceptionOnServerError()
         {
             SparqlQueryClient client = GetQueryClient();
-            RdfQueryException ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultGraphAsync(_fixture.ErrorConstructQuery));
+            RdfQueryException ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultGraphAsync(_fixture.ErrorConstructQuery, TestContext.Current.CancellationToken));
             ex.Message.Should().Contain("400");
         }
     }
