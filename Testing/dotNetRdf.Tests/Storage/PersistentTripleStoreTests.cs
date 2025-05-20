@@ -790,9 +790,6 @@ namespace VDS.RDF.Storage
 
         private void TestUpdateUnsynced(IStorageProvider manager)
         {
-            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
-                "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
@@ -842,6 +839,9 @@ namespace VDS.RDF.Storage
         [Fact]
         public void StoragePersistentTripleStoreMemUpdateUnsynced()
         {
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+                "Test Config marks Remote Parsing as unavailable, test cannot be run");
+
             var manager = new InMemoryManager();
             Assert.Throws<SparqlUpdateException>(() => TestUpdateUnsynced(manager));
         }
