@@ -25,13 +25,13 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
 
     protected Dictionary<string, string> SkipTests = new();
 
-    protected async void PerformTest(ManifestTestData t)
+    protected async Task PerformTest(ManifestTestData t)
     {
-        Assert.SkipWhen(SkipTests.TryGetValue(t.Id, out var reason), reason);
+        Assert.SkipWhen(SkipTests.TryGetValue(t.Id, out var reason), reason ?? "No reason given");
         output.WriteLine($"{t.Id}: {t.Name} is a {t.Type}");
         await InvokeTestRunnerAsync(t);
     }
-    
+
     private async Task InvokeTestRunnerAsync(ManifestTestData t)
     {
         switch (t.Type.AbsoluteUri)
@@ -77,7 +77,7 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
         {
             expectedResultGraph = new Graph() { BaseUri = t.Manifest.BaseUri };
             expectedResultGraph.LoadFromFile(resultInputPath, new TurtleParser(TurtleSyntax.W3C, false));
-        } 
+        }
         else if (resultInputPath.EndsWith(".rdf"))
         {
             expectedResultGraph = new Graph() { BaseUri = t.Manifest.BaseUri };
@@ -96,7 +96,7 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
         if (dataInputPath != null)
         {
             nodeFactory.FlushBlankNodeAssignments();
-            var g = new Graph(null, nodeFactory){BaseUri = t.Data};
+            var g = new Graph(null, nodeFactory) { BaseUri = t.Data };
             g.LoadFromFile(dataInputPath);
             tripleStore.Add(g);
         }
