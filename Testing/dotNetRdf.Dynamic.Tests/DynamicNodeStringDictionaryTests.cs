@@ -61,9 +61,8 @@ namespace VDS.RDF.Dynamic
             var actual = d[p];
 
             var objects = Assert.IsType<DynamicObjectCollection>(actual);
-            Assert.Collection(
-                objects,
-                @object => Assert.Equal(o, @object));
+            var @object = Assert.Single(objects);
+            Assert.Equal(o, @object);
         }
 
         [Fact]
