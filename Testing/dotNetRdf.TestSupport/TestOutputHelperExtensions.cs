@@ -1,4 +1,6 @@
-﻿namespace VDS.RDF
+﻿using Xunit;
+
+namespace VDS.RDF
 {
     public static class TestOutputHelperExtensions
     {
