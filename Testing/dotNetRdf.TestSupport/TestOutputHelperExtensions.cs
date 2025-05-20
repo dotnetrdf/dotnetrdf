@@ -1,6 +1,4 @@
-﻿using Xunit.Abstractions;
-
-namespace VDS.RDF
+﻿namespace VDS.RDF
 {
     public static class TestOutputHelperExtensions
     {
