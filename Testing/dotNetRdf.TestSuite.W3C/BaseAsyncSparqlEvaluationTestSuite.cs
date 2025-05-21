@@ -77,7 +77,7 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
         {
             expectedResultGraph = new Graph() { BaseUri = t.Manifest.BaseUri };
             expectedResultGraph.LoadFromFile(resultInputPath, new TurtleParser(TurtleSyntax.W3C, false));
-        }
+        } 
         else if (resultInputPath.EndsWith(".rdf"))
         {
             expectedResultGraph = new Graph() { BaseUri = t.Manifest.BaseUri };
@@ -96,7 +96,7 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
         if (dataInputPath != null)
         {
             nodeFactory.FlushBlankNodeAssignments();
-            var g = new Graph(null, nodeFactory) { BaseUri = t.Data };
+            var g = new Graph(null, nodeFactory){BaseUri = t.Data};
             g.LoadFromFile(dataInputPath);
             tripleStore.Add(g);
         }
