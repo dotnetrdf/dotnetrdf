@@ -119,8 +119,8 @@ namespace VDS.RDF.Storage
                 {
                     Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                 }
-            } 
-            finally
+            }
+            finally 
             {
                 provider.Dispose();
             }
