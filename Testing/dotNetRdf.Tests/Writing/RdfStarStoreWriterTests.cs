@@ -85,7 +85,7 @@ namespace VDS.RDF.Writing
 
         [Theory]
         [MemberData(nameof(RoundTripTestData))]
-        public void TestRoundTrip(string testName, string input)
+        public void TestRoundTrip(string _, string input)
         {
             RoundTrip(input);
         }
@@ -113,7 +113,7 @@ namespace VDS.RDF.Writing
 
         [Theory]
         [MemberData(nameof(RoundTripTestData))]
-        public void TestRoundTrip(string testName, string input)
+        public void TestRoundTrip(string _, string input)
         {
             RoundTrip(input);
         }
@@ -143,7 +143,7 @@ namespace VDS.RDF.Writing
 
         [Theory]
         [MemberData(nameof(RoundTripTestData))]
-        public void TestRoundTrip(string testName, string input)
+        public void TestRoundTrip(string _, string input)
         {
             RoundTrip(input);
         }
@@ -174,7 +174,7 @@ namespace VDS.RDF.Writing
 
         [Theory]
         [MemberData(nameof(RoundTripTestData))]
-        public void TestRoundTrip(string testName, string input)
+        public void TestRoundTrip(string _, string input)
         {
             RoundTrip(input);
         }
