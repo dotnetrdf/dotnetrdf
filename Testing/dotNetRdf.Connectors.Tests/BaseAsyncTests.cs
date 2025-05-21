@@ -119,7 +119,7 @@ namespace VDS.RDF.Storage
                 {
                     Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                 }
-            }
+            } 
             finally
             {
                 provider.Dispose();
@@ -415,7 +415,7 @@ namespace VDS.RDF.Storage
             finally
             {
                 provider.Dispose();
-            }
+            }            
         }
 
         protected void TestAsyncQuery(IGraph g)
