@@ -197,14 +197,14 @@ namespace VDS.RDF
             Assert.True(report.RemovedTriples.Any(), "Report should list removed triples");
         }
 
-        public static IEnumerable<object[]> DiffCases()
+        public static IEnumerable<TheoryDataRow<string>> DiffCases()
         {
             var resourceDirectory = new DirectoryInfo(Path.Combine("resources", "diff_cases"));
             foreach (FileInfo fileA in resourceDirectory.EnumerateFiles("*_a.ttl"))
             {
                 var testCase = fileA.Name;
                 testCase = testCase.Substring(0, testCase.LastIndexOf('_'));
-                yield return new object[] {testCase};
+                yield return new(testCase);
             }
         }
 

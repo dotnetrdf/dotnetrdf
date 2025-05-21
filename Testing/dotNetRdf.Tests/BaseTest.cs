@@ -55,9 +55,9 @@ namespace VDS.RDF
             new CultureInfo("pt-BR")
         };
 
-        public static IEnumerable<object[]> GetTestCultures()
+        public static IEnumerable<TheoryDataRow<CultureInfo>> GetTestCultures()
         {
-            return TestedCultureInfos.Select(ci => new object[] { ci });
+            return TestedCultureInfos.Select(ci => new TheoryDataRow<CultureInfo>(ci));
         }
 
         public void Debug(string msg = null)
