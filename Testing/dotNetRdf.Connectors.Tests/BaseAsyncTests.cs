@@ -505,7 +505,7 @@ namespace VDS.RDF.Storage
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             TestAsyncDeleteTriples(g);
         }
-
+        
         [Fact]
         public void StorageAsyncAddTriples()
         {
