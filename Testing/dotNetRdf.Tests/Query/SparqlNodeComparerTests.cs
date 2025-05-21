@@ -40,7 +40,7 @@ namespace VDS.RDF.Query
             // Simple Literals are comparable
             new(new LiteralNode("a"), new LiteralNode("b"), ExpectCompare.Lower),
             // XSD string literals are comparable
-            new()
+            new(
                 new LiteralNode("b", new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)),
                 new LiteralNode("a", new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)), ExpectCompare.Greater
             ),
