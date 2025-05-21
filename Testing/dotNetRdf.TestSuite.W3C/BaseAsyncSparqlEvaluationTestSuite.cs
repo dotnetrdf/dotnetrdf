@@ -31,7 +31,7 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
         output.WriteLine($"{t.Id}: {t.Name} is a {t.Type}");
         await InvokeTestRunnerAsync(t);
     }
-
+    
     private async Task InvokeTestRunnerAsync(ManifestTestData t)
     {
         switch (t.Type.AbsoluteUri)
