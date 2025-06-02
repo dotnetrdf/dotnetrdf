@@ -7,6 +7,8 @@ Next release
 NEW: Added a new `SafeMode` option for the JSONLD Parser. Setting this option to true will cause additional warnings to be raised when an invalid type, subject, predicate or object is encountered when parsing JSON-LD rather than silently ignoring them. Thanks to @BigBlueHat for the suggestion and @sdml for the initial implementation (#675)
 FIX: Fix for `$PATH` substitution in `SELECT`-based validators in `SPARQL`-based Constraint Components. Thanks to @Ikeragnell for the report and @langsamu for the fix. (#694)
 FIX: Fixes to the IDisposable implementation of several classes to reduce memory leaks. Thanks to @rorlic for the bug report. (#691)
+NEW: Updated test framework to XUnit 3.x. Thanks to @hellikopter for the PR. (#704)
+NEW: Moved to centrally managed package versions. Thanks to @hellikopter for the PR. (#705)
 
 3.3.2
 -----
