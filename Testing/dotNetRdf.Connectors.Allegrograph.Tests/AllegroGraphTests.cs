@@ -38,7 +38,7 @@ namespace VDS.RDF.Storage
     {
         public static AllegroGraphConnector GetConnection()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseAllegroGraph), "Test Config marks AllegroGraph as unavailable, cannot run this test");
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseAllegroGraph), "Test Config marks AllegroGraph as unavailable, cannot run this test");
             EnsureRepository(TestConfigManager.GetSetting(TestConfigManager.AllegroGraphServer),
                 TestConfigManager.GetSetting(TestConfigManager.AllegroGraphCatalog),
                 TestConfigManager.GetSetting(TestConfigManager.AllegroGraphRepository),
@@ -55,7 +55,7 @@ namespace VDS.RDF.Storage
 
         // These tests are using the synchronous API
 
-        [SkippableFact]
+        [Fact]
         public void StorageAllegroGraphSaveLoad()
         {
             var g = new Graph();
@@ -72,7 +72,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAllegroGraphSaveEmptyGraph1()
         {
             var g = new Graph
@@ -90,7 +90,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAllegroGraphSaveEmptyGraph2()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -126,7 +126,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAllegroGraphSaveEmptyGraph3()
         {
             AllegroGraphConnector agraph = GetConnection();
@@ -162,7 +162,7 @@ namespace VDS.RDF.Storage
             Assert.True(h.HasSubGraph(g));
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAllegroGraphDeleteTriples()
         {
             var g = new Graph();
@@ -189,7 +189,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAllegroGraphDeleteGraph1()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -214,7 +214,7 @@ namespace VDS.RDF.Storage
             Assert.NotEqual(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAllegroGraphDeleteGraph2()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -240,7 +240,7 @@ namespace VDS.RDF.Storage
             Assert.NotEqual(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAllegroGraphAsk()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -248,10 +248,10 @@ namespace VDS.RDF.Storage
             var ask = "ASK WHERE { ?s ?p ?o }";
 
             var results = agraph.Query(ask);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAllegroGraphDescribe()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -259,10 +259,10 @@ namespace VDS.RDF.Storage
             var describe = "DESCRIBE <http://example.org/Vehicles/FordFiesta>";
 
             var results = agraph.Query(describe);
-            Assert.IsAssignableFrom<IGraph>(results);
+            Assert.IsType<IGraph>(results, exactMatch: false);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAllegroGraphSparqlUpdate()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();

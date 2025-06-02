@@ -27,7 +27,6 @@ using System;
 using System.IO;
 using VDS.RDF.Query;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -52,13 +51,13 @@ namespace VDS.RDF.Parsing.Suites
             RunDirectory(f => Path.GetExtension(f).Equals(".srx") && !f.Contains("bad"), true);
             RunDirectory(f => Path.GetExtension(f).Equals(".srx") && f.Contains("bad"), false);
 
-            if (Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.Fail("No tests found");
 
             _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
             _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
-            if (Failed > 0) Assert.True(false, Failed + " Tests failed");
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
+            if (Failed > 0) Assert.Fail(Failed + " Tests failed");
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
         }
 
         [Fact]

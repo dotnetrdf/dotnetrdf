@@ -17,53 +17,46 @@ namespace VDS.RDF.Query
 
     public class SparqlNodeComparerTests
     {
-        public static IEnumerable<object[]> NodeCompareTestData = new[]
-        {
+        public static IEnumerable<TheoryDataRow<INode, INode, ExpectCompare>> NodeCompareTestData = [
             // URI Nodes are not comparable
-            new object[]
-            {
+            new(
                 new UriNode(new Uri("http://example/a")), new UriNode(new Uri("http://example/b")),
                 ExpectCompare.Error
-            },
+            ),
             // Blank Nodes are not comparable
-            new object[] { new BlankNode("a"), new BlankNode("b"), ExpectCompare.Error },
+            new(new BlankNode("a"), new BlankNode("b"), ExpectCompare.Error ),
             // Numeric nodes are comparable
-            new object[]
-            {
+            new(
                 new LiteralNode("123", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)),
                 new LiteralNode("123.0", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal)),
                 ExpectCompare.Equal
-            },
+            ),
             // Numeric nodes are comparable
-            new object[]
-            {
+            new(
                 new LiteralNode("123", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)),
                 new LiteralNode("1.24E2", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal)),
                 ExpectCompare.Lower
-            },
+            ),
             // Simple Literals are comparable
-            new object[] { new LiteralNode("a"), new LiteralNode("b"), ExpectCompare.Lower },
+            new(new LiteralNode("a"), new LiteralNode("b"), ExpectCompare.Lower),
             // XSD string literals are comparable
-            new object[]
-            {
+            new(
                 new LiteralNode("b", new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)),
                 new LiteralNode("a", new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)), ExpectCompare.Greater
-            },
+            ),
             // XSD boolean literals are comparable
-            new object[]
-            {
+            new(
                 new LiteralNode("true", new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean)),
                 new LiteralNode("false", new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean)),
                 ExpectCompare.Greater
-            },
+            ),
             // XSD dateTime literals are comparable
-            new object[]
-            {
+            new(
                 new LiteralNode("2020-01-01T00:00:00Z", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime)),
                 new LiteralNode("2020-01-01T01:00:00+01:00", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime)),
                 ExpectCompare.Equal
-            }
-        };
+            )
+        ];
 
         private readonly SparqlNodeComparer _comparer;
 

@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Builder
             var q = b.BuildQuery();
 
             // then
-            Assert.True(q.QueryType == SparqlQueryType.Describe);
+            Assert.Equal(SparqlQueryType.Describe, q.QueryType);
             Assert.Single(q.DescribeVariables);
             Assert.Equal(uriString, q.DescribeVariables.Single().Value);
         }

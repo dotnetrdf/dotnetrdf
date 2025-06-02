@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using VDS.RDF.Parsing;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Writing
 {
@@ -17,34 +16,28 @@ namespace VDS.RDF.Writing
         public abstract IStoreWriter GetWriter();
         public abstract IStoreReader GetReader();
 
-        public static IEnumerable<object[]> RoundTripTestData = new[]
-        {
-            new object[]
-            {
+        public static IEnumerable<TheoryDataRow<string, string>> RoundTripTestData = [
+            new(
                 "Triple Node Subject",
                 "<< <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o> <http://example.org/g> ."
-            },
-            new object[]
-            {
+            ),
+            new(
                 "Triple Node Object",
                 "<http://example.org/s> <http://example.org/p> << <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/g> ."
-            },
-            new object[]
-            {
+            ),
+            new(
                 "Annotated Triple",
                 @"<< <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o> <http://example.org/g> .
                   <http://example.org/s> <http://example.org/p> <http://example.org/o> <http://example.org/g> ."
-            },
-            new object[]
-            {
+            ),
+            new(
                 "Multiple Triple Annotations",
                 @"<< <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o> <http://example.org/g> .
                 << <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o2> <http://example.org/g> .
                 << <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p2> <http://example.org/o> <http://example.org/g> .
                 <http://example.org/s> <http://example.org/p> <http://example.org/o> <http://example.org/g> ."
-            },
-            new object[]
-            {
+            ),
+            new(
                 "Multiple Graphs",
                 @"<< <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o> <http://example.org/g1> .
                   <http://example.org/s> <http://example.org/p> << <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/g2> .
@@ -54,8 +47,8 @@ namespace VDS.RDF.Writing
                   << <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o2> <http://example.org/g4> .
                   << <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p2> <http://example.org/o> <http://example.org/g4> .
                   <http://example.org/s> <http://example.org/p> <http://example.org/o> <http://example.org/g4> ."
-            }
-        };
+            )
+        ];
 
         protected void RoundTrip(string input)
         {
@@ -92,7 +85,7 @@ namespace VDS.RDF.Writing
 
         [Theory]
         [MemberData(nameof(RoundTripTestData))]
-        public void TestRoundTrip(string testName, string input)
+        public void TestRoundTrip(string _, string input)
         {
             RoundTrip(input);
         }
@@ -120,7 +113,7 @@ namespace VDS.RDF.Writing
 
         [Theory]
         [MemberData(nameof(RoundTripTestData))]
-        public void TestRoundTrip(string testName, string input)
+        public void TestRoundTrip(string _, string input)
         {
             RoundTrip(input);
         }
@@ -150,7 +143,7 @@ namespace VDS.RDF.Writing
 
         [Theory]
         [MemberData(nameof(RoundTripTestData))]
-        public void TestRoundTrip(string testName, string input)
+        public void TestRoundTrip(string _, string input)
         {
             RoundTrip(input);
         }
@@ -181,7 +174,7 @@ namespace VDS.RDF.Writing
 
         [Theory]
         [MemberData(nameof(RoundTripTestData))]
-        public void TestRoundTrip(string testName, string input)
+        public void TestRoundTrip(string _, string input)
         {
             RoundTrip(input);
         }

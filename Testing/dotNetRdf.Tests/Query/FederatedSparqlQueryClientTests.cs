@@ -1,6 +1,7 @@
-﻿using System;
+﻿using FluentAssertions;
+using System;
 using System.Net.Http;
-using FluentAssertions;
+using System.Threading.Tasks;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using Xunit;
@@ -21,88 +22,88 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public async void QueryWithResultSetCombinesResultsFromFederatedEndpoints()
+        public async Task QueryWithResultSetCombinesResultsFromFederatedEndpoints()
         {
             var endpoint = new FederatedSparqlQueryClient(
                 HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query"), new Uri(_fixture.Server2.Urls[0] + "/query"));
-            SparqlResultSet results = await endpoint.QueryWithResultSetAsync("SELECT * WHERE {?s ?p ?o}");
+            SparqlResultSet results = await endpoint.QueryWithResultSetAsync("SELECT * WHERE {?s ?p ?o}", TestContext.Current.CancellationToken);
             results.Should().NotBeNull().And.HaveCount(2);
         }
 
         [Fact]
-        public async void QueryWithResultGraphCombinesGraphsFromFederatedEndpoints()
+        public async Task QueryWithResultGraphCombinesGraphsFromFederatedEndpoints()
         {
             var endpoint = new FederatedSparqlQueryClient(
                 HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query2"), new Uri(_fixture.Server2.Urls[0] + "/query2"));
-            IGraph resultGraph = await endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }");
+            IGraph resultGraph = await endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }", TestContext.Current.CancellationToken);
             resultGraph.Should().NotBeNull();
             resultGraph.Triples.Should().HaveCount(2);
         }
 
         [Fact]
-        public void QueryWithResultSetThrowsAnExceptionIfOneEndpointFails()
+        public async Task QueryWithResultSetThrowsAnExceptionIfOneEndpointFails()
         {
             var endpoint = new FederatedSparqlQueryClient(
                 HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query"), new Uri(_fixture.Server2.Urls[0] + "/fail"));
-            Assert.ThrowsAsync<RdfQueryException>(() => endpoint.QueryWithResultSetAsync("SELECT * WHERE { ?s ?p ?o }"));
+            await Assert.ThrowsAsync<RdfQueryException>(() => endpoint.QueryWithResultSetAsync("SELECT * WHERE { ?s ?p ?o }", TestContext.Current.CancellationToken));
         }
 
         [Fact]
-        public async void QueryWithResultGraphThrowsAnExceptionIfOneEndpointFails()
+        public async Task QueryWithResultGraphThrowsAnExceptionIfOneEndpointFails()
         {
             var endpoint = new FederatedSparqlQueryClient(
                 HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query2"), new Uri(_fixture.Server2.Urls[0] + "/fail"));
-            await Assert.ThrowsAsync<RdfQueryException>( () => endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }"));
+            await Assert.ThrowsAsync<RdfQueryException>( () => endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }", TestContext.Current.CancellationToken));
         }
 
         [Fact]
-        public async void QueryWithResultSetAllowsEndpointErrorsToBeIgnored()
+        public async Task QueryWithResultSetAllowsEndpointErrorsToBeIgnored()
         {
             var endpoint = new FederatedSparqlQueryClient(
                     HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query"), new Uri(_fixture.Server2.Urls[0] + "/fail"))
             { IgnoreFailedRequests = true };
-            SparqlResultSet results = await endpoint.QueryWithResultSetAsync("SELECT * WHERE {?s ?p ?o}");
+            SparqlResultSet results = await endpoint.QueryWithResultSetAsync("SELECT * WHERE {?s ?p ?o}", TestContext.Current.CancellationToken);
             results.Should().NotBeNull().And.HaveCount(1);
         }
 
         [Fact]
-        public async void QueryWithResultGraphAllowsEndpointErrorsToBeIgnored()
+        public async Task QueryWithResultGraphAllowsEndpointErrorsToBeIgnored()
         {
             var endpoint = new FederatedSparqlQueryClient(
                     HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query2"), new Uri(_fixture.Server2.Urls[0] + "/fail"))
                 {IgnoreFailedRequests = true};
-            IGraph results = await endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }");
+            IGraph results = await endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }", TestContext.Current.CancellationToken);
             results.Should().NotBeNull();
             results.Triples.Count.Should().Be(1);
         }
 
         [Fact]
-        public async void QueryWithResultSetThrowsAnExceptionIfOneEndpointTimesOut()
+        public async Task QueryWithResultSetThrowsAnExceptionIfOneEndpointTimesOut()
         {
             var endpoint = new FederatedSparqlQueryClient(
                     HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query"), new Uri(_fixture.Server2.Urls[0] + "/timeout"))
             { Timeout = 2000 };
-            await Assert.ThrowsAsync<RdfQueryTimeoutException>(() => endpoint.QueryWithResultSetAsync("SELECT * WHERE { ?s ?p ?o }"));
+            await Assert.ThrowsAsync<RdfQueryTimeoutException>(() => endpoint.QueryWithResultSetAsync("SELECT * WHERE { ?s ?p ?o }", TestContext.Current.CancellationToken));
         }
 
         [Fact]
-        public async void QueryWithResultGraphThrowsAnExceptionIfOneEndpointTimesOut()
+        public async Task QueryWithResultGraphThrowsAnExceptionIfOneEndpointTimesOut()
         {
             var endpoint = new FederatedSparqlQueryClient(
                     HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query2"), new Uri(_fixture.Server2.Urls[0] + "/timeout"))
                 { Timeout = 2000 };
             await Assert.ThrowsAsync<RdfQueryTimeoutException>(async () =>
-                await endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }"));
+                await endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }", TestContext.Current.CancellationToken));
 
         }
 
         [Fact]
-        public async void QueryWithResultSetAllowsTimeoutsToBeIgnored()
+        public async Task QueryWithResultSetAllowsTimeoutsToBeIgnored()
         {
             var endpoint = new FederatedSparqlQueryClient(
                     HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query"), new Uri(_fixture.Server2.Urls[0] + "/timeout"))
             { Timeout = 3000, IgnoreFailedRequests = true };
-            SparqlResultSet results = await endpoint.QueryWithResultSetAsync("SELECT * WHERE {?s ?p ?o}");
+            SparqlResultSet results = await endpoint.QueryWithResultSetAsync("SELECT * WHERE {?s ?p ?o}", TestContext.Current.CancellationToken);
             results.Should().NotBeNull().And.HaveCount(1);
             _fixture.Server1.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/query"))
                 .Should().HaveCount(1).And.Contain(x =>
@@ -110,12 +111,12 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public async void QueryWithResultGraphAllowsTimeoutsToBeIgnored()
+        public async Task QueryWithResultGraphAllowsTimeoutsToBeIgnored()
         {
             var endpoint = new FederatedSparqlQueryClient(
                     HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query2"), new Uri(_fixture.Server2.Urls[0] + "/timeout"))
                 { Timeout = 3000, IgnoreFailedRequests = true };
-            IGraph results = await endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }");
+            IGraph results = await endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }", TestContext.Current.CancellationToken);
             results.Should().NotBeNull();
             results.Triples.Count.Should().Be(1);
             _fixture.Server1.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/query2"))

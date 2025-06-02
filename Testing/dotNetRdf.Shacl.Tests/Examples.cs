@@ -137,7 +137,7 @@ namespace VDS.RDF.Shacl
             var processor = new ShapesGraph(shapesGraph);
             Report report = processor.Validate(dataGraph);
 
-            Assert.Equal(1, report.Results.Count);
+            Assert.Single(report.Results);
             
             Result result = report.Results.Single();
             Assert.Equal("test message", result.Message.Value);

@@ -43,11 +43,11 @@ namespace VDS.RDF.Storage
 
         public static SparqlHttpProtocolConnector GetConnection()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS), "Test Config marks IIS as unavailable, cannot run test");
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS), "Test Config marks IIS as unavailable, cannot run test");
             return new SparqlHttpProtocolConnector(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolSaveGraph()
         {
             try
@@ -82,7 +82,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolSaveGraph2()
         {
             try
@@ -117,7 +117,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolLoadGraph()
         {
             try
@@ -152,7 +152,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolGraphExists()
         {
             try
@@ -171,7 +171,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolDeleteGraph()
         {
             try
@@ -205,7 +205,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolAddTriples()
         {
             try
@@ -237,7 +237,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolRemoveTriples()
         {
             try
@@ -251,7 +251,7 @@ namespace VDS.RDF.Storage
                     SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
                     sparql.UpdateGraph("http://example.org/sparqlTest", null, g.Triples);
 
-                    Assert.True(false, "SPARQL Uniform HTTP Protocol does not support removing Triples");
+                    Assert.Fail("SPARQL Uniform HTTP Protocol does not support removing Triples");
                 }
                 catch (RdfStorageException storeEx)
                 {
@@ -270,7 +270,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolPostCreate()
         {
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
@@ -294,7 +294,7 @@ namespace VDS.RDF.Storage
                 //Should get a 201 Created response
                 if (response.StatusCode == HttpStatusCode.Created)
                 {
-                    if (response.Headers["Location"] == null) Assert.True(false, "A Location: Header containing the URI of the newly created Graph should have been returned");
+                    if (response.Headers["Location"] == null) Assert.Fail("A Location: Header containing the URI of the newly created Graph should have been returned");
                     var graphUri = new Uri(response.Headers["Location"]);
 
                     Console.WriteLine("New Graph URI is " + graphUri.ToString());
@@ -309,13 +309,13 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    Assert.True(false, "A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
+                    Assert.Fail("A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
                 }
                 response.Close();
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageSparqlUniformHttpProtocolPostCreateMultiple()
         {
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
@@ -342,7 +342,7 @@ namespace VDS.RDF.Storage
                     //Should get a 201 Created response
                     if (response.StatusCode == HttpStatusCode.Created)
                     {
-                        if (response.Headers["Location"] == null) Assert.True(false, "A Location: Header containing the URI of the newly created Graph should have been returned");
+                        if (response.Headers["Location"] == null) Assert.Fail("A Location: Header containing the URI of the newly created Graph should have been returned");
                         var graphUri = new Uri(response.Headers["Location"]);
                         uris.Add(graphUri);
 
@@ -357,7 +357,7 @@ namespace VDS.RDF.Storage
                     }
                     else
                     {
-                        Assert.True(false, "A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
+                        Assert.Fail("A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
                     }
                     response.Close();
                 }

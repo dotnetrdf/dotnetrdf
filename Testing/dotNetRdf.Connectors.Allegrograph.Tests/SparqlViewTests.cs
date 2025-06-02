@@ -9,7 +9,7 @@ namespace VDS.RDF.Storage
     [Collection("AllegroGraph Test Collection")]
     public class SparqlViewTests
     {
-        [SkippableFact]
+        [Fact]
         public void SparqlViewNativeAllegroGraph()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();

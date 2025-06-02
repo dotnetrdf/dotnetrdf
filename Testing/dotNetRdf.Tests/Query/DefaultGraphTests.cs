@@ -61,7 +61,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "ASK Query did not return a SPARQL Result Set as expected");
+                Assert.Fail("ASK Query did not return a SPARQL Result Set as expected");
             }
         }
 
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "ASK Query did not return a SPARQL Result Set as expected");
+                Assert.Fail("ASK Query did not return a SPARQL Result Set as expected");
             }
         }
 
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "ASK Query did not return a SPARQL Result Set as expected");
+                Assert.Fail("ASK Query did not return a SPARQL Result Set as expected");
             }
         }
 
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "ASK Query did not return a SPARQL Result Set as expected");
+                Assert.Fail("ASK Query did not return a SPARQL Result Set as expected");
             }
         }
 
@@ -268,7 +268,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Did not get a SPARQL Result Set as expected");
+                Assert.Fail("Did not get a SPARQL Result Set as expected");
             }
         }
 
@@ -296,7 +296,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Did not get a SPARQL Result Set as expected");
+                Assert.Fail("Did not get a SPARQL Result Set as expected");
             }
         }
 
@@ -325,7 +325,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Did not get a SPARQL Result Set as expected");
+                Assert.Fail("Did not get a SPARQL Result Set as expected");
             }
         }
 
@@ -353,7 +353,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Did not get a SPARQL Result Set as expected");
+                Assert.Fail("Did not get a SPARQL Result Set as expected");
             }
         }
 
@@ -384,7 +384,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Did not get a SPARQL Result Set as expected");
+                Assert.Fail("Did not get a SPARQL Result Set as expected");
             }
         }
     }

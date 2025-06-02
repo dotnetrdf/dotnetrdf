@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Update
 {
@@ -42,7 +41,7 @@ namespace VDS.RDF.Update
 
         protected abstract IStorageProvider GetManager();
 
-        [SkippableFact]
+        [Fact]
         public void SparqlUpdateGenericCreateAndInsertData()
         {
             IStorageProvider manager = GetManager();
@@ -60,7 +59,7 @@ namespace VDS.RDF.Update
             Assert.Equal(1, g.Triples.Count);
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlUpdateGenericCreateInsertDeleteData()
         {
             IStorageProvider manager = GetManager();

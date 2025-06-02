@@ -33,7 +33,6 @@ using VDS.RDF.Query.FullText.Indexing.Lucene;
 using VDS.RDF.Query.FullText.Schema;
 using VDS.RDF.Query.FullText.Search.Lucene;
 using VDS.RDF.Writing.Formatting;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Query.FullText
 {

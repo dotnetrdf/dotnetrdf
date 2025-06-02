@@ -67,7 +67,7 @@ namespace VDS.RDF.Query
             Console.WriteLine(q.ToAlgebra().ToString());
 
             var results = _processor.ProcessQuery(q) as SparqlResultSet;
-            if (results == null) Assert.True(false, "Did not get a SPARQL Result Set as expected");
+            if (results == null) Assert.Fail("Did not get a SPARQL Result Set as expected");
             Assert.False(results.Count == 0, "Result Set should not be empty");
 
             Assert.True(results.All(r => r.HasValue("o") && r["o"] != null && r["o"].NodeType == NodeType.Literal), "All results should be literals");

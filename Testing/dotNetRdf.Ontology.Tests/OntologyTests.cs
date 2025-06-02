@@ -29,7 +29,6 @@ using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
-using Xunit.Abstractions;
 
 
 namespace VDS.RDF.Ontology
@@ -93,7 +92,7 @@ namespace VDS.RDF.Ontology
             try
             {
                 Individual i = g.CreateIndividual(new Uri("http://example.org/noSuchThing"));
-                Assert.True(false, "Attempting to create a none-existent Individual should fail");
+                Assert.Fail("Attempting to create a none-existent Individual should fail");
             }
             catch (RdfOntologyException)
             {
@@ -114,7 +113,7 @@ namespace VDS.RDF.Ontology
             }
             catch (RdfOntologyException)
             {
-                Assert.True(false, "Should be able to get an existing Individual");
+                Assert.Fail("Should be able to get an existing Individual");
             }
             _output.WriteLine(string.Empty);
 
@@ -131,7 +130,7 @@ namespace VDS.RDF.Ontology
             }
             catch (RdfOntologyException)
             {
-                Assert.True(false, "Should be able to create new Individuals");
+                Assert.Fail("Should be able to create new Individuals");
             }
         }
 

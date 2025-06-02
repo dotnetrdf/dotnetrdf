@@ -6,7 +6,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 using Xunit;
-using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace VDS.RDF.TestSuite.RdfStar
 {
@@ -22,7 +22,7 @@ namespace VDS.RDF.TestSuite.RdfStar
             _output = output;
         }
 
-        [SkippableTheory]
+        [Theory]
         [MemberData(nameof(RdfStarSemantics))]
         public void RunTest(ManifestTestData t)
         {
@@ -46,7 +46,7 @@ namespace VDS.RDF.TestSuite.RdfStar
         {
             if (!t.EntailmentRegime.Equals("simple"))
             {
-                throw new SkipException($"Entailment regime {t.EntailmentRegime} is not supported.");
+                throw SkipException.ForSkip($"Entailment regime {t.EntailmentRegime} is not supported.");
             }
             var inputPath = t.Manifest.ResolveResourcePath(t.Action);
             var resultPath = t.Manifest.ResolveResourcePath(t.Result);

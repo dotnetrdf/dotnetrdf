@@ -28,7 +28,6 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 using VDS.RDF.Query.Expressions.Primary;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Query.Expressions
 {

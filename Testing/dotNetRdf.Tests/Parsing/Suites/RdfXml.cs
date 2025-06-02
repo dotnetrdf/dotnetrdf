@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System.IO;
 using System.Linq;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -49,7 +48,7 @@ namespace VDS.RDF.Parsing.Suites
             CheckResults = false;
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingSuiteRdfXmlDom()
         {
             //Run manifests
@@ -58,7 +57,7 @@ namespace VDS.RDF.Parsing.Suites
 
             if (Count == 0)
             {
-                Assert.True(false, "No tests found");
+                Assert.Fail("No tests found");
             }
 
             _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
@@ -66,10 +65,10 @@ namespace VDS.RDF.Parsing.Suites
 
             if (Failed > 0)
             {
-                Assert.True(false, Failed + " Tests failed: \n\t" + string.Join("\n\t", FailedTests));
+                Assert.Fail(Failed + " Tests failed: \n\t" + string.Join("\n\t", FailedTests));
             }
 
-            Skip.If(Indeterminate> 0,$"{Indeterminate} Tests are indeterminate: " + string.Join(", ", IndeterminateTests));
+            Assert.SkipWhen(Indeterminate> 0,$"{Indeterminate} Tests are indeterminate: " + string.Join(", ", IndeterminateTests));
         }
 
         [Fact]
@@ -108,13 +107,13 @@ namespace VDS.RDF.Parsing.Suites
             //Run manifests
             RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error") && !SkipTests.Any(f.EndsWith), true);
             RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error") && !SkipTests.Any(f.EndsWith), false);
-            if (Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.Fail("No tests found");
 
             _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
             _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
-            if (Failed > 0) Assert.True(false, Failed + " Tests failed: " + string.Join(", ", FailedTests));
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate" + string.Join(", ", PassedTests));
+            if (Failed > 0) Assert.Fail(Failed + " Tests failed: " + string.Join(", ", FailedTests));
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate" + string.Join(", ", PassedTests));
         }
 
         [Fact]

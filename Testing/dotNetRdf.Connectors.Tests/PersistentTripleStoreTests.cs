@@ -61,7 +61,7 @@ namespace VDS.RDF.Storage
 
         private void EnsureGraphDeleted(IStorageProvider manager, IRefNode graphUri)
         {
-            Skip.IfNot(manager.DeleteSupported,
+            Assert.SkipUnless(manager.DeleteSupported,
                 "Unable to conduct this test as it requires ensuring a Graph is deleted from the underlying store which the IStorageProvider instance does not support");
             manager.DeleteGraph(graphUri.ToString());
         }
@@ -100,7 +100,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemContains()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -148,7 +148,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemGetGraph()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -195,7 +195,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemAddTriplesFlushed()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -240,7 +240,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemAddTriplesDiscarded()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -287,7 +287,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemRemoveTriplesFlushed()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -330,7 +330,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemRemoveTriplesDiscarded()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -369,7 +369,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemAddGraphFlushed()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -414,7 +414,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemAddGraphDiscarded()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -462,7 +462,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemRemoveGraphFlushed()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -498,7 +498,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemRemoveGraphDiscarded()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -545,7 +545,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemAddThenRemoveGraphFlushed()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -588,7 +588,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemAddThenRemoveGraphDiscarded()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -633,7 +633,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemRemoveThenAddGraphFlushed()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -674,7 +674,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemRemoveThenAddGraphDiscarded()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -770,21 +770,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemQueryUnsynced()
         {
             IStorageProvider manager = GetStorageProvider();
             Assert.Throws<RdfQueryException>(() => TestQueryUnsynced(manager));
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemQuerySelect()
         {
             IStorageProvider manager = GetStorageProvider();
             TestQuerySelect(manager, "SELECT * WHERE { ?s a ?type }");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemQueryAsk()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -792,14 +792,14 @@ namespace VDS.RDF.Storage
             TestQueryAsk(manager, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemQueryConstruct()
         {
             IStorageProvider manager = GetStorageProvider();
             TestQueryConstruct(manager, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemQueryDescribe()
         {
             IStorageProvider manager = GetStorageProvider();
@@ -914,14 +914,14 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemDump1()
         {
             IStorageProvider manager = GetStorageProvider();
             TestDumpStoreEmpty(manager);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemDump2()
         {
             IStorageProvider manager = GetStorageProvider();

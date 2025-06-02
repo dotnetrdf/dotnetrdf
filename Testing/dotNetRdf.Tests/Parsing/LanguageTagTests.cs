@@ -21,14 +21,14 @@ namespace VDS.RDF.Parsing
             "en gb", // no spaces
         };
 
-        public static IEnumerable<object[]> GetWellFormedTags()
+        public static IEnumerable<TheoryDataRow<string>> GetWellFormedTags()
         {
-            return WellFormedTags.Select(x => new object[] {x});
+            return WellFormedTags.Select(x => new TheoryDataRow<string>(x));
         }
 
-        public static IEnumerable<object[]> GetMalformedTags()
+        public static IEnumerable<TheoryDataRow<string>> GetMalformedTags()
         {
-            return MalformedTags.Select(x => new object[] {x});
+            return MalformedTags.Select(x => new TheoryDataRow<string>(x));
         }
 
         [Theory]

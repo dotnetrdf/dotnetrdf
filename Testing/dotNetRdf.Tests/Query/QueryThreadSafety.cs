@@ -30,7 +30,6 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Parsing;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
@@ -118,13 +117,13 @@ namespace VDS.RDF.Query
 
         }
 
-        [SkippableFact(typeof(PlatformNotSupportedException))]
+        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
         public void SparqlQueryThreadSafeEvaluation()
         {
             TestTools.TestInMTAThread(SparqlQueryThreadSafeEvaluationActual);
         }
 
-        [SkippableFact(typeof(PlatformNotSupportedException))]
+        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
         public void SparqlQueryAndUpdateThreadSafeEvaluation()
         {
             for (var i = 1; i <= 10; i++)
@@ -236,7 +235,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Query did not produce a Graph as expected");
+                Assert.Fail("Query did not produce a Graph as expected");
             }
             return null;
         }
@@ -259,7 +258,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Query did not produce a Result Set as expected");
+                Assert.Fail("Query did not produce a Result Set as expected");
             }
             return null;
         }

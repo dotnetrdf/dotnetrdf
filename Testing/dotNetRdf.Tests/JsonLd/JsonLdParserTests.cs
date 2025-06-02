@@ -12,7 +12,6 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using Xunit;
-using Xunit.Abstractions;
 using StringWriter = VDS.RDF.Writing.StringWriter;
 
 namespace VDS.RDF.JsonLd
@@ -112,24 +111,24 @@ namespace VDS.RDF.JsonLd
         }
 
 
-        public static IEnumerable<object[]> DateTimeValues
+        public static IEnumerable<TheoryDataRow<string, string>> DateTimeValues
         {
             get
             {
-                return new[] {
-                    new object[] { "not_a_date", "http://www.w3.org/2001/XMLSchema#dateTime" },
-                    new object[] { "2000-01-01T00:00:00", "http://www.w3.org/2001/XMLSchema#dateTime" },
-                    new object[] { "2000-01-01T00:00:00-00:00", "http://www.w3.org/2001/XMLSchema#dateTime" },
-                    new object[] { "2000-01-01T00:00:00+00:00", "http://www.w3.org/2001/XMLSchema#dateTime" },
-                    new object[] { "2000-01-01T00:00:00-01:00", "http://www.w3.org/2001/XMLSchema#dateTime" },
-                    new object[] { "2000-01-01T00:00:00+01:00", "http://www.w3.org/2001/XMLSchema#dateTime" },
-                    new object[] { "not_a_date", "http://example.com/datatype" },
-                    new object[] { "2000-01-01T00:00:00", "http://example.com/datatype" },
-                    new object[] { "2000-01-01T00:00:00-00:00", "http://example.com/datatype" },
-                    new object[] { "2000-01-01T00:00:00+00:00", "http://example.com/datatype" },
-                    new object[] { "2000-01-01T00:00:00-01:00", "http://example.com/datatype" },
-                    new object[] { "2000-01-01T00:00:00+01:00", "http://example.com/datatype" },
-                };
+                return [
+                    new("not_a_date", "http://www.w3.org/2001/XMLSchema#dateTime"),
+                    new("2000-01-01T00:00:00", "http://www.w3.org/2001/XMLSchema#dateTime"),
+                    new("2000-01-01T00:00:00-00:00", "http://www.w3.org/2001/XMLSchema#dateTime"),
+                    new("2000-01-01T00:00:00+00:00", "http://www.w3.org/2001/XMLSchema#dateTime"),
+                    new("2000-01-01T00:00:00-01:00", "http://www.w3.org/2001/XMLSchema#dateTime"),
+                    new("2000-01-01T00:00:00+01:00", "http://www.w3.org/2001/XMLSchema#dateTime"),
+                    new("not_a_date", "http://example.com/datatype"),
+                    new("2000-01-01T00:00:00", "http://example.com/datatype"),
+                    new("2000-01-01T00:00:00-00:00", "http://example.com/datatype"),
+                    new("2000-01-01T00:00:00+00:00", "http://example.com/datatype"),
+                    new("2000-01-01T00:00:00-01:00", "http://example.com/datatype"),
+                    new("2000-01-01T00:00:00+01:00", "http://example.com/datatype"),
+                ];
             }
         }
 

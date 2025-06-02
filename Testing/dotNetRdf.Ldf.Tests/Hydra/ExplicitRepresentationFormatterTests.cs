@@ -98,18 +98,18 @@ public class ExplicitRepresentationFormatterTests
     public void x(INode node, TripleSegment segment1, TripleSegment segment2) =>
         formatter.Format(node, segment1).Should().Be(formatter.Format(node, segment2), "because formatting is agnostic of position");
 
-    public static IEnumerable<object[]> IllegalNodes
+    public static IEnumerable<TheoryDataRow<INode>> IllegalNodes
     {
         get
         {
-            yield return new object[] { factory.CreateBlankNode() };
-            yield return new object[] { factory.CreateVariableNode("var") };
-            yield return new object[] { factory.CreateTripleNode(default) };
-            yield return new object[] { factory.CreateGraphLiteralNode() };
+            yield return new(factory.CreateBlankNode());
+            yield return new(factory.CreateVariableNode("var"));
+            yield return new(factory.CreateTripleNode(default));
+            yield return new(factory.CreateGraphLiteralNode());
         }
     }
 
-    public static IEnumerable<object[]> NodesAndSegments
+    public static IEnumerable<TheoryDataRow<INode, TripleSegment, TripleSegment>> NodesAndSegments
     {
         get
         {
@@ -125,7 +125,7 @@ public class ExplicitRepresentationFormatterTests
                 from node in nodes
                 from segment1 in segments
                 from segment2 in segments
-                select new object[] { node, segment1, segment2 };
+                select new TheoryDataRow<INode, TripleSegment, TripleSegment>(node, segment1, segment2);
         }
     }
 }

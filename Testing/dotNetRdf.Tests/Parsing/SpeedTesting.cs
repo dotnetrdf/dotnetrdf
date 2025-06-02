@@ -29,7 +29,6 @@ using System.IO;
 using Xunit;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing
 {
@@ -215,7 +214,7 @@ namespace VDS.RDF.Parsing
             CalculateSpeed(500000, watch);
         }
 
-        [SkippableFact(typeof(OutOfMemoryException))]
+        [Fact(SkipExceptions = [typeof(OutOfMemoryException)])]
         [Trait("Category", "explicit")]
         public void ParsingSpeedNTriples1Million()
         {

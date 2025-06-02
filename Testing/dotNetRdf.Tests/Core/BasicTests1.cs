@@ -32,7 +32,6 @@ using Xunit;
 using VDS.RDF.Writing;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using Xunit.Abstractions;
 
 #pragma warning disable 252,253
 
@@ -200,7 +199,7 @@ namespace VDS.RDF
             g.Assert(new Triple(rob, name, g.CreateLiteralNode("Rob")));
             g.Assert(new Triple(fido, breed, lab));
 
-            Assert.True(g.Triples.Count == 5);
+            Assert.Equal(5, g.Triples.Count);
         }
 
         [Fact]

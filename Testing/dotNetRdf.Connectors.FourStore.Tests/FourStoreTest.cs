@@ -40,12 +40,11 @@ namespace VDS.RDF.Storage
     {
         public static FourStoreConnector GetConnection()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseFourStore), "Test Config marks 4store as unavailable, test cannot be run");
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseFourStore), "Test Config marks 4store as unavailable, test cannot be run");
             return new FourStoreConnector(TestConfigManager.GetSetting(TestConfigManager.FourStoreServer));
         }
 
-        [SkippableFact]
-
+        [Fact]
         public void StorageFourStoreSaveGraph()
         {
             var g = new Graph(new Uri("http://example.org/4storeTest"));
@@ -60,7 +59,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFourStoreLoadGraph()
         {
             StorageFourStoreSaveGraph();
@@ -76,7 +75,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFourStoreDeleteGraph()
         {
             StorageFourStoreSaveGraph();
@@ -90,7 +89,7 @@ namespace VDS.RDF.Storage
             Assert.True(g.IsEmpty, "Graph should be empty as it was deleted from 4store");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFourStoreAddTriples()
         {
             StorageFourStoreDeleteGraph();
@@ -108,7 +107,7 @@ namespace VDS.RDF.Storage
             Assert.True(ts.All(t => g.ContainsTriple(t)), "Added Triple should be in the Graph");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFourStoreRemoveTriples()
         {
             //StorageFourStoreAddTriples();
@@ -137,7 +136,7 @@ namespace VDS.RDF.Storage
             Assert.True(toRemove.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFourStoreUpdate()
         {
             FourStoreConnector fourstore = GetConnection();

@@ -28,7 +28,6 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Writing.Formatting;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
@@ -116,7 +115,7 @@ namespace VDS.RDF.Query
 
                 //Run the Query
                 var results = processor.ProcessQuery(q);
-                Assert.IsAssignableFrom<SparqlResultSet>(results);
+                Assert.IsType<SparqlResultSet>(results, exactMatch: false);
                 if (results is SparqlResultSet rset)
                 {
                     _output.WriteLine("Requested Timeout: " + t + " - Actual Timeout: " + expected + "ms - Results: " +
@@ -289,7 +288,7 @@ namespace VDS.RDF.Query
             var processor = new LeviathanQueryProcessor(AsDataset(store),
                 options => { options.QueryExecutionTimeout = 0; });
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 _output.WriteLine("Results: " + rset.Count + " - Query Time: " + q.QueryExecutionTime);
@@ -313,7 +312,7 @@ namespace VDS.RDF.Query
             var processor = new LeviathanQueryProcessor(AsDataset(store),
                 options => { options.QueryExecutionTimeout = 1; });
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             if (results is SparqlResultSet rset)
             {
                 _output.WriteLine("Results: " + rset.Count + " - Query Time: " + q.QueryExecutionTime);

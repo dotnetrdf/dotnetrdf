@@ -2,7 +2,6 @@ using dotNetRdf.TestSupport;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using Xunit.Abstractions;
 
 namespace dotNetRdf.TestSuite.Rdfa
 {

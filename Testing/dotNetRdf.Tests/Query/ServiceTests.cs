@@ -85,7 +85,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Should have returned a SPARQL Result Set");
+                Assert.Fail("Should have returned a SPARQL Result Set");
             }
         }
 

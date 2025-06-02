@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Xunit;
-using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace VDS.RDF.JsonLd
 {
@@ -54,14 +54,13 @@ namespace VDS.RDF.JsonLd
             {"#tli12", "Test is broken (see https://github.com/w3c/json-ld-api/issues/533)"}
         };
 
-        [SkippableTheory(typeof(SkipException))]
-        //[Theory]
+        [Theory(SkipExceptions = [typeof(SkipException)])]
         [MemberData(nameof(JsonLdTestSuiteDataSource.W3CToRdfTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public override void JsonLdParserTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
             string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri, string processorMode,
             string expandContextPath, bool compactArrays, string rdfDirection)
         {
-            if (_skippedParserTests.ContainsKey(testId)) throw new SkipException(_skippedParserTests[testId]);
+            if (_skippedParserTests.ContainsKey(testId)) throw SkipException.ForSkip(_skippedParserTests[testId]);
             base.JsonLdParserTests(testId, testType, inputPath, contextPath, expectedOutputPath,
                 expectedErrorCode, baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
         }
@@ -71,12 +70,12 @@ namespace VDS.RDF.JsonLd
             {"#t0027", "Test depends on decimal representation of a float"},
         };
 
-        [SkippableTheory(typeof(SkipException))]
+        [Theory(SkipExceptions = [typeof(SkipException)])]
         [MemberData(nameof(JsonLdTestSuiteDataSource.W3CFromRdfTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public override void JsonLdWriterTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
             string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool useNativeTypes, bool useRdfType, bool ordered, string rdfDirection)
         {
-            if (_skippedWriterTests.ContainsKey(testId)) throw new SkipException(_skippedWriterTests[testId]);
+            if (_skippedWriterTests.ContainsKey(testId)) throw SkipException.ForSkip(_skippedWriterTests[testId]);
             base.JsonLdWriterTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectErrorCode, useNativeTypes, useRdfType, ordered, rdfDirection);
         }
 

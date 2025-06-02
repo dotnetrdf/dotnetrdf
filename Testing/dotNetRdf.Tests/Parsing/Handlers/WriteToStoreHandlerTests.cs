@@ -202,21 +202,21 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.Throws<ArgumentException>(() => new WriteToStoreHandler(new InMemoryManager(), null, 0));
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingWriteToStoreHandlerInMemory()
         {
             var mem = new InMemoryManager();
             TestWriteToStoreHandler(mem);
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingWriteToStoreHandlerDatasetsInMemory()
         {
             var manager = new InMemoryManager();
             TestWriteToStoreDatasetsHandler(manager);
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesInMemory()
         {
             var manager = new InMemoryManager();

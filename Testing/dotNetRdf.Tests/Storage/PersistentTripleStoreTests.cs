@@ -61,11 +61,11 @@ namespace VDS.RDF.Storage
 
         private void EnsureGraphDeleted(IStorageProvider manager, string graphName)
         {
-            Skip.IfNot(manager.DeleteSupported, "Unable to conduct this test as it requires ensuring a Graph is deleted from the underlying store which the IStorageProvider instance does not support");
+            Assert.SkipUnless(manager.DeleteSupported, "Unable to conduct this test as it requires ensuring a Graph is deleted from the underlying store which the IStorageProvider instance does not support");
             manager.DeleteGraph(graphName);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreBadInstantiation()
         {
             Assert.Throws<ArgumentNullException>(() => new PersistentTripleStore(null));
@@ -127,7 +127,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemContains()
         {
             var manager = new InMemoryManager();
@@ -176,7 +176,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemGetGraph()
         {
             var manager = new InMemoryManager();
@@ -218,7 +218,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemAddTriplesFlushed()
         {
             var manager = new InMemoryManager();
@@ -256,7 +256,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemAddTriplesDiscarded()
         {
             var manager = new InMemoryManager();
@@ -298,7 +298,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemRemoveTriplesFlushed()
         {
             var manager = new InMemoryManager();
@@ -337,7 +337,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemRemoveTriplesDiscarded()
         {
             var manager = new InMemoryManager();
@@ -373,7 +373,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemAddGraphFlushed()
         {
             var manager = new InMemoryManager();
@@ -414,7 +414,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemAddGraphDiscarded()
         {
             var manager = new InMemoryManager();
@@ -457,7 +457,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemRemoveGraphFlushed()
         {
             var manager = new InMemoryManager();
@@ -489,7 +489,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemRemoveGraphDiscarded()
         {
             var manager = new InMemoryManager();
@@ -530,7 +530,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemAddThenRemoveGraphFlushed()
         {
             var manager = new InMemoryManager();
@@ -567,7 +567,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemAddThenRemoveGraphDiscarded()
         {
             var manager = new InMemoryManager();
@@ -608,7 +608,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemRemoveThenAddGraphFlushed()
         {
             var manager = new InMemoryManager();
@@ -645,7 +645,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemRemoveThenAddGraphDiscarded()
         {
             var manager = new InMemoryManager();
@@ -681,7 +681,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var results = store.ExecuteQuery(query) as SparqlResultSet;
-                if (results == null) Assert.True(false, "Did not get a SPARQL Result Set as expected");
+                if (results == null) Assert.Fail("Did not get a SPARQL Result Set as expected");
 
                 TestTools.ShowResults(results);
             }
@@ -699,7 +699,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var results = store.ExecuteQuery(query) as SparqlResultSet;
-                if (results == null) Assert.True(false, "Did not get a SPARQL Result Set as expected");
+                if (results == null) Assert.Fail("Did not get a SPARQL Result Set as expected");
 
                 TestTools.ShowResults(results);
 
@@ -720,7 +720,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var g = store.ExecuteQuery(query) as IGraph;
-                if (g == null) Assert.True(false, "Did not get a Graph as expected");
+                if (g == null) Assert.Fail("Did not get a Graph as expected");
 
                 TestTools.ShowResults(g);
             }
@@ -738,7 +738,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var g = store.ExecuteQuery(query) as IGraph;
-                if (g == null) Assert.True(false, "Did not get a Graph as expected");
+                if (g == null) Assert.Fail("Did not get a Graph as expected");
 
                 TestTools.ShowResults(g);
             }
@@ -748,21 +748,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemQueryUnsynced()
         {
             var manager = new InMemoryManager();
             Assert.Throws<RdfQueryException>(() => TestQueryUnsynced(manager));
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemQuerySelect()
         {
             var manager = new InMemoryManager();
             TestQuerySelect(manager, "SELECT * WHERE { ?s a ?type }");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemQueryAsk()
         {
             var manager = new InMemoryManager();
@@ -770,14 +770,14 @@ namespace VDS.RDF.Storage
             TestQueryAsk(manager, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemQueryConstruct()
         {
             var manager = new InMemoryManager();
             TestQueryConstruct(manager, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemQueryDescribe()
         {
             var manager = new InMemoryManager();
@@ -790,9 +790,6 @@ namespace VDS.RDF.Storage
 
         private void TestUpdateUnsynced(IStorageProvider manager)
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
-                "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
@@ -811,7 +808,7 @@ namespace VDS.RDF.Storage
 
         private void TestUpdate(IStorageProvider manager)
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             EnsureTestDataset(manager);
@@ -839,9 +836,12 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemUpdateUnsynced()
         {
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+                "Test Config marks Remote Parsing as unavailable, test cannot be run");
+
             var manager = new InMemoryManager();
             Assert.Throws<SparqlUpdateException>(() => TestUpdateUnsynced(manager));
         }
@@ -915,14 +915,14 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemDump1()
         {
             var manager = new InMemoryManager();
             TestDumpStoreEmpty(manager);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemDump2()
         {
             var manager = new InMemoryManager();
@@ -932,7 +932,7 @@ namespace VDS.RDF.Storage
         #endregion
 
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreMemUpdate()
         {
             var manager = new InMemoryManager();

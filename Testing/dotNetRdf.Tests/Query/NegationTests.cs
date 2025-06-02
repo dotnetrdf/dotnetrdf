@@ -29,7 +29,6 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
@@ -172,7 +171,7 @@ namespace VDS.RDF.Query
             _testOutputHelper.WriteLine();
 
             var actual = processor.ProcessQuery(query) as SparqlResultSet;
-            if (actual == null) Assert.True(false, "Null results");
+            if (actual == null) Assert.Fail("Null results");
             var expected = new SparqlResultSet();
             var parser = new SparqlXmlParser();
             parser.Load(expected, Path.Combine("resources", "full-minuend.srx"));
@@ -200,8 +199,8 @@ namespace VDS.RDF.Query
             var negResults = processor.ProcessQuery(negQuery) as SparqlResultSet;
             var noNegResults = processor.ProcessQuery(noNegQuery) as SparqlResultSet;
 
-            if (negResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Negation Query");
-            if (noNegResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Non-Negation Query");
+            if (negResults == null) Assert.Fail("Did not get a SPARQL Result Set for the Negation Query");
+            if (noNegResults == null) Assert.Fail("Did not get a SPARQL Result Set for the Non-Negation Query");
 
             Console.WriteLine("Negation Results");
             TestTools.ShowResults(negResults);
@@ -220,7 +219,7 @@ namespace VDS.RDF.Query
 
             var negResults = processor.ProcessQuery(negQuery) as SparqlResultSet;
 
-            if (negResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Negation Query");
+            if (negResults == null) Assert.Fail("Did not get a SPARQL Result Set for the Negation Query");
 
             Console.WriteLine("Negation Results");
             TestTools.ShowResults(negResults);

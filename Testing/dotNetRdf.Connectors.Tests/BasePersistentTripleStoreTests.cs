@@ -70,11 +70,11 @@ namespace VDS.RDF.Storage
 
         private void EnsureGraphDeleted(IStorageProvider manager,  IRefNode graphUri)
         {
-            Skip.IfNot(manager.DeleteSupported, "Unable to conduct this test as it requires ensuring a Graph is deleted from the underlying store which the IStorageProvider instance does not support");
+            Assert.SkipUnless(manager.DeleteSupported, "Unable to conduct this test as it requires ensuring a Graph is deleted from the underlying store which the IStorageProvider instance does not support");
             manager.DeleteGraph(graphUri.ToString());
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreBadInstantiation()
         {
             Assert.Throws<ArgumentNullException>(() => new PersistentTripleStore(null));
@@ -588,7 +588,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var results = store.ExecuteQuery(query) as SparqlResultSet;
-                if (results == null) Assert.True(false, "Did not get a SPARQL Result Set as expected");
+                if (results == null) Assert.Fail("Did not get a SPARQL Result Set as expected");
 
                 //TestTools.ShowResults(results);
             }
@@ -606,7 +606,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var results = store.ExecuteQuery(query) as SparqlResultSet;
-                if (results == null) Assert.True(false, "Did not get a SPARQL Result Set as expected");
+                if (results == null) Assert.Fail("Did not get a SPARQL Result Set as expected");
 
                 //TestTools.ShowResults(results);
 
@@ -627,7 +627,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var g = store.ExecuteQuery(query) as IGraph;
-                if (g == null) Assert.True(false, "Did not get a Graph as expected");
+                if (g == null) Assert.Fail("Did not get a Graph as expected");
 
                 //TestTools.ShowResults(g);
             }
@@ -645,7 +645,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var g = store.ExecuteQuery(query) as IGraph;
-                if (g == null) Assert.True(false, "Did not get a Graph as expected");
+                if (g == null) Assert.Fail("Did not get a Graph as expected");
 
                 //TestTools.ShowResults(g);
             }
@@ -777,28 +777,28 @@ namespace VDS.RDF.Storage
 
         #endregion
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiContains()
         {
             IStorageProvider fuseki = GetConnection();
             TestContains(fuseki);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiGetGraph()
         {
             IStorageProvider fuseki = GetConnection();
             TestGetGraph(fuseki);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiAddTriplesFlushed()
         {
             IStorageProvider fuseki = GetConnection();
             TestAddTriplesFlushed(fuseki);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiAddTriplesDiscarded()
         {
             IStorageProvider fuseki = GetConnection();
@@ -806,14 +806,14 @@ namespace VDS.RDF.Storage
         }
 
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiRemoveTriplesFlushed()
         {
             IStorageProvider fuseki = GetConnection();
             TestRemoveTriplesFlushed(fuseki);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiRemoveTriplesDiscarded()
         {
             IStorageProvider fuseki = GetConnection();
@@ -821,14 +821,14 @@ namespace VDS.RDF.Storage
         }
 
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiAddGraphFlushed()
         {
             IStorageProvider fuseki = GetConnection();
             TestAddGraphFlushed(fuseki);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiAddGraphDiscarded()
         {
             IStorageProvider fuseki = GetConnection();
@@ -836,21 +836,21 @@ namespace VDS.RDF.Storage
         }
 
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiRemoveGraphFlushed()
         {
             IStorageProvider fuseki = GetConnection();
             TestRemoveGraphFlushed(fuseki);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiRemoveGraphDiscarded()
         {
             IStorageProvider fuseki = GetConnection();
             TestRemoveGraphDiscarded(fuseki);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiAddThenRemoveGraphFlushed()
         {
             IStorageProvider fuseki = GetConnection();
@@ -858,42 +858,42 @@ namespace VDS.RDF.Storage
         }
 
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiAddThenRemoveGraphDiscarded()
         {
             IStorageProvider fuseki = GetConnection();
             TestAddThenRemoveGraphDiscarded(fuseki);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiRemoveThenAddGraphFlushed()
         {
             IStorageProvider fuseki = GetConnection();
             TestRemoveThenAddGraphFlushed(fuseki);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiRemoveThenAddGraphDiscarded()
         {
             IStorageProvider fuseki = GetConnection();
             TestRemoveThenAddGraphDiscarded(fuseki);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiQueryUnsynced()
         {
             IStorageProvider fuseki = GetConnection();
             Assert.Throws<RdfQueryException>(() => TestQueryUnsynced(fuseki));
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiQuerySelect()
         {
             IStorageProvider fuseki = GetConnection();
             TestQuerySelect(fuseki, "SELECT * WHERE { ?s a ?type }");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiQueryAsk()
         {
             IStorageProvider fuseki = GetConnection();
@@ -901,28 +901,28 @@ namespace VDS.RDF.Storage
             TestQueryAsk(fuseki, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiQueryConstruct()
         {
             IStorageProvider fuseki = GetConnection();
             TestQueryConstruct(fuseki, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiQueryDescribe()
         {
             IStorageProvider fuseki = GetConnection();
             TestQueryDescribe(fuseki, "DESCRIBE ?type WHERE { GRAPH ?g { ?s a ?type } } LIMIT 5");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiUpdateUnsynced()
         {
             IStorageProvider fuseki = GetConnection();
             Assert.Throws<SparqlUpdateException>(() => TestUpdateUnsynced(fuseki));
         }
 
-        [SkippableFact]
+        [Fact]
         public void StoragePersistentTripleStoreFusekiUpdate()
         {
             IStorageProvider fuseki = GetConnection();

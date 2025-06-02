@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using VDS.RDF;
 using Xunit;
@@ -60,9 +61,8 @@ namespace VDS.RDF.Dynamic
             var actual = d[p];
 
             var objects = Assert.IsType<DynamicObjectCollection>(actual);
-            Assert.Collection(
-                objects,
-                @object => Assert.Equal(o, @object));
+            var @object = Assert.Single(objects);
+            Assert.Equal(o, @object);
         }
 
         [Fact]
@@ -332,6 +332,7 @@ namespace VDS.RDF.Dynamic
         }
 
         [Fact]
+        [SuppressMessage("Assertions", "xUnit2017:Do not use Contains() to check if a value exists in a collection", Justification = "We are testing a specific `contains` method")]
         public void Contains_handles_pairs()
         {
             var g = new Graph();
@@ -344,7 +345,7 @@ namespace VDS.RDF.Dynamic
             var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
             var d = new DynamicNode(s, g);
 
-            Assert.Contains(new KeyValuePair<INode, object>(p, o), d);
+            Assert.True(d.Contains(new KeyValuePair<INode, object>(p, o)));
         }
 
         [Fact]

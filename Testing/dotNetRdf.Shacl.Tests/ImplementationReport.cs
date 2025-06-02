@@ -37,7 +37,7 @@ namespace VDS.RDF.Shacl
         {
             var testSubject = GenerateTestSubjectGraph(DateTime.UtcNow);
 
-            foreach (var test in CoreFullTests.Concat(SparqlTests).Select(testNames => (string)testNames[0]).ToList())
+            foreach (var test in CoreFullTests.Concat(SparqlTests).Select(testNames => testNames.Data).ToList())
             {
                 ExtractTestData(test, out var testGraph, out var shouldFail, out var dataGraph, out var shapesGraph);
 

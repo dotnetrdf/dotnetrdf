@@ -88,7 +88,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.Equal(3, subjects.Count);
         }
 
-        [SkippableFact(typeof(PlatformNotSupportedException))]
+        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
         public void ParsingStoreHandlerBlankNodesTriG()
         {
             TestTools.TestInMTAThread(ParsingStoreHandlerBlankNodesTriGActual);
@@ -105,7 +105,7 @@ namespace VDS.RDF.Parsing.Handlers
             EnsureTestResults(store);
         }
 
-        [SkippableFact(typeof(PlatformNotSupportedException))]
+        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
         public void ParsingStoreHandlerBlankNodesTriX()
         {
             TestTools.TestInMTAThread(ParsingStoreHandlerBlankNodesTriXActual);
@@ -122,7 +122,7 @@ namespace VDS.RDF.Parsing.Handlers
             EnsureTestResults(store);
         }
 
-        [SkippableFact(typeof(System.PlatformNotSupportedException))]
+        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
         public void ParsingStoreHandlerBlankNodesNQuads()
         {
             TestTools.TestInMTAThread(ParsingStoreHandlerBlankNodesNQuadsActual);

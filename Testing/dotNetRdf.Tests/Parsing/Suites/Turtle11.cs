@@ -29,7 +29,6 @@ using System.IO;
 using System.Linq;
 using VDS.RDF.Writing.Formatting;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -40,20 +39,20 @@ namespace VDS.RDF.Parsing.Suites
         public Turtle11Unofficial()
             : base(new TurtleParser(TurtleSyntax.W3C, false), new NTriplesParser(), "turtle11-unofficial") { }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingSuiteTurtleW3CUnofficialTests()
         {
             //Run manifests
             RunManifest("resources/turtle11-unofficial/manifest.ttl", true);
             RunManifest("resources/turtle11-unofficial/manifest-bad.ttl", false);
 
-            if (Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.Fail("No tests found");
 
             Console.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
             Console.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
-            if (Failed > 0) Assert.True(false, Failed + " Tests failed");
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
+            if (Failed > 0) Assert.Fail(Failed + " Tests failed");
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
         }
     }
 
@@ -83,7 +82,7 @@ namespace VDS.RDF.Parsing.Suites
             //Run manifests
             RunManifest(Path.Combine("resources", "turtle11", "manifest.ttl"), new[] { posSyntaxTest }, new[] { negSyntaxTest, negEvalTest });
 
-            if (Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.Fail("No tests found");
 
             _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed - " + Indeterminate + " Indeterminate");
             _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
@@ -92,14 +91,14 @@ namespace VDS.RDF.Parsing.Suites
             {
                 if (Indeterminate == 0)
                 {
-                    Assert.True(false, Failed + " Tests failed and " + Passed + " Tests Passed");
+                    Assert.Fail(Failed + " Tests failed and " + Passed + " Tests Passed");
                 }
                 else
                 {
-                    Assert.True(false, Failed + " Test failed, " + Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
+                    Assert.Fail(Failed + " Test failed, " + Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
                 }
             }
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
         }
 
         [Fact]
@@ -460,7 +459,7 @@ namespace VDS.RDF.Parsing.Suites
             //Run manifests
             RunManifest(Path.Combine("resources", "turtle11", "manifest.ttl"), new[] { posSyntaxTest }, new[] { negSyntaxTest, negEvalTest });
 
-            if (Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.Fail("No tests found");
 
             _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed - " + Indeterminate + " Indeterminate");
             _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
@@ -469,14 +468,14 @@ namespace VDS.RDF.Parsing.Suites
             {
                 if (Indeterminate == 0)
                 {
-                    Assert.True(false, Failed + " Tests failed and " + Passed + " Tests Passed\n\t" + string.Join("\n\t", FailedTests));
+                    Assert.Fail(Failed + " Tests failed and " + Passed + " Tests Passed\n\t" + string.Join("\n\t", FailedTests));
                 }
                 else
                 {
-                    Assert.True(false, Failed + " Test failed, " + Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed\n\t" + string.Join("\n\t", FailedTests));
+                    Assert.Fail(Failed + " Test failed, " + Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed\n\t" + string.Join("\n\t", FailedTests));
                 }
             }
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
         }
 
         [Fact]

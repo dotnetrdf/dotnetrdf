@@ -32,7 +32,6 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
-using Xunit.Abstractions;
 
 namespace VDS.RDF
 {
@@ -57,7 +56,7 @@ namespace VDS.RDF
 
         private void CheckCombinations(List<INode> nodes, IComparer<INode> comparer)
         {
-            if (nodes.Count == 0) Assert.True(false, "No Input");
+            if (nodes.Count == 0) Assert.Fail("No Input");
 
             _output.WriteLine("INode Typed Tests");
             for (var i = 0; i < nodes.Count; i++)
@@ -105,7 +104,7 @@ namespace VDS.RDF
 
         private void CheckCombinations<T>(List<T> nodes, IComparer<T> comparer)
         {
-            if (nodes.Count == 0) Assert.True(false, "No Input");
+            if (nodes.Count == 0) Assert.Fail("No Input");
 
             _output.WriteLine("Strongly Typed Tests - " + nodes.GetType().ToString());
             for (var i = 0; i < nodes.Count; i++)

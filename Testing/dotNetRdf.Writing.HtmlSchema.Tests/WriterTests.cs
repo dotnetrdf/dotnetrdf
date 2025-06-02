@@ -5,7 +5,6 @@ using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using Xunit;
-using Xunit.Abstractions;
 using StringWriter = VDS.RDF.Writing.StringWriter;
 
 namespace VDS.RDF

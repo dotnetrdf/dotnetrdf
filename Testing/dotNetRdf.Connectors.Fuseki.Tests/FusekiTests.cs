@@ -30,7 +30,6 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
-using Xunit.Abstractions;
 using System.IO;
 
 namespace VDS.RDF.Storage
@@ -54,7 +53,7 @@ namespace VDS.RDF.Storage
                 mimeTypeDescription);
         }
 
-        [SkippableTheory]
+        [Theory]
         [InlineData("application/rdf+xml")]
         [InlineData("application/n-triples")]
         public void StorageFusekiSaveGraph(string mimeType = null)
@@ -81,7 +80,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFusekiSaveGraph2()
         {
             var g = new Graph();
@@ -99,7 +98,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFusekiSaveDefaultGraph()
         {
             var g = new Graph();
@@ -118,7 +117,7 @@ namespace VDS.RDF.Storage
             Assert.Null(h.BaseUri);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFusekiSaveDefaultGraph2()
         {
             var g = new Graph();
@@ -137,7 +136,7 @@ namespace VDS.RDF.Storage
             Assert.Null(h.BaseUri);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFusekiLoadGraph()
         {
             //Ensure that the Graph will be there using the SaveGraph() test
@@ -156,7 +155,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFusekiDeleteGraph()
         {
             StorageFusekiSaveGraph();
@@ -179,7 +178,7 @@ namespace VDS.RDF.Storage
                 "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFusekiDeleteDefaultGraph()
         {
             StorageFusekiSaveDefaultGraph();
@@ -203,7 +202,7 @@ namespace VDS.RDF.Storage
                 "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFusekiDeleteDefaultGraph2()
         {
             StorageFusekiSaveDefaultGraph();
@@ -226,7 +225,7 @@ namespace VDS.RDF.Storage
                 "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFusekiAddTriples()
         {
             StorageFusekiSaveGraph();
@@ -246,7 +245,7 @@ namespace VDS.RDF.Storage
             Assert.True(ts.All(t => g.ContainsTriple(t)), "Added Triple should have been in the Graph");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFusekiRemoveTriples()
         {
             StorageFusekiSaveGraph();
@@ -266,7 +265,7 @@ namespace VDS.RDF.Storage
             Assert.True(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFusekiQuery()
         {
             FusekiConnector fuseki = FusekiTests.GetConnection();
@@ -278,11 +277,11 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                Assert.True(false, "Did not get a SPARQL Result Set as expected");
+                Assert.Fail("Did not get a SPARQL Result Set as expected");
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFusekiUpdate()
         {
             FusekiConnector fuseki = FusekiTests.GetConnection();
@@ -305,7 +304,7 @@ namespace VDS.RDF.Storage
             Assert.True(g.IsEmpty, "Graph should be empty as it should have been DROPped by Fuseki");
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageFusekiDescribe()
         {
             FusekiConnector fuseki = FusekiTests.GetConnection();
@@ -317,7 +316,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                Assert.True(false, "Did not return a Graph as expected");
+                Assert.Fail("Did not return a Graph as expected");
             }
         }
     }

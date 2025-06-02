@@ -90,7 +90,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Did not get a Graph as expected");
+                Assert.Fail("Did not get a Graph as expected");
             }
         }
 

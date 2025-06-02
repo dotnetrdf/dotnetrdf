@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Query;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing
 {

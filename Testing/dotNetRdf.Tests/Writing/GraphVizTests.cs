@@ -40,10 +40,10 @@ namespace VDS.RDF.Writing
             writer.Save(g, "WritingGraphViz1.dot");
         }
 
-        [SkippableFact]
+        [Fact]
         public void WritingGraphViz2()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz), "Test Config marks GraphViz as unavailable, test cannot be run");
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz), "Test Config marks GraphViz as unavailable, test cannot be run");
 
             var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
@@ -52,10 +52,10 @@ namespace VDS.RDF.Writing
             generator.Generate(g, "WritingGraphViz2.svg", false);
         }
 
-        [SkippableFact]
+        [Fact]
         public void WritingGraphViz3()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz), "Test Config marks GraphViz as unavailable, test cannot be run");
+            Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz), "Test Config marks GraphViz as unavailable, test cannot be run");
 
             var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");

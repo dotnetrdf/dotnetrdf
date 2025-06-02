@@ -12,7 +12,6 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using Xunit;
-using Xunit.Abstractions;
 using StringWriter = VDS.RDF.Writing.StringWriter;
 
 namespace VDS.RDF.JsonLd

@@ -48,7 +48,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             var d = new DynamicNode(s, g);
 
-            Assert.IsAssignableFrom<IUriNode>(d);
+            Assert.IsType<IUriNode>(d, exactMatch: false);
             Assert.Equal(((IUriNode)d).Uri, s.Uri);
         }
 
@@ -70,7 +70,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateBlankNode();
             var d = new DynamicNode(s, g);
 
-            Assert.IsAssignableFrom<IBlankNode>(d);
+            Assert.IsType<IBlankNode>(d, exactMatch: false);
             Assert.Equal(((IBlankNode)d).InternalID, s.InternalID);
         }
 

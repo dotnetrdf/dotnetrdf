@@ -29,6 +29,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Sdk;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
@@ -56,7 +57,7 @@ namespace VDS.RDF.Storage
 
         protected void Fail(IAsyncStorageProvider provider, string msg)
         {
-            Assert.True(false, "[" + provider.GetType().Name + "] " + msg);
+            Assert.Fail("[" + provider.GetType().Name + "] " + msg);
         }
 
         protected void Fail(IAsyncStorageProvider provider, string msg, Exception e)
@@ -481,7 +482,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAsyncSaveLoad()
         {
             var g = new Graph(new Uri(SaveGraphUri));
@@ -489,7 +490,7 @@ namespace VDS.RDF.Storage
             TestAsyncSaveLoad(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAsyncDeleteGraph()
         {
             var g = new Graph(new Uri(DeleteGraphUri + "/" + Guid.NewGuid()));
@@ -497,7 +498,7 @@ namespace VDS.RDF.Storage
             TestAsyncDelete(g);
         }
         
-        [SkippableFact]
+        [Fact]
         public void StorageAsyncRemoveTriples()
         {
             var g = new Graph(new Uri(RemoveTriplesUri));
@@ -505,7 +506,7 @@ namespace VDS.RDF.Storage
             TestAsyncDeleteTriples(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAsyncAddTriples()
         {
             var g = new Graph(new Uri(AddTripleUri));
@@ -513,13 +514,13 @@ namespace VDS.RDF.Storage
             TestAsyncAddTriples(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAsyncListGraphs()
         {
             TestAsyncListGraphs();
         }
 
-        [SkippableFact]
+        [Fact]
         public void StorageAsyncQuery()
         {
             var g = new Graph(new Uri(QueryGraphUri));
@@ -554,7 +555,7 @@ namespace VDS.RDF.Storage
             IAsyncStorageProvider provider = GetAsyncProvider();
             if (!provider.DeleteSupported)
             {
-                throw new SkipException("[" + provider.GetType().Name +
+                throw SkipException.ForSkip("[" + provider.GetType().Name +
                                         "] IO Behaviour required for this test is not supported, skipping test for this provider");
             }
 
@@ -579,7 +580,7 @@ namespace VDS.RDF.Storage
             IAsyncStorageProvider provider = GetAsyncProvider();
             if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0)
             {
-                throw new SkipException("[" + provider.GetType().Name +
+                throw SkipException.ForSkip("[" + provider.GetType().Name +
                                         "] IO Behaviour required for this test is not supported, skipping test for this provider");
             }
 
@@ -609,7 +610,7 @@ namespace VDS.RDF.Storage
             IAsyncStorageProvider provider = GetAsyncProvider();
             if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0)
             {
-                throw new SkipException(
+                throw SkipException.ForSkip(
                     $"[{provider.GetType().Name}] IO Behaviour required for this test is not supported, skipping test for this provider");
             }
 
@@ -642,7 +643,7 @@ namespace VDS.RDF.Storage
             IAsyncStorageProvider provider = GetAsyncProvider();
             if (!provider.ListGraphsSupported)
             {
-                throw new SkipException("[" + provider.GetType().Name +
+                throw SkipException.ForSkip("[" + provider.GetType().Name +
                                         "] IO Behaviour required for this test is not supported, skipping test for this provider");
             }
 
@@ -664,7 +665,7 @@ namespace VDS.RDF.Storage
             IAsyncStorageProvider provider = GetAsyncProvider();
             if (!(provider is IAsyncQueryableStorage))
             {
-                throw new SkipException("[" + provider.GetType().Name +
+                throw SkipException.ForSkip("[" + provider.GetType().Name +
                                         "] IO Behaviour required for this test is not supported, skipping test for this provider");
             }
 
@@ -675,7 +676,7 @@ namespace VDS.RDF.Storage
                 var results = await ((IAsyncQueryableStorage)provider).QueryAsync(
                     "SELECT * WHERE { GRAPH <" + QueryGraphUri + "> { ?s a ?type } }", CancellationToken.None);
                 Assert.NotNull(results);
-                SparqlResultSet resultSet = Assert.IsAssignableFrom<SparqlResultSet>(results);
+                SparqlResultSet resultSet = Assert.IsType<SparqlResultSet>(results, exactMatch: false);
                 foreach (SparqlResult r in resultSet)
                 {
                     Assert.True(g.GetTriplesWithSubjectObject(r["s"], r["type"]).Any(),
@@ -689,7 +690,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task StorageSaveLoadAsync()
         {
             var g = new Graph(new Uri(SaveGraphUri2));
@@ -697,7 +698,7 @@ namespace VDS.RDF.Storage
             await TestSaveLoadAsync(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task StorageDeleteGraphAsync()
         {
             var g = new Graph(new Uri(DeleteGraphUri + "/" + Guid.NewGuid()));
@@ -705,7 +706,7 @@ namespace VDS.RDF.Storage
             await TestDeleteGraphAsync(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task StorageDeleteTriplesAsync()
         {
             var g = new Graph(new Uri(RemoveTriplesUri));
@@ -713,7 +714,7 @@ namespace VDS.RDF.Storage
             await TestDeleteTriplesAsync(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task StorageAddTriplesAsync()
         {
             var g = new Graph();
@@ -721,7 +722,7 @@ namespace VDS.RDF.Storage
             await TestAddTriplesAsync(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task StorageListGraphsAsync()
         {
             var g = new Graph(new Uri(ListGraphsUri));
@@ -729,7 +730,7 @@ namespace VDS.RDF.Storage
             await TestListGraphsAsync(g);
         }
 
-        [SkippableFact]
+        [Fact]
         public async Task StorageQueryAsync()
         {
             var g = new Graph();

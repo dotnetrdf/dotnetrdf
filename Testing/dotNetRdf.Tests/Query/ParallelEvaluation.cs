@@ -36,7 +36,6 @@ using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Writing.Formatting;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
@@ -124,12 +123,12 @@ namespace VDS.RDF.Query
                 }
                 else
                 {
-                    Assert.True(false, "Query did not return a SPARQL Result Set as expected");
+                    Assert.Fail("Query did not return a SPARQL Result Set as expected");
                 }
             }
             else
             {
-                Assert.True(false, "Query did not return a SPARQL Result Set for normal evaluation as expected");
+                Assert.Fail("Query did not return a SPARQL Result Set for normal evaluation as expected");
             }
         }
 

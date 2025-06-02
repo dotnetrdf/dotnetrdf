@@ -70,7 +70,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Expected a SPARQL Result Set");
+                Assert.Fail("Expected a SPARQL Result Set");
             }
         }
 
@@ -164,7 +164,7 @@ namespace VDS.RDF.Query
                 try
                 {
                     SparqlQuery q = parser.ParseFromString(iv);
-                    Assert.True(false, "Should have thrown a Parsing Error");
+                    Assert.Fail("Should have thrown a Parsing Error");
                 }
                 catch (RdfParseException parseEx)
                 {
@@ -209,7 +209,7 @@ namespace VDS.RDF.Query
                 try
                 {
                     SparqlQuery q = parser.ParseFromString(iv);
-                    Assert.True(false, "Should have thrown a Parsing Error");
+                    Assert.Fail("Should have thrown a Parsing Error");
                 }
                 catch (RdfParseException parseEx)
                 {
@@ -237,7 +237,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Expected a SPARQL Result Set");
+                Assert.Fail("Expected a SPARQL Result Set");
             }
         }
 
@@ -258,7 +258,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(false, "Expected a SPARQL Result Set");
+                Assert.Fail("Expected a SPARQL Result Set");
             }
         }
 

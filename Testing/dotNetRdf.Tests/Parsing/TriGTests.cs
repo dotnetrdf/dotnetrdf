@@ -43,7 +43,7 @@ namespace VDS.RDF.Parsing
             {
                 parser.Load(store, new StringReader(data));
 
-                if (!shouldParse) Assert.True(false, "Parsed using syntax " + syntax.ToString() + " when an error was expected");
+                if (!shouldParse) Assert.Fail("Parsed using syntax " + syntax.ToString() + " when an error was expected");
             }
             catch (Exception ex)
             {

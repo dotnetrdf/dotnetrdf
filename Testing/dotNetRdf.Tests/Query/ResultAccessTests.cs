@@ -61,7 +61,7 @@ namespace VDS.RDF.Query
         private SparqlResultSet GetResults(SparqlQuery query)
         {
             object results = _processor.ProcessQuery(query);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             return results as SparqlResultSet;
         }
 

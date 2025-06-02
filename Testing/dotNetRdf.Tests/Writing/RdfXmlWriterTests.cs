@@ -32,7 +32,6 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Writing
 {
@@ -132,7 +131,7 @@ namespace VDS.RDF.Writing
                 {
                     _output.WriteLine("Failed as expected - " + ex.Message);
                 }
-                if (failed) Assert.True(false, writer.GetType().Name + " produced output when failure was expected");
+                if (failed) Assert.Fail(writer.GetType().Name + " produced output when failure was expected");
                 _output.WriteLine(string.Empty);
             }
         }

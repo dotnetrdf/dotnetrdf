@@ -34,7 +34,6 @@ using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
@@ -401,7 +400,7 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://re
             Assert.NotNull(constant);
 
             var n = constant.Node;
-            Assert.IsAssignableFrom<ILiteralNode>(n);
+            Assert.IsType<ILiteralNode>(n, exactMatch: false);
             var lit = (ILiteralNode) n;
             Assert.Equal(string.Empty, lit.Language);
             Assert.True(EqualityHelper.AreUrisEqual(lit.DataType, new Uri("http://example/type")));
@@ -449,7 +448,7 @@ SELECT * WHERE
             try
             {
                 _parser.ParseFromString(query);
-                Assert.True(false, "Did not error as expected");
+                Assert.Fail("Did not error as expected");
             }
             catch (RdfParseException parseEx)
             {
@@ -474,7 +473,7 @@ SELECT * WHERE
             try
             {
                 _parser.ParseFromString(query);
-                Assert.True(false, "Did not error as expected");
+                Assert.Fail("Did not error as expected");
             }
             catch (RdfParseException parseEx)
             {
@@ -499,7 +498,7 @@ SELECT * WHERE
             try
             {
                 _parser.ParseFromString(query);
-                Assert.True(false, "Did not error as expected");
+                Assert.Fail("Did not error as expected");
             }
             catch (RdfParseException parseEx)
             {
@@ -524,7 +523,7 @@ SELECT * WHERE
             try
             {
                 _parser.ParseFromString(query);
-                Assert.True(false, "Did not error as expected");
+                Assert.Fail("Did not error as expected");
             }
             catch (RdfParseException parseEx)
             {

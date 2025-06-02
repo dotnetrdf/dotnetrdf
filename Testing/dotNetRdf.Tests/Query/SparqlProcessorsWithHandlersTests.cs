@@ -229,26 +229,26 @@ namespace VDS.RDF.Query
         {
             if (_remote == null)
             {
-                Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS), "Test Config marks IIS as unavailable, cannot run test");
+                Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS), "Test Config marks IIS as unavailable, cannot run test");
                 _remote = new RemoteQueryProcessor(new SparqlQueryClient(new HttpClient(),  new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalQueryUri))));
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlWithHandlersRemoteCount()
         {
             EnsureRemoteReady();
             TestCountHandlers(_remote);
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlWithHandlersRemoteGraph()
         {
             EnsureRemoteReady();
             TestGraphHandlers(_remote);
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlWithHandlersRemoteWriteThrough()
         {
             EnsureRemoteReady();

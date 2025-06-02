@@ -72,13 +72,13 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [SkippableFact(typeof(PlatformNotSupportedException))]
+        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
         public void WritingTriX()
         {
             TestWriter(new TriXWriter(), new TriXParser(), false);
         }
 
-        [SkippableFact(typeof(PlatformNotSupportedException))]
+        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
         public void WritingNQuads()
         {
             TestTools.TestInMTAThread(WritingNQuadsActual);
@@ -95,7 +95,7 @@ namespace VDS.RDF.Writing
             TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Original), true);
         }
 
-        [SkippableFact(typeof(PlatformNotSupportedException))]
+        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
         public void WritingNQuadsMixed()
         {
             TestTools.TestInMTAThread(WritingNQuadsMixedActual);
@@ -112,9 +112,11 @@ namespace VDS.RDF.Writing
             TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Rdf11), true);
         }
 
-        [SkippableFact(typeof(PlatformNotSupportedException))]
+        [Fact]
         public void WritingNQuadsMixedBad()
         {
+            Assert.SkipUnless(System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows), "Only supported on Windows");
+
             Assert.Throws<RdfParseException>(() => TestTools.TestInMTAThread(WritingNQuadsMixedBadActual));
         }
 
@@ -129,7 +131,7 @@ namespace VDS.RDF.Writing
             TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Original), true);
         }
 
-        [SkippableFact(typeof(PlatformNotSupportedException))]
+        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
         public void WritingNQuads11()
         {
             TestTools.TestInMTAThread(WritingNQuads11Actual);
@@ -146,7 +148,7 @@ namespace VDS.RDF.Writing
             TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Rdf11), true);
         }
 
-        [SkippableFact(typeof(PlatformNotSupportedException))]
+        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
         public void WritingTriG()
         {
             TestTools.TestInMTAThread(WritingTriGActual);
@@ -163,7 +165,7 @@ namespace VDS.RDF.Writing
             TestWriter(new TriGWriter(), new TriGParser(), true);
         }
 
-        [SkippableFact(typeof(PlatformNotSupportedException))]
+        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
         public void WritingTriGUncompressed()
         {
             TestTools.TestInMTAThread(WritingTriGUncompressedActual);

@@ -3,8 +3,7 @@ using dotNetRdf.TestSupport;
 using System.Collections.Generic;
 using System.IO;
 using Xunit;
-using Xunit.Abstractions;
-
+using Xunit.Sdk;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -24,7 +23,7 @@ namespace VDS.RDF.Parsing.Suites
                 Path.Combine("resources", "trig11", "manifest.ttl"));
         }
 
-        [SkippableTheory]
+        [Theory]
         [MemberData(nameof(GetTestData))]
         public void RunTest(ManifestTestData t)
         {
@@ -37,7 +36,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             if (t.Id == "http://www.w3.org/2013/TriGTests/#trig-syntax-minimal-whitespace-01")
             {
-                throw new SkipException(
+                throw SkipException.ForSkip(
                     "Turtle tokenizer does not currently handle backtracking when a DOT was meant to terminate a triple.");
             }
             _output.WriteLine($"Load from {t.Manifest.ResolveResourcePath(t.Action)}");
@@ -51,7 +50,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             if (t.Id == "http://www.w3.org/2013/TriGTests/#trig-graph-bad-02")
             {
-                throw new SkipException(
+                throw SkipException.ForSkip(
                     "Skipping dubious bad syntax test. Test asserts that a graph block must be followed by a DOT, but the specification does not require this.");
             }
 
@@ -86,7 +85,7 @@ namespace VDS.RDF.Parsing.Suites
         }
 
 
-        [SkippableFact]
+        [Fact]
         public void RunSingle()
         {
             InvokeTestRunner(new ManifestTestDataProvider(

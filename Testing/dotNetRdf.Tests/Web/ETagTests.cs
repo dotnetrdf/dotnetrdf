@@ -29,7 +29,6 @@ using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Web
 {

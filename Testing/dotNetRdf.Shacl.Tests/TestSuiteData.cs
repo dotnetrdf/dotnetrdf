@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Xunit;
 using IO = System.IO;
 
 namespace VDS.RDF.Shacl
@@ -55,18 +56,18 @@ namespace VDS.RDF.Shacl
             Populate(factory.CreateUriNode(new Uri(baseUri, "sparql/component/nodeValidator-001.ttl")));
         }
 
-        public static IEnumerable<object[]> CoreTests =>
+        public static IEnumerable<TheoryDataRow<string>> CoreTests =>
             from name in CoreTestNames
-            select new[] { name };
+            select new TheoryDataRow<string>(name);
 
-        public static IEnumerable<object[]> CoreFullTests =>
+        public static IEnumerable<TheoryDataRow<string>> CoreFullTests =>
             from name in CoreTestNames.Except(CoreFullExcludedTests)
-            select new[] { name };
+            select new TheoryDataRow<string>(name);
 
-        public static IEnumerable<object[]> SparqlTests =>
+        public static IEnumerable<TheoryDataRow<string>> SparqlTests =>
             from name in Tests
             where name.StartsWith("sparql")
-            select new[] { name };
+            select new TheoryDataRow<string>(name);
 
         public static IEnumerable<string> CoreTestNames =>
             from name in Tests

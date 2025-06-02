@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System.IO;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -50,13 +49,13 @@ namespace VDS.RDF.Parsing.Suites
             RunDirectory(f => Path.GetExtension(f).Equals(".trig") && !f.Contains("bad"), true);
             RunDirectory(f => Path.GetExtension(f).Equals(".trig") && f.Contains("bad"), false);
 
-            if (Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.Fail("No tests found");
 
             _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
             _testOutputHelper.WriteLine((((double)Passed / (double)Count) * 100) + "% Passed");
 
-            if (Failed > 0) Assert.True(false, Failed + " Tests failed");
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
+            if (Failed > 0) Assert.Fail(Failed + " Tests failed");
+            Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
         }
     }
 }

@@ -139,7 +139,7 @@ namespace VDS.RDF
 
         private static void Fail()
         {
-            Skip.IfNot(true, "UnitTestConfig.properties cannot be found, to configure your test environment please make a copy of UnitTestConfig.template under the resources directory, add it to this project as a Content item and then edit it to match your test environment");
+            Assert.SkipUnless(true, "UnitTestConfig.properties cannot be found, to configure your test environment please make a copy of UnitTestConfig.template under the resources directory, add it to this project as a Content item and then edit it to match your test environment");
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace VDS.RDF
                 var value = _settings[key];
                 if (String.IsNullOrEmpty(value))
                 {
-                    Assert.True(false,
+                    Assert.Fail(
                         "Configuration setting '" + key + "' in your UnitTestConfig.properties file is empty/null");
                     return null;
                 }
@@ -168,7 +168,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.True(false,
+                Assert.Fail(
                     "Required configuration setting '" + key +
                     "' not found in your UnitTestConfig.properties file");
                 return null;
@@ -192,7 +192,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.True(false,
+                Assert.Fail(
                     "Configuration setting '" + key +
                     "' in your UnitTestConfig.properties file is not a valid integer");
                 return 0;
@@ -216,7 +216,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.True(false,
+                Assert.Fail(
                     "Configuration setting '" + key +
                     "' in your UnitTestConfig.properties file is not a valid boolean");
                 return false;

@@ -63,9 +63,9 @@ namespace VDS.RDF.Dynamic
             var p = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:p")), g);
             var o = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:o")), g);
 
-            Assert.Contains(s, o.P);
-            Assert.Contains(p, o.P);
-            Assert.Contains(o, o.P);
+            Assert.True(o.P.Contains(s));
+            Assert.True(o.P.Contains(p));
+            Assert.True(o.P.Contains(o));
         }
 
         [Fact]

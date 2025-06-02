@@ -78,7 +78,7 @@ namespace VDS.RDF.Query
                 options => options.Describer =
                     new SparqlDescriber((IDescribeAlgorithm)Activator.CreateInstance(describerType)));
             var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<Graph>(results);
+            Assert.IsType<Graph>(results, exactMatch: false);
             if (results is Graph)
             {
                 TestTools.ShowResults(results);

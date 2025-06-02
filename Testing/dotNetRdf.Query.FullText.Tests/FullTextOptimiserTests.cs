@@ -33,7 +33,6 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.FullText.Search;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Writing.Formatting;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Query.FullText
 {

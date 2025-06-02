@@ -28,7 +28,6 @@ using System;
 using VDS.RDF.Shacl.Validation;
 using VDS.RDF.Writing;
 using Xunit;
-using Xunit.Abstractions;
 using static VDS.RDF.Shacl.TestSuiteData;
 
 namespace VDS.RDF.Shacl

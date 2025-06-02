@@ -70,7 +70,7 @@ namespace VDS.RDF.Query
             {
                 if (result.Contains(op)) continue;
                 Console.WriteLine("Expected Operator '" + op + "' missing");
-                Assert.True(false, "Expected Operator '" + op + "' missing");
+                Assert.Fail("Expected Operator '" + op + "' missing");
             }
         }
 

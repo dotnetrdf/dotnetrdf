@@ -136,7 +136,7 @@ namespace VDS.RDF
             Assert.True(report.AddedMSGs.Any(), "Difference should have reported some Added MSGs");
         }
 
-        [SkippableFact]
+        [Fact]
         public void GraphDiffRemovedMSG()
         {
             var g = new Graph();
@@ -146,7 +146,7 @@ namespace VDS.RDF
 
             //Remove MSG from 2nd Graph
             INode toRemove = h.Nodes.BlankNodes().FirstOrDefault();
-            Skip.If(toRemove == null, "No MSGs in test graph");
+            Assert.SkipWhen(toRemove == null, "No MSGs in test graph");
             h.Retract(h.GetTriplesWithSubject(toRemove).ToList());
 
             GraphDiffReport report = g.Difference(h);
@@ -197,14 +197,14 @@ namespace VDS.RDF
             Assert.True(report.RemovedTriples.Any(), "Report should list removed triples");
         }
 
-        public static IEnumerable<object[]> DiffCases()
+        public static IEnumerable<TheoryDataRow<string>> DiffCases()
         {
             var resourceDirectory = new DirectoryInfo(Path.Combine("resources", "diff_cases"));
             foreach (FileInfo fileA in resourceDirectory.EnumerateFiles("*_a.ttl"))
             {
                 var testCase = fileA.Name;
                 testCase = testCase.Substring(0, testCase.LastIndexOf('_'));
-                yield return new object[] {testCase};
+                yield return new(testCase);
             }
         }
 

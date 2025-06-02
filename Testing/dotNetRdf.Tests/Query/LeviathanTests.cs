@@ -38,7 +38,6 @@ using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Update;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
@@ -467,7 +466,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             }
             else
             {
-                Assert.True(false, "Query should have returned a SPARQL Result Set");
+                Assert.Fail("Query should have returned a SPARQL Result Set");
             }
         }
 

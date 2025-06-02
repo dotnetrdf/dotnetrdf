@@ -30,7 +30,6 @@ using System.Linq;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -274,7 +273,7 @@ namespace VDS.RDF.Parsing.Suites
                 }
                 _testOutputHelper.WriteLine("Average Parsing Speed was " + totalTriples / (totalTime / 1000d) + " triples/second");
 
-                if (testsFailed > 0) Assert.True(false, testsFailed + " Tests Failed");
+                if (testsFailed > 0) Assert.Fail(testsFailed + " Tests Failed");
             }
             catch (Exception ex)
             {
