@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{F0F45D49-20AC-4407-8618-8C3650E34B97}"
 	ProjectSection(SolutionItems) = preProject
 		Testing\Directory.Build.props = Testing\Directory.Build.props
+		Testing\Directory.Packages.props = Testing\Directory.Packages.props
 		Testing\xunit.runner.json = Testing\xunit.runner.json
 	EndProjectSection
 EndProject
@@ -27,6 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		.github\workflows\build.yaml = .github\workflows\build.yaml
 		ChangeLog.txt = ChangeLog.txt
+		Directory.Packages.props = Directory.Packages.props
 		dotnetrdf.ruleset = dotnetrdf.ruleset
 		.github\workflows\publish.yaml = .github\workflows\publish.yaml
 	EndProjectSection
