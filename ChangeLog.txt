@@ -9,7 +9,8 @@ FIX: Fix for `$PATH` substitution in `SELECT`-based validators in `SPARQL`-based
 FIX: Fixes to the IDisposable implementation of several classes to reduce memory leaks. Thanks to @rorlic for the bug report. (#691)
 NEW: Updated test framework to XUnit 3.x. Thanks to @hellikopter for the PR. (#704)
 NEW: Moved to centrally managed package versions. Thanks to @hellikopter for the PR. (#705, #707)
-FIX: Fixed documentation of RemoveFromList methods to correctly document the limitations of the methods. Thanks to @langsamu for the report (#702, #708)
+FIX: Fixed documentation of RemoveFromList methods to correctly document the limitations of the methods. Thanks to @langsamu for the report. (#702, #708)
+NEW: Added Graph extension methods RemoveAllFromList to remove all instances of a specified node or object (with node mapping function) from an RDF collection. (#709)
 
 3.3.2
 -----

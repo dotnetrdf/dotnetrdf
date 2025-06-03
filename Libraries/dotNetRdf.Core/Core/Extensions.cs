@@ -615,6 +615,45 @@ namespace VDS.RDF
             RemoveFromList(g, listRoot, objects, n => n);
         }
 
+        /// <summary>
+        /// Removes the given items from a list (aka an RDF collection).
+        /// </summary>
+        /// <remarks>If an item occurs multiple times in the list, all instances of that item will be removed.</remarks>
+        /// <param name="g">Graph to retract from.</param>
+        /// <param name="listRoot">Root node of the list to be modified.</param>
+        /// <param name="objects">Objects to remove from the collection.</param>
+        /// <param name="mapFunc">Mapping from object type <typeparamref name="T"/> to <see cref="INode"/>.</param>
+        /// <typeparam name="T">Type of objects to be removed.</typeparam>
+        public static void RemoveAllFromList<T>(this IGraph g, INode listRoot, IEnumerable<T> objects,
+            Func<T, INode> mapFunc)
+        {
+            var removeNodes = objects.Select(mapFunc).ToList();
+            if (!removeNodes.Any())
+            {
+                // Nothing to remove
+                return;
+            }
+            var currObjects = GetListItems(g, listRoot).ToList();
+            var initialCount = currObjects.Count;
+            currObjects.RemoveAll(x=>removeNodes.Contains(x));
+            if (initialCount != currObjects.Count)
+            {
+                RetractList(g, listRoot);
+                AssertList(g, listRoot, currObjects);
+            }
+        }
+
+        /// <summary>
+        /// Removes the given items from a list (aka an RDF collection).
+        /// </summary>
+        /// <remarks>If an item occurs multiple times in the list, all instances of that item will be removed.</remarks>
+        /// <param name="g">Graph to retract from.</param>
+        /// <param name="listRoot">Root node of the list to be modified.</param>
+        /// <param name="objects">Nodes to remove from the collection.</param>
+        public static void RemoveAllFromList(this IGraph g, INode listRoot, IEnumerable<INode> objects)
+        {
+            RemoveAllFromList(g, listRoot, objects, n => n);
+        }
 #endregion
 
 

@@ -23,7 +23,11 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using FluentAssertions;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Parsing;
 using Xunit;
 
 namespace VDS.RDF
@@ -121,6 +125,32 @@ namespace VDS.RDF
         {
             var g = new Graph();
             g.AddToList(g.CreateBlankNode(), Enumerable.Empty<INode>());
+        }
+
+        [Fact]
+        public void RemoveFromListRemovesFirstOccurrenceOnly()
+        {
+            var g = new Graph();
+            INode list = g.AssertList([0, 0, 1], x => x.ToLiteral(g));
+            g.RemoveFromList(list, [0], x=>x.ToLiteral(g));
+            g.GetListItems(list).Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void RemoveAllFromListRemovesAllOccurrences()
+        {
+            var g = new Graph();
+            INode list = g.AssertList([0, 0, 1], x => x.ToLiteral(g));
+            g.RemoveAllFromList(list, [0], x=>x.ToLiteral(g));
+            g.GetListItems(list).Should().HaveCount(1);
+        }
+
+        [Fact]
+        public void AnEmptyListCanBeAssertedAndRetrieved()
+        {
+            var g = new Graph();
+            INode list = g.AssertList(new List<INode>());
+            g.GetListItems(list).Should().BeEmpty();
         }
 
         [Fact]
