@@ -576,7 +576,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Removes the given items from a list (aka a RDF collection), if an item occurs multiple times in the list all occurrences will be removed.
+        /// Removes the given items from a list (aka a RDF collection), if an item occurs multiple times in the list, only the first occurrence will be removed.
         /// </summary>
         /// <typeparam name="T">Type of Objects.</typeparam>
         /// <param name="g">Graph to retract from.</param>
@@ -585,7 +585,7 @@ namespace VDS.RDF
         /// <param name="mapFunc">Mapping from Object Type to <see cref="INode">INode</see>.</param>
         public static void RemoveFromList<T>(this IGraph g, INode listRoot, IEnumerable<T> objects, Func<T, INode> mapFunc)
         {
-            // If no objects to remove then nothing to do
+            // If no objects to remove, then nothing to do
             if (!objects.Any()) return;
 
             // Figure out which items need removing
@@ -605,7 +605,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Removes the given items from a list (aka a RDF collection), if an item occurs multiple times in the list all occurrences will be removed.
+        /// Removes the given items from a list (aka a RDF collection), if an item occurs multiple times in the list, only the first occurrence will be removed.
         /// </summary>
         /// <param name="g">Graph to retract from.</param>
         /// <param name="listRoot">Root Node for the list.</param>
