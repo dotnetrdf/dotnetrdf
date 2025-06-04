@@ -29,109 +29,108 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Builder.Expressions;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+internal sealed class SelectBuilder : QueryBuilder, ISelectBuilder
 {
-    internal sealed class SelectBuilder : QueryBuilder, ISelectBuilder
+    private readonly IList<Func<INamespaceMapper, SparqlVariable>> _buildSelectVariables = new List<Func<INamespaceMapper, SparqlVariable>>();
+
+    internal SelectBuilder(SparqlQueryType queryType) : base(queryType)
     {
-        private readonly IList<Func<INamespaceMapper, SparqlVariable>> _buildSelectVariables = new List<Func<INamespaceMapper, SparqlVariable>>();
+    }
 
-        internal SelectBuilder(SparqlQueryType queryType) : base(queryType)
+    /// <summary>
+    /// Adds additional SELECT <paramref name="variables"/>.
+    /// </summary>
+    public ISelectBuilder And(params SparqlVariable[] variables)
+    {
+        foreach (SparqlVariable sparqlVariable in variables)
         {
+            SparqlVariable variablelocalCopy = sparqlVariable;
+            _buildSelectVariables.Add(prefixes => EnsureIsResultVariable(variablelocalCopy));
+        }
+        return this;
+    }
+
+    internal ISelectBuilder And(Func<INamespaceMapper, SparqlVariable> buildTriplePatternFunc)
+    {
+        _buildSelectVariables.Add(buildTriplePatternFunc);
+        return this;
+    }
+
+    /// <summary>
+    /// Adds additional SELECT expression.
+    /// </summary>
+    public IAssignmentVariableNamePart<ISelectBuilder> And<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
+    {
+        return new SelectAssignmentVariableNamePart<TExpression>(this, buildAssignmentExpression);
+    }
+
+    private static SparqlVariable EnsureIsResultVariable(SparqlVariable sparqlVariable)
+    {
+        if (sparqlVariable.IsResultVariable)
+        {
+            return sparqlVariable;
         }
 
-        /// <summary>
-        /// Adds additional SELECT <paramref name="variables"/>.
-        /// </summary>
-        public ISelectBuilder And(params SparqlVariable[] variables)
+        if (sparqlVariable.IsAggregate)
         {
-            foreach (SparqlVariable sparqlVariable in variables)
-            {
-                SparqlVariable variablelocalCopy = sparqlVariable;
-                _buildSelectVariables.Add(prefixes => EnsureIsResultVariable(variablelocalCopy));
-            }
-            return this;
+            return new SparqlVariable(sparqlVariable.Name, sparqlVariable.Aggregate);
         }
 
-        internal ISelectBuilder And(Func<INamespaceMapper, SparqlVariable> buildTriplePatternFunc)
+        if (sparqlVariable.IsProjection)
         {
-            _buildSelectVariables.Add(buildTriplePatternFunc);
-            return this;
+            return new SparqlVariable(sparqlVariable.Name, sparqlVariable.Projection);
         }
 
-        /// <summary>
-        /// Adds additional SELECT expression.
-        /// </summary>
-        public IAssignmentVariableNamePart<ISelectBuilder> And<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
+        return new SparqlVariable(sparqlVariable.Name, true);
+    }
+
+    /// <summary>
+    /// Adds additional SELECT <paramref name="variables"/>.
+    /// </summary>
+    public ISelectBuilder And(params string[] variables)
+    {
+        return And(variables.Select(var => new SparqlVariable(var, true)).ToArray());
+    }
+
+    /// <summary>
+    /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default).
+    /// </summary>
+    public ISelectBuilder Distinct()
+    {
+        switch (QueryType)
         {
-            return new SelectAssignmentVariableNamePart<TExpression>(this, buildAssignmentExpression);
+            case SparqlQueryType.Select:
+                QueryType = SparqlQueryType.SelectDistinct;
+                break;
+            case SparqlQueryType.SelectAll:
+                QueryType = SparqlQueryType.SelectAllDistinct;
+                break;
+            case SparqlQueryType.SelectReduced:
+                QueryType = SparqlQueryType.SelectDistinct;
+                break;
+            case SparqlQueryType.SelectAllReduced:
+                QueryType = SparqlQueryType.SelectAllDistinct;
+                break;
         }
+        return this;
+    }
 
-        private static SparqlVariable EnsureIsResultVariable(SparqlVariable sparqlVariable)
+    protected override SparqlQuery BuildQuery(SparqlQuery query)
+    {
+        BuildReturnVariables(query);
+
+        return base.BuildQuery(query);
+    }
+
+    private void BuildReturnVariables(SparqlQuery query)
+    {
+        IEnumerable<SparqlVariable> variables = _buildSelectVariables.Select(buildSelectVariable => buildSelectVariable(Prefixes));
+
+        foreach (SparqlVariable selectVariable in variables)
         {
-            if (sparqlVariable.IsResultVariable)
-            {
-                return sparqlVariable;
-            }
-
-            if (sparqlVariable.IsAggregate)
-            {
-                return new SparqlVariable(sparqlVariable.Name, sparqlVariable.Aggregate);
-            }
-
-            if (sparqlVariable.IsProjection)
-            {
-                return new SparqlVariable(sparqlVariable.Name, sparqlVariable.Projection);
-            }
-
-            return new SparqlVariable(sparqlVariable.Name, true);
-        }
-
-        /// <summary>
-        /// Adds additional SELECT <paramref name="variables"/>.
-        /// </summary>
-        public ISelectBuilder And(params string[] variables)
-        {
-            return And(variables.Select(var => new SparqlVariable(var, true)).ToArray());
-        }
-
-        /// <summary>
-        /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default).
-        /// </summary>
-        public ISelectBuilder Distinct()
-        {
-            switch (QueryType)
-            {
-                case SparqlQueryType.Select:
-                    QueryType = SparqlQueryType.SelectDistinct;
-                    break;
-                case SparqlQueryType.SelectAll:
-                    QueryType = SparqlQueryType.SelectAllDistinct;
-                    break;
-                case SparqlQueryType.SelectReduced:
-                    QueryType = SparqlQueryType.SelectDistinct;
-                    break;
-                case SparqlQueryType.SelectAllReduced:
-                    QueryType = SparqlQueryType.SelectAllDistinct;
-                    break;
-            }
-            return this;
-        }
-
-        protected override SparqlQuery BuildQuery(SparqlQuery query)
-        {
-            BuildReturnVariables(query);
-
-            return base.BuildQuery(query);
-        }
-
-        private void BuildReturnVariables(SparqlQuery query)
-        {
-            IEnumerable<SparqlVariable> variables = _buildSelectVariables.Select(buildSelectVariable => buildSelectVariable(Prefixes));
-
-            foreach (SparqlVariable selectVariable in variables)
-            {
-                query.AddVariable(selectVariable);
-            }
+            query.AddVariable(selectVariable);
         }
     }
 }

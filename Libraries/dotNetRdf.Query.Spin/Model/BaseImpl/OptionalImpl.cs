@@ -26,28 +26,27 @@
 
 using VDS.RDF.Query.Spin.SparqlUtil;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class OptionalImpl : ElementImpl, IOptional
 {
-    internal class OptionalImpl : ElementImpl, IOptional
+
+    public OptionalImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
 
-        public OptionalImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
-
-        }
-
-
-        override public void Print(ISparqlPrinter p)
-        {
-            p.printKeyword("OPTIONAL");
-            printNestedElementList(p);
-        }
-
-
-        //override public void visit(IElementVisitor visitor)
-        //{
-        //    visitor.visit(this);
-        //}
     }
+
+
+    override public void Print(ISparqlPrinter p)
+    {
+        p.printKeyword("OPTIONAL");
+        printNestedElementList(p);
+    }
+
+
+    //override public void visit(IElementVisitor visitor)
+    //{
+    //    visitor.visit(this);
+    //}
 }

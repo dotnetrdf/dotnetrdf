@@ -29,87 +29,86 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Formatter which formats Triples as NQuads adding an additional URI at the end of the Triple if there is a Graph URI associated with the Triple.
+/// </summary>
+public class NQuadsFormatter
+    : NTriplesFormatter, IQuadFormatter
 {
     /// <summary>
-    /// Formatter which formats Triples as NQuads adding an additional URI at the end of the Triple if there is a Graph URI associated with the Triple.
+    /// Creates a new NQuads Formatter.
     /// </summary>
-    public class NQuadsFormatter
-        : NTriplesFormatter, IQuadFormatter
+    public NQuadsFormatter()
+        : this(NQuadsSyntax.Original, GetName()) { }
+
+    /// <summary>
+    /// Creates a new NQuads formatter.
+    /// </summary>
+    /// <param name="syntax">NQuads syntax to output.</param>
+    public NQuadsFormatter(NQuadsSyntax syntax)
+        : this(syntax, GetName(syntax)) { }
+
+    /// <summary>
+    /// Creates a new NQuads formatter.
+    /// </summary>
+    /// <param name="syntax">NQuads syntax to output.</param>
+    /// <param name="formatName">Format Name.</param>
+    public NQuadsFormatter(NQuadsSyntax syntax, string formatName)
+        : base(NQuadsParser.AsNTriplesSyntax(syntax), formatName) { }
+
+    private static string GetName()
     {
-        /// <summary>
-        /// Creates a new NQuads Formatter.
-        /// </summary>
-        public NQuadsFormatter()
-            : this(NQuadsSyntax.Original, GetName()) { }
+        return GetName(NQuadsSyntax.Original);
+    }
 
-        /// <summary>
-        /// Creates a new NQuads formatter.
-        /// </summary>
-        /// <param name="syntax">NQuads syntax to output.</param>
-        public NQuadsFormatter(NQuadsSyntax syntax)
-            : this(syntax, GetName(syntax)) { }
-
-        /// <summary>
-        /// Creates a new NQuads formatter.
-        /// </summary>
-        /// <param name="syntax">NQuads syntax to output.</param>
-        /// <param name="formatName">Format Name.</param>
-        public NQuadsFormatter(NQuadsSyntax syntax, string formatName)
-            : base(NQuadsParser.AsNTriplesSyntax(syntax), formatName) { }
-
-        private static string GetName()
+    private static string GetName(NQuadsSyntax syntax)
+    {
+        switch (syntax)
         {
-            return GetName(NQuadsSyntax.Original);
-        }
-
-        private static string GetName(NQuadsSyntax syntax)
-        {
-            switch (syntax)
-            {
-                case NQuadsSyntax.Original:
-                    return "NQuads";
-                default:
-                    return "NQuads (RDF 1.1)";
-            }
-        }
-
-        /// <summary>
-        /// Formats a Triple (optionally in the context of a graph) as a String.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <param name="graph">The graph containing the triple.</param>
-        /// <returns></returns>
-        public override string Format(Triple t, IRefNode graph)
-        {
-            if (graph == null)
-            {
-                return base.Format(t);
-            }
-            return Format(t.Subject, TripleSegment.Subject) + " " + Format(t.Predicate, TripleSegment.Predicate) + " " + Format(t.Object, TripleSegment.Object) + " " + Format(graph) + " .";
+            case NQuadsSyntax.Original:
+                return "NQuads";
+            default:
+                return "NQuads (RDF 1.1)";
         }
     }
 
     /// <summary>
-    /// Formatter which formats Triples as NQuads according to the RDF 1.1 NQuads specification.
+    /// Formats a Triple (optionally in the context of a graph) as a String.
     /// </summary>
-    public class NQuads11Formatter
-        : NQuadsFormatter
+    /// <param name="t">Triple.</param>
+    /// <param name="graph">The graph containing the triple.</param>
+    /// <returns></returns>
+    public override string Format(Triple t, IRefNode graph)
     {
-        /// <summary>
-        /// Creates a new formatter.
-        /// </summary>
-        public NQuads11Formatter()
-            : base(NQuadsSyntax.Rdf11) { }
-        
-        /// <summary>
-        /// Return the datatype specification for a literal value.
-        /// </summary>
-        /// <param name="datatypeUri">The datatype URI.</param>
-        /// <returns>The formatted datatype specification unless <paramref name="datatypeUri"/> matches the XML Schema String datatype URI, in which case an empty string is returned.</returns>
-        protected override string FormatDatatype(Uri datatypeUri)
+        if (graph == null)
         {
-            return datatypeUri.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString) ? string.Empty : base.FormatDatatype(datatypeUri);
+            return base.Format(t);
         }
+        return Format(t.Subject, TripleSegment.Subject) + " " + Format(t.Predicate, TripleSegment.Predicate) + " " + Format(t.Object, TripleSegment.Object) + " " + Format(graph) + " .";
+    }
+}
+
+/// <summary>
+/// Formatter which formats Triples as NQuads according to the RDF 1.1 NQuads specification.
+/// </summary>
+public class NQuads11Formatter
+    : NQuadsFormatter
+{
+    /// <summary>
+    /// Creates a new formatter.
+    /// </summary>
+    public NQuads11Formatter()
+        : base(NQuadsSyntax.Rdf11) { }
+    
+    /// <summary>
+    /// Return the datatype specification for a literal value.
+    /// </summary>
+    /// <param name="datatypeUri">The datatype URI.</param>
+    /// <returns>The formatted datatype specification unless <paramref name="datatypeUri"/> matches the XML Schema String datatype URI, in which case an empty string is returned.</returns>
+    protected override string FormatDatatype(Uri datatypeUri)
+    {
+        return datatypeUri.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString) ? string.Empty : base.FormatDatatype(datatypeUri);
     }
 }

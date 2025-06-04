@@ -26,76 +26,75 @@
 
 using System;
 
-namespace VDS.RDF.Query.Datasets
+namespace VDS.RDF.Query.Datasets;
+
+/// <summary>
+/// Abstract Dataset wrapper implementation for datasets that can load graphs on demand.
+/// </summary>
+public abstract class BaseDemandDataset
+    : WrapperDataset
 {
     /// <summary>
-    /// Abstract Dataset wrapper implementation for datasets that can load graphs on demand.
+    /// Creates a new Demand Dataset.
     /// </summary>
-    public abstract class BaseDemandDataset
-        : WrapperDataset
-    {
-        /// <summary>
-        /// Creates a new Demand Dataset.
-        /// </summary>
-        /// <param name="dataset">Underlying Dataset.</param>
-        public BaseDemandDataset(ISparqlDataset dataset)
-            : base(dataset) { }
+    /// <param name="dataset">Underlying Dataset.</param>
+    public BaseDemandDataset(ISparqlDataset dataset)
+        : base(dataset) { }
 
-        /// <summary>
-        /// Sees if the underlying dataset has a graph and if not tries to load it on demand.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <returns></returns>
-        [Obsolete("Replaced by HasGraph(IRefNode)")]
-        public override bool HasGraph(Uri graphUri)
+    /// <summary>
+    /// Sees if the underlying dataset has a graph and if not tries to load it on demand.
+    /// </summary>
+    /// <param name="graphUri">Graph URI.</param>
+    /// <returns></returns>
+    [Obsolete("Replaced by HasGraph(IRefNode)")]
+    public override bool HasGraph(Uri graphUri)
+    {
+        if (!_dataset.HasGraph(graphUri))
         {
-            if (!_dataset.HasGraph(graphUri))
+            // If the underlying dataset doesn't have the Graph can we load it on demand
+            IGraph g;
+            if (TryLoadGraph(graphUri, out g))
             {
-                // If the underlying dataset doesn't have the Graph can we load it on demand
-                IGraph g;
-                if (TryLoadGraph(graphUri, out g))
-                {
-                    g.BaseUri = graphUri;
-                    AddGraph(g);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                g.BaseUri = graphUri;
+                AddGraph(g);
+                return true;
             }
             else
             {
+                return false;
+            }
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="graphName"></param>
+    /// <returns></returns>
+    public override bool HasGraph(IRefNode graphName)
+    {
+        if (_dataset.HasGraph(graphName)) return true;
+        // If the underlying dataset doesn't have the Graph can we load it on demand
+        if (graphName.NodeType == NodeType.Uri)
+        {
+            if (TryLoadGraph((graphName as IUriNode).Uri, out IGraph g))
+            {
+                AddGraph(g);
                 return true;
             }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="graphName"></param>
-        /// <returns></returns>
-        public override bool HasGraph(IRefNode graphName)
-        {
-            if (_dataset.HasGraph(graphName)) return true;
-            // If the underlying dataset doesn't have the Graph can we load it on demand
-            if (graphName.NodeType == NodeType.Uri)
-            {
-                if (TryLoadGraph((graphName as IUriNode).Uri, out IGraph g))
-                {
-                    AddGraph(g);
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Method to be implemented by derived classes which implements the loading of graphs on demand.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <param name="g">Graph.</param>
-        /// <returns></returns>
-        protected abstract bool TryLoadGraph(Uri graphUri, out IGraph g);
+        return false;
     }
+
+    /// <summary>
+    /// Method to be implemented by derived classes which implements the loading of graphs on demand.
+    /// </summary>
+    /// <param name="graphUri">Graph URI.</param>
+    /// <param name="g">Graph.</param>
+    /// <returns></returns>
+    protected abstract bool TryLoadGraph(Uri graphUri, out IGraph g);
 }

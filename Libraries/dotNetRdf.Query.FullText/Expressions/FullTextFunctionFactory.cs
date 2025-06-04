@@ -28,56 +28,55 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Query.Expressions
+namespace VDS.RDF.Query.Expressions;
+
+/// <summary>
+/// A SPARQL Expression Factory reserved as a future extension point but not currently compiled or used.
+/// </summary>
+public class FullTextFunctionFactory
+    : ISparqlCustomExpressionFactory
 {
+
     /// <summary>
-    /// A SPARQL Expression Factory reserved as a future extension point but not currently compiled or used.
+    /// Tries to create an expression.
     /// </summary>
-    public class FullTextFunctionFactory
-        : ISparqlCustomExpressionFactory
+    /// <param name="u">Function URI.</param>
+    /// <param name="args">Arguments.</param>
+    /// <param name="scalarArguments">Scalar Arguments.</param>
+    /// <param name="expr">Resulting SPARQL Expression.</param>
+    /// <returns>True if a SPARQL Expression could be created, False otherwise.</returns>
+    public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<string, ISparqlExpression> scalarArguments, out ISparqlExpression expr)
     {
+        //TODO: Add support for FullTextMatchFunction and FullTextSearchFunction
 
-        /// <summary>
-        /// Tries to create an expression.
-        /// </summary>
-        /// <param name="u">Function URI.</param>
-        /// <param name="args">Arguments.</param>
-        /// <param name="scalarArguments">Scalar Arguments.</param>
-        /// <param name="expr">Resulting SPARQL Expression.</param>
-        /// <returns>True if a SPARQL Expression could be created, False otherwise.</returns>
-        public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<string, ISparqlExpression> scalarArguments, out ISparqlExpression expr)
+        //switch (u.ToString())
+        //{
+
+        //}
+
+        expr = null;
+        return false;
+    }
+
+    /// <summary>
+    /// Gets the URIs of available extension functions.
+    /// </summary>
+    public IEnumerable<Uri> AvailableExtensionFunctions
+    {
+        get 
         {
-            //TODO: Add support for FullTextMatchFunction and FullTextSearchFunction
-
-            //switch (u.ToString())
-            //{
-
-            //}
-
-            expr = null;
-            return false;
+            return Enumerable.Empty<Uri>(); 
         }
+    }
 
-        /// <summary>
-        /// Gets the URIs of available extension functions.
-        /// </summary>
-        public IEnumerable<Uri> AvailableExtensionFunctions
+    /// <summary>
+    /// Gets the URIs of available extension aggregates.
+    /// </summary>
+    public IEnumerable<Uri> AvailableExtensionAggregates
+    {
+        get 
         {
-            get 
-            {
-                return Enumerable.Empty<Uri>(); 
-            }
-        }
-
-        /// <summary>
-        /// Gets the URIs of available extension aggregates.
-        /// </summary>
-        public IEnumerable<Uri> AvailableExtensionAggregates
-        {
-            get 
-            {
-                return Enumerable.Empty<Uri>();
-            }
+            return Enumerable.Empty<Uri>();
         }
     }
 }

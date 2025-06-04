@@ -26,61 +26,60 @@
 
 using System;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Class for representing Literal Nodes.
+/// </summary>
+public class LiteralNode
+    : BaseLiteralNode, IEquatable<LiteralNode>, IComparable<LiteralNode>
 {
     /// <summary>
-    /// Class for representing Literal Nodes.
+    /// Constructor for Literal Nodes.
     /// </summary>
-    public class LiteralNode
-        : BaseLiteralNode, IEquatable<LiteralNode>, IComparable<LiteralNode>
+    /// <param name="literal">String value of the Literal.</param>
+    /// <param name="normalize">Whether to Normalize the Literal Value.</param>
+    public LiteralNode(string literal, bool normalize = true)
+        : base(literal, normalize) { }
+
+    /// <summary>
+    /// Constructor for Literal Nodes.
+    /// </summary>
+    /// <param name="literal">String value of the Literal.</param>
+    /// <param name="langSpec">String value for the Language Specifier for the Literal.</param>
+    /// <param name="normalize">Whether to Normalize the Literal Value.</param>
+    public LiteralNode(string literal, string langSpec, bool normalize = true)
+        : base(literal, langSpec, normalize) { }
+
+    /// <summary>
+    /// Constructor for Literal Nodes.
+    /// </summary>
+    /// <param name="literal">String value of the Literal.</param>
+    /// <param name="datatype">Uri for the Literals Data Type.</param>
+    /// <param name="normalize">Whether to Normalize the Literal Value.</param>
+    public LiteralNode(string literal, Uri datatype, bool normalize = true)
+        : base(literal, datatype, normalize) { }
+
+    /// <summary>
+    /// Implementation of Compare To for Literal Nodes.
+    /// </summary>
+    /// <param name="other">Literal Node to Compare To.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Simply invokes the more general implementation of this method.
+    /// </remarks>
+    public int CompareTo(LiteralNode other)
     {
-        /// <summary>
-        /// Constructor for Literal Nodes.
-        /// </summary>
-        /// <param name="literal">String value of the Literal.</param>
-        /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        public LiteralNode(string literal, bool normalize = true)
-            : base(literal, normalize) { }
+        return CompareTo((ILiteralNode)other);
+    }
 
-        /// <summary>
-        /// Constructor for Literal Nodes.
-        /// </summary>
-        /// <param name="literal">String value of the Literal.</param>
-        /// <param name="langSpec">String value for the Language Specifier for the Literal.</param>
-        /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        public LiteralNode(string literal, string langSpec, bool normalize = true)
-            : base(literal, langSpec, normalize) { }
-
-        /// <summary>
-        /// Constructor for Literal Nodes.
-        /// </summary>
-        /// <param name="literal">String value of the Literal.</param>
-        /// <param name="datatype">Uri for the Literals Data Type.</param>
-        /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        public LiteralNode(string literal, Uri datatype, bool normalize = true)
-            : base(literal, datatype, normalize) { }
-
-        /// <summary>
-        /// Implementation of Compare To for Literal Nodes.
-        /// </summary>
-        /// <param name="other">Literal Node to Compare To.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Simply invokes the more general implementation of this method.
-        /// </remarks>
-        public int CompareTo(LiteralNode other)
-        {
-            return CompareTo((ILiteralNode)other);
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Literal Node.
-        /// </summary>
-        /// <param name="other">Literal Node.</param>
-        /// <returns></returns>
-        public bool Equals(LiteralNode other)
-        {
-            return base.Equals((ILiteralNode)other);
-        }
+    /// <summary>
+    /// Determines whether this Node is equal to a Literal Node.
+    /// </summary>
+    /// <param name="other">Literal Node.</param>
+    /// <returns></returns>
+    public bool Equals(LiteralNode other)
+    {
+        return base.Equals((ILiteralNode)other);
     }
 }

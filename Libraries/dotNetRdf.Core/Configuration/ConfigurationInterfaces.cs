@@ -27,76 +27,75 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+/// <summary>
+/// Interface for Object Factories which are factory classes that can create Objects based on configuration information in a Graph.
+/// </summary>
+public interface IObjectFactory
 {
     /// <summary>
-    /// Interface for Object Factories which are factory classes that can create Objects based on configuration information in a Graph.
+    /// Attempts to load an Object of the given type identified by the given Node and returned as the Type that this loader generates.
     /// </summary>
-    public interface IObjectFactory
-    {
-        /// <summary>
-        /// Attempts to load an Object of the given type identified by the given Node and returned as the Type that this loader generates.
-        /// </summary>
-        /// <param name="g">Configuration Graph.</param>
-        /// <param name="objNode">Object Node.</param>
-        /// <param name="targetType">Target Type.</param>
-        /// <param name="obj">Created Object.</param>
-        /// <returns>True if the loader succeeded in creating an Object.</returns>
-        /// <remarks>
-        /// <para>
-        /// The Factory should not throw an error if some required configuration is missing as another factory further down the processing chain may still be able to create the object.  If the factory encounters errors and all the required configuration information is present then that error should be thrown i.e. class instantiation throws an error or a call to load an object that this object requires fails.
-        /// </para>
-        /// </remarks>
-        bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj);
-
-        /// <summary>
-        /// Returns whether this Factory is capable of creating objects of the given type.
-        /// </summary>
-        /// <param name="t">Target Type.</param>
-        /// <returns></returns>
-        bool CanLoadObject(Type t);
-    }
+    /// <param name="g">Configuration Graph.</param>
+    /// <param name="objNode">Object Node.</param>
+    /// <param name="targetType">Target Type.</param>
+    /// <param name="obj">Created Object.</param>
+    /// <returns>True if the loader succeeded in creating an Object.</returns>
+    /// <remarks>
+    /// <para>
+    /// The Factory should not throw an error if some required configuration is missing as another factory further down the processing chain may still be able to create the object.  If the factory encounters errors and all the required configuration information is present then that error should be thrown i.e. class instantiation throws an error or a call to load an object that this object requires fails.
+    /// </para>
+    /// </remarks>
+    bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj);
 
     /// <summary>
-    /// Interface for Objects which can have their configuration serialized to RDF.
+    /// Returns whether this Factory is capable of creating objects of the given type.
     /// </summary>
-    public interface IConfigurationSerializable
-    {
-        /// <summary>
-        /// Serializes the Configuration in the given context.
-        /// </summary>
-        /// <param name="context">Configuration Serialization Context.</param>
-        void SerializeConfiguration(ConfigurationSerializationContext context);
-    }
+    /// <param name="t">Target Type.</param>
+    /// <returns></returns>
+    bool CanLoadObject(Type t);
+}
+
+/// <summary>
+/// Interface for Objects which can have their configuration serialized to RDF.
+/// </summary>
+public interface IConfigurationSerializable
+{
+    /// <summary>
+    /// Serializes the Configuration in the given context.
+    /// </summary>
+    /// <param name="context">Configuration Serialization Context.</param>
+    void SerializeConfiguration(ConfigurationSerializationContext context);
+}
+
+/// <summary>
+/// Interface for Objects which can resolve paths specified for Configuration properties.
+/// </summary>
+public interface IPathResolver
+{
+    /// <summary>
+    /// Resolves a Path.
+    /// </summary>
+    /// <param name="path">Path.</param>
+    /// <returns></returns>
+    string ResolvePath(string path);
+}
+
+/// <summary>
+/// Interface for objects which provide additional factories and auto-configuration strategies for the <see cref="ConfigurationLoader"/>.
+/// </summary>
+public interface IConfigurationExtension
+{
+    /// <summary>
+    /// Returns the additional object factories provided by this configuration extension.
+    /// </summary>
+    /// <returns></returns>
+    IEnumerable<IObjectFactory> GetObjectFactories();
 
     /// <summary>
-    /// Interface for Objects which can resolve paths specified for Configuration properties.
+    /// Returns the additional auto-configuration actions provided by this configuration extension.
     /// </summary>
-    public interface IPathResolver
-    {
-        /// <summary>
-        /// Resolves a Path.
-        /// </summary>
-        /// <param name="path">Path.</param>
-        /// <returns></returns>
-        string ResolvePath(string path);
-    }
-
-    /// <summary>
-    /// Interface for objects which provide additional factories and auto-configuration strategies for the <see cref="ConfigurationLoader"/>.
-    /// </summary>
-    public interface IConfigurationExtension
-    {
-        /// <summary>
-        /// Returns the additional object factories provided by this configuration extension.
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<IObjectFactory> GetObjectFactories();
-
-        /// <summary>
-        /// Returns the additional auto-configuration actions provided by this configuration extension.
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<Action<IGraph>> GetAutoConfigureActions();
-    }
+    /// <returns></returns>
+    IEnumerable<Action<IGraph>> GetAutoConfigureActions();
 }

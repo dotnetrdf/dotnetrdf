@@ -28,66 +28,65 @@ using System.IO;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Writing.Contexts
+namespace VDS.RDF.Writing.Contexts;
+
+/// <summary>
+/// Writer Context for Turtle Writers.
+/// </summary>
+public class TurtleWriterContext 
+    : BaseWriterContext
 {
     /// <summary>
-    /// Writer Context for Turtle Writers.
+    /// Creates a new Turtle Writer Context with default settings.
     /// </summary>
-    public class TurtleWriterContext 
-        : BaseWriterContext
+    /// <param name="g">Graph to write.</param>
+    /// <param name="output">TextWriter to write to.</param>
+    /// <param name="syntax">Turtle Syntax.</param>
+    public TurtleWriterContext(IGraph g, TextWriter output, TurtleSyntax syntax)
+        : this(g, output, WriterCompressionLevel.More, true, true, syntax) { }
+
+    /// <summary>
+    /// Creates a new Turtle Writer Context with default settings.
+    /// </summary>
+    /// <param name="g">Graph to write.</param>
+    /// <param name="output">TextWriter to write to.</param>
+    public TurtleWriterContext(IGraph g, TextWriter output)
+        : this(g, output, TurtleSyntax.Original) { }
+
+    /// <summary>
+    /// Creates a new Turtle Writer Context with custom settings.
+    /// </summary>
+    /// <param name="g">Graph to write.</param>
+    /// <param name="output">TextWriter to write to.</param>
+    /// <param name="prettyPrint">Pretty Print Mode.</param>
+    /// <param name="hiSpeed">High Speed Mode.</param>
+    /// <param name="syntax">Turtle Syntax.</param>
+    public TurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
+        : this(g, output, WriterCompressionLevel.More, prettyPrint, hiSpeed, syntax) { }
+
+    /// <summary>
+    /// Creates a new Turtle Writer Context with custom settings.
+    /// </summary>
+    /// <param name="g">Graph to write.</param>
+    /// <param name="output">TextWriter to write to.</param>
+    /// <param name="prettyPrint">Pretty Print Mode.</param>
+    /// <param name="hiSpeed">High Speed Mode.</param>
+    public TurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed)
+        : this(g, output, WriterCompressionLevel.More, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
+
+    /// <summary>
+    /// Creates a new Turtle Writer Context with custom settings.
+    /// </summary>
+    /// <param name="g">Graph to write.</param>
+    /// <param name="output">TextWriter to write to.</param>
+    /// <param name="compressionLevel">Compression Level to use.</param>
+    /// <param name="prettyPrint">Pretty Print Mode.</param>
+    /// <param name="hiSpeed">High Speed Mode.</param>
+    /// <param name="syntax">Turtle Syntax.</param>
+    public TurtleWriterContext(IGraph g, TextWriter output, int compressionLevel, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
+        : base(g, output, compressionLevel, prettyPrint, hiSpeed) 
     {
-        /// <summary>
-        /// Creates a new Turtle Writer Context with default settings.
-        /// </summary>
-        /// <param name="g">Graph to write.</param>
-        /// <param name="output">TextWriter to write to.</param>
-        /// <param name="syntax">Turtle Syntax.</param>
-        public TurtleWriterContext(IGraph g, TextWriter output, TurtleSyntax syntax)
-            : this(g, output, WriterCompressionLevel.More, true, true, syntax) { }
-
-        /// <summary>
-        /// Creates a new Turtle Writer Context with default settings.
-        /// </summary>
-        /// <param name="g">Graph to write.</param>
-        /// <param name="output">TextWriter to write to.</param>
-        public TurtleWriterContext(IGraph g, TextWriter output)
-            : this(g, output, TurtleSyntax.Original) { }
-
-        /// <summary>
-        /// Creates a new Turtle Writer Context with custom settings.
-        /// </summary>
-        /// <param name="g">Graph to write.</param>
-        /// <param name="output">TextWriter to write to.</param>
-        /// <param name="prettyPrint">Pretty Print Mode.</param>
-        /// <param name="hiSpeed">High Speed Mode.</param>
-        /// <param name="syntax">Turtle Syntax.</param>
-        public TurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
-            : this(g, output, WriterCompressionLevel.More, prettyPrint, hiSpeed, syntax) { }
-
-        /// <summary>
-        /// Creates a new Turtle Writer Context with custom settings.
-        /// </summary>
-        /// <param name="g">Graph to write.</param>
-        /// <param name="output">TextWriter to write to.</param>
-        /// <param name="prettyPrint">Pretty Print Mode.</param>
-        /// <param name="hiSpeed">High Speed Mode.</param>
-        public TurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed)
-            : this(g, output, WriterCompressionLevel.More, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
-
-        /// <summary>
-        /// Creates a new Turtle Writer Context with custom settings.
-        /// </summary>
-        /// <param name="g">Graph to write.</param>
-        /// <param name="output">TextWriter to write to.</param>
-        /// <param name="compressionLevel">Compression Level to use.</param>
-        /// <param name="prettyPrint">Pretty Print Mode.</param>
-        /// <param name="hiSpeed">High Speed Mode.</param>
-        /// <param name="syntax">Turtle Syntax.</param>
-        public TurtleWriterContext(IGraph g, TextWriter output, int compressionLevel, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
-            : base(g, output, compressionLevel, prettyPrint, hiSpeed) 
-        {
-            NodeFormatter = (syntax == TurtleSyntax.Original ? new TurtleFormatter(g) : new TurtleW3CFormatter(g));
-            _uriFormatter = (IUriFormatter)NodeFormatter;
-        }
+        NodeFormatter = (syntax == TurtleSyntax.Original ? new TurtleFormatter(g) : new TurtleW3CFormatter(g));
+        _uriFormatter = (IUriFormatter)NodeFormatter;
     }
 }

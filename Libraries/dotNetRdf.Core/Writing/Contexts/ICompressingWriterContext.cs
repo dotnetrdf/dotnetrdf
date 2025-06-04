@@ -24,19 +24,18 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Writing.Contexts
+namespace VDS.RDF.Writing.Contexts;
+
+/// <summary>
+/// Interface for writer contexts which store triple compression data.
+/// </summary>
+public interface ICompressingWriterContext : IWriterContext
 {
     /// <summary>
-    /// Interface for writer contexts which store triple compression data.
+    /// Gets the Triples that should be excluded from standard output as they have been handled by the compression.
     /// </summary>
-    public interface ICompressingWriterContext : IWriterContext
+    BaseTripleCollection TriplesDone
     {
-        /// <summary>
-        /// Gets the Triples that should be excluded from standard output as they have been handled by the compression.
-        /// </summary>
-        BaseTripleCollection TriplesDone
-        {
-            get;
-        }
+        get;
     }
 }

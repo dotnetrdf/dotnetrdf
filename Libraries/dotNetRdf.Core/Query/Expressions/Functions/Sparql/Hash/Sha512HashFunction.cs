@@ -24,62 +24,61 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
+
+
+/// <summary>
+/// Represents the SPARQL SHA512() Function.
+/// </summary>
+public class Sha512HashFunction 
+    : BaseHashFunction
 {
+    /// <summary>
+    /// Creates a new SHA512() Function.
+    /// </summary>
+    /// <param name="expr">Argument Expression.</param>
+    public Sha512HashFunction(ISparqlExpression expr)
+        : base(expr) { }
 
     /// <summary>
-    /// Represents the SPARQL SHA512() Function.
+    /// Gets the Functor of the Expression.
     /// </summary>
-    public class Sha512HashFunction 
-        : BaseHashFunction
+    public override string Functor
     {
-        /// <summary>
-        /// Creates a new SHA512() Function.
-        /// </summary>
-        /// <param name="expr">Argument Expression.</param>
-        public Sha512HashFunction(ISparqlExpression expr)
-            : base(expr) { }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
+        get
         {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordSha512;
-            }
+            return SparqlSpecsHelper.SparqlKeywordSha512;
         }
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordSha512 + "(" + InnerExpression + ")";
-        }
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return SparqlSpecsHelper.SparqlKeywordSha512 + "(" + InnerExpression + ")";
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessSha512HashFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessSha512HashFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitSha512HashFunction(this);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitSha512HashFunction(this);
+    }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new Sha512HashFunction(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new Sha512HashFunction(transformer.Transform(InnerExpression));
     }
 }

@@ -26,50 +26,49 @@
 
 using System;
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing.Contexts;
+
+/// <summary>
+/// Interface for Store Parser Contexts.
+/// </summary>
+public interface IStoreParserContext
 {
     /// <summary>
-    /// Interface for Store Parser Contexts.
+    /// Gets the RDF Handler which is used to instantiate Nodes and to handle the generated RDF.
     /// </summary>
-    public interface IStoreParserContext
+    IRdfHandler Handler
     {
-        /// <summary>
-        /// Gets the RDF Handler which is used to instantiate Nodes and to handle the generated RDF.
-        /// </summary>
-        IRdfHandler Handler
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets/Sets whether Parser Tracing should be used (if the Parser supports it).
-        /// </summary>
-        bool TraceParsing 
-        { 
-            get; 
-            set; 
-        }
-
-        /// <summary>
-        /// Gets the Namespace Map for the Handler.
-        /// </summary>
-        INamespaceMapper Namespaces
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Base URI for the Handler.
-        /// </summary>
-        Uri BaseUri
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets the URI factory for the handler.
-        /// </summary>
-        IUriFactory UriFactory { get; }
+        get;
     }
+
+    /// <summary>
+    /// Gets/Sets whether Parser Tracing should be used (if the Parser supports it).
+    /// </summary>
+    bool TraceParsing 
+    { 
+        get; 
+        set; 
+    }
+
+    /// <summary>
+    /// Gets the Namespace Map for the Handler.
+    /// </summary>
+    INamespaceMapper Namespaces
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the Base URI for the Handler.
+    /// </summary>
+    Uri BaseUri
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Gets the URI factory for the handler.
+    /// </summary>
+    IUriFactory UriFactory { get; }
 }

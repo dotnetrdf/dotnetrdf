@@ -24,228 +24,227 @@
 // </copyright>
 */
 
-namespace System.Web.UI
+namespace System.Web.UI;
+
+/// <summary>
+/// HTML Attributes.
+/// </summary>
+public enum HtmlTextWriterAttribute
 {
     /// <summary>
-    /// HTML Attributes.
+    /// Access Key
     /// </summary>
-    public enum HtmlTextWriterAttribute
-    {
-        /// <summary>
-        /// Access Key
-        /// </summary>
-        Accesskey,
-        /// <summary>
-        /// Align
-        /// </summary>
-        Align,
-        /// <summary>
-        /// Alternative Text
-        /// </summary>
-        Alt,
-        /// <summary>
-        /// Background Image
-        /// </summary>
-        Background,
-        /// <summary>
-        /// Background Colour
-        /// </summary>
-        Bgcolor,
-        /// <summary>
-        /// Border
-        /// </summary>
-        Border,
-        /// <summary>
-        /// Border Colour
-        /// </summary>
-        Bordercolor,
-        /// <summary>
-        /// Cell Padding
-        /// </summary>
-        Cellpadding,
-        /// <summary>
-        /// Cell Spacing
-        /// </summary>
-        Cellspacing,
-        /// <summary>
-        /// Checked
-        /// </summary>
-        Checked,
-        /// <summary>
-        /// CSS Class
-        /// </summary>
-        Class,
-        /// <summary>
-        /// Columns
-        /// </summary>
-        Cols,
-        /// <summary>
-        /// Column Span
-        /// </summary>
-        Colspan,
-        /// <summary>
-        /// Disabled
-        /// </summary>
-        Disabled,
-        /// <summary>
-        /// For
-        /// </summary>
-        For,
-        /// <summary>
-        /// Height
-        /// </summary>
-        Height,
-        /// <summary>
-        /// Hyper Reference
-        /// </summary>
-        Href,
-        /// <summary>
-        /// ID
-        /// </summary>
-        Id,
-        /// <summary>
-        /// Maximum Length
-        /// </summary>
-        Maxlength,
-        /// <summary>
-        /// Multiple Values permitted
-        /// </summary>
-        Multiple,
-        /// <summary>
-        /// Name
-        /// </summary>
-        Name,
-        /// <summary>
-        /// No Wrapping
-        /// </summary>
-        Nowrap,
-        /// <summary>
-        /// On Change
-        /// </summary>
-        Onchange,
-        /// <summary>
-        /// On Click
-        /// </summary>
-        Onclick,
-        /// <summary>
-        /// Read Only
-        /// </summary>
-        ReadOnly,
-        /// <summary>
-        /// Rows
-        /// </summary>
-        Rows,
-        /// <summary>
-        /// Row Span
-        /// </summary>
-        Rowspan,
-        /// <summary>
-        /// Rules
-        /// </summary>
-        Rules,
-        /// <summary>
-        /// Selected
-        /// </summary>
-        Selected,
-        /// <summary>
-        /// Size
-        /// </summary>
-        Size,
-        /// <summary>
-        /// Source
-        /// </summary>
-        Src,
-        /// <summary>
-        /// CSS Styles
-        /// </summary>
-        Style,
-        /// <summary>
-        /// Tab Index
-        /// </summary>
-        Tabindex,
-        /// <summary>
-        /// Target
-        /// </summary>
-        Target,
-        /// <summary>
-        /// Title
-        /// </summary>
-        Title,
-        /// <summary>
-        /// Type
-        /// </summary>
-        Type,
-        /// <summary>
-        /// Vertical Align
-        /// </summary>
-        Valign,
-        /// <summary>
-        /// Value
-        /// </summary>
-        Value,
-        /// <summary>
-        /// Width
-        /// </summary>
-        Width,
-        /// <summary>
-        /// Wrapping
-        /// </summary>
-        Wrap,
-        /// <summary>
-        /// Abbreviation
-        /// </summary>
-        Abbr,
-        /// <summary>
-        /// Auto-Complete
-        /// </summary>
-        AutoComplete,
-        /// <summary>
-        /// Axis
-        /// </summary>
-        Axis,
-        /// <summary>
-        /// Content
-        /// </summary>
-        Content,
-        /// <summary>
-        /// Coordinates
-        /// </summary>
-        Coords,
-        /// <summary>
-        /// Designer Region
-        /// </summary>
-        DesignerRegion,
-        /// <summary>
-        /// Direction
-        /// </summary>
-        Dir,
-        /// <summary>
-        /// Headers
-        /// </summary>
-        Headers,
-        /// <summary>
-        /// Long Description
-        /// </summary>
-        Longdesc,
-        /// <summary>
-        /// Relationship
-        /// </summary>
-        Rel,
-        /// <summary>
-        /// Scope
-        /// </summary>
-        Scope,
-        /// <summary>
-        /// Shape
-        /// </summary>
-        Shape,
-        /// <summary>
-        /// Use Map
-        /// </summary>
-        Usemap,
-        /// <summary>
-        /// VCard Name
-        /// </summary>
-        VCardName,
-    }
+    Accesskey,
+    /// <summary>
+    /// Align
+    /// </summary>
+    Align,
+    /// <summary>
+    /// Alternative Text
+    /// </summary>
+    Alt,
+    /// <summary>
+    /// Background Image
+    /// </summary>
+    Background,
+    /// <summary>
+    /// Background Colour
+    /// </summary>
+    Bgcolor,
+    /// <summary>
+    /// Border
+    /// </summary>
+    Border,
+    /// <summary>
+    /// Border Colour
+    /// </summary>
+    Bordercolor,
+    /// <summary>
+    /// Cell Padding
+    /// </summary>
+    Cellpadding,
+    /// <summary>
+    /// Cell Spacing
+    /// </summary>
+    Cellspacing,
+    /// <summary>
+    /// Checked
+    /// </summary>
+    Checked,
+    /// <summary>
+    /// CSS Class
+    /// </summary>
+    Class,
+    /// <summary>
+    /// Columns
+    /// </summary>
+    Cols,
+    /// <summary>
+    /// Column Span
+    /// </summary>
+    Colspan,
+    /// <summary>
+    /// Disabled
+    /// </summary>
+    Disabled,
+    /// <summary>
+    /// For
+    /// </summary>
+    For,
+    /// <summary>
+    /// Height
+    /// </summary>
+    Height,
+    /// <summary>
+    /// Hyper Reference
+    /// </summary>
+    Href,
+    /// <summary>
+    /// ID
+    /// </summary>
+    Id,
+    /// <summary>
+    /// Maximum Length
+    /// </summary>
+    Maxlength,
+    /// <summary>
+    /// Multiple Values permitted
+    /// </summary>
+    Multiple,
+    /// <summary>
+    /// Name
+    /// </summary>
+    Name,
+    /// <summary>
+    /// No Wrapping
+    /// </summary>
+    Nowrap,
+    /// <summary>
+    /// On Change
+    /// </summary>
+    Onchange,
+    /// <summary>
+    /// On Click
+    /// </summary>
+    Onclick,
+    /// <summary>
+    /// Read Only
+    /// </summary>
+    ReadOnly,
+    /// <summary>
+    /// Rows
+    /// </summary>
+    Rows,
+    /// <summary>
+    /// Row Span
+    /// </summary>
+    Rowspan,
+    /// <summary>
+    /// Rules
+    /// </summary>
+    Rules,
+    /// <summary>
+    /// Selected
+    /// </summary>
+    Selected,
+    /// <summary>
+    /// Size
+    /// </summary>
+    Size,
+    /// <summary>
+    /// Source
+    /// </summary>
+    Src,
+    /// <summary>
+    /// CSS Styles
+    /// </summary>
+    Style,
+    /// <summary>
+    /// Tab Index
+    /// </summary>
+    Tabindex,
+    /// <summary>
+    /// Target
+    /// </summary>
+    Target,
+    /// <summary>
+    /// Title
+    /// </summary>
+    Title,
+    /// <summary>
+    /// Type
+    /// </summary>
+    Type,
+    /// <summary>
+    /// Vertical Align
+    /// </summary>
+    Valign,
+    /// <summary>
+    /// Value
+    /// </summary>
+    Value,
+    /// <summary>
+    /// Width
+    /// </summary>
+    Width,
+    /// <summary>
+    /// Wrapping
+    /// </summary>
+    Wrap,
+    /// <summary>
+    /// Abbreviation
+    /// </summary>
+    Abbr,
+    /// <summary>
+    /// Auto-Complete
+    /// </summary>
+    AutoComplete,
+    /// <summary>
+    /// Axis
+    /// </summary>
+    Axis,
+    /// <summary>
+    /// Content
+    /// </summary>
+    Content,
+    /// <summary>
+    /// Coordinates
+    /// </summary>
+    Coords,
+    /// <summary>
+    /// Designer Region
+    /// </summary>
+    DesignerRegion,
+    /// <summary>
+    /// Direction
+    /// </summary>
+    Dir,
+    /// <summary>
+    /// Headers
+    /// </summary>
+    Headers,
+    /// <summary>
+    /// Long Description
+    /// </summary>
+    Longdesc,
+    /// <summary>
+    /// Relationship
+    /// </summary>
+    Rel,
+    /// <summary>
+    /// Scope
+    /// </summary>
+    Scope,
+    /// <summary>
+    /// Shape
+    /// </summary>
+    Shape,
+    /// <summary>
+    /// Use Map
+    /// </summary>
+    Usemap,
+    /// <summary>
+    /// VCard Name
+    /// </summary>
+    VCardName,
 }

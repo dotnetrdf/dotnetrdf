@@ -29,84 +29,83 @@ using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Aggregates.Sparql
+namespace VDS.RDF.Query.Aggregates.Sparql;
+
+/// <summary>
+/// Class representing MIN Aggregate Functions.
+/// </summary>
+public class MinAggregate 
+    : BaseAggregate
 {
     /// <summary>
-    /// Class representing MIN Aggregate Functions.
+    /// Creates a new MIN Aggregate.
     /// </summary>
-    public class MinAggregate 
-        : BaseAggregate
+    /// <param name="expr">Variable Expression.</param>
+    /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
+    public MinAggregate(VariableTerm expr, bool distinct)
+        : base(expr, distinct)
     {
-        /// <summary>
-        /// Creates a new MIN Aggregate.
-        /// </summary>
-        /// <param name="expr">Variable Expression.</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
-        public MinAggregate(VariableTerm expr, bool distinct)
-            : base(expr, distinct)
+        Variable = expr.ToString().Substring(1);
+    }
+
+    /// <summary>
+    /// Creates a new MIN Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
+    public MinAggregate(ISparqlExpression expr, bool distinct)
+        : base(expr, distinct) { }
+
+    /// <summary>
+    /// Creates a new MIN Aggregate.
+    /// </summary>
+    /// <param name="expr">Variable Expression.</param>
+    public MinAggregate(VariableTerm expr)
+        : this(expr, false) { }
+
+    /// <summary>
+    /// Creates a new MIN Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    public MinAggregate(ISparqlExpression expr)
+        : this(expr, false) { }
+
+    /// <summary>
+    /// Get the name of the variable that is aggregated if the
+    /// aggregation operates on a simple variable term, otherwise
+    /// this property will return null.
+    /// </summary>
+    public string Variable { get; }
+
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+        IEnumerable<TBinding> bindings)
+    {
+        return processor.ProcessMin(this, context, bindings);
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Aggregate.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append("MIN(");
+        if (_distinct) output.Append("DISTINCT ");
+        output.Append(_expr + ")");
+        return output.ToString();
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Aggregate.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            Variable = expr.ToString().Substring(1);
-        }
-
-        /// <summary>
-        /// Creates a new MIN Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
-        public MinAggregate(ISparqlExpression expr, bool distinct)
-            : base(expr, distinct) { }
-
-        /// <summary>
-        /// Creates a new MIN Aggregate.
-        /// </summary>
-        /// <param name="expr">Variable Expression.</param>
-        public MinAggregate(VariableTerm expr)
-            : this(expr, false) { }
-
-        /// <summary>
-        /// Creates a new MIN Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public MinAggregate(ISparqlExpression expr)
-            : this(expr, false) { }
-
-        /// <summary>
-        /// Get the name of the variable that is aggregated if the
-        /// aggregation operates on a simple variable term, otherwise
-        /// this property will return null.
-        /// </summary>
-        public string Variable { get; }
-
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
-            IEnumerable<TBinding> bindings)
-        {
-            return processor.ProcessMin(this, context, bindings);
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Aggregate.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append("MIN(");
-            if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr + ")");
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Aggregate.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordMin;
-            }
+            return SparqlSpecsHelper.SparqlKeywordMin;
         }
     }
 }

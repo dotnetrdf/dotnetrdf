@@ -24,61 +24,60 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.String
+namespace VDS.RDF.Query.Expressions.Functions.XPath.String;
+
+/// <summary>
+/// Represents the XPath fn:lower-case() function.
+/// </summary>
+public class LowerCaseFunction
+    : BaseUnaryStringFunction
 {
     /// <summary>
-    /// Represents the XPath fn:lower-case() function.
+    /// Creates a new XPath Lower Case function.
     /// </summary>
-    public class LowerCaseFunction
-        : BaseUnaryStringFunction
+    /// <param name="stringExpr">Expression.</param>
+    public LowerCaseFunction(ISparqlExpression stringExpr)
+        : base(stringExpr) { }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
     {
-        /// <summary>
-        /// Creates a new XPath Lower Case function.
-        /// </summary>
-        /// <param name="stringExpr">Expression.</param>
-        public LowerCaseFunction(ISparqlExpression stringExpr)
-            : base(stringExpr) { }
+        return processor.ProcessLowerCaseFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessLowerCaseFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitLowerCaseFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitLowerCaseFunction(this);
-        }
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.LowerCase + ">(" + _expr + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.LowerCase + ">(" + _expr + ")";
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.LowerCase;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.LowerCase;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new LowerCaseFunction(transformer.Transform(_expr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new LowerCaseFunction(transformer.Transform(_expr));
     }
 }

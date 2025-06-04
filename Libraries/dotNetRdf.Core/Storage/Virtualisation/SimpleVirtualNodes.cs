@@ -26,363 +26,362 @@
 
 using System;
 
-namespace VDS.RDF.Storage.Virtualisation
+namespace VDS.RDF.Storage.Virtualisation;
+
+/// <summary>
+/// Simple implementation of a Virtual Blank Node where the virtual IDs are integers.
+/// </summary>
+public class SimpleVirtualBlankNode
+    : BaseVirtualBlankNode<int, int>, IEquatable<SimpleVirtualBlankNode>, IComparable<SimpleVirtualBlankNode>
 {
     /// <summary>
-    /// Simple implementation of a Virtual Blank Node where the virtual IDs are integers.
+    /// Creates a new Virtual Blank Node.
     /// </summary>
-    public class SimpleVirtualBlankNode
-        : BaseVirtualBlankNode<int, int>, IEquatable<SimpleVirtualBlankNode>, IComparable<SimpleVirtualBlankNode>
+    /// <param name="g">Graph the Node belongs to.</param>
+    /// <param name="id">Virtual ID.</param>
+    /// <param name="provider">Virtual RDF Provider.</param>
+    public SimpleVirtualBlankNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider)
+        : base(g, id, provider) { }
+
+    /// <summary>
+    /// Creates a new Virtual Blank Node.
+    /// </summary>
+    /// <param name="g">Graph the Node belongs to.</param>
+    /// <param name="id">Virtual ID.</param>
+    /// <param name="provider">Virtual RDF Provider.</param>
+    /// <param name="value">Materialised Value.</param>
+    public SimpleVirtualBlankNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider, IBlankNode value)
+        : base(g, id, provider, value) { }
+
+    /// <summary>
+    /// Determines whether this Node is equal to another virtual Blank node.
+    /// </summary>
+    /// <param name="other">Other Blank Node.</param>
+    /// <returns></returns>
+    public bool Equals(SimpleVirtualBlankNode other)
     {
-        /// <summary>
-        /// Creates a new Virtual Blank Node.
-        /// </summary>
-        /// <param name="g">Graph the Node belongs to.</param>
-        /// <param name="id">Virtual ID.</param>
-        /// <param name="provider">Virtual RDF Provider.</param>
-        public SimpleVirtualBlankNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider)
-            : base(g, id, provider) { }
+        return Equals((IBlankNode)other);
+    }
 
-        /// <summary>
-        /// Creates a new Virtual Blank Node.
-        /// </summary>
-        /// <param name="g">Graph the Node belongs to.</param>
-        /// <param name="id">Virtual ID.</param>
-        /// <param name="provider">Virtual RDF Provider.</param>
-        /// <param name="value">Materialised Value.</param>
-        public SimpleVirtualBlankNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider, IBlankNode value)
-            : base(g, id, provider, value) { }
+    /// <summary>
+    /// Compares this Node to another virtual Blank node.
+    /// </summary>
+    /// <param name="other">Other Blank Node.</param>
+    /// <returns></returns>
+    public int CompareTo(SimpleVirtualBlankNode other)
+    {
+        return CompareTo((IBlankNode)other);
+    }
 
-        /// <summary>
-        /// Determines whether this Node is equal to another virtual Blank node.
-        /// </summary>
-        /// <param name="other">Other Blank Node.</param>
-        /// <returns></returns>
-        public bool Equals(SimpleVirtualBlankNode other)
+    /// <summary>
+    /// Copies the Node to another Graph.
+    /// </summary>
+    /// <param name="target">Target Graph.</param>
+    /// <returns></returns>
+    public override INode CopyNode(IGraph target)
+    {
+        return new SimpleVirtualBlankNode(target, VirtualID, Provider);
+    }
+
+    /// <summary>
+    /// Method to be implemented in derived classes to provide comparison of VirtualId values.
+    /// </summary>
+    /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
+    /// <returns>The comparison result.</returns>
+    public override int CompareVirtualId(int other)
+    {
+        return VirtualID.CompareTo(other);
+    }
+}
+
+/// <summary>
+/// Simple implementation of a Virtual Graph Literal Node where the virtual IDs are integers.
+/// </summary>
+public class SimpleVirtualGraphLiteralNode
+    : BaseVirtualGraphLiteralNode<int, int>, IEquatable<SimpleVirtualGraphLiteralNode>, IComparable<SimpleVirtualGraphLiteralNode>
+{
+    /// <summary>
+    /// Creates a new Virtual Graph Literal Node.
+    /// </summary>
+    /// <param name="g">Graph the Node belongs to.</param>
+    /// <param name="id">Virtual ID.</param>
+    /// <param name="provider">Virtual RDF Provider.</param>
+    public SimpleVirtualGraphLiteralNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider)
+        : base(g, id, provider) { }
+
+    /// <summary>
+    /// Creates a new Virtual Graph Literal Node.
+    /// </summary>
+    /// <param name="g">Graph the Node belongs to.</param>
+    /// <param name="id">Virtual ID.</param>
+    /// <param name="provider">Virtual RDF Provider.</param>
+    /// <param name="value">Materialised Values.</param>
+    public SimpleVirtualGraphLiteralNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider, IGraphLiteralNode value)
+        : base(g, id, provider, value) { }
+
+    /// <summary>
+    /// Determines whether this Node is equal to another virtual Graph Literal node.
+    /// </summary>
+    /// <param name="other">Other Graph Literal Node.</param>
+    /// <returns></returns>
+    public bool Equals(SimpleVirtualGraphLiteralNode other)
+    {
+        return Equals((IGraphLiteralNode)other);
+    }
+
+    /// <summary>
+    /// Compares this Node to another virtual Graph Literal node.
+    /// </summary>
+    /// <param name="other">Other Graph Literal Node.</param>
+    /// <returns></returns>
+    public int CompareTo(SimpleVirtualGraphLiteralNode other)
+    {
+        return CompareTo((IGraphLiteralNode)other);
+    }
+
+    /// <summary>
+    /// Copies the Node to another Graph including the materialised value if present.
+    /// </summary>
+    /// <param name="target">Target Graph.</param>
+    /// <returns></returns>
+    public override INode CopyNode(IGraph target)
+    {
+        if (_value != null)
         {
-            return Equals((IBlankNode)other);
+            return new SimpleVirtualGraphLiteralNode(target, VirtualID, Provider, (IGraphLiteralNode)_value);
         }
-
-        /// <summary>
-        /// Compares this Node to another virtual Blank node.
-        /// </summary>
-        /// <param name="other">Other Blank Node.</param>
-        /// <returns></returns>
-        public int CompareTo(SimpleVirtualBlankNode other)
+        else
         {
-            return CompareTo((IBlankNode)other);
-        }
-
-        /// <summary>
-        /// Copies the Node to another Graph.
-        /// </summary>
-        /// <param name="target">Target Graph.</param>
-        /// <returns></returns>
-        public override INode CopyNode(IGraph target)
-        {
-            return new SimpleVirtualBlankNode(target, VirtualID, Provider);
-        }
-
-        /// <summary>
-        /// Method to be implemented in derived classes to provide comparison of VirtualId values.
-        /// </summary>
-        /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
-        /// <returns>The comparison result.</returns>
-        public override int CompareVirtualId(int other)
-        {
-            return VirtualID.CompareTo(other);
+            return new SimpleVirtualGraphLiteralNode(target, VirtualID, Provider);
         }
     }
 
     /// <summary>
-    /// Simple implementation of a Virtual Graph Literal Node where the virtual IDs are integers.
+    /// Method to be implemented in derived classes to provide comparison of VirtualId values.
     /// </summary>
-    public class SimpleVirtualGraphLiteralNode
-        : BaseVirtualGraphLiteralNode<int, int>, IEquatable<SimpleVirtualGraphLiteralNode>, IComparable<SimpleVirtualGraphLiteralNode>
+    /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
+    /// <returns>The comparison result.</returns>
+    public override int CompareVirtualId(int other)
     {
-        /// <summary>
-        /// Creates a new Virtual Graph Literal Node.
-        /// </summary>
-        /// <param name="g">Graph the Node belongs to.</param>
-        /// <param name="id">Virtual ID.</param>
-        /// <param name="provider">Virtual RDF Provider.</param>
-        public SimpleVirtualGraphLiteralNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider)
-            : base(g, id, provider) { }
+        return VirtualID.CompareTo(other);
+    }
+}
 
-        /// <summary>
-        /// Creates a new Virtual Graph Literal Node.
-        /// </summary>
-        /// <param name="g">Graph the Node belongs to.</param>
-        /// <param name="id">Virtual ID.</param>
-        /// <param name="provider">Virtual RDF Provider.</param>
-        /// <param name="value">Materialised Values.</param>
-        public SimpleVirtualGraphLiteralNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider, IGraphLiteralNode value)
-            : base(g, id, provider, value) { }
+/// <summary>
+/// Simple implementation of a Virtual Literal Node where the virtual IDs are integers.
+/// </summary>
+public class SimpleVirtualLiteralNode
+    : BaseVirtualLiteralNode<int, int>, IEquatable<SimpleVirtualLiteralNode>, IComparable<SimpleVirtualLiteralNode>
+{
+    /// <summary>
+    /// Creates a new Virtual Literal Node.
+    /// </summary>
+    /// <param name="g">Graph the Node belongs to.</param>
+    /// <param name="id">Virtual ID.</param>
+    /// <param name="provider">Virtual RDF Provider.</param>
+    public SimpleVirtualLiteralNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider)
+        : base(g, id, provider) { }
 
-        /// <summary>
-        /// Determines whether this Node is equal to another virtual Graph Literal node.
-        /// </summary>
-        /// <param name="other">Other Graph Literal Node.</param>
-        /// <returns></returns>
-        public bool Equals(SimpleVirtualGraphLiteralNode other)
+    /// <summary>
+    /// Creates a new Virtual Literal Node.
+    /// </summary>
+    /// <param name="g">Graph the Node belongs to.</param>
+    /// <param name="id">Virtual ID.</param>
+    /// <param name="provider">Virtual RDF Provider.</param>
+    /// <param name="value">Materialised Value.</param>
+    public SimpleVirtualLiteralNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider, ILiteralNode value)
+        : base(g, id, provider, value) { }
+
+    /// <summary>
+    /// Determines whether this Node is equal to another virtual Literal node.
+    /// </summary>
+    /// <param name="other">Other Literal Node.</param>
+    /// <returns></returns>
+    public bool Equals(SimpleVirtualLiteralNode other)
+    {
+        return Equals((ILiteralNode)other);
+    }
+
+    /// <summary>
+    /// Compares this Node to another virtual Literal node.
+    /// </summary>
+    /// <param name="other">Other Literal Node.</param>
+    /// <returns></returns>
+    public int CompareTo(SimpleVirtualLiteralNode other)
+    {
+        return CompareTo((ILiteralNode)other);
+    }
+
+    /// <summary>
+    /// Copies the Node to another Graph including the materialised value if present.
+    /// </summary>
+    /// <param name="target">Target Graph.</param>
+    /// <returns></returns>
+    public override INode CopyNode(IGraph target)
+    {
+        if (_value != null)
         {
-            return Equals((IGraphLiteralNode)other);
+            return new SimpleVirtualLiteralNode(target, VirtualID, Provider, (ILiteralNode)_value);
         }
-
-        /// <summary>
-        /// Compares this Node to another virtual Graph Literal node.
-        /// </summary>
-        /// <param name="other">Other Graph Literal Node.</param>
-        /// <returns></returns>
-        public int CompareTo(SimpleVirtualGraphLiteralNode other)
+        else
         {
-            return CompareTo((IGraphLiteralNode)other);
-        }
-
-        /// <summary>
-        /// Copies the Node to another Graph including the materialised value if present.
-        /// </summary>
-        /// <param name="target">Target Graph.</param>
-        /// <returns></returns>
-        public override INode CopyNode(IGraph target)
-        {
-            if (_value != null)
-            {
-                return new SimpleVirtualGraphLiteralNode(target, VirtualID, Provider, (IGraphLiteralNode)_value);
-            }
-            else
-            {
-                return new SimpleVirtualGraphLiteralNode(target, VirtualID, Provider);
-            }
-        }
-
-        /// <summary>
-        /// Method to be implemented in derived classes to provide comparison of VirtualId values.
-        /// </summary>
-        /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
-        /// <returns>The comparison result.</returns>
-        public override int CompareVirtualId(int other)
-        {
-            return VirtualID.CompareTo(other);
+            return new SimpleVirtualLiteralNode(target, VirtualID, Provider);
         }
     }
 
     /// <summary>
-    /// Simple implementation of a Virtual Literal Node where the virtual IDs are integers.
+    /// Method to be implemented in derived classes to provide comparison of VirtualId values.
     /// </summary>
-    public class SimpleVirtualLiteralNode
-        : BaseVirtualLiteralNode<int, int>, IEquatable<SimpleVirtualLiteralNode>, IComparable<SimpleVirtualLiteralNode>
+    /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
+    /// <returns>The comparison result.</returns>
+    public override int CompareVirtualId(int other)
     {
-        /// <summary>
-        /// Creates a new Virtual Literal Node.
-        /// </summary>
-        /// <param name="g">Graph the Node belongs to.</param>
-        /// <param name="id">Virtual ID.</param>
-        /// <param name="provider">Virtual RDF Provider.</param>
-        public SimpleVirtualLiteralNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider)
-            : base(g, id, provider) { }
+        return VirtualID.CompareTo(other);
+    }
+}
 
-        /// <summary>
-        /// Creates a new Virtual Literal Node.
-        /// </summary>
-        /// <param name="g">Graph the Node belongs to.</param>
-        /// <param name="id">Virtual ID.</param>
-        /// <param name="provider">Virtual RDF Provider.</param>
-        /// <param name="value">Materialised Value.</param>
-        public SimpleVirtualLiteralNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider, ILiteralNode value)
-            : base(g, id, provider, value) { }
+/// <summary>
+/// Simple implementation of a Virtual URI Node where the virtual IDs are integers.
+/// </summary>
+public class SimpleVirtualUriNode
+    : BaseVirtualUriNode<int, int>, IEquatable<SimpleVirtualUriNode>, IComparable<SimpleVirtualUriNode>
+{
+    /// <summary>
+    /// Creates a new Virtual URI Node.
+    /// </summary>
+    /// <param name="g">Graph the Node belongs to.</param>
+    /// <param name="id">Virtual ID.</param>
+    /// <param name="provider">Virtual RDF Provider.</param>
+    public SimpleVirtualUriNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider)
+        : base(g, id, provider) { }
 
-        /// <summary>
-        /// Determines whether this Node is equal to another virtual Literal node.
-        /// </summary>
-        /// <param name="other">Other Literal Node.</param>
-        /// <returns></returns>
-        public bool Equals(SimpleVirtualLiteralNode other)
+    /// <summary>
+    /// Creates a new Virtual URI Node.
+    /// </summary>
+    /// <param name="g">Graph the Node belongs to.</param>
+    /// <param name="id">Virtual ID.</param>
+    /// <param name="provider">Virtual RDF Provider.</param>
+    /// <param name="value">Materialised Value.</param>
+    public SimpleVirtualUriNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider, IUriNode value)
+        : base(g, id, provider, value) { }
+
+    /// <summary>
+    /// Determines whether this Node is equal to another virtual URI node.
+    /// </summary>
+    /// <param name="other">Other URI Node.</param>
+    /// <returns></returns>
+    public bool Equals(SimpleVirtualUriNode other)
+    {
+        return Equals((IUriNode)other);
+    }
+
+    /// <summary>
+    /// Compares this Node to another virtual URI node.
+    /// </summary>
+    /// <param name="other">Other URI Node.</param>
+    /// <returns></returns>
+    public int CompareTo(SimpleVirtualUriNode other)
+    {
+        return CompareTo((IUriNode)other);
+    }
+
+    /// <summary>
+    /// Copies the Node to another Graph including the materialised value if present.
+    /// </summary>
+    /// <param name="target">Target Graph.</param>
+    /// <returns></returns>
+    public override INode CopyNode(IGraph target)
+    {
+        if (_value != null)
         {
-            return Equals((ILiteralNode)other);
+            return new SimpleVirtualUriNode(target, VirtualID, Provider, (IUriNode)_value);
         }
-
-        /// <summary>
-        /// Compares this Node to another virtual Literal node.
-        /// </summary>
-        /// <param name="other">Other Literal Node.</param>
-        /// <returns></returns>
-        public int CompareTo(SimpleVirtualLiteralNode other)
+        else
         {
-            return CompareTo((ILiteralNode)other);
-        }
-
-        /// <summary>
-        /// Copies the Node to another Graph including the materialised value if present.
-        /// </summary>
-        /// <param name="target">Target Graph.</param>
-        /// <returns></returns>
-        public override INode CopyNode(IGraph target)
-        {
-            if (_value != null)
-            {
-                return new SimpleVirtualLiteralNode(target, VirtualID, Provider, (ILiteralNode)_value);
-            }
-            else
-            {
-                return new SimpleVirtualLiteralNode(target, VirtualID, Provider);
-            }
-        }
-
-        /// <summary>
-        /// Method to be implemented in derived classes to provide comparison of VirtualId values.
-        /// </summary>
-        /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
-        /// <returns>The comparison result.</returns>
-        public override int CompareVirtualId(int other)
-        {
-            return VirtualID.CompareTo(other);
+            return new SimpleVirtualUriNode(target, VirtualID, Provider);
         }
     }
 
     /// <summary>
-    /// Simple implementation of a Virtual URI Node where the virtual IDs are integers.
+    /// Method to be implemented in derived classes to provide comparison of VirtualId values.
     /// </summary>
-    public class SimpleVirtualUriNode
-        : BaseVirtualUriNode<int, int>, IEquatable<SimpleVirtualUriNode>, IComparable<SimpleVirtualUriNode>
+    /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
+    /// <returns>The comparison result.</returns>
+    public override int CompareVirtualId(int other)
     {
-        /// <summary>
-        /// Creates a new Virtual URI Node.
-        /// </summary>
-        /// <param name="g">Graph the Node belongs to.</param>
-        /// <param name="id">Virtual ID.</param>
-        /// <param name="provider">Virtual RDF Provider.</param>
-        public SimpleVirtualUriNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider)
-            : base(g, id, provider) { }
+        return VirtualID.CompareTo(other);
+    }
+}
 
-        /// <summary>
-        /// Creates a new Virtual URI Node.
-        /// </summary>
-        /// <param name="g">Graph the Node belongs to.</param>
-        /// <param name="id">Virtual ID.</param>
-        /// <param name="provider">Virtual RDF Provider.</param>
-        /// <param name="value">Materialised Value.</param>
-        public SimpleVirtualUriNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider, IUriNode value)
-            : base(g, id, provider, value) { }
+/// <summary>
+/// Simple implementation of a Virtual URI Node where the virtual IDs are integers.
+/// </summary>
+public class SimpleVirtualVariableNode
+    : BaseVirtualVariableNode<int, int>, IEquatable<SimpleVirtualVariableNode>, IComparable<SimpleVirtualVariableNode>
+{
+    /// <summary>
+    /// Creates a new Virtual Variable Node.
+    /// </summary>
+    /// <param name="g">Graph the Node belongs to.</param>
+    /// <param name="id">Virtual ID.</param>
+    /// <param name="provider">Virtual RDF Provider.</param>
+    public SimpleVirtualVariableNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider)
+        : base(g, id, provider) { }
 
-        /// <summary>
-        /// Determines whether this Node is equal to another virtual URI node.
-        /// </summary>
-        /// <param name="other">Other URI Node.</param>
-        /// <returns></returns>
-        public bool Equals(SimpleVirtualUriNode other)
+    /// <summary>
+    /// Creates a new Virtual Variable Node.
+    /// </summary>
+    /// <param name="g">Graph the Node belongs to.</param>
+    /// <param name="id">Virtual ID.</param>
+    /// <param name="provider">Virtual RDF Provider.</param>
+    /// <param name="value">Materialised Value.</param>
+    public SimpleVirtualVariableNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider, IVariableNode value)
+        : base(g, id, provider, value) { }
+
+    /// <summary>
+    /// Determines whether this Node is equal to another virtual variable node.
+    /// </summary>
+    /// <param name="other">Other Variable Node.</param>
+    /// <returns></returns>
+    public bool Equals(SimpleVirtualVariableNode other)
+    {
+        return Equals((IVariableNode)other);
+    }
+
+    /// <summary>
+    /// Compares this Node to another virtual Variable node.
+    /// </summary>
+    /// <param name="other">Other Variable Node.</param>
+    /// <returns></returns>
+    public int CompareTo(SimpleVirtualVariableNode other)
+    {
+        return CompareTo((IVariableNode)other);
+    }
+
+    /// <summary>
+    /// Copies the Node to another Graph including the materialised value if present.
+    /// </summary>
+    /// <param name="target">Target Graph.</param>
+    /// <returns></returns>
+    public override INode CopyNode(IGraph target)
+    {
+        if (_value != null)
         {
-            return Equals((IUriNode)other);
+            return new SimpleVirtualVariableNode(target, VirtualID, Provider, (IVariableNode)_value);
         }
-
-        /// <summary>
-        /// Compares this Node to another virtual URI node.
-        /// </summary>
-        /// <param name="other">Other URI Node.</param>
-        /// <returns></returns>
-        public int CompareTo(SimpleVirtualUriNode other)
+        else
         {
-            return CompareTo((IUriNode)other);
-        }
-
-        /// <summary>
-        /// Copies the Node to another Graph including the materialised value if present.
-        /// </summary>
-        /// <param name="target">Target Graph.</param>
-        /// <returns></returns>
-        public override INode CopyNode(IGraph target)
-        {
-            if (_value != null)
-            {
-                return new SimpleVirtualUriNode(target, VirtualID, Provider, (IUriNode)_value);
-            }
-            else
-            {
-                return new SimpleVirtualUriNode(target, VirtualID, Provider);
-            }
-        }
-
-        /// <summary>
-        /// Method to be implemented in derived classes to provide comparison of VirtualId values.
-        /// </summary>
-        /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
-        /// <returns>The comparison result.</returns>
-        public override int CompareVirtualId(int other)
-        {
-            return VirtualID.CompareTo(other);
+            return new SimpleVirtualVariableNode(target, VirtualID, Provider);
         }
     }
 
     /// <summary>
-    /// Simple implementation of a Virtual URI Node where the virtual IDs are integers.
+    /// Method to be implemented in derived classes to provide comparison of VirtualId values.
     /// </summary>
-    public class SimpleVirtualVariableNode
-        : BaseVirtualVariableNode<int, int>, IEquatable<SimpleVirtualVariableNode>, IComparable<SimpleVirtualVariableNode>
+    /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
+    /// <returns>The comparison result.</returns>
+    public override int CompareVirtualId(int other)
     {
-        /// <summary>
-        /// Creates a new Virtual Variable Node.
-        /// </summary>
-        /// <param name="g">Graph the Node belongs to.</param>
-        /// <param name="id">Virtual ID.</param>
-        /// <param name="provider">Virtual RDF Provider.</param>
-        public SimpleVirtualVariableNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider)
-            : base(g, id, provider) { }
-
-        /// <summary>
-        /// Creates a new Virtual Variable Node.
-        /// </summary>
-        /// <param name="g">Graph the Node belongs to.</param>
-        /// <param name="id">Virtual ID.</param>
-        /// <param name="provider">Virtual RDF Provider.</param>
-        /// <param name="value">Materialised Value.</param>
-        public SimpleVirtualVariableNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider, IVariableNode value)
-            : base(g, id, provider, value) { }
-
-        /// <summary>
-        /// Determines whether this Node is equal to another virtual variable node.
-        /// </summary>
-        /// <param name="other">Other Variable Node.</param>
-        /// <returns></returns>
-        public bool Equals(SimpleVirtualVariableNode other)
-        {
-            return Equals((IVariableNode)other);
-        }
-
-        /// <summary>
-        /// Compares this Node to another virtual Variable node.
-        /// </summary>
-        /// <param name="other">Other Variable Node.</param>
-        /// <returns></returns>
-        public int CompareTo(SimpleVirtualVariableNode other)
-        {
-            return CompareTo((IVariableNode)other);
-        }
-
-        /// <summary>
-        /// Copies the Node to another Graph including the materialised value if present.
-        /// </summary>
-        /// <param name="target">Target Graph.</param>
-        /// <returns></returns>
-        public override INode CopyNode(IGraph target)
-        {
-            if (_value != null)
-            {
-                return new SimpleVirtualVariableNode(target, VirtualID, Provider, (IVariableNode)_value);
-            }
-            else
-            {
-                return new SimpleVirtualVariableNode(target, VirtualID, Provider);
-            }
-        }
-
-        /// <summary>
-        /// Method to be implemented in derived classes to provide comparison of VirtualId values.
-        /// </summary>
-        /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
-        /// <returns>The comparison result.</returns>
-        public override int CompareVirtualId(int other)
-        {
-            return VirtualID.CompareTo(other);
-        }
+        return VirtualID.CompareTo(other);
     }
 }

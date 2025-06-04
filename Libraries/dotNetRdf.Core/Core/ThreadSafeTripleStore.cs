@@ -24,32 +24,31 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// A thread safe variant of <see cref="TripleStore"/>, simply a <see cref="TripleStore"/> instance with a <see cref="ThreadSafeGraphCollection"/> decorator around it's underlying <see cref="BaseGraphCollection"/>.
+/// </summary>
+public class ThreadSafeTripleStore
+    : TripleStore
 {
     /// <summary>
-    /// A thread safe variant of <see cref="TripleStore"/>, simply a <see cref="TripleStore"/> instance with a <see cref="ThreadSafeGraphCollection"/> decorator around it's underlying <see cref="BaseGraphCollection"/>.
+    /// Creates a new Thread Safe triple store.
     /// </summary>
-    public class ThreadSafeTripleStore
-        : TripleStore
-    {
-        /// <summary>
-        /// Creates a new Thread Safe triple store.
-        /// </summary>
-        public ThreadSafeTripleStore()
-            : base(new ThreadSafeGraphCollection()) { }
+    public ThreadSafeTripleStore()
+        : base(new ThreadSafeGraphCollection()) { }
 
-        /// <summary>
-        /// Creates a new Thread safe triple store using the given Thread safe graph collection.
-        /// </summary>
-        /// <param name="collection">Collection.</param>
-        public ThreadSafeTripleStore(ThreadSafeGraphCollection collection)
-            : base(collection) { }
+    /// <summary>
+    /// Creates a new Thread safe triple store using the given Thread safe graph collection.
+    /// </summary>
+    /// <param name="collection">Collection.</param>
+    public ThreadSafeTripleStore(ThreadSafeGraphCollection collection)
+        : base(collection) { }
 
-        /// <summary>
-        /// Creates a new Thread safe triple store using a thread safe decorator around the given graph collection.
-        /// </summary>
-        /// <param name="collection">Collection.</param>
-        public ThreadSafeTripleStore(BaseGraphCollection collection)
-            : this(new ThreadSafeGraphCollection(collection)) { }
-    }
+    /// <summary>
+    /// Creates a new Thread safe triple store using a thread safe decorator around the given graph collection.
+    /// </summary>
+    /// <param name="collection">Collection.</param>
+    public ThreadSafeTripleStore(BaseGraphCollection collection)
+        : this(new ThreadSafeGraphCollection(collection)) { }
 }

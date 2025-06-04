@@ -28,30 +28,29 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions;
+
+
+public class SparqlExpressionTests
 {
-
-    public class SparqlExpressionTests
+    private class TestingSparqlExpression : SparqlExpression
     {
-        private class TestingSparqlExpression : SparqlExpression
+        public TestingSparqlExpression(ISparqlExpression expression) : base(expression)
         {
-            public TestingSparqlExpression(ISparqlExpression expression) : base(expression)
-            {
-            }
         }
+    }
 
-        [Fact]
-        public void CanCreateInFunction()
-        {
-            // given
-            SparqlExpression rdfTerm = new TestingSparqlExpression(new VariableTerm("x"));
- 
-            // when
-            BooleanExpression expression = rdfTerm.In();
+    [Fact]
+    public void CanCreateInFunction()
+    {
+        // given
+        SparqlExpression rdfTerm = new TestingSparqlExpression(new VariableTerm("x"));
 
-            // then
-            Assert.True(expression.Expression is InFunction);
-            Assert.Single(expression.Expression.Arguments);
-        }
+        // when
+        BooleanExpression expression = rdfTerm.In();
+
+        // then
+        Assert.True(expression.Expression is InFunction);
+        Assert.Single(expression.Expression.Arguments);
     }
 }

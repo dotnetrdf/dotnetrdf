@@ -24,73 +24,72 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+
+/// <summary>
+/// Class representing the Sparql SameTerm() function.
+/// </summary>
+public class SameTermFunction
+    : BaseBinaryExpression
 {
     /// <summary>
-    /// Class representing the Sparql SameTerm() function.
+    /// Creates a new SameTerm() function expression.
     /// </summary>
-    public class SameTermFunction
-        : BaseBinaryExpression
+    /// <param name="term1">First Term.</param>
+    /// <param name="term2">Second Term.</param>
+    public SameTermFunction(ISparqlExpression term1, ISparqlExpression term2)
+        : base(term1, term2) { }
+
+    /// <summary>
+    /// Gets the String representation of this Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new SameTerm() function expression.
-        /// </summary>
-        /// <param name="term1">First Term.</param>
-        /// <param name="term2">Second Term.</param>
-        public SameTermFunction(ISparqlExpression term1, ISparqlExpression term2)
-            : base(term1, term2) { }
+        return "SAMETERM(" + _leftExpr + "," + _rightExpr + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of this Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "SAMETERM(" + _leftExpr + "," + _rightExpr + ")";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessSameTermFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessSameTermFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitSameTermFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return visitor.VisitSameTermFunction(this);
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return SparqlSpecsHelper.SparqlKeywordSameTerm;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordSameTerm;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new SameTermFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new SameTermFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
     }
 }

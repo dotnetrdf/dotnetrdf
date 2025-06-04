@@ -24,73 +24,72 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.String;
+
+/// <summary>
+/// Class representing the Sparql Lang() function.
+/// </summary>
+public class LangFunction
+    : BaseUnaryExpression
 {
     /// <summary>
-    /// Class representing the Sparql Lang() function.
+    /// Creates a new Lang() function expression.
     /// </summary>
-    public class LangFunction
-        : BaseUnaryExpression
+    /// <param name="expr">Expression to apply the function to.</param>
+    public LangFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+
+    /// <summary>
+    /// Gets the String representation of this Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new Lang() function expression.
-        /// </summary>
-        /// <param name="expr">Expression to apply the function to.</param>
-        public LangFunction(ISparqlExpression expr)
-            : base(expr) { }
+        return "LANG(" + InnerExpression + ")";
+    }
 
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessLangFunction(this, context, binding);
+    }
 
-        /// <summary>
-        /// Gets the String representation of this Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitLangFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return "LANG(" + InnerExpression + ")";
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return processor.ProcessLangFunction(this, context, binding);
+            return SparqlSpecsHelper.SparqlKeywordLang;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitLangFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordLang;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new LangFunction(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new LangFunction(transformer.Transform(InnerExpression));
     }
 }

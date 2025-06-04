@@ -29,73 +29,72 @@ using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+/// <summary>
+/// Class containing helper functions related to SPARQL numeric types.
+/// </summary>
+public static class NumericTypesHelper
 {
     /// <summary>
-    /// Class containing helper functions related to SPARQL numeric types.
+    /// Set of XML Schema Data Types which are derived from Integer and can be treated as Integers by SPARQL.
     /// </summary>
-    public static class NumericTypesHelper
+    public static string[] IntegerDataTypes = {
+        XmlSpecsHelper.XmlSchemaDataTypeByte,
+        XmlSpecsHelper.XmlSchemaDataTypeInt,
+        XmlSpecsHelper.XmlSchemaDataTypeInteger,
+        XmlSpecsHelper.XmlSchemaDataTypeLong,
+        XmlSpecsHelper.XmlSchemaDataTypeNegativeInteger,
+        XmlSpecsHelper.XmlSchemaDataTypeNonNegativeInteger,
+        XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger,
+        XmlSpecsHelper.XmlSchemaDataTypePositiveInteger,
+        XmlSpecsHelper.XmlSchemaDataTypeShort,
+        XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte,
+        XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt,
+        XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong,
+        XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort,
+    };
+
+    #region Numeric Type determination
+
+    /// <summary>
+    /// Determines the Sparql Numeric Type for a Literal based on its Data Type Uri.
+    /// </summary>
+    /// <param name="dtUri">Data Type Uri.</param>
+    /// <returns></returns>
+    public static SparqlNumericType GetNumericTypeFromDataTypeUri(Uri dtUri)
     {
-        /// <summary>
-        /// Set of XML Schema Data Types which are derived from Integer and can be treated as Integers by SPARQL.
-        /// </summary>
-        public static string[] IntegerDataTypes = {
-            XmlSpecsHelper.XmlSchemaDataTypeByte,
-            XmlSpecsHelper.XmlSchemaDataTypeInt,
-            XmlSpecsHelper.XmlSchemaDataTypeInteger,
-            XmlSpecsHelper.XmlSchemaDataTypeLong,
-            XmlSpecsHelper.XmlSchemaDataTypeNegativeInteger,
-            XmlSpecsHelper.XmlSchemaDataTypeNonNegativeInteger,
-            XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger,
-            XmlSpecsHelper.XmlSchemaDataTypePositiveInteger,
-            XmlSpecsHelper.XmlSchemaDataTypeShort,
-            XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte,
-            XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt,
-            XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong,
-            XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort,
-        };
-
-        #region Numeric Type determination
-
-        /// <summary>
-        /// Determines the Sparql Numeric Type for a Literal based on its Data Type Uri.
-        /// </summary>
-        /// <param name="dtUri">Data Type Uri.</param>
-        /// <returns></returns>
-        public static SparqlNumericType GetNumericTypeFromDataTypeUri(Uri dtUri)
-        {
-            return GetNumericTypeFromDataTypeUri(dtUri.AbsoluteUri);
-        }
-
-        /// <summary>
-        /// Determines the Sparql Numeric Type for a Literal based on its Data Type Uri.
-        /// </summary>
-        /// <param name="dtUri">Data Type Uri as a String.</param>
-        /// <returns></returns>
-        public static SparqlNumericType GetNumericTypeFromDataTypeUri(string dtUri)
-        {
-            if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
-            {
-                return SparqlNumericType.Double;
-            }
-            else if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
-            {
-                return SparqlNumericType.Float;
-            }
-            else if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDecimal))
-            {
-                return SparqlNumericType.Decimal;
-            }
-            else if (IntegerDataTypes.Contains(dtUri))
-            {
-                return SparqlNumericType.Integer;
-            }
-            else
-            {
-                return SparqlNumericType.NaN;
-            }
-        }
-
-        #endregion
+        return GetNumericTypeFromDataTypeUri(dtUri.AbsoluteUri);
     }
+
+    /// <summary>
+    /// Determines the Sparql Numeric Type for a Literal based on its Data Type Uri.
+    /// </summary>
+    /// <param name="dtUri">Data Type Uri as a String.</param>
+    /// <returns></returns>
+    public static SparqlNumericType GetNumericTypeFromDataTypeUri(string dtUri)
+    {
+        if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
+        {
+            return SparqlNumericType.Double;
+        }
+        else if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
+        {
+            return SparqlNumericType.Float;
+        }
+        else if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDecimal))
+        {
+            return SparqlNumericType.Decimal;
+        }
+        else if (IntegerDataTypes.Contains(dtUri))
+        {
+            return SparqlNumericType.Integer;
+        }
+        else
+        {
+            return SparqlNumericType.NaN;
+        }
+    }
+
+    #endregion
 }

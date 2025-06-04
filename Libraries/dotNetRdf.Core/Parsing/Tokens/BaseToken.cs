@@ -24,136 +24,135 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Parsing.Tokens
+namespace VDS.RDF.Parsing.Tokens;
+
+/// <summary>
+/// Base Implementation of IToken used by all derived tokens for ease of implementation.
+/// </summary>
+public abstract class BaseToken : IToken
 {
+
     /// <summary>
-    /// Base Implementation of IToken used by all derived tokens for ease of implementation.
+    /// Variables for representing the Type and Position of the Token.
     /// </summary>
-    public abstract class BaseToken : IToken
+    protected int _tokentype, _startline, _endline, _startpos, _endpos;
+    /// <summary>
+    /// Variable containg the value of the Token.
+    /// </summary>
+    protected string _value;
+
+    /// <summary>
+    /// Creates a Token and fills in its Values.
+    /// </summary>
+    /// <param name="tokenType">Integer denoting the Tokens Type.</param>
+    /// <param name="value">String value that the Token represents (if any).</param>
+    /// <param name="startLine">Line at which the Token starts.</param>
+    /// <param name="endLine">Line at which the Token ends.</param>
+    /// <param name="startPos">Column at which the Token starts.</param>
+    /// <param name="endPos">Column at which the Token ends.</param>
+    /// <remarks>All the derived classes use this Constructor to fill in the basic values of a Token.</remarks>
+    protected internal BaseToken(int tokenType, string value, int startLine, int endLine, int startPos, int endPos)
     {
+        _tokentype = tokenType;
+        _value = value;
+        _startline = startLine;
+        _endline = endLine;
+        _startpos = startPos;
+        _endpos = endPos;
+    }
 
-        /// <summary>
-        /// Variables for representing the Type and Position of the Token.
-        /// </summary>
-        protected int _tokentype, _startline, _endline, _startpos, _endpos;
-        /// <summary>
-        /// Variable containg the value of the Token.
-        /// </summary>
-        protected string _value;
-
-        /// <summary>
-        /// Creates a Token and fills in its Values.
-        /// </summary>
-        /// <param name="tokenType">Integer denoting the Tokens Type.</param>
-        /// <param name="value">String value that the Token represents (if any).</param>
-        /// <param name="startLine">Line at which the Token starts.</param>
-        /// <param name="endLine">Line at which the Token ends.</param>
-        /// <param name="startPos">Column at which the Token starts.</param>
-        /// <param name="endPos">Column at which the Token ends.</param>
-        /// <remarks>All the derived classes use this Constructor to fill in the basic values of a Token.</remarks>
-        protected internal BaseToken(int tokenType, string value, int startLine, int endLine, int startPos, int endPos)
+    /// <summary>
+    /// Gets an arbitrary integer which indicates the Type of the Token.
+    /// </summary>
+    public int TokenType
+    {
+        get 
         {
-            _tokentype = tokenType;
-            _value = value;
-            _startline = startLine;
-            _endline = endLine;
-            _startpos = startPos;
-            _endpos = endPos;
+            return _tokentype;
         }
+    }
 
-        /// <summary>
-        /// Gets an arbitrary integer which indicates the Type of the Token.
-        /// </summary>
-        public int TokenType
+    /// <summary>
+    /// Gets the String Value which this Token represents (if any).
+    /// </summary>
+    public string Value
+    {
+        get
         {
-            get 
-            {
-                return _tokentype;
-            }
+            return _value;
         }
+    }
 
-        /// <summary>
-        /// Gets the String Value which this Token represents (if any).
-        /// </summary>
-        public string Value
+    /// <summary>
+    /// Gets the Line at which this Token Starts.
+    /// </summary>
+    public int StartLine
+    {
+        get 
         {
-            get
-            {
-                return _value;
-            }
+            return _startline;
         }
+    }
 
-        /// <summary>
-        /// Gets the Line at which this Token Starts.
-        /// </summary>
-        public int StartLine
+    /// <summary>
+    /// Gets the Line at which this Token Ends.
+    /// </summary>
+    public int EndLine
+    {
+        get 
         {
-            get 
-            {
-                return _startline;
-            }
+            return _endline;
         }
+    }
 
-        /// <summary>
-        /// Gets the Line at which this Token Ends.
-        /// </summary>
-        public int EndLine
+    /// <summary>
+    /// Gets the Column at which this Token Starts.
+    /// </summary>
+    public int StartPosition
+    {
+        get 
         {
-            get 
-            {
-                return _endline;
-            }
+            return _startpos;
         }
+    }
 
-        /// <summary>
-        /// Gets the Column at which this Token Starts.
-        /// </summary>
-        public int StartPosition
+    /// <summary>
+    /// Gets the Column at which this Token Ends.
+    /// </summary>
+    public int EndPosition
+    {
+        get 
         {
-            get 
-            {
-                return _startpos;
-            }
+            return _endpos; 
         }
+    }
 
-        /// <summary>
-        /// Gets the Column at which this Token Ends.
-        /// </summary>
-        public int EndPosition
+    /// <summary>
+    /// Gets the Length of the Tokens Value.
+    /// </summary>
+    public int Length
+    {
+        get
         {
-            get 
-            {
-                return _endpos; 
-            }
+            return _value.Length;
         }
+    }
 
-        /// <summary>
-        /// Gets the Length of the Tokens Value.
-        /// </summary>
-        public int Length
-        {
-            get
-            {
-                return _value.Length;
-            }
-        }
+    /// <summary>
+    /// Gets a String representation of the Token Type and Value.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return GetType() + " " + _value;
+    }
 
-        /// <summary>
-        /// Gets a String representation of the Token Type and Value.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return GetType() + " " + _value;
-        }
-
-        /// <summary>
-        /// Gets a Hash Code for a Token.
-        /// </summary>
-        /// <returns></returns>
-        public override int GetHashCode()
-        {
-            return ToString().GetHashCode();
-        }
+    /// <summary>
+    /// Gets a Hash Code for a Token.
+    /// </summary>
+    /// <returns></returns>
+    public override int GetHashCode()
+    {
+        return ToString().GetHashCode();
     }
 }

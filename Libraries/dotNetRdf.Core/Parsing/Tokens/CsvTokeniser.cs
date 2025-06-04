@@ -26,196 +26,195 @@
 
 using System.IO;
 
-namespace VDS.RDF.Parsing.Tokens
+namespace VDS.RDF.Parsing.Tokens;
+
+/// <summary>
+/// Tokeniser for tokenising CSV inputs.
+/// </summary>
+public class CsvTokeniser
+    : BaseTokeniser
 {
+    private ParsingTextReader _in;
+
     /// <summary>
-    /// Tokeniser for tokenising CSV inputs.
+    /// Creates a new CSV Tokeniser.
     /// </summary>
-    public class CsvTokeniser
-        : BaseTokeniser
+    /// <param name="reader">Text Reader.</param>
+    public CsvTokeniser(ParsingTextReader reader)
+        : base(reader)
     {
-        private ParsingTextReader _in;
+        _in = reader;
+    }
 
-        /// <summary>
-        /// Creates a new CSV Tokeniser.
-        /// </summary>
-        /// <param name="reader">Text Reader.</param>
-        public CsvTokeniser(ParsingTextReader reader)
-            : base(reader)
+    /// <summary>
+    /// Creates a new CSV Tokeniser.
+    /// </summary>
+    /// <param name="reader">Stream Reader.</param>
+    public CsvTokeniser(StreamReader reader)
+        : this(ParsingTextReader.Create(reader)) { }
+    
+    /// <summary>
+    /// Gets the next available token from the input.
+    /// </summary>
+    /// <returns></returns>
+    public override IToken GetNextToken()
+    {
+        // Have we read anything yet?
+        if (LastTokenType == -1)
         {
-            _in = reader;
+            // Nothing read yet so produce a BOF Token
+            LastTokenType = Token.BOF;
+            return new BOFToken();
         }
-
-        /// <summary>
-        /// Creates a new CSV Tokeniser.
-        /// </summary>
-        /// <param name="reader">Stream Reader.</param>
-        public CsvTokeniser(StreamReader reader)
-            : this(ParsingTextReader.Create(reader)) { }
-        
-        /// <summary>
-        /// Gets the next available token from the input.
-        /// </summary>
-        /// <returns></returns>
-        public override IToken GetNextToken()
+        else
         {
-            // Have we read anything yet?
-            if (LastTokenType == -1)
+            try
             {
-                // Nothing read yet so produce a BOF Token
-                LastTokenType = Token.BOF;
-                return new BOFToken();
-            }
-            else
-            {
-                try
+                // Reading has started
+                StartNewToken();
+
+                // Check for EOF
+                if (_in.EndOfStream)
                 {
-                    // Reading has started
-                    StartNewToken();
-
-                    // Check for EOF
-                    if (_in.EndOfStream)
+                    if (Length == 0)
                     {
-                        if (Length == 0)
-                        {
-                            // We're at the End of the Stream and not part-way through reading a Token
-                            return new EOFToken(CurrentLine, CurrentPosition);
-                        }
-                        else
-                        {
-                            // We're at the End of the Stream and part-way through reading a Token
-                            // Raise an error
-                            throw UnexpectedEndOfInput("Token");
-                        }
-                    }
-
-                    var next = Peek();
-
-                    // Always need to do a check for End of Stream after Peeking to handle empty files OK
-                    if (next == char.MaxValue && _in.EndOfStream)
-                    {
-                        if (Length == 0)
-                        {
-                            // We're at the End of the Stream and not part-way through reading a Token
-                            return new EOFToken(CurrentLine, CurrentPosition);
-                        }
-                        else
-                        {
-                            // We're at the End of the Stream and part-way through reading a Token
-                            // Raise an error
-                            throw UnexpectedEndOfInput("Token");
-                        }
-                    }
-
-                    switch (next)
-                    {
-                        case ',':
-                            // Comma
-                            ConsumeCharacter();
-                            LastTokenType = Token.COMMA;
-                            return new CommaToken(StartLine, StartPosition);
-
-                        case '\r':
-                        case '\n':
-                            // New Line
-                            ConsumeNewLine(true);
-                            LastTokenType = Token.EOL;
-                            return new EOLToken(StartLine, StartPosition);
-
-                        case '"':
-                            // Start of a Quoted Field
-                            return TryGetQuotedField();
-
-                        default:
-                            // Start of an Unquoted Field
-                            return TryGetUnquotedField();
-                    }
-
-                }
-                catch (IOException)
-                {
-                    // End Of Stream Check
-                    if (_in.EndOfStream)
-                    {
-                        // At End of Stream so produce the EOFToken
+                        // We're at the End of the Stream and not part-way through reading a Token
                         return new EOFToken(CurrentLine, CurrentPosition);
                     }
                     else
                     {
-                        // Some other Error so throw
-                        throw;
+                        // We're at the End of the Stream and part-way through reading a Token
+                        // Raise an error
+                        throw UnexpectedEndOfInput("Token");
                     }
                 }
-            }
-        }
 
-        private IToken TryGetUnquotedField()
-        {
-            var next = Peek();
-            while (next != ',' && next != '\n' && next != '\r')
-            {
-                ConsumeCharacter();
-                next = Peek();
-            }
+                var next = Peek();
 
-            if (Value.StartsWith("_:"))
-            {
-                return new BlankNodeWithIDToken(Value, StartLine, StartPosition, EndPosition);
-            }
-            else
-            {
-                return new PlainLiteralToken(Value, StartLine, StartPosition, EndPosition);
-            }
-        }
-
-        private IToken TryGetQuotedField()
-        {
-            ConsumeCharacter();
-            var next = Peek();
-            do
-            {
-                if (next == '"')
+                // Always need to do a check for End of Stream after Peeking to handle empty files OK
+                if (next == char.MaxValue && _in.EndOfStream)
                 {
-                    // May be end of quoted field unless followed immediately by another quote
-                    ConsumeCharacter();
-                    next = Peek();
-                    if (next == '"')
+                    if (Length == 0)
                     {
-                        // Just a "" to escape a quote, skip the 2nd quote and continue
-                        SkipCharacter();
-                    }
-                    else if (next == ',' || next == '\n' || next == '\r' || _in.EndOfStream)
-                    {
-                        // Otherwise if a comma/new line/EOF it's the end of the field
-                        break;
+                        // We're at the End of the Stream and not part-way through reading a Token
+                        return new EOFToken(CurrentLine, CurrentPosition);
                     }
                     else
                     {
-                        // Anything else is invalid end of field
-                        throw Error("Unexpected end of quoted field");
+                        // We're at the End of the Stream and part-way through reading a Token
+                        // Raise an error
+                        throw UnexpectedEndOfInput("Token");
                     }
                 }
-                else if (next == '\r' || next == '\n')
+
+                switch (next)
                 {
-                    // New lines are permitted inside quoted fields, use consume method to consume correctly
-                    ConsumeNewLine(true, false);
+                    case ',':
+                        // Comma
+                        ConsumeCharacter();
+                        LastTokenType = Token.COMMA;
+                        return new CommaToken(StartLine, StartPosition);
+
+                    case '\r':
+                    case '\n':
+                        // New Line
+                        ConsumeNewLine(true);
+                        LastTokenType = Token.EOL;
+                        return new EOLToken(StartLine, StartPosition);
+
+                    case '"':
+                        // Start of a Quoted Field
+                        return TryGetQuotedField();
+
+                    default:
+                        // Start of an Unquoted Field
+                        return TryGetUnquotedField();
                 }
-                else if (_in.EndOfStream)
+
+            }
+            catch (IOException)
+            {
+                // End Of Stream Check
+                if (_in.EndOfStream)
                 {
-                    throw UnexpectedEndOfInput("quoted field");
+                    // At End of Stream so produce the EOFToken
+                    return new EOFToken(CurrentLine, CurrentPosition);
                 }
                 else
                 {
-                    // Any other character has literal meaning and is consumed as-is
-                    ConsumeCharacter();
+                    // Some other Error so throw
+                    throw;
                 }
-
-                if (_in.EndOfStream) throw UnexpectedEndOfInput("quoted field");
-
-                next = Peek();
-            } while (true);
-
-            return new LiteralToken(Value, StartLine, EndLine, StartPosition, EndPosition);
+            }
         }
+    }
+
+    private IToken TryGetUnquotedField()
+    {
+        var next = Peek();
+        while (next != ',' && next != '\n' && next != '\r')
+        {
+            ConsumeCharacter();
+            next = Peek();
+        }
+
+        if (Value.StartsWith("_:"))
+        {
+            return new BlankNodeWithIDToken(Value, StartLine, StartPosition, EndPosition);
+        }
+        else
+        {
+            return new PlainLiteralToken(Value, StartLine, StartPosition, EndPosition);
+        }
+    }
+
+    private IToken TryGetQuotedField()
+    {
+        ConsumeCharacter();
+        var next = Peek();
+        do
+        {
+            if (next == '"')
+            {
+                // May be end of quoted field unless followed immediately by another quote
+                ConsumeCharacter();
+                next = Peek();
+                if (next == '"')
+                {
+                    // Just a "" to escape a quote, skip the 2nd quote and continue
+                    SkipCharacter();
+                }
+                else if (next == ',' || next == '\n' || next == '\r' || _in.EndOfStream)
+                {
+                    // Otherwise if a comma/new line/EOF it's the end of the field
+                    break;
+                }
+                else
+                {
+                    // Anything else is invalid end of field
+                    throw Error("Unexpected end of quoted field");
+                }
+            }
+            else if (next == '\r' || next == '\n')
+            {
+                // New lines are permitted inside quoted fields, use consume method to consume correctly
+                ConsumeNewLine(true, false);
+            }
+            else if (_in.EndOfStream)
+            {
+                throw UnexpectedEndOfInput("quoted field");
+            }
+            else
+            {
+                // Any other character has literal meaning and is consumed as-is
+                ConsumeCharacter();
+            }
+
+            if (_in.EndOfStream) throw UnexpectedEndOfInput("quoted field");
+
+            next = Peek();
+        } while (true);
+
+        return new LiteralToken(Value, StartLine, EndLine, StartPosition, EndPosition);
     }
 }

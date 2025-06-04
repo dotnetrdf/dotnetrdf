@@ -30,197 +30,196 @@ using System.IO.Compression;
 using VDS.RDF.JsonLd;
 using VDS.RDF.Parsing.Handlers;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+/// <summary>
+/// Abstract Base Class for parsers that handle GZipped input.
+/// </summary>
+/// <remarks>
+/// <para>
+/// While the normal parsers can be used with GZip streams directly this class just abstracts the wrapping of file/stream input into a GZip stream if it is not already passed as such.
+/// </para>
+/// </remarks>
+public abstract class BaseGZipDatasetParser
+    : IStoreReader
 {
+    private IStoreReader _parser;
+
     /// <summary>
-    /// Abstract Base Class for parsers that handle GZipped input.
+    /// Creates a new GZipped input parser.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// While the normal parsers can be used with GZip streams directly this class just abstracts the wrapping of file/stream input into a GZip stream if it is not already passed as such.
-    /// </para>
-    /// </remarks>
-    public abstract class BaseGZipDatasetParser
-        : IStoreReader
+    /// <param name="parser">The underlying parser to use.</param>
+    public BaseGZipDatasetParser(IStoreReader parser)
     {
-        private IStoreReader _parser;
+        _parser = parser ?? throw new ArgumentNullException(nameof(parser));
+        _parser.Warning += RaiseWarning;
+    }
 
-        /// <summary>
-        /// Creates a new GZipped input parser.
-        /// </summary>
-        /// <param name="parser">The underlying parser to use.</param>
-        public BaseGZipDatasetParser(IStoreReader parser)
+    /// <summary>
+    /// Loads a RDF dataset from GZipped input.
+    /// </summary>
+    /// <param name="store">Triple Store to load into.</param>
+    /// <param name="filename">File to load from.</param>
+    public void Load(ITripleStore store, string filename)
+    {
+        if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+        Load(store, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
+    }
+
+    /// <summary>
+    /// Loads a RDF dataset from GZipped input.
+    /// </summary>
+    /// <param name="store">Triple Store to load into.</param>
+    /// <param name="input">Input to load from.</param>
+    public void Load(ITripleStore store, TextReader input)
+    {
+        if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
+        if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+        Load(new StoreHandler(store), input, store.UriFactory);
+    }
+
+    /// <summary>
+    /// Loads a RDF dataset from GZipped input.
+    /// </summary>
+    /// <param name="handler">RDF Handler to use.</param>
+    /// <param name="filename">File to load from.</param>
+    public void Load(IRdfHandler handler, string filename)
+    {
+        Load(handler, filename, UriFactory.Root);
+    }
+
+    /// <summary>
+    /// Loads an RDF dataset using an RDF handler.
+    /// </summary>
+    /// <param name="handler">RDF handler to use.</param>
+    /// <param name="filename">File to load from.</param>
+    /// <param name="uriFactory">URI factory to use.</param>
+    public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+    {
+        if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+
+        Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)), uriFactory);
+    }
+
+    /// <summary>
+    /// Loads a RDF dataset from GZipped input.
+    /// </summary>
+    /// <param name="handler">RDF Handler to use.</param>
+    /// <param name="input">Input to load from.</param>
+    public void Load(IRdfHandler handler, TextReader input)
+    {
+        Load(handler, input, UriFactory.Root);
+    }
+
+    /// <summary>
+    /// Loads an RDF dataset using and RDF handler.
+    /// </summary>
+    /// <param name="handler">RDF handler to use.</param>
+    /// <param name="input">File to load from.</param>
+    /// <param name="uriFactory">URI factory to use.</param>
+    public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+    {
+        if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
+        if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+
+        if (input is StreamReader reader)
         {
-            _parser = parser ?? throw new ArgumentNullException(nameof(parser));
-            _parser.Warning += RaiseWarning;
-        }
-
-        /// <summary>
-        /// Loads a RDF dataset from GZipped input.
-        /// </summary>
-        /// <param name="store">Triple Store to load into.</param>
-        /// <param name="filename">File to load from.</param>
-        public void Load(ITripleStore store, string filename)
-        {
-            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            Load(store, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
-        }
-
-        /// <summary>
-        /// Loads a RDF dataset from GZipped input.
-        /// </summary>
-        /// <param name="store">Triple Store to load into.</param>
-        /// <param name="input">Input to load from.</param>
-        public void Load(ITripleStore store, TextReader input)
-        {
-            if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
-            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-            Load(new StoreHandler(store), input, store.UriFactory);
-        }
-
-        /// <summary>
-        /// Loads a RDF dataset from GZipped input.
-        /// </summary>
-        /// <param name="handler">RDF Handler to use.</param>
-        /// <param name="filename">File to load from.</param>
-        public void Load(IRdfHandler handler, string filename)
-        {
-            Load(handler, filename, UriFactory.Root);
-        }
-
-        /// <summary>
-        /// Loads an RDF dataset using an RDF handler.
-        /// </summary>
-        /// <param name="handler">RDF handler to use.</param>
-        /// <param name="filename">File to load from.</param>
-        /// <param name="uriFactory">URI factory to use.</param>
-        public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
-        {
-            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-
-            Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)), uriFactory);
-        }
-
-        /// <summary>
-        /// Loads a RDF dataset from GZipped input.
-        /// </summary>
-        /// <param name="handler">RDF Handler to use.</param>
-        /// <param name="input">Input to load from.</param>
-        public void Load(IRdfHandler handler, TextReader input)
-        {
-            Load(handler, input, UriFactory.Root);
-        }
-
-        /// <summary>
-        /// Loads an RDF dataset using and RDF handler.
-        /// </summary>
-        /// <param name="handler">RDF handler to use.</param>
-        /// <param name="input">File to load from.</param>
-        /// <param name="uriFactory">URI factory to use.</param>
-        public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
-        {
-            if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
-            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-
-            if (input is StreamReader reader)
+            if (reader.BaseStream is GZipStream)
             {
-                if (reader.BaseStream is GZipStream)
-                {
-                    _parser.Load(handler, reader);
-                }
-                else
-                {
-                    // Force the inner stream to be GZipped
-                    _parser.Load(handler,
-                        new StreamReader(new GZipStream(reader.BaseStream, CompressionMode.Decompress)));
-                }
+                _parser.Load(handler, reader);
             }
             else
             {
-                throw new RdfParseException("GZip Dataset Parsers can only read from StreamReader instances");
+                // Force the inner stream to be GZipped
+                _parser.Load(handler,
+                    new StreamReader(new GZipStream(reader.BaseStream, CompressionMode.Decompress)));
             }
         }
-
-        /// <summary>
-        /// Warning Event raised on non-fatal errors encountered parsing
-        /// </summary>
-        public event StoreReaderWarning Warning;
-
-        /// <summary>
-        /// Helper method for raising warning events.
-        /// </summary>
-        /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(string message)
+        else
         {
-            StoreReaderWarning d = Warning;
-            if (d != null) d(message);
-        }
-
-        /// <summary>
-        /// Gets the description of the parser.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "GZipped " + _parser;
+            throw new RdfParseException("GZip Dataset Parsers can only read from StreamReader instances");
         }
     }
 
     /// <summary>
-    /// Parser for loading GZipped NQuads.
+    /// Warning Event raised on non-fatal errors encountered parsing
     /// </summary>
-    public class GZippedNQuadsParser
-        : BaseGZipDatasetParser
+    public event StoreReaderWarning Warning;
+
+    /// <summary>
+    /// Helper method for raising warning events.
+    /// </summary>
+    /// <param name="message">Warning Message.</param>
+    private void RaiseWarning(string message)
     {
-        /// <summary>
-        /// Creates a new GZipped NQuads Parser.
-        /// </summary>
-        public GZippedNQuadsParser()
-            : base(new NQuadsParser()) { }
+        StoreReaderWarning d = Warning;
+        if (d != null) d(message);
     }
 
     /// <summary>
-    /// Parser for loading GZipped TriG.
+    /// Gets the description of the parser.
     /// </summary>
-    public class GZippedTriGParser
-        : BaseGZipDatasetParser
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new GZipped TriG Parser.
-        /// </summary>
-        public GZippedTriGParser()
-            : base(new TriGParser()) { }
+        return "GZipped " + _parser;
     }
+}
+
+/// <summary>
+/// Parser for loading GZipped NQuads.
+/// </summary>
+public class GZippedNQuadsParser
+    : BaseGZipDatasetParser
+{
+    /// <summary>
+    /// Creates a new GZipped NQuads Parser.
+    /// </summary>
+    public GZippedNQuadsParser()
+        : base(new NQuadsParser()) { }
+}
+
+/// <summary>
+/// Parser for loading GZipped TriG.
+/// </summary>
+public class GZippedTriGParser
+    : BaseGZipDatasetParser
+{
+    /// <summary>
+    /// Creates a new GZipped TriG Parser.
+    /// </summary>
+    public GZippedTriGParser()
+        : base(new TriGParser()) { }
+}
+
+/// <summary>
+/// Parser for loading GZipped TriX.
+/// </summary>
+public class GZippedTriXParser
+    : BaseGZipDatasetParser
+{
+    /// <summary>
+    /// Creates a new GZipped TriX Parser.
+    /// </summary>
+    public GZippedTriXParser()
+        : base(new TriXParser()) { }
+}
+
+/// <summary>
+/// Parser for oading GZipped JSON-LD.
+/// </summary>
+public class GZippedJsonLdParser : BaseGZipDatasetParser
+{
+    /// <summary>
+    /// Creates a new GZipped JSON-LD parser.
+    /// </summary>
+    public GZippedJsonLdParser():base(new JsonLdParser()) { }
 
     /// <summary>
-    /// Parser for loading GZipped TriX.
+    /// Creates a new GZipped JSON-LD parser with a specific set of <see cref="JsonLdProcessorOptions"/>.
     /// </summary>
-    public class GZippedTriXParser
-        : BaseGZipDatasetParser
-    {
-        /// <summary>
-        /// Creates a new GZipped TriX Parser.
-        /// </summary>
-        public GZippedTriXParser()
-            : base(new TriXParser()) { }
-    }
-
-    /// <summary>
-    /// Parser for oading GZipped JSON-LD.
-    /// </summary>
-    public class GZippedJsonLdParser : BaseGZipDatasetParser
-    {
-        /// <summary>
-        /// Creates a new GZipped JSON-LD parser.
-        /// </summary>
-        public GZippedJsonLdParser():base(new JsonLdParser()) { }
-
-        /// <summary>
-        /// Creates a new GZipped JSON-LD parser with a specific set of <see cref="JsonLdProcessorOptions"/>.
-        /// </summary>
-        /// <param name="parserOptions">The options to pass to the underlying <see cref="JsonLdParser"/>.</param>
-        public GZippedJsonLdParser(JsonLdProcessorOptions parserOptions):base(new JsonLdParser(parserOptions)) { }
-    }
+    /// <param name="parserOptions">The options to pass to the underlying <see cref="JsonLdParser"/>.</param>
+    public GZippedJsonLdParser(JsonLdProcessorOptions parserOptions):base(new JsonLdParser(parserOptions)) { }
 }

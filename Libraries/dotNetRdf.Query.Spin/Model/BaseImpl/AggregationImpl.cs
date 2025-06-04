@@ -29,94 +29,93 @@ using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.Core;
 using VDS.RDF.Query.Spin.Util;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class AggregationImpl : AbstractSPINResource, IAggregation
 {
-    internal class AggregationImpl : AbstractSPINResource, IAggregation
+
+    public AggregationImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
+    {
+    }
+
+
+    public IVariable getAs()
+    {
+        IResource node = getObject(SP.PropertyAs);
+        if (node != null)
+        {
+            return SPINFactory.asVariable(node);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    public INode getExpression()
+    {
+        return getObject(SP.PropertyExpression);
+    }
+
+
+    public bool isDistinct()
+    {
+        return hasProperty(SP.PropertyDistinct, RDFUtil.TRUE);
+    }
+
+    override public void Print(ISparqlPrinter p)
     {
 
-        public AggregationImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
+        IVariable asVar = getAs();
+        if (asVar != null)
         {
-        }
-
-
-        public IVariable getAs()
-        {
-            IResource node = getObject(SP.PropertyAs);
-            if (node != null)
-            {
-                return SPINFactory.asVariable(node);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-
-        public INode getExpression()
-        {
-            return getObject(SP.PropertyExpression);
-        }
-
-
-        public bool isDistinct()
-        {
-            return hasProperty(SP.PropertyDistinct, RDFUtil.TRUE);
-        }
-
-        override public void Print(ISparqlPrinter p)
-        {
-
-            IVariable asVar = getAs();
-            if (asVar != null)
-            {
-                p.print("(");
-            }
-
-            INode aggType = getObject(RDF.PropertyType);
-            var aggName = Aggregations.getName(aggType);
-            p.printKeyword(aggName);
             p.print("(");
+        }
 
-            if (isDistinct())
-            {
-                p.print("DISTINCT ");
-            }
+        INode aggType = getObject(RDF.PropertyType);
+        var aggName = Aggregations.getName(aggType);
+        p.printKeyword(aggName);
+        p.print("(");
 
-            Triple exprS = getProperty(SP.PropertyExpression);
-            if (exprS != null && !(exprS.Object is ILiteralNode))
+        if (isDistinct())
+        {
+            p.print("DISTINCT ");
+        }
+
+        Triple exprS = getProperty(SP.PropertyExpression);
+        if (exprS != null && !(exprS.Object is ILiteralNode))
+        {
+            IResource r = Resource.Get(exprS.Object, Graph, getModel());
+            IResource expr = SPINFactory.asExpression(r);
+            if (expr is IPrintable)
             {
-                IResource r = Resource.Get(exprS.Object, Graph, getModel());
-                IResource expr = SPINFactory.asExpression(r);
-                if (expr is IPrintable)
-                {
-                    ((IPrintable)expr).Print(p);
-                }
-                else
-                {
-                    p.printURIResource(r);
-                }
+                ((IPrintable)expr).Print(p);
             }
             else
             {
-                p.print("*");
+                p.printURIResource(r);
             }
-            var separator = getString(SP.PropertySeparator);
-            if (separator != null)
-            {
-                p.print("; ");
-                p.printKeyword("SEPARATOR");
-                p.print("=''"); //"='" + DatasetUtil.escapeString(separator) + "'");
-            }
-            if (asVar != null)
-            {
-                p.print(") ");
-                p.printKeyword("AS");
-                p.print(" ");
-                p.print(asVar.ToString());
-            }
-            p.print(")");
         }
+        else
+        {
+            p.print("*");
+        }
+        var separator = getString(SP.PropertySeparator);
+        if (separator != null)
+        {
+            p.print("; ");
+            p.printKeyword("SEPARATOR");
+            p.print("=''"); //"='" + DatasetUtil.escapeString(separator) + "'");
+        }
+        if (asVar != null)
+        {
+            p.print(") ");
+            p.printKeyword("AS");
+            p.print(" ");
+            p.print(asVar.ToString());
+        }
+        p.print(")");
     }
 }

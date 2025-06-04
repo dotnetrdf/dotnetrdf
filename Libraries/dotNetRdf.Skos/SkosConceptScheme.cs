@@ -26,29 +26,28 @@
 
 using System.Collections.Generic;
 
-namespace VDS.RDF.Skos
+namespace VDS.RDF.Skos;
+
+/// <summary>
+/// Represents an aggregation of one or more SKOS concepts.
+/// </summary>
+public class SkosConceptScheme : SkosResource
 {
     /// <summary>
-    /// Represents an aggregation of one or more SKOS concepts.
+    /// Creates a new concept schemes for the given resource.
     /// </summary>
-    public class SkosConceptScheme : SkosResource
-    {
-        /// <summary>
-        /// Creates a new concept schemes for the given resource.
-        /// </summary>
-        /// <param name="resource">Resource representing the concept scheme.</param>
-        /// <param name="graph">The graph containing the concept scheme.</param>
-        public SkosConceptScheme(INode resource, IGraph graph) : base(resource, graph) { }
+    /// <param name="resource">Resource representing the concept scheme.</param>
+    /// <param name="graph">The graph containing the concept scheme.</param>
+    public SkosConceptScheme(INode resource, IGraph graph) : base(resource, graph) { }
 
-        /// <summary>
-        /// Gets the top concepts of the concept scheme.
-        /// </summary>
-        public IEnumerable<SkosConcept> HasTopConcept
+    /// <summary>
+    /// Gets the top concepts of the concept scheme.
+    /// </summary>
+    public IEnumerable<SkosConcept> HasTopConcept
+    {
+        get
         {
-            get
-            {
-                return GetConcepts(SkosHelper.HasTopConcept);
-            }
+            return GetConcepts(SkosHelper.HasTopConcept);
         }
     }
 }

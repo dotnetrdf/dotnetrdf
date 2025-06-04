@@ -30,162 +30,161 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Query.Optimisation
+namespace VDS.RDF.Query.Optimisation;
+
+/// <summary>
+/// An Algebra Optimiser which implements the Filtered Product optimisation.
+/// </summary>
+/// <remarks>
+/// <para>
+/// A filtered product is implied by any query where there is a product over a join or within a BGP around which there is a Filter which contains variables from both sides of the product.  So rather than computing the entire product and then applying the filter we want to push filter application into the product computation.
+/// </para>
+/// </remarks>
+public class FilteredProductOptimiser
+    : IAlgebraOptimiser
 {
+    /// <inheritdoc/>
+    public bool UnsafeOptimisation { get; set; }
+
     /// <summary>
-    /// An Algebra Optimiser which implements the Filtered Product optimisation.
+    /// Optimises the Algebra to use implict joins where applicable.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// A filtered product is implied by any query where there is a product over a join or within a BGP around which there is a Filter which contains variables from both sides of the product.  So rather than computing the entire product and then applying the filter we want to push filter application into the product computation.
-    /// </para>
-    /// </remarks>
-    public class FilteredProductOptimiser
-        : IAlgebraOptimiser
+    /// <param name="algebra">Algebra.</param>
+    /// <returns></returns>
+    public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
     {
-        /// <inheritdoc/>
-        public bool UnsafeOptimisation { get; set; }
-
-        /// <summary>
-        /// Optimises the Algebra to use implict joins where applicable.
-        /// </summary>
-        /// <param name="algebra">Algebra.</param>
-        /// <returns></returns>
-        public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
+        try
         {
-            try
+            if (algebra is Filter)
             {
-                if (algebra is Filter)
-                {
-                    var f = (Filter)algebra;
+                var f = (Filter)algebra;
 
-                    // See if the Filtered Product style optimization applies instead
-                    var splitPoint = -1;
-                    if (f.SparqlFilter.Expression.CanParallelise && IsDisjointOperation(f.InnerAlgebra, f.SparqlFilter.Expression.Variables.ToList(), out splitPoint))
+                // See if the Filtered Product style optimization applies instead
+                var splitPoint = -1;
+                if (f.SparqlFilter.Expression.CanParallelise && IsDisjointOperation(f.InnerAlgebra, f.SparqlFilter.Expression.Variables.ToList(), out splitPoint))
+                {
+                    if (splitPoint > -1)
                     {
-                        if (splitPoint > -1)
-                        {
-                            // Means the inner algebra is a BGP we can split into two parts
-                            var bgp = (IBgp)f.InnerAlgebra;
-                            return new FilteredProduct(new Bgp(bgp.TriplePatterns.Take(splitPoint)), new Bgp(bgp.TriplePatterns.Skip(splitPoint)), f.SparqlFilter.Expression);
-                        }
-                        else
-                        {
-                            // Means that the inner algebra is a Join where the sides are disjoint
-                            var join = (IJoin)f.InnerAlgebra;
-                            return new FilteredProduct(join.Lhs, join.Rhs, f.SparqlFilter.Expression);
-                        }
+                        // Means the inner algebra is a BGP we can split into two parts
+                        var bgp = (IBgp)f.InnerAlgebra;
+                        return new FilteredProduct(new Bgp(bgp.TriplePatterns.Take(splitPoint)), new Bgp(bgp.TriplePatterns.Skip(splitPoint)), f.SparqlFilter.Expression);
                     }
                     else
                     {
-                        return f.Transform(this);
+                        // Means that the inner algebra is a Join where the sides are disjoint
+                        var join = (IJoin)f.InnerAlgebra;
+                        return new FilteredProduct(join.Lhs, join.Rhs, f.SparqlFilter.Expression);
                     }
-                }
-                else if (algebra is IAbstractJoin)
-                {
-                    return ((IAbstractJoin)algebra).Transform(this);
-                }
-                else if (algebra is IUnaryOperator)
-                {
-                    return ((IUnaryOperator)algebra).Transform(this);
                 }
                 else
                 {
-                    return algebra;
+                    return f.Transform(this);
                 }
             }
-            catch
+            else if (algebra is IAbstractJoin)
+            {
+                return ((IAbstractJoin)algebra).Transform(this);
+            }
+            else if (algebra is IUnaryOperator)
+            {
+                return ((IUnaryOperator)algebra).Transform(this);
+            }
+            else
             {
                 return algebra;
             }
         }
-
-        private bool IsDisjointOperation(ISparqlAlgebra algebra, List<string> filterVars, out int splitPoint)
+        catch
         {
-            splitPoint = -1;
-            if (algebra is IBgp)
+            return algebra;
+        }
+    }
+
+    private bool IsDisjointOperation(ISparqlAlgebra algebra, List<string> filterVars, out int splitPoint)
+    {
+        splitPoint = -1;
+        if (algebra is IBgp)
+        {
+            // Get Triple Patterns, can't split into a product if there are blank variables present
+            var ps = ((IBgp)algebra).TriplePatterns.ToList();
+            if (ps.Any(p => !p.HasNoBlankVariables)) return false;
+
+            // Iterate over the Triple Patterns to see if we can split into a Product
+            var vars = new List<string>();
+            for (var i = 0; i < ps.Count; i++)
             {
-                // Get Triple Patterns, can't split into a product if there are blank variables present
-                var ps = ((IBgp)algebra).TriplePatterns.ToList();
-                if (ps.Any(p => !p.HasNoBlankVariables)) return false;
+                // Not a product if we've seen both variables already
+                if (filterVars.All(v => vars.Contains(v))) return false;
 
-                // Iterate over the Triple Patterns to see if we can split into a Product
-                var vars = new List<string>();
-                for (var i = 0; i < ps.Count; i++)
+                ITriplePattern p = ps[i];
+                if (p.PatternType == TriplePatternType.Match || p.PatternType == TriplePatternType.SubQuery)
                 {
-                    // Not a product if we've seen both variables already
-                    if (filterVars.All(v => vars.Contains(v))) return false;
-
-                    ITriplePattern p = ps[i];
-                    if (p.PatternType == TriplePatternType.Match || p.PatternType == TriplePatternType.SubQuery)
+                    if (vars.Count > 0 && vars.IsDisjoint(p.Variables))
                     {
-                        if (vars.Count > 0 && vars.IsDisjoint(p.Variables))
+                        // Is a filterable product if we've not seen all the variables so far and have hit a point where a product occurs
+                        // and all the variables are not in the RHS
+                        var rhs = new Bgp(ps.Skip(i));
+                        if (!filterVars.All(v => rhs.Variables.Contains(v)))
                         {
-                            // Is a filterable product if we've not seen all the variables so far and have hit a point where a product occurs
-                            // and all the variables are not in the RHS
-                            var rhs = new Bgp(ps.Skip(i));
-                            if (!filterVars.All(v => rhs.Variables.Contains(v)))
-                            {
-                                splitPoint = i;
-                                return true;
-                            }
+                            splitPoint = i;
+                            return true;
                         }
-                        vars.AddRange(p.Variables);
                     }
-                    else if (p.PatternType == TriplePatternType.BindAssignment || p.PatternType == TriplePatternType.LetAssignment)
-                    {
-                        vars.Add(((IAssignmentPattern)p).VariableName);
-                    }
-                    else if (p.PatternType == TriplePatternType.Filter)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    vars.AddRange(p.Variables);
                 }
-                // If we get all the way here then not a product
-                return false;
-            }
-            else if (algebra is IJoin)
-            {
-                var join = (IJoin)algebra;
-                if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
+                else if (p.PatternType == TriplePatternType.BindAssignment || p.PatternType == TriplePatternType.LetAssignment)
                 {
-                    // There a product between the two sides of the join but are the variables spead over different sides of that join?
-                    // If all variables occur on one side then this is not a filtered product
-                    return !filterVars.All(v => join.Lhs.Variables.Contains(v)) && !filterVars.All(v => join.Rhs.Variables.Contains(v));
+                    vars.Add(((IAssignmentPattern)p).VariableName);
+                }
+                else if (p.PatternType == TriplePatternType.Filter)
+                {
+                    continue;
                 }
                 else
                 {
                     return false;
                 }
             }
+            // If we get all the way here then not a product
+            return false;
+        }
+        else if (algebra is IJoin)
+        {
+            var join = (IJoin)algebra;
+            if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
+            {
+                // There a product between the two sides of the join but are the variables spead over different sides of that join?
+                // If all variables occur on one side then this is not a filtered product
+                return !filterVars.All(v => join.Lhs.Variables.Contains(v)) && !filterVars.All(v => join.Rhs.Variables.Contains(v));
+            }
             else
             {
                 return false;
             }
         }
-
-        /// <summary>
-        /// Returns that this optimiser is applicable to all queries.
-        /// </summary>
-        /// <param name="q">Query.</param>
-        /// <returns></returns>
-        public bool IsApplicable(SparqlQuery q)
+        else
         {
-            return true;
+            return false;
         }
+    }
 
-        /// <summary>
-        /// Returns that this optimiser is applicable to all updates.
-        /// </summary>
-        /// <param name="cmds">Updates.</param>
-        /// <returns></returns>
-        public bool IsApplicable(SparqlUpdateCommandSet cmds)
-        {
-            return true;
-        }
+    /// <summary>
+    /// Returns that this optimiser is applicable to all queries.
+    /// </summary>
+    /// <param name="q">Query.</param>
+    /// <returns></returns>
+    public bool IsApplicable(SparqlQuery q)
+    {
+        return true;
+    }
+
+    /// <summary>
+    /// Returns that this optimiser is applicable to all updates.
+    /// </summary>
+    /// <param name="cmds">Updates.</param>
+    /// <returns></returns>
+    public bool IsApplicable(SparqlUpdateCommandSet cmds)
+    {
+        return true;
     }
 }

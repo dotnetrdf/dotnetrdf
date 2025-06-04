@@ -24,36 +24,35 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Node Type Values.
+/// </summary>
+public enum NodeType
 {
     /// <summary>
-    /// Node Type Values.
+    /// A Blank Node
     /// </summary>
-    public enum NodeType
-    {
-        /// <summary>
-        /// A Blank Node
-        /// </summary>
-        Blank = 0, 
-        /// <summary>
-        /// A Uri Node
-        /// </summary>
-        Uri = 1, 
-        /// <summary>
-        /// A Literal Node
-        /// </summary>
-        Literal = 2,
-        /// <summary>
-        /// A Graph Literal Node
-        /// </summary>
-        GraphLiteral = 3,
-        /// <summary>
-        /// A Variable Node (currently only used in N3)
-        /// </summary>
-        Variable = 4,
-        /// <summary>
-        /// A triple node (used in RDF-Star graphs)
-        /// </summary>
-        Triple = 5,
-    }
+    Blank = 0, 
+    /// <summary>
+    /// A Uri Node
+    /// </summary>
+    Uri = 1, 
+    /// <summary>
+    /// A Literal Node
+    /// </summary>
+    Literal = 2,
+    /// <summary>
+    /// A Graph Literal Node
+    /// </summary>
+    GraphLiteral = 3,
+    /// <summary>
+    /// A Variable Node (currently only used in N3)
+    /// </summary>
+    Variable = 4,
+    /// <summary>
+    /// A triple node (used in RDF-Star graphs)
+    /// </summary>
+    Triple = 5,
 }

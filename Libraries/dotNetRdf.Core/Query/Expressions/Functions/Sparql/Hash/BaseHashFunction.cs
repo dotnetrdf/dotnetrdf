@@ -24,39 +24,38 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
+
+/// <summary>
+/// Abstract base class for Hash Functions.
+/// </summary>
+public abstract class BaseHashFunction 
+    : BaseUnaryExpression
 {
+
     /// <summary>
-    /// Abstract base class for Hash Functions.
+    /// Creates a new Hash function.
     /// </summary>
-    public abstract class BaseHashFunction 
-        : BaseUnaryExpression
+    /// <param name="expr">Expression.</param>
+    protected BaseHashFunction(ISparqlExpression expr)
+        : base(expr)
     {
+    }
 
-        /// <summary>
-        /// Creates a new Hash function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        protected BaseHashFunction(ISparqlExpression expr)
-            : base(expr)
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public abstract override string ToString();
+
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return SparqlExpressionType.Function;
         }
     }
 }

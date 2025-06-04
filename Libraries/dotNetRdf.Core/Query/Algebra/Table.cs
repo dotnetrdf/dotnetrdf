@@ -28,111 +28,110 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Represents a fixed set of solutions.
+/// </summary>
+public class Table
+    : ITerminalOperator
 {
     /// <summary>
-    /// Represents a fixed set of solutions.
+    /// Creates a new fixed set of solutions.
     /// </summary>
-    public class Table
-        : ITerminalOperator
+    /// <param name="table">Table.</param>
+    public Table(BaseMultiset table)
     {
-        /// <summary>
-        /// Creates a new fixed set of solutions.
-        /// </summary>
-        /// <param name="table">Table.</param>
-        public Table(BaseMultiset table)
-        {
-            Multiset = table ?? throw new ArgumentNullException(nameof(table));
-        }
+        Multiset = table ?? throw new ArgumentNullException(nameof(table));
+    }
 
-        /// <summary>
-        /// Returns the fixed set of solutions.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            context.OutputMultiset = Multiset;
-            return context.OutputMultiset;
-        }
+    /// <summary>
+    /// Returns the fixed set of solutions.
+    /// </summary>
+    /// <param name="context">Evaluation Context.</param>
+    /// <returns></returns>
+    public BaseMultiset Evaluate(SparqlEvaluationContext context)
+    {
+        context.OutputMultiset = Multiset;
+        return context.OutputMultiset;
+    }
 
-        /// <summary>
-        /// Get the fixed set of solutions that this algebra represents.
-        /// </summary>
-        public BaseMultiset Multiset { get; }
+    /// <summary>
+    /// Get the fixed set of solutions that this algebra represents.
+    /// </summary>
+    public BaseMultiset Multiset { get; }
 
-        /// <summary>
-        /// Gets the variables used in the algebra.
-        /// </summary>
-        public IEnumerable<string> Variables
+    /// <summary>
+    /// Gets the variables used in the algebra.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
         {
-            get
-            {
-                return Multiset.Variables; 
-            }
+            return Multiset.Variables; 
         }
+    }
 
-        /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FloatingVariables
+    /// <summary>
+    /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FloatingVariables
+    {
+        get
         {
-            get
-            {
-                // Floating variables are any where there are rows with an unbound value
-                return Multiset.Variables.Where(v => Multiset.Sets.Any(s => s[v] == null));
-            }
+            // Floating variables are any where there are rows with an unbound value
+            return Multiset.Variables.Where(v => Multiset.Sets.Any(s => s[v] == null));
         }
+    }
 
-        /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FixedVariables
+    /// <summary>
+    /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FixedVariables
+    {
+        get
         {
-            get
-            {
-                // Fixed variables are any where there are no rows with an unbound value
-                return Multiset.Variables.Where(v => Multiset.Sets.All(s => s[v] != null));
-            }
+            // Fixed variables are any where there are no rows with an unbound value
+            return Multiset.Variables.Where(v => Multiset.Sets.All(s => s[v] != null));
         }
+    }
 
-        /// <summary>
-        /// Throws an error as this cannot be converted back into a query.
-        /// </summary>
-        /// <returns></returns>
-        public SparqlQuery ToQuery()
-        {
-            throw new NotSupportedException("Cannot convert Table to Query");
-        }
+    /// <summary>
+    /// Throws an error as this cannot be converted back into a query.
+    /// </summary>
+    /// <returns></returns>
+    public SparqlQuery ToQuery()
+    {
+        throw new NotSupportedException("Cannot convert Table to Query");
+    }
 
-        /// <summary>
-        /// Throws an error as this cannot be converted back into a graph pattern.
-        /// </summary>
-        /// <returns></returns>
-        public Patterns.GraphPattern ToGraphPattern()
-        {
-            throw new NotSupportedException("Cannot convert Table to Graph Pattern");
-        }
+    /// <summary>
+    /// Throws an error as this cannot be converted back into a graph pattern.
+    /// </summary>
+    /// <returns></returns>
+    public Patterns.GraphPattern ToGraphPattern()
+    {
+        throw new NotSupportedException("Cannot convert Table to Graph Pattern");
+    }
 
-        /// <summary>
-        /// Gets the string representation of the algebra.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "Table()";
-        }
+    /// <summary>
+    /// Gets the string representation of the algebra.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "Table()";
+    }
 
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
-        {
-            return processor.ProcessUnknownOperator(this, context);
-        }
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    {
+        return processor.ProcessUnknownOperator(this, context);
+    }
 
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
-        {
-            return visitor.VisitUnknownOperator(this);
-        }
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    {
+        return visitor.VisitUnknownOperator(this);
     }
 }

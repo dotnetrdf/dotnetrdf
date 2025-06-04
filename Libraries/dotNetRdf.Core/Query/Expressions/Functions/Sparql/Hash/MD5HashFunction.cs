@@ -24,62 +24,61 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
+
+
+/// <summary>
+/// Represents the SPARQL MD5() Function.
+/// </summary>
+public class MD5HashFunction
+    : Leviathan.Hash.MD5HashFunction
 {
+    /// <summary>
+    /// Creates a new MD5() Function.
+    /// </summary>
+    /// <param name="expr">Argument Expression.</param>
+    public MD5HashFunction(ISparqlExpression expr)
+        : base(expr) { }
 
     /// <summary>
-    /// Represents the SPARQL MD5() Function.
+    /// Gets the Functor of the Expression.
     /// </summary>
-    public class MD5HashFunction
-        : Leviathan.Hash.MD5HashFunction
+    public override string Functor
     {
-        /// <summary>
-        /// Creates a new MD5() Function.
-        /// </summary>
-        /// <param name="expr">Argument Expression.</param>
-        public MD5HashFunction(ISparqlExpression expr)
-            : base(expr) { }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
+        get
         {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordMD5;
-            }
+            return SparqlSpecsHelper.SparqlKeywordMD5;
         }
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordMD5 + "(" + InnerExpression + ")";
-        }
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return SparqlSpecsHelper.SparqlKeywordMD5 + "(" + InnerExpression + ")";
+    }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new MD5HashFunction(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new MD5HashFunction(transformer.Transform(InnerExpression));
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessMd5HashFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessMd5HashFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitMd5HashFunction(this);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitMd5HashFunction(this);
     }
 }

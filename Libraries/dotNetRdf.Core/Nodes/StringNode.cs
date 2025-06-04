@@ -28,142 +28,141 @@ using System;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Nodes
+namespace VDS.RDF.Nodes;
+
+/// <summary>
+/// Valued node whose value is a string or can only be converted to a string.
+/// </summary>
+public class StringNode
+    : LiteralNode, IValuedNode
 {
     /// <summary>
-    /// Valued node whose value is a string or can only be converted to a string.
+    /// Creates a new String Node.
     /// </summary>
-    public class StringNode
-        : LiteralNode, IValuedNode
+    /// <param name="value">String value.</param>
+    /// <param name="datatype">Datatype URI.</param>
+    public StringNode(string value, Uri datatype)
+        : base(value, datatype, false) { }
+
+    /// <summary>
+    /// Creates a new String Node.
+    /// </summary>
+    /// <param name="value">String value.</param>
+    /// <param name="lang">Language Specifier.</param>
+    public StringNode(string value, string lang)
+        : base(value, lang, false) { }
+
+    /// <summary>
+    /// Creates a new String Node.
+    /// </summary>
+    /// <param name="value">String value.</param>
+    public StringNode(string value)
+        : base(value, false) { }
+
+    #region IValuedNode Members
+
+    /// <summary>
+    /// Gets the string value.
+    /// </summary>
+    /// <returns></returns>
+    public string AsString()
     {
-        /// <summary>
-        /// Creates a new String Node.
-        /// </summary>
-        /// <param name="value">String value.</param>
-        /// <param name="datatype">Datatype URI.</param>
-        public StringNode(string value, Uri datatype)
-            : base(value, datatype, false) { }
-
-        /// <summary>
-        /// Creates a new String Node.
-        /// </summary>
-        /// <param name="value">String value.</param>
-        /// <param name="lang">Language Specifier.</param>
-        public StringNode(string value, string lang)
-            : base(value, lang, false) { }
-
-        /// <summary>
-        /// Creates a new String Node.
-        /// </summary>
-        /// <param name="value">String value.</param>
-        public StringNode(string value)
-            : base(value, false) { }
-
-        #region IValuedNode Members
-
-        /// <summary>
-        /// Gets the string value.
-        /// </summary>
-        /// <returns></returns>
-        public string AsString()
-        {
-            return Value;
-        }
-
-        /// <summary>
-        /// Throws an error as the string cannot be cast to an integer.
-        /// </summary>
-        /// <returns></returns>
-        public long AsInteger()
-        {
-            throw new RdfQueryException("Cannot cast this literal node to a type");
-        }
-
-        /// <summary>
-        /// Throws an error as the string cannot be cast to a decimal.
-        /// </summary>
-        /// <returns></returns>
-        public decimal AsDecimal()
-        {
-            throw new RdfQueryException("Cannot cast this literal node to a type");
-        }
-
-        /// <summary>
-        /// Throws an error as the string cannot be cast to a float.
-        /// </summary>
-        /// <returns></returns>
-        public float AsFloat()
-        {
-            throw new RdfQueryException("Cannot cast this literal node to a type");
-        }
-
-        /// <summary>
-        /// Throws an error as the string cannot be cast to a double.
-        /// </summary>
-        /// <returns></returns>
-        public double AsDouble()
-        {
-            throw new RdfQueryException("Cannot cast this literal node to a type");
-        }
-
-        /// <summary>
-        /// Gets the boolean value of the string.
-        /// </summary>
-        /// <returns></returns>
-        public bool AsBoolean()
-        {
-            return this.EffectiveBooleanValue();
-        }
-
-        /// <summary>
-        /// Throws an error as the string cannot be cast to a date time.
-        /// </summary>
-        /// <returns></returns>
-        public DateTime AsDateTime()
-        {
-            throw new RdfQueryException("Cannot cast this literal node to a type");
-        }
-
-        /// <summary>
-        /// Throws an error as the string cannot be cast to a date time.
-        /// </summary>
-        /// <returns></returns>
-        public DateTimeOffset AsDateTimeOffset()
-        {
-            throw new RdfQueryException("Cannot cast this literal node to a type");
-        }
-
-        /// <summary>
-        /// Throws an error as the string cannot be cast to a time span.
-        /// </summary>
-        /// <returns></returns>
-        public TimeSpan AsTimeSpan()
-        {
-            throw new RdfQueryException("Cannot case this literal node to a type");
-        }
-
-        /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String.
-        /// </summary>
-        public string EffectiveType
-        {
-            get
-            {
-                return (DataType != null ? DataType.AbsoluteUri : string.Empty);
-            }
-        }
-
-        /// <summary>
-        /// Gets the numeric type of the expression.
-        /// </summary>
-        public SparqlNumericType NumericType
-        {
-            get 
-            {
-                return SparqlNumericType.NaN;
-            }
-        }
-
-        #endregion
+        return Value;
     }
+
+    /// <summary>
+    /// Throws an error as the string cannot be cast to an integer.
+    /// </summary>
+    /// <returns></returns>
+    public long AsInteger()
+    {
+        throw new RdfQueryException("Cannot cast this literal node to a type");
+    }
+
+    /// <summary>
+    /// Throws an error as the string cannot be cast to a decimal.
+    /// </summary>
+    /// <returns></returns>
+    public decimal AsDecimal()
+    {
+        throw new RdfQueryException("Cannot cast this literal node to a type");
+    }
+
+    /// <summary>
+    /// Throws an error as the string cannot be cast to a float.
+    /// </summary>
+    /// <returns></returns>
+    public float AsFloat()
+    {
+        throw new RdfQueryException("Cannot cast this literal node to a type");
+    }
+
+    /// <summary>
+    /// Throws an error as the string cannot be cast to a double.
+    /// </summary>
+    /// <returns></returns>
+    public double AsDouble()
+    {
+        throw new RdfQueryException("Cannot cast this literal node to a type");
+    }
+
+    /// <summary>
+    /// Gets the boolean value of the string.
+    /// </summary>
+    /// <returns></returns>
+    public bool AsBoolean()
+    {
+        return this.EffectiveBooleanValue();
+    }
+
+    /// <summary>
+    /// Throws an error as the string cannot be cast to a date time.
+    /// </summary>
+    /// <returns></returns>
+    public DateTime AsDateTime()
+    {
+        throw new RdfQueryException("Cannot cast this literal node to a type");
+    }
+
+    /// <summary>
+    /// Throws an error as the string cannot be cast to a date time.
+    /// </summary>
+    /// <returns></returns>
+    public DateTimeOffset AsDateTimeOffset()
+    {
+        throw new RdfQueryException("Cannot cast this literal node to a type");
+    }
+
+    /// <summary>
+    /// Throws an error as the string cannot be cast to a time span.
+    /// </summary>
+    /// <returns></returns>
+    public TimeSpan AsTimeSpan()
+    {
+        throw new RdfQueryException("Cannot case this literal node to a type");
+    }
+
+    /// <summary>
+    /// Gets the URI of the datatype this valued node represents as a String.
+    /// </summary>
+    public string EffectiveType
+    {
+        get
+        {
+            return (DataType != null ? DataType.AbsoluteUri : string.Empty);
+        }
+    }
+
+    /// <summary>
+    /// Gets the numeric type of the expression.
+    /// </summary>
+    public SparqlNumericType NumericType
+    {
+        get 
+        {
+            return SparqlNumericType.NaN;
+        }
+    }
+
+    #endregion
 }

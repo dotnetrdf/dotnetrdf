@@ -25,42 +25,41 @@
 */
 
 using VDS.RDF.Query.Spin.SparqlUtil;
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+/**
+ * The base interface of TriplePattern and TripleTemplate.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface ITriple : IPrintable, IResource
 {
 
     /**
-     * The base interface of TriplePattern and TripleTemplate.
-     * 
-     * @author Holger Knublauch
+     * Gets the subject of this Triple, downcasting it into Variable if appropriate.
+     * @return the subject
      */
-    internal interface ITriple : IPrintable, IResource
-    {
-
-        /**
-         * Gets the subject of this Triple, downcasting it into Variable if appropriate.
-         * @return the subject
-         */
-        IResource getSubject();
+    IResource getSubject();
 
 
-        /**
-         * Gets the predicate of this Triple, downcasting it into Variable if appropriate.
-         * @return the predicate
-         */
-        IResource getPredicate();
+    /**
+     * Gets the predicate of this Triple, downcasting it into Variable if appropriate.
+     * @return the predicate
+     */
+    IResource getPredicate();
 
 
-        /**
-         * Gets the object of this Triple, downcasting it into Variable if appropriate.
-         * @return the object
-         */
-        IResource getObject();
+    /**
+     * Gets the object of this Triple, downcasting it into Variable if appropriate.
+     * @return the object
+     */
+    IResource getObject();
 
 
-        /**
-         * Gets the object as a INode.
-         * @return the object or null if it's not a resource (i.e., a literal)
-         */
-        IResource getObjectResource();
-    }
+    /**
+     * Gets the object as a INode.
+     * @return the object or null if it's not a resource (i.e., a literal)
+     */
+    IResource getObjectResource();
 }

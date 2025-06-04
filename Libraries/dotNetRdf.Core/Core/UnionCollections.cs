@@ -28,195 +28,194 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Represents a union of multiple Triple Collections.
+/// </summary>
+/// <remarks>
+/// <para>
+/// The union consists of a <em>Base</em> collection which is the collection that Triples can actually be added to and deleted from and any number of additional collections which are read-only as far as the union is concerned (this does not mean they cannot be altered elsewhere by other code).
+/// </para>
+/// </remarks>
+public class UnionTripleCollection 
+    : BaseTripleCollection
 {
+    private List<BaseTripleCollection> _collections = new List<BaseTripleCollection>();
+    private BaseTripleCollection _baseCollection;
+
     /// <summary>
-    /// Represents a union of multiple Triple Collections.
+    /// Creates a new Union Triple Collection which is a union of two collections.
+    /// </summary>
+    /// <param name="baseTriples">Base Triple Collection.</param>
+    /// <param name="additionalTriples">Additional Triple Collection.</param>
+    public UnionTripleCollection(BaseTripleCollection baseTriples, BaseTripleCollection additionalTriples)
+    {
+        if (baseTriples == null) throw new ArgumentNullException("baseTriple");
+        if (additionalTriples == null) throw new ArgumentNullException("additionalTriples");
+        _collections.Add(baseTriples);
+        _collections.Add(additionalTriples);
+        _baseCollection = baseTriples;
+    }
+
+    /// <summary>
+    /// Creates a new Union Triple Collection which is a union of any number of collections.
+    /// </summary>
+    /// <param name="baseTriples">Base Triple Collection.</param>
+    /// <param name="additionalTriples">Additional Triple Collection(s).</param>
+    public UnionTripleCollection(BaseTripleCollection baseTriples, IEnumerable<BaseTripleCollection> additionalTriples)
+    {
+        if (baseTriples == null) throw new ArgumentNullException("baseTriple");
+        _collections.Add(baseTriples);
+        _collections.AddRange(additionalTriples);
+        _baseCollection = baseTriples;
+    }
+
+    /// <summary>
+    /// Adds a Triple to the base collection.
+    /// </summary>
+    /// <param name="t">Triple to add.</param>
+    protected internal override bool Add(Triple t)
+    {
+        return _baseCollection.Add(t);
+    }
+
+    /// <summary>
+    /// Checks whether the union contains this Triple in any of the collections it comprises.
+    /// </summary>
+    /// <param name="t">Triple to test.</param>
+    /// <returns></returns>
+    public override bool Contains(Triple t)
+    {
+        return _collections.Any(c => c.Contains(t));
+    }
+
+    /// <summary>
+    /// Checks whether the specified triple is quoted in any of the collections of the union.
+    /// </summary>
+    /// <param name="t">Triple to test.</param>
+    /// <returns></returns>
+    public override bool ContainsQuoted(Triple t)
+    {
+        return _collections.Any(c => c.ContainsQuoted(t));
+    }
+
+    /// <summary>
+    /// Gets the count of Triples in this union.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// The union consists of a <em>Base</em> collection which is the collection that Triples can actually be added to and deleted from and any number of additional collections which are read-only as far as the union is concerned (this does not mean they cannot be altered elsewhere by other code).
-    /// </para>
+    /// The Count is the total number of Triples, this may be different from the number of distinct triples.
     /// </remarks>
-    public class UnionTripleCollection 
-        : BaseTripleCollection
+    public override int Count
     {
-        private List<BaseTripleCollection> _collections = new List<BaseTripleCollection>();
-        private BaseTripleCollection _baseCollection;
-
-        /// <summary>
-        /// Creates a new Union Triple Collection which is a union of two collections.
-        /// </summary>
-        /// <param name="baseTriples">Base Triple Collection.</param>
-        /// <param name="additionalTriples">Additional Triple Collection.</param>
-        public UnionTripleCollection(BaseTripleCollection baseTriples, BaseTripleCollection additionalTriples)
+        get 
         {
-            if (baseTriples == null) throw new ArgumentNullException("baseTriple");
-            if (additionalTriples == null) throw new ArgumentNullException("additionalTriples");
-            _collections.Add(baseTriples);
-            _collections.Add(additionalTriples);
-            _baseCollection = baseTriples;
+            return _collections.Sum(c => c.Count);
         }
-
-        /// <summary>
-        /// Creates a new Union Triple Collection which is a union of any number of collections.
-        /// </summary>
-        /// <param name="baseTriples">Base Triple Collection.</param>
-        /// <param name="additionalTriples">Additional Triple Collection(s).</param>
-        public UnionTripleCollection(BaseTripleCollection baseTriples, IEnumerable<BaseTripleCollection> additionalTriples)
-        {
-            if (baseTriples == null) throw new ArgumentNullException("baseTriple");
-            _collections.Add(baseTriples);
-            _collections.AddRange(additionalTriples);
-            _baseCollection = baseTriples;
-        }
-
-        /// <summary>
-        /// Adds a Triple to the base collection.
-        /// </summary>
-        /// <param name="t">Triple to add.</param>
-        protected internal override bool Add(Triple t)
-        {
-            return _baseCollection.Add(t);
-        }
-
-        /// <summary>
-        /// Checks whether the union contains this Triple in any of the collections it comprises.
-        /// </summary>
-        /// <param name="t">Triple to test.</param>
-        /// <returns></returns>
-        public override bool Contains(Triple t)
-        {
-            return _collections.Any(c => c.Contains(t));
-        }
-
-        /// <summary>
-        /// Checks whether the specified triple is quoted in any of the collections of the union.
-        /// </summary>
-        /// <param name="t">Triple to test.</param>
-        /// <returns></returns>
-        public override bool ContainsQuoted(Triple t)
-        {
-            return _collections.Any(c => c.ContainsQuoted(t));
-        }
-
-        /// <summary>
-        /// Gets the count of Triples in this union.
-        /// </summary>
-        /// <remarks>
-        /// The Count is the total number of Triples, this may be different from the number of distinct triples.
-        /// </remarks>
-        public override int Count
-        {
-            get 
-            {
-                return _collections.Sum(c => c.Count);
-            }
-        }
-
-        /// <inheritdoc/>
-        public override int QuotedCount => _collections.Sum(c=>c.QuotedCount);
-
-        /// <summary>
-        /// Deletes a Triple from the base collection.
-        /// </summary>
-        /// <param name="t">Triple to delete.</param>
-        protected internal override bool Delete(Triple t)
-        {
-            return _baseCollection.Delete(t);
-        }
-
-        /// <summary>
-        /// Retrieves a Triple from the union.
-        /// </summary>
-        /// <param name="t">Triple to retrieve.</param>
-        /// <returns></returns>
-        /// <exception cref="KeyNotFoundException">Thrown if the Triple is not contained in any of the collections this union comprises.</exception>
-        public override Triple this[Triple t]
-        {
-            get 
-            {
-                foreach (BaseTripleCollection c in _collections)
-                {
-                    if (c.Contains(t))
-                    {
-                        return c[t];
-                    }
-                }
-                throw new KeyNotFoundException("The given Triple does not exist in this Triple Collection");
-            }
-        }
-
-        /// <summary>
-        /// Gets the enumeration of distinct objects of Triples.
-        /// </summary>
-        public override IEnumerable<INode> ObjectNodes
-        {
-            get 
-            {
-                return (from c in _collections
-                        from o in c.ObjectNodes
-                        select o);
-            }
-        }
-
-        /// <summary>
-        /// Gets the enumeration of distinct predicates of Triples.
-        /// </summary>
-        public override IEnumerable<INode> PredicateNodes
-        {
-            get 
-            {
-                return (from c in _collections
-                        from p in c.PredicateNodes
-                        select p); 
-            }
-        }
-
-        /// <summary>
-        /// Gets the enumeration of distinct subjects of Triples.
-        /// </summary>
-        public override IEnumerable<INode> SubjectNodes
-        {
-            get 
-            {
-                return (from c in _collections
-                        from s in c.SubjectNodes
-                        select s); 
-            }
-        }
-
-        /// <inheritdoc/>
-        public override IEnumerable<INode> QuotedObjectNodes
-        {
-            get => _collections.SelectMany(c => c.QuotedObjectNodes);
-        }
-
-        /// <inheritdoc/>
-        public override IEnumerable<INode> QuotedPredicateNodes
-        {
-            get => _collections.SelectMany(c => c.QuotedPredicateNodes);
-        }
-        /// <inheritdoc/>
-        public override IEnumerable<INode> QuotedSubjectNodes
-        {
-            get => _collections.SelectMany(c => c.QuotedSubjectNodes);
-        }
-
-        /// <summary>
-        /// Gets the enumeration of Triples in the union.
-        /// </summary>
-        /// <returns></returns>
-        public override IEnumerator<Triple> GetEnumerator()
-        {
-            return _collections.SelectMany(c => c).GetEnumerator();
-        }
-
-        /// <inheritdoc />
-        public override IEnumerable<Triple> Asserted => _collections.SelectMany(c => c.Asserted);
-
-        /// <inheritdoc />
-        public override IEnumerable<Triple> Quoted => _collections.SelectMany(c => c.Quoted);
-
     }
+
+    /// <inheritdoc/>
+    public override int QuotedCount => _collections.Sum(c=>c.QuotedCount);
+
+    /// <summary>
+    /// Deletes a Triple from the base collection.
+    /// </summary>
+    /// <param name="t">Triple to delete.</param>
+    protected internal override bool Delete(Triple t)
+    {
+        return _baseCollection.Delete(t);
+    }
+
+    /// <summary>
+    /// Retrieves a Triple from the union.
+    /// </summary>
+    /// <param name="t">Triple to retrieve.</param>
+    /// <returns></returns>
+    /// <exception cref="KeyNotFoundException">Thrown if the Triple is not contained in any of the collections this union comprises.</exception>
+    public override Triple this[Triple t]
+    {
+        get 
+        {
+            foreach (BaseTripleCollection c in _collections)
+            {
+                if (c.Contains(t))
+                {
+                    return c[t];
+                }
+            }
+            throw new KeyNotFoundException("The given Triple does not exist in this Triple Collection");
+        }
+    }
+
+    /// <summary>
+    /// Gets the enumeration of distinct objects of Triples.
+    /// </summary>
+    public override IEnumerable<INode> ObjectNodes
+    {
+        get 
+        {
+            return (from c in _collections
+                    from o in c.ObjectNodes
+                    select o);
+        }
+    }
+
+    /// <summary>
+    /// Gets the enumeration of distinct predicates of Triples.
+    /// </summary>
+    public override IEnumerable<INode> PredicateNodes
+    {
+        get 
+        {
+            return (from c in _collections
+                    from p in c.PredicateNodes
+                    select p); 
+        }
+    }
+
+    /// <summary>
+    /// Gets the enumeration of distinct subjects of Triples.
+    /// </summary>
+    public override IEnumerable<INode> SubjectNodes
+    {
+        get 
+        {
+            return (from c in _collections
+                    from s in c.SubjectNodes
+                    select s); 
+        }
+    }
+
+    /// <inheritdoc/>
+    public override IEnumerable<INode> QuotedObjectNodes
+    {
+        get => _collections.SelectMany(c => c.QuotedObjectNodes);
+    }
+
+    /// <inheritdoc/>
+    public override IEnumerable<INode> QuotedPredicateNodes
+    {
+        get => _collections.SelectMany(c => c.QuotedPredicateNodes);
+    }
+    /// <inheritdoc/>
+    public override IEnumerable<INode> QuotedSubjectNodes
+    {
+        get => _collections.SelectMany(c => c.QuotedSubjectNodes);
+    }
+
+    /// <summary>
+    /// Gets the enumeration of Triples in the union.
+    /// </summary>
+    /// <returns></returns>
+    public override IEnumerator<Triple> GetEnumerator()
+    {
+        return _collections.SelectMany(c => c).GetEnumerator();
+    }
+
+    /// <inheritdoc />
+    public override IEnumerable<Triple> Asserted => _collections.SelectMany(c => c.Asserted);
+
+    /// <inheritdoc />
+    public override IEnumerable<Triple> Quoted => _collections.SelectMany(c => c.Quoted);
+
 }

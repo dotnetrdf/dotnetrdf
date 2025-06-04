@@ -27,53 +27,52 @@
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Paths
+namespace VDS.RDF.Query.Paths;
+
+/// <summary>
+/// Represents an Inverse Path.
+/// </summary>
+public class InversePath : BaseUnaryPath
 {
     /// <summary>
-    /// Represents an Inverse Path.
+    /// Creates a new Inverse Path.
     /// </summary>
-    public class InversePath : BaseUnaryPath
+    /// <param name="path">Path.</param>
+    public InversePath(ISparqlPath path)
+        : base(path) { }
+
+    /// <summary>
+    /// Gets the String representation of the Path.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new Inverse Path.
-        /// </summary>
-        /// <param name="path">Path.</param>
-        public InversePath(ISparqlPath path)
-            : base(path) { }
+        return "^ " + _path.ToString();
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Path.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "^ " + _path.ToString();
-        }
+    /// <summary>
+    /// Converts a Path into its Algebra Form.
+    /// </summary>
+    /// <param name="context">Path Transformation Context.</param>
+    /// <returns></returns>
+    public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
+    {
+        // Swap the Subject and Object over
+        PatternItem tempObj = context.Object;
+        PatternItem tempSubj = context.Subject;
+        PatternItem tempEnd = context.End;
+        context.Object = tempSubj;
+        context.Subject = tempObj;
+        context.End = tempSubj;
 
-        /// <summary>
-        /// Converts a Path into its Algebra Form.
-        /// </summary>
-        /// <param name="context">Path Transformation Context.</param>
-        /// <returns></returns>
-        public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
-        {
-            // Swap the Subject and Object over
-            PatternItem tempObj = context.Object;
-            PatternItem tempSubj = context.Subject;
-            PatternItem tempEnd = context.End;
-            context.Object = tempSubj;
-            context.Subject = tempObj;
-            context.End = tempSubj;
+        // Then transform the path
+        context.AddTriplePattern(context.GetTriplePattern(context.Subject, _path, context.Object));
 
-            // Then transform the path
-            context.AddTriplePattern(context.GetTriplePattern(context.Subject, _path, context.Object));
+        // Then swap the Subject and Object back
+        context.Subject = tempSubj;
+        context.Object = tempObj;
+        context.End = tempEnd;
 
-            // Then swap the Subject and Object back
-            context.Subject = tempSubj;
-            context.Object = tempObj;
-            context.End = tempEnd;
-
-            return context.ToAlgebra();
-        }
+        return context.ToAlgebra();
     }
 }

@@ -26,28 +26,27 @@
 
 using VDS.RDF.Query.Spin.SparqlUtil;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class MinusImpl : ElementImpl, IMinus
 {
-    internal class MinusImpl : ElementImpl, IMinus
+
+    public MinusImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
-
-        public MinusImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
-        }
+    }
 
 
-        //override public void visit(IElementVisitor visitor)
-        //{
-        //    visitor.visit(this);
-        //}
+    //override public void visit(IElementVisitor visitor)
+    //{
+    //    visitor.visit(this);
+    //}
 
 
-        // TODO PRINT CONTEXT SHOULD DEPEND ON THE MODEL TO AVOID ADDING RESOURCE-CONSUMMING ATTERNS WHERE NOT NEEDED
-        override public void Print(ISparqlPrinter p)
-        {
-            p.printKeyword("MINUS");
-            printNestedElementList(p);
-        }
+    // TODO PRINT CONTEXT SHOULD DEPEND ON THE MODEL TO AVOID ADDING RESOURCE-CONSUMMING ATTERNS WHERE NOT NEEDED
+    override public void Print(ISparqlPrinter p)
+    {
+        p.printKeyword("MINUS");
+        printNestedElementList(p);
     }
 }

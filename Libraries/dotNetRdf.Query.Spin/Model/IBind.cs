@@ -24,27 +24,26 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+/**
+ * A BIND assignment element.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IBind : IElement
 {
+
     /**
-     * A BIND assignment element.
-     * 
-     * @author Holger Knublauch
+     * Gets the SPARQL expression delivering the assigned value.
+     * @return the expression
      */
-    internal interface IBind : IElement
-    {
-
-        /**
-         * Gets the SPARQL expression delivering the assigned value.
-         * @return the expression
-         */
-        IResource getExpression();
+    IResource getExpression();
 
 
-        /**
-         * Gets the variable on the right hand side of the BIND.
-         * @return the Variable
-         */
-        IVariable getVariable();
-    }
+    /**
+     * Gets the variable on the right hand side of the BIND.
+     * @return the Variable
+     */
+    IVariable getVariable();
 }

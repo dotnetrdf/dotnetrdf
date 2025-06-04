@@ -27,81 +27,80 @@
 using System;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+/// <summary>
+/// Class responsible for setting the predicate part of triple patterns.
+/// </summary>
+public sealed class TriplePatternPredicatePart
 {
-    /// <summary>
-    /// Class responsible for setting the predicate part of triple patterns.
-    /// </summary>
-    public sealed class TriplePatternPredicatePart
+    private readonly PatternItem _subjectPatternItem;
+    private readonly TriplePatternBuilder _triplePatternBuilder;
+    private readonly INamespaceMapper _prefixes;
+
+    internal TriplePatternPredicatePart(TriplePatternBuilder triplePatternBuilder, PatternItem subjectPatternItem, INamespaceMapper prefixes)
     {
-        private readonly PatternItem _subjectPatternItem;
-        private readonly TriplePatternBuilder _triplePatternBuilder;
-        private readonly INamespaceMapper _prefixes;
+        _subjectPatternItem = subjectPatternItem;
+        _prefixes = prefixes;
+        _triplePatternBuilder = triplePatternBuilder;
+    }
 
-        internal TriplePatternPredicatePart(TriplePatternBuilder triplePatternBuilder, PatternItem subjectPatternItem, INamespaceMapper prefixes)
-        {
-            _subjectPatternItem = subjectPatternItem;
-            _prefixes = prefixes;
-            _triplePatternBuilder = triplePatternBuilder;
-        }
+    /// <summary>
+    /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Predicate"/>.
+    /// </summary>
+    public TriplePatternObjectPart Predicate(SparqlVariable variable)
+    {
+        PatternItem predicate = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variable.Name);
+        return CreateTriplePatternObjectPart(predicate);
+    }
 
-        /// <summary>
-        /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Predicate"/>.
-        /// </summary>
-        public TriplePatternObjectPart Predicate(SparqlVariable variable)
-        {
-            PatternItem predicate = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variable.Name);
-            return CreateTriplePatternObjectPart(predicate);
-        }
+    /// <summary>
+    /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Predicate"/>.
+    /// </summary>
+    public TriplePatternObjectPart Predicate(string variableName)
+    {
+        PatternItem predicate = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variableName);
+        return CreateTriplePatternObjectPart(predicate);
+    }
 
-        /// <summary>
-        /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Predicate"/>.
-        /// </summary>
-        public TriplePatternObjectPart Predicate(string variableName)
-        {
-            PatternItem predicate = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variableName);
-            return CreateTriplePatternObjectPart(predicate);
-        }
+    /// <summary>
+    /// Sets a <see cref="PatternItem"/> as <see cref="IMatchTriplePattern.Predicate"/>.
+    /// </summary>
+    public TriplePatternObjectPart Predicate(PatternItem predicate)
+    {
+        return new TriplePatternObjectPart(_triplePatternBuilder, _subjectPatternItem, predicate, _prefixes);
+    }
 
-        /// <summary>
-        /// Sets a <see cref="PatternItem"/> as <see cref="IMatchTriplePattern.Predicate"/>.
-        /// </summary>
-        public TriplePatternObjectPart Predicate(PatternItem predicate)
-        {
-            return new TriplePatternObjectPart(_triplePatternBuilder, _subjectPatternItem, predicate, _prefixes);
-        }
+    /// <summary>
+    /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Predicate"/>.
+    /// </summary>
+    public TriplePatternObjectPart PredicateUri(Uri predicateUri)
+    {
+        PatternItem predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateUri);
+        return CreateTriplePatternObjectPart(predicate);
+    }
 
-        /// <summary>
-        /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Predicate"/>.
-        /// </summary>
-        public TriplePatternObjectPart PredicateUri(Uri predicateUri)
-        {
-            PatternItem predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateUri);
-            return CreateTriplePatternObjectPart(predicate);
-        }
+    /// <summary>
+    /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Predicate"/> using a QName.
+    /// </summary>
+    /// <remarks>A relevant prefix/base URI must be added to <see cref="IQueryBuilder.Prefixes"/>.</remarks>
+    public TriplePatternObjectPart PredicateUri(string predicateQName)
+    {
+        PatternItem predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateQName, _prefixes);
+        return CreateTriplePatternObjectPart(predicate);
+    }
 
-        /// <summary>
-        /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Predicate"/> using a QName.
-        /// </summary>
-        /// <remarks>A relevant prefix/base URI must be added to <see cref="IQueryBuilder.Prefixes"/>.</remarks>
-        public TriplePatternObjectPart PredicateUri(string predicateQName)
-        {
-            PatternItem predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateQName, _prefixes);
-            return CreateTriplePatternObjectPart(predicate);
-        }
+    /// <summary>
+    /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Predicate"/> using a <see cref="IUriNode"/>.
+    /// </summary>
+    public TriplePatternObjectPart PredicateUri(IUriNode predicateNode)
+    {
+        PatternItem predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateNode);
+        return CreateTriplePatternObjectPart(predicate);
+    }
 
-        /// <summary>
-        /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Predicate"/> using a <see cref="IUriNode"/>.
-        /// </summary>
-        public TriplePatternObjectPart PredicateUri(IUriNode predicateNode)
-        {
-            PatternItem predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateNode);
-            return CreateTriplePatternObjectPart(predicate);
-        }
-
-        private TriplePatternObjectPart CreateTriplePatternObjectPart(PatternItem predicate)
-        {
-            return new TriplePatternObjectPart(_triplePatternBuilder, _subjectPatternItem, predicate, _prefixes);
-        }
+    private TriplePatternObjectPart CreateTriplePatternObjectPart(PatternItem predicate)
+    {
+        return new TriplePatternObjectPart(_triplePatternBuilder, _subjectPatternItem, predicate, _prefixes);
     }
 }

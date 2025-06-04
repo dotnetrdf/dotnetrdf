@@ -28,509 +28,508 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Thread Safe decorator for triple collections.
+/// </summary>
+/// <remarks>
+/// Depending on the platform this either uses <see cref="ReaderWriterLockSlim"/> to provide MRSW concurrency or it uses <see cref="Monitor"/> to provide exclusive access concurrency, either way usage is thread safe.
+/// </remarks>
+/// <threadsafety instance="true">This decorator provides thread safe access to any underlying triple collection.</threadsafety>
+public class ThreadSafeTripleCollection 
+    : WrapperTripleCollection
 {
+    private readonly ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+
     /// <summary>
-    /// Thread Safe decorator for triple collections.
+    /// Creates a new thread safe triple collection which wraps a new instance of the default unindexed <see cref="TripleCollection"/>.
     /// </summary>
-    /// <remarks>
-    /// Depending on the platform this either uses <see cref="ReaderWriterLockSlim"/> to provide MRSW concurrency or it uses <see cref="Monitor"/> to provide exclusive access concurrency, either way usage is thread safe.
-    /// </remarks>
-    /// <threadsafety instance="true">This decorator provides thread safe access to any underlying triple collection.</threadsafety>
-    public class ThreadSafeTripleCollection 
-        : WrapperTripleCollection
+    public ThreadSafeTripleCollection()
+        : base(new TripleCollection()) { }
+
+    /// <summary>
+    /// Creates a new thread safe triple collection which wraps the provided triple collection.
+    /// </summary>
+    /// <param name="tripleCollection">Triple Collection.</param>
+    public ThreadSafeTripleCollection(BaseTripleCollection tripleCollection)
+        : base(tripleCollection) { }
+
+    /// <summary>
+    /// Enters the write lock.
+    /// </summary>
+    protected void EnterWriteLock()
     {
-        private readonly ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        _lockManager.EnterWriteLock();
+    }
 
-        /// <summary>
-        /// Creates a new thread safe triple collection which wraps a new instance of the default unindexed <see cref="TripleCollection"/>.
-        /// </summary>
-        public ThreadSafeTripleCollection()
-            : base(new TripleCollection()) { }
+    /// <summary>
+    /// Exists the write lock.
+    /// </summary>
+    protected void ExitWriteLock()
+    {
+        _lockManager.ExitWriteLock();
+    }
 
-        /// <summary>
-        /// Creates a new thread safe triple collection which wraps the provided triple collection.
-        /// </summary>
-        /// <param name="tripleCollection">Triple Collection.</param>
-        public ThreadSafeTripleCollection(BaseTripleCollection tripleCollection)
-            : base(tripleCollection) { }
+    /// <summary>
+    /// Enters the read lock.
+    /// </summary>
+    protected void EnterReadLock()
+    {
+        _lockManager.EnterReadLock();
+    }
 
-        /// <summary>
-        /// Enters the write lock.
-        /// </summary>
-        protected void EnterWriteLock()
+    /// <summary>
+    /// Exists the read lock.
+    /// </summary>
+    protected void ExitReadLock()
+    {
+        _lockManager.ExitReadLock();
+    }
+
+    /// <summary>
+    /// Adds a Triple to the Collection.
+    /// </summary>
+    /// <param name="t">Triple to add.</param>
+    protected internal override bool Add(Triple t)
+    {
+        try
         {
-            _lockManager.EnterWriteLock();
+            EnterWriteLock();
+            return _triples.Add(t); ;
         }
-
-        /// <summary>
-        /// Exists the write lock.
-        /// </summary>
-        protected void ExitWriteLock()
+        finally
         {
-            _lockManager.ExitWriteLock();
+            ExitWriteLock();
         }
+    }
 
-        /// <summary>
-        /// Enters the read lock.
-        /// </summary>
-        protected void EnterReadLock()
+    /// <summary>
+    /// Determines whether a given Triple is in the Triple Collection.
+    /// </summary>
+    /// <param name="t">The Triple to test.</param>
+    /// <returns>True if the Triple already exists in the Triple Collection.</returns>
+    public override bool Contains(Triple t)
+    {
+        var contains = false;
+        try
         {
-            _lockManager.EnterReadLock();
+            EnterReadLock();
+            contains = _triples.Contains(t);
         }
-
-        /// <summary>
-        /// Exists the read lock.
-        /// </summary>
-        protected void ExitReadLock()
+        finally
         {
-            _lockManager.ExitReadLock();
+            ExitReadLock();
         }
+        return contains;
+    }
 
-        /// <summary>
-        /// Adds a Triple to the Collection.
-        /// </summary>
-        /// <param name="t">Triple to add.</param>
-        protected internal override bool Add(Triple t)
+   /// <inheritdoc />
+    public override bool ContainsQuoted(Triple t)
+    {
+        try
         {
-            try
-            {
-                EnterWriteLock();
-                return _triples.Add(t); ;
-            }
-            finally
-            {
-                ExitWriteLock();
-            }
+            EnterReadLock();
+            return _triples.ContainsQuoted(t);
         }
-
-        /// <summary>
-        /// Determines whether a given Triple is in the Triple Collection.
-        /// </summary>
-        /// <param name="t">The Triple to test.</param>
-        /// <returns>True if the Triple already exists in the Triple Collection.</returns>
-        public override bool Contains(Triple t)
+        finally
         {
-            var contains = false;
+            ExitReadLock();
+        }
+    }
+
+    /// <summary>
+    /// Gets the Number of Triples in the Triple Collection.
+    /// </summary>
+    public override int Count
+    {
+        get
+        {
+            var c = 0;
             try
             {
                 EnterReadLock();
-                contains = _triples.Contains(t);
+                c = _triples.Count;
             }
             finally
             {
                 ExitReadLock();
             }
-            return contains;
+            return c;
         }
+    }
 
-       /// <inheritdoc />
-        public override bool ContainsQuoted(Triple t)
+    /// <inheritdoc />
+    public override int QuotedCount
+    {
+        get
         {
             try
             {
                 EnterReadLock();
-                return _triples.ContainsQuoted(t);
+                return _triples.QuotedCount;
             }
             finally
             {
                 ExitReadLock();
             }
         }
+    }
 
-        /// <summary>
-        /// Gets the Number of Triples in the Triple Collection.
-        /// </summary>
-        public override int Count
+    /// <summary>
+    /// Gets the original instance of a specific Triple from the Triple Collection.
+    /// </summary>
+    /// <param name="t">Triple.</param>
+    /// <returns></returns>
+    public override Triple this[Triple t]
+    {
+        get
         {
-            get
-            {
-                var c = 0;
-                try
-                {
-                    EnterReadLock();
-                    c = _triples.Count;
-                }
-                finally
-                {
-                    ExitReadLock();
-                }
-                return c;
-            }
-        }
-
-        /// <inheritdoc />
-        public override int QuotedCount
-        {
-            get
-            {
-                try
-                {
-                    EnterReadLock();
-                    return _triples.QuotedCount;
-                }
-                finally
-                {
-                    ExitReadLock();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the original instance of a specific Triple from the Triple Collection.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        public override Triple this[Triple t]
-        {
-            get
-            {
-                Triple temp;
-                try
-                {
-                    EnterReadLock();
-                    temp = _triples[t];
-                }
-                finally
-                {
-                    ExitReadLock();
-                }
-                if (temp == null) throw new KeyNotFoundException("The given Triple does not exist in the Triple Collection");
-                return temp;
-            }
-        }
-
-        /// <summary>
-        /// Deletes a Triple from the Collection.
-        /// </summary>
-        /// <param name="t">Triple to remove.</param>
-        /// <remarks>Deleting something that doesn't exist has no effect and gives no error.</remarks>
-        protected internal override bool Delete(Triple t)
-        {
-            try
-            {
-                EnterWriteLock();
-                return _triples.Delete(t);
-            }
-            finally
-            {
-                ExitWriteLock();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Enumerator for the Collection.
-        /// </summary>
-        /// <returns></returns>
-        public override IEnumerator<Triple> GetEnumerator()
-        {
-            var triples = new List<Triple>();
+            Triple temp;
             try
             {
                 EnterReadLock();
-                triples = _triples.ToList();
+                temp = _triples[t];
             }
             finally
             {
                 ExitReadLock();
             }
-            return triples.GetEnumerator();
+            if (temp == null) throw new KeyNotFoundException("The given Triple does not exist in the Triple Collection");
+            return temp;
         }
+    }
 
-        /// <inheritdoc />
-        public override IEnumerable<Triple> Asserted
+    /// <summary>
+    /// Deletes a Triple from the Collection.
+    /// </summary>
+    /// <param name="t">Triple to remove.</param>
+    /// <remarks>Deleting something that doesn't exist has no effect and gives no error.</remarks>
+    protected internal override bool Delete(Triple t)
+    {
+        try
         {
-            get
-            {
-                try
-                {
-                    EnterReadLock();
-                    return _triples.Asserted.ToList();
-                }
-                finally
-                {
-                    ExitReadLock();
-                }
-            }
+            EnterWriteLock();
+            return _triples.Delete(t);
         }
-
-        /// <inheritdoc />
-        public override IEnumerable<Triple> Quoted
+        finally
         {
-            get
-            {
-                try
-                {
-                    EnterReadLock();
-                    return _triples.Quoted.ToList();
-                }
-                finally
-                {
-                    ExitReadLock();
-                }
-            }
+            ExitWriteLock();
         }
+    }
 
-
-        /// <summary>
-        /// Gets all the Nodes which are Objects of Triples in the Triple Collectio.
-        /// </summary>
-        public override IEnumerable<INode> ObjectNodes
+    /// <summary>
+    /// Gets the Enumerator for the Collection.
+    /// </summary>
+    /// <returns></returns>
+    public override IEnumerator<Triple> GetEnumerator()
+    {
+        var triples = new List<Triple>();
+        try
         {
-            get
-            {
-                var nodes = new List<INode>();
-                try
-                {
-                    EnterReadLock();
-                    nodes = _triples.ObjectNodes.ToList();
-                }
-                finally
-                {
-                    ExitReadLock();
-                }
-                return nodes;
-            }
+            EnterReadLock();
+            triples = _triples.ToList();
         }
-
-        /// <summary>
-        /// Gets all the Nodes which are Predicates of Triples in the Triple Collection.
-        /// </summary>
-        public override IEnumerable<INode> PredicateNodes
+        finally
         {
-            get
-            {
-                var nodes = new List<INode>();
-                try
-                {
-                    EnterReadLock();
-                    nodes = _triples.PredicateNodes.ToList();
-                }
-                finally
-                {
-                    ExitReadLock();
-                }
-                return nodes;
-            }
+            ExitReadLock();
         }
+        return triples.GetEnumerator();
+    }
 
-        /// <summary>
-        /// Gets all the Nodes which are Subjects of Triples in the Triple Collection.
-        /// </summary>
-        public override IEnumerable<INode> SubjectNodes
+    /// <inheritdoc />
+    public override IEnumerable<Triple> Asserted
+    {
+        get
         {
-            get
-            {
-                var nodes = new List<INode>();
-                try
-                {
-                    EnterReadLock();
-                    nodes = _triples.SubjectNodes.ToList();
-                }
-                finally
-                {
-                    ExitReadLock();
-                }
-                return nodes;
-            }
-        }
-
-
-        /// <inheritdoc/>
-        public override IEnumerable<INode> QuotedObjectNodes {
-            get
-            {
-                try
-                {
-                    EnterReadLock();
-                    return _triples.QuotedObjectNodes.ToList();
-                }
-                finally
-                {
-                    ExitReadLock();
-                }
-            }
-        }
-
-        /// <inheritdoc/>
-        public override IEnumerable<INode> QuotedPredicateNodes {
-            get
-            {
-                try
-                {
-                    EnterReadLock();
-                    return _triples.QuotedPredicateNodes.ToList();
-                }
-                finally
-                {
-                    ExitReadLock();
-                }
-            }
-        }
-
-        /// <inheritdoc/>
-        public override IEnumerable<INode> QuotedSubjectNodes
-        {
-            get
-            {
-                try
-                {
-                    EnterReadLock();
-                    return _triples.QuotedSubjectNodes.ToList();
-                }
-                finally
-                {
-                    ExitReadLock();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets all triples with the given Object.
-        /// </summary>
-        /// <param name="obj">Object.</param>
-        /// <returns></returns>
-        public override IEnumerable<Triple> WithObject(INode obj)
-        {
-            var triples = new List<Triple>();
             try
             {
                 EnterReadLock();
-                triples = _triples.WithObject(obj).ToList();
+                return _triples.Asserted.ToList();
             }
             finally
             {
                 ExitReadLock();
             }
-            return triples;
         }
+    }
 
-        /// <summary>
-        /// Gets all triples with the given predicate.
-        /// </summary>
-        /// <param name="pred">Predicate.</param>
-        /// <returns></returns>
-        public override IEnumerable<Triple> WithPredicate(INode pred)
+    /// <inheritdoc />
+    public override IEnumerable<Triple> Quoted
+    {
+        get
         {
-            var triples = new List<Triple>();
             try
             {
                 EnterReadLock();
-                triples = _triples.WithPredicate(pred).ToList();
+                return _triples.Quoted.ToList();
             }
             finally
             {
                 ExitReadLock();
             }
-            return triples;
         }
+    }
 
-        /// <summary>
-        /// Gets all triples with the given predicate object.
-        /// </summary>
-        /// <param name="pred">Predicate.</param>
-        /// <param name="obj">Object.</param>
-        /// <returns></returns>
-        public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
+
+    /// <summary>
+    /// Gets all the Nodes which are Objects of Triples in the Triple Collectio.
+    /// </summary>
+    public override IEnumerable<INode> ObjectNodes
+    {
+        get
         {
-            var triples = new List<Triple>();
+            var nodes = new List<INode>();
             try
             {
                 EnterReadLock();
-                triples = _triples.WithPredicateObject(pred, obj).ToList();
+                nodes = _triples.ObjectNodes.ToList();
             }
             finally
             {
                 ExitReadLock();
             }
-            return triples;
+            return nodes;
         }
+    }
 
-        /// <summary>
-        /// Gets all the triples with the given subject.
-        /// </summary>
-        /// <param name="subj">Subject.</param>
-        /// <returns></returns>
-        public override IEnumerable<Triple> WithSubject(INode subj)
+    /// <summary>
+    /// Gets all the Nodes which are Predicates of Triples in the Triple Collection.
+    /// </summary>
+    public override IEnumerable<INode> PredicateNodes
+    {
+        get
         {
-            var triples = new List<Triple>();
+            var nodes = new List<INode>();
             try
             {
                 EnterReadLock();
-                triples = _triples.WithSubject(subj).ToList();
+                nodes = _triples.PredicateNodes.ToList();
             }
             finally
             {
                 ExitReadLock();
             }
-            return triples;
+            return nodes;
         }
+    }
 
-        /// <summary>
-        /// Gets all the triples with the given subject and object.
-        /// </summary>
-        /// <param name="subj">Subject.</param>
-        /// <param name="obj">Object.</param>
-        /// <returns></returns>
-        public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
+    /// <summary>
+    /// Gets all the Nodes which are Subjects of Triples in the Triple Collection.
+    /// </summary>
+    public override IEnumerable<INode> SubjectNodes
+    {
+        get
         {
-            var triples = new List<Triple>();
+            var nodes = new List<INode>();
             try
             {
                 EnterReadLock();
-                triples = _triples.WithSubjectObject(subj, obj).ToList();
+                nodes = _triples.SubjectNodes.ToList();
             }
             finally
             {
                 ExitReadLock();
             }
-            return triples;
+            return nodes;
         }
+    }
 
-        /// <summary>
-        /// Gets all triples with the given subject and predicate.
-        /// </summary>
-        /// <param name="subj">Subject.</param>
-        /// <param name="pred">Predicate.</param>
-        /// <returns></returns>
-        public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
+
+    /// <inheritdoc/>
+    public override IEnumerable<INode> QuotedObjectNodes {
+        get
         {
-            var triples = new List<Triple>();
             try
             {
                 EnterReadLock();
-                triples = _triples.WithSubjectPredicate(subj, pred).ToList();
+                return _triples.QuotedObjectNodes.ToList();
             }
             finally
             {
                 ExitReadLock();
             }
-            return triples;
         }
+    }
 
-        private bool _isDisposed;
-        /// <summary>
-        /// Disposes of a Triple Collection.
-        /// </summary>
-        protected override void Dispose(bool disposing)
+    /// <inheritdoc/>
+    public override IEnumerable<INode> QuotedPredicateNodes {
+        get
         {
-            if (!_isDisposed)
+            try
             {
-                _isDisposed = true;
-                if (disposing)
+                EnterReadLock();
+                return _triples.QuotedPredicateNodes.ToList();
+            }
+            finally
+            {
+                ExitReadLock();
+            }
+        }
+    }
+
+    /// <inheritdoc/>
+    public override IEnumerable<INode> QuotedSubjectNodes
+    {
+        get
+        {
+            try
+            {
+                EnterReadLock();
+                return _triples.QuotedSubjectNodes.ToList();
+            }
+            finally
+            {
+                ExitReadLock();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets all triples with the given Object.
+    /// </summary>
+    /// <param name="obj">Object.</param>
+    /// <returns></returns>
+    public override IEnumerable<Triple> WithObject(INode obj)
+    {
+        var triples = new List<Triple>();
+        try
+        {
+            EnterReadLock();
+            triples = _triples.WithObject(obj).ToList();
+        }
+        finally
+        {
+            ExitReadLock();
+        }
+        return triples;
+    }
+
+    /// <summary>
+    /// Gets all triples with the given predicate.
+    /// </summary>
+    /// <param name="pred">Predicate.</param>
+    /// <returns></returns>
+    public override IEnumerable<Triple> WithPredicate(INode pred)
+    {
+        var triples = new List<Triple>();
+        try
+        {
+            EnterReadLock();
+            triples = _triples.WithPredicate(pred).ToList();
+        }
+        finally
+        {
+            ExitReadLock();
+        }
+        return triples;
+    }
+
+    /// <summary>
+    /// Gets all triples with the given predicate object.
+    /// </summary>
+    /// <param name="pred">Predicate.</param>
+    /// <param name="obj">Object.</param>
+    /// <returns></returns>
+    public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
+    {
+        var triples = new List<Triple>();
+        try
+        {
+            EnterReadLock();
+            triples = _triples.WithPredicateObject(pred, obj).ToList();
+        }
+        finally
+        {
+            ExitReadLock();
+        }
+        return triples;
+    }
+
+    /// <summary>
+    /// Gets all the triples with the given subject.
+    /// </summary>
+    /// <param name="subj">Subject.</param>
+    /// <returns></returns>
+    public override IEnumerable<Triple> WithSubject(INode subj)
+    {
+        var triples = new List<Triple>();
+        try
+        {
+            EnterReadLock();
+            triples = _triples.WithSubject(subj).ToList();
+        }
+        finally
+        {
+            ExitReadLock();
+        }
+        return triples;
+    }
+
+    /// <summary>
+    /// Gets all the triples with the given subject and object.
+    /// </summary>
+    /// <param name="subj">Subject.</param>
+    /// <param name="obj">Object.</param>
+    /// <returns></returns>
+    public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
+    {
+        var triples = new List<Triple>();
+        try
+        {
+            EnterReadLock();
+            triples = _triples.WithSubjectObject(subj, obj).ToList();
+        }
+        finally
+        {
+            ExitReadLock();
+        }
+        return triples;
+    }
+
+    /// <summary>
+    /// Gets all triples with the given subject and predicate.
+    /// </summary>
+    /// <param name="subj">Subject.</param>
+    /// <param name="pred">Predicate.</param>
+    /// <returns></returns>
+    public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
+    {
+        var triples = new List<Triple>();
+        try
+        {
+            EnterReadLock();
+            triples = _triples.WithSubjectPredicate(subj, pred).ToList();
+        }
+        finally
+        {
+            ExitReadLock();
+        }
+        return triples;
+    }
+
+    private bool _isDisposed;
+    /// <summary>
+    /// Disposes of a Triple Collection.
+    /// </summary>
+    protected override void Dispose(bool disposing)
+    {
+        if (!_isDisposed)
+        {
+            _isDisposed = true;
+            if (disposing)
+            {
+                try
                 {
-                    try
-                    {
-                        EnterWriteLock();
-                        _triples.Dispose();
-                    }
-                    finally
-                    {
-                        ExitWriteLock();
-                    }
+                    EnterWriteLock();
+                    _triples.Dispose();
+                }
+                finally
+                {
+                    ExitWriteLock();
                 }
             }
-            base.Dispose(disposing);
         }
+        base.Dispose(disposing);
     }
 }

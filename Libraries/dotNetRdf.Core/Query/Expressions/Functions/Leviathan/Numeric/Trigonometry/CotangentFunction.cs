@@ -26,95 +26,94 @@
 
 using System;
 
-namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry;
+
+/// <summary>
+/// Represents the Leviathan lfn:cot() or lfn:cot-1 function.
+/// </summary>
+public class CotangentFunction
+    : BaseTrigonometricFunction
 {
+    private static readonly Func<double, double> _cotangent = (d => (Math.Cos(d) / Math.Sin(d)));
+    private static readonly Func<double, double> _arccotangent = (d => Math.Atan(1 / d));
+
     /// <summary>
-    /// Represents the Leviathan lfn:cot() or lfn:cot-1 function.
+    /// Creates a new Leviathan Cotangent Function.
     /// </summary>
-    public class CotangentFunction
-        : BaseTrigonometricFunction
+    /// <param name="expr">Expression.</param>
+    public CotangentFunction(ISparqlExpression expr)
+        : base(expr, _cotangent) { }
+
+    /// <summary>
+    /// Creates a new Leviathan Cotangent Function.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="inverse">Whether this should be the inverse function.</param>
+    public CotangentFunction(ISparqlExpression expr, bool inverse)
+        : base(expr)
     {
-        private static readonly Func<double, double> _cotangent = (d => (Math.Cos(d) / Math.Sin(d)));
-        private static readonly Func<double, double> _arccotangent = (d => Math.Atan(1 / d));
+        Inverse = inverse;
+        _func = Inverse ? _arccotangent : _cotangent;
+    }
 
-        /// <summary>
-        /// Creates a new Leviathan Cotangent Function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public CotangentFunction(ISparqlExpression expr)
-            : base(expr, _cotangent) { }
+    /// <summary>
+    /// Gets whether this is the inverse function.
+    /// </summary>
+    public bool Inverse { get; }
 
-        /// <summary>
-        /// Creates a new Leviathan Cotangent Function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="inverse">Whether this should be the inverse function.</param>
-        public CotangentFunction(ISparqlExpression expr, bool inverse)
-            : base(expr)
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        if (Inverse)
         {
-            Inverse = inverse;
-            _func = Inverse ? _arccotangent : _cotangent;
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotanInv + ">(" + InnerExpression + ")";
         }
+        else
+        {
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotan + ">(" + InnerExpression + ")";
+        }
+    }
 
-        /// <summary>
-        /// Gets whether this is the inverse function.
-        /// </summary>
-        public bool Inverse { get; }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessCotangentFunction(this, context, binding);
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitCotangentFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
             if (Inverse)
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotanInv + ">(" + InnerExpression + ")";
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotanInv;
             }
             else
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotan + ">(" + InnerExpression + ")";
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotan;
             }
         }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessCotangentFunction(this, context, binding);
-        }
-
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitCotangentFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                if (Inverse)
-                {
-                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotanInv;
-                }
-                else
-                {
-                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotan;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new CotangentFunction(transformer.Transform(InnerExpression), Inverse);
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new CotangentFunction(transformer.Transform(InnerExpression), Inverse);
     }
 }

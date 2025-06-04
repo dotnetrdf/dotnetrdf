@@ -29,37 +29,36 @@ using System.Xml;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing.Contexts;
+
+/// <summary>
+/// Parser Context for SPARQL XML Results parsers.
+/// </summary>
+public class SparqlXmlParserContext : BaseResultsParserContext
 {
     /// <summary>
-    /// Parser Context for SPARQL XML Results parsers.
+    /// Creates a new Parser Context.
     /// </summary>
-    public class SparqlXmlParserContext : BaseResultsParserContext
+    /// <param name="reader">XML Reader.</param>
+    /// <param name="handler">Results Handler.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public SparqlXmlParserContext(XmlReader reader, ISparqlResultsHandler handler, IUriFactory uriFactory = null)
+        : base(handler, uriFactory)
     {
-        /// <summary>
-        /// Creates a new Parser Context.
-        /// </summary>
-        /// <param name="reader">XML Reader.</param>
-        /// <param name="handler">Results Handler.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public SparqlXmlParserContext(XmlReader reader, ISparqlResultsHandler handler, IUriFactory uriFactory = null)
-            : base(handler, uriFactory)
-        {
-            Input = reader ?? throw new ArgumentNullException(nameof(reader));
-        }
-
-        /// <summary>
-        /// Creates a new Parser Context.
-        /// </summary>
-        /// <param name="reader">XML Reader.</param>
-        /// <param name="results">Results Set to load into.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public SparqlXmlParserContext(XmlReader reader, SparqlResultSet results, IUriFactory uriFactory = null)
-            : this(reader, new ResultSetHandler(results), uriFactory) { }
-
-        /// <summary>
-        /// Gets the XML Reader.
-        /// </summary>
-        public XmlReader Input { get; }
+        Input = reader ?? throw new ArgumentNullException(nameof(reader));
     }
+
+    /// <summary>
+    /// Creates a new Parser Context.
+    /// </summary>
+    /// <param name="reader">XML Reader.</param>
+    /// <param name="results">Results Set to load into.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public SparqlXmlParserContext(XmlReader reader, SparqlResultSet results, IUriFactory uriFactory = null)
+        : this(reader, new ResultSetHandler(results), uriFactory) { }
+
+    /// <summary>
+    /// Gets the XML Reader.
+    /// </summary>
+    public XmlReader Input { get; }
 }

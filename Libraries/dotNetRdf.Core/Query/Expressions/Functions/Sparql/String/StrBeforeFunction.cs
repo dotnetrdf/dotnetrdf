@@ -27,119 +27,118 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.String;
+
+/// <summary>
+/// Represents the SPARQL STRBEFORE function.
+/// </summary>
+public class StrBeforeFunction
+    : ISparqlExpression
 {
     /// <summary>
-    /// Represents the SPARQL STRBEFORE function.
+    /// Creates a new STRBEFORE Function.
     /// </summary>
-    public class StrBeforeFunction
-        : ISparqlExpression
+    /// <param name="stringExpr">String Expression.</param>
+    /// <param name="startsExpr">Starts Expression.</param>
+    public StrBeforeFunction(ISparqlExpression stringExpr, ISparqlExpression startsExpr)
     {
-        /// <summary>
-        /// Creates a new STRBEFORE Function.
-        /// </summary>
-        /// <param name="stringExpr">String Expression.</param>
-        /// <param name="startsExpr">Starts Expression.</param>
-        public StrBeforeFunction(ISparqlExpression stringExpr, ISparqlExpression startsExpr)
+        StringExpression = stringExpr;
+        EndsExpression = startsExpr;
+    }
+
+    /// <summary>
+    /// Get the expression that evaluates to the string to be processed.
+    /// </summary>
+    public ISparqlExpression StringExpression { get; }
+
+    /// <summary>
+    /// Get the expression that evaluates to the substring to search for.
+    /// </summary>
+    public ISparqlExpression EndsExpression { get; }
+
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessStrBeforeFunction(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitStrBeforeFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Variables used in the function.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
         {
-            StringExpression = stringExpr;
-            EndsExpression = startsExpr;
+            return EndsExpression.Variables.Concat(StringExpression.Variables);
         }
+    }
 
-        /// <summary>
-        /// Get the expression that evaluates to the string to be processed.
-        /// </summary>
-        public ISparqlExpression StringExpression { get; }
-
-        /// <summary>
-        /// Get the expression that evaluates to the substring to search for.
-        /// </summary>
-        public ISparqlExpression EndsExpression { get; }
-
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public SparqlExpressionType Type
+    {
+        get
         {
-            return processor.ProcessStrBeforeFunction(this, context, binding);
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public string Functor
+    {
+        get
         {
-            return visitor.VisitStrBeforeFunction(this);
+            return SparqlSpecsHelper.SparqlKeywordStrBefore;
         }
+    }
 
-        /// <summary>
-        /// Gets the Variables used in the function.
-        /// </summary>
-        public IEnumerable<string> Variables
+    /// <summary>
+    /// Gets the Arguments of the Function.
+    /// </summary>
+    public IEnumerable<ISparqlExpression> Arguments
+    {
+        get
         {
-            get
-            {
-                return EndsExpression.Variables.Concat(StringExpression.Variables);
-            }
+            return new ISparqlExpression[] { StringExpression, EndsExpression };
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public SparqlExpressionType Type
+    /// <summary>
+    /// Gets whether an expression can safely be evaluated in parallel.
+    /// </summary>
+    public virtual bool CanParallelise
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return StringExpression.CanParallelise && EndsExpression.CanParallelise;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordStrBefore;
-            }
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new StrBeforeFunction(transformer.Transform(StringExpression), transformer.Transform(EndsExpression));
+    }
 
-        /// <summary>
-        /// Gets the Arguments of the Function.
-        /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
-        {
-            get
-            {
-                return new ISparqlExpression[] { StringExpression, EndsExpression };
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel.
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return StringExpression.CanParallelise && EndsExpression.CanParallelise;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new StrBeforeFunction(transformer.Transform(StringExpression), transformer.Transform(EndsExpression));
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordStrBefore + "(" + StringExpression + ", " + EndsExpression + ")";
-        }
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return SparqlSpecsHelper.SparqlKeywordStrBefore + "(" + StringExpression + ", " + EndsExpression + ")";
     }
 }

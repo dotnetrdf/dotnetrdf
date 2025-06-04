@@ -28,95 +28,94 @@ using System;
 using System.IO;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+/// <summary>
+/// Class for generating CSV output from RDF Graphs.
+/// </summary>
+public class CsvWriter 
+    : BaseRdfWriter, IFormatterBasedWriter
 {
+    private readonly CsvFormatter _formatter = new CsvFormatter();
+
     /// <summary>
-    /// Class for generating CSV output from RDF Graphs.
+    /// Gets the type of the Triple Formatter used by the writer.
     /// </summary>
-    public class CsvWriter 
-        : BaseRdfWriter, IFormatterBasedWriter
+    public Type TripleFormatterType
     {
-        private readonly CsvFormatter _formatter = new CsvFormatter();
-
-        /// <summary>
-        /// Gets the type of the Triple Formatter used by the writer.
-        /// </summary>
-        public Type TripleFormatterType
+        get
         {
-            get
-            {
-                return _formatter.GetType();
-            }
+            return _formatter.GetType();
         }
+    }
 
-        /// <summary>
-        /// Saves a Graph to CSV format.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="output">Writer to save to.</param>
-        protected override void SaveInternal(IGraph g, TextWriter output)
+    /// <summary>
+    /// Saves a Graph to CSV format.
+    /// </summary>
+    /// <param name="g">Graph.</param>
+    /// <param name="output">Writer to save to.</param>
+    protected override void SaveInternal(IGraph g, TextWriter output)
+    {
+        foreach (Triple t in g.Triples)
         {
-            foreach (Triple t in g.Triples)
-            {
-                GenerateNodeOutput(output, t.Subject, TripleSegment.Subject);
-                output.Write(',');
-                GenerateNodeOutput(output, t.Predicate, TripleSegment.Predicate);
-                output.Write(',');
-                GenerateNodeOutput(output, t.Object, TripleSegment.Object);
-                output.Write("\r\n");
-            }
+            GenerateNodeOutput(output, t.Subject, TripleSegment.Subject);
+            output.Write(',');
+            GenerateNodeOutput(output, t.Predicate, TripleSegment.Predicate);
+            output.Write(',');
+            GenerateNodeOutput(output, t.Object, TripleSegment.Object);
+            output.Write("\r\n");
         }
+    }
 
-        /// <summary>
-        /// Generates Node Output for the given Node.
-        /// </summary>
-        /// <param name="output">Text Writer.</param>
-        /// <param name="n">Node.</param>
-        /// <param name="segment">Triple Segment.</param>
-        private void GenerateNodeOutput(TextWriter output, INode n, TripleSegment segment)
+    /// <summary>
+    /// Generates Node Output for the given Node.
+    /// </summary>
+    /// <param name="output">Text Writer.</param>
+    /// <param name="n">Node.</param>
+    /// <param name="segment">Triple Segment.</param>
+    private void GenerateNodeOutput(TextWriter output, INode n, TripleSegment segment)
+    {
+        switch (n.NodeType)
         {
-            switch (n.NodeType)
-            {
-                case NodeType.Blank:
-                    if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable("CSV"));
+            case NodeType.Blank:
+                if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable("CSV"));
 
-                    output.Write(_formatter.Format(n));
-                    break;
+                output.Write(_formatter.Format(n));
+                break;
 
-                case NodeType.GraphLiteral:
-                    throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("CSV"));
+            case NodeType.GraphLiteral:
+                throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("CSV"));
 
-                case NodeType.Literal:
-                    if (segment == TripleSegment.Subject) throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("CSV"));
-                    if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("CSV"));
+            case NodeType.Literal:
+                if (segment == TripleSegment.Subject) throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("CSV"));
+                if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("CSV"));
 
-                    output.Write(_formatter.Format(n));
-                    break;
+                output.Write(_formatter.Format(n));
+                break;
 
-                case NodeType.Uri:
-                    output.Write(_formatter.Format(n));
-                    break;
+            case NodeType.Uri:
+                output.Write(_formatter.Format(n));
+                break;
 
-                default:
-                    throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("CSV"));
-            }
+            default:
+                throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("CSV"));
         }
+    }
 
-        /// <summary>
-        /// Event which is raised if the Writer detects a non-fatal error while outputting CSV
-        /// </summary>
-        /// <remarks>This class does not raise this event.</remarks>
+    /// <summary>
+    /// Event which is raised if the Writer detects a non-fatal error while outputting CSV
+    /// </summary>
+    /// <remarks>This class does not raise this event.</remarks>
 #pragma warning disable CS0067
-        public override event RdfWriterWarning Warning;
+    public override event RdfWriterWarning Warning;
 #pragma warning restore CS0067
 
-        /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "CSV";
-        }
+    /// <summary>
+    /// Gets the String representation of the writer which is a description of the syntax it produces.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "CSV";
     }
 }

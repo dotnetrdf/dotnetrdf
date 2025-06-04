@@ -25,25 +25,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using VDS.RDF.Query.Datasets;
 
-namespace VDS.RDF.Update
+namespace VDS.RDF.Update;
+
+
+public class TransactionalUpdateQuadTests
+    : TransactionalUpdateTests
 {
-
-    public class TransactionalUpdateQuadTests
-        : TransactionalUpdateTests
+    protected override ISparqlDataset GetEmptyDataset()
     {
-        protected override ISparqlDataset GetEmptyDataset()
-        {
-            return new InMemoryQuadDataset();
-        }
+        return new InMemoryQuadDataset();
+    }
 
-        protected override ISparqlDataset GetNonEmptyDataset()
-        {
-            var dataset = new InMemoryQuadDataset();
+    protected override ISparqlDataset GetNonEmptyDataset()
+    {
+        var dataset = new InMemoryQuadDataset();
 
-            var g = new Graph(TestGraphUri);
-            dataset.AddGraph(g);
+        var g = new Graph(TestGraphUri);
+        dataset.AddGraph(g);
 
-            return dataset;
-        }
+        return dataset;
     }
 }

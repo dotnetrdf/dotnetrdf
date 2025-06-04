@@ -29,59 +29,68 @@ using System.Text;
 using System.Xml;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+/// <summary>
+/// Class for serializing Triple Stores in the TriX format.
+/// </summary>
+public class TriXWriter
+    : BaseStoreWriter
 {
-    /// <summary>
-    /// Class for serializing Triple Stores in the TriX format.
-    /// </summary>
-    public class TriXWriter
-        : BaseStoreWriter
+    private static XmlWriterSettings GetSettings(Encoding fileEncoding, bool leaveOpen)
     {
-        private static XmlWriterSettings GetSettings(Encoding fileEncoding, bool leaveOpen)
+        var settings = new XmlWriterSettings
         {
-            var settings = new XmlWriterSettings
+            CloseOutput = !leaveOpen,
+            ConformanceLevel = ConformanceLevel.Document,
+            Encoding = fileEncoding,
+            Indent = true,
+            NewLineHandling = NewLineHandling.None,
+            OmitXmlDeclaration = false,
+        };
+        return settings;
+    }
+
+    /// <summary>
+    /// Saves a Store in TriX format.
+    /// </summary>
+    /// <param name="store">Store to save.</param>
+    /// <param name="output">Writer to save to.</param>
+    /// <param name="leaveOpen">Boolean flag indicating if <paramref name="output"/> should be closed after the store is saved.</param>
+    public override void Save(ITripleStore store, TextWriter output, bool leaveOpen)
+    {
+        if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
+        if (output == null) throw new RdfOutputException("Cannot output to a null writer");
+
+        try
+        {
+            // Setup the XML document
+            var writer = XmlWriter.Create(output, GetSettings(output.Encoding, leaveOpen));
+            writer.WriteStartDocument();
+            writer.WriteStartElement("TriX", TriXParser.TriXNamespaceURI);
+            writer.WriteStartAttribute("xmlns");
+            writer.WriteRaw(TriXParser.TriXNamespaceURI);
+            writer.WriteEndAttribute();
+
+            // Output Graphs as XML <graph> elements
+            foreach (IGraph g in store.Graphs)
             {
-                CloseOutput = !leaveOpen,
-                ConformanceLevel = ConformanceLevel.Document,
-                Encoding = fileEncoding,
-                Indent = true,
-                NewLineHandling = NewLineHandling.None,
-                OmitXmlDeclaration = false,
-            };
-            return settings;
+                GraphToTriX(g, writer);
+            }
+
+            // Save the XML to disk
+            writer.WriteEndDocument();
+            writer.Flush();
+            writer.Close();
+            if (!leaveOpen)
+            {
+                output.Close();
+            }
         }
-
-        /// <summary>
-        /// Saves a Store in TriX format.
-        /// </summary>
-        /// <param name="store">Store to save.</param>
-        /// <param name="output">Writer to save to.</param>
-        /// <param name="leaveOpen">Boolean flag indicating if <paramref name="output"/> should be closed after the store is saved.</param>
-        public override void Save(ITripleStore store, TextWriter output, bool leaveOpen)
+        catch
         {
-            if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
-            if (output == null) throw new RdfOutputException("Cannot output to a null writer");
-
             try
             {
-                // Setup the XML document
-                var writer = XmlWriter.Create(output, GetSettings(output.Encoding, leaveOpen));
-                writer.WriteStartDocument();
-                writer.WriteStartElement("TriX", TriXParser.TriXNamespaceURI);
-                writer.WriteStartAttribute("xmlns");
-                writer.WriteRaw(TriXParser.TriXNamespaceURI);
-                writer.WriteEndAttribute();
-
-                // Output Graphs as XML <graph> elements
-                foreach (IGraph g in store.Graphs)
-                {
-                    GraphToTriX(g, writer);
-                }
-
-                // Save the XML to disk
-                writer.WriteEndDocument();
-                writer.Flush();
-                writer.Close();
                 if (!leaveOpen)
                 {
                     output.Close();
@@ -89,141 +98,131 @@ namespace VDS.RDF.Writing
             }
             catch
             {
-                try
-                {
-                    if (!leaveOpen)
-                    {
-                        output.Close();
-                    }
-                }
-                catch
-                {
-                    // Just cleaning up
-                }
-                throw;
+                // Just cleaning up
             }
+            throw;
         }
+    }
 
-        private void GraphToTriX(IGraph g, XmlWriter writer)
+    private void GraphToTriX(IGraph g, XmlWriter writer)
+    {
+        // Create the <graph> element
+        writer.WriteStartElement("graph");
+
+        // Is the Graph Named?
+        if (g.Name != null)
         {
-            // Create the <graph> element
-            writer.WriteStartElement("graph");
-
-            // Is the Graph Named?
-            if (g.Name != null)
+            if (g.Name is IUriNode uriNode)
             {
-                if (g.Name is IUriNode uriNode)
+                var graphUri = uriNode.Uri.AbsoluteUri;
+                if (!graphUri.StartsWith("trix:local:"))
                 {
-                    var graphUri = uriNode.Uri.AbsoluteUri;
-                    if (!graphUri.StartsWith("trix:local:"))
-                    {
-                        writer.WriteStartElement("uri");
-                        writer.WriteRaw(WriterHelper.EncodeForXml(graphUri));
-                        writer.WriteEndElement();
-                    }
-                    else
-                    {
-                        writer.WriteStartElement("id");
-                        writer.WriteRaw(WriterHelper.EncodeForXml(graphUri));
-                        writer.WriteEndElement();
-                    }
+                    writer.WriteStartElement("uri");
+                    writer.WriteRaw(WriterHelper.EncodeForXml(graphUri));
+                    writer.WriteEndElement();
                 }
                 else
                 {
                     writer.WriteStartElement("id");
-                    writer.WriteRaw(WriterHelper.EncodeForXml(((IBlankNode)g.Name).InternalID));
+                    writer.WriteRaw(WriterHelper.EncodeForXml(graphUri));
                     writer.WriteEndElement();
                 }
             }
-
-            // Output the Triples
-            foreach (Triple t in g.Triples)
+            else
             {
-                writer.WriteStartElement("triple");
-
-                NodeToTriX(t.Subject, writer);
-                NodeToTriX(t.Predicate, writer);
-                NodeToTriX(t.Object, writer);
-
-                // </triple>
+                writer.WriteStartElement("id");
+                writer.WriteRaw(WriterHelper.EncodeForXml(((IBlankNode)g.Name).InternalID));
                 writer.WriteEndElement();
             }
+        }
 
-            // </graph>
+        // Output the Triples
+        foreach (Triple t in g.Triples)
+        {
+            writer.WriteStartElement("triple");
+
+            NodeToTriX(t.Subject, writer);
+            NodeToTriX(t.Predicate, writer);
+            NodeToTriX(t.Object, writer);
+
+            // </triple>
             writer.WriteEndElement();
         }
 
-        private void NodeToTriX(INode n, XmlWriter writer)
+        // </graph>
+        writer.WriteEndElement();
+    }
+
+    private void NodeToTriX(INode n, XmlWriter writer)
+    {
+        switch (n.NodeType)
         {
-            switch (n.NodeType)
-            {
-                case NodeType.Blank:
-                    writer.WriteStartElement("id");
-                    writer.WriteRaw(WriterHelper.EncodeForXml(((IBlankNode)n).InternalID));
-                    writer.WriteEndElement();
-                    break;
-                case NodeType.GraphLiteral:
-                    throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("TriX"));
-                case NodeType.Literal:
-                    var lit = (ILiteralNode)n;
-                    if (lit.DataType != null)
+            case NodeType.Blank:
+                writer.WriteStartElement("id");
+                writer.WriteRaw(WriterHelper.EncodeForXml(((IBlankNode)n).InternalID));
+                writer.WriteEndElement();
+                break;
+            case NodeType.GraphLiteral:
+                throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("TriX"));
+            case NodeType.Literal:
+                var lit = (ILiteralNode)n;
+                if (lit.DataType != null)
+                {
+                    writer.WriteStartElement("typedLiteral");
+                    writer.WriteStartAttribute("datatype");
+                    writer.WriteRaw(WriterHelper.EncodeForXml(lit.DataType.AbsoluteUri));
+                    writer.WriteEndAttribute();
+                    if (lit.DataType.AbsoluteUri.Equals(RdfSpecsHelper.RdfXmlLiteral))
                     {
-                        writer.WriteStartElement("typedLiteral");
-                        writer.WriteStartAttribute("datatype");
-                        writer.WriteRaw(WriterHelper.EncodeForXml(lit.DataType.AbsoluteUri));
-                        writer.WriteEndAttribute();
-                        if (lit.DataType.AbsoluteUri.Equals(RdfSpecsHelper.RdfXmlLiteral))
-                        {
-                            writer.WriteCData(lit.Value);
-                        }
-                        else
-                        {
-                            writer.WriteRaw(WriterHelper.EncodeForXml(lit.Value));
-                        }
-                        writer.WriteEndElement();
+                        writer.WriteCData(lit.Value);
                     }
                     else
                     {
-                        writer.WriteStartElement("plainLiteral");
-                        if (!lit.Language.Equals(string.Empty))
-                        {
-                            writer.WriteAttributeString("xml", "lang", null, lit.Language);
-                        }
                         writer.WriteRaw(WriterHelper.EncodeForXml(lit.Value));
-                        writer.WriteEndElement();
                     }
-                    break;
-                case NodeType.Uri:
-                    writer.WriteStartElement("uri");
-                    writer.WriteRaw(WriterHelper.EncodeForXml(((IUriNode)n).Uri.AbsoluteUri));
                     writer.WriteEndElement();
-                    break;
-                default:
-                    throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("TriX"));
-            }
+                }
+                else
+                {
+                    writer.WriteStartElement("plainLiteral");
+                    if (!lit.Language.Equals(string.Empty))
+                    {
+                        writer.WriteAttributeString("xml", "lang", null, lit.Language);
+                    }
+                    writer.WriteRaw(WriterHelper.EncodeForXml(lit.Value));
+                    writer.WriteEndElement();
+                }
+                break;
+            case NodeType.Uri:
+                writer.WriteStartElement("uri");
+                writer.WriteRaw(WriterHelper.EncodeForXml(((IUriNode)n).Uri.AbsoluteUri));
+                writer.WriteEndElement();
+                break;
+            default:
+                throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("TriX"));
         }
+    }
 
-        /// <summary>
-        /// Event which is raised when there is an issue with the Graphs being serialized that doesn't prevent serialization but the user should be aware of
-        /// </summary>
-        public override event StoreWriterWarning Warning;
+    /// <summary>
+    /// Event which is raised when there is an issue with the Graphs being serialized that doesn't prevent serialization but the user should be aware of
+    /// </summary>
+    public override event StoreWriterWarning Warning;
 
-        /// <summary>
-        /// Internal Helper method which raises the Warning event only if there is an Event Handler registered.
-        /// </summary>
-        /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(string message)
-        {
-            Warning?.Invoke(message);
-        }
+    /// <summary>
+    /// Internal Helper method which raises the Warning event only if there is an Event Handler registered.
+    /// </summary>
+    /// <param name="message">Warning Message.</param>
+    private void RaiseWarning(string message)
+    {
+        Warning?.Invoke(message);
+    }
 
-        /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "TriX";
-        }
+    /// <summary>
+    /// Gets the String representation of the writer which is a description of the syntax it produces.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "TriX";
     }
 }

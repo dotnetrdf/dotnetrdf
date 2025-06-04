@@ -27,26 +27,25 @@
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Interface for Property Path Operators.
+/// </summary>
+public interface IPathOperator : ISparqlAlgebra
 {
     /// <summary>
-    /// Interface for Property Path Operators.
+    /// Gets the Path Start.
     /// </summary>
-    public interface IPathOperator : ISparqlAlgebra
-    {
-        /// <summary>
-        /// Gets the Path Start.
-        /// </summary>
-        PatternItem PathStart { get; }
+    PatternItem PathStart { get; }
 
-        /// <summary>
-        /// Gets the Path End.
-        /// </summary>
-        PatternItem PathEnd { get; }
+    /// <summary>
+    /// Gets the Path End.
+    /// </summary>
+    PatternItem PathEnd { get; }
 
-        /// <summary>
-        /// Gets the Property Path.
-        /// </summary>
-        ISparqlPath Path { get; }
-    }
+    /// <summary>
+    /// Gets the Property Path.
+    /// </summary>
+    ISparqlPath Path { get; }
 }

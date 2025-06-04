@@ -24,73 +24,72 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+
+/// <summary>
+/// Class representing the Sparql IsLiteral() function.
+/// </summary>
+public class IsLiteralFunction
+    : BaseUnaryExpression
 {
     /// <summary>
-    /// Class representing the Sparql IsLiteral() function.
+    /// Creates a new IsLiteral() function expression.
     /// </summary>
-    public class IsLiteralFunction
-        : BaseUnaryExpression
+    /// <param name="expr">Expression to apply the function to.</param>
+    public IsLiteralFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+
+    /// <summary>
+    /// Gets the String representation of this Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new IsLiteral() function expression.
-        /// </summary>
-        /// <param name="expr">Expression to apply the function to.</param>
-        public IsLiteralFunction(ISparqlExpression expr)
-            : base(expr) { }
+        return "ISLITERAL(" + InnerExpression + ")";
+    }
 
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessIsLiteralFunction(this, context, binding);
+    }
 
-        /// <summary>
-        /// Gets the String representation of this Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitIsLiteralFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return "ISLITERAL(" + InnerExpression + ")";
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return processor.ProcessIsLiteralFunction(this, context, binding);
+            return SparqlSpecsHelper.SparqlKeywordIsLiteral;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitIsLiteralFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordIsLiteral;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new IsLiteralFunction(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new IsLiteralFunction(transformer.Transform(InnerExpression));
     }
 }

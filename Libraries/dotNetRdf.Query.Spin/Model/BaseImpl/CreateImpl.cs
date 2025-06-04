@@ -27,26 +27,25 @@
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.LibraryOntology;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class CreateImpl : UpdateImpl, ICreate
 {
-    internal class CreateImpl : UpdateImpl, ICreate
+
+    public CreateImpl(INode node, IGraph graph, SpinProcessor processor)
+        : base(node, graph, processor)
     {
 
-        public CreateImpl(INode node, IGraph graph, SpinProcessor processor)
-            : base(node, graph, processor)
-        {
-
-        }
+    }
 
 
-        override public void printSPINRDF(ISparqlPrinter p)
-        {
-            p.printKeyword("CREATE");
-            p.print(" ");
-            printSilent(p);
-            p.printKeyword("GRAPH");
-            p.print(" ");
-            p.printURIResource(getResource(SP.PropertyGraphIRI));
-        }
+    override public void printSPINRDF(ISparqlPrinter p)
+    {
+        p.printKeyword("CREATE");
+        p.print(" ");
+        printSilent(p);
+        p.printKeyword("GRAPH");
+        p.print(" ");
+        p.printURIResource(getResource(SP.PropertyGraphIRI));
     }
 }

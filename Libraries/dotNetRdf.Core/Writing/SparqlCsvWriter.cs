@@ -30,129 +30,128 @@ using System.Text;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+/// <summary>
+/// Class for saving SPARQL Result Sets to CSV format (not a standardised format).
+/// </summary>
+public class SparqlCsvWriter
+    : ISparqlResultsWriter
 {
-    /// <summary>
-    /// Class for saving SPARQL Result Sets to CSV format (not a standardised format).
-    /// </summary>
-    public class SparqlCsvWriter
-        : ISparqlResultsWriter
+    private readonly CsvFormatter _formatter = new CsvFormatter();
+
+    /// <inheritdoc />
+    public void Save(SparqlResultSet results, string filename)
     {
-        private readonly CsvFormatter _formatter = new CsvFormatter();
-
-        /// <inheritdoc />
-        public void Save(SparqlResultSet results, string filename)
-        {
-            Save(results, filename,
+        Save(results, filename,
 #pragma warning disable CS0618 // Type or member is obsolete
-                    new UTF8Encoding(Options.UseBomForUtf8) //new UTF8Encoding(false)
+                new UTF8Encoding(Options.UseBomForUtf8) //new UTF8Encoding(false)
 #pragma warning restore CS0618 // Type or member is obsolete
-                );
-        }
+            );
+    }
 
-        /// <inheritdoc />
-        public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
+    /// <inheritdoc />
+    public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
+    {
+        using (FileStream stream = File.Open(filename, FileMode.Create))
         {
-            using (FileStream stream = File.Open(filename, FileMode.Create))
-            {
-                Save(results, new StreamWriter(stream, fileEncoding));
-            }
+            Save(results, new StreamWriter(stream, fileEncoding));
         }
+    }
 
-        /// <summary>
-        /// Saves a SPARQL Result Set to CSV format.
-        /// </summary>
-        /// <param name="results">Result Set.</param>
-        /// <param name="output">Writer to save to.</param>
-        public void Save(SparqlResultSet results, TextWriter output)
+    /// <summary>
+    /// Saves a SPARQL Result Set to CSV format.
+    /// </summary>
+    /// <param name="results">Result Set.</param>
+    /// <param name="output">Writer to save to.</param>
+    public void Save(SparqlResultSet results, TextWriter output)
+    {
+        try
         {
-            try
+            if (results.ResultsType == SparqlResultsType.VariableBindings)
             {
-                if (results.ResultsType == SparqlResultsType.VariableBindings)
+                // Output Variables first
+                var vars = results.Variables.ToArray();
+                for (var i = 0; i < vars.Length; i++)
                 {
-                    // Output Variables first
-                    var vars = results.Variables.ToArray();
+                    output.Write(vars[i]);
+                    if (i < vars.Length - 1) output.Write(',');
+                }
+                output.Write("\r\n");
+
+                foreach (SparqlResult result in results)
+                {
                     for (var i = 0; i < vars.Length; i++)
                     {
-                        output.Write(vars[i]);
+                        if (result.HasValue(vars[i]))
+                        {
+                            INode temp = result[vars[i]];
+                            if (temp != null)
+                            {
+                                switch (temp.NodeType)
+                                {
+                                    case NodeType.Blank:
+                                    case NodeType.Uri:
+                                    case NodeType.Literal:
+                                        output.Write(_formatter.Format(temp));
+                                        break;
+                                    case NodeType.GraphLiteral:
+                                        throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("SPARQL CSV"));
+                                    default:
+                                        throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("SPARQL CSV"));
+                                }
+                            }
+                        }
                         if (i < vars.Length - 1) output.Write(',');
                     }
                     output.Write("\r\n");
-
-                    foreach (SparqlResult result in results)
-                    {
-                        for (var i = 0; i < vars.Length; i++)
-                        {
-                            if (result.HasValue(vars[i]))
-                            {
-                                INode temp = result[vars[i]];
-                                if (temp != null)
-                                {
-                                    switch (temp.NodeType)
-                                    {
-                                        case NodeType.Blank:
-                                        case NodeType.Uri:
-                                        case NodeType.Literal:
-                                            output.Write(_formatter.Format(temp));
-                                            break;
-                                        case NodeType.GraphLiteral:
-                                            throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("SPARQL CSV"));
-                                        default:
-                                            throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("SPARQL CSV"));
-                                    }
-                                }
-                            }
-                            if (i < vars.Length - 1) output.Write(',');
-                        }
-                        output.Write("\r\n");
-                    }
                 }
-                else
-                {
-                    output.Write(results.Result.ToString());
-                }
+            }
+            else
+            {
+                output.Write(results.Result.ToString());
+            }
 
+            output.Close();
+        }
+        catch
+        {
+            try
+            {
                 output.Close();
             }
             catch
             {
-                try
-                {
-                    output.Close();
-                }
-                catch
-                {
-                    // No error handling, just trying to clean up
-                }
-                throw;
+                // No error handling, just trying to clean up
             }
+            throw;
         }
+    }
 
-        /// <summary>
-        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected.
-        /// </summary>
-        /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(string message)
+    /// <summary>
+    /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected.
+    /// </summary>
+    /// <param name="message">Warning Message.</param>
+    private void RaiseWarning(string message)
+    {
+        SparqlWarning d = Warning;
+        if (d != null)
         {
-            SparqlWarning d = Warning;
-            if (d != null)
-            {
-                d(message);
-            }
+            d(message);
         }
+    }
 
-        /// <summary>
-        /// Event raised when a non-fatal issue with the SPARQL Results being written is detected
-        /// </summary>
-        public event SparqlWarning Warning;
+    /// <summary>
+    /// Event raised when a non-fatal issue with the SPARQL Results being written is detected
+    /// </summary>
+    public event SparqlWarning Warning;
 
-        /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "SPARQL Results CSV";
-        }
+    /// <summary>
+    /// Gets the String representation of the writer which is a description of the syntax it produces.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "SPARQL Results CSV";
     }
 }

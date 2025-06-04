@@ -28,58 +28,57 @@ using System.Collections.Generic;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Aggregates.Sparql
+namespace VDS.RDF.Query.Aggregates.Sparql;
+
+/// <summary>
+/// Class representing COUNT(DISTINCT *) Aggregate Function.
+/// </summary>
+public class CountAllDistinctAggregate
+    : BaseAggregate
 {
     /// <summary>
-    /// Class representing COUNT(DISTINCT *) Aggregate Function.
+    /// Creates a new COUNT(DISTINCT*) Aggregate.
     /// </summary>
-    public class CountAllDistinctAggregate
-        : BaseAggregate
+    public CountAllDistinctAggregate()
+        : base(null)
     {
-        /// <summary>
-        /// Creates a new COUNT(DISTINCT*) Aggregate.
-        /// </summary>
-        public CountAllDistinctAggregate()
-            : base(null)
-        {
-        }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
-            IEnumerable<TBinding> bindings)
-        {
-            return processor.ProcessCountAllDistinct(this, context, bindings);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+        IEnumerable<TBinding> bindings)
+    {
+        return processor.ProcessCountAllDistinct(this, context, bindings);
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Aggregate.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "COUNT(DISTINCT *)";
-        }
+    /// <summary>
+    /// Gets the String representation of the Aggregate.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "COUNT(DISTINCT *)";
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Aggregate.
-        /// </summary>
-        public override string Functor
+    /// <summary>
+    /// Gets the Functor of the Aggregate.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordCount;
-            }
+            return SparqlSpecsHelper.SparqlKeywordCount;
         }
+    }
 
-        /// <summary>
-        /// Gets the Arguments of the Aggregate.
-        /// </summary>
-        public override IEnumerable<ISparqlExpression> Arguments
+    /// <summary>
+    /// Gets the Arguments of the Aggregate.
+    /// </summary>
+    public override IEnumerable<ISparqlExpression> Arguments
+    {
+        get
         {
-            get
-            {
-                return new ISparqlExpression[] { new DistinctModifier(), new AllModifier() };
-            }
+            return new ISparqlExpression[] { new DistinctModifier(), new AllModifier() };
         }
     }
 }

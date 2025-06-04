@@ -29,79 +29,78 @@ using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Aggregates.Sparql
+namespace VDS.RDF.Query.Aggregates.Sparql;
+
+/// <summary>
+/// Class representing SUM Aggregate Functions.
+/// </summary>
+public class SumAggregate
+    : BaseAggregate
 {
+    private string _varname;
+
     /// <summary>
-    /// Class representing SUM Aggregate Functions.
+    /// Creates a new SUM Aggregate.
     /// </summary>
-    public class SumAggregate
-        : BaseAggregate
+    /// <param name="expr">Variable Expression.</param>
+    /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
+    public SumAggregate(VariableTerm expr, bool distinct)
+        : base(expr, distinct)
     {
-        private string _varname;
+        _varname = expr.ToString().Substring(1);
+    }
 
-        /// <summary>
-        /// Creates a new SUM Aggregate.
-        /// </summary>
-        /// <param name="expr">Variable Expression.</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
-        public SumAggregate(VariableTerm expr, bool distinct)
-            : base(expr, distinct)
+    /// <summary>
+    /// Creates a new SUM Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
+    public SumAggregate(ISparqlExpression expr, bool distinct)
+        : base(expr, distinct) { }
+
+    /// <summary>
+    /// Creates a new SUM Aggregate.
+    /// </summary>
+    /// <param name="expr">Variable Expression.</param>
+    public SumAggregate(VariableTerm expr)
+        : this(expr, false) { }
+
+    /// <summary>
+    /// Creates a new SUM Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    public SumAggregate(ISparqlExpression expr)
+        : this(expr, false) { }
+
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+        IEnumerable<TBinding> bindings)
+    {
+        return processor.ProcessSum(this, context, bindings);
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Aggregate.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append("SUM(");
+        if (_distinct) output.Append("DISTINCT ");
+        output.Append(_expr + ")");
+        return output.ToString();
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Aggregate.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            _varname = expr.ToString().Substring(1);
-        }
-
-        /// <summary>
-        /// Creates a new SUM Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
-        public SumAggregate(ISparqlExpression expr, bool distinct)
-            : base(expr, distinct) { }
-
-        /// <summary>
-        /// Creates a new SUM Aggregate.
-        /// </summary>
-        /// <param name="expr">Variable Expression.</param>
-        public SumAggregate(VariableTerm expr)
-            : this(expr, false) { }
-
-        /// <summary>
-        /// Creates a new SUM Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public SumAggregate(ISparqlExpression expr)
-            : this(expr, false) { }
-
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
-            IEnumerable<TBinding> bindings)
-        {
-            return processor.ProcessSum(this, context, bindings);
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Aggregate.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append("SUM(");
-            if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr + ")");
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Aggregate.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordSum;
-            }
+            return SparqlSpecsHelper.SparqlKeywordSum;
         }
     }
 }

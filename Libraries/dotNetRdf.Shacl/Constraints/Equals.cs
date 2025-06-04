@@ -29,40 +29,39 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class Equals : Constraint
 {
-    internal class Equals : Constraint
+    [DebuggerStepThrough]
+    internal Equals(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal Equals(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage => $"Values nodes must be the same as the values of the property {this}.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.EqualsConstraintComponent;
         }
+    }
 
-        protected override string DefaultMessage => $"Values nodes must be the same as the values of the property {this}.";
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        IEnumerable<INode> values = this.ObjectsOf(focusNode, dataGraph);
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.EqualsConstraintComponent;
-            }
-        }
+        IEnumerable<INode> invalidValues = (
+            from valueNode in valueNodes
+            where !values.Contains(valueNode)
+            select valueNode)
+            .Union(
+            from value in values
+            where !valueNodes.Contains(value)
+            select value);
 
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            IEnumerable<INode> values = this.ObjectsOf(focusNode, dataGraph);
-
-            IEnumerable<INode> invalidValues = (
-                from valueNode in valueNodes
-                where !values.Contains(valueNode)
-                select valueNode)
-                .Union(
-                from value in values
-                where !valueNodes.Contains(value)
-                select value);
-
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
+        return ReportValueNodes(focusNode, invalidValues, report);
     }
 }

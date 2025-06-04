@@ -29,87 +29,86 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+/// <summary>
+/// Represents a strongly typed read/write dynamic collection of objects by subject and predicate.
+/// </summary>
+/// <typeparam name="T">The type of statement objects.</typeparam>
+public class DynamicObjectCollection<T> : DynamicObjectCollection, ICollection<T>
 {
+    private readonly IGraph _graph;
+
     /// <summary>
-    /// Represents a strongly typed read/write dynamic collection of objects by subject and predicate.
+    /// Initializes a new instance of the <see cref="DynamicObjectCollection{T}"/> class.
     /// </summary>
-    /// <typeparam name="T">The type of statement objects.</typeparam>
-    public class DynamicObjectCollection<T> : DynamicObjectCollection, ICollection<T>
+    /// <param name="subject">The subject to use.</param>
+    /// <param name="predicate">The predicate to use.</param>
+    public DynamicObjectCollection(DynamicNode subject, string predicate)
+        : base(
+            subject,
+            predicate.AsUriNode(subject.Graph, subject.BaseUri))
     {
-        private readonly IGraph _graph;
+        _graph = subject.Graph;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DynamicObjectCollection{T}"/> class.
-        /// </summary>
-        /// <param name="subject">The subject to use.</param>
-        /// <param name="predicate">The predicate to use.</param>
-        public DynamicObjectCollection(DynamicNode subject, string predicate)
-            : base(
-                subject,
-                predicate.AsUriNode(subject.Graph, subject.BaseUri))
+    /// <summary>
+    /// Asserts statements equivalent to given subject and predicate and <paramref name="object"/>.
+    /// </summary>
+    /// <param name="object">The object to assert.</param>
+    public void Add(T @object)
+    {
+        base.Add(@object);
+    }
+
+    /// <summary>
+    /// Checks whether a statement exists equivalent to given subject and predicate and <paramref name="object"/>.
+    /// </summary>
+    /// <param name="object">The object to assert.</param>
+    /// <returns>Whether a statement exists equivalent to given subject and predicate and <paramref name="object"/>.</returns>
+    public bool Contains(T @object)
+    {
+        return base.Contains(@object);
+    }
+
+    /// <summary>
+    /// Copies objects of statements with given subject and predicate <paramref name="array"/> starting at <paramref name="index"/>.
+    /// </summary>
+    /// <param name="array">The destination of subjects copied.</param>
+    /// <param name="index">The index at which copying begins.</param>
+    /// <remarks>Known literal nodes are converted to native primitives, URI and blank nodes are wrapped in <see cref="DynamicNode"/>.</remarks>
+    public void CopyTo(T[] array, int index)
+    {
+        Objects.Select(Convert).ToArray().CopyTo(array, index);
+    }
+
+    /// <summary>
+    /// Retracts statements equivalent to given subject and predicate and <paramref name="object"/>.
+    /// </summary>
+    /// <param name="object">The object to retract.</param>
+    /// <returns>Whether any statements were retracted.</returns>
+    public bool Remove(T @object)
+    {
+        return base.Remove(@object);
+    }
+
+    /// <inheritdoc/>
+    IEnumerator<T> IEnumerable<T>.GetEnumerator()
+    {
+        return Objects.Select(Convert).GetEnumerator();
+    }
+
+    private T Convert(object value)
+    {
+        Type type = typeof(T);
+
+        if (type.IsSubclassOf(typeof(DynamicNode)))
         {
-            _graph = subject.Graph;
+            // TODO: Exception handling
+            ConstructorInfo ctor = type.GetConstructor(new[] { typeof(INode), typeof(IGraph) });
+            value = ctor.Invoke(new[] { value, _graph });
         }
 
-        /// <summary>
-        /// Asserts statements equivalent to given subject and predicate and <paramref name="object"/>.
-        /// </summary>
-        /// <param name="object">The object to assert.</param>
-        public void Add(T @object)
-        {
-            base.Add(@object);
-        }
-
-        /// <summary>
-        /// Checks whether a statement exists equivalent to given subject and predicate and <paramref name="object"/>.
-        /// </summary>
-        /// <param name="object">The object to assert.</param>
-        /// <returns>Whether a statement exists equivalent to given subject and predicate and <paramref name="object"/>.</returns>
-        public bool Contains(T @object)
-        {
-            return base.Contains(@object);
-        }
-
-        /// <summary>
-        /// Copies objects of statements with given subject and predicate <paramref name="array"/> starting at <paramref name="index"/>.
-        /// </summary>
-        /// <param name="array">The destination of subjects copied.</param>
-        /// <param name="index">The index at which copying begins.</param>
-        /// <remarks>Known literal nodes are converted to native primitives, URI and blank nodes are wrapped in <see cref="DynamicNode"/>.</remarks>
-        public void CopyTo(T[] array, int index)
-        {
-            Objects.Select(Convert).ToArray().CopyTo(array, index);
-        }
-
-        /// <summary>
-        /// Retracts statements equivalent to given subject and predicate and <paramref name="object"/>.
-        /// </summary>
-        /// <param name="object">The object to retract.</param>
-        /// <returns>Whether any statements were retracted.</returns>
-        public bool Remove(T @object)
-        {
-            return base.Remove(@object);
-        }
-
-        /// <inheritdoc/>
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
-            return Objects.Select(Convert).GetEnumerator();
-        }
-
-        private T Convert(object value)
-        {
-            Type type = typeof(T);
-
-            if (type.IsSubclassOf(typeof(DynamicNode)))
-            {
-                // TODO: Exception handling
-                ConstructorInfo ctor = type.GetConstructor(new[] { typeof(INode), typeof(IGraph) });
-                value = ctor.Invoke(new[] { value, _graph });
-            }
-
-            return (T)value;
-        }
+        return (T)value;
     }
 }

@@ -29,71 +29,70 @@ using FluentAssertions;
 using System.IO;
 using Xunit;
 
-namespace VDS.RDF.Parsing
-{
-    [Collection("RdfServer")]
-    public class RdfATests(RdfServerFixture server)
-    {
-        [Fact]
-        public void ParsingRdfABadSyntax()
-        {
-            //Tests parsing a file which has much invalid RDFa syntax in it, some triples will be produced (6-8) but most of the triples are wrongly encoded and will be ignored
-            var g = new Graph {BaseUri = new Uri("http://www.wurvoc.org/vocabularies/om-1.6/Kelvin_scale")};
-            FileLoader.Load(g, Path.Combine("resources", "bad_rdfa.html"));
-            g.IsEmpty.Should().BeFalse("some triples should have been harvested from the bad RDFa example");
-        }
+namespace VDS.RDF.Parsing;
 
-        [Fact]
-        public void ParsingRdfAGoodRelations()
+[Collection("RdfServer")]
+public class RdfATests(RdfServerFixture server)
+{
+    [Fact]
+    public void ParsingRdfABadSyntax()
+    {
+        //Tests parsing a file which has much invalid RDFa syntax in it, some triples will be produced (6-8) but most of the triples are wrongly encoded and will be ignored
+        var g = new Graph {BaseUri = new Uri("http://www.wurvoc.org/vocabularies/om-1.6/Kelvin_scale")};
+        FileLoader.Load(g, Path.Combine("resources", "bad_rdfa.html"));
+        g.IsEmpty.Should().BeFalse("some triples should have been harvested from the bad RDFa example");
+    }
+
+    [Fact]
+    public void ParsingRdfAGoodRelations()
+    {
+        var tests = new List<string>
         {
-            var tests = new List<string>
+            "gr1",
+            "gr2",
+            "gr3"
+        };
+
+        FileLoader.Warning += TestTools.WarningPrinter;
+        var testGraphName = new UriNode(new Uri("http://example.org/goodrelations"));
+        foreach (var test in tests)
+        {
+            var g = new Graph(testGraphName)
             {
-                "gr1",
-                "gr2",
-                "gr3"
+                BaseUri = new Uri("http://example.org/goodrelations")
+            };
+            var h = new Graph(testGraphName)
+            {
+                BaseUri = g.BaseUri
             };
 
-            FileLoader.Warning += TestTools.WarningPrinter;
-            var testGraphName = new UriNode(new Uri("http://example.org/goodrelations"));
-            foreach (var test in tests)
-            {
-                var g = new Graph(testGraphName)
-                {
-                    BaseUri = new Uri("http://example.org/goodrelations")
-                };
-                var h = new Graph(testGraphName)
-                {
-                    BaseUri = g.BaseUri
-                };
-
-                var parser =
-                    new RdfAParser(new RdfAParserOptions() { Base = new Uri("http://example.org/goodrelations") });
-                parser.Load(g, Path.Combine("resources", $"{test}.xhtml"));
-                parser.Load(h, Path.Combine("resources", $"{test}b.xhtml"));
-                Assert.Equal(g, h);
-            }
+            var parser =
+                new RdfAParser(new RdfAParserOptions() { Base = new Uri("http://example.org/goodrelations") });
+            parser.Load(g, Path.Combine("resources", $"{test}.xhtml"));
+            parser.Load(h, Path.Combine("resources", $"{test}b.xhtml"));
+            Assert.Equal(g, h);
         }
+    }
 
-        [Fact]
-        public void ParsingRdfABadProfile()
-        {
-            var parser = new RdfAParser(RdfASyntax.RDFa_1_1);
-            parser.Warning += TestTools.WarningPrinter;
+    [Fact]
+    public void ParsingRdfABadProfile()
+    {
+        var parser = new RdfAParser(RdfASyntax.RDFa_1_1);
+        parser.Warning += TestTools.WarningPrinter;
 
-            var g = new Graph();
-            parser.Load(g, Path.Combine("resources", "bad_profile.xhtml"));
+        var g = new Graph();
+        parser.Load(g, Path.Combine("resources", "bad_profile.xhtml"));
 
-            TestTools.ShowGraph(g);
+        TestTools.ShowGraph(g);
 
-            Assert.Equal(1, g.Triples.Count);
-        }
+        Assert.Equal(1, g.Triples.Count);
+    }
 
-        [Fact(DisplayName = "Populates base URI from handler if missing from options")]
-        public void BaseFromHandler()
-        {
-            var load = () => new Graph().LoadFromUri(server.UriFor("/dbpedia_ldf.html"));
+    [Fact(DisplayName = "Populates base URI from handler if missing from options")]
+    public void BaseFromHandler()
+    {
+        var load = () => new Graph().LoadFromUri(server.UriFor("/dbpedia_ldf.html"));
 
-            load.Should().NotThrow("because the parser should set its base URI from the handler if its options don't have one");
-        }
+        load.Should().NotThrow("because the parser should set its base URI from the handler if its options don't have one");
     }
 }

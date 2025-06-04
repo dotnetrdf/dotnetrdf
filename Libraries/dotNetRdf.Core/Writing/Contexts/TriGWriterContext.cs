@@ -26,36 +26,35 @@
 
 using System.IO;
 
-namespace VDS.RDF.Writing.Contexts
+namespace VDS.RDF.Writing.Contexts;
+
+/// <summary>
+/// Writer Context for TriG.
+/// </summary>
+public class TriGWriterContext : ThreadedStoreWriterContext
 {
     /// <summary>
-    /// Writer Context for TriG.
+    /// Creates a new TriG Writer context.
     /// </summary>
-    public class TriGWriterContext : ThreadedStoreWriterContext
+    /// <param name="store">Triple Store to save.</param>
+    /// <param name="output">TextWriter to output to.</param>
+    /// <param name="prettyPrint">Whether to use pretty printing.</param>
+    /// <param name="hiSpeedAllowed">Whether high speed mode is permitted.</param>
+    /// <param name="compressionLevel">Compression Level to use.</param>
+    /// <param name="n3compatability">Whether to enable N3 compatability mode.</param>
+    public TriGWriterContext(ITripleStore store, TextWriter output, bool prettyPrint, bool hiSpeedAllowed, int compressionLevel, bool n3compatability)
+        : base(store, output, prettyPrint, hiSpeedAllowed)
     {
-        /// <summary>
-        /// Creates a new TriG Writer context.
-        /// </summary>
-        /// <param name="store">Triple Store to save.</param>
-        /// <param name="output">TextWriter to output to.</param>
-        /// <param name="prettyPrint">Whether to use pretty printing.</param>
-        /// <param name="hiSpeedAllowed">Whether high speed mode is permitted.</param>
-        /// <param name="compressionLevel">Compression Level to use.</param>
-        /// <param name="n3compatability">Whether to enable N3 compatability mode.</param>
-        public TriGWriterContext(ITripleStore store, TextWriter output, bool prettyPrint, bool hiSpeedAllowed, int compressionLevel, bool n3compatability)
-            : base(store, output, prettyPrint, hiSpeedAllowed)
-        {
-            CompressionLevel = compressionLevel;
-        }
-
-        /// <summary>
-        /// Gets/Sets the Compression Level.
-        /// </summary>
-        public int CompressionLevel { get; set; } = WriterCompressionLevel.Default;
-
-        /// <summary>
-        /// Gets/Sets N3 Compatability Mode.
-        /// </summary>
-        public bool N3CompatabilityMode { get; set; } = false;
+        CompressionLevel = compressionLevel;
     }
+
+    /// <summary>
+    /// Gets/Sets the Compression Level.
+    /// </summary>
+    public int CompressionLevel { get; set; } = WriterCompressionLevel.Default;
+
+    /// <summary>
+    /// Gets/Sets N3 Compatability Mode.
+    /// </summary>
+    public bool N3CompatabilityMode { get; set; } = false;
 }

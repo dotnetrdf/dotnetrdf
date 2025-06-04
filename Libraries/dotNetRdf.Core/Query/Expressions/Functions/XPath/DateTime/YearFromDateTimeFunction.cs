@@ -24,62 +24,60 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
+namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime;
+
+/// <summary>
+/// Represents the XPath year-from-dateTime() function.
+/// </summary>
+public class YearFromDateTimeFunction
+    : BaseUnaryDateTimeFunction
 {
     /// <summary>
-    /// Represents the XPath year-from-dateTime() function.
+    /// Creates a new XPath Year from Date Time function.
     /// </summary>
-    public class YearFromDateTimeFunction
-        : BaseUnaryDateTimeFunction
+    /// <param name="expr">Expression.</param>
+    public YearFromDateTimeFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new XPath Year from Date Time function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public YearFromDateTimeFunction(ISparqlExpression expr)
-            : base(expr) { }
+        return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.YearFromDateTime + ">(" + InnerExpression + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.YearFromDateTime + ">(" + InnerExpression + ")";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessYearsFromDateTimeFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessYearsFromDateTimeFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitYearsFromDateTimeFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return visitor.VisitYearsFromDateTimeFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.YearFromDateTime;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new YearFromDateTimeFunction(transformer.Transform(InnerExpression));
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.YearFromDateTime;
         }
     }
 
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new YearFromDateTimeFunction(transformer.Transform(InnerExpression));
+    }
 }

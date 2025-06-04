@@ -30,66 +30,65 @@ using Xunit;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Parsing
-{
+namespace VDS.RDF.Parsing;
 
-    public class ObjectParserTests
+
+public class ObjectParserTests
+{
+    [Fact]
+    public void ParsingObjectsListAvailable()
     {
-        [Fact]
-        public void ParsingObjectsListAvailable()
+        foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)
         {
-            foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)
+            Console.WriteLine("Syntax: " + def.SyntaxName);
+            foreach (KeyValuePair<Type, Type> kvp in def.ObjectParserTypes)
             {
-                Console.WriteLine("Syntax: " + def.SyntaxName);
-                foreach (KeyValuePair<Type, Type> kvp in def.ObjectParserTypes)
-                {
-                    Console.WriteLine("Parsed " + kvp.Key.Name + " using " + kvp.Value.Name);
-                }
+                Console.WriteLine("Parsed " + kvp.Key.Name + " using " + kvp.Value.Name);
             }
         }
+    }
 
-        [Fact]
-        public void ParsingObjectsQueryTypeCheck()
-        {
-            Type target = typeof(SparqlQueryParser);
-            MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlQuery>());
-            Assert.NotNull(def);
-            Assert.Equal(target, def.GetObjectParserType<SparqlQuery>());
-        }
+    [Fact]
+    public void ParsingObjectsQueryTypeCheck()
+    {
+        Type target = typeof(SparqlQueryParser);
+        MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlQuery>());
+        Assert.NotNull(def);
+        Assert.Equal(target, def.GetObjectParserType<SparqlQuery>());
+    }
 
-        [Fact]
-        public void ParsingObjectsUpdateTypeCheck()
-        {
-            Type target = typeof(SparqlUpdateParser);
-            MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlUpdateCommandSet>());
-            Assert.NotNull(def);
-            Assert.Equal(target, def.GetObjectParserType<SparqlUpdateCommandSet>());
-        }
+    [Fact]
+    public void ParsingObjectsUpdateTypeCheck()
+    {
+        Type target = typeof(SparqlUpdateParser);
+        MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlUpdateCommandSet>());
+        Assert.NotNull(def);
+        Assert.Equal(target, def.GetObjectParserType<SparqlUpdateCommandSet>());
+    }
 
-        [Fact]
-        public void ParsingObjectsQueryParserCheck()
-        {
-            Type target = typeof(SparqlQueryParser);
-            MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlQuery>());
-            Assert.NotNull(def);
-            Assert.Equal(target, def.GetObjectParserType<SparqlQuery>());
+    [Fact]
+    public void ParsingObjectsQueryParserCheck()
+    {
+        Type target = typeof(SparqlQueryParser);
+        MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlQuery>());
+        Assert.NotNull(def);
+        Assert.Equal(target, def.GetObjectParserType<SparqlQuery>());
 
-            IObjectParser<SparqlQuery> parser = def.GetObjectParser<SparqlQuery>();
-            SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
-            Console.WriteLine(q.ToString());
-        }
+        IObjectParser<SparqlQuery> parser = def.GetObjectParser<SparqlQuery>();
+        SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
+        Console.WriteLine(q.ToString());
+    }
 
-        [Fact]
-        public void ParsingObjectsUpdateParserCheck()
-        {
-            Type target = typeof(SparqlUpdateParser);
-            MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlUpdateCommandSet>());
-            Assert.NotNull(def);
-            Assert.Equal(target, def.GetObjectParserType<SparqlUpdateCommandSet>());
+    [Fact]
+    public void ParsingObjectsUpdateParserCheck()
+    {
+        Type target = typeof(SparqlUpdateParser);
+        MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlUpdateCommandSet>());
+        Assert.NotNull(def);
+        Assert.Equal(target, def.GetObjectParserType<SparqlUpdateCommandSet>());
 
-            IObjectParser<SparqlUpdateCommandSet> parser = def.GetObjectParser<SparqlUpdateCommandSet>();
-            SparqlUpdateCommandSet cmds = parser.ParseFromString("CLEAR DEFAULT");
-            Console.WriteLine(cmds.ToString());
-        }
+        IObjectParser<SparqlUpdateCommandSet> parser = def.GetObjectParser<SparqlUpdateCommandSet>();
+        SparqlUpdateCommandSet cmds = parser.ParseFromString("CLEAR DEFAULT");
+        Console.WriteLine(cmds.ToString());
     }
 }

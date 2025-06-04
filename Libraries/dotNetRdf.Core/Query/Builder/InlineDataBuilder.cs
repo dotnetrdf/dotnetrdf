@@ -29,55 +29,54 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+internal class InlineDataBuilder : IInlineDataBuilder
 {
-    internal class InlineDataBuilder : IInlineDataBuilder
+    private readonly BindingsPattern _bindingsPattern;
+    private readonly List<string> _variables;
+
+    public InlineDataBuilder(IEnumerable<string> variables)
     {
-        private readonly BindingsPattern _bindingsPattern;
-        private readonly List<string> _variables;
+        _variables = variables.ToList();
+        _bindingsPattern = new BindingsPattern(_variables);
+    }
 
-        public InlineDataBuilder(IEnumerable<string> variables)
+    public IInlineDataBuilder Values(params object[] values)
+    { 
+        return Values(builder => values.Aggregate(builder, CreateValue));
+    }
+
+    public IInlineDataBuilder Values(Action<IBindingTupleBuilder> buildWith)
+    {
+        var builder = new BindingTupleBuilder(_variables);
+        buildWith(builder);
+        _bindingsPattern.AddTuple(builder.GetTuple());
+        return this;
+    }
+
+    public void AppendTo(GraphPattern graphPattern)
+    {
+        graphPattern.AddInlineData(_bindingsPattern);
+    }
+
+    public void AppendTo(SparqlQuery query)
+    {
+        query.Bindings = _bindingsPattern;
+    }
+
+    private static IBindingTupleBuilder CreateValue(IBindingTupleBuilder builder, object value)
+    {
+        if (value == null)
         {
-            _variables = variables.ToList();
-            _bindingsPattern = new BindingsPattern(_variables);
+            return builder.Undef();
         }
 
-        public IInlineDataBuilder Values(params object[] values)
-        { 
-            return Values(builder => values.Aggregate(builder, CreateValue));
-        }
-
-        public IInlineDataBuilder Values(Action<IBindingTupleBuilder> buildWith)
+        if (value is Uri uri)
         {
-            var builder = new BindingTupleBuilder(_variables);
-            buildWith(builder);
-            _bindingsPattern.AddTuple(builder.GetTuple());
-            return this;
+            return builder.Value(uri);
         }
 
-        public void AppendTo(GraphPattern graphPattern)
-        {
-            graphPattern.AddInlineData(_bindingsPattern);
-        }
-
-        public void AppendTo(SparqlQuery query)
-        {
-            query.Bindings = _bindingsPattern;
-        }
-
-        private static IBindingTupleBuilder CreateValue(IBindingTupleBuilder builder, object value)
-        {
-            if (value == null)
-            {
-                return builder.Undef();
-            }
-
-            if (value is Uri uri)
-            {
-                return builder.Value(uri);
-            }
-
-            return builder.Value(value);
-        }
+        return builder.Value(value);
     }
 }

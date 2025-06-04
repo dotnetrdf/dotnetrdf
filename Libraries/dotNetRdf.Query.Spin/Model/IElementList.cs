@@ -24,22 +24,21 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
-{
+namespace VDS.RDF.Query.Spin.Model;
 
-    /**
-     * An RDFList representing a plain list of sub-Elements in a Query.
-     * Example:
-     * 
-     * ASK WHERE {
-     *     {
-     *         ?this is:partOf :ElementList
-     * 	   } 
-     * }
-     * 
-     * @author Holger Knublauch
-     */
-    internal interface IElementList : IElementGroup
-    {
-    }
+
+/**
+ * An RDFList representing a plain list of sub-Elements in a Query.
+ * Example:
+ * 
+ * ASK WHERE {
+ *     {
+ *         ?this is:partOf :ElementList
+ * 	   } 
+ * }
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IElementList : IElementGroup
+{
 }

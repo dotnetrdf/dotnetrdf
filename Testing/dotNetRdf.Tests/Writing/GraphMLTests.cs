@@ -29,117 +29,116 @@ using System.Xml;
 using System.Xml.Linq;
 using Xunit;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+public class GraphMLTests : IClassFixture<GraphMLFixture>
 {
-    public class GraphMLTests : IClassFixture<GraphMLFixture>
+    private GraphMLFixture fixture;
+
+    public GraphMLTests(GraphMLFixture fixture)
     {
-        private GraphMLFixture fixture;
+        this.fixture = fixture;
+    }
 
-        public GraphMLTests(GraphMLFixture fixture)
+    [Fact]
+    public void Produces_a_graph_element_per_graph()
+    {
+        foreach (var graph in fixture.Input.Graphs)
         {
-            this.fixture = fixture;
+            var graphElement = fixture.GraphElementByBaseUri((graph.Name as IUriNode)?.Uri);
+
+            Assert.NotNull(graphElement);
         }
+    }
 
-        [Fact]
-        public void Produces_a_graph_element_per_graph()
+    [Fact]
+    public void Produces_an_edge_element_per_triple()
+    {
+        foreach (var graph in fixture.Input.Graphs)
         {
-            foreach (var graph in fixture.Input.Graphs)
-            {
-                var graphElement = fixture.GraphElementByBaseUri((graph.Name as IUriNode)?.Uri);
+            var graphElement = fixture.GraphElementByBaseUri((graph.Name as IUriNode)?.Uri);
 
-                Assert.NotNull(graphElement);
-            }
+            var expected = graph.Triples.Count();
+            var actual = graphElement.Elements(XName.Get(GraphMLSpecsHelper.Edge, GraphMLSpecsHelper.NS)).Count();
+
+            Assert.Equal(expected, actual);
         }
+    }
 
-        [Fact]
-        public void Produces_an_edge_element_per_triple()
+    [Fact]
+    public void Produces_a_node_element_per_node()
+    {
+        foreach (var graph in fixture.Input.Graphs)
         {
-            foreach (var graph in fixture.Input.Graphs)
-            {
-                var graphElement = fixture.GraphElementByBaseUri((graph.Name as IUriNode)?.Uri);
+            var graphElement = fixture.GraphElementByBaseUri((graph.Name as IUriNode)?.Uri);
 
-                var expected = graph.Triples.Count();
-                var actual = graphElement.Elements(XName.Get(GraphMLSpecsHelper.Edge, GraphMLSpecsHelper.NS)).Count();
-
-                Assert.Equal(expected, actual);
-            }
-        }
-
-        [Fact]
-        public void Produces_a_node_element_per_node()
-        {
-            foreach (var graph in fixture.Input.Graphs)
-            {
-                var graphElement = fixture.GraphElementByBaseUri((graph.Name as IUriNode)?.Uri);
-
-                var expected = graph.Nodes.Count();
-                var actual = graphElement.Elements(XName.Get(GraphMLSpecsHelper.Node, GraphMLSpecsHelper.NS)).Count();
-
-                Assert.Equal(expected, actual);
-            }
-        }
-
-        [Fact]
-        public void Collapses_literals_by_default()
-        {
-            var s = new TripleStore();
-            var g = new Graph();
-            g.LoadFromString(@"
-_:s1 <urn:p> ""o"" .
-_:s2 <urn:p> ""o"" .
-");
-            s.Add(g);
-
-            var x = new XDocument();
-            using (var outputWriter = x.CreateWriter())
-            {
-                new GraphMLWriter().Save(s, outputWriter);
-            }
-
-            var graphElement = x.Descendants(XName.Get(GraphMLSpecsHelper.Graph, GraphMLSpecsHelper.NS)).Single();
-            var expected = 3;
+            var expected = graph.Nodes.Count();
             var actual = graphElement.Elements(XName.Get(GraphMLSpecsHelper.Node, GraphMLSpecsHelper.NS)).Count();
 
             Assert.Equal(expected, actual);
         }
+    }
 
-        [Fact]
-        public void Doesnt_collapses_literals_if_required()
-        {
-            var s = new TripleStore();
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Collapses_literals_by_default()
+    {
+        var s = new TripleStore();
+        var g = new Graph();
+        g.LoadFromString(@"
 _:s1 <urn:p> ""o"" .
 _:s2 <urn:p> ""o"" .
 ");
-            s.Add(g);
+        s.Add(g);
 
-            var x = new XDocument();
-            using (var outputWriter = x.CreateWriter())
-            {
-                new GraphMLWriter() { CollapseLiterals = false }.Save(s, outputWriter);
-            }
-
-            var graphElement = x.Descendants(XName.Get(GraphMLSpecsHelper.Graph, GraphMLSpecsHelper.NS)).Single();
-            var expected = 4;
-            var actual = graphElement.Elements(XName.Get(GraphMLSpecsHelper.Node, GraphMLSpecsHelper.NS)).Count();
-
-            Assert.Equal(expected, actual);
+        var x = new XDocument();
+        using (var outputWriter = x.CreateWriter())
+        {
+            new GraphMLWriter().Save(s, outputWriter);
         }
 
-        [Fact]
-        public void Output_conforms_to_XSD()
+        var graphElement = x.Descendants(XName.Get(GraphMLSpecsHelper.Graph, GraphMLSpecsHelper.NS)).Single();
+        var expected = 3;
+        var actual = graphElement.Elements(XName.Get(GraphMLSpecsHelper.Node, GraphMLSpecsHelper.NS)).Count();
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Doesnt_collapses_literals_if_required()
+    {
+        var s = new TripleStore();
+        var g = new Graph();
+        g.LoadFromString(@"
+_:s1 <urn:p> ""o"" .
+_:s2 <urn:p> ""o"" .
+");
+        s.Add(g);
+
+        var x = new XDocument();
+        using (var outputWriter = x.CreateWriter())
         {
-            var settings = new XmlReaderSettings
+            new GraphMLWriter() { CollapseLiterals = false }.Save(s, outputWriter);
+        }
+
+        var graphElement = x.Descendants(XName.Get(GraphMLSpecsHelper.Graph, GraphMLSpecsHelper.NS)).Single();
+        var expected = 4;
+        var actual = graphElement.Elements(XName.Get(GraphMLSpecsHelper.Node, GraphMLSpecsHelper.NS)).Count();
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Output_conforms_to_XSD()
+    {
+        var settings = new XmlReaderSettings
+        {
+            ValidationType = ValidationType.Schema, Schemas = {XmlResolver = new XmlUrlResolver()}
+        };
+        settings.Schemas.Add(GraphMLSpecsHelper.NS, GraphMLSpecsHelper.XsdUri);
+        using(var reader = XmlReader.Create(new StringReader(fixture.Output.ToString()), settings))
+        {
+            while (reader.Read())
             {
-                ValidationType = ValidationType.Schema, Schemas = {XmlResolver = new XmlUrlResolver()}
-            };
-            settings.Schemas.Add(GraphMLSpecsHelper.NS, GraphMLSpecsHelper.XsdUri);
-            using(var reader = XmlReader.Create(new StringReader(fixture.Output.ToString()), settings))
-            {
-                while (reader.Read())
-                {
-                }
             }
         }
     }

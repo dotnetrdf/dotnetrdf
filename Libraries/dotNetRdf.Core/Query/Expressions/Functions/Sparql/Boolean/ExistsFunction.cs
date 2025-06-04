@@ -30,147 +30,146 @@ using System.Text;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+
+/// <summary>
+/// Represents an EXIST/NOT EXISTS clause used as a Function in an Expression.
+/// </summary>
+public class ExistsFunction 
+    : ISparqlExpression
 {
     /// <summary>
-    /// Represents an EXIST/NOT EXISTS clause used as a Function in an Expression.
+    /// Creates a new EXISTS/NOT EXISTS function.
     /// </summary>
-    public class ExistsFunction 
-        : ISparqlExpression
+    /// <param name="pattern">Graph Pattern.</param>
+    /// <param name="mustExist">Whether this is an EXIST.</param>
+    public ExistsFunction(GraphPattern pattern, bool mustExist)
     {
-        /// <summary>
-        /// Creates a new EXISTS/NOT EXISTS function.
-        /// </summary>
-        /// <param name="pattern">Graph Pattern.</param>
-        /// <param name="mustExist">Whether this is an EXIST.</param>
-        public ExistsFunction(GraphPattern pattern, bool mustExist)
-        {
-            Pattern = pattern;
-            MustExist = mustExist;
+        Pattern = pattern;
+        MustExist = mustExist;
+    }
+
+    /// <summary>
+    /// Get whether this is an EXIST (true) or NOT EXIST (false).
+    /// </summary>
+    public bool MustExist { get; }
+
+    /// <summary>
+    /// Get the pattern to test for (non-)existence.
+    /// </summary>
+    public GraphPattern Pattern { get; }
+
+
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessExistsFunction(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitExistsFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Variables used in this Expression.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get 
+        { 
+            return (from p in Pattern.TriplePatterns
+                    from v in p.Variables
+                    select v).Distinct();
         }
+    }
 
-        /// <summary>
-        /// Get whether this is an EXIST (true) or NOT EXIST (false).
-        /// </summary>
-        public bool MustExist { get; }
-
-        /// <summary>
-        /// Get the pattern to test for (non-)existence.
-        /// </summary>
-        public GraphPattern Pattern { get; }
-
-
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets whether an expression can safely be evaluated in parallel.
+    /// </summary>
+    public virtual bool CanParallelise
+    {
+        get
         {
-            return processor.ProcessExistsFunction(this, context, binding);
+            return false;
         }
+    }
 
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        if (MustExist)
         {
-            return visitor.VisitExistsFunction(this);
+            output.Append("EXISTS ");
         }
-
-        /// <summary>
-        /// Gets the Variables used in this Expression.
-        /// </summary>
-        public IEnumerable<string> Variables
+        else
         {
-            get 
-            { 
-                return (from p in Pattern.TriplePatterns
-                        from v in p.Variables
-                        select v).Distinct();
-            }
+            output.Append("NOT EXISTS ");
         }
+        output.Append(Pattern);
+        return output.ToString();
+    }
 
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel.
-        /// </summary>
-        public virtual bool CanParallelise
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public SparqlExpressionType Type
+    {
+        get
         {
-            get
-            {
-                return false;
-            }
+            return SparqlExpressionType.GraphOperator;
         }
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public string Functor
+    {
+        get
         {
-            var output = new StringBuilder();
             if (MustExist)
             {
-                output.Append("EXISTS ");
+                return SparqlSpecsHelper.SparqlKeywordExists;
             }
             else
             {
-                output.Append("NOT EXISTS ");
-            }
-            output.Append(Pattern);
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.GraphOperator;
+                return SparqlSpecsHelper.SparqlKeywordNotExists;
             }
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public string Functor
+    /// <summary>
+    /// Gets the Arguments of the Expression.
+    /// </summary>
+    public IEnumerable<ISparqlExpression> Arguments
+    {
+        get
         {
-            get
-            {
-                if (MustExist)
-                {
-                    return SparqlSpecsHelper.SparqlKeywordExists;
-                }
-                else
-                {
-                    return SparqlSpecsHelper.SparqlKeywordNotExists;
-                }
-            }
+            return new ISparqlExpression[] { new GraphPatternTerm(Pattern) };
         }
+    }
 
-        /// <summary>
-        /// Gets the Arguments of the Expression.
-        /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        ISparqlExpression temp = transformer.Transform(new GraphPatternTerm(Pattern));
+        if (temp is GraphPatternTerm)
         {
-            get
-            {
-                return new ISparqlExpression[] { new GraphPatternTerm(Pattern) };
-            }
+            return new ExistsFunction(((GraphPatternTerm)temp).Pattern, MustExist);
         }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        else
         {
-            ISparqlExpression temp = transformer.Transform(new GraphPatternTerm(Pattern));
-            if (temp is GraphPatternTerm)
-            {
-                return new ExistsFunction(((GraphPatternTerm)temp).Pattern, MustExist);
-            }
-            else
-            {
-                throw new RdfQueryException("Unable to transform an EXISTS/NOT EXISTS function since the expression transformer in use failed to transform the inner Graph Pattern Expression to another Graph Pattern Expression");
-            }
+            throw new RdfQueryException("Unable to transform an EXISTS/NOT EXISTS function since the expression transformer in use failed to transform the inner Graph Pattern Expression to another Graph Pattern Expression");
         }
     }
 }

@@ -24,72 +24,71 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric;
+
+/// <summary>
+/// Represents the Leviathan lfn:sq() function.
+/// </summary>
+public class SquareFunction
+    : BaseUnaryExpression
 {
     /// <summary>
-    /// Represents the Leviathan lfn:sq() function.
+    /// Creates a new Leviathan Square Function.
     /// </summary>
-    public class SquareFunction
-        : BaseUnaryExpression
+    /// <param name="expr">Expression.</param>
+    public SquareFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new Leviathan Square Function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public SquareFunction(ISparqlExpression expr)
-            : base(expr) { }
+        return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Square + ">(" + InnerExpression + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Square + ">(" + InnerExpression + ")";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessSquareFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessSquareFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitSquareFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Type of this expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return visitor.VisitSquareFunction(this);
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of this expression.
-        /// </summary>
-        public override SparqlExpressionType Type
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Square;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Square;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new SquareFunction(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new SquareFunction(transformer.Transform(InnerExpression));
     }
 }

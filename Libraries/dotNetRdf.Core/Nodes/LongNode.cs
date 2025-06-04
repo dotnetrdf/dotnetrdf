@@ -30,198 +30,197 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Nodes
+namespace VDS.RDF.Nodes;
+
+/// <summary>
+/// A Valued Node with a Long value.
+/// </summary>
+public class LongNode
+    : NumericNode
 {
+    private long _value;
+
     /// <summary>
-    /// A Valued Node with a Long value.
+    /// Creates a new long valued node.
     /// </summary>
-    public class LongNode
-        : NumericNode
+    /// <param name="value">Long value.</param>
+    /// <param name="lexicalValue">Lexical Value.</param>
+    public LongNode(long value, string lexicalValue)
+        : this(value, lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger)) { }
+
+    /// <summary>
+    /// Creates a new long valued node.
+    /// </summary>
+    /// <param name="value">Long value.</param>
+    /// <param name="lexicalValue">Lexical Value.</param>
+    /// <param name="datatype">Datatype URI.</param>
+    public LongNode(long value, string lexicalValue, Uri datatype)
+        : base(lexicalValue, datatype, SparqlNumericType.Integer)
     {
-        private long _value;
+        _value = value;
+    }
 
-        /// <summary>
-        /// Creates a new long valued node.
-        /// </summary>
-        /// <param name="value">Long value.</param>
-        /// <param name="lexicalValue">Lexical Value.</param>
-        public LongNode(long value, string lexicalValue)
-            : this(value, lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger)) { }
+    /// <summary>
+    /// Creates a new long valued node.
+    /// </summary>
+    /// <param name="value">Long value.</param>
+    public LongNode(long value)
+        : this(value, value.ToString(CultureInfo.InvariantCulture)) { }
 
-        /// <summary>
-        /// Creates a new long valued node.
-        /// </summary>
-        /// <param name="value">Long value.</param>
-        /// <param name="lexicalValue">Lexical Value.</param>
-        /// <param name="datatype">Datatype URI.</param>
-        public LongNode(long value, string lexicalValue, Uri datatype)
-            : base(lexicalValue, datatype, SparqlNumericType.Integer)
+    /// <summary>
+    /// Gets the long value.
+    /// </summary>
+    /// <returns></returns>
+    public override long AsInteger()
+    {
+        return _value;
+    }
+
+    /// <summary>
+    /// Gets the decimal value of the long.
+    /// </summary>
+    /// <returns></returns>
+    public override decimal AsDecimal()
+    {
+        try
         {
-            _value = value;
+            return Convert.ToDecimal(_value);
         }
-
-        /// <summary>
-        /// Creates a new long valued node.
-        /// </summary>
-        /// <param name="value">Long value.</param>
-        public LongNode(long value)
-            : this(value, value.ToString(CultureInfo.InvariantCulture)) { }
-
-        /// <summary>
-        /// Gets the long value.
-        /// </summary>
-        /// <returns></returns>
-        public override long AsInteger()
+        catch
         {
-            return _value;
-        }
-
-        /// <summary>
-        /// Gets the decimal value of the long.
-        /// </summary>
-        /// <returns></returns>
-        public override decimal AsDecimal()
-        {
-            try
-            {
-                return Convert.ToDecimal(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to upcast Long to Double");
-            }
-        }
-
-        /// <summary>
-        /// Gets the float value of the long.
-        /// </summary>
-        /// <returns></returns>
-        public override float AsFloat()
-        {
-            try
-            {
-                return Convert.ToSingle(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to upcast Long to Float");
-            }
-        }
-
-        /// <summary>
-        /// Gets the double value of the long.
-        /// </summary>
-        /// <returns></returns>
-        public override double AsDouble()
-        {
-            try
-            {
-                return Convert.ToDouble(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to upcast Long to Double");
-            }
+            throw new RdfQueryException("Unable to upcast Long to Double");
         }
     }
 
     /// <summary>
-    /// A Valued Node with a unsigned long value.
+    /// Gets the float value of the long.
     /// </summary>
-    public class UnsignedLongNode
-        : NumericNode
+    /// <returns></returns>
+    public override float AsFloat()
     {
-        private ulong _value;
-
-        /// <summary>
-        /// Creates a new unsigned long valued node.
-        /// </summary>
-        /// <param name="value">Unsigned Long value.</param>
-        /// <param name="lexicalValue">Lexical Value.</param>
-        public UnsignedLongNode(ulong value, string lexicalValue)
-            : this(value, lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt)) { }
-
-        /// <summary>
-        /// Creates a new unsigned long valued node.
-        /// </summary>
-        /// <param name="value">Unsigned Long value.</param>
-        /// <param name="lexicalValue">Lexical Value.</param>
-        /// <param name="datatype">Datatype URI.</param>
-        public UnsignedLongNode(ulong value, string lexicalValue, Uri datatype)
-            : base(lexicalValue, datatype, SparqlNumericType.Integer)
+        try
         {
-            _value = value;
+            return Convert.ToSingle(_value);
         }
-
-        /// <summary>
-        /// Creates a new unsigned long valued node.
-        /// </summary>
-        /// <param name="value">Unsigned Long value.</param>
-        public UnsignedLongNode(ulong value)
-            : this(value, value.ToString(CultureInfo.InvariantCulture)) { }
-
-        /// <summary>
-        /// Gets the long value of the ulong.
-        /// </summary>
-        /// <returns></returns>
-        public override long AsInteger()
+        catch
         {
-            try
-            {
-                return Convert.ToInt64(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to downcast unsigned Long to long");
-            }
+            throw new RdfQueryException("Unable to upcast Long to Float");
         }
+    }
 
-        /// <summary>
-        /// Gets the decimal value of the ulong.
-        /// </summary>
-        /// <returns></returns>
-        public override decimal AsDecimal()
+    /// <summary>
+    /// Gets the double value of the long.
+    /// </summary>
+    /// <returns></returns>
+    public override double AsDouble()
+    {
+        try
         {
-            try
-            {
-                return Convert.ToDecimal(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to upcast Long to Double");
-            }
+            return Convert.ToDouble(_value);
         }
-
-        /// <summary>
-        /// Gets the float value of the ulong.
-        /// </summary>
-        /// <returns></returns>
-        public override float AsFloat()
+        catch
         {
-            try
-            {
-                return Convert.ToSingle(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to upcast Long to Float");
-            }
+            throw new RdfQueryException("Unable to upcast Long to Double");
         }
+    }
+}
 
-        /// <summary>
-        /// Gets the double value of the ulong.
-        /// </summary>
-        /// <returns></returns>
-        public override double AsDouble()
+/// <summary>
+/// A Valued Node with a unsigned long value.
+/// </summary>
+public class UnsignedLongNode
+    : NumericNode
+{
+    private ulong _value;
+
+    /// <summary>
+    /// Creates a new unsigned long valued node.
+    /// </summary>
+    /// <param name="value">Unsigned Long value.</param>
+    /// <param name="lexicalValue">Lexical Value.</param>
+    public UnsignedLongNode(ulong value, string lexicalValue)
+        : this(value, lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt)) { }
+
+    /// <summary>
+    /// Creates a new unsigned long valued node.
+    /// </summary>
+    /// <param name="value">Unsigned Long value.</param>
+    /// <param name="lexicalValue">Lexical Value.</param>
+    /// <param name="datatype">Datatype URI.</param>
+    public UnsignedLongNode(ulong value, string lexicalValue, Uri datatype)
+        : base(lexicalValue, datatype, SparqlNumericType.Integer)
+    {
+        _value = value;
+    }
+
+    /// <summary>
+    /// Creates a new unsigned long valued node.
+    /// </summary>
+    /// <param name="value">Unsigned Long value.</param>
+    public UnsignedLongNode(ulong value)
+        : this(value, value.ToString(CultureInfo.InvariantCulture)) { }
+
+    /// <summary>
+    /// Gets the long value of the ulong.
+    /// </summary>
+    /// <returns></returns>
+    public override long AsInteger()
+    {
+        try
         {
-            try
-            {
-                return Convert.ToDouble(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to upcast Long to Double");
-            }
+            return Convert.ToInt64(_value);
+        }
+        catch
+        {
+            throw new RdfQueryException("Unable to downcast unsigned Long to long");
+        }
+    }
+
+    /// <summary>
+    /// Gets the decimal value of the ulong.
+    /// </summary>
+    /// <returns></returns>
+    public override decimal AsDecimal()
+    {
+        try
+        {
+            return Convert.ToDecimal(_value);
+        }
+        catch
+        {
+            throw new RdfQueryException("Unable to upcast Long to Double");
+        }
+    }
+
+    /// <summary>
+    /// Gets the float value of the ulong.
+    /// </summary>
+    /// <returns></returns>
+    public override float AsFloat()
+    {
+        try
+        {
+            return Convert.ToSingle(_value);
+        }
+        catch
+        {
+            throw new RdfQueryException("Unable to upcast Long to Float");
+        }
+    }
+
+    /// <summary>
+    /// Gets the double value of the ulong.
+    /// </summary>
+    /// <returns></returns>
+    public override double AsDouble()
+    {
+        try
+        {
+            return Convert.ToDouble(_value);
+        }
+        catch
+        {
+            throw new RdfQueryException("Unable to upcast Long to Double");
         }
     }
 }

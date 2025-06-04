@@ -28,28 +28,27 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class Property : Constraint
 {
-    internal class Property : Constraint
+    [DebuggerStepThrough]
+    internal Property(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal Property(Shape shape, INode node)
-            : base(shape, node)
-        {
-        }
+    }
 
-        // This is never used since validation is delegated to the constraints of this property shape.
-        internal override INode ConstraintComponent
+    // This is never used since validation is delegated to the constraints of this property shape.
+    internal override INode ConstraintComponent
+    {
+        get
         {
-            get
-            {
-                return Vocabulary.PropertyConstraintComponent;
-            }
+            return Vocabulary.PropertyConstraintComponent;
         }
+    }
 
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            return new Shapes.Property(this, this.Graph).Validate(dataGraph, focusNode, valueNodes, report);
-        }
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        return new Shapes.Property(this, this.Graph).Validate(dataGraph, focusNode, valueNodes, report);
     }
 }

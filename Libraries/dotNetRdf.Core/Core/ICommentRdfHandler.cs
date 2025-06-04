@@ -24,19 +24,18 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface for Handlers which are able to accept comments.
+/// </summary>
+public interface ICommentRdfHandler
+    : IRdfHandler
 {
     /// <summary>
-    /// Interface for Handlers which are able to accept comments.
+    /// Handles a Comment.
     /// </summary>
-    public interface ICommentRdfHandler
-        : IRdfHandler
-    {
-        /// <summary>
-        /// Handles a Comment.
-        /// </summary>
-        /// <param name="text">The text String of the Comment.</param>
-        /// <returns>Should return <strong>true</strong> if parsing should continue or <strong>false</strong> if it should be aborted.</returns>
-        bool HandleComment(string text);
-    }
+    /// <param name="text">The text String of the Comment.</param>
+    /// <returns>Should return <strong>true</strong> if parsing should continue or <strong>false</strong> if it should be aborted.</returns>
+    bool HandleComment(string text);
 }

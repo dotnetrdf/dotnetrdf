@@ -28,96 +28,95 @@ using System.Collections.Generic;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 
-namespace VDS.RDF.Query.Patterns
+namespace VDS.RDF.Query.Patterns;
+
+/// <summary>
+/// Pattern which matches temporary variables.
+/// </summary>
+public class BlankNodePattern 
+    : PatternItem
 {
     /// <summary>
-    /// Pattern which matches temporary variables.
+    /// Creates a new Pattern representing a Blank Node.
     /// </summary>
-    public class BlankNodePattern 
-        : PatternItem
+    /// <param name="name">Blank Node ID.</param>
+    public BlankNodePattern(string name)
     {
-        /// <summary>
-        /// Creates a new Pattern representing a Blank Node.
-        /// </summary>
-        /// <param name="name">Blank Node ID.</param>
-        public BlankNodePattern(string name)
+        ID = "_:" + name;
+    }
+
+    /// <summary>
+    /// Creates a new Pattern representing a Blank Node.
+    /// </summary>
+    /// <param name="name">Blank Node ID.</param>
+    /// <param name="rigorousEvaluation">Whether to force rigorous evaluation.</param>
+    public BlankNodePattern(string name, bool rigorousEvaluation)
+        : this(name)
+    {
+        RigorousEvaluation = rigorousEvaluation;
+    }
+
+    /// <summary>
+    /// Gets the Blank Node ID.
+    /// </summary>
+    public string ID { get; }
+
+    /// <inheritdoc />
+    public override bool IsFixed => false;
+
+    /// <summary>
+    /// Checks whether the given Node is a valid value for the Temporary Variable.
+    /// </summary>
+    /// <param name="context">Evaluation Context.</param>
+    /// <param name="obj">Node to test.</param>
+    /// <param name="s"></param>
+    /// <returns></returns>
+    public override bool Accepts(IPatternEvaluationContext context, INode obj, ISet s)
+    {
+        if (s.ContainsVariable(ID)) return obj.Equals(s[ID]);
+        if ((context.RigorousEvaluation || RigorousEvaluation) && context.ContainsVariable(ID) && !context.ContainsValue(ID, obj))
         {
-            ID = "_:" + name;
+            return false;
         }
 
-        /// <summary>
-        /// Creates a new Pattern representing a Blank Node.
-        /// </summary>
-        /// <param name="name">Blank Node ID.</param>
-        /// <param name="rigorousEvaluation">Whether to force rigorous evaluation.</param>
-        public BlankNodePattern(string name, bool rigorousEvaluation)
-            : this(name)
-        {
-            RigorousEvaluation = rigorousEvaluation;
-        }
+        s.Add(ID, obj);
+        return true;
+    }
 
-        /// <summary>
-        /// Gets the Blank Node ID.
-        /// </summary>
-        public string ID { get; }
+    /// <summary>
+    /// Constructs a Node based on the given Set.
+    /// </summary>
+    /// <param name="context">Construct Context.</param>
+    /// <returns></returns>
+    public override INode Construct(ConstructContext context)
+    {
+        return context.GetBlankNode(ID);
+    }
 
-        /// <inheritdoc />
-        public override bool IsFixed => false;
+    /// <summary>
+    /// Gets the String representation of this Pattern.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return ID;
+    }
 
-        /// <summary>
-        /// Checks whether the given Node is a valid value for the Temporary Variable.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="obj">Node to test.</param>
-        /// <param name="s"></param>
-        /// <returns></returns>
-        public override bool Accepts(IPatternEvaluationContext context, INode obj, ISet s)
-        {
-            if (s.ContainsVariable(ID)) return obj.Equals(s[ID]);
-            if ((context.RigorousEvaluation || RigorousEvaluation) && context.ContainsVariable(ID) && !context.ContainsValue(ID, obj))
-            {
-                return false;
-            }
+    /// <summary>
+    /// Gets the Temporary Variable Name of this Pattern.
+    /// </summary>
+    public override IEnumerable<string> Variables => ID.AsEnumerable();
 
-            s.Add(ID, obj);
-            return true;
-        }
+    /// <inheritdoc />
+    public override void AddBindings(INode forNode, ISet toSet)
+    {
+        toSet.Add(ID, forNode);
+    }
 
-        /// <summary>
-        /// Constructs a Node based on the given Set.
-        /// </summary>
-        /// <param name="context">Construct Context.</param>
-        /// <returns></returns>
-        public override INode Construct(ConstructContext context)
-        {
-            return context.GetBlankNode(ID);
-        }
-
-        /// <summary>
-        /// Gets the String representation of this Pattern.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return ID;
-        }
-
-        /// <summary>
-        /// Gets the Temporary Variable Name of this Pattern.
-        /// </summary>
-        public override IEnumerable<string> Variables => ID.AsEnumerable();
-
-        /// <inheritdoc />
-        public override void AddBindings(INode forNode, ISet toSet)
-        {
-            toSet.Add(ID, forNode);
-        }
-
-        /// <inheritdoc />
-        public override INode Bind(ISet variableBindings)
-        {
-            //return new BlankNode(ID.Substring(2));
-            return variableBindings[ID];
-        }
+    /// <inheritdoc />
+    public override INode Bind(ISet variableBindings)
+    {
+        //return new BlankNode(ID.Substring(2));
+        return variableBindings[ID];
     }
 }

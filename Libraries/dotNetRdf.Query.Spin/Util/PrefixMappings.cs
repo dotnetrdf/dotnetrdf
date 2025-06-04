@@ -27,13 +27,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Query.Spin.Util
+namespace VDS.RDF.Query.Spin.Util;
+
+internal class PrefixMapping : Dictionary<String, String>
 {
-    internal class PrefixMapping : Dictionary<String, String>
+    public PrefixMapping()
+        : base(StringComparer.Ordinal)
     {
-        public PrefixMapping()
-            : base(StringComparer.Ordinal)
-        {
-        }
     }
 }

@@ -29,37 +29,36 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Query.Paths;
 
-namespace VDS.RDF.Shacl.Paths
+namespace VDS.RDF.Shacl.Paths;
+
+internal class Sequence : Path
 {
-    internal class Sequence : Path
+    [DebuggerStepThrough]
+    internal Sequence(INode node, IGraph shapesGraph)
+        : base(node, shapesGraph)
     {
-        [DebuggerStepThrough]
-        internal Sequence(INode node, IGraph shapesGraph)
-            : base(node, shapesGraph)
-        {
-        }
+    }
 
-        internal override ISparqlPath SparqlPath
+    internal override ISparqlPath SparqlPath
+    {
+        get
         {
-            get
-            {
-                return (
-                    from member in Graph.GetListItems(this)
-                    let path = Path.Parse(member, Graph)
-                    select path.SparqlPath)
-                    .Aggregate((first, second) => new SequencePath(first, second));
-            }
+            return (
+                from member in Graph.GetListItems(this)
+                let path = Path.Parse(member, Graph)
+                select path.SparqlPath)
+                .Aggregate((first, second) => new SequencePath(first, second));
         }
+    }
 
-        internal override IEnumerable<Triple> AsTriples
+    internal override IEnumerable<Triple> AsTriples
+    {
+        get
         {
-            get
-            {
-                return
-                    Graph.GetListAsTriples(this)
-                    .Concat(
-                    Graph.GetListItems(this).SelectMany(member => Path.Parse(member, Graph).AsTriples));
-            }
+            return
+                Graph.GetListAsTriples(this)
+                .Concat(
+                Graph.GetListItems(this).SelectMany(member => Path.Parse(member, Graph).AsTriples));
         }
     }
 }

@@ -31,131 +31,130 @@ using VDS.RDF.Parsing.Events;
 using VDS.RDF.Parsing.Events.RdfXml;
 using VDS.RDF.Parsing.Handlers;
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing.Contexts;
+
+/// <summary>
+/// Parser Context for RDF/XML Parser.
+/// </summary>
+public class RdfXmlParserContext : BaseParserContext, IEventParserContext<IRdfXmlEvent>
 {
+    private IEventQueue<IRdfXmlEvent> _queue;
+    private Dictionary<string, List<INode>> _usedIDs = new Dictionary<string, List<INode>>();
+
     /// <summary>
-    /// Parser Context for RDF/XML Parser.
+    /// Creates a new Parser Context.
     /// </summary>
-    public class RdfXmlParserContext : BaseParserContext, IEventParserContext<IRdfXmlEvent>
+    /// <param name="g">Graph.</param>
+    /// <param name="document">XML Document.</param>
+    public RdfXmlParserContext(IGraph g, XmlDocument document)
+        : this(g, document, false) { }
+
+    /// <summary>
+    /// Creates a new Parser Context.
+    /// </summary>
+    /// <param name="g">Graph.</param>
+    /// <param name="document">XML Document.</param>
+    /// <param name="traceParsing">Whether to Trace Parsing.</param>
+    public RdfXmlParserContext(IGraph g, XmlDocument document, bool traceParsing)
+        : base(g) 
     {
-        private IEventQueue<IRdfXmlEvent> _queue;
-        private Dictionary<string, List<INode>> _usedIDs = new Dictionary<string, List<INode>>();
-
-        /// <summary>
-        /// Creates a new Parser Context.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="document">XML Document.</param>
-        public RdfXmlParserContext(IGraph g, XmlDocument document)
-            : this(g, document, false) { }
-
-        /// <summary>
-        /// Creates a new Parser Context.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="document">XML Document.</param>
-        /// <param name="traceParsing">Whether to Trace Parsing.</param>
-        public RdfXmlParserContext(IGraph g, XmlDocument document, bool traceParsing)
-            : base(g) 
+        _queue = new EventQueue<IRdfXmlEvent>(new DomBasedEventGenerator(document));
+        if (_queue.EventGenerator is IRdfXmlPreProcessingEventGenerator generator)
         {
-            _queue = new EventQueue<IRdfXmlEvent>(new DomBasedEventGenerator(document));
-            if (_queue.EventGenerator is IRdfXmlPreProcessingEventGenerator generator)
-            {
-                generator.GetAllEvents(this);
-            }
+            generator.GetAllEvents(this);
         }
+    }
 
-        /// <summary>
-        /// Creates a new Parser Context.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="document">XML Document.</param>
-        public RdfXmlParserContext(IRdfHandler handler, XmlDocument document)
-            : this(handler, document, false) { }
+    /// <summary>
+    /// Creates a new Parser Context.
+    /// </summary>
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="document">XML Document.</param>
+    public RdfXmlParserContext(IRdfHandler handler, XmlDocument document)
+        : this(handler, document, false) { }
 
-        /// <summary>
-        /// Creates a new Parser Context.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="document">XML Document.</param>
-        /// <param name="traceParsing">Whether to Trace Parsing.</param>
-        /// <param name="uriFactory">URI factory to use.</param>
-        public RdfXmlParserContext(IRdfHandler handler, XmlDocument document, bool traceParsing, IUriFactory uriFactory = null)
-            : base(handler, traceParsing, uriFactory ?? RDF.UriFactory.Root)
+    /// <summary>
+    /// Creates a new Parser Context.
+    /// </summary>
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="document">XML Document.</param>
+    /// <param name="traceParsing">Whether to Trace Parsing.</param>
+    /// <param name="uriFactory">URI factory to use.</param>
+    public RdfXmlParserContext(IRdfHandler handler, XmlDocument document, bool traceParsing, IUriFactory uriFactory = null)
+        : base(handler, traceParsing, uriFactory ?? RDF.UriFactory.Root)
+    {
+        _queue = new EventQueue<IRdfXmlEvent>(new DomBasedEventGenerator(document));
+        if (_queue.EventGenerator is IRdfXmlPreProcessingEventGenerator)
         {
-            _queue = new EventQueue<IRdfXmlEvent>(new DomBasedEventGenerator(document));
-            if (_queue.EventGenerator is IRdfXmlPreProcessingEventGenerator)
-            {
-                ((IRdfXmlPreProcessingEventGenerator)_queue.EventGenerator).GetAllEvents(this);
-            }
+            ((IRdfXmlPreProcessingEventGenerator)_queue.EventGenerator).GetAllEvents(this);
         }
+    }
 
-        /// <summary>
-        /// Creates a new Parser Context which uses Streaming parsing.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="stream">Stream.</param>
-        public RdfXmlParserContext(IGraph g, Stream stream)
-            : base(g)
+    /// <summary>
+    /// Creates a new Parser Context which uses Streaming parsing.
+    /// </summary>
+    /// <param name="g">Graph.</param>
+    /// <param name="stream">Stream.</param>
+    public RdfXmlParserContext(IGraph g, Stream stream)
+        : base(g)
+    {
+        _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, g.BaseUri.ToSafeString()));
+    }
+
+    /// <summary>
+    /// Creates a new Parser Context which uses Streaming parsing.
+    /// </summary>
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="stream">Stream.</param>
+    public RdfXmlParserContext(IRdfHandler handler, Stream stream)
+        : base(handler)
+    {
+        _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, handler.GetBaseUri().ToSafeString()));
+    }
+
+    /// <summary>
+    /// Creates a new Parser Context which uses Streaming parsing.
+    /// </summary>
+    /// <param name="g">Graph.</param>
+    /// <param name="input">Input.</param>
+    public RdfXmlParserContext(IGraph g, TextReader input)
+        : base(g)
+    {
+        _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, g.BaseUri.ToSafeString()));
+    }
+
+    /// <summary>
+    /// Creates a new Parser Context which uses Streaming parsing.
+    /// </summary>
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="input">Input.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    /// <param name="xmlReaderSettings">The settngs to pass through to the underlying XML parser.</param>
+    public RdfXmlParserContext(IRdfHandler handler, TextReader input, IUriFactory uriFactory= null, XmlReaderSettings xmlReaderSettings = null)
+        : base(handler, false, uriFactory ?? RDF.UriFactory.Root)
+    {
+        _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, handler.GetBaseUri().ToSafeString(), xmlReaderSettings));
+    }
+
+    /// <summary>
+    /// Gets the Event Queue.
+    /// </summary>
+    public IEventQueue<IRdfXmlEvent> Events
+    {
+        get
         {
-            _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, g.BaseUri.ToSafeString()));
+            return _queue;
         }
+    }
 
-        /// <summary>
-        /// Creates a new Parser Context which uses Streaming parsing.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="stream">Stream.</param>
-        public RdfXmlParserContext(IRdfHandler handler, Stream stream)
-            : base(handler)
+    /// <summary>
+    /// Gets the Mapping of in-use IDs.
+    /// </summary>
+    public Dictionary<string, List<INode>> IDs
+    {
+        get
         {
-            _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, handler.GetBaseUri().ToSafeString()));
-        }
-
-        /// <summary>
-        /// Creates a new Parser Context which uses Streaming parsing.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="input">Input.</param>
-        public RdfXmlParserContext(IGraph g, TextReader input)
-            : base(g)
-        {
-            _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, g.BaseUri.ToSafeString()));
-        }
-
-        /// <summary>
-        /// Creates a new Parser Context which uses Streaming parsing.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="input">Input.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        /// <param name="xmlReaderSettings">The settngs to pass through to the underlying XML parser.</param>
-        public RdfXmlParserContext(IRdfHandler handler, TextReader input, IUriFactory uriFactory= null, XmlReaderSettings xmlReaderSettings = null)
-            : base(handler, false, uriFactory ?? RDF.UriFactory.Root)
-        {
-            _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, handler.GetBaseUri().ToSafeString(), xmlReaderSettings));
-        }
-
-        /// <summary>
-        /// Gets the Event Queue.
-        /// </summary>
-        public IEventQueue<IRdfXmlEvent> Events
-        {
-            get
-            {
-                return _queue;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Mapping of in-use IDs.
-        /// </summary>
-        public Dictionary<string, List<INode>> IDs
-        {
-            get
-            {
-                return _usedIDs;
-            }
+            return _usedIDs;
         }
     }
 }

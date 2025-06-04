@@ -26,62 +26,61 @@
 
 using VDS.RDF.Query.Algebra;
 
-namespace VDS.RDF.Query.Paths
+namespace VDS.RDF.Query.Paths;
+
+/// <summary>
+/// Abstract Base Class for Binary Path operators.
+/// </summary>
+public abstract class BaseBinaryPath : ISparqlPath
 {
     /// <summary>
-    /// Abstract Base Class for Binary Path operators.
+    /// Parts of the Path.
     /// </summary>
-    public abstract class BaseBinaryPath : ISparqlPath
+    protected ISparqlPath _lhs, _rhs;
+
+    /// <summary>
+    /// Creates a new Binary Path.
+    /// </summary>
+    /// <param name="lhs">LHS Path.</param>
+    /// <param name="rhs">RHS Path.</param>
+    public BaseBinaryPath(ISparqlPath lhs, ISparqlPath rhs)
     {
-        /// <summary>
-        /// Parts of the Path.
-        /// </summary>
-        protected ISparqlPath _lhs, _rhs;
-
-        /// <summary>
-        /// Creates a new Binary Path.
-        /// </summary>
-        /// <param name="lhs">LHS Path.</param>
-        /// <param name="rhs">RHS Path.</param>
-        public BaseBinaryPath(ISparqlPath lhs, ISparqlPath rhs)
-        {
-            _lhs = lhs;
-            _rhs = rhs;
-        }
-
-        /// <summary>
-        /// Gets the LHS Path component.
-        /// </summary>
-        public ISparqlPath LhsPath
-        {
-            get
-            {
-                return _lhs;
-            }
-        }
-
-        /// <summary>
-        /// Gets the RHS Path component.
-        /// </summary>
-        public ISparqlPath RhsPath
-        {
-            get
-            {
-                return _rhs;
-            }
-        }
-
-        /// <summary>
-        /// Converts a Path into its Algebra Form.
-        /// </summary>
-        /// <param name="context">Path Transformation Context.</param>
-        /// <returns></returns>
-        public abstract ISparqlAlgebra ToAlgebra(PathTransformContext context);
-
-        /// <summary>
-        /// Gets the String representation of the Path.
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
+        _lhs = lhs;
+        _rhs = rhs;
     }
+
+    /// <summary>
+    /// Gets the LHS Path component.
+    /// </summary>
+    public ISparqlPath LhsPath
+    {
+        get
+        {
+            return _lhs;
+        }
+    }
+
+    /// <summary>
+    /// Gets the RHS Path component.
+    /// </summary>
+    public ISparqlPath RhsPath
+    {
+        get
+        {
+            return _rhs;
+        }
+    }
+
+    /// <summary>
+    /// Converts a Path into its Algebra Form.
+    /// </summary>
+    /// <param name="context">Path Transformation Context.</param>
+    /// <returns></returns>
+    public abstract ISparqlAlgebra ToAlgebra(PathTransformContext context);
+
+    /// <summary>
+    /// Gets the String representation of the Path.
+    /// </summary>
+    /// <returns></returns>
+    public abstract override string ToString();
 }

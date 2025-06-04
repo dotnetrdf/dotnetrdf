@@ -29,151 +29,150 @@ using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.PropertyFunctions
+namespace VDS.RDF.Query.PropertyFunctions;
+
+/// <summary>
+/// Helper Class containing functions useful in working with property functions.
+/// </summary>
+public static class PropertyFunctionHelper
 {
     /// <summary>
-    /// Helper Class containing functions useful in working with property functions.
+    /// Used to extract the patterns that make up property functions.
     /// </summary>
-    public static class PropertyFunctionHelper
+    /// <param name="patterns">Triple Patterns.</param>
+    /// <returns></returns>
+    public static List<IPropertyFunctionPattern> ExtractPatterns(IEnumerable<ITriplePattern> patterns)
     {
-        /// <summary>
-        /// Used to extract the patterns that make up property functions.
-        /// </summary>
-        /// <param name="patterns">Triple Patterns.</param>
-        /// <returns></returns>
-        public static List<IPropertyFunctionPattern> ExtractPatterns(IEnumerable<ITriplePattern> patterns)
+        return ExtractPatterns(patterns, Enumerable.Empty<IPropertyFunctionFactory>());
+    }
+
+    /// <summary>
+    /// Used to extract the patterns that make up property functions.
+    /// </summary>
+    /// <param name="patterns">Triple Patterns.</param>
+    /// <param name="localFactories">Locally scoped factories.</param>
+    /// <returns></returns>
+    public static List<IPropertyFunctionPattern> ExtractPatterns(IEnumerable<ITriplePattern> patterns, IEnumerable<IPropertyFunctionFactory> localFactories)
+    {
+        // Do a first pass which simply looks to find any 'magic' properties
+        var funcInfo = new Dictionary<PatternItem, PropertyFunctionInfo>();
+        var ps = patterns.OfType<IMatchTriplePattern>().ToList();
+        if (ps.Count == 0) return new List<IPropertyFunctionPattern>();
+        foreach (IMatchTriplePattern tp in ps)
         {
-            return ExtractPatterns(patterns, Enumerable.Empty<IPropertyFunctionFactory>());
+            var predItem = tp.Predicate as NodeMatchPattern;
+            if (predItem == null) continue;
+            var predNode = predItem.Node as IUriNode;
+            if (predNode == null) continue;
+            if (PropertyFunctionFactory.IsPropertyFunction(predNode.Uri, localFactories))
+            {
+                var info = new PropertyFunctionInfo(predNode.Uri);
+                info.Patterns.Add(tp);
+                funcInfo.Add(tp.Subject, info);
+            }
+        }
+        // Remove any Patterns we found from the original patterns
+        foreach (PropertyFunctionInfo info in funcInfo.Values)
+        {
+            info.Patterns.ForEach(tp => ps.Remove(tp));
         }
 
-        /// <summary>
-        /// Used to extract the patterns that make up property functions.
-        /// </summary>
-        /// <param name="patterns">Triple Patterns.</param>
-        /// <param name="localFactories">Locally scoped factories.</param>
-        /// <returns></returns>
-        public static List<IPropertyFunctionPattern> ExtractPatterns(IEnumerable<ITriplePattern> patterns, IEnumerable<IPropertyFunctionFactory> localFactories)
+        if (funcInfo.Count == 0) return new List<IPropertyFunctionPattern>();
+
+        // Now for each 'magic' property we found do a further search to see if we are using
+        // the collection forms to provide extended arguments
+        foreach (PatternItem key in funcInfo.Keys)
         {
-            // Do a first pass which simply looks to find any 'magic' properties
-            var funcInfo = new Dictionary<PatternItem, PropertyFunctionInfo>();
-            var ps = patterns.OfType<IMatchTriplePattern>().ToList();
-            if (ps.Count == 0) return new List<IPropertyFunctionPattern>();
-            foreach (IMatchTriplePattern tp in ps)
+            if (key is BlankNodePattern)
             {
-                var predItem = tp.Predicate as NodeMatchPattern;
-                if (predItem == null) continue;
-                var predNode = predItem.Node as IUriNode;
-                if (predNode == null) continue;
-                if (PropertyFunctionFactory.IsPropertyFunction(predNode.Uri, localFactories))
+                // If LHS is a blank node may be collection form
+                var count = funcInfo[key].Patterns.Count;
+                ExtractRelatedPatterns(key, key, ps, funcInfo, funcInfo[key].SubjectArgs);
+                if (funcInfo[key].Patterns.Count == count)
                 {
-                    var info = new PropertyFunctionInfo(predNode.Uri);
-                    info.Patterns.Add(tp);
-                    funcInfo.Add(tp.Subject, info);
-                }
-            }
-            // Remove any Patterns we found from the original patterns
-            foreach (PropertyFunctionInfo info in funcInfo.Values)
-            {
-                info.Patterns.ForEach(tp => ps.Remove(tp));
-            }
-
-            if (funcInfo.Count == 0) return new List<IPropertyFunctionPattern>();
-
-            // Now for each 'magic' property we found do a further search to see if we are using
-            // the collection forms to provide extended arguments
-            foreach (PatternItem key in funcInfo.Keys)
-            {
-                if (key is BlankNodePattern)
-                {
-                    // If LHS is a blank node may be collection form
-                    var count = funcInfo[key].Patterns.Count;
-                    ExtractRelatedPatterns(key, key, ps, funcInfo, funcInfo[key].SubjectArgs);
-                    if (funcInfo[key].Patterns.Count == count)
-                    {
-                        // If no further patterns found just single LHS argument
-                        funcInfo[key].SubjectArgs.Add(key);
-                    }
-                }
-                else
-                {
-                    // Otherwise key is the only LHS argument
+                    // If no further patterns found just single LHS argument
                     funcInfo[key].SubjectArgs.Add(key);
                 }
-                PatternItem searchKey = funcInfo[key].Patterns.First().Object;
-                if (searchKey is BlankNodePattern)
+            }
+            else
+            {
+                // Otherwise key is the only LHS argument
+                funcInfo[key].SubjectArgs.Add(key);
+            }
+            PatternItem searchKey = funcInfo[key].Patterns.First().Object;
+            if (searchKey is BlankNodePattern)
+            {
+                // If RHS is a blank node may be collection form
+                var count = funcInfo[key].Patterns.Count;
+                ExtractRelatedPatterns(key, searchKey, ps, funcInfo, funcInfo[key].ObjectArgs);
+                if (funcInfo[key].Patterns.Count == count)
                 {
-                    // If RHS is a blank node may be collection form
-                    var count = funcInfo[key].Patterns.Count;
-                    ExtractRelatedPatterns(key, searchKey, ps, funcInfo, funcInfo[key].ObjectArgs);
-                    if (funcInfo[key].Patterns.Count == count)
-                    {
-                        // If no further patterns found just single RHS argument
-                        funcInfo[key].ObjectArgs.Add(searchKey);
-                    }
-                }
-                else
-                {
-                    // Otherwise single RHS argument
+                    // If no further patterns found just single RHS argument
                     funcInfo[key].ObjectArgs.Add(searchKey);
                 }
             }
-
-            // Now try to create actual property functions
-            var propFunctions = new List<IPropertyFunctionPattern>();
-            foreach (PatternItem key in funcInfo.Keys)
+            else
             {
-                IPropertyFunctionPattern propFunc;
-                if (PropertyFunctionFactory.TryCreatePropertyFunction(funcInfo[key], localFactories, out propFunc))
-                {
-                    propFunctions.Add(propFunc);
-                }
+                // Otherwise single RHS argument
+                funcInfo[key].ObjectArgs.Add(searchKey);
             }
-            return propFunctions;
         }
 
-        /// <summary>
-        /// Used to help extract the patterns that make up a property function pattern.
-        /// </summary>
-        /// <param name="key">Key.</param>
-        /// <param name="subj">Subject.</param>
-        /// <param name="ps">Patterns.</param>
-        /// <param name="funcInfo">Function Information.</param>
-        /// <param name="argList">Argument List to add discovered arguments to.</param>
-        static void ExtractRelatedPatterns(PatternItem key, PatternItem subj, List<IMatchTriplePattern> ps, Dictionary<PatternItem, PropertyFunctionInfo> funcInfo, List<PatternItem> argList)
+        // Now try to create actual property functions
+        var propFunctions = new List<IPropertyFunctionPattern>();
+        foreach (PatternItem key in funcInfo.Keys)
         {
-            bool recurse = true, any = false, argSeen = false;
-            PatternItem nextSubj = subj;
-            while (recurse)
+            IPropertyFunctionPattern propFunc;
+            if (PropertyFunctionFactory.TryCreatePropertyFunction(funcInfo[key], localFactories, out propFunc))
             {
-                any = false;
-                foreach (IMatchTriplePattern tp in ps.ToList())
+                propFunctions.Add(propFunc);
+            }
+        }
+        return propFunctions;
+    }
+
+    /// <summary>
+    /// Used to help extract the patterns that make up a property function pattern.
+    /// </summary>
+    /// <param name="key">Key.</param>
+    /// <param name="subj">Subject.</param>
+    /// <param name="ps">Patterns.</param>
+    /// <param name="funcInfo">Function Information.</param>
+    /// <param name="argList">Argument List to add discovered arguments to.</param>
+    static void ExtractRelatedPatterns(PatternItem key, PatternItem subj, List<IMatchTriplePattern> ps, Dictionary<PatternItem, PropertyFunctionInfo> funcInfo, List<PatternItem> argList)
+    {
+        bool recurse = true, any = false, argSeen = false;
+        PatternItem nextSubj = subj;
+        while (recurse)
+        {
+            any = false;
+            foreach (IMatchTriplePattern tp in ps.ToList())
+            {
+                if (tp.Subject.Variables.All(v=>nextSubj.Variables.Contains(v)))
                 {
-                    if (tp.Subject.Variables.All(v=>nextSubj.Variables.Contains(v)))
+                    if (tp.Predicate is not NodeMatchPattern { Node: IUriNode predNode }) continue;
+                    if (!argSeen && predNode.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfListFirst))
                     {
-                        if (tp.Predicate is not NodeMatchPattern { Node: IUriNode predNode }) continue;
-                        if (!argSeen && predNode.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfListFirst))
-                        {
-                            funcInfo[key].Patterns.Add(tp);
-                            argList.Add(tp.Object);
-                            ps.Remove(tp);
-                            any = true;
-                            argSeen = true;
-                        }
-                        else if (argSeen && predNode.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfListRest))
-                        {
-                            funcInfo[key].Patterns.Add(tp);
-                            ps.Remove(tp);
-                            recurse = !tp.Object.IsFixed;
-                            nextSubj = tp.Object;
-                            any = true;
-                            argSeen = false;
-                        }
+                        funcInfo[key].Patterns.Add(tp);
+                        argList.Add(tp.Object);
+                        ps.Remove(tp);
+                        any = true;
+                        argSeen = true;
+                    }
+                    else if (argSeen && predNode.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfListRest))
+                    {
+                        funcInfo[key].Patterns.Add(tp);
+                        ps.Remove(tp);
+                        recurse = !tp.Object.IsFixed;
+                        nextSubj = tp.Object;
+                        any = true;
+                        argSeen = false;
                     }
                 }
-                if (!any) recurse = false;
-
-                if (nextSubj == null) throw new RdfQueryException("Failed to find expected rdf:rest property");
             }
+            if (!any) recurse = false;
+
+            if (nextSubj == null) throw new RdfQueryException("Failed to find expected rdf:rest property");
         }
     }
 }

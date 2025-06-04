@@ -26,99 +26,98 @@
 
 using System;
 
-namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry;
+
+/// <summary>
+/// Represents the Leviathan lfn:tan() or lfn:tan-1 function.
+/// </summary>
+public class TangentFunction
+    : BaseTrigonometricFunction
 {
     /// <summary>
-    /// Represents the Leviathan lfn:tan() or lfn:tan-1 function.
+    /// Creates a new Leviathan Tangent Function.
     /// </summary>
-    public class TangentFunction
-        : BaseTrigonometricFunction
+    /// <param name="expr">Expression.</param>
+    public TangentFunction(ISparqlExpression expr)
+        : base(expr, Math.Tan) { }
+
+    /// <summary>
+    /// Creates a new Leviathan Tangent Function.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="inverse">Whether this should be the inverse function.</param>
+    public TangentFunction(ISparqlExpression expr, bool inverse)
+        : base(expr)
     {
-        /// <summary>
-        /// Creates a new Leviathan Tangent Function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public TangentFunction(ISparqlExpression expr)
-            : base(expr, Math.Tan) { }
-
-        /// <summary>
-        /// Creates a new Leviathan Tangent Function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="inverse">Whether this should be the inverse function.</param>
-        public TangentFunction(ISparqlExpression expr, bool inverse)
-            : base(expr)
+        Inverse = inverse;
+        if (Inverse)
         {
-            Inverse = inverse;
+            _func = Math.Atan;
+        }
+        else
+        {
+            _func = Math.Tan;
+        }
+    }
+
+    /// <summary>
+    /// Get whether this is the inverse function.
+    /// </summary>
+    public bool Inverse { get; }
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        if (Inverse)
+        {
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTanInv + ">(" + InnerExpression + ")";
+        }
+        else
+        {
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTan + ">(" + InnerExpression + ")";
+        }
+    }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessTangentFunction(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitTangentFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
+        {
             if (Inverse)
             {
-                _func = Math.Atan;
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTanInv;
             }
             else
             {
-                _func = Math.Tan;
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTan;
             }
         }
+    }
 
-        /// <summary>
-        /// Get whether this is the inverse function.
-        /// </summary>
-        public bool Inverse { get; }
-
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            if (Inverse)
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTanInv + ">(" + InnerExpression + ")";
-            }
-            else
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTan + ">(" + InnerExpression + ")";
-            }
-        }
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessTangentFunction(this, context, binding);
-        }
-
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitTangentFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                if (Inverse)
-                {
-                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTanInv;
-                }
-                else
-                {
-                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTan;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new TangentFunction(transformer.Transform(InnerExpression), Inverse);
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new TangentFunction(transformer.Transform(InnerExpression), Inverse);
     }
 }

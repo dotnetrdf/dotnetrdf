@@ -24,80 +24,79 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+/// <summary>
+/// Represents a SPARQL View over an in-memory store.
+/// </summary>
+public class SparqlView
+    : BaseSparqlView
 {
     /// <summary>
-    /// Represents a SPARQL View over an in-memory store.
+    /// Specifies whether this view should fully index any graph result sets.
     /// </summary>
-    public class SparqlView
-        : BaseSparqlView
+    public bool FullTripleIndexing { get; set; } = true;
+
+    /// <summary>
+    /// Creates a new SPARQL View.
+    /// </summary>
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    /// <param name="store">Triple Store to query.</param>
+    /// <param name="name">The graph name to assign to the view.</param>
+    public SparqlView(string sparqlQuery, IInMemoryQueryableStore store, IRefNode name = null)
+        : base(sparqlQuery, store, name) { }
+
+    /// <summary>
+    /// Creates a new SPARQL View.
+    /// </summary>
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    /// <param name="store">Triple Store to query.</param>
+    /// <param name="name">The graph name to assign to the view.</param>
+    public SparqlView(SparqlParameterizedString sparqlQuery, IInMemoryQueryableStore store, IRefNode name = null)
+        : this(sparqlQuery.ToString(), store, name) { }
+
+    /// <summary>
+    /// Creates a new SPARQL View.
+    /// </summary>
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    /// <param name="store">Triple Store to query.</param>
+    /// <param name="name">The graph name to assign to the view.</param>
+    public SparqlView(SparqlQuery sparqlQuery, IInMemoryQueryableStore store, IRefNode name = null)
+        : base(sparqlQuery, store, name) { }
+
+
+    /// <summary>
+    /// Updates the view by making the SPARQL Query in-memory over the relevant Triple Store.
+    /// </summary>
+    protected override void UpdateViewInternal()
     {
-        /// <summary>
-        /// Specifies whether this view should fully index any graph result sets.
-        /// </summary>
-        public bool FullTripleIndexing { get; set; } = true;
-
-        /// <summary>
-        /// Creates a new SPARQL View.
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <param name="store">Triple Store to query.</param>
-        /// <param name="name">The graph name to assign to the view.</param>
-        public SparqlView(string sparqlQuery, IInMemoryQueryableStore store, IRefNode name = null)
-            : base(sparqlQuery, store, name) { }
-
-        /// <summary>
-        /// Creates a new SPARQL View.
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <param name="store">Triple Store to query.</param>
-        /// <param name="name">The graph name to assign to the view.</param>
-        public SparqlView(SparqlParameterizedString sparqlQuery, IInMemoryQueryableStore store, IRefNode name = null)
-            : this(sparqlQuery.ToString(), store, name) { }
-
-        /// <summary>
-        /// Creates a new SPARQL View.
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <param name="store">Triple Store to query.</param>
-        /// <param name="name">The graph name to assign to the view.</param>
-        public SparqlView(SparqlQuery sparqlQuery, IInMemoryQueryableStore store, IRefNode name = null)
-            : base(sparqlQuery, store, name) { }
-
-
-        /// <summary>
-        /// Updates the view by making the SPARQL Query in-memory over the relevant Triple Store.
-        /// </summary>
-        protected override void UpdateViewInternal()
+        try
         {
-            try
+            var processor = new LeviathanQueryProcessor((IInMemoryQueryableStore)_store);
+            var results = processor.ProcessQuery(_q);
+            if (results is IGraph g)
             {
-                var processor = new LeviathanQueryProcessor((IInMemoryQueryableStore)_store);
-                var results = processor.ProcessQuery(_q);
-                if (results is IGraph g)
-                {
-                    // Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
-                    // This does mean that while the update is occurring the user may be viewing a stale graph
-                    DetachEventHandlers(_triples);
-                    BaseTripleCollection triples = g.Triples.ToTripleCollection(indexed: FullTripleIndexing);
-                    _triples = triples;
-                    AttachEventHandlers(_triples);
-                }
-                else
-                {
-                    // Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
-                    // This does mean that while the update is occurring the user may be viewing a stale graph
-                    DetachEventHandlers(_triples);
-                    _triples = ((SparqlResultSet)results).ToTripleCollection(this, "s", "p", "o", FullTripleIndexing);
-                    AttachEventHandlers(_triples);
-                }
-                LastError = null;
-                RaiseGraphChanged();
+                // Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
+                // This does mean that while the update is occurring the user may be viewing a stale graph
+                DetachEventHandlers(_triples);
+                BaseTripleCollection triples = g.Triples.ToTripleCollection(indexed: FullTripleIndexing);
+                _triples = triples;
+                AttachEventHandlers(_triples);
             }
-            catch (RdfQueryException queryEx)
+            else
             {
-                LastError = new RdfQueryException("Unable to Update a SPARQL View as an error occurred in processing the Query - see Inner Exception for details", queryEx);
+                // Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
+                // This does mean that while the update is occurring the user may be viewing a stale graph
+                DetachEventHandlers(_triples);
+                _triples = ((SparqlResultSet)results).ToTripleCollection(this, "s", "p", "o", FullTripleIndexing);
+                AttachEventHandlers(_triples);
             }
+            LastError = null;
+            RaiseGraphChanged();
+        }
+        catch (RdfQueryException queryEx)
+        {
+            LastError = new RdfQueryException("Unable to Update a SPARQL View as an error occurred in processing the Query - see Inner Exception for details", queryEx);
         }
     }
 }

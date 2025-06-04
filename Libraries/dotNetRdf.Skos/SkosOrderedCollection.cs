@@ -27,33 +27,32 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Skos
+namespace VDS.RDF.Skos;
+
+/// <summary>
+/// Represents an ordered group of SKOS concepts.
+/// </summary>
+public class SkosOrderedCollection : SkosCollection
 {
     /// <summary>
-    /// Represents an ordered group of SKOS concepts.
+    /// Creates a new ordered collection for the given resource.
     /// </summary>
-    public class SkosOrderedCollection : SkosCollection
-    {
-        /// <summary>
-        /// Creates a new ordered collection for the given resource.
-        /// </summary>
-        /// <param name="resource">Resource representing the ordered collection.</param>
-        /// <param name="graph">The graph containing the collection.</param>
-        public SkosOrderedCollection(INode resource, IGraph graph) : base(resource, graph) { }
+    /// <param name="resource">Resource representing the ordered collection.</param>
+    /// <param name="graph">The graph containing the collection.</param>
+    public SkosOrderedCollection(INode resource, IGraph graph) : base(resource, graph) { }
 
-        /// <summary>
-        /// Gets the ordered list of members of the collection.
-        /// </summary>
-        public IEnumerable<SkosMember> MemberList
+    /// <summary>
+    /// Gets the ordered list of members of the collection.
+    /// </summary>
+    public IEnumerable<SkosMember> MemberList
+    {
+        get
         {
-            get
-            {
-                return Graph
-                    .GetListItems(
-                        GetObjects(SkosHelper.MemberList)
-                        .Single())
-                    .Select(x=> SkosMember.Create(x, Graph));
-            }
+            return Graph
+                .GetListItems(
+                    GetObjects(SkosHelper.MemberList)
+                    .Single())
+                .Select(x=> SkosMember.Create(x, Graph));
         }
     }
 }

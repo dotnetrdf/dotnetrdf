@@ -28,92 +28,91 @@ using System;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Optimisation;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+/// <summary>
+/// Interface for building SPARQL queries. 
+/// </summary>
+public interface IQueryBuilder
 {
     /// <summary>
-    /// Interface for building SPARQL queries. 
+    /// Gets the query type of the generated SPARQL query.
     /// </summary>
-    public interface IQueryBuilder
-    {
-        /// <summary>
-        /// Gets the query type of the generated SPARQL query.
-        /// </summary>
-        SparqlQueryType QueryType { get; }
-        /// <summary>
-        /// Gets the builder associated with the root graph pattern.
-        /// </summary>
-        [Obsolete("Please use Root property", true)]
-        GraphPatternBuilder RootGraphPatternBuilder { get; }
-        /// <summary>
-        /// Gets the builder associated with the root graph pattern.
-        /// </summary>
-        IGraphPatternBuilder Root { get; }
-        /// <summary>
-        /// Gets the prefix manager, which allows adding prefixes to the query or graph pattern.
-        /// </summary>
-        INamespaceMapper Prefixes { get; set; }
-        /// <summary>
-        /// Applies a LIMIT.
-        /// </summary>
-        /// <param name="limit">Limit value. Pass negative to disable LIMIT.</param>
-        IQueryBuilder Limit(int limit);
-        /// <summary>
-        /// Applies an OFFSET.
-        /// </summary>
-        IQueryBuilder Offset(int offset);
-        /// <summary>
-        /// Adds ascending ordering by a variable to the query.
-        /// </summary>
-        IQueryBuilder OrderBy(SparqlVariable variable);
-        /// <summary>
-        /// Adds ascending ordering by a variable to the query.
-        /// </summary>
-        IQueryBuilder OrderBy(string variableName);
-        /// <summary>
-        /// Adds descending ordering by a variable to the query.
-        /// </summary>
-        IQueryBuilder OrderByDescending(SparqlVariable variable);
-        /// <summary>
-        /// Adds descending ordering by a variable to the query.
-        /// </summary>
-        IQueryBuilder OrderByDescending(string variableName);
-        /// <summary>
-        /// Adds ascending ordering by an expression to the query.
-        /// </summary>
-        IQueryBuilder OrderBy(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression);
-        /// <summary>
-        /// Adds descending ordering by an expression to the query.
-        /// </summary>
-        IQueryBuilder OrderByDescending(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression);
-        /// <summary>
-        /// Adds a GROUP BY clause to the query.
-        /// </summary>
-        IQueryBuilder GroupBy(SparqlVariable variable);
-        /// <summary>
-        /// Adds a GROUP BY clause to the query.
-        /// </summary>
-        IQueryBuilder GroupBy(string variableName);
-        /// <summary>
-        /// Adds a GROUP BY clause to the query.
-        /// </summary>
-        IQueryBuilder GroupBy(Func<INonAggregateExpressionBuilder, SparqlExpression> buildGroupingExpression);
-        /// <summary>
-        /// Adds a HAVING clause to the query.
-        /// </summary>
-        IQueryBuilder Having(Func<IExpressionBuilder, BooleanExpression> buildHavingConstraint);
-        /// <summary>
-        /// Builds and returns a <see cref="SparqlQuery"/>.
-        /// </summary>
-        /// <param name="applyOptimisation">Whether to apply query optimisation to the generated <see cref="SparqlQuery"/> before returning it.</param>
-        /// <param name="queryOptimiser">The optimiser to apply to the query if <paramref name="applyOptimisation"/> is set to true. If not specified, defaults to the globally scoped SPARQL query optimiser.</param>
-        SparqlQuery BuildQuery(bool applyOptimisation = true, IQueryOptimiser queryOptimiser = null);
-        /// <summary>
-        /// Adds a BIND variable assignment to the root graph pattern.
-        /// </summary>
-        IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression);
-        /// <summary>
-        /// Adds a VALUES inline data block to the entire query (outside graph patterns).
-        /// </summary>
-        IInlineDataBuilder InlineDataOverQuery(params string[] variables);
-    }
+    SparqlQueryType QueryType { get; }
+    /// <summary>
+    /// Gets the builder associated with the root graph pattern.
+    /// </summary>
+    [Obsolete("Please use Root property", true)]
+    GraphPatternBuilder RootGraphPatternBuilder { get; }
+    /// <summary>
+    /// Gets the builder associated with the root graph pattern.
+    /// </summary>
+    IGraphPatternBuilder Root { get; }
+    /// <summary>
+    /// Gets the prefix manager, which allows adding prefixes to the query or graph pattern.
+    /// </summary>
+    INamespaceMapper Prefixes { get; set; }
+    /// <summary>
+    /// Applies a LIMIT.
+    /// </summary>
+    /// <param name="limit">Limit value. Pass negative to disable LIMIT.</param>
+    IQueryBuilder Limit(int limit);
+    /// <summary>
+    /// Applies an OFFSET.
+    /// </summary>
+    IQueryBuilder Offset(int offset);
+    /// <summary>
+    /// Adds ascending ordering by a variable to the query.
+    /// </summary>
+    IQueryBuilder OrderBy(SparqlVariable variable);
+    /// <summary>
+    /// Adds ascending ordering by a variable to the query.
+    /// </summary>
+    IQueryBuilder OrderBy(string variableName);
+    /// <summary>
+    /// Adds descending ordering by a variable to the query.
+    /// </summary>
+    IQueryBuilder OrderByDescending(SparqlVariable variable);
+    /// <summary>
+    /// Adds descending ordering by a variable to the query.
+    /// </summary>
+    IQueryBuilder OrderByDescending(string variableName);
+    /// <summary>
+    /// Adds ascending ordering by an expression to the query.
+    /// </summary>
+    IQueryBuilder OrderBy(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression);
+    /// <summary>
+    /// Adds descending ordering by an expression to the query.
+    /// </summary>
+    IQueryBuilder OrderByDescending(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression);
+    /// <summary>
+    /// Adds a GROUP BY clause to the query.
+    /// </summary>
+    IQueryBuilder GroupBy(SparqlVariable variable);
+    /// <summary>
+    /// Adds a GROUP BY clause to the query.
+    /// </summary>
+    IQueryBuilder GroupBy(string variableName);
+    /// <summary>
+    /// Adds a GROUP BY clause to the query.
+    /// </summary>
+    IQueryBuilder GroupBy(Func<INonAggregateExpressionBuilder, SparqlExpression> buildGroupingExpression);
+    /// <summary>
+    /// Adds a HAVING clause to the query.
+    /// </summary>
+    IQueryBuilder Having(Func<IExpressionBuilder, BooleanExpression> buildHavingConstraint);
+    /// <summary>
+    /// Builds and returns a <see cref="SparqlQuery"/>.
+    /// </summary>
+    /// <param name="applyOptimisation">Whether to apply query optimisation to the generated <see cref="SparqlQuery"/> before returning it.</param>
+    /// <param name="queryOptimiser">The optimiser to apply to the query if <paramref name="applyOptimisation"/> is set to true. If not specified, defaults to the globally scoped SPARQL query optimiser.</param>
+    SparqlQuery BuildQuery(bool applyOptimisation = true, IQueryOptimiser queryOptimiser = null);
+    /// <summary>
+    /// Adds a BIND variable assignment to the root graph pattern.
+    /// </summary>
+    IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression);
+    /// <summary>
+    /// Adds a VALUES inline data block to the entire query (outside graph patterns).
+    /// </summary>
+    IInlineDataBuilder InlineDataOverQuery(params string[] variables);
 }

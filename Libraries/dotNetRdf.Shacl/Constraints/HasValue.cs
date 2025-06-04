@@ -29,34 +29,33 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class HasValue : Constraint
 {
-    internal class HasValue : Constraint
+    [DebuggerStepThrough]
+    internal HasValue(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal HasValue(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage => $"Value must be {this}.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.HasValueConstraintComponent;
         }
+    }
 
-        protected override string DefaultMessage => $"Value must be {this}.";
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        IEnumerable<INode> invalidValues =
+            from value in focusNode.AsEnumerable()
+            where !valueNodes.Contains(this)
+            select value;
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.HasValueConstraintComponent;
-            }
-        }
-
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            IEnumerable<INode> invalidValues =
-                from value in focusNode.AsEnumerable()
-                where !valueNodes.Contains(this)
-                select value;
-
-            return ReportFocusNode(focusNode, invalidValues, report);
-        }
+        return ReportFocusNode(focusNode, invalidValues, report);
     }
 }

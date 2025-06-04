@@ -28,151 +28,150 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Abstract Base Class for Graph Collections.
+/// </summary>
+/// <remarks>Designed to allow the underlying storage of a Graph Collection to be changed at a later date without affecting classes that use it.</remarks>
+public abstract class BaseGraphCollection 
+    : IEnumerable<IGraph>, IDisposable
 {
     /// <summary>
-    /// Abstract Base Class for Graph Collections.
+    /// Checks whether the Graph with the given Uri exists in this Graph Collection.
     /// </summary>
-    /// <remarks>Designed to allow the underlying storage of a Graph Collection to be changed at a later date without affecting classes that use it.</remarks>
-    public abstract class BaseGraphCollection 
-        : IEnumerable<IGraph>, IDisposable
+    /// <param name="graphUri">Graph Uri to test.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// The null URI is used to reference the Default Graph.
+    /// </remarks>
+    [Obsolete("Replaced by Contains(IRefNode)")]
+    public abstract bool Contains(Uri graphUri);
+
+    /// <summary>
+    /// Checks whether the graph with the given name exists in this graph collection.
+    /// </summary>
+    /// <param name="graphName">Graph name to test for.</param>
+    /// <returns>True if a graph with the specified name is in the collection, false otherwise.</returns>
+    /// <remarks>The null value is used to reference the default (unnamed) graph.</remarks>
+    public abstract bool Contains(IRefNode graphName);
+
+    /// <summary>
+    /// Adds a Graph to the Collection.
+    /// </summary>
+    /// <param name="g">Graph to add.</param>
+    /// <param name="mergeIfExists">Sets whether the Graph should be merged with an existing Graph of the same Uri if present.</param>
+    public abstract bool Add(IGraph g, bool mergeIfExists);
+
+    /// <summary>
+    /// Removes a Graph from the Collection.
+    /// </summary>
+    /// <param name="graphUri">Uri of the Graph to remove.</param>
+    /// <remarks>
+    /// The null URI is used to reference the Default Graph.
+    /// </remarks>
+    [Obsolete("Replaced by Remove(IRefNode)")]
+    public abstract bool Remove(Uri graphUri);
+
+    /// <summary>
+    /// Removes a graph from the collection.
+    /// </summary>
+    /// <param name="graphName">Name of the Graph to remove.</param>
+    /// <remarks>
+    /// The null value is used to reference the Default Graph.
+    /// </remarks>
+    public abstract bool Remove(IRefNode graphName);
+
+    /// <summary>
+    /// Gets the number of Graphs in the Collection.
+    /// </summary>
+    public abstract int Count
     {
-        /// <summary>
-        /// Checks whether the Graph with the given Uri exists in this Graph Collection.
-        /// </summary>
-        /// <param name="graphUri">Graph Uri to test.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// The null URI is used to reference the Default Graph.
-        /// </remarks>
-        [Obsolete("Replaced by Contains(IRefNode)")]
-        public abstract bool Contains(Uri graphUri);
+        get;
+    }
 
-        /// <summary>
-        /// Checks whether the graph with the given name exists in this graph collection.
-        /// </summary>
-        /// <param name="graphName">Graph name to test for.</param>
-        /// <returns>True if a graph with the specified name is in the collection, false otherwise.</returns>
-        /// <remarks>The null value is used to reference the default (unnamed) graph.</remarks>
-        public abstract bool Contains(IRefNode graphName);
+    /// <summary>
+    /// Provides access to the Graph URIs of Graphs in the Collection.
+    /// </summary>
+    [Obsolete("Replaced by GraphNames")]
+    public abstract IEnumerable<Uri> GraphUris
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Adds a Graph to the Collection.
-        /// </summary>
-        /// <param name="g">Graph to add.</param>
-        /// <param name="mergeIfExists">Sets whether the Graph should be merged with an existing Graph of the same Uri if present.</param>
-        public abstract bool Add(IGraph g, bool mergeIfExists);
+    /// <summary>
+    /// Provides an enumeration of the names of all of teh graphs in the collection.
+    /// </summary>
+    public abstract IEnumerable<IRefNode> GraphNames { get; }
 
-        /// <summary>
-        /// Removes a Graph from the Collection.
-        /// </summary>
-        /// <param name="graphUri">Uri of the Graph to remove.</param>
-        /// <remarks>
-        /// The null URI is used to reference the Default Graph.
-        /// </remarks>
-        [Obsolete("Replaced by Remove(IRefNode)")]
-        public abstract bool Remove(Uri graphUri);
+    /// <summary>
+    /// Gets a Graph from the Collection.
+    /// </summary>
+    /// <param name="graphUri">Graph Uri.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// The null URI is used to reference the Default Graph.
+    /// </remarks>
+    [Obsolete("Replaced by this[IRefNode]")]
+    public abstract IGraph this[Uri graphUri] 
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Removes a graph from the collection.
-        /// </summary>
-        /// <param name="graphName">Name of the Graph to remove.</param>
-        /// <remarks>
-        /// The null value is used to reference the Default Graph.
-        /// </remarks>
-        public abstract bool Remove(IRefNode graphName);
+    /// <summary>
+    /// Gets a graph from the collection.
+    /// </summary>
+    /// <param name="graphName">The name of the graph to retrieve.</param>
+    /// <returns></returns>
+    /// <remarks>The null value is used to reference the default graph.</remarks>
+    public abstract IGraph this[IRefNode graphName] { get; }
 
-        /// <summary>
-        /// Gets the number of Graphs in the Collection.
-        /// </summary>
-        public abstract int Count
-        {
-            get;
-        }
+    /// <summary>
+    /// Disposes of the Graph Collection.
+    /// </summary>
+    /// <remarks>Invokes the <see cref="IDisposable.Dispose()">Dispose()</see> method of all Graphs contained in the Collection.</remarks>
+    public abstract void Dispose();
 
-        /// <summary>
-        /// Provides access to the Graph URIs of Graphs in the Collection.
-        /// </summary>
-        [Obsolete("Replaced by GraphNames")]
-        public abstract IEnumerable<Uri> GraphUris
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets the Enumerator for the Collection.
+    /// </summary>
+    /// <returns></returns>
+    public abstract IEnumerator<IGraph> GetEnumerator();
 
-        /// <summary>
-        /// Provides an enumeration of the names of all of teh graphs in the collection.
-        /// </summary>
-        public abstract IEnumerable<IRefNode> GraphNames { get; }
+    /// <summary>
+    /// Gets the Enumerator for this Collection.
+    /// </summary>
+    /// <returns></returns>
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return Enumerable.Empty<IGraph>().GetEnumerator();
+    }
 
-        /// <summary>
-        /// Gets a Graph from the Collection.
-        /// </summary>
-        /// <param name="graphUri">Graph Uri.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// The null URI is used to reference the Default Graph.
-        /// </remarks>
-        [Obsolete("Replaced by this[IRefNode]")]
-        public abstract IGraph this[Uri graphUri] 
-        {
-            get;
-        }
+    /// <summary>
+    /// Event which is raised when a Graph is added to the Collection
+    /// </summary>
+    public event GraphEventHandler GraphAdded;
 
-        /// <summary>
-        /// Gets a graph from the collection.
-        /// </summary>
-        /// <param name="graphName">The name of the graph to retrieve.</param>
-        /// <returns></returns>
-        /// <remarks>The null value is used to reference the default graph.</remarks>
-        public abstract IGraph this[IRefNode graphName] { get; }
+    /// <summary>
+    /// Event which is raised when a Graph is removed from the Collection
+    /// </summary>
+    public event GraphEventHandler GraphRemoved;
 
-        /// <summary>
-        /// Disposes of the Graph Collection.
-        /// </summary>
-        /// <remarks>Invokes the <see cref="IDisposable.Dispose()">Dispose()</see> method of all Graphs contained in the Collection.</remarks>
-        public abstract void Dispose();
+    /// <summary>
+    /// Helper method which raises the <see cref="GraphAdded">Graph Added</see> event manually.
+    /// </summary>
+    /// <param name="g">Graph.</param>
+    protected virtual void RaiseGraphAdded(IGraph g)
+    {
+        GraphAdded?.Invoke(this, new GraphEventArgs(g));
+    }
 
-        /// <summary>
-        /// Gets the Enumerator for the Collection.
-        /// </summary>
-        /// <returns></returns>
-        public abstract IEnumerator<IGraph> GetEnumerator();
-
-        /// <summary>
-        /// Gets the Enumerator for this Collection.
-        /// </summary>
-        /// <returns></returns>
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return Enumerable.Empty<IGraph>().GetEnumerator();
-        }
-
-        /// <summary>
-        /// Event which is raised when a Graph is added to the Collection
-        /// </summary>
-        public event GraphEventHandler GraphAdded;
-
-        /// <summary>
-        /// Event which is raised when a Graph is removed from the Collection
-        /// </summary>
-        public event GraphEventHandler GraphRemoved;
-
-        /// <summary>
-        /// Helper method which raises the <see cref="GraphAdded">Graph Added</see> event manually.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        protected virtual void RaiseGraphAdded(IGraph g)
-        {
-            GraphAdded?.Invoke(this, new GraphEventArgs(g));
-        }
-
-        /// <summary>
-        /// Helper method which raises the <see cref="GraphRemoved">Graph Removed</see> event manually.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        protected virtual void RaiseGraphRemoved(IGraph g)
-        {
-            GraphRemoved?.Invoke(this, new GraphEventArgs(g));
-        }
+    /// <summary>
+    /// Helper method which raises the <see cref="GraphRemoved">Graph Removed</see> event manually.
+    /// </summary>
+    /// <param name="g">Graph.</param>
+    protected virtual void RaiseGraphRemoved(IGraph g)
+    {
+        GraphRemoved?.Invoke(this, new GraphEventArgs(g));
     }
 }

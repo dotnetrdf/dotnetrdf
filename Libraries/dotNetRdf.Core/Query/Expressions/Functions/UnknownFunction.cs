@@ -29,155 +29,154 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF.Query.Expressions.Functions
+namespace VDS.RDF.Query.Expressions.Functions;
+
+/// <summary>
+/// Represents an Unknown Function that is not supported by dotNetRDF.
+/// </summary>
+/// <remarks>
+/// <para>
+/// This exists as a placeholder class so users may choose to parse Unknown Functions and have them appear in queries even if they cannot be evaluated.  This is useful when you wish to parse a query locally to check syntactic validity before passing it to an external query processor which may understand how to evaluate the function.  Using this placeholder also allows queries containing Unknown Functions to still be formatted properly.
+/// </para>
+/// </remarks>
+public class UnknownFunction
+    : ISparqlExpression
 {
+    private readonly Uri _funcUri;
+    private readonly List<ISparqlExpression> _args = new();
+
     /// <summary>
-    /// Represents an Unknown Function that is not supported by dotNetRDF.
+    /// Creates a new Unknown Function that has no Arguments.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This exists as a placeholder class so users may choose to parse Unknown Functions and have them appear in queries even if they cannot be evaluated.  This is useful when you wish to parse a query locally to check syntactic validity before passing it to an external query processor which may understand how to evaluate the function.  Using this placeholder also allows queries containing Unknown Functions to still be formatted properly.
-    /// </para>
-    /// </remarks>
-    public class UnknownFunction
-        : ISparqlExpression
+    /// <param name="funcUri">Function URI.</param>
+    public UnknownFunction(Uri funcUri)
     {
-        private readonly Uri _funcUri;
-        private readonly List<ISparqlExpression> _args = new();
+        _funcUri = funcUri;
+    }
 
-        /// <summary>
-        /// Creates a new Unknown Function that has no Arguments.
-        /// </summary>
-        /// <param name="funcUri">Function URI.</param>
-        public UnknownFunction(Uri funcUri)
+    /// <summary>
+    /// Creates a new Unknown Function that has a Single Argument.
+    /// </summary>
+    /// <param name="funcUri">Function URI.</param>
+    /// <param name="expr">Argument Expression.</param>
+    public UnknownFunction(Uri funcUri, ISparqlExpression expr)
+        : this(funcUri)
+    {
+        _args.Add(expr);
+    }
+
+    /// <summary>
+    /// Creates a new Unknown Function that has multiple Arguments.
+    /// </summary>
+    /// <param name="funcUri">Function URI.</param>
+    /// <param name="argumentExpressions">Argument Expressions.</param>
+    public UnknownFunction(Uri funcUri, IEnumerable<ISparqlExpression> argumentExpressions)
+        : this(funcUri)
+    {
+        _args.AddRange(argumentExpressions);
+    }
+
+
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessUnknownFunction(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitUnknownFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Variables used in the Function.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get 
         {
-            _funcUri = funcUri;
+            return (from arg in _args
+                    from v in arg.Variables
+                    select v).Distinct();
         }
+    }
 
-        /// <summary>
-        /// Creates a new Unknown Function that has a Single Argument.
-        /// </summary>
-        /// <param name="funcUri">Function URI.</param>
-        /// <param name="expr">Argument Expression.</param>
-        public UnknownFunction(Uri funcUri, ISparqlExpression expr)
-            : this(funcUri)
+    /// <summary>
+    /// Gets the Expression Type.
+    /// </summary>
+    public SparqlExpressionType Type
+    {
+        get
         {
-            _args.Add(expr);
+            return SparqlExpressionType.Function; 
         }
+    }
 
-        /// <summary>
-        /// Creates a new Unknown Function that has multiple Arguments.
-        /// </summary>
-        /// <param name="funcUri">Function URI.</param>
-        /// <param name="argumentExpressions">Argument Expressions.</param>
-        public UnknownFunction(Uri funcUri, IEnumerable<ISparqlExpression> argumentExpressions)
-            : this(funcUri)
+    /// <summary>
+    /// Gets the Function URI of the Expression.
+    /// </summary>
+    public string Functor
+    {
+        get 
         {
-            _args.AddRange(argumentExpressions);
+            return _funcUri.ToString(); 
         }
+    }
 
-
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the Arguments of the Expression.
+    /// </summary>
+    public IEnumerable<ISparqlExpression> Arguments
+    {
+        get
         {
-            return processor.ProcessUnknownFunction(this, context, binding);
+            return _args; 
         }
+    }
 
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets whether an expression can safely be evaluated in parallel.
+    /// </summary>
+    public virtual bool CanParallelise
+    {
+        get
         {
-            return visitor.VisitUnknownFunction(this);
+            return _args.All(a => a.CanParallelise);
         }
+    }
 
-        /// <summary>
-        /// Gets the Variables used in the Function.
-        /// </summary>
-        public IEnumerable<string> Variables
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append('<');
+        output.Append(_funcUri.AbsoluteUri.Replace(">", "\\>"));
+        output.Append('>');
+        output.Append('(');
+        for (var i = 0; i < _args.Count; i++)
         {
-            get 
+            output.Append(_args[i]);
+
+            if (i < _args.Count - 1)
             {
-                return (from arg in _args
-                        from v in arg.Variables
-                        select v).Distinct();
+                output.Append(", ");
             }
         }
+        output.Append(')');
+        return output.ToString();
+    }
 
-        /// <summary>
-        /// Gets the Expression Type.
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function; 
-            }
-        }
-
-        /// <summary>
-        /// Gets the Function URI of the Expression.
-        /// </summary>
-        public string Functor
-        {
-            get 
-            {
-                return _funcUri.ToString(); 
-            }
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression.
-        /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
-        {
-            get
-            {
-                return _args; 
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel.
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return _args.All(a => a.CanParallelise);
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append('<');
-            output.Append(_funcUri.AbsoluteUri.Replace(">", "\\>"));
-            output.Append('>');
-            output.Append('(');
-            for (var i = 0; i < _args.Count; i++)
-            {
-                output.Append(_args[i]);
-
-                if (i < _args.Count - 1)
-                {
-                    output.Append(", ");
-                }
-            }
-            output.Append(')');
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new UnknownFunction(_funcUri, _args.Select(transformer.Transform));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new UnknownFunction(_funcUri, _args.Select(transformer.Transform));
     }
 }

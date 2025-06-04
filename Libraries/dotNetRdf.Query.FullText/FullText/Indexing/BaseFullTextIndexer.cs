@@ -27,155 +27,154 @@
 using System;
 using VDS.RDF.Query.Datasets;
 
-namespace VDS.RDF.Query.FullText.Indexing
+namespace VDS.RDF.Query.FullText.Indexing;
+
+/// <summary>
+/// Abstract Base Class for Full Text Indexers which implements the basic logic leaving derived classes to implement the index specific logic.
+/// </summary>
+public abstract class BaseFullTextIndexer
+    : IFullTextIndexer
 {
     /// <summary>
-    /// Abstract Base Class for Full Text Indexers which implements the basic logic leaving derived classes to implement the index specific logic.
+    /// Destructor for the Indexer which ensures it is disposed of
     /// </summary>
-    public abstract class BaseFullTextIndexer
-        : IFullTextIndexer
+    ~BaseFullTextIndexer()
     {
-        /// <summary>
-        /// Destructor for the Indexer which ensures it is disposed of
-        /// </summary>
-        ~BaseFullTextIndexer()
-        {
-            Dispose(false);
-        }
-
-        /// <summary>
-        /// Gets the Indexing Mode used by this Indexer.
-        /// </summary>
-        public abstract IndexingMode IndexingMode
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Indexes a Triple associating it with the given Graph.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <param name="t">Triple.</param>
-        protected abstract void Index(String graphUri, Triple t);
-
-        /// <inheritdoc/>
-        [Obsolete("Replaced by Index(IGraph, Triple)", true)]
-        public virtual void Index(Triple t)
-        {
-            Index((IGraph)null, t);
-        }
-
-        /// <summary>
-        /// Indexes a Triple.
-        /// </summary>
-        /// <param name="g">Graph context of the triple to be indexed.</param>
-        /// <param name="t">Triple.</param>
-        public virtual void Index(IGraph g, Triple t)
-        {
-            Index(g.Name.ToSafeString(), t);
-        }
-
-        /// <summary>
-        /// Indexes a Graph.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        public virtual void Index(IGraph g)
-        {
-            foreach (Triple t in g.Triples)
-            {
-                Index(g, t);
-            }
-            Flush();
-        }
-
-        /// <summary>
-        /// Indexes a Dataset.
-        /// </summary>
-        /// <param name="dataset">Dataset.</param>
-        public virtual void Index(ISparqlDataset dataset)
-        {
-            foreach (IRefNode u in dataset.GraphNames)
-            {
-                IGraph g = dataset[u];
-                Index(g);
-            }
-        }
-
-        /// <summary>
-        /// Unindexes a Triple associating it with the given Graph.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <param name="t">Triple.</param>
-        protected abstract void Unindex(String graphUri, Triple t);
-
-        /// <summary>
-        /// Unindexes a Triple.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        [Obsolete("Replaced by Unindex(IGraph, Triple). As triples no longer have a reference to a parent graph, this method should no longer be used.", true)]
-        public virtual void Unindex(Triple t)
-        {
-            Unindex(string.Empty, t);
-        }
-
-        /// <inheritdoc />
-        public virtual void Unindex(IGraph g, Triple t)
-        {
-            Unindex(g.Name.ToSafeString(), t);
-        }
-
-        /// <summary>
-        /// Unindexes a Graph.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        public virtual void Unindex(IGraph g)
-        {
-            foreach (Triple t in g.Triples)
-            {
-                Unindex(g, t);
-            }
-            Flush();
-        }
-
-        /// <summary>
-        /// Unindexes a Dataset.
-        /// </summary>
-        /// <param name="dataset">Dataset.</param>
-        public virtual void Unindex(ISparqlDataset dataset)
-        {
-            foreach (IRefNode u in dataset.GraphNames)
-            {
-                IGraph g = dataset[u];
-                Unindex(g);
-            }
-        }
-
-        /// <summary>
-        /// Ensures any pending changes are flushed to the actual index.
-        /// </summary>
-        public virtual void Flush() { }
-
-        /// <summary>
-        /// Disposes of the Indexer.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        /// <summary>
-        /// Disposes of the Indexer.
-        /// </summary>
-        /// <param name="disposing">Whether this was called by the Dispose method.</param>
-        private void Dispose(bool disposing)
-        {
-            if (disposing) GC.SuppressFinalize(this);
-            DisposeInternal();
-        }
-
-        /// <summary>
-        /// Virtual method that can be overridden to add implementation specific dispose logic.
-        /// </summary>
-        protected virtual void DisposeInternal() { }
+        Dispose(false);
     }
+
+    /// <summary>
+    /// Gets the Indexing Mode used by this Indexer.
+    /// </summary>
+    public abstract IndexingMode IndexingMode
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Indexes a Triple associating it with the given Graph.
+    /// </summary>
+    /// <param name="graphUri">Graph URI.</param>
+    /// <param name="t">Triple.</param>
+    protected abstract void Index(String graphUri, Triple t);
+
+    /// <inheritdoc/>
+    [Obsolete("Replaced by Index(IGraph, Triple)", true)]
+    public virtual void Index(Triple t)
+    {
+        Index((IGraph)null, t);
+    }
+
+    /// <summary>
+    /// Indexes a Triple.
+    /// </summary>
+    /// <param name="g">Graph context of the triple to be indexed.</param>
+    /// <param name="t">Triple.</param>
+    public virtual void Index(IGraph g, Triple t)
+    {
+        Index(g.Name.ToSafeString(), t);
+    }
+
+    /// <summary>
+    /// Indexes a Graph.
+    /// </summary>
+    /// <param name="g">Graph.</param>
+    public virtual void Index(IGraph g)
+    {
+        foreach (Triple t in g.Triples)
+        {
+            Index(g, t);
+        }
+        Flush();
+    }
+
+    /// <summary>
+    /// Indexes a Dataset.
+    /// </summary>
+    /// <param name="dataset">Dataset.</param>
+    public virtual void Index(ISparqlDataset dataset)
+    {
+        foreach (IRefNode u in dataset.GraphNames)
+        {
+            IGraph g = dataset[u];
+            Index(g);
+        }
+    }
+
+    /// <summary>
+    /// Unindexes a Triple associating it with the given Graph.
+    /// </summary>
+    /// <param name="graphUri">Graph URI.</param>
+    /// <param name="t">Triple.</param>
+    protected abstract void Unindex(String graphUri, Triple t);
+
+    /// <summary>
+    /// Unindexes a Triple.
+    /// </summary>
+    /// <param name="t">Triple.</param>
+    [Obsolete("Replaced by Unindex(IGraph, Triple). As triples no longer have a reference to a parent graph, this method should no longer be used.", true)]
+    public virtual void Unindex(Triple t)
+    {
+        Unindex(string.Empty, t);
+    }
+
+    /// <inheritdoc />
+    public virtual void Unindex(IGraph g, Triple t)
+    {
+        Unindex(g.Name.ToSafeString(), t);
+    }
+
+    /// <summary>
+    /// Unindexes a Graph.
+    /// </summary>
+    /// <param name="g">Graph.</param>
+    public virtual void Unindex(IGraph g)
+    {
+        foreach (Triple t in g.Triples)
+        {
+            Unindex(g, t);
+        }
+        Flush();
+    }
+
+    /// <summary>
+    /// Unindexes a Dataset.
+    /// </summary>
+    /// <param name="dataset">Dataset.</param>
+    public virtual void Unindex(ISparqlDataset dataset)
+    {
+        foreach (IRefNode u in dataset.GraphNames)
+        {
+            IGraph g = dataset[u];
+            Unindex(g);
+        }
+    }
+
+    /// <summary>
+    /// Ensures any pending changes are flushed to the actual index.
+    /// </summary>
+    public virtual void Flush() { }
+
+    /// <summary>
+    /// Disposes of the Indexer.
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+    }
+
+    /// <summary>
+    /// Disposes of the Indexer.
+    /// </summary>
+    /// <param name="disposing">Whether this was called by the Dispose method.</param>
+    private void Dispose(bool disposing)
+    {
+        if (disposing) GC.SuppressFinalize(this);
+        DisposeInternal();
+    }
+
+    /// <summary>
+    /// Virtual method that can be overridden to add implementation specific dispose logic.
+    /// </summary>
+    protected virtual void DisposeInternal() { }
 }

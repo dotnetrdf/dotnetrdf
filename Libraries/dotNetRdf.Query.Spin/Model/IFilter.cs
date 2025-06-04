@@ -24,23 +24,22 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+/**
+ * A SPARQL FILTER element.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IFilter : IElement
 {
 
     /**
-     * A SPARQL FILTER element.
-     * 
-     * @author Holger Knublauch
+     * Gets the expression representing the filter condition.
+     * The result object will be typecast into the most specific
+     * subclass of INode, e.g. FunctionCall or Variable.
+     * @return the expression or null
      */
-    internal interface IFilter : IElement
-    {
-
-        /**
-         * Gets the expression representing the filter condition.
-         * The result object will be typecast into the most specific
-         * subclass of INode, e.g. FunctionCall or Variable.
-         * @return the expression or null
-         */
-        IResource getExpression();
-    }
+    IResource getExpression();
 }

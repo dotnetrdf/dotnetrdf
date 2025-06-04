@@ -26,30 +26,29 @@
 
 using System;
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd;
+
+/// <summary>
+/// Class used to return information about a remote document or context.
+/// </summary>
+public class RemoteDocument
 {
     /// <summary>
-    /// Class used to return information about a remote document or context.
+    /// If available, the value of the HTTP Link Header [RFC5988] using the http://www.w3.org/ns/json-ld#context link relation in the response. 
     /// </summary>
-    public class RemoteDocument
-    {
-        /// <summary>
-        /// If available, the value of the HTTP Link Header [RFC5988] using the http://www.w3.org/ns/json-ld#context link relation in the response. 
-        /// </summary>
-        /// <remarks>If the response's content type is application/ld+json, the HTTP Link Header is ignored. 
-        /// If multiple HTTP Link Headers using the http://www.w3.org/ns/json-ld#context link relation are found, 
-        /// the Promise of the LoadDocumentCallback is rejected with a JsonLdError whose code is set to multiple context link headers.</remarks>
-        public Uri ContextUrl { get; set; }
+    /// <remarks>If the response's content type is application/ld+json, the HTTP Link Header is ignored. 
+    /// If multiple HTTP Link Headers using the http://www.w3.org/ns/json-ld#context link relation are found, 
+    /// the Promise of the LoadDocumentCallback is rejected with a JsonLdError whose code is set to multiple context link headers.</remarks>
+    public Uri ContextUrl { get; set; }
 
-        /// <summary>
-        /// The final URL of the loaded document. This is important to handle HTTP redirects properly.
-        /// </summary>
-        public Uri DocumentUrl { get; set; }
+    /// <summary>
+    /// The final URL of the loaded document. This is important to handle HTTP redirects properly.
+    /// </summary>
+    public Uri DocumentUrl { get; set; }
 
-        /// <summary>
-        /// The retrieved document. This can either be the raw payload or the already parsed document.
-        /// </summary>
-        /// <remarks>This property may be a JToken or a string. If it is a string, the string is parsed to a JToken.</remarks>
-        public object Document { get; set; }
-    }
+    /// <summary>
+    /// The retrieved document. This can either be the raw payload or the already parsed document.
+    /// </summary>
+    /// <remarks>This property may be a JToken or a string. If it is a string, the string is parsed to a JToken.</remarks>
+    public object Document { get; set; }
 }

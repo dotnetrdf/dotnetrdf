@@ -27,135 +27,134 @@
 using System;
 using System.IO;
 
-namespace VDS.RDF.Writing.Contexts
+namespace VDS.RDF.Writing.Contexts;
+
+/// <summary>
+/// Interface for Store Writer Contexts.
+/// </summary>
+public interface IStoreWriterContext
 {
     /// <summary>
-    /// Interface for Store Writer Contexts.
+    /// Gets the Store being written.
     /// </summary>
-    public interface IStoreWriterContext
+    ITripleStore Store
     {
-        /// <summary>
-        /// Gets the Store being written.
-        /// </summary>
-        ITripleStore Store
+        get;
+    }
+}
+
+/// <summary>
+/// Base Class for Store Writer Context Objects.
+/// </summary>
+public class BaseStoreWriterContext : IStoreWriterContext
+{
+    private ITripleStore _store;
+    private TextWriter _output;
+    /// <summary>
+    /// Pretty Print Mode setting.
+    /// </summary>
+    protected bool _prettyPrint = true;
+    /// <summary>
+    /// High Speed Mode setting.
+    /// </summary>
+    protected bool _hiSpeedAllowed = true;
+
+    /// <summary>
+    /// Creates a new Base Store Writer Context with default settings.
+    /// </summary>
+    /// <param name="store">Store to write.</param>
+    /// <param name="output">TextWriter being written to.</param>
+    public BaseStoreWriterContext(ITripleStore store, TextWriter output)
+    {
+        _store = store;
+        _output = output;
+    }
+
+    /// <summary>
+    /// Creates a new Base Store Writer Context with custom settings.
+    /// </summary>
+    /// <param name="store">Store to write.</param>
+    /// <param name="output">TextWriter being written to.</param>
+    /// <param name="prettyPrint">Pretty Print Mode.</param>
+    /// <param name="hiSpeedAllowed">High Speed Mode.</param>
+    public BaseStoreWriterContext(ITripleStore store, TextWriter output, bool prettyPrint, bool hiSpeedAllowed)
+        : this(store, output)
+    {
+        _prettyPrint = prettyPrint;
+        _hiSpeedAllowed = hiSpeedAllowed;
+    }
+
+    /// <summary>
+    /// Gets/Sets the Pretty Printing Mode used.
+    /// </summary>
+    public bool PrettyPrint
+    {
+        get
         {
-            get;
+            return _prettyPrint;
+        }
+        set
+        {
+            _prettyPrint = value;
         }
     }
 
     /// <summary>
-    /// Base Class for Store Writer Context Objects.
+    /// Gets/Sets the High Speed Mode used.
     /// </summary>
-    public class BaseStoreWriterContext : IStoreWriterContext
+    public bool HighSpeedModePermitted
     {
-        private ITripleStore _store;
-        private TextWriter _output;
-        /// <summary>
-        /// Pretty Print Mode setting.
-        /// </summary>
-        protected bool _prettyPrint = true;
-        /// <summary>
-        /// High Speed Mode setting.
-        /// </summary>
-        protected bool _hiSpeedAllowed = true;
-
-        /// <summary>
-        /// Creates a new Base Store Writer Context with default settings.
-        /// </summary>
-        /// <param name="store">Store to write.</param>
-        /// <param name="output">TextWriter being written to.</param>
-        public BaseStoreWriterContext(ITripleStore store, TextWriter output)
+        get
         {
-            _store = store;
-            _output = output;
+            return _hiSpeedAllowed;
         }
-
-        /// <summary>
-        /// Creates a new Base Store Writer Context with custom settings.
-        /// </summary>
-        /// <param name="store">Store to write.</param>
-        /// <param name="output">TextWriter being written to.</param>
-        /// <param name="prettyPrint">Pretty Print Mode.</param>
-        /// <param name="hiSpeedAllowed">High Speed Mode.</param>
-        public BaseStoreWriterContext(ITripleStore store, TextWriter output, bool prettyPrint, bool hiSpeedAllowed)
-            : this(store, output)
+        set
         {
-            _prettyPrint = prettyPrint;
-            _hiSpeedAllowed = hiSpeedAllowed;
+            _hiSpeedAllowed = value;
         }
+    }
 
-        /// <summary>
-        /// Gets/Sets the Pretty Printing Mode used.
-        /// </summary>
-        public bool PrettyPrint
+    /// <summary>
+    /// Gets the Store being written.
+    /// </summary>
+    public ITripleStore Store
+    {
+        get
         {
-            get
-            {
-                return _prettyPrint;
-            }
-            set
-            {
-                _prettyPrint = value;
-            }
+            return _store;
         }
+    }
 
-        /// <summary>
-        /// Gets/Sets the High Speed Mode used.
-        /// </summary>
-        public bool HighSpeedModePermitted
+    /// <summary>
+    /// Gets the TextWriter being written to.
+    /// </summary>
+    public TextWriter Output
+    {
+        get
         {
-            get
-            {
-                return _hiSpeedAllowed;
-            }
-            set
-            {
-                _hiSpeedAllowed = value;
-            }
+            return _output;
         }
+    }
 
-        /// <summary>
-        /// Gets the Store being written.
-        /// </summary>
-        public ITripleStore Store
-        {
-            get
-            {
-                return _store;
-            }
-        }
+    /// <summary>
+    /// Formats a URI as a String for full Output.
+    /// </summary>
+    /// <param name="u">URI.</param>
+    /// <returns></returns>
+    public virtual string FormatUri(string u)
+    {
+        var uri = Uri.EscapeUriString(u);
+        uri = uri.Replace(">", "\\>");
+        return uri;
+    }
 
-        /// <summary>
-        /// Gets the TextWriter being written to.
-        /// </summary>
-        public TextWriter Output
-        {
-            get
-            {
-                return _output;
-            }
-        }
-
-        /// <summary>
-        /// Formats a URI as a String for full Output.
-        /// </summary>
-        /// <param name="u">URI.</param>
-        /// <returns></returns>
-        public virtual string FormatUri(string u)
-        {
-            var uri = Uri.EscapeUriString(u);
-            uri = uri.Replace(">", "\\>");
-            return uri;
-        }
-
-        /// <summary>
-        /// Formats a URI as a String for full Output.
-        /// </summary>
-        /// <param name="u">URI.</param>
-        /// <returns></returns>
-        public virtual string FormatUri(Uri u)
-        {
-            return FormatUri(u.AbsoluteUri);
-        }
+    /// <summary>
+    /// Formats a URI as a String for full Output.
+    /// </summary>
+    /// <param name="u">URI.</param>
+    /// <returns></returns>
+    public virtual string FormatUri(Uri u)
+    {
+        return FormatUri(u.AbsoluteUri);
     }
 }

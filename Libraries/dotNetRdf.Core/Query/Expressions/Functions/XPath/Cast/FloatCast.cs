@@ -26,61 +26,60 @@
 
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
+namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast;
+
+/// <summary>
+/// Class representing an XPath Float Cast Function.
+/// </summary>
+public class FloatCast
+    : BaseCast
 {
     /// <summary>
-    /// Class representing an XPath Float Cast Function.
+    /// Creates a new XPath Float Cast Function Expression.
     /// </summary>
-    public class FloatCast
-        : BaseCast
+    /// <param name="expr">Expression to be cast.</param>
+    public FloatCast(ISparqlExpression expr)
+        : base(expr) { }
+
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new XPath Float Cast Function Expression.
-        /// </summary>
-        /// <param name="expr">Expression to be cast.</param>
-        public FloatCast(ISparqlExpression expr)
-            : base(expr) { }
+        return "<" + XmlSpecsHelper.XmlSchemaDataTypeFloat + ">(" + _expr + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeFloat + ">(" + _expr + ")";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessFloatCast(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessFloatCast(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitFloatCast(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return visitor.VisitFloatCast(this);
+            return XmlSpecsHelper.XmlSchemaDataTypeFloat;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XmlSpecsHelper.XmlSchemaDataTypeFloat;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new FloatCast(transformer.Transform(_expr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new FloatCast(transformer.Transform(_expr));
     }
 }

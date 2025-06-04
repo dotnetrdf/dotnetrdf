@@ -25,42 +25,41 @@
 */
 
 using System.Collections.Generic;
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+
+/**
+ * A SELECT query.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface ISelect : ISolutionModifierQuery
 {
+
+    /**
+     * Gets a list of result variables, or null if we have a star
+     * results list.  Note that the "variables" may in fact be
+     * wrapped aggregations or expressions.
+     * The results can be tested with is against
+     * <code>Variable</code>, <code>Aggregation</code> or
+     * <code>FunctionCall</code>.  Variables can have an additional
+     * <code>sp:expression</code>, representing AS expressions.
+     * @return the result "variables"
+     */
+    List<IResource> getResultVariables();
 
 
     /**
-     * A SELECT query.
-     * 
-     * @author Holger Knublauch
+     * Checks is this query has the DISTINCT flag set.
+     * @return true if distinct
      */
-    internal interface ISelect : ISolutionModifierQuery
-    {
-
-        /**
-         * Gets a list of result variables, or null if we have a star
-         * results list.  Note that the "variables" may in fact be
-         * wrapped aggregations or expressions.
-         * The results can be tested with is against
-         * <code>Variable</code>, <code>Aggregation</code> or
-         * <code>FunctionCall</code>.  Variables can have an additional
-         * <code>sp:expression</code>, representing AS expressions.
-         * @return the result "variables"
-         */
-        List<IResource> getResultVariables();
+    bool isDistinct();
 
 
-        /**
-         * Checks is this query has the DISTINCT flag set.
-         * @return true if distinct
-         */
-        bool isDistinct();
-
-
-        /**
-         * Checks if this query has the REDUCED flag set.
-         * @return true if reduced
-         */
-        bool isReduced();
-    }
+    /**
+     * Checks if this query has the REDUCED flag set.
+     * @return true if reduced
+     */
+    bool isReduced();
 }

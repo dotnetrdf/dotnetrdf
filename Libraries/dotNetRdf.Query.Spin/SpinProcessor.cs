@@ -36,371 +36,370 @@ using VDS.RDF.Query.Spin.Model;
 using VDS.RDF.Query.Spin.Util;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Query.Spin
+namespace VDS.RDF.Query.Spin;
+
+/// <summary>
+/// TODO make this class internal
+/// TODO refactor the initialization process to allow for dynamic SPIN configuration updates through the dataset API.
+/// TODO avoid multiple query transformations (ie String => SparqlQuery => SPIN Resources => String) by using the native dotNetRDF algebra classes instead of IResource
+/// </summary>
+internal class SpinProcessor //: IInferenceEngine
 {
+
+    // TODO change support to OWL ?
+    private IInferenceEngine _reasoner = new StaticRdfsReasoner();
+
+    internal InMemoryDataset _spinConfiguration;
+
+    private IGraph _currentSparqlGraph = new ThreadSafeGraph();
+
+    #region "SPIN processor Initialisation"
+
+    internal SpinProcessor()
+    {
+        _spinConfiguration = new InMemoryDataset(true);
+
+        // Ensure that SP, SPIN and SPL are present
+        IRdfReader rdfReader = new RdfXmlParser();
+        Initialise(UriFactory.Root.Create(SP.BASE_URI), rdfReader);
+        Initialise(UriFactory.Root.Create(SPIN.BASE_URI), rdfReader);
+        Initialise(UriFactory.Root.Create(SPL.BASE_URI), rdfReader);
+    }
+
+    internal void Initialise(Uri spinGraphUri, IRdfReader rdfReader = null)
+    {
+        if (_spinConfiguration.GraphNames.Any(x=>x.NodeType == NodeType.Uri && (x as IUriNode).Uri.Equals(spinGraphUri)))
+        {
+            return;
+        }
+        Initialise(SPINImports.GetInstance().getImportedGraph(spinGraphUri, rdfReader));
+    }
+
     /// <summary>
-    /// TODO make this class internal
-    /// TODO refactor the initialization process to allow for dynamic SPIN configuration updates through the dataset API.
-    /// TODO avoid multiple query transformations (ie String => SparqlQuery => SPIN Resources => String) by using the native dotNetRDF algebra classes instead of IResource
+    /// 
     /// </summary>
-    internal class SpinProcessor //: IInferenceEngine
+    /// <param name="spinGraph"></param>
+    /// <returns></returns>
+    internal IGraph Initialise(IGraph spinGraph)
+    {
+        if (_spinConfiguration.GraphNames.Contains(spinGraph.Name))
+        {
+            _spinConfiguration.RemoveGraph(spinGraph.Name);
+        }
+        var ontQuery = "CONSTRUCT { ?graphUri a <" + SPIN.ClassLibraryOntology + ">} WHERE { {?s (<" + SPIN.PropertyImports + ">|<" + OWL.PropertyImports + ">) ?graphUri} UNION {?graphUri a <" + SPIN.ClassLibraryOntology + ">} }";
+        IGraph imports = (Graph)spinGraph.ExecuteQuery(ontQuery);
+
+        // Explore for subsequent imports
+        foreach (Triple t in imports.GetTriplesWithPredicateObject(RDF.PropertyType, SPIN.ClassLibraryOntology))
+        {
+            INode importGraphName = t.Subject;
+            Uri importUri = ((IUriNode)t.Subject).Uri;
+            if (!_spinConfiguration.GraphNames.Contains(importGraphName) && !RDFUtil.sameTerm(importGraphName, spinGraph.Name))
+            {
+                Initialise(importUri);
+            }
+        }
+        _spinConfiguration.AddGraph(spinGraph);
+        _reasoner.Initialise(spinGraph);
+
+        IGraph inferenceGraph = ApplyInference(spinGraph);
+        _spinConfiguration.AddGraph(inferenceGraph);
+        _reasoner.Initialise(inferenceGraph);
+
+        return inferenceGraph;
+    }
+
+    #endregion
+
+    #region "Spin model utilities"
+
+
+    internal void SortClasses(List<Resource> classList)
+    {
+        classList.Sort(delegate(Resource x, Resource y)
+        {
+            if (RDFUtil.sameTerm(x, y)) return 0;
+            if (ContainsTriple(x, RDFS.PropertySubClassOf, y))
+            {
+                return 1;
+            }
+            return -1;
+        });
+    }
+
+    internal void SortProperties(List<Resource> propertyList)
+    {
+        propertyList.Sort(delegate(Resource x, Resource y)
+        {
+            if (RDFUtil.sameTerm(x, y)) return 0;
+            if (ContainsTriple(x, RDFS.PropertySubPropertyOf, y))
+            {
+                return 1;
+            }
+            return -1;
+        });
+    }
+
+    internal IEnumerable<IUpdate> GetConstructorsForClass(INode cls)
+    {
+        var constructors = GetTriplesWithSubjectPredicate(cls, SPIN.PropertyConstructor).Select(t => SPINFactory.asUpdate(Resource.Get(t.Object, _currentSparqlGraph, this))).ToList();
+        return constructors;
+    }
+
+    internal IEnumerable<IResource> GetAllInstances(INode cls)
+    {
+        var resourceList = GetTriplesWithPredicateObject(RDF.PropertyType, cls).Select(t => Resource.Get(t.Subject, _currentSparqlGraph, this)).ToList();
+        return resourceList;
+    }
+
+    internal IEnumerable<IResource> GetAllSubClasses(INode root, bool includeRoot = false)
+    {
+        var classList = GetTriplesWithPredicateObject(RDFS.PropertySubClassOf, root).Select(t => Resource.Get(t.Subject, _currentSparqlGraph, this)).ToList();
+        if (includeRoot)
+        {
+            classList.Add(Resource.Get(root, _currentSparqlGraph, this));
+        }
+        SortClasses(classList);
+        return classList;
+    }
+
+    internal IEnumerable<IResource> GetAllSuperClasses(INode root, bool includeRoot = false)
+    {
+        var classList = GetTriplesWithSubjectPredicate(root, RDFS.PropertySubClassOf).Select(t => Resource.Get(t.Object, _currentSparqlGraph, this)).ToList();
+        if (includeRoot)
+        {
+            classList.Add(Resource.Get(root, _currentSparqlGraph, this));
+        }
+        SortClasses(classList);
+        return classList;
+    }
+
+    internal IEnumerable<IResource> GetAllSubProperties(INode root, bool includeRoot = false)
+    {
+        var propertyList = GetTriplesWithPredicateObject(RDFS.PropertySubPropertyOf, root).Select(t => Resource.Get(t.Subject, _currentSparqlGraph, this)).ToList();
+        if (includeRoot)
+        {
+            propertyList.Add(Resource.Get(root, _currentSparqlGraph, this));
+        }
+        SortProperties(propertyList);
+        return propertyList;
+    }
+
+    internal IEnumerable<IResource> GetAllSuperProperties(INode root, bool includeRoot = false)
+    {
+        var propertyList = GetTriplesWithSubjectPredicate(root, RDFS.PropertySubPropertyOf).Select(t => Resource.Get(t.Object, _currentSparqlGraph, this)).ToList();
+        if (includeRoot)
+        {
+            propertyList.Add(Resource.Get(root, _currentSparqlGraph, this));
+        }
+        SortProperties(propertyList);
+        return propertyList;
+    }
+
+    private INode GetSourceNode(INode resource)
+    {
+        if (resource is IResource)
+        {
+            return ((IResource)resource).getSource();
+        }
+        return resource;
+    }
+
+    internal IResource CreateResource(INode rdfType = null)
+    {
+        // TODO put that in another graph to not overflow the configuration with temporary requests ?
+        INode resource = _currentSparqlGraph.CreateBlankNode();
+        if (rdfType != null)
+        {
+            _currentSparqlGraph.Assert(resource, RDF.PropertyType, rdfType);
+        }
+        return Resource.Get(resource, _currentSparqlGraph, this);
+    }
+
+    internal IResource CreateList(IResource[] elements)
+    {
+        return CreateList((IEnumerator<IResource>)elements.GetEnumerator());
+    }
+
+    internal IResource CreateList(IEnumerator<IResource> elements)
+    {
+        IResource first = CreateResource();
+        IResource root = first;
+        if (!elements.MoveNext())
+        {
+            first.AddProperty(RDF.PropertyFirst, RDF.Nil);
+            return first;
+        }
+        do
+        {
+            first.AddProperty(RDF.PropertyFirst, elements.Current);
+            IResource rest = CreateResource();
+            first.AddProperty(RDF.PropertyRest, rest);
+            first = rest;
+        } while (elements.MoveNext());
+        first.AddProperty(RDF.PropertyRest, RDF.Nil);
+        return root;
+    }
+
+
+    internal IEnumerable<Triple> GetTriplesWithSubject(INode subj)
+    {
+        return _spinConfiguration.GetTriplesWithSubject(GetSourceNode(subj));
+    }
+
+    internal IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
+    {
+        return _spinConfiguration.GetTriplesWithPredicate(GetSourceNode(pred));
+    }
+
+    internal IEnumerable<Triple> GetTriplesWithObject(INode obj)
+    {
+        return _spinConfiguration.GetTriplesWithObject(GetSourceNode(obj));
+    }
+
+    internal IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
+    {
+        return _spinConfiguration.GetTriplesWithPredicateObject(GetSourceNode(pred), GetSourceNode(obj));
+    }
+
+    internal IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
+    {
+        return _spinConfiguration.GetTriplesWithSubjectPredicate(GetSourceNode(subj), GetSourceNode(pred));
+    }
+
+    internal IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
+    {
+        return _spinConfiguration.GetTriplesWithSubjectObject(GetSourceNode(subj), GetSourceNode(obj));
+    }
+
+    internal bool ContainsTriple(INode subj, INode pred, INode obj)
+    {
+        return ContainsTriple(new Triple(GetSourceNode(subj), GetSourceNode(pred), GetSourceNode(obj)));
+    }
+
+    internal bool ContainsTriple(Triple t)
+    {
+        return _spinConfiguration.ContainsTriple(t);
+    }
+
+    #endregion
+
+    #region Dataset utilities
+
+    private Dictionary<IGraph, IGraph> _inferenceGraphs = new Dictionary<IGraph, IGraph>();
+
+    internal IGraph ApplyInference(IGraph g)
+    {
+        IGraph inferedTriples;
+        if (_inferenceGraphs.ContainsKey(g))
+        {
+            inferedTriples = _inferenceGraphs[g];
+            inferedTriples.Clear();
+        }
+        else
+        {
+            inferedTriples = new ThreadSafeGraph();
+        }
+        _reasoner.Apply(g, inferedTriples);
+        _inferenceGraphs[g] = inferedTriples;
+        return inferedTriples;
+    }
+
+
+    // TODO the three following methods are not needed anymore. Refactor them into a SPARQLMotion API ?
+
+    /*
+    /// <summary>
+    /// The default implementation applies all rules then checks all constraints and returns wether the results raised constraints violations or not.
+    /// Allow any subclass to define how SPIN processing would be applied when a dataset is flushed. 
+    /// TODO this should be complemented with an ExecuteScript method that would allow to exploit SPARQLMotion scripts in the model.
+    /// </summary>
+    /// <param name="dataset">The Dataset to apply SPIN processing on</param>
+    /// <param name="resources">A list of resources to check constraints on</param>
+    /// <returns>true if no constraint violation is raised, false otherwise</returns>
+    internal bool Apply(SpinWrappedDataset dataset, IEnumerable<INode> resources)
+    {
+        dataset.CreateExecutionContext(resources);
+        return ApplyInternal(dataset);
+    }
+
+    // TODO perhaps use the null uri to avoid creating a graph with all rdftype triples ?
+    internal bool Apply(SpinWrappedDataset dataset)
+    {
+        dataset.CreateExecutionContext(null);
+        return ApplyInternal(dataset);
+    }
+
+    // TODO perhaps use the null uri to avoid creating a graph with all rdftype triples ?
+    internal protected virtual bool ApplyInternal(SpinWrappedDataset dataset)
     {
 
-        // TODO change support to OWL ?
-        private IInferenceEngine _reasoner = new StaticRdfsReasoner();
 
-        internal InMemoryDataset _spinConfiguration;
 
-        private IGraph _currentSparqlGraph = new ThreadSafeGraph();
+        dataset.QueryExecutionMode = SpinWrappedDataset.QueryMode.SpinConstraintsChecking;
+        IEnumerable<ConstraintViolation> vios = new List<ConstraintViolation>(); //runConstraints(dataset, resources, null);
+        dataset.QueryExecutionMode = SpinWrappedDataset.QueryMode.UserQuerying;
+        return vios.Count() == 0;
+    }
+    */
+    #endregion
 
-        #region "SPIN processor Initialisation"
+    #region SPIN user's queries wrapping
 
-        internal SpinProcessor()
+    // TODO make the cache dynamic and set limits on the queryCache
+    private Dictionary<String, ICommand> queryCache = new Dictionary<String, ICommand>();
+
+    internal IQuery BuildQuery(String sparqlQuery)
+    {
+        IQuery spinQuery = null;
+        if (queryCache.ContainsKey(sparqlQuery))
         {
-            _spinConfiguration = new InMemoryDataset(true);
-
-            // Ensure that SP, SPIN and SPL are present
-            IRdfReader rdfReader = new RdfXmlParser();
-            Initialise(UriFactory.Root.Create(SP.BASE_URI), rdfReader);
-            Initialise(UriFactory.Root.Create(SPIN.BASE_URI), rdfReader);
-            Initialise(UriFactory.Root.Create(SPL.BASE_URI), rdfReader);
+            spinQuery = (IQuery)queryCache[sparqlQuery];
         }
-
-        internal void Initialise(Uri spinGraphUri, IRdfReader rdfReader = null)
+        else
         {
-            if (_spinConfiguration.GraphNames.Any(x=>x.NodeType == NodeType.Uri && (x as IUriNode).Uri.Equals(spinGraphUri)))
+            _currentSparqlGraph = new Graph();
+            _currentSparqlGraph.BaseUri = _currentSparqlGraph.UriFactory.Create("sparql-query:" + sparqlQuery);
+            INode q = new SparqlQueryParser().ParseFromString(sparqlQuery).ToSpinRdf(_currentSparqlGraph);
+            if (!_currentSparqlGraph.IsEmpty)
             {
-                return;
+                _spinConfiguration.AddGraph(_currentSparqlGraph);
+                spinQuery = SPINFactory.asQuery(Resource.Get(q, _currentSparqlGraph, this));
+                queryCache[sparqlQuery] = spinQuery;
             }
-            Initialise(SPINImports.GetInstance().getImportedGraph(spinGraphUri, rdfReader));
         }
+        return spinQuery;
+    }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="spinGraph"></param>
-        /// <returns></returns>
-        internal IGraph Initialise(IGraph spinGraph)
+    internal IEnumerable<IUpdate> BuildUpdate(String sparqlQuery)
+    {
+        var spinQueryList = new List<IUpdate>();
+        SparqlUpdateCommandSet query = new SparqlUpdateParser().ParseFromString(sparqlQuery);
+        query.Optimise();
+        foreach (SparqlUpdateCommand command in query.Commands)
         {
-            if (_spinConfiguration.GraphNames.Contains(spinGraph.Name))
-            {
-                _spinConfiguration.RemoveGraph(spinGraph.Name);
-            }
-            var ontQuery = "CONSTRUCT { ?graphUri a <" + SPIN.ClassLibraryOntology + ">} WHERE { {?s (<" + SPIN.PropertyImports + ">|<" + OWL.PropertyImports + ">) ?graphUri} UNION {?graphUri a <" + SPIN.ClassLibraryOntology + ">} }";
-            IGraph imports = (Graph)spinGraph.ExecuteQuery(ontQuery);
-
-            // Explore for subsequent imports
-            foreach (Triple t in imports.GetTriplesWithPredicateObject(RDF.PropertyType, SPIN.ClassLibraryOntology))
-            {
-                INode importGraphName = t.Subject;
-                Uri importUri = ((IUriNode)t.Subject).Uri;
-                if (!_spinConfiguration.GraphNames.Contains(importGraphName) && !RDFUtil.sameTerm(importGraphName, spinGraph.Name))
-                {
-                    Initialise(importUri);
-                }
-            }
-            _spinConfiguration.AddGraph(spinGraph);
-            _reasoner.Initialise(spinGraph);
-
-            IGraph inferenceGraph = ApplyInference(spinGraph);
-            _spinConfiguration.AddGraph(inferenceGraph);
-            _reasoner.Initialise(inferenceGraph);
-
-            return inferenceGraph;
-        }
-
-        #endregion
-
-        #region "Spin model utilities"
-
-
-        internal void SortClasses(List<Resource> classList)
-        {
-            classList.Sort(delegate(Resource x, Resource y)
-            {
-                if (RDFUtil.sameTerm(x, y)) return 0;
-                if (ContainsTriple(x, RDFS.PropertySubClassOf, y))
-                {
-                    return 1;
-                }
-                return -1;
-            });
-        }
-
-        internal void SortProperties(List<Resource> propertyList)
-        {
-            propertyList.Sort(delegate(Resource x, Resource y)
-            {
-                if (RDFUtil.sameTerm(x, y)) return 0;
-                if (ContainsTriple(x, RDFS.PropertySubPropertyOf, y))
-                {
-                    return 1;
-                }
-                return -1;
-            });
-        }
-
-        internal IEnumerable<IUpdate> GetConstructorsForClass(INode cls)
-        {
-            var constructors = GetTriplesWithSubjectPredicate(cls, SPIN.PropertyConstructor).Select(t => SPINFactory.asUpdate(Resource.Get(t.Object, _currentSparqlGraph, this))).ToList();
-            return constructors;
-        }
-
-        internal IEnumerable<IResource> GetAllInstances(INode cls)
-        {
-            var resourceList = GetTriplesWithPredicateObject(RDF.PropertyType, cls).Select(t => Resource.Get(t.Subject, _currentSparqlGraph, this)).ToList();
-            return resourceList;
-        }
-
-        internal IEnumerable<IResource> GetAllSubClasses(INode root, bool includeRoot = false)
-        {
-            var classList = GetTriplesWithPredicateObject(RDFS.PropertySubClassOf, root).Select(t => Resource.Get(t.Subject, _currentSparqlGraph, this)).ToList();
-            if (includeRoot)
-            {
-                classList.Add(Resource.Get(root, _currentSparqlGraph, this));
-            }
-            SortClasses(classList);
-            return classList;
-        }
-
-        internal IEnumerable<IResource> GetAllSuperClasses(INode root, bool includeRoot = false)
-        {
-            var classList = GetTriplesWithSubjectPredicate(root, RDFS.PropertySubClassOf).Select(t => Resource.Get(t.Object, _currentSparqlGraph, this)).ToList();
-            if (includeRoot)
-            {
-                classList.Add(Resource.Get(root, _currentSparqlGraph, this));
-            }
-            SortClasses(classList);
-            return classList;
-        }
-
-        internal IEnumerable<IResource> GetAllSubProperties(INode root, bool includeRoot = false)
-        {
-            var propertyList = GetTriplesWithPredicateObject(RDFS.PropertySubPropertyOf, root).Select(t => Resource.Get(t.Subject, _currentSparqlGraph, this)).ToList();
-            if (includeRoot)
-            {
-                propertyList.Add(Resource.Get(root, _currentSparqlGraph, this));
-            }
-            SortProperties(propertyList);
-            return propertyList;
-        }
-
-        internal IEnumerable<IResource> GetAllSuperProperties(INode root, bool includeRoot = false)
-        {
-            var propertyList = GetTriplesWithSubjectPredicate(root, RDFS.PropertySubPropertyOf).Select(t => Resource.Get(t.Object, _currentSparqlGraph, this)).ToList();
-            if (includeRoot)
-            {
-                propertyList.Add(Resource.Get(root, _currentSparqlGraph, this));
-            }
-            SortProperties(propertyList);
-            return propertyList;
-        }
-
-        private INode GetSourceNode(INode resource)
-        {
-            if (resource is IResource)
-            {
-                return ((IResource)resource).getSource();
-            }
-            return resource;
-        }
-
-        internal IResource CreateResource(INode rdfType = null)
-        {
-            // TODO put that in another graph to not overflow the configuration with temporary requests ?
-            INode resource = _currentSparqlGraph.CreateBlankNode();
-            if (rdfType != null)
-            {
-                _currentSparqlGraph.Assert(resource, RDF.PropertyType, rdfType);
-            }
-            return Resource.Get(resource, _currentSparqlGraph, this);
-        }
-
-        internal IResource CreateList(IResource[] elements)
-        {
-            return CreateList((IEnumerator<IResource>)elements.GetEnumerator());
-        }
-
-        internal IResource CreateList(IEnumerator<IResource> elements)
-        {
-            IResource first = CreateResource();
-            IResource root = first;
-            if (!elements.MoveNext())
-            {
-                first.AddProperty(RDF.PropertyFirst, RDF.Nil);
-                return first;
-            }
-            do
-            {
-                first.AddProperty(RDF.PropertyFirst, elements.Current);
-                IResource rest = CreateResource();
-                first.AddProperty(RDF.PropertyRest, rest);
-                first = rest;
-            } while (elements.MoveNext());
-            first.AddProperty(RDF.PropertyRest, RDF.Nil);
-            return root;
-        }
-
-
-        internal IEnumerable<Triple> GetTriplesWithSubject(INode subj)
-        {
-            return _spinConfiguration.GetTriplesWithSubject(GetSourceNode(subj));
-        }
-
-        internal IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
-        {
-            return _spinConfiguration.GetTriplesWithPredicate(GetSourceNode(pred));
-        }
-
-        internal IEnumerable<Triple> GetTriplesWithObject(INode obj)
-        {
-            return _spinConfiguration.GetTriplesWithObject(GetSourceNode(obj));
-        }
-
-        internal IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
-        {
-            return _spinConfiguration.GetTriplesWithPredicateObject(GetSourceNode(pred), GetSourceNode(obj));
-        }
-
-        internal IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
-        {
-            return _spinConfiguration.GetTriplesWithSubjectPredicate(GetSourceNode(subj), GetSourceNode(pred));
-        }
-
-        internal IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
-        {
-            return _spinConfiguration.GetTriplesWithSubjectObject(GetSourceNode(subj), GetSourceNode(obj));
-        }
-
-        internal bool ContainsTriple(INode subj, INode pred, INode obj)
-        {
-            return ContainsTriple(new Triple(GetSourceNode(subj), GetSourceNode(pred), GetSourceNode(obj)));
-        }
-
-        internal bool ContainsTriple(Triple t)
-        {
-            return _spinConfiguration.ContainsTriple(t);
-        }
-
-        #endregion
-
-        #region Dataset utilities
-
-        private Dictionary<IGraph, IGraph> _inferenceGraphs = new Dictionary<IGraph, IGraph>();
-
-        internal IGraph ApplyInference(IGraph g)
-        {
-            IGraph inferedTriples;
-            if (_inferenceGraphs.ContainsKey(g))
-            {
-                inferedTriples = _inferenceGraphs[g];
-                inferedTriples.Clear();
-            }
-            else
-            {
-                inferedTriples = new ThreadSafeGraph();
-            }
-            _reasoner.Apply(g, inferedTriples);
-            _inferenceGraphs[g] = inferedTriples;
-            return inferedTriples;
-        }
-
-
-        // TODO the three following methods are not needed anymore. Refactor them into a SPARQLMotion API ?
-
-        /*
-        /// <summary>
-        /// The default implementation applies all rules then checks all constraints and returns wether the results raised constraints violations or not.
-        /// Allow any subclass to define how SPIN processing would be applied when a dataset is flushed. 
-        /// TODO this should be complemented with an ExecuteScript method that would allow to exploit SPARQLMotion scripts in the model.
-        /// </summary>
-        /// <param name="dataset">The Dataset to apply SPIN processing on</param>
-        /// <param name="resources">A list of resources to check constraints on</param>
-        /// <returns>true if no constraint violation is raised, false otherwise</returns>
-        internal bool Apply(SpinWrappedDataset dataset, IEnumerable<INode> resources)
-        {
-            dataset.CreateExecutionContext(resources);
-            return ApplyInternal(dataset);
-        }
-
-        // TODO perhaps use the null uri to avoid creating a graph with all rdftype triples ?
-        internal bool Apply(SpinWrappedDataset dataset)
-        {
-            dataset.CreateExecutionContext(null);
-            return ApplyInternal(dataset);
-        }
-
-        // TODO perhaps use the null uri to avoid creating a graph with all rdftype triples ?
-        internal protected virtual bool ApplyInternal(SpinWrappedDataset dataset)
-        {
-
-
-
-            dataset.QueryExecutionMode = SpinWrappedDataset.QueryMode.SpinConstraintsChecking;
-            IEnumerable<ConstraintViolation> vios = new List<ConstraintViolation>(); //runConstraints(dataset, resources, null);
-            dataset.QueryExecutionMode = SpinWrappedDataset.QueryMode.UserQuerying;
-            return vios.Count() == 0;
-        }
-        */
-        #endregion
-
-        #region SPIN user's queries wrapping
-
-        // TODO make the cache dynamic and set limits on the queryCache
-        private Dictionary<String, ICommand> queryCache = new Dictionary<String, ICommand>();
-
-        internal IQuery BuildQuery(String sparqlQuery)
-        {
-            IQuery spinQuery = null;
+            sparqlQuery = command.ToString();
             if (queryCache.ContainsKey(sparqlQuery))
             {
-                spinQuery = (IQuery)queryCache[sparqlQuery];
+                spinQueryList.Add((IUpdate)queryCache[sparqlQuery]);
             }
             else
             {
                 _currentSparqlGraph = new Graph();
                 _currentSparqlGraph.BaseUri = _currentSparqlGraph.UriFactory.Create("sparql-query:" + sparqlQuery);
-                INode q = new SparqlQueryParser().ParseFromString(sparqlQuery).ToSpinRdf(_currentSparqlGraph);
+                INode q = command.ToSpinRdf(_currentSparqlGraph);
                 if (!_currentSparqlGraph.IsEmpty)
                 {
                     _spinConfiguration.AddGraph(_currentSparqlGraph);
-                    spinQuery = SPINFactory.asQuery(Resource.Get(q, _currentSparqlGraph, this));
+                    IUpdate spinQuery = SPINFactory.asUpdate(Resource.Get(q, _currentSparqlGraph, this));
                     queryCache[sparqlQuery] = spinQuery;
+                    spinQueryList.Add(spinQuery);
                 }
             }
-            return spinQuery;
         }
-
-        internal IEnumerable<IUpdate> BuildUpdate(String sparqlQuery)
-        {
-            var spinQueryList = new List<IUpdate>();
-            SparqlUpdateCommandSet query = new SparqlUpdateParser().ParseFromString(sparqlQuery);
-            query.Optimise();
-            foreach (SparqlUpdateCommand command in query.Commands)
-            {
-                sparqlQuery = command.ToString();
-                if (queryCache.ContainsKey(sparqlQuery))
-                {
-                    spinQueryList.Add((IUpdate)queryCache[sparqlQuery]);
-                }
-                else
-                {
-                    _currentSparqlGraph = new Graph();
-                    _currentSparqlGraph.BaseUri = _currentSparqlGraph.UriFactory.Create("sparql-query:" + sparqlQuery);
-                    INode q = command.ToSpinRdf(_currentSparqlGraph);
-                    if (!_currentSparqlGraph.IsEmpty)
-                    {
-                        _spinConfiguration.AddGraph(_currentSparqlGraph);
-                        IUpdate spinQuery = SPINFactory.asUpdate(Resource.Get(q, _currentSparqlGraph, this));
-                        queryCache[sparqlQuery] = spinQuery;
-                        spinQueryList.Add(spinQuery);
-                    }
-                }
-            }
-            return spinQueryList;
-        }
-
-        #endregion
-
+        return spinQueryList;
     }
+
+    #endregion
+
 }

@@ -26,62 +26,61 @@
 
 using VDS.RDF.Query.Expressions.Functions.XPath.String;
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.String;
+
+/// <summary>
+/// Represents the SPARQL UCASE Function.
+/// </summary>
+public class UCaseFunction
+    : BaseUnaryStringFunction
 {
     /// <summary>
-    /// Represents the SPARQL UCASE Function.
+    /// Creates a new UCASE() function.
     /// </summary>
-    public class UCaseFunction
-        : BaseUnaryStringFunction
+    /// <param name="expr">Argument Expression.</param>
+    public UCaseFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
     {
-        /// <summary>
-        /// Creates a new UCASE() function.
-        /// </summary>
-        /// <param name="expr">Argument Expression.</param>
-        public UCaseFunction(ISparqlExpression expr)
-            : base(expr) { }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
+        get
         {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordUCase;
-            }
+            return SparqlSpecsHelper.SparqlKeywordUCase;
         }
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessUCaseFunction(this, context, binding);
-        }
-
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitUCaseFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordUCase + "(" + _expr + ")";
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new UCaseFunction(transformer.Transform(_expr));
-        }
-
     }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessUCaseFunction(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitUCaseFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return SparqlSpecsHelper.SparqlKeywordUCase + "(" + _expr + ")";
+    }
+
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new UCaseFunction(transformer.Transform(_expr));
+    }
+
 }

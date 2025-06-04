@@ -26,39 +26,38 @@
 
 using System;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Class representing Variable Nodes (only used for N3).
+/// </summary>
+public class VariableNode
+    : BaseVariableNode, IEquatable<VariableNode>, IComparable<VariableNode>
 {
     /// <summary>
-    /// Class representing Variable Nodes (only used for N3).
+    /// Creates a new Variable Node.
     /// </summary>
-    public class VariableNode
-        : BaseVariableNode, IEquatable<VariableNode>, IComparable<VariableNode>
+    /// <param name="varName">Variable Name.</param>
+    public VariableNode(string varName)
+        : base(varName) { }
+
+    /// <summary>
+    /// Compares this Node to another Variable Node.
+    /// </summary>
+    /// <param name="other">Variable Node.</param>
+    /// <returns></returns>
+    public int CompareTo(VariableNode other)
     {
-        /// <summary>
-        /// Creates a new Variable Node.
-        /// </summary>
-        /// <param name="varName">Variable Name.</param>
-        public VariableNode(string varName)
-            : base(varName) { }
+        return base.CompareTo((IVariableNode)other);
+    }
 
-        /// <summary>
-        /// Compares this Node to another Variable Node.
-        /// </summary>
-        /// <param name="other">Variable Node.</param>
-        /// <returns></returns>
-        public int CompareTo(VariableNode other)
-        {
-            return base.CompareTo((IVariableNode)other);
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Variable Node.
-        /// </summary>
-        /// <param name="other">Variable Node.</param>
-        /// <returns></returns>
-        public bool Equals(VariableNode other)
-        {
-            return base.Equals((IVariableNode)other);
-        }
+    /// <summary>
+    /// Determines whether this Node is equal to a Variable Node.
+    /// </summary>
+    /// <param name="other">Variable Node.</param>
+    /// <returns></returns>
+    public bool Equals(VariableNode other)
+    {
+        return base.Equals((IVariableNode)other);
     }
 }

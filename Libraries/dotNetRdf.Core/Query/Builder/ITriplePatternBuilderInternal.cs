@@ -26,27 +26,26 @@
 
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+/// <summary>
+/// Additional methods and properties that can be used by extensions of the <see cref="ITriplePatternBuilder"/> interface.
+/// </summary>
+public interface ITriplePatternBuilderInternal : ITriplePatternBuilder
 {
     /// <summary>
-    /// Additional methods and properties that can be used by extensions of the <see cref="ITriplePatternBuilder"/> interface.
+    /// Gets the pattern item factory used by the builder.
     /// </summary>
-    public interface ITriplePatternBuilderInternal : ITriplePatternBuilder
-    {
-        /// <summary>
-        /// Gets the pattern item factory used by the builder.
-        /// </summary>
-        IPatternItemFactory PatternItemFactory { get; }
+    IPatternItemFactory PatternItemFactory { get; }
 
-        /// <summary>
-        /// Gets the prefix manager, which allows adding prefixes to the query or graph pattern.
-        /// </summary>
-        INamespaceMapper Prefixes { get; }
+    /// <summary>
+    /// Gets the prefix manager, which allows adding prefixes to the query or graph pattern.
+    /// </summary>
+    INamespaceMapper Prefixes { get; }
 
-        /// <summary>
-        /// Add TriplePattern to the builder.
-        /// </summary>
-        /// <param name="triplePattern"></param>
-        void AddPattern(TriplePattern triplePattern);
-    }
+    /// <summary>
+    /// Add TriplePattern to the builder.
+    /// </summary>
+    /// <param name="triplePattern"></param>
+    void AddPattern(TriplePattern triplePattern);
 }

@@ -25,27 +25,25 @@
 */
 
 // TODO is this really needed ?
-namespace VDS.RDF.Query.Spin.SparqlUtil
+namespace VDS.RDF.Query.Spin.SparqlUtil;
+
+
+/**
+ * An interface for objects that can be printed into a PrintContext.
+ * This is implemented by SPIN Queries and Elements.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IPrintable
 {
 
     /**
-     * An interface for objects that can be printed into a PrintContext.
-     * This is implemented by SPIN Queries and Elements.
-     * 
-     * @author Holger Knublauch
+     * Instructs this to print itself into a given PrintContext.
+     * Implementations need to use the provided functions of p.
+     * @param p  the context
      */
-    internal interface IPrintable
-    {
+    void Print(ISparqlPrinter p);
 
-        /**
-         * Instructs this to print itself into a given PrintContext.
-         * Implementations need to use the provided functions of p.
-         * @param p  the context
-         */
-        void Print(ISparqlPrinter p);
-
-        void PrintEnhancedSPARQL(ISparqlPrinter p);
-
-    }
+    void PrintEnhancedSPARQL(ISparqlPrinter p);
 
 }

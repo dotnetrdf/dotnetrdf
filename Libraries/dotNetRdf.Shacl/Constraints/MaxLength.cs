@@ -26,29 +26,28 @@
 
 using System.Diagnostics;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class MaxLength : Length
 {
-    internal class MaxLength : Length
+    [DebuggerStepThrough]
+    internal MaxLength(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal MaxLength(Shape shape, INode node)
-            : base(shape, node)
-        {
-        }
+    }
 
-        protected override string DefaultMessage => $"Value length must be less than {NumericValue}.";
+    protected override string DefaultMessage => $"Value length must be less than {NumericValue}.";
 
-        internal override INode ConstraintComponent
+    internal override INode ConstraintComponent
+    {
+        get
         {
-            get
-            {
-                return Vocabulary.MaxLengthConstraintComponent;
-            }
+            return Vocabulary.MaxLengthConstraintComponent;
         }
+    }
 
-        protected override bool ValidateInternal(int v)
-        {
-            return v < 1;
-        }
+    protected override bool ValidateInternal(int v)
+    {
+        return v < 1;
     }
 }

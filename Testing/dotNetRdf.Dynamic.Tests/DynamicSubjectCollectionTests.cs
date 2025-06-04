@@ -31,32 +31,32 @@ using System.Linq.Expressions;
 using VDS.RDF;
 using Xunit;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+public class DynamicSubjectCollectionTests
 {
-    public class DynamicSubjectCollectionTests
+    [Fact]
+    public void Requires_predicate()
     {
-        [Fact]
-        public void Requires_predicate()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                new DynamicSubjectCollection(null, null));
-        }
+        Assert.Throws<ArgumentNullException>(() =>
+            new DynamicSubjectCollection(null, null));
+    }
 
-        [Fact]
-        public void Requires_object()
-        {
-            var g = new Graph();
-            var p = g.CreateBlankNode();
+    [Fact]
+    public void Requires_object()
+    {
+        var g = new Graph();
+        var p = g.CreateBlankNode();
 
-            Assert.Throws<ArgumentNullException>(() =>
-                new DynamicSubjectCollection(p, null));
-        }
+        Assert.Throws<ArgumentNullException>(() =>
+            new DynamicSubjectCollection(p, null));
+    }
 
-        [Fact]
-        public void Counts_by_predicate_and_object()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Counts_by_predicate_and_object()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> .
 <urn:s> <urn:s> <urn:p> .
 <urn:s> <urn:s> <urn:o> .
@@ -86,51 +86,51 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
-            var d = new DynamicNode(o, g);
-            var c = new DynamicSubjectCollection(p, d);
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
+        var d = new DynamicNode(o, g);
+        var c = new DynamicSubjectCollection(p, d);
 
-            Assert.Equal(3, c.Count());
-        }
+        Assert.Equal(3, c.Count());
+    }
 
-        [Fact]
-        public void Is_writable()
-        {
-            var g = new Graph();
-            var p = g.CreateBlankNode();
-            var o = g.CreateBlankNode();
-            var d = new DynamicNode(o, g);
-            var c = new DynamicSubjectCollection(p, d);
+    [Fact]
+    public void Is_writable()
+    {
+        var g = new Graph();
+        var p = g.CreateBlankNode();
+        var o = g.CreateBlankNode();
+        var d = new DynamicNode(o, g);
+        var c = new DynamicSubjectCollection(p, d);
 
-            Assert.False(c.IsReadOnly);
-        }
+        Assert.False(c.IsReadOnly);
+    }
 
-        [Fact]
-        public void Add_asserts_with_predicate_object_and_argument_subject()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
+    [Fact]
+    public void Add_asserts_with_predicate_object_and_argument_subject()
+    {
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var g = new Graph();
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
-            var d = new DynamicNode(o, g);
-            var c = new DynamicSubjectCollection(p, d);
+        var g = new Graph();
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
+        var d = new DynamicNode(o, g);
+        var c = new DynamicSubjectCollection(p, d);
 
-            c.Add(s);
+        c.Add(s);
 
-            Assert.Equal(expected, g);
-        }
+        Assert.Equal(expected, g);
+    }
 
-        [Fact]
-        public void Clear_retracts_by_predicate_and_object()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
+    [Fact]
+    public void Clear_retracts_by_predicate_and_object()
+    {
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> .
 <urn:s> <urn:s> <urn:p> .
 <urn:s> <urn:s> <urn:o> .
@@ -160,8 +160,8 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var g = new Graph();
-            g.LoadFromString(@"
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> .
 <urn:s> <urn:s> <urn:p> .
 <urn:s> <urn:s> <urn:o> .
@@ -191,21 +191,21 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
-            var d = new DynamicNode(o, g);
-            var c = new DynamicSubjectCollection(p, d);
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
+        var d = new DynamicNode(o, g);
+        var c = new DynamicSubjectCollection(p, d);
 
-            c.Clear();
+        c.Clear();
 
-            Assert.Equal(expected, g);
-        }
+        Assert.Equal(expected, g);
+    }
 
-        [Fact]
-        public void Contains_reports_by_predicate_object_and_argument_subject()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Contains_reports_by_predicate_object_and_argument_subject()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> .
 <urn:s> <urn:s> <urn:p> .
 <urn:s> <urn:s> <urn:o> .
@@ -235,23 +235,23 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
-            var d = new DynamicNode(s, g);
-            var c = new DynamicSubjectCollection(p, d);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
+        var d = new DynamicNode(s, g);
+        var c = new DynamicSubjectCollection(p, d);
 
-            Assert.Contains(s, c);
-            Assert.Contains(p, c);
-            Assert.Contains(o, c);
-            Assert.Equal(3, c.Count());
-        }
+        Assert.Contains(s, c);
+        Assert.Contains(p, c);
+        Assert.Contains(o, c);
+        Assert.Equal(3, c.Count());
+    }
 
-        [Fact]
-        public void Copies_subjects_by_predicate_and_object()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Copies_subjects_by_predicate_and_object()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> .
 <urn:s> <urn:s> <urn:p> .
 <urn:s> <urn:s> <urn:o> .
@@ -281,25 +281,25 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
-            var d = new DynamicNode(o, g);
-            var c = new DynamicSubjectCollection(p, d);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
+        var d = new DynamicNode(o, g);
+        var c = new DynamicSubjectCollection(p, d);
 
-            var objects = new INode[5]; // +2 for padding on each side
-            c.CopyTo(objects, 1); // start at the second item at destination
+        var objects = new INode[5]; // +2 for padding on each side
+        c.CopyTo(objects, 1); // start at the second item at destination
 
-            Assert.Equal(
-                new[] { null, s, p, o, null },
-                objects);
-        }
+        Assert.Equal(
+            new[] { null, s, p, o, null },
+            objects);
+    }
 
-        [Fact]
-        public void Enumerates_subjects_by_predicate_and_subject()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Enumerates_subjects_by_predicate_and_subject()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> .
 <urn:s> <urn:s> <urn:p> .
 <urn:s> <urn:s> <urn:o> .
@@ -329,31 +329,31 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
-            var d = new DynamicNode(s, g);
-            var c = new DynamicSubjectCollection(p, d);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
+        var d = new DynamicNode(s, g);
+        var c = new DynamicSubjectCollection(p, d);
 
-            var expected = new[] { s, p, o }.GetEnumerator();
-            using (var actual = c.GetEnumerator())
+        var expected = new[] { s, p, o }.GetEnumerator();
+        using (var actual = c.GetEnumerator())
+        {
+            while (expected.MoveNext())
             {
-                while (expected.MoveNext())
-                {
-                    actual.MoveNext();
+                actual.MoveNext();
 
-                    Assert.Equal(
-                        expected.Current,
-                        actual.Current);
-                }
+                Assert.Equal(
+                    expected.Current,
+                    actual.Current);
             }
         }
+    }
 
-        [Fact]
-        public void Remove_retracts_by_predicate_object_and_argument_subject()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
+    [Fact]
+    public void Remove_retracts_by_predicate_object_and_argument_subject()
+    {
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> .
 <urn:s> <urn:s> <urn:p> .
 <urn:s> <urn:s> <urn:o> .
@@ -383,8 +383,8 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var g = new Graph();
-            g.LoadFromString(@"
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> .
 <urn:s> <urn:s> <urn:p> .
 <urn:s> <urn:s> <urn:o> .
@@ -414,24 +414,24 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
-            var d = new DynamicNode(o, g);
-            var c = new DynamicSubjectCollection(p, d);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
+        var d = new DynamicNode(o, g);
+        var c = new DynamicSubjectCollection(p, d);
 
-            c.Remove(s);
+        c.Remove(s);
 
-            Assert.Equal(
-                expected,
-                g);
-        }
+        Assert.Equal(
+            expected,
+            g);
+    }
 
-        [Fact]
-        public void IEnumerable_enumerates_subjects_by_predicate_and_object()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void IEnumerable_enumerates_subjects_by_predicate_and_object()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> .
 <urn:s> <urn:s> <urn:p> .
 <urn:s> <urn:s> <urn:o> .
@@ -461,38 +461,37 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
-            var d = new DynamicNode(s, g);
-            var c = new DynamicSubjectCollection(p, d) as IEnumerable;
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
+        var d = new DynamicNode(s, g);
+        var c = new DynamicSubjectCollection(p, d) as IEnumerable;
 
-            var expected = new[] { s, p, o }.GetEnumerator();
-            var actual = c.GetEnumerator();
-            while (expected.MoveNext())
-            {
-                actual.MoveNext();
-
-                Assert.Equal(
-                    expected.Current,
-                    actual.Current);
-            }
-        }
-
-        [Fact]
-        public void Provides_meta_object()
+        var expected = new[] { s, p, o }.GetEnumerator();
+        var actual = c.GetEnumerator();
+        while (expected.MoveNext())
         {
-            var g = new Graph();
-            g.LoadFromString(@"<urn:s> <urn:p> <urn:o> .");
+            actual.MoveNext();
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
-            var d = new DynamicNode(o, g);
-            var l = new DynamicSubjectCollection(p, d) as IDynamicMetaObjectProvider;
-            var mo = l.GetMetaObject(Expression.Empty());
-
-            Assert.NotNull(mo);
+            Assert.Equal(
+                expected.Current,
+                actual.Current);
         }
+    }
+
+    [Fact]
+    public void Provides_meta_object()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"<urn:s> <urn:p> <urn:o> .");
+
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
+        var d = new DynamicNode(o, g);
+        var l = new DynamicSubjectCollection(p, d) as IDynamicMetaObjectProvider;
+        var mo = l.GetMetaObject(Expression.Empty());
+
+        Assert.NotNull(mo);
     }
 }

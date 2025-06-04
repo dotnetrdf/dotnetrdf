@@ -27,31 +27,30 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Skos
+namespace VDS.RDF.Skos;
+
+/// <summary>
+/// Represents a labelled group of SKOS concepts.
+/// </summary>
+public class SkosCollection : SkosMember
 {
     /// <summary>
-    /// Represents a labelled group of SKOS concepts.
+    /// Creates a new collection for the given resource.
     /// </summary>
-    public class SkosCollection : SkosMember
-    {
-        /// <summary>
-        /// Creates a new collection for the given resource.
-        /// </summary>
-        /// <param name="resource">Resource representing the collection.</param>
-        /// <param name="graph">Graph containing the resource representing the collection.</param>
-        public SkosCollection(INode resource, IGraph graph) : base(resource, graph) { }
+    /// <param name="resource">Resource representing the collection.</param>
+    /// <param name="graph">Graph containing the resource representing the collection.</param>
+    public SkosCollection(INode resource, IGraph graph) : base(resource, graph) { }
 
-        /// <summary>
-        /// Gets the members of the collection.
-        /// </summary>
-        public IEnumerable<SkosMember> Member
+    /// <summary>
+    /// Gets the members of the collection.
+    /// </summary>
+    public IEnumerable<SkosMember> Member
+    {
+        get
         {
-            get
-            {
-                return 
-                    GetObjects(SkosHelper.Member)
-                    .Select(x=>SkosMember.Create(x, Graph));
-            }
+            return 
+                GetObjects(SkosHelper.Member)
+                .Select(x=>SkosMember.Create(x, Graph));
         }
     }
 }

@@ -29,256 +29,255 @@ using System.Linq;
 using System.Threading.Tasks;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+/// <summary>
+/// Abstract Base class for SPARQL Views which are Graphs which are generated from SPARQL Queries and get automatically updated when the Store they are attached to changes.
+/// </summary>
+/// <remarks>
+/// <para>
+/// CONSTRUCT, DESCRIBE or SELECT queries can be used to generate a Graph.  If you use a SELECT query the returned variables must contain ?s, ?p and ?o in order to generate a view correctly.
+/// </para>
+/// </remarks>
+public abstract class BaseSparqlView 
+    : Graph
 {
     /// <summary>
-    /// Abstract Base class for SPARQL Views which are Graphs which are generated from SPARQL Queries and get automatically updated when the Store they are attached to changes.
+    /// SPARQL Query.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// CONSTRUCT, DESCRIBE or SELECT queries can be used to generate a Graph.  If you use a SELECT query the returned variables must contain ?s, ?p and ?o in order to generate a view correctly.
-    /// </para>
-    /// </remarks>
-    public abstract class BaseSparqlView 
-        : Graph
+    protected SparqlQuery _q;
+    /// <summary>
+    /// Graphs that are mentioned in the Query.
+    /// </summary>
+    protected HashSet<string> _graphs;
+    /// <summary>
+    /// Triple Store the query operates over.
+    /// </summary>
+    protected ITripleStore _store;
+
+    private bool _requiresInvalidate ;
+    private readonly object _lock = new object();
+
+    /// <summary>
+    /// Creates a new SPARQL View.
+    /// </summary>
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    /// <param name="store">Triple Store to query.</param>
+    /// <param name="name">The graph name to assign to the view.</param>
+    protected BaseSparqlView(string sparqlQuery, ITripleStore store, IRefNode name = null)
+        : base(name)
     {
-        /// <summary>
-        /// SPARQL Query.
-        /// </summary>
-        protected SparqlQuery _q;
-        /// <summary>
-        /// Graphs that are mentioned in the Query.
-        /// </summary>
-        protected HashSet<string> _graphs;
-        /// <summary>
-        /// Triple Store the query operates over.
-        /// </summary>
-        protected ITripleStore _store;
+        var parser = new SparqlQueryParser();
+        _q = parser.ParseFromString(sparqlQuery);
+        _store = store;
+        Initialise();
+    }
 
-        private bool _requiresInvalidate ;
-        private readonly object _lock = new object();
+    /// <summary>
+    /// Creates a new SPARQL View.
+    /// </summary>
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    /// <param name="store">Triple Store to query.</param>
+    /// <param name="name">The graph name to assign to the view.</param>
+    protected BaseSparqlView(SparqlParameterizedString sparqlQuery, ITripleStore store, IRefNode name = null)
+        : this(sparqlQuery.ToString(), store, name) { }
 
-        /// <summary>
-        /// Creates a new SPARQL View.
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <param name="store">Triple Store to query.</param>
-        /// <param name="name">The graph name to assign to the view.</param>
-        protected BaseSparqlView(string sparqlQuery, ITripleStore store, IRefNode name = null)
-            : base(name)
+    /// <summary>
+    /// Creates a new SPARQL View.
+    /// </summary>
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    /// <param name="store">Triple Store to query.</param>
+    /// <param name="name">The graph name to assign to the view.</param>
+    protected BaseSparqlView(SparqlQuery sparqlQuery, ITripleStore store, IRefNode name = null)
+        : base(name)
+    {
+        _q = sparqlQuery;
+        _store = store;
+        Initialise();
+    }
+
+    /// <summary>
+    /// Initializes the SPARQL View.
+    /// </summary>
+    private void Initialise()
+    {
+        if (_q.QueryType == SparqlQueryType.Ask)
         {
-            var parser = new SparqlQueryParser();
-            _q = parser.ParseFromString(sparqlQuery);
-            _store = store;
-            Initialise();
+            throw new RdfQueryException("Cannot create a SPARQL View based on an ASK Query");
         }
 
-        /// <summary>
-        /// Creates a new SPARQL View.
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <param name="store">Triple Store to query.</param>
-        /// <param name="name">The graph name to assign to the view.</param>
-        protected BaseSparqlView(SparqlParameterizedString sparqlQuery, ITripleStore store, IRefNode name = null)
-            : this(sparqlQuery.ToString(), store, name) { }
-
-        /// <summary>
-        /// Creates a new SPARQL View.
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <param name="store">Triple Store to query.</param>
-        /// <param name="name">The graph name to assign to the view.</param>
-        protected BaseSparqlView(SparqlQuery sparqlQuery, ITripleStore store, IRefNode name = null)
-            : base(name)
+        // Does this Query operate over specific Graphs?
+        if (_q.DefaultGraphNames.Any() || _q.NamedGraphNames.Any())
         {
-            _q = sparqlQuery;
-            _store = store;
-            Initialise();
+            _graphs = new HashSet<string>();
+            foreach (IRefNode graphName in _q.DefaultGraphNames)
+            {
+                _graphs.Add(graphName.ToSafeString());
+            }
+            foreach (IRefNode graphName in _q.NamedGraphNames)
+            {
+                _graphs.Add(graphName.ToSafeString());
+            }
         }
 
-        /// <summary>
-        /// Initializes the SPARQL View.
-        /// </summary>
-        private void Initialise()
+        // Attach a Handler to the Store's Graph Added, Removed and Changed events
+        _store.GraphChanged += OnGraphChanged;
+        _store.GraphAdded += OnGraphAdded;
+        _store.GraphRemoved += OnGraphRemoved;
+        _store.GraphMerged += OnGraphMerged;
+
+        // Fill the Graph with the results of the Query
+        UpdateViewInternal();
+    }
+
+    /// <summary>
+    /// Invalidates the View causing it to be updated.
+    /// </summary>
+    private void InvalidateView()
+    {
+        Task.Factory.StartNew(UpdateViewInternal).ContinueWith(antecedent =>
         {
-            if (_q.QueryType == SparqlQueryType.Ask)
+            if (antecedent.IsFaulted)
             {
-                throw new RdfQueryException("Cannot create a SPARQL View based on an ASK Query");
+                LastError = new RdfQueryException(
+                    "Unable to complete update of SPARQL View, see inner exception for details",
+                    antecedent.Exception);
             }
-
-            // Does this Query operate over specific Graphs?
-            if (_q.DefaultGraphNames.Any() || _q.NamedGraphNames.Any())
+            else
             {
-                _graphs = new HashSet<string>();
-                foreach (IRefNode graphName in _q.DefaultGraphNames)
+                if (_requiresInvalidate)
                 {
-                    _graphs.Add(graphName.ToSafeString());
-                }
-                foreach (IRefNode graphName in _q.NamedGraphNames)
-                {
-                    _graphs.Add(graphName.ToSafeString());
+                    InvalidateView();
+                    _requiresInvalidate = false;
                 }
             }
+        });
+    }
 
-            // Attach a Handler to the Store's Graph Added, Removed and Changed events
-            _store.GraphChanged += OnGraphChanged;
-            _store.GraphAdded += OnGraphAdded;
-            _store.GraphRemoved += OnGraphRemoved;
-            _store.GraphMerged += OnGraphMerged;
-
-            // Fill the Graph with the results of the Query
+    /// <summary>
+    /// Forces the view to be updated.
+    /// </summary>
+    public void UpdateView()
+    {
+        lock (_lock)
+        {
             UpdateViewInternal();
+            if (LastError != null) throw LastError;
         }
+    }
 
-        /// <summary>
-        /// Invalidates the View causing it to be updated.
-        /// </summary>
-        private void InvalidateView()
+    /// <summary>
+    /// Abstract method that derived classes should implement to update the view.
+    /// </summary>
+    protected abstract void UpdateViewInternal();
+
+    /// <summary>
+    /// Gets the error that occurred during the last update (if any).
+    /// </summary>
+    public RdfQueryException LastError { get; protected set; }
+
+    private void OnGraphChanged(object sender, TripleStoreEventArgs args)
+    {
+        if (args.GraphEvent != null)
         {
-            Task.Factory.StartNew(UpdateViewInternal).ContinueWith(antecedent =>
+            IGraph g = args.GraphEvent.Graph;
+            if (g != null)
             {
-                if (antecedent.IsFaulted)
+                // Ignore Changes to self
+                if (ReferenceEquals(g, this)) return;
+
+                if (_graphs == null)
                 {
-                    LastError = new RdfQueryException(
-                        "Unable to complete update of SPARQL View, see inner exception for details",
-                        antecedent.Exception);
+                    // No specific Graphs so any change causes an invalidation
+                    InvalidateView();
                 }
                 else
                 {
-                    if (_requiresInvalidate)
+                    // If specific Graphs only invalidate when those Graphs change
+                    if (_graphs.Contains(g.BaseUri.ToSafeString()))
                     {
                         InvalidateView();
-                        _requiresInvalidate = false;
-                    }
-                }
-            });
-        }
-
-        /// <summary>
-        /// Forces the view to be updated.
-        /// </summary>
-        public void UpdateView()
-        {
-            lock (_lock)
-            {
-                UpdateViewInternal();
-                if (LastError != null) throw LastError;
-            }
-        }
-
-        /// <summary>
-        /// Abstract method that derived classes should implement to update the view.
-        /// </summary>
-        protected abstract void UpdateViewInternal();
-
-        /// <summary>
-        /// Gets the error that occurred during the last update (if any).
-        /// </summary>
-        public RdfQueryException LastError { get; protected set; }
-
-        private void OnGraphChanged(object sender, TripleStoreEventArgs args)
-        {
-            if (args.GraphEvent != null)
-            {
-                IGraph g = args.GraphEvent.Graph;
-                if (g != null)
-                {
-                    // Ignore Changes to self
-                    if (ReferenceEquals(g, this)) return;
-
-                    if (_graphs == null)
-                    {
-                        // No specific Graphs so any change causes an invalidation
-                        InvalidateView();
-                    }
-                    else
-                    {
-                        // If specific Graphs only invalidate when those Graphs change
-                        if (_graphs.Contains(g.BaseUri.ToSafeString()))
-                        {
-                            InvalidateView();
-                        }
                     }
                 }
             }
         }
+    }
 
-        private void OnGraphMerged(object sender, TripleStoreEventArgs args)
+    private void OnGraphMerged(object sender, TripleStoreEventArgs args)
+    {
+        if (args.GraphEvent != null)
         {
-            if (args.GraphEvent != null)
+            IGraph g = args.GraphEvent.Graph;
+            if (g != null)
             {
-                IGraph g = args.GraphEvent.Graph;
-                if (g != null)
-                {
-                    // Ignore merges to self
-                    if (ReferenceEquals(g, this)) return;
+                // Ignore merges to self
+                if (ReferenceEquals(g, this)) return;
 
-                    if (_graphs == null)
+                if (_graphs == null)
+                {
+                    // No specific Graphs so any change causes an invalidation
+                    InvalidateView();
+                }
+                else
+                {
+                    // If specific Graphs only invalidate when those Graphs change
+                    if (_graphs.Contains(g.BaseUri.ToSafeString()))
                     {
-                        // No specific Graphs so any change causes an invalidation
                         InvalidateView();
-                    }
-                    else
-                    {
-                        // If specific Graphs only invalidate when those Graphs change
-                        if (_graphs.Contains(g.BaseUri.ToSafeString()))
-                        {
-                            InvalidateView();
-                        }
                     }
                 }
             }
         }
+    }
 
-        private void OnGraphAdded(object sender, TripleStoreEventArgs args)
+    private void OnGraphAdded(object sender, TripleStoreEventArgs args)
+    {
+        if (args.GraphEvent != null)
         {
-            if (args.GraphEvent != null)
+            IGraph g = args.GraphEvent.Graph;
+            if (g != null)
             {
-                IGraph g = args.GraphEvent.Graph;
-                if (g != null)
-                {
-                    // Ignore Changes to self
-                    if (ReferenceEquals(g, this)) return;
+                // Ignore Changes to self
+                if (ReferenceEquals(g, this)) return;
 
-                    if (_graphs == null)
+                if (_graphs == null)
+                {
+                    // No specific Graphs so any change causes an invalidation
+                    InvalidateView();
+                }
+                else
+                {
+                    // If specific Graphs only invalidate when those Graphs change
+                    if (_graphs.Contains(g.BaseUri.ToSafeString()))
                     {
-                        // No specific Graphs so any change causes an invalidation
                         InvalidateView();
-                    }
-                    else
-                    {
-                        // If specific Graphs only invalidate when those Graphs change
-                        if (_graphs.Contains(g.BaseUri.ToSafeString()))
-                        {
-                            InvalidateView();
-                        }
                     }
                 }
             }
         }
+    }
 
-        private void OnGraphRemoved(object sender, TripleStoreEventArgs args)
+    private void OnGraphRemoved(object sender, TripleStoreEventArgs args)
+    {
+        if (args.GraphEvent != null)
         {
-            if (args.GraphEvent != null)
+            IGraph g = args.GraphEvent.Graph;
+            if (g != null)
             {
-                IGraph g = args.GraphEvent.Graph;
-                if (g != null)
-                {
-                    // Ignore Changes to self
-                    if (ReferenceEquals(g, this)) return;
+                // Ignore Changes to self
+                if (ReferenceEquals(g, this)) return;
 
-                    if (_graphs == null)
+                if (_graphs == null)
+                {
+                    // No specific Graphs so any change causes an invalidation
+                    InvalidateView();
+                }
+                else
+                {
+                    // If specific Graphs only invalidate when those Graphs change
+                    if (_graphs.Contains(g.BaseUri.ToSafeString()))
                     {
-                        // No specific Graphs so any change causes an invalidation
                         InvalidateView();
-                    }
-                    else
-                    {
-                        // If specific Graphs only invalidate when those Graphs change
-                        if (_graphs.Contains(g.BaseUri.ToSafeString()))
-                        {
-                            InvalidateView();
-                        }
                     }
                 }
             }

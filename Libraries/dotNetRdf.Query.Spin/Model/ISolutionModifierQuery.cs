@@ -24,29 +24,28 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+
+/**
+ * Shared functions of those Query types that can have solution modifiers.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface ISolutionModifierQuery : IQuery
 {
+
+    /**
+     * Gets the LIMIT or null.
+     * @return the specified limit or null
+     */
+    long? getLimit();
 
 
     /**
-     * Shared functions of those Query types that can have solution modifiers.
-     * 
-     * @author Holger Knublauch
+     * Gets the OFFSET or null
+     * @return the specified offset or null
      */
-    internal interface ISolutionModifierQuery : IQuery
-    {
-
-        /**
-         * Gets the LIMIT or null.
-         * @return the specified limit or null
-         */
-        long? getLimit();
-
-
-        /**
-         * Gets the OFFSET or null
-         * @return the specified offset or null
-         */
-        long? getOffset();
-    }
+    long? getOffset();
 }

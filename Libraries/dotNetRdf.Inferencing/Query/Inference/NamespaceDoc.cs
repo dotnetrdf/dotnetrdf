@@ -26,22 +26,21 @@
 
 using System.Runtime.CompilerServices;
 
-namespace VDS.RDF.Query.Inference
-{
-    /// <summary>
-    /// <para>
-    /// Namespace for Inference Classes which provide Inferencing capabilities on RDF - these features are currently experimental and may not work as expected.
-    /// </para>
-    /// <para>
-    /// Classes which implement reasoning must implement the <see cref="IInferenceEngine">IInferenceEngine</see> interface, these can then be attached to classes which implement the <see cref="IInferencingTripleStore">IInferencingTripleStore</see> interface or they can be used to apply inference to any <see cref="IGraph">IGraph</see> implementation with the inferred Triples optionally output to a separate Graph.
-    /// </para>
-    /// <para>
-    /// OWL reasoning currently has extremely limited support.
-    /// </para>
-    /// </summary>
-    [CompilerGenerated]
-    class NamespaceDoc
-    {
+namespace VDS.RDF.Query.Inference;
 
-    }
+/// <summary>
+/// <para>
+/// Namespace for Inference Classes which provide Inferencing capabilities on RDF - these features are currently experimental and may not work as expected.
+/// </para>
+/// <para>
+/// Classes which implement reasoning must implement the <see cref="IInferenceEngine">IInferenceEngine</see> interface, these can then be attached to classes which implement the <see cref="IInferencingTripleStore">IInferencingTripleStore</see> interface or they can be used to apply inference to any <see cref="IGraph">IGraph</see> implementation with the inferred Triples optionally output to a separate Graph.
+/// </para>
+/// <para>
+/// OWL reasoning currently has extremely limited support.
+/// </para>
+/// </summary>
+[CompilerGenerated]
+class NamespaceDoc
+{
+
 }

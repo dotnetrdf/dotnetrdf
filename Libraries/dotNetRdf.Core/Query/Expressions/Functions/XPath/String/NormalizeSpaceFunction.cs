@@ -24,62 +24,61 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.String
+namespace VDS.RDF.Query.Expressions.Functions.XPath.String;
+
+/// <summary>
+/// Represents the XPath fn:normalize-space() function.
+/// </summary>
+public class NormalizeSpaceFunction
+    : BaseUnaryStringFunction
 {
     /// <summary>
-    /// Represents the XPath fn:normalize-space() function.
+    /// Creates a new XPath Normalize Space function.
     /// </summary>
-    public class NormalizeSpaceFunction
-        : BaseUnaryStringFunction
+    /// <param name="stringExpr">Expression.</param>
+    public NormalizeSpaceFunction(ISparqlExpression stringExpr)
+        : base(stringExpr) { }
+
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
     {
-        /// <summary>
-        /// Creates a new XPath Normalize Space function.
-        /// </summary>
-        /// <param name="stringExpr">Expression.</param>
-        public NormalizeSpaceFunction(ISparqlExpression stringExpr)
-            : base(stringExpr) { }
+        return processor.ProcessNormalizeSpaceFunction(this, context, binding);
+    }
 
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitNormalizeSpaceFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeSpace + ">(" + _expr + ")";
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return processor.ProcessNormalizeSpaceFunction(this, context, binding);
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeSpace;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitNormalizeSpaceFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeSpace + ">(" + _expr + ")";
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeSpace;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new NormalizeSpaceFunction(transformer.Transform(_expr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new NormalizeSpaceFunction(transformer.Transform(_expr));
     }
 }

@@ -29,81 +29,80 @@ using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Aggregates.Sparql
+namespace VDS.RDF.Query.Aggregates.Sparql;
+
+/// <summary>
+/// Class representing AVG Aggregate Functions.
+/// </summary>
+public class AverageAggregate
+    : BaseAggregate
 {
     /// <summary>
-    /// Class representing AVG Aggregate Functions.
+    /// Creates a new AVG Aggregate.
     /// </summary>
-    public class AverageAggregate
-        : BaseAggregate
+    /// <param name="expr">Variable Expression.</param>
+    /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
+    public AverageAggregate(VariableTerm expr, bool distinct)
+        : base(expr, distinct)
     {
-        /// <summary>
-        /// Creates a new AVG Aggregate.
-        /// </summary>
-        /// <param name="expr">Variable Expression.</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
-        public AverageAggregate(VariableTerm expr, bool distinct)
-            : base(expr, distinct)
+        Variable = expr.ToString().Substring(1);
+    }
+
+    /// <summary>
+    /// Creates a new AVG Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
+    public AverageAggregate(ISparqlExpression expr, bool distinct)
+        : base(expr, distinct) { }
+
+    /// <summary>
+    /// Creates a new AVG Aggregate.
+    /// </summary>
+    /// <param name="expr">Variable Expression.</param>
+    public AverageAggregate(VariableTerm expr)
+        : this(expr, false) { }
+
+    /// <summary>
+    /// Creates a new AVG Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    public AverageAggregate(ISparqlExpression expr)
+        : this(expr, false) { }
+
+    /// <summary>
+    /// The variable to aggregate.
+    /// </summary>
+    public string Variable { get; }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+        IEnumerable<TBinding> bindings)
+    {
+        return processor.ProcessAverage(this, context, bindings);
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Aggregate.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append("AVG(");
+        if (_distinct) output.Append("DISTINCT ");
+        output.Append(_expr + ")");
+        return output.ToString();
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Aggregate.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            Variable = expr.ToString().Substring(1);
-        }
-
-        /// <summary>
-        /// Creates a new AVG Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
-        public AverageAggregate(ISparqlExpression expr, bool distinct)
-            : base(expr, distinct) { }
-
-        /// <summary>
-        /// Creates a new AVG Aggregate.
-        /// </summary>
-        /// <param name="expr">Variable Expression.</param>
-        public AverageAggregate(VariableTerm expr)
-            : this(expr, false) { }
-
-        /// <summary>
-        /// Creates a new AVG Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public AverageAggregate(ISparqlExpression expr)
-            : this(expr, false) { }
-
-        /// <summary>
-        /// The variable to aggregate.
-        /// </summary>
-        public string Variable { get; }
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
-            IEnumerable<TBinding> bindings)
-        {
-            return processor.ProcessAverage(this, context, bindings);
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Aggregate.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append("AVG(");
-            if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr + ")");
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Aggregate.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordAvg;
-            }
+            return SparqlSpecsHelper.SparqlKeywordAvg;
         }
     }
 }

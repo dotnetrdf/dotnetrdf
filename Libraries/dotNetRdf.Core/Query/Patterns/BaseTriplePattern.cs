@@ -27,148 +27,147 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Query.Patterns
+namespace VDS.RDF.Query.Patterns;
+
+/// <summary>
+/// Base class for representing all types of Triple Patterns in SPARQL queries.
+/// </summary>
+public abstract class BaseTriplePattern 
+    : ITriplePattern
 {
     /// <summary>
-    /// Base class for representing all types of Triple Patterns in SPARQL queries.
+    /// Stores the list of variables that are used in the Pattern.
     /// </summary>
-    public abstract class BaseTriplePattern 
-        : ITriplePattern
+    protected List<string> _vars = new();
+
+    /// <inheritdoc />
+    public abstract TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor,
+        TContext context);
+
+    /// <inheritdoc />
+    public abstract T Accept<T>(ISparqlAlgebraVisitor<T> visitor);
+
+    /// <summary>
+    /// Returns whether the Triple Pattern is an accept all.
+    /// </summary>
+    public abstract bool IsAcceptAll
     {
-        /// <summary>
-        /// Stores the list of variables that are used in the Pattern.
-        /// </summary>
-        protected List<string> _vars = new();
+        get;
+    }
 
-        /// <inheritdoc />
-        public abstract TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor,
-            TContext context);
+    /// <summary>
+    /// Gets the Triple Pattern Type.
+    /// </summary>
+    public abstract TriplePatternType PatternType
+    {
+        get;
+    }
 
-        /// <inheritdoc />
-        public abstract T Accept<T>(ISparqlAlgebraVisitor<T> visitor);
-
-        /// <summary>
-        /// Returns whether the Triple Pattern is an accept all.
-        /// </summary>
-        public abstract bool IsAcceptAll
-        {
-            get;
+    /// <summary>
+    /// Gets the List of Variables used in the Pattern.
+    /// </summary>
+    /// <remarks>
+    /// These are sorted in alphabetical order.
+    /// </remarks>
+    public List<string> Variables
+    {
+        get 
+        { 
+            return _vars;
         }
+    }
 
-        /// <summary>
-        /// Gets the Triple Pattern Type.
-        /// </summary>
-        public abstract TriplePatternType PatternType
+    /// <summary>
+    /// Gets the enumeration of floating variables in the pattern i.e. variables that are not guaranteed to have a bound value.
+    /// </summary>
+    public abstract IEnumerable<string> FloatingVariables { get; }
+
+    /// <summary>
+    /// Gets the enumeration of fixed variables in the pattern i.e. variables that are guaranteed to have a bound value.
+    /// </summary>
+    public abstract IEnumerable<string> FixedVariables { get; }
+
+    /// <summary>
+    /// Compares a Triple Pattern to another Triple Pattern.
+    /// </summary>
+    /// <param name="other">Other Triple Pattern.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <para>
+    /// The aim of this function is to sort Triple Patterns into what is hopefully an optimal order such that during execution the query space is restricted as early as possible.
+    /// </para>
+    /// <para>
+    /// The basic rules of this are as follows:.
+    /// <ol>
+    ///     <li>Patterns with fewer variables should be executed first</li>
+    ///     <li>Patterns using the same variables should be executed in sequence</li>
+    ///     <li>Patterns using indexes which are considered more useful should be executed first</li>
+    /// </ol>
+    /// </para>
+    /// </remarks>
+    public virtual int CompareTo(ITriplePattern other)
+    {
+        if (_vars.Count < other.Variables.Count)
         {
-            get;
+            // We have fewer variables so we go before the other pattern
+            return -1;
         }
-
-        /// <summary>
-        /// Gets the List of Variables used in the Pattern.
-        /// </summary>
-        /// <remarks>
-        /// These are sorted in alphabetical order.
-        /// </remarks>
-        public List<string> Variables
+        if (_vars.Count > other.Variables.Count)
         {
-            get 
-            { 
-                return _vars;
-            }
+            // We have more variables so we go after the other pattern
+            return 1;
         }
+        // Neither pattern has any variables so we consider these to be equivalent
+        // Order of these patterns has no effect
+        if (_vars.Count <= 0) return 0;
 
-        /// <summary>
-        /// Gets the enumeration of floating variables in the pattern i.e. variables that are not guaranteed to have a bound value.
-        /// </summary>
-        public abstract IEnumerable<string> FloatingVariables { get; }
-
-        /// <summary>
-        /// Gets the enumeration of fixed variables in the pattern i.e. variables that are guaranteed to have a bound value.
-        /// </summary>
-        public abstract IEnumerable<string> FixedVariables { get; }
-
-        /// <summary>
-        /// Compares a Triple Pattern to another Triple Pattern.
-        /// </summary>
-        /// <param name="other">Other Triple Pattern.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// The aim of this function is to sort Triple Patterns into what is hopefully an optimal order such that during execution the query space is restricted as early as possible.
-        /// </para>
-        /// <para>
-        /// The basic rules of this are as follows:.
-        /// <ol>
-        ///     <li>Patterns with fewer variables should be executed first</li>
-        ///     <li>Patterns using the same variables should be executed in sequence</li>
-        ///     <li>Patterns using indexes which are considered more useful should be executed first</li>
-        /// </ol>
-        /// </para>
-        /// </remarks>
-        public virtual int CompareTo(ITriplePattern other)
+        for (var i = 0; i < _vars.Count; i++)
         {
-            if (_vars.Count < other.Variables.Count)
+            var c = string.Compare(_vars[i], other.Variables[i], StringComparison.Ordinal);
+            if (c < 0)
             {
-                // We have fewer variables so we go before the other pattern
+                // Our variables occur alphabetically sooner than the other patterns so we go before the other pattern
                 return -1;
             }
-            if (_vars.Count > other.Variables.Count)
+            if (c > 0)
             {
-                // We have more variables so we go after the other pattern
+                // Other variables occur alphabetically sooner than ours so we go after
                 return 1;
             }
-            // Neither pattern has any variables so we consider these to be equivalent
-            // Order of these patterns has no effect
-            if (_vars.Count <= 0) return 0;
-
-            for (var i = 0; i < _vars.Count; i++)
-            {
-                var c = string.Compare(_vars[i], other.Variables[i], StringComparison.Ordinal);
-                if (c < 0)
-                {
-                    // Our variables occur alphabetically sooner than the other patterns so we go before the other pattern
-                    return -1;
-                }
-                if (c > 0)
-                {
-                    // Other variables occur alphabetically sooner than ours so we go after
-                    return 1;
-                }
-                // Otherwise we continue checking
-            }
-
-            // If we reach this point then we contain the same variables
-            // Now we order based on our Index Types
-            var sorter = new TriplePatternTypeComparer();
-            return sorter.Compare(PatternType, other.PatternType);
+            // Otherwise we continue checking
         }
 
-        /// <summary>
-        /// Gets whether a Triple Pattern is Thread Safe when evaluated.
-        /// </summary>
-        /// <remarks>
-        /// Almost all Triple Patterns are Thread Safe unless they are sub-query patterns which themselves are not thread safe.
-        /// </remarks>
-        public virtual bool UsesDefaultDataset
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Gets whether the Pattern has no blank variables.
-        /// </summary>
-        public abstract bool HasNoBlankVariables
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Pattern.
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
+        // If we reach this point then we contain the same variables
+        // Now we order based on our Index Types
+        var sorter = new TriplePatternTypeComparer();
+        return sorter.Compare(PatternType, other.PatternType);
     }
+
+    /// <summary>
+    /// Gets whether a Triple Pattern is Thread Safe when evaluated.
+    /// </summary>
+    /// <remarks>
+    /// Almost all Triple Patterns are Thread Safe unless they are sub-query patterns which themselves are not thread safe.
+    /// </remarks>
+    public virtual bool UsesDefaultDataset
+    {
+        get
+        {
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// Gets whether the Pattern has no blank variables.
+    /// </summary>
+    public abstract bool HasNoBlankVariables
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Pattern.
+    /// </summary>
+    /// <returns></returns>
+    public abstract override string ToString();
 }

@@ -29,68 +29,67 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.JsonLd.Syntax;
 
-namespace VDS.RDF.JsonLd.Processors
+namespace VDS.RDF.JsonLd.Processors;
+
+internal class FramingState
 {
-    internal class FramingState
+    public JsonLdEmbed Embed { get; set; }
+    public bool ExplicitInclusion { get; set; }
+    public bool RequireAll { get; set; }
+    public bool OmitDefault { get; set; }
+    public JObject GraphMap { get; set; }
+    public string GraphName { get; set; }
+    public JObject Subjects => GraphMap[GraphName] as JObject;
+    public Stack<string> GraphStack { get; set; }
+    public JObject Link { get; set; }
+    public bool Embedded { get; set; }
+
+    private readonly Dictionary<string, Dictionary<string, Tuple<JToken, string>>> _embeds;
+
+    public FramingState(JsonLdProcessorOptions options, JObject graphMap, string graphName)
     {
-        public JsonLdEmbed Embed { get; set; }
-        public bool ExplicitInclusion { get; set; }
-        public bool RequireAll { get; set; }
-        public bool OmitDefault { get; set; }
-        public JObject GraphMap { get; set; }
-        public string GraphName { get; set; }
-        public JObject Subjects => GraphMap[GraphName] as JObject;
-        public Stack<string> GraphStack { get; set; }
-        public JObject Link { get; set; }
-        public bool Embedded { get; set; }
+        Embed = options.Embed;
+        Embedded = false;
+        ExplicitInclusion = options.Explicit;
+        RequireAll = options.RequireAll;
+        OmitDefault = options.OmitDefault;
+        GraphMap = graphMap;
+        GraphName = graphName;
+        GraphStack = new Stack<string>();
+        Link = new JObject();
+        _embeds = new Dictionary<string, Dictionary<string, Tuple<JToken, string>>>();
+    }
 
-        private readonly Dictionary<string, Dictionary<string, Tuple<JToken, string>>> _embeds;
-
-        public FramingState(JsonLdProcessorOptions options, JObject graphMap, string graphName)
+    public void TrackEmbeddedNodes(bool forceNew)
+    {
+        if (forceNew || !_embeds.ContainsKey(GraphName))
         {
-            Embed = options.Embed;
-            Embedded = false;
-            ExplicitInclusion = options.Explicit;
-            RequireAll = options.RequireAll;
-            OmitDefault = options.OmitDefault;
-            GraphMap = graphMap;
-            GraphName = graphName;
-            GraphStack = new Stack<string>();
-            Link = new JObject();
-            _embeds = new Dictionary<string, Dictionary<string, Tuple<JToken, string>>>();
+            _embeds[GraphName] = new Dictionary<string, Tuple<JToken, string>>();
+        }
+    }
+
+    public bool HasEmbeddedNode(string id)
+    {
+        return _embeds[GraphName].ContainsKey(id);
+    }
+
+    public void AddEmbeddedNode(string id, JToken node, string property)
+    {
+        if (!_embeds.ContainsKey(GraphName))
+        {
+            _embeds[GraphName] = new Dictionary<string, Tuple<JToken, string>>();
         }
 
-        public void TrackEmbeddedNodes(bool forceNew)
+        _embeds[GraphName][id] = new Tuple<JToken, string>(node, property);
+    }
+
+    public Tuple<JToken, string> GetEmbeddedNode(string id)
+    {
+        if (_embeds.ContainsKey(GraphName) && _embeds[GraphName].ContainsKey(id))
         {
-            if (forceNew || !_embeds.ContainsKey(GraphName))
-            {
-                _embeds[GraphName] = new Dictionary<string, Tuple<JToken, string>>();
-            }
+            return _embeds[GraphName][id];
         }
 
-        public bool HasEmbeddedNode(string id)
-        {
-            return _embeds[GraphName].ContainsKey(id);
-        }
-
-        public void AddEmbeddedNode(string id, JToken node, string property)
-        {
-            if (!_embeds.ContainsKey(GraphName))
-            {
-                _embeds[GraphName] = new Dictionary<string, Tuple<JToken, string>>();
-            }
-
-            _embeds[GraphName][id] = new Tuple<JToken, string>(node, property);
-        }
-
-        public Tuple<JToken, string> GetEmbeddedNode(string id)
-        {
-            if (_embeds.ContainsKey(GraphName) && _embeds[GraphName].ContainsKey(id))
-            {
-                return _embeds[GraphName][id];
-            }
-
-            return null;
-        }
+        return null;
     }
 }

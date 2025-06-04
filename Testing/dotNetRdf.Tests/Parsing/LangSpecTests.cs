@@ -28,101 +28,100 @@ using System.Linq;
 using System.IO;
 using Xunit;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+
+public class LangSpecTests
 {
+    private const string NTriplesLangSpec = "resources\\langspec.nt";
+    private const string TurtleLangSpec = "resources\\langspec.ttl";
+    private const string N3LangSpec = "resources\\langspec.n3";
+    private const string TrigLangSpec = "resources\\langspec.trig";
+    private const string NQuadsLangSpec = "resources\\langspec.nq";
 
-    public class LangSpecTests
+    private IGraph _original;
+    private TripleStore _store;
+
+    private void EnsureTestData(String file)
     {
-        private const string NTriplesLangSpec = "resources\\langspec.nt";
-        private const string TurtleLangSpec = "resources\\langspec.ttl";
-        private const string N3LangSpec = "resources\\langspec.n3";
-        private const string TrigLangSpec = "resources\\langspec.trig";
-        private const string NQuadsLangSpec = "resources\\langspec.nq";
-
-        private IGraph _original;
-        private TripleStore _store;
-
-        private void EnsureTestData(String file)
+        if (_original == null)
         {
-            if (_original == null)
-            {
-                var g = new Graph();
-                g.Assert(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Root.Create("http://example.org/predicate")), g.CreateLiteralNode("literal", "en-123"));
-                g.Assert(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Root.Create("http://example.org/predicate")), g.CreateLiteralNode("literal", "en-gb-variant"));
-                g.Assert(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Root.Create("http://example.org/predicate")), g.CreateLiteralNode("literal", "en-123-variant"));
-                _original = g;
+            var g = new Graph();
+            g.Assert(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Root.Create("http://example.org/predicate")), g.CreateLiteralNode("literal", "en-123"));
+            g.Assert(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Root.Create("http://example.org/predicate")), g.CreateLiteralNode("literal", "en-gb-variant"));
+            g.Assert(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Root.Create("http://example.org/predicate")), g.CreateLiteralNode("literal", "en-123-variant"));
+            _original = g;
 
-                _store = new TripleStore();
-                _store.Add(_original);
-            }
-
-            if (!File.Exists(file))
-            {
-                var def = MimeTypesHelper.GetDefinitionsByFileExtension(Path.GetExtension(file)).FirstOrDefault();
-                //MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(Path.GetExtension(file))).FirstOrDefault();
-                Assert.NotNull(def);
-                if (def != null)
-                {
-                    Assert.True(def.CanWriteRdf || def.CanWriteRdfDatasets, "Unable to ensure test data");
-                    if (def.CanWriteRdf)
-                    {
-                        _original.SaveToFile(file);
-                    }
-                    else if (def.CanWriteRdfDatasets)
-                    {
-                        _store.SaveToFile(file);
-                    }
-                }
-            }
-            Assert.True(File.Exists(file), "Unable to ensure test data:" + Path.GetFullPath(file));
+            _store = new TripleStore();
+            _store.Add(_original);
         }
 
-        [Theory]
-        [InlineData(NTriplesLangSpec)]
-        [InlineData(TurtleLangSpec)]
-        [InlineData(N3LangSpec)]
-        [InlineData(TrigLangSpec)]
-        [InlineData(NQuadsLangSpec)]
-        public void TestLangSpecParsing(String file)
+        if (!File.Exists(file))
         {
-            EnsureTestData(file);
             var def = MimeTypesHelper.GetDefinitionsByFileExtension(Path.GetExtension(file)).FirstOrDefault();
             //MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(Path.GetExtension(file))).FirstOrDefault();
             Assert.NotNull(def);
             if (def != null)
             {
-                if (def.CanParseRdf)
+                Assert.True(def.CanWriteRdf || def.CanWriteRdfDatasets, "Unable to ensure test data");
+                if (def.CanWriteRdf)
                 {
-                    var g = new Graph();
-                    g.LoadFromFile(file);
-
-                    Assert.Equal(_original, g);
+                    _original.SaveToFile(file);
                 }
-                else if (def.CanParseRdfDatasets)
+                else if (def.CanWriteRdfDatasets)
                 {
-                    var store = new TripleStore();
-                    store.LoadFromFile(file);
-
-                    Assert.Equal(_original, store.Graphs.First());
+                    _store.SaveToFile(file);
                 }
             }
         }
+        Assert.True(File.Exists(file), "Unable to ensure test data:" + Path.GetFullPath(file));
+    }
 
-        public LangSpecTests()
+    [Theory]
+    [InlineData(NTriplesLangSpec)]
+    [InlineData(TurtleLangSpec)]
+    [InlineData(N3LangSpec)]
+    [InlineData(TrigLangSpec)]
+    [InlineData(NQuadsLangSpec)]
+    public void TestLangSpecParsing(String file)
+    {
+        EnsureTestData(file);
+        var def = MimeTypesHelper.GetDefinitionsByFileExtension(Path.GetExtension(file)).FirstOrDefault();
+        //MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(Path.GetExtension(file))).FirstOrDefault();
+        Assert.NotNull(def);
+        if (def != null)
         {
-            DeleteLangSpec(NTriplesLangSpec);
-            DeleteLangSpec(TurtleLangSpec);
-            DeleteLangSpec(N3LangSpec);
-            DeleteLangSpec(TrigLangSpec);
-            DeleteLangSpec(NQuadsLangSpec);
-        }
-
-        private static void DeleteLangSpec(string langSpecFile)
-        {
-            if (File.Exists(langSpecFile))
+            if (def.CanParseRdf)
             {
-                File.Delete(langSpecFile);
+                var g = new Graph();
+                g.LoadFromFile(file);
+
+                Assert.Equal(_original, g);
             }
+            else if (def.CanParseRdfDatasets)
+            {
+                var store = new TripleStore();
+                store.LoadFromFile(file);
+
+                Assert.Equal(_original, store.Graphs.First());
+            }
+        }
+    }
+
+    public LangSpecTests()
+    {
+        DeleteLangSpec(NTriplesLangSpec);
+        DeleteLangSpec(TurtleLangSpec);
+        DeleteLangSpec(N3LangSpec);
+        DeleteLangSpec(TrigLangSpec);
+        DeleteLangSpec(NQuadsLangSpec);
+    }
+
+    private static void DeleteLangSpec(string langSpecFile)
+    {
+        if (File.Exists(langSpecFile))
+        {
+            File.Delete(langSpecFile);
         }
     }
 }

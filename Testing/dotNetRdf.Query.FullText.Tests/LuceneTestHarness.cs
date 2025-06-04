@@ -30,39 +30,38 @@ using Lucene.Net.Store;
 using VDS.RDF.Query.FullText.Schema;
 
 
-namespace VDS.RDF.Query.FullText
+namespace VDS.RDF.Query.FullText;
+
+public class LuceneTestHarness
 {
-    public class LuceneTestHarness
+    private bool _init = false;
+    private Directory _indexDir;
+    private IFullTextIndexSchema _schema;
+    private Analyzer _analyzer;
+
+    public readonly static Lucene.Net.Util.LuceneVersion LuceneVersion = Lucene.Net.Util.LuceneVersion.LUCENE_48;
+
+    public LuceneTestHarness()
     {
-        private bool _init = false;
-        private Directory _indexDir;
-        private IFullTextIndexSchema _schema;
-        private Analyzer _analyzer;
+        _indexDir = new RAMDirectory();
+        _schema = new DefaultIndexSchema();
+        _analyzer = new StandardAnalyzer(LuceneVersion);
+        _init = true;
+    }
 
-        public readonly static Lucene.Net.Util.LuceneVersion LuceneVersion = Lucene.Net.Util.LuceneVersion.LUCENE_48;
+    public Directory Index
+    {
+        get => _indexDir;
+    }
 
-        public LuceneTestHarness()
-        {
-            _indexDir = new RAMDirectory();
-            _schema = new DefaultIndexSchema();
-            _analyzer = new StandardAnalyzer(LuceneVersion);
-            _init = true;
-        }
+    public IFullTextIndexSchema Schema
+    {
+        get => _schema;
+    }
 
-        public Directory Index
-        {
-            get => _indexDir;
-        }
-
-        public IFullTextIndexSchema Schema
-        {
-            get => _schema;
-        }
-
-        public Analyzer Analyzer
-        {
-            get => _analyzer;
-        }
+    public Analyzer Analyzer
+    {
+        get => _analyzer;
     }
 }
 #endif

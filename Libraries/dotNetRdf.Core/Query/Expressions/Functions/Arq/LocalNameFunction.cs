@@ -24,72 +24,71 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Arq
+namespace VDS.RDF.Query.Expressions.Functions.Arq;
+
+/// <summary>
+/// Represents the ARQ afn:localname() function.
+/// </summary>
+public class LocalNameFunction
+    : BaseUnaryExpression
 {
     /// <summary>
-    /// Represents the ARQ afn:localname() function.
+    /// Creates a new ARQ Local Name function.
     /// </summary>
-    public class LocalNameFunction
-        : BaseUnaryExpression
+    /// <param name="expr">Expression.</param>
+    public LocalNameFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new ARQ Local Name function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public LocalNameFunction(ISparqlExpression expr)
-            : base(expr) { }
+        return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.LocalName + ">(" + InnerExpression + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.LocalName + ">(" + InnerExpression + ")";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessLocalNameFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessLocalNameFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitLocalNameFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return visitor.VisitLocalNameFunction(this);
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.LocalName;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.LocalName;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new LocalNameFunction(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new LocalNameFunction(transformer.Transform(InnerExpression));
     }
 }

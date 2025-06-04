@@ -27,22 +27,21 @@
 using System.Diagnostics;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Shacl.Constraints
-{
-    internal abstract class Numeric : Constraint
-    {
-        [DebuggerStepThrough]
-        internal Numeric(Shape shape, INode node)
-            : base(shape, node)
-        {
-        }
+namespace VDS.RDF.Shacl.Constraints;
 
-        protected int NumericValue
+internal abstract class Numeric : Constraint
+{
+    [DebuggerStepThrough]
+    internal Numeric(Shape shape, INode node)
+        : base(shape, node)
+    {
+    }
+
+    protected int NumericValue
+    {
+        get
         {
-            get
-            {
-                return (int)this.AsValuedNode().AsInteger();
-            }
+            return (int)this.AsValuedNode().AsInteger();
         }
     }
 }

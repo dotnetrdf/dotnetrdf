@@ -29,41 +29,40 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class Xone : Constraint
 {
-    internal class Xone : Constraint
+    [DebuggerStepThrough]
+    internal Xone(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal Xone(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage => "Value must conform to exactly one of the specified target shapes.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.XoneConstraintComponent;
         }
+    }
 
-        protected override string DefaultMessage => "Value must conform to exactly one of the specified target shapes.";
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        IEnumerable<INode> invalidValues =
+            from valueNode in valueNodes
+            from member in Graph.GetListItems(this)
+            let shape = Shape.Parse(member, Graph)
+            group shape.Validate(dataGraph, valueNode) by valueNode into results
+            let valid =
+                from result in results
+                where result
+                select result
+            where !valid.Any() || valid.Skip(1).Any()
+            select results.Key;
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.XoneConstraintComponent;
-            }
-        }
-
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            IEnumerable<INode> invalidValues =
-                from valueNode in valueNodes
-                from member in Graph.GetListItems(this)
-                let shape = Shape.Parse(member, Graph)
-                group shape.Validate(dataGraph, valueNode) by valueNode into results
-                let valid =
-                    from result in results
-                    where result
-                    select result
-                where !valid.Any() || valid.Skip(1).Any()
-                select results.Key;
-
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
+        return ReportValueNodes(focusNode, invalidValues, report);
     }
 }

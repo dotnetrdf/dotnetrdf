@@ -24,20 +24,19 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+/// <summary>
+/// Controls how the <see cref="SparqlConnector">SparqlConnector</see> loads Graphs from the Endpoint.
+/// </summary>
+public enum SparqlConnectorLoadMethod 
 {
     /// <summary>
-    /// Controls how the <see cref="SparqlConnector">SparqlConnector</see> loads Graphs from the Endpoint.
+    /// Graphs are loaded by issuing a DESCRIBE query using the Graph URI
     /// </summary>
-    public enum SparqlConnectorLoadMethod 
-    {
-        /// <summary>
-        /// Graphs are loaded by issuing a DESCRIBE query using the Graph URI
-        /// </summary>
-        Describe,
-        /// <summary>
-        /// Graphs are loaded by issuing a CONSTRUCT FROM query using the Graph URI
-        /// </summary>
-        Construct,
-    }
+    Describe,
+    /// <summary>
+    /// Graphs are loaded by issuing a CONSTRUCT FROM query using the Graph URI
+    /// </summary>
+    Construct,
 }

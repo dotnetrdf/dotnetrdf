@@ -29,85 +29,84 @@ using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Aggregates.Leviathan
+namespace VDS.RDF.Query.Aggregates.Leviathan;
+
+/// <summary>
+/// Class representing MODE Aggregate Functions.
+/// </summary>
+public class ModeAggregate
+    : BaseAggregate
 {
     /// <summary>
-    /// Class representing MODE Aggregate Functions.
+    /// Creates a new MODE Aggregate.
     /// </summary>
-    public class ModeAggregate
-        : BaseAggregate
+    /// <param name="expr">Variable Expression.</param>
+    public ModeAggregate(VariableTerm expr)
+        : base(expr, false) { }
+
+    /// <summary>
+    /// Creates a new MODE Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    public ModeAggregate(ISparqlExpression expr)
+        : this(expr, false) { }
+
+    /// <summary>
+    /// Creates a new MODE Aggregate.
+    /// </summary>
+    /// <param name="expr">Variable Expression.</param>
+    /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
+    public ModeAggregate(VariableTerm expr, bool distinct)
+        : base(expr, distinct)
     {
-        /// <summary>
-        /// Creates a new MODE Aggregate.
-        /// </summary>
-        /// <param name="expr">Variable Expression.</param>
-        public ModeAggregate(VariableTerm expr)
-            : base(expr, false) { }
+        Variable = expr.ToString().Substring(1);
+    }
+    /// <summary>
+    /// Creates a new MODE Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
+    public ModeAggregate(ISparqlExpression expr, bool distinct)
+        : base(expr, distinct) { }
 
-        /// <summary>
-        /// Creates a new MODE Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public ModeAggregate(ISparqlExpression expr)
-            : this(expr, false) { }
+    /// <summary>
+    /// The variable to aggregate.
+    /// </summary>
+    public string Variable { get; }
 
-        /// <summary>
-        /// Creates a new MODE Aggregate.
-        /// </summary>
-        /// <param name="expr">Variable Expression.</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
-        public ModeAggregate(VariableTerm expr, bool distinct)
-            : base(expr, distinct)
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+        IEnumerable<TBinding> bindings)
+    {
+        return processor.ProcessMode(this, context, bindings);
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Aggregate.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append('<');
+        output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
+        output.Append(LeviathanFunctionFactory.Mode);
+        output.Append(">(");
+        if (_distinct) output.Append("DISTINCT ");
+        output.Append(_expr);
+        output.Append(')');
+        return output.ToString();
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Aggregate.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            Variable = expr.ToString().Substring(1);
-        }
-        /// <summary>
-        /// Creates a new MODE Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
-        public ModeAggregate(ISparqlExpression expr, bool distinct)
-            : base(expr, distinct) { }
-
-        /// <summary>
-        /// The variable to aggregate.
-        /// </summary>
-        public string Variable { get; }
-
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
-            IEnumerable<TBinding> bindings)
-        {
-            return processor.ProcessMode(this, context, bindings);
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Aggregate.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append('<');
-            output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
-            output.Append(LeviathanFunctionFactory.Mode);
-            output.Append(">(");
-            if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr);
-            output.Append(')');
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Aggregate.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Mode;
-            }
+            return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Mode;
         }
     }
 }

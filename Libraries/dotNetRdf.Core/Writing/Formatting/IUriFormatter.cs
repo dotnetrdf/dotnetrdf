@@ -26,25 +26,24 @@
 
 using System;
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Interface for URI Formatters.
+/// </summary>
+public interface IUriFormatter
 {
     /// <summary>
-    /// Interface for URI Formatters.
+    /// Formats a URI as a String.
     /// </summary>
-    public interface IUriFormatter
-    {
-        /// <summary>
-        /// Formats a URI as a String.
-        /// </summary>
-        /// <param name="u">URI.</param>
-        /// <returns></returns>
-        string FormatUri(Uri u);
+    /// <param name="u">URI.</param>
+    /// <returns></returns>
+    string FormatUri(Uri u);
 
-        /// <summary>
-        /// Formats a URI as a String.
-        /// </summary>
-        /// <param name="u">URI.</param>
-        /// <returns></returns>
-        string FormatUri(string u);
-    }
+    /// <summary>
+    /// Formats a URI as a String.
+    /// </summary>
+    /// <param name="u">URI.</param>
+    /// <returns></returns>
+    string FormatUri(string u);
 }

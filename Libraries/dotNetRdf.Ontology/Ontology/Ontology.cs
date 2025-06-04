@@ -28,355 +28,354 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Ontology
+namespace VDS.RDF.Ontology;
+
+/// <summary>
+/// Represents the meta-information about an Ontology.
+/// </summary>
+/// <remarks>
+/// <para>
+/// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace.
+/// </para>
+/// </remarks>
+public class Ontology : OntologyResource
 {
     /// <summary>
-    /// Represents the meta-information about an Ontology.
+    /// Creates a new Ontology for the given resource.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace.
-    /// </para>
-    /// </remarks>
-    public class Ontology : OntologyResource
+    /// <param name="resource">Resource.</param>
+    /// <param name="graph">Graph.</param>
+    public Ontology(INode resource, IGraph graph)
+        : base(resource, graph)
     {
-        /// <summary>
-        /// Creates a new Ontology for the given resource.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <param name="graph">Graph.</param>
-        public Ontology(INode resource, IGraph graph)
-            : base(resource, graph)
-        {
-            // Assert the rdf:type owl:Ontology triple
-            _graph.Assert(new Triple(resource, 
-                _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyType)), 
-                _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.OwlOntology))));
+        // Assert the rdf:type owl:Ontology triple
+        _graph.Assert(new Triple(resource, 
+            _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyType)), 
+            _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.OwlOntology))));
 
-            IntialiseProperty(OntologyHelper.PropertyBackwardCompatibleWith, false);
-            IntialiseProperty(OntologyHelper.PropertyIncompatibleWith, false);
-            IntialiseProperty(OntologyHelper.PropertyPriorVersion, false);
-            IntialiseProperty(OntologyHelper.PropertyImports, false);
+        IntialiseProperty(OntologyHelper.PropertyBackwardCompatibleWith, false);
+        IntialiseProperty(OntologyHelper.PropertyIncompatibleWith, false);
+        IntialiseProperty(OntologyHelper.PropertyPriorVersion, false);
+        IntialiseProperty(OntologyHelper.PropertyImports, false);
+    }
+
+    /// <summary>
+    /// Adds a new <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool AddBackwardsCompatibleWith(INode resource)
+    {
+        return AddResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith, resource, true);
+    }
+
+    /// <summary>
+    /// Adds a new <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool AddBackwardsCompatibleWith(Uri resource)
+    {
+        return AddBackwardsCompatibleWith(_graph.CreateUriNode(resource));
+    }
+
+    /// <summary>
+    /// Adds a new <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool AddBackwardsCompatibleWith(OntologyResource resource)
+    {
+        return AddBackwardsCompatibleWith(resource.Resource);
+    }
+
+    /// <summary>
+    /// Removes all <em>owl:backwardsCompatibleWith</em> triples for this Ontology.
+    /// </summary>
+    /// <returns></returns>
+    public bool ClearBackwardsCompatibleWith()
+    {
+        return ClearResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith, true);
+    }
+
+    /// <summary>
+    /// Removes a <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool RemoveBackwardsCompatibleWith(INode resource)
+    {
+        return RemoveResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith, resource, true);
+    }
+
+    /// <summary>
+    /// Removes a <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool RemoveBackwardsCompatibleWith(Uri resource)
+    {
+        return RemoveBackwardsCompatibleWith(_graph.CreateUriNode(resource));
+    }
+
+    /// <summary>
+    /// Removes a <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool RemoveBackwardsCompatibleWith(OntologyResource resource)
+    {
+        return RemoveBackwardsCompatibleWith(resource.Resource);
+    }
+
+    /// <summary>
+    /// Adds a new <em>owl:incompatibleWith</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool AddIncompatibleWith(INode resource)
+    {
+        return AddResourceProperty(OntologyHelper.PropertyIncompatibleWith, resource, true);
+    }
+
+    /// <summary>
+    /// Adds a new <em>owl:incompatibleWith</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool AddIncompatibleWith(Uri resource)
+    {
+        return AddIncompatibleWith(_graph.CreateUriNode(resource));
+    }
+
+    /// <summary>
+    /// Adds a new <em>owl:incompatibleWith</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool AddIncompatibleWith(OntologyResource resource)
+    {
+        return AddIncompatibleWith(resource.Resource);
+    }
+
+    /// <summary>
+    /// Removes all <em>owl:incompatibleWith</em> triples for this Ontology.
+    /// </summary>
+    /// <returns></returns>
+    public bool ClearIncompatibleWith()
+    {
+        return ClearResourceProperty(OntologyHelper.PropertyIncompatibleWith, true);
+    }
+
+    /// <summary>
+    /// Removes a <em>owl:incompatibleWith</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool RemoveIncompatibleWith(INode resource)
+    {
+        return RemoveResourceProperty(OntologyHelper.PropertyIncompatibleWith, resource, true);
+    }
+
+    /// <summary>
+    /// Removes a <em>owl:incompatibleWith</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool RemoveIncompatibleWith(Uri resource)
+    {
+        return RemoveIncompatibleWith(_graph.CreateUriNode(resource));
+    }
+
+    /// <summary>
+    /// Removes a <em>owl:incompatibleWith</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool RemoveIncompatibleWith(OntologyResource resource)
+    {
+        return RemoveIncompatibleWith(resource.Resource);
+    }
+
+    /// <summary>
+    /// Adds a new <em>owl:imports</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool AddImports(INode resource)
+    {
+        return AddResourceProperty(OntologyHelper.PropertyImports, resource, true);
+    }
+
+    /// <summary>
+    /// Adds a new <em>owl:imports</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool AddImports(Uri resource)
+    {
+        return AddImports(_graph.CreateUriNode(resource));
+    }
+
+    /// <summary>
+    /// Adds a new <em>owl:imports</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool AddImports(OntologyResource resource)
+    {
+        return AddImports(resource.Resource);
+    }
+
+    /// <summary>
+    /// Removes all <em>owl:imports</em> triples for this Ontology.
+    /// </summary>
+    /// <returns></returns>
+    public bool ClearImports()
+    {
+        return ClearResourceProperty(OntologyHelper.PropertyImports, true);
+    }
+
+    /// <summary>
+    /// Removes a <em>owl:imports</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool RemoveImports(INode resource)
+    {
+        return RemoveResourceProperty(OntologyHelper.PropertyImports, resource, true);
+    }
+
+    /// <summary>
+    /// Removes a <em>owl:imports</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool RemoveImports(Uri resource)
+    {
+        return RemoveImports(_graph.CreateUriNode(resource));
+    }
+
+    /// <summary>
+    /// Removes a <em>owl:imports</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool RemoveImports(OntologyResource resource)
+    {
+        return RemoveImports(resource.Resource);
+    }
+
+    /// <summary>
+    /// Adds a new <em>owl:priorVersion</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool AddPriorVersion(INode resource)
+    {
+        return AddResourceProperty(OntologyHelper.PropertyPriorVersion, resource, true);
+    }
+
+    /// <summary>
+    /// Adds a new <em>owl:priorVersion</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool AddPriorVersion(Uri resource)
+    {
+        return AddPriorVersion(_graph.CreateUriNode(resource));
+    }
+
+    /// <summary>
+    /// Adds a new <em>owl:priorVersion</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool AddPriorVersion(OntologyResource resource)
+    {
+        return AddPriorVersion(resource.Resource);
+    }
+
+    /// <summary>
+    /// Removes all <em>owl:priorVersion</em> triples for this Ontology.
+    /// </summary>
+    /// <returns></returns>
+    public bool ClearPriorVersions()
+    {
+        return ClearResourceProperty(OntologyHelper.PropertyPriorVersion, true);
+    }
+
+    /// <summary>
+    /// Removes a <em>owl:priorVersion</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool RemovePriorVersion(INode resource)
+    {
+        return RemoveResourceProperty(OntologyHelper.PropertyPriorVersion, resource, true);
+    }
+
+    /// <summary>
+    /// Removes a <em>owl:priorVersion</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool RemovePriorVersion(Uri resource)
+    {
+        return RemovePriorVersion(_graph.CreateUriNode(resource));
+    }
+
+    /// <summary>
+    /// Removes a <em>owl:priorVersion</em> triple for this Ontology.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public bool RemovePriorVersion(OntologyResource resource)
+    {
+        return RemovePriorVersion(resource.Resource);
+    }
+
+    /// <summary>
+    /// Gets all the Ontologies that this Ontology is backwards compatible with.
+    /// </summary>
+    public IEnumerable<Ontology> BackwardsCompatibleWith
+    {
+        get
+        {
+            return GetResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith).Select(r => new Ontology(r, _graph));
         }
+    }
 
-        /// <summary>
-        /// Adds a new <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool AddBackwardsCompatibleWith(INode resource)
+    /// <summary>
+    /// Gets all the Ontologies that this Ontology is incompatible with.
+    /// </summary>
+    public IEnumerable<Ontology> IncompatibleWith
+    {
+        get
         {
-            return AddResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith, resource, true);
+            return GetResourceProperty(OntologyHelper.PropertyIncompatibleWith).Select(r => new Ontology(r, _graph));
         }
+    }
 
-        /// <summary>
-        /// Adds a new <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool AddBackwardsCompatibleWith(Uri resource)
+    /// <summary>
+    /// Gets all the Ontologies that this Ontology imports.
+    /// </summary>
+    public IEnumerable<Ontology> Imports
+    {
+        get
         {
-            return AddBackwardsCompatibleWith(_graph.CreateUriNode(resource));
+            return GetResourceProperty(OntologyHelper.PropertyImports).Select(r => new Ontology(r, _graph));
         }
+    }
 
-        /// <summary>
-        /// Adds a new <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool AddBackwardsCompatibleWith(OntologyResource resource)
+    /// <summary>
+    /// Gets all the Ontologies that are prior versions of this Ontology.
+    /// </summary>
+    public IEnumerable<Ontology> PriorVersions
+    {
+        get
         {
-            return AddBackwardsCompatibleWith(resource.Resource);
-        }
-
-        /// <summary>
-        /// Removes all <em>owl:backwardsCompatibleWith</em> triples for this Ontology.
-        /// </summary>
-        /// <returns></returns>
-        public bool ClearBackwardsCompatibleWith()
-        {
-            return ClearResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith, true);
-        }
-
-        /// <summary>
-        /// Removes a <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool RemoveBackwardsCompatibleWith(INode resource)
-        {
-            return RemoveResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith, resource, true);
-        }
-
-        /// <summary>
-        /// Removes a <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool RemoveBackwardsCompatibleWith(Uri resource)
-        {
-            return RemoveBackwardsCompatibleWith(_graph.CreateUriNode(resource));
-        }
-
-        /// <summary>
-        /// Removes a <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool RemoveBackwardsCompatibleWith(OntologyResource resource)
-        {
-            return RemoveBackwardsCompatibleWith(resource.Resource);
-        }
-
-        /// <summary>
-        /// Adds a new <em>owl:incompatibleWith</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool AddIncompatibleWith(INode resource)
-        {
-            return AddResourceProperty(OntologyHelper.PropertyIncompatibleWith, resource, true);
-        }
-
-        /// <summary>
-        /// Adds a new <em>owl:incompatibleWith</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool AddIncompatibleWith(Uri resource)
-        {
-            return AddIncompatibleWith(_graph.CreateUriNode(resource));
-        }
-
-        /// <summary>
-        /// Adds a new <em>owl:incompatibleWith</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool AddIncompatibleWith(OntologyResource resource)
-        {
-            return AddIncompatibleWith(resource.Resource);
-        }
-
-        /// <summary>
-        /// Removes all <em>owl:incompatibleWith</em> triples for this Ontology.
-        /// </summary>
-        /// <returns></returns>
-        public bool ClearIncompatibleWith()
-        {
-            return ClearResourceProperty(OntologyHelper.PropertyIncompatibleWith, true);
-        }
-
-        /// <summary>
-        /// Removes a <em>owl:incompatibleWith</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool RemoveIncompatibleWith(INode resource)
-        {
-            return RemoveResourceProperty(OntologyHelper.PropertyIncompatibleWith, resource, true);
-        }
-
-        /// <summary>
-        /// Removes a <em>owl:incompatibleWith</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool RemoveIncompatibleWith(Uri resource)
-        {
-            return RemoveIncompatibleWith(_graph.CreateUriNode(resource));
-        }
-
-        /// <summary>
-        /// Removes a <em>owl:incompatibleWith</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool RemoveIncompatibleWith(OntologyResource resource)
-        {
-            return RemoveIncompatibleWith(resource.Resource);
-        }
-
-        /// <summary>
-        /// Adds a new <em>owl:imports</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool AddImports(INode resource)
-        {
-            return AddResourceProperty(OntologyHelper.PropertyImports, resource, true);
-        }
-
-        /// <summary>
-        /// Adds a new <em>owl:imports</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool AddImports(Uri resource)
-        {
-            return AddImports(_graph.CreateUriNode(resource));
-        }
-
-        /// <summary>
-        /// Adds a new <em>owl:imports</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool AddImports(OntologyResource resource)
-        {
-            return AddImports(resource.Resource);
-        }
-
-        /// <summary>
-        /// Removes all <em>owl:imports</em> triples for this Ontology.
-        /// </summary>
-        /// <returns></returns>
-        public bool ClearImports()
-        {
-            return ClearResourceProperty(OntologyHelper.PropertyImports, true);
-        }
-
-        /// <summary>
-        /// Removes a <em>owl:imports</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool RemoveImports(INode resource)
-        {
-            return RemoveResourceProperty(OntologyHelper.PropertyImports, resource, true);
-        }
-
-        /// <summary>
-        /// Removes a <em>owl:imports</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool RemoveImports(Uri resource)
-        {
-            return RemoveImports(_graph.CreateUriNode(resource));
-        }
-
-        /// <summary>
-        /// Removes a <em>owl:imports</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool RemoveImports(OntologyResource resource)
-        {
-            return RemoveImports(resource.Resource);
-        }
-
-        /// <summary>
-        /// Adds a new <em>owl:priorVersion</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool AddPriorVersion(INode resource)
-        {
-            return AddResourceProperty(OntologyHelper.PropertyPriorVersion, resource, true);
-        }
-
-        /// <summary>
-        /// Adds a new <em>owl:priorVersion</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool AddPriorVersion(Uri resource)
-        {
-            return AddPriorVersion(_graph.CreateUriNode(resource));
-        }
-
-        /// <summary>
-        /// Adds a new <em>owl:priorVersion</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool AddPriorVersion(OntologyResource resource)
-        {
-            return AddPriorVersion(resource.Resource);
-        }
-
-        /// <summary>
-        /// Removes all <em>owl:priorVersion</em> triples for this Ontology.
-        /// </summary>
-        /// <returns></returns>
-        public bool ClearPriorVersions()
-        {
-            return ClearResourceProperty(OntologyHelper.PropertyPriorVersion, true);
-        }
-
-        /// <summary>
-        /// Removes a <em>owl:priorVersion</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool RemovePriorVersion(INode resource)
-        {
-            return RemoveResourceProperty(OntologyHelper.PropertyPriorVersion, resource, true);
-        }
-
-        /// <summary>
-        /// Removes a <em>owl:priorVersion</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool RemovePriorVersion(Uri resource)
-        {
-            return RemovePriorVersion(_graph.CreateUriNode(resource));
-        }
-
-        /// <summary>
-        /// Removes a <em>owl:priorVersion</em> triple for this Ontology.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public bool RemovePriorVersion(OntologyResource resource)
-        {
-            return RemovePriorVersion(resource.Resource);
-        }
-
-        /// <summary>
-        /// Gets all the Ontologies that this Ontology is backwards compatible with.
-        /// </summary>
-        public IEnumerable<Ontology> BackwardsCompatibleWith
-        {
-            get
-            {
-                return GetResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith).Select(r => new Ontology(r, _graph));
-            }
-        }
-
-        /// <summary>
-        /// Gets all the Ontologies that this Ontology is incompatible with.
-        /// </summary>
-        public IEnumerable<Ontology> IncompatibleWith
-        {
-            get
-            {
-                return GetResourceProperty(OntologyHelper.PropertyIncompatibleWith).Select(r => new Ontology(r, _graph));
-            }
-        }
-
-        /// <summary>
-        /// Gets all the Ontologies that this Ontology imports.
-        /// </summary>
-        public IEnumerable<Ontology> Imports
-        {
-            get
-            {
-                return GetResourceProperty(OntologyHelper.PropertyImports).Select(r => new Ontology(r, _graph));
-            }
-        }
-
-        /// <summary>
-        /// Gets all the Ontologies that are prior versions of this Ontology.
-        /// </summary>
-        public IEnumerable<Ontology> PriorVersions
-        {
-            get
-            {
-                return GetResourceProperty(OntologyHelper.PropertyPriorVersion).Select(r => new Ontology(r, _graph));
-            }
+            return GetResourceProperty(OntologyHelper.PropertyPriorVersion).Select(r => new Ontology(r, _graph));
         }
     }
 }

@@ -26,29 +26,28 @@
 
 using System.Diagnostics;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class LessThanOrEquals : PropertyCompare
 {
-    internal class LessThanOrEquals : PropertyCompare
+    [DebuggerStepThrough]
+    internal LessThanOrEquals(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal LessThanOrEquals(Shape shape, INode node)
-            : base(shape, node)
-        {
-        }
+    }
 
-        protected override string DefaultMessage => $"Value must be less than or equal to the value of {this}.";
+    protected override string DefaultMessage => $"Value must be less than or equal to the value of {this}.";
 
-        internal override INode ConstraintComponent
+    internal override INode ConstraintComponent
+    {
+        get
         {
-            get
-            {
-                return Vocabulary.LessThanOrEqualsConstraintComponent;
-            }
+            return Vocabulary.LessThanOrEqualsConstraintComponent;
         }
+    }
 
-        protected override bool IsValidInternal(int v)
-        {
-            return v < 1;
-        }
+    protected override bool IsValidInternal(int v)
+    {
+        return v < 1;
     }
 }

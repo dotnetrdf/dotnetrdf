@@ -26,20 +26,19 @@
 
 using VDS.RDF.Parsing.Events;
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing.Contexts;
+
+/// <summary>
+/// Interface for Event Parser contexts.
+/// </summary>
+/// <typeparam name="T">Event Type.</typeparam>
+public interface IEventParserContext<T> where T : IEvent
 {
     /// <summary>
-    /// Interface for Event Parser contexts.
+    /// Queue of Events.
     /// </summary>
-    /// <typeparam name="T">Event Type.</typeparam>
-    public interface IEventParserContext<T> where T : IEvent
-    {
-        /// <summary>
-        /// Queue of Events.
-        /// </summary>
-        IEventQueue<T> Events 
-        { 
-            get;
-        }
+    IEventQueue<T> Events 
+    { 
+        get;
     }
 }

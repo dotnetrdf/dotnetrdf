@@ -24,39 +24,38 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Constraints
+namespace VDS.RDF.Query.Spin.Constraints;
+
+/**
+ * A property path that describes a mechanism to get values starting
+ * from a given RDF node (root) by following a given predicate.
+ * There are two subclasses for SP->O and OP->S paths.
+ * 
+ * @author Holger Knublauch
+ */
+internal abstract class SimplePropertyPath
 {
-    /**
-     * A property path that describes a mechanism to get values starting
-     * from a given RDF node (root) by following a given predicate.
-     * There are two subclasses for SP->O and OP->S paths.
-     * 
-     * @author Holger Knublauch
-     */
-    internal abstract class SimplePropertyPath
+
+    private INode predicate;
+
+    private INode root;
+
+
+    public SimplePropertyPath(INode root, INode predicate)
     {
-
-        private INode predicate;
-
-        private INode root;
-
-
-        public SimplePropertyPath(INode root, INode predicate)
-        {
-            this.predicate = predicate;
-            this.root = root;
-        }
+        this.predicate = predicate;
+        this.root = root;
+    }
 
 
-        public INode getPredicate()
-        {
-            return predicate;
-        }
+    public INode getPredicate()
+    {
+        return predicate;
+    }
 
 
-        public INode getRoot()
-        {
-            return root;
-        }
+    public INode getRoot()
+    {
+        return root;
     }
 }

@@ -24,16 +24,15 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+
+/**
+ * An OPTIONAL element group.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IOptional : IElementGroup
 {
-
-
-    /**
-     * An OPTIONAL element group.
-     * 
-     * @author Holger Knublauch
-     */
-    internal interface IOptional : IElementGroup
-    {
-    }
 }

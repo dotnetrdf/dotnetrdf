@@ -27,43 +27,42 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Skos
+namespace VDS.RDF.Skos;
+
+/// <summary>
+/// Represents a SKOS resource.
+/// </summary>
+public abstract class SkosResource
 {
     /// <summary>
-    /// Represents a SKOS resource.
+    /// Gets the original resource underlying the SKOS resource.
     /// </summary>
-    public abstract class SkosResource
+    public INode Resource { get; private set; }
+
+    /// <summary>
+    /// Gets the graph containing the SKOS resource.
+    /// </summary>
+    public IGraph Graph { get; }
+
+    internal SkosResource(INode resource, IGraph graph)
     {
-        /// <summary>
-        /// Gets the original resource underlying the SKOS resource.
-        /// </summary>
-        public INode Resource { get; private set; }
+        Resource = resource ?? throw new RdfSkosException("Cannot create a SKOS Resource for a null Resource");
+        Graph = graph ?? throw new RdfSkosException("Cannot create a SKOS resource for a null graph");
+    }
 
-        /// <summary>
-        /// Gets the graph containing the SKOS resource.
-        /// </summary>
-        public IGraph Graph { get; }
+    internal IEnumerable<SkosConcept> GetConcepts(string predicateUri)
+    {
+        return 
+            GetObjects(predicateUri)
+            .Select(o => new SkosConcept(o, Graph));
+    }
 
-        internal SkosResource(INode resource, IGraph graph)
-        {
-            Resource = resource ?? throw new RdfSkosException("Cannot create a SKOS Resource for a null Resource");
-            Graph = graph ?? throw new RdfSkosException("Cannot create a SKOS resource for a null graph");
-        }
+    internal IEnumerable<INode> GetObjects(string predicateUri)
+    {
+        IUriNode predicate = Graph.CreateUriNode(Graph.UriFactory.Create(predicateUri));
 
-        internal IEnumerable<SkosConcept> GetConcepts(string predicateUri)
-        {
-            return 
-                GetObjects(predicateUri)
-                .Select(o => new SkosConcept(o, Graph));
-        }
-
-        internal IEnumerable<INode> GetObjects(string predicateUri)
-        {
-            IUriNode predicate = Graph.CreateUriNode(Graph.UriFactory.Create(predicateUri));
-
-            return Graph
-                .GetTriplesWithSubjectPredicate(Resource, predicate)
-                .Select(t => t.Object);
-        }
+        return Graph
+            .GetTriplesWithSubjectPredicate(Resource, predicate)
+            .Select(t => t.Object);
     }
 }

@@ -26,74 +26,73 @@
 
 using Newtonsoft.Json;
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing.Contexts;
+
+/// <summary>
+/// Parser Context for RDF/JSON Parsers.
+/// </summary>
+public class JsonParserContext : BaseParserContext
 {
+    private JsonTextReader _input;
+
     /// <summary>
-    /// Parser Context for RDF/JSON Parsers.
+    /// Creates a new JSON Parser Context.
     /// </summary>
-    public class JsonParserContext : BaseParserContext
+    /// <param name="g">Graph to parse into.</param>
+    /// <param name="input">JSON Text Reader to read from.</param>
+    public JsonParserContext(IGraph g, JsonTextReader input)
+        : base(g)
     {
-        private JsonTextReader _input;
+        _input = input;
+    }
 
-        /// <summary>
-        /// Creates a new JSON Parser Context.
-        /// </summary>
-        /// <param name="g">Graph to parse into.</param>
-        /// <param name="input">JSON Text Reader to read from.</param>
-        public JsonParserContext(IGraph g, JsonTextReader input)
-            : base(g)
+    /// <summary>
+    /// Creates a new JSON Parser Context.
+    /// </summary>
+    /// <param name="handler">RDF Handler to use.</param>
+    /// <param name="input">JSON Text Reader to read from.</param>
+    public JsonParserContext(IRdfHandler handler, JsonTextReader input)
+        : base(handler)
+    {
+        _input = input;
+    }
+
+    /// <summary>
+    /// Gets the JSON Text Reader which input is read from.
+    /// </summary>
+    public JsonTextReader Input
+    {
+        get
         {
-            _input = input;
+            return _input;
         }
+    }
 
-        /// <summary>
-        /// Creates a new JSON Parser Context.
-        /// </summary>
-        /// <param name="handler">RDF Handler to use.</param>
-        /// <param name="input">JSON Text Reader to read from.</param>
-        public JsonParserContext(IRdfHandler handler, JsonTextReader input)
-            : base(handler)
+    /// <summary>
+    /// Gets the Current Position of the JSON Text Reader.
+    /// </summary>
+    public PositionInfo CurrentPosition
+    {
+        get
         {
-            _input = input;
-        }
-
-        /// <summary>
-        /// Gets the JSON Text Reader which input is read from.
-        /// </summary>
-        public JsonTextReader Input
-        {
-            get
+            if (_input.LineNumber == 0 && _input.LinePosition == 0)
             {
-                return _input;
+                return new PositionInfo(1, 1);
+            }
+            else
+            {
+                return new PositionInfo(_input.LineNumber, _input.LinePosition);
             }
         }
+    }
 
-        /// <summary>
-        /// Gets the Current Position of the JSON Text Reader.
-        /// </summary>
-        public PositionInfo CurrentPosition
-        {
-            get
-            {
-                if (_input.LineNumber == 0 && _input.LinePosition == 0)
-                {
-                    return new PositionInfo(1, 1);
-                }
-                else
-                {
-                    return new PositionInfo(_input.LineNumber, _input.LinePosition);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the Position range from the given Start Position to the current Position.
-        /// </summary>
-        /// <param name="startPosition">Start Position.</param>
-        /// <returns></returns>
-        public PositionInfo GetPositionRange(PositionInfo startPosition)
-        {
-            return new PositionInfo(startPosition.StartLine, _input.LineNumber, startPosition.StartPosition, _input.LinePosition);
-        }
+    /// <summary>
+    /// Gets the Position range from the given Start Position to the current Position.
+    /// </summary>
+    /// <param name="startPosition">Start Position.</param>
+    /// <returns></returns>
+    public PositionInfo GetPositionRange(PositionInfo startPosition)
+    {
+        return new PositionInfo(startPosition.StartLine, _input.LineNumber, startPosition.StartPosition, _input.LinePosition);
     }
 }

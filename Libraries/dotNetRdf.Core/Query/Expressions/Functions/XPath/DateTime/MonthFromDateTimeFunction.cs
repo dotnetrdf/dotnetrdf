@@ -24,62 +24,61 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
+namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime;
+
+/// <summary>
+/// Represents the XPath month-from-dateTime() function.
+/// </summary>
+public class MonthFromDateTimeFunction
+    : BaseUnaryDateTimeFunction
 {
     /// <summary>
-    /// Represents the XPath month-from-dateTime() function.
+    /// Creates a new XPath Month from Date Time function.
     /// </summary>
-    public class MonthFromDateTimeFunction
-        : BaseUnaryDateTimeFunction
+    /// <param name="expr">Expression.</param>
+    public MonthFromDateTimeFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+    
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new XPath Month from Date Time function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public MonthFromDateTimeFunction(ISparqlExpression expr)
-            : base(expr) { }
+        return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MonthFromDateTime + ">(" + InnerExpression + ")";
+    }
 
-        
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MonthFromDateTime + ">(" + InnerExpression + ")";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessMonthFromDateTimeFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessMonthFromDateTimeFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitMonthFromDateTimeFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return visitor.VisitMonthFromDateTimeFunction(this);
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MonthFromDateTime;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MonthFromDateTime;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new MonthFromDateTimeFunction(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new MonthFromDateTimeFunction(transformer.Transform(InnerExpression));
     }
 }

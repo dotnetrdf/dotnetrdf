@@ -24,16 +24,15 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+
+/**
+ * A UNION element.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IUnion : IElementGroup
 {
-
-
-    /**
-     * A UNION element.
-     * 
-     * @author Holger Knublauch
-     */
-    internal interface IUnion : IElementGroup
-    {
-    }
 }

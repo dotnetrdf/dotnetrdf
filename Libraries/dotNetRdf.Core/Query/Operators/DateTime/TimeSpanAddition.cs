@@ -29,49 +29,48 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Query.Operators.DateTime
+namespace VDS.RDF.Query.Operators.DateTime;
+
+/// <summary>
+/// Represents the time span addition operation.
+/// </summary>
+/// <remarks>
+/// Allows queries to add time spans together.
+/// </remarks>
+public class TimeSpanAddition
+    : BaseTimeSpanOperator
 {
     /// <summary>
-    /// Represents the time span addition operation.
+    /// Gets the operator type.
     /// </summary>
-    /// <remarks>
-    /// Allows queries to add time spans together.
-    /// </remarks>
-    public class TimeSpanAddition
-        : BaseTimeSpanOperator
+    public override SparqlOperatorType Operator
     {
-        /// <summary>
-        /// Gets the operator type.
-        /// </summary>
-        public override SparqlOperatorType Operator
+        get
         {
-            get
-            {
-                return SparqlOperatorType.Add;
-            }
+            return SparqlOperatorType.Add;
         }
+    }
 
-        /// <summary>
-        /// Applies the operator.
-        /// </summary>
-        /// <param name="ns">Arguments.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(params IValuedNode[] ns)
+    /// <summary>
+    /// Applies the operator.
+    /// </summary>
+    /// <param name="ns">Arguments.</param>
+    /// <returns></returns>
+    public override IValuedNode Apply(params IValuedNode[] ns)
+    {
+        if (ns == null) throw new ArgumentNullException("Cannot apply to null arguments");
+        if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply operator when one/more arguments are null");
+
+        return new TimeSpanNode(Add(ns.Select(n => n.AsTimeSpan())));
+    }
+
+    private TimeSpan Add(IEnumerable<TimeSpan> ts)
+    {
+        TimeSpan total = TimeSpan.Zero;
+        foreach (TimeSpan t in ts)
         {
-            if (ns == null) throw new ArgumentNullException("Cannot apply to null arguments");
-            if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply operator when one/more arguments are null");
-
-            return new TimeSpanNode(Add(ns.Select(n => n.AsTimeSpan())));
+            total += t;
         }
-
-        private TimeSpan Add(IEnumerable<TimeSpan> ts)
-        {
-            TimeSpan total = TimeSpan.Zero;
-            foreach (TimeSpan t in ts)
-            {
-                total += t;
-            }
-            return total;
-        }
+        return total;
     }
 }

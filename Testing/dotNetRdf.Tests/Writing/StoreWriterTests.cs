@@ -28,158 +28,157 @@ using System.IO;
 using Xunit;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+public class StoreWriterTests
 {
-    public class StoreWriterTests
+    private void TestWriter(IStoreWriter writer, IStoreReader reader, bool useMultiThreaded, int compressionLevel = WriterCompressionLevel.More)
     {
-        private void TestWriter(IStoreWriter writer, IStoreReader reader, bool useMultiThreaded, int compressionLevel = WriterCompressionLevel.More)
+        var store = new TripleStore();
+        var g = new Graph();
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        store.Add(g);
+
+        g = new Graph(new UriNode(new Uri("http://example.org/graph")));
+        g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+        store.Add(g);
+
+        g = new Graph(new UriNode(new Uri("http://example.org/cyrillic")));
+        g.LoadFromFile(Path.Combine("resources", "cyrillic.rdf"));
+        store.Add(g);
+
+        if (writer is ICompressingWriter)
         {
-            var store = new TripleStore();
-            var g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            store.Add(g);
-
-            g = new Graph(new UriNode(new Uri("http://example.org/graph")));
-            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
-            store.Add(g);
-
-            g = new Graph(new UriNode(new Uri("http://example.org/cyrillic")));
-            g.LoadFromFile(Path.Combine("resources", "cyrillic.rdf"));
-            store.Add(g);
-
-            if (writer is ICompressingWriter)
-            {
-                ((ICompressingWriter)writer).CompressionLevel = compressionLevel;
-            }
-            if (writer is IMultiThreadedWriter)
-            {
-                ((IMultiThreadedWriter)writer).UseMultiThreadedWriting = useMultiThreaded;
-            }
-            var strWriter = new System.IO.StringWriter();
-            writer.Save(store, strWriter);
-
-            Console.WriteLine(strWriter.ToString());
-
-            Assert.NotEqual(strWriter.ToString(), String.Empty);
-
-            var store2 = new TripleStore();
-            reader.Load(store2, new System.IO.StringReader(strWriter.ToString()));
-
-            foreach (IGraph graph in store.Graphs)
-            {
-                Assert.True(store2.HasGraph(graph.Name), "Parsed Stored should have contained serialized graph");
-                Assert.Equal(graph, store2[graph.Name]);
-            }
+            ((ICompressingWriter)writer).CompressionLevel = compressionLevel;
         }
-
-        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
-        public void WritingTriX()
+        if (writer is IMultiThreadedWriter)
         {
-            TestWriter(new TriXWriter(), new TriXParser(), false);
+            ((IMultiThreadedWriter)writer).UseMultiThreadedWriting = useMultiThreaded;
         }
+        var strWriter = new System.IO.StringWriter();
+        writer.Save(store, strWriter);
 
-        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
-        public void WritingNQuads()
+        Console.WriteLine(strWriter.ToString());
+
+        Assert.NotEqual(strWriter.ToString(), String.Empty);
+
+        var store2 = new TripleStore();
+        reader.Load(store2, new System.IO.StringReader(strWriter.ToString()));
+
+        foreach (IGraph graph in store.Graphs)
         {
-            TestTools.TestInMTAThread(WritingNQuadsActual);
+            Assert.True(store2.HasGraph(graph.Name), "Parsed Stored should have contained serialized graph");
+            Assert.Equal(graph, store2[graph.Name]);
         }
+    }
 
-        [Fact]
-        public void WritingNQuadsSingleThreaded()
-        {
-            WritingNQuadsActual();
-        }
+    [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
+    public void WritingTriX()
+    {
+        TestWriter(new TriXWriter(), new TriXParser(), false);
+    }
 
-        private void WritingNQuadsActual()
-        {
-            TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Original), true);
-        }
+    [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
+    public void WritingNQuads()
+    {
+        TestTools.TestInMTAThread(WritingNQuadsActual);
+    }
 
-        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
-        public void WritingNQuadsMixed()
-        {
-            TestTools.TestInMTAThread(WritingNQuadsMixedActual);
-        }
+    [Fact]
+    public void WritingNQuadsSingleThreaded()
+    {
+        WritingNQuadsActual();
+    }
 
-        [Fact]
-        public void WritingNQuadsMixedSingleThreaded()
-        {
-            WritingNQuadsMixedActual();
-        }
+    private void WritingNQuadsActual()
+    {
+        TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Original), true);
+    }
 
-        private void WritingNQuadsMixedActual()
-        {
-            TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Rdf11), true);
-        }
+    [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
+    public void WritingNQuadsMixed()
+    {
+        TestTools.TestInMTAThread(WritingNQuadsMixedActual);
+    }
 
-        [Fact]
-        public void WritingNQuadsMixedBad()
-        {
-            Assert.SkipUnless(System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows), "Only supported on Windows");
+    [Fact]
+    public void WritingNQuadsMixedSingleThreaded()
+    {
+        WritingNQuadsMixedActual();
+    }
 
-            Assert.Throws<RdfParseException>(() => TestTools.TestInMTAThread(WritingNQuadsMixedBadActual));
-        }
+    private void WritingNQuadsMixedActual()
+    {
+        TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Rdf11), true);
+    }
 
-        [Fact]
-        public void WritingNQuadsMixedBadSingleThreaded()
-        {
-            Assert.Throws<RdfParseException>(() => WritingNQuadsMixedBadActual());
-        }
+    [Fact]
+    public void WritingNQuadsMixedBad()
+    {
+        Assert.SkipUnless(System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows), "Only supported on Windows");
 
-        private void WritingNQuadsMixedBadActual()
-        {
-            TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Original), true);
-        }
+        Assert.Throws<RdfParseException>(() => TestTools.TestInMTAThread(WritingNQuadsMixedBadActual));
+    }
 
-        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
-        public void WritingNQuads11()
-        {
-            TestTools.TestInMTAThread(WritingNQuads11Actual);
-        }
+    [Fact]
+    public void WritingNQuadsMixedBadSingleThreaded()
+    {
+        Assert.Throws<RdfParseException>(() => WritingNQuadsMixedBadActual());
+    }
 
-        [Fact]
-        public void WritingNQuads11SingleThreaded()
-        {
-            WritingNQuads11Actual();
-        }
+    private void WritingNQuadsMixedBadActual()
+    {
+        TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Original), true);
+    }
 
-        private void WritingNQuads11Actual()
-        {
-            TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Rdf11), true);
-        }
+    [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
+    public void WritingNQuads11()
+    {
+        TestTools.TestInMTAThread(WritingNQuads11Actual);
+    }
 
-        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
-        public void WritingTriG()
-        {
-            TestTools.TestInMTAThread(WritingTriGActual);
-        }
+    [Fact]
+    public void WritingNQuads11SingleThreaded()
+    {
+        WritingNQuads11Actual();
+    }
 
-        [Fact]
-        public void WritingTriGSingleThreaded()
-        {
-            WritingTriGActual();
-        }
+    private void WritingNQuads11Actual()
+    {
+        TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Rdf11), true);
+    }
 
-        private void WritingTriGActual()
-        {
-            TestWriter(new TriGWriter(), new TriGParser(), true);
-        }
+    [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
+    public void WritingTriG()
+    {
+        TestTools.TestInMTAThread(WritingTriGActual);
+    }
 
-        [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
-        public void WritingTriGUncompressed()
-        {
-            TestTools.TestInMTAThread(WritingTriGUncompressedActual);
-        }
+    [Fact]
+    public void WritingTriGSingleThreaded()
+    {
+        WritingTriGActual();
+    }
 
-        [Fact]
-        public void WritingTriGUncompressedSingleThreaded()
-        {
-            WritingTriGUncompressedActual();
-        }
+    private void WritingTriGActual()
+    {
+        TestWriter(new TriGWriter(), new TriGParser(), true);
+    }
 
-        private void WritingTriGUncompressedActual()
-        {
-            TestWriter(new TriGWriter(), new TriGParser(), true, WriterCompressionLevel.None);
-        }
+    [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
+    public void WritingTriGUncompressed()
+    {
+        TestTools.TestInMTAThread(WritingTriGUncompressedActual);
+    }
+
+    [Fact]
+    public void WritingTriGUncompressedSingleThreaded()
+    {
+        WritingTriGUncompressedActual();
+    }
+
+    private void WritingTriGUncompressedActual()
+    {
+        TestWriter(new TriGWriter(), new TriGParser(), true, WriterCompressionLevel.None);
     }
 }

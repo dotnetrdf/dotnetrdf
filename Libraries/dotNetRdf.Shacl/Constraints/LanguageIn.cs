@@ -30,52 +30,51 @@ using System.Linq;
 using VDS.RDF.Query;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class LanguageIn : Constraint
 {
-    internal class LanguageIn : Constraint
+    [DebuggerStepThrough]
+    internal LanguageIn(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal LanguageIn(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage =>
+        $"Value must be a literal with a language tag that is one of {this}.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.LanguageInConstraintComponent;
         }
+    }
 
-        protected override string DefaultMessage =>
-            $"Value must be a literal with a language tag that is one of {this}.";
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        IEnumerable<INode> items = Graph.GetListItems(this);
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.LanguageInConstraintComponent;
-            }
-        }
+        IEnumerable<INode> invalidValues =
+            from valueNode in valueNodes
+            where !items.Any(item => LangMatches(dataGraph, valueNode, item))
+            select valueNode;
 
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            IEnumerable<INode> items = Graph.GetListItems(this);
+        return ReportValueNodes(focusNode, invalidValues, report);
+    }
 
-            IEnumerable<INode> invalidValues =
-                from valueNode in valueNodes
-                where !items.Any(item => LangMatches(dataGraph, valueNode, item))
-                select valueNode;
-
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
-
-        private static bool LangMatches(IGraph dataGraph, INode node, INode item)
-        {
-            var query = new SparqlParameterizedString(@"
+    private static bool LangMatches(IGraph dataGraph, INode node, INode item)
+    {
+        var query = new SparqlParameterizedString(@"
 ASK {
     FILTER(LANGMATCHES(LANG(?value), ?language))
 }
 ");
-            query.SetVariable("value", node);
-            query.SetVariable("language", item);
+        query.SetVariable("value", node);
+        query.SetVariable("language", item);
 
-            var result = (SparqlResultSet)dataGraph.ExecuteQuery(query);
+        var result = (SparqlResultSet)dataGraph.ExecuteQuery(query);
 
-            return result.Result;
-        }
+        return result.Result;
     }
 }

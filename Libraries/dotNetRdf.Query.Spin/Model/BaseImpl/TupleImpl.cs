@@ -28,104 +28,103 @@ using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Util;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal abstract class TupleImpl : AbstractSPINResource
 {
-    internal abstract class TupleImpl : AbstractSPINResource
+
+    public TupleImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
 
-        public TupleImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
+    }
 
+
+    public IResource getObject()
+    {
+        return getRDFNodeOrVariable(SP.PropertyObject);
+    }
+
+
+    public IResource getObjectResource()
+    {
+        IResource node = getRDFNodeOrVariable(SP.PropertyObject);
+        if (!(node is IVariable))
+        {
+            return node;
         }
-
-
-        public IResource getObject()
+        else
         {
-            return getRDFNodeOrVariable(SP.PropertyObject);
+            return null;
         }
+    }
 
 
-        public IResource getObjectResource()
+    public IResource getSubject()
+    {
+        return getRDFNodeOrVariable(SP.PropertySubject);
+    }
+
+
+    protected IResource getRDFNodeOrVariable(INode predicate)
+    {
+        IResource node = getResource(predicate);
+        if (node != null)
         {
-            IResource node = getRDFNodeOrVariable(SP.PropertyObject);
-            if (!(node is IVariable))
+            IVariable var = SPINFactory.asVariable(node);
+            if (var != null)
+            {
+                return var;
+            }
+            else
             {
                 return node;
             }
-            else
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    internal void print(IResource node, ISparqlPrinter p)
+    {
+        TupleImpl.print(getModel(), node, p);
+    }
+
+
+    internal void print(IResource node, ISparqlPrinter p, bool abbrevRDFType)
+    {
+        TupleImpl.print(getModel(), node, p, abbrevRDFType);
+    }
+
+
+    public static void print(SpinProcessor model, IResource node, ISparqlPrinter p)
+    {
+        print(model, node, p, false);
+    }
+
+
+    public static void print(SpinProcessor model, IResource node, ISparqlPrinter p, bool abbrevRDFType)
+    {
+        // TODO find the good tests ?????
+        if (!node.isLiteral())
+        {
+            if (abbrevRDFType && RDFUtil.sameTerm(RDF.PropertyType, node))
             {
-                return null;
-            }
-        }
-
-
-        public IResource getSubject()
-        {
-            return getRDFNodeOrVariable(SP.PropertySubject);
-        }
-
-
-        protected IResource getRDFNodeOrVariable(INode predicate)
-        {
-            IResource node = getResource(predicate);
-            if (node != null)
-            {
-                IVariable var = SPINFactory.asVariable(node);
-                if (var != null)
-                {
-                    return var;
-                }
-                else
-                {
-                    return node;
-                }
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-
-        internal void print(IResource node, ISparqlPrinter p)
-        {
-            TupleImpl.print(getModel(), node, p);
-        }
-
-
-        internal void print(IResource node, ISparqlPrinter p, bool abbrevRDFType)
-        {
-            TupleImpl.print(getModel(), node, p, abbrevRDFType);
-        }
-
-
-        public static void print(SpinProcessor model, IResource node, ISparqlPrinter p)
-        {
-            print(model, node, p, false);
-        }
-
-
-        public static void print(SpinProcessor model, IResource node, ISparqlPrinter p, bool abbrevRDFType)
-        {
-            // TODO find the good tests ?????
-            if (!node.isLiteral())
-            {
-                if (abbrevRDFType && RDFUtil.sameTerm(RDF.PropertyType, node))
-                {
-                    p.print("a");
-                }
-                else
-                {
-                    printVarOrResource(p, node);
-                }
+                p.print("a");
             }
             else
             {
-                //TODO INamespaceMapper pm = p.getUsePrefixes() ? model.getGraph().getPrefixMapping() : SPINExpressions.emptyPrefixMapping;
-                var str = node.getSource().ToString();// TODO is this correct ? // FmtUtils.stringForNode(node, null/*TODO pm*/);
-                p.print(str);
+                printVarOrResource(p, node);
             }
+        }
+        else
+        {
+            //TODO INamespaceMapper pm = p.getUsePrefixes() ? model.getGraph().getPrefixMapping() : SPINExpressions.emptyPrefixMapping;
+            var str = node.getSource().ToString();// TODO is this correct ? // FmtUtils.stringForNode(node, null/*TODO pm*/);
+            p.print(str);
         }
     }
 }

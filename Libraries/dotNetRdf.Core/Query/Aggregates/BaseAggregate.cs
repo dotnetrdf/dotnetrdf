@@ -27,97 +27,96 @@
 using System.Collections.Generic;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Aggregates
+namespace VDS.RDF.Query.Aggregates;
+
+/// <summary>
+/// Abstract Base Class for Aggregate Functions.
+/// </summary>
+public abstract class BaseAggregate 
+    : ISparqlAggregate
 {
     /// <summary>
-    /// Abstract Base Class for Aggregate Functions.
+    /// Expression that the aggregate operates over.
     /// </summary>
-    public abstract class BaseAggregate 
-        : ISparqlAggregate
+    protected ISparqlExpression _expr;
+    /// <summary>
+    /// Whether a DISTINCT modifer is applied.
+    /// </summary>
+    protected bool _distinct = false;
+
+    /// <summary>
+    /// Base Constructor for Aggregates.
+    /// </summary>
+    /// <param name="expr">Expression that the aggregate is over.</param>
+    public BaseAggregate(ISparqlExpression expr)
     {
-        /// <summary>
-        /// Expression that the aggregate operates over.
-        /// </summary>
-        protected ISparqlExpression _expr;
-        /// <summary>
-        /// Whether a DISTINCT modifer is applied.
-        /// </summary>
-        protected bool _distinct = false;
+        _expr = expr;
+    }
 
-        /// <summary>
-        /// Base Constructor for Aggregates.
-        /// </summary>
-        /// <param name="expr">Expression that the aggregate is over.</param>
-        public BaseAggregate(ISparqlExpression expr)
+    /// <summary>
+    /// Base Constructor for Aggregates.
+    /// </summary>
+    /// <param name="expr">Expression that the aggregate is over.</param>
+    /// <param name="distinct">Whether a Distinct modifer is applied.</param>
+    public BaseAggregate(ISparqlExpression expr, bool distinct)
+        : this(expr)
+    {
+        _distinct = distinct;
+    }
+
+    /// <inheritdoc />
+    public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+        IEnumerable<TBinding> bindings);
+
+    /// <summary>
+    /// Expression that the Aggregate executes over.
+    /// </summary>
+    public ISparqlExpression Expression
+    {
+        get
         {
-            _expr = expr;
+            return _expr;
         }
+    }
 
-        /// <summary>
-        /// Base Constructor for Aggregates.
-        /// </summary>
-        /// <param name="expr">Expression that the aggregate is over.</param>
-        /// <param name="distinct">Whether a Distinct modifer is applied.</param>
-        public BaseAggregate(ISparqlExpression expr, bool distinct)
-            : this(expr)
+    /// <summary>
+    /// Get whether the aggregate should apply only to distinct values.
+    /// </summary>
+    public bool Distinct { get => _distinct; }
+
+    /// <summary>
+    /// Gets the String representation of the Aggregate.
+    /// </summary>
+    /// <returns></returns>
+    public abstract override string ToString();
+
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public SparqlExpressionType Type
+    {
+        get
         {
-            _distinct = distinct;
+            return SparqlExpressionType.Aggregate;
         }
+    }
 
-        /// <inheritdoc />
-        public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
-            IEnumerable<TBinding> bindings);
+    /// <summary>
+    /// Gets the Functor of the Aggregate.
+    /// </summary>
+    public abstract string Functor
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Expression that the Aggregate executes over.
-        /// </summary>
-        public ISparqlExpression Expression
+    /// <summary>
+    /// Gets the Arguments of the Expression.
+    /// </summary>
+    public virtual IEnumerable<ISparqlExpression> Arguments
+    {
+        get
         {
-            get
-            {
-                return _expr;
-            }
-        }
-
-        /// <summary>
-        /// Get whether the aggregate should apply only to distinct values.
-        /// </summary>
-        public bool Distinct { get => _distinct; }
-
-        /// <summary>
-        /// Gets the String representation of the Aggregate.
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Aggregate;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Aggregate.
-        /// </summary>
-        public abstract string Functor
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression.
-        /// </summary>
-        public virtual IEnumerable<ISparqlExpression> Arguments
-        {
-            get
-            {
-                return _expr.AsEnumerable();
-            }
+            return _expr.AsEnumerable();
         }
     }
 }

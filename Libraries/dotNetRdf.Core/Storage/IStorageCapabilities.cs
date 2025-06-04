@@ -26,69 +26,68 @@
 
 using System;
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+/// <summary>
+/// Interface which describes the capabilities of some storage provider.
+/// </summary>
+public interface IStorageCapabilities
 {
     /// <summary>
-    /// Interface which describes the capabilities of some storage provider.
+    /// Gets whether the connection with the underlying Store is ready for use.
     /// </summary>
-    public interface IStorageCapabilities
+    bool IsReady
     {
-        /// <summary>
-        /// Gets whether the connection with the underlying Store is ready for use.
-        /// </summary>
-        bool IsReady
-        {
-            get;
-        }
+        get;
+    }
 
-        /// <summary>
-        /// Gets whether the connection with the underlying Store is read-only.
-        /// </summary>
-        /// <remarks>
-        /// Any Manager which indicates it is read-only should also return false for the <see cref="IStorageCapabilities.UpdateSupported">UpdatedSupported</see> property and should throw a <see cref="RdfStorageException">RdfStorageException</see> if the <strong>SaveGraph()</strong> or <strong>UpdateGraph()</strong> methods are called.
-        /// </remarks>
-        bool IsReadOnly
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets whether the connection with the underlying Store is read-only.
+    /// </summary>
+    /// <remarks>
+    /// Any Manager which indicates it is read-only should also return false for the <see cref="IStorageCapabilities.UpdateSupported">UpdatedSupported</see> property and should throw a <see cref="RdfStorageException">RdfStorageException</see> if the <strong>SaveGraph()</strong> or <strong>UpdateGraph()</strong> methods are called.
+    /// </remarks>
+    bool IsReadOnly
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gets the Save Behaviour the Store uses.
-        /// </summary>
-        IOBehaviour IOBehaviour
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets the Save Behaviour the Store uses.
+    /// </summary>
+    IOBehaviour IOBehaviour
+    {
+        get;
+    }
 
 
-        /// <summary>
-        /// Gets whether the triple level updates are supported.
-        /// </summary>
-        /// <remarks>
-        /// Some Stores do not support updates at the Triple level and may as designated in the interface defintion throw a <see cref="NotSupportedException">NotSupportedException</see> if the <strong>UpdateGraph()</strong> method is called.  This property allows for calling code to check in advance whether Updates are supported.
-        /// </remarks>
-        bool UpdateSupported
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets whether the triple level updates are supported.
+    /// </summary>
+    /// <remarks>
+    /// Some Stores do not support updates at the Triple level and may as designated in the interface defintion throw a <see cref="NotSupportedException">NotSupportedException</see> if the <strong>UpdateGraph()</strong> method is called.  This property allows for calling code to check in advance whether Updates are supported.
+    /// </remarks>
+    bool UpdateSupported
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gets whether the deletion of graphs is supported.
-        /// </summary>
-        /// <remarks>
-        /// Some Stores do not support the deletion of Graphs and may as designated in the interface definition throw a <see cref="NotSupportedException">NotSupportedException</see> if the <strong>DeleteGraph()</strong> method is called.  This property allows for calling code to check in advance whether Deletion of Graphs is supported.
-        /// </remarks>
-        bool DeleteSupported
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets whether the deletion of graphs is supported.
+    /// </summary>
+    /// <remarks>
+    /// Some Stores do not support the deletion of Graphs and may as designated in the interface definition throw a <see cref="NotSupportedException">NotSupportedException</see> if the <strong>DeleteGraph()</strong> method is called.  This property allows for calling code to check in advance whether Deletion of Graphs is supported.
+    /// </remarks>
+    bool DeleteSupported
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gets whether the Store supports Listing Graphs.
-        /// </summary>
-        bool ListGraphsSupported
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets whether the Store supports Listing Graphs.
+    /// </summary>
+    bool ListGraphsSupported
+    {
+        get;
     }
 }

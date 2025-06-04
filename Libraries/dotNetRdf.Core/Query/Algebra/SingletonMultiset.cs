@@ -28,20 +28,19 @@
 
 using System.Collections.Generic;
 
-namespace VDS.RDF.Query.Algebra
-{
-    internal class SingletonMultiset : Multiset
-    {
-        public SingletonMultiset()
-            : base()
-        {
-            Add(new Set());
-        }
+namespace VDS.RDF.Query.Algebra;
 
-        public SingletonMultiset(IEnumerable<string> vars)
-            : base(vars)
-        {
-            Add(new Set());
-        }
+internal class SingletonMultiset : Multiset
+{
+    public SingletonMultiset()
+        : base()
+    {
+        Add(new Set());
+    }
+
+    public SingletonMultiset(IEnumerable<string> vars)
+        : base(vars)
+    {
+        Add(new Set());
     }
 }

@@ -28,55 +28,54 @@ using System;
 using System.IO;
 using VDS.RDF.Parsing.Handlers;
 
-namespace VDS.RDF.Parsing.Validation
+namespace VDS.RDF.Parsing.Validation;
+
+/// <summary>
+/// Syntax Validator for RDF Dataset Formats.
+/// </summary>
+public class RdfDatasetSyntaxValidator : ISyntaxValidator
 {
+    private IStoreReader _parser;
+
     /// <summary>
-    /// Syntax Validator for RDF Dataset Formats.
+    /// Creates a new RDF Dataset Syntax Validator.
     /// </summary>
-    public class RdfDatasetSyntaxValidator : ISyntaxValidator
+    /// <param name="parser">Dataset Parser.</param>
+    public RdfDatasetSyntaxValidator(IStoreReader parser)
     {
-        private IStoreReader _parser;
+        _parser = parser;
+    }
 
-        /// <summary>
-        /// Creates a new RDF Dataset Syntax Validator.
-        /// </summary>
-        /// <param name="parser">Dataset Parser.</param>
-        public RdfDatasetSyntaxValidator(IStoreReader parser)
+    /// <summary>
+    /// Determines whether the data provided is valid syntax.
+    /// </summary>
+    /// <param name="data">Data.</param>
+    /// <returns></returns>
+    public virtual ISyntaxValidationResults Validate(string data)
+    {
+        string message;
+        try
         {
-            _parser = parser;
+            var handler = new StoreCountHandler();
+            _parser.Load(handler, new StringReader(data));
+
+            message = "Valid RDF Dataset - " + handler.GraphCount + " Graphs with " + handler.TripleCount + " Triples - Parser: " + _parser.GetType().Name;
+            return new SyntaxValidationResults(true, message, handler);
         }
-
-        /// <summary>
-        /// Determines whether the data provided is valid syntax.
-        /// </summary>
-        /// <param name="data">Data.</param>
-        /// <returns></returns>
-        public virtual ISyntaxValidationResults Validate(string data)
+        catch (RdfParseException parseEx)
         {
-            string message;
-            try
-            {
-                var handler = new StoreCountHandler();
-                _parser.Load(handler, new StringReader(data));
-
-                message = "Valid RDF Dataset - " + handler.GraphCount + " Graphs with " + handler.TripleCount + " Triples - Parser: " + _parser.GetType().Name;
-                return new SyntaxValidationResults(true, message, handler);
-            }
-            catch (RdfParseException parseEx)
-            {
-                message = "Invalid RDF Dataset - Parsing Error from Parser: " + _parser.GetType().Name + " - " + parseEx.Message;
-                return new SyntaxValidationResults(message, parseEx);
-            }
-            catch (RdfException rdfEx)
-            {
-                message = "Invalid RDF Dataset - RDF Error from Parser: " + _parser.GetType().Name + " - " + rdfEx.Message;
-                return new SyntaxValidationResults(message, rdfEx);
-            }
-            catch (Exception ex)
-            {
-                message = "Invalid RDF Dataset - Error from Parser: " + _parser.GetType().Name + " - " + ex.Message;
-                return new SyntaxValidationResults(message, ex);
-            }
+            message = "Invalid RDF Dataset - Parsing Error from Parser: " + _parser.GetType().Name + " - " + parseEx.Message;
+            return new SyntaxValidationResults(message, parseEx);
+        }
+        catch (RdfException rdfEx)
+        {
+            message = "Invalid RDF Dataset - RDF Error from Parser: " + _parser.GetType().Name + " - " + rdfEx.Message;
+            return new SyntaxValidationResults(message, rdfEx);
+        }
+        catch (Exception ex)
+        {
+            message = "Invalid RDF Dataset - Error from Parser: " + _parser.GetType().Name + " - " + ex.Message;
+            return new SyntaxValidationResults(message, ex);
         }
     }
 }

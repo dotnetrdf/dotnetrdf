@@ -24,28 +24,27 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+/**
+ * A triple path element.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface ITriplePath : IElement
 {
 
     /**
-     * A triple path element.
-     * 
-     * @author Holger Knublauch
+     * Gets the subject.
+     * @return the subject
      */
-    internal interface ITriplePath : IElement
-    {
-
-        /**
-         * Gets the subject.
-         * @return the subject
-         */
-        IResource getSubject();
+    IResource getSubject();
 
 
-        /**
-         * Gets the object.
-         * @return the object
-         */
-        IResource getObject();
-    }
+    /**
+     * Gets the object.
+     * @return the object
+     */
+    IResource getObject();
 }

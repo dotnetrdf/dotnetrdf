@@ -26,22 +26,21 @@
 
 using VDS.RDF.Query.Spin.SparqlUtil;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class TripleTemplateImpl : TripleImpl, ITripleTemplate
 {
-    internal class TripleTemplateImpl : TripleImpl, ITripleTemplate
+
+    public TripleTemplateImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
-
-        public TripleTemplateImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
-        }
+    }
 
 
-        override public void Print(ISparqlPrinter p)
-        {
-            p.setNamedBNodeMode(true);
-            base.Print(p);
-            p.setNamedBNodeMode(false);
-        }
+    override public void Print(ISparqlPrinter p)
+    {
+        p.setNamedBNodeMode(true);
+        base.Print(p);
+        p.setNamedBNodeMode(false);
     }
 }

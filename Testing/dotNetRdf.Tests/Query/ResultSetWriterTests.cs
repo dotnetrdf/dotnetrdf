@@ -29,34 +29,33 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+
+public class ResultSetWriterTests
 {
-
-    public class ResultSetWriterTests
+    [Fact]
+    public void SparqlXmlWriter()
     {
-        [Fact]
-        public void SparqlXmlWriter()
-        {
-                var g = new Graph();
-                g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+            var g = new Graph();
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
-                var results = g.ExecuteQuery("SELECT * WHERE {?s ?p ?o}");
-                if (results is SparqlResultSet)
-                {
-                    TestTools.ShowResults(results);
-                }
+            var results = g.ExecuteQuery("SELECT * WHERE {?s ?p ?o}");
+            if (results is SparqlResultSet)
+            {
+                TestTools.ShowResults(results);
+            }
 
-                var output = new StringBuilder();
-                var writer = new System.IO.StringWriter(output);
-                var sparqlWriter = new SparqlXmlWriter();
-                sparqlWriter.Save((SparqlResultSet)results, writer);
+            var output = new StringBuilder();
+            var writer = new System.IO.StringWriter(output);
+            var sparqlWriter = new SparqlXmlWriter();
+            sparqlWriter.Save((SparqlResultSet)results, writer);
 
-                var parser = new SparqlXmlParser();
-                var results2 = new SparqlResultSet();
-                StringParser.ParseResultSet(results2, output.ToString(), parser);
+            var parser = new SparqlXmlParser();
+            var results2 = new SparqlResultSet();
+            StringParser.ParseResultSet(results2, output.ToString(), parser);
 
-                Assert.Equal(((SparqlResultSet)results).Count, results2.Count);
-                Assert.True(((SparqlResultSet)results).Equals(results2), "Result Sets should have been equal");
-        }
+            Assert.Equal(((SparqlResultSet)results).Count, results2.Count);
+            Assert.True(((SparqlResultSet)results).Equals(results2), "Result Sets should have been equal");
     }
 }

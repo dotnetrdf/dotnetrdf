@@ -29,36 +29,35 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class In : Constraint
 {
-    internal class In : Constraint
+    [DebuggerStepThrough]
+    internal In(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal In(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage => $"Value must be one of {this}.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.InConstraintComponent;
         }
+    }
 
-        protected override string DefaultMessage => $"Value must be one of {this}.";
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        IEnumerable<INode> items = Graph.GetListItems(this);
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.InConstraintComponent;
-            }
-        }
+        IEnumerable<INode> invalidValues =
+            from valueNode in valueNodes
+            where !items.Contains(valueNode)
+            select valueNode;
 
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            IEnumerable<INode> items = Graph.GetListItems(this);
-
-            IEnumerable<INode> invalidValues =
-                from valueNode in valueNodes
-                where !items.Contains(valueNode)
-                select valueNode;
-
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
+        return ReportValueNodes(focusNode, invalidValues, report);
     }
 }

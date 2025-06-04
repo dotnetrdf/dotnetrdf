@@ -26,95 +26,94 @@
 
 using System;
 
-namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry;
+
+/// <summary>
+/// Represents the Leviathan lfn:cosec() or lfn:cosec-1 function.
+/// </summary>
+public class CosecantFunction
+    : BaseTrigonometricFunction
 {
+    private static readonly Func<double, double> _cosecant = (d => (1 / Math.Sin(d)));
+    private static readonly Func<double, double> _arccosecant = (d => Math.Asin(1 / d));
+
     /// <summary>
-    /// Represents the Leviathan lfn:cosec() or lfn:cosec-1 function.
+    /// Creates a new Leviathan Cosecant Function.
     /// </summary>
-    public class CosecantFunction
-        : BaseTrigonometricFunction
+    /// <param name="expr">Expression.</param>
+    public CosecantFunction(ISparqlExpression expr)
+        : base(expr, _cosecant) { }
+
+    /// <summary>
+    /// Creates a new Leviathan Cosecant Function.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="inverse">Whether this should be the inverse function.</param>
+    public CosecantFunction(ISparqlExpression expr, bool inverse)
+        : base(expr)
     {
-        private static readonly Func<double, double> _cosecant = (d => (1 / Math.Sin(d)));
-        private static readonly Func<double, double> _arccosecant = (d => Math.Asin(1 / d));
+        Inverse = inverse;
+        _func = Inverse ? _arccosecant : _cosecant;
+    }
 
-        /// <summary>
-        /// Creates a new Leviathan Cosecant Function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public CosecantFunction(ISparqlExpression expr)
-            : base(expr, _cosecant) { }
+    /// <summary>
+    /// Get whether this is the inverse function.
+    /// </summary>
+    public bool Inverse { get; }
 
-        /// <summary>
-        /// Creates a new Leviathan Cosecant Function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="inverse">Whether this should be the inverse function.</param>
-        public CosecantFunction(ISparqlExpression expr, bool inverse)
-            : base(expr)
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        if (Inverse)
         {
-            Inverse = inverse;
-            _func = Inverse ? _arccosecant : _cosecant;
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosecInv + ">(" + InnerExpression + ")";
         }
+        else
+        {
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosec + ">(" + InnerExpression + ")";
+        }
+    }
 
-        /// <summary>
-        /// Get whether this is the inverse function.
-        /// </summary>
-        public bool Inverse { get; }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessCosecantFunction(this, context, binding);
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitCosecantFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
             if (Inverse)
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosecInv + ">(" + InnerExpression + ")";
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosecInv;
             }
             else
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosec + ">(" + InnerExpression + ")";
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosec;
             }
         }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessCosecantFunction(this, context, binding);
-        }
-
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitCosecantFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                if (Inverse)
-                {
-                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosecInv;
-                }
-                else
-                {
-                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosec;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new CosecantFunction(transformer.Transform(InnerExpression), Inverse);
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new CosecantFunction(transformer.Transform(InnerExpression), Inverse);
     }
 }

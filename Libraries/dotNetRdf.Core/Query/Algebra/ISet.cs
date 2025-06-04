@@ -29,264 +29,263 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Interface for Sets which represents a possible solution during SPARQL evaluation.
+/// </summary>
+public interface ISet 
+    : IEquatable<ISet>
 {
     /// <summary>
-    /// Interface for Sets which represents a possible solution during SPARQL evaluation.
+    /// Adds a Value for a Variable to the Set.
     /// </summary>
-    public interface ISet 
-        : IEquatable<ISet>
-    {
-        /// <summary>
-        /// Adds a Value for a Variable to the Set.
-        /// </summary>
-        /// <param name="variable">Variable.</param>
-        /// <param name="value">Value.</param>
-        void Add(string variable, INode value);
+    /// <param name="variable">Variable.</param>
+    /// <param name="value">Value.</param>
+    void Add(string variable, INode value);
 
-        /// <summary>
-        /// Checks whether the Set contains a given Variable.
-        /// </summary>
-        /// <param name="variable">Variable.</param>
-        /// <returns></returns>
-        bool ContainsVariable(string variable);
+    /// <summary>
+    /// Checks whether the Set contains a given Variable.
+    /// </summary>
+    /// <param name="variable">Variable.</param>
+    /// <returns></returns>
+    bool ContainsVariable(string variable);
 
-        /// <summary>
-        /// Gets whether the Set is compatible with a given set based on the given variables.
-        /// </summary>
-        /// <param name="s">Set.</param>
-        /// <param name="vars">Variables.</param>
-        /// <returns></returns>
-        bool IsCompatibleWith(ISet s, IEnumerable<string> vars);
+    /// <summary>
+    /// Gets whether the Set is compatible with a given set based on the given variables.
+    /// </summary>
+    /// <param name="s">Set.</param>
+    /// <param name="vars">Variables.</param>
+    /// <returns></returns>
+    bool IsCompatibleWith(ISet s, IEnumerable<string> vars);
 
-        /// <summary>
-        /// Gets whether the Set is minus compatible with a given set based on the given variables.
-        /// </summary>
-        /// <param name="s">Set.</param>
-        /// <param name="vars">Variables.</param>
-        /// <returns></returns>
-        bool IsMinusCompatibleWith(ISet s, IEnumerable<string> vars);
+    /// <summary>
+    /// Gets whether the Set is minus compatible with a given set based on the given variables.
+    /// </summary>
+    /// <param name="s">Set.</param>
+    /// <param name="vars">Variables.</param>
+    /// <returns></returns>
+    bool IsMinusCompatibleWith(ISet s, IEnumerable<string> vars);
 
-        /// <summary>
-        /// Gets/Sets the ID of the Set.
-        /// </summary>
-        int ID 
-        { 
-            get; 
-            set; 
-        }
-
-        /// <summary>
-        /// Removes a Value for a Variable from the Set.
-        /// </summary>
-        /// <param name="variable">Variable.</param>
-        void Remove(string variable);
-
-        /// <summary>
-        /// Retrieves the Value in this set for the given Variable.
-        /// </summary>
-        /// <param name="variable">Variable.</param>
-        /// <returns>Either a Node or a null.</returns>
-        INode this[string variable] 
-        { 
-            get; 
-        }
-
-        /// <summary>
-        /// Gets the Values in the Set.
-        /// </summary>
-        IEnumerable<INode> Values 
-        { 
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Variables in the Set.
-        /// </summary>
-        IEnumerable<string> Variables 
-        { 
-            get;
-        }
-
-        /// <summary>
-        /// Joins the set to another set.
-        /// </summary>
-        /// <param name="other">Other Set.</param>
-        /// <returns></returns>
-        ISet Join(ISet other);
-
-        /// <summary>
-        /// Copies the Set.
-        /// </summary>
-        /// <returns></returns>
-        ISet Copy();
-
-        /// <summary>
-        /// Return true if this set contains a non-null value for all of the specified variables.
-        /// </summary>
-        /// <param name="vars">Variable names.</param>
-        /// <returns></returns>
-        bool BindsAll(IEnumerable<string> vars);
+    /// <summary>
+    /// Gets/Sets the ID of the Set.
+    /// </summary>
+    int ID 
+    { 
+        get; 
+        set; 
     }
 
     /// <summary>
-    /// Abstract Base Class for implementations of the <see cref="ISet">ISet</see> interface.
+    /// Removes a Value for a Variable from the Set.
     /// </summary>
-    public abstract class BaseSet
-        : ISet
+    /// <param name="variable">Variable.</param>
+    void Remove(string variable);
+
+    /// <summary>
+    /// Retrieves the Value in this set for the given Variable.
+    /// </summary>
+    /// <param name="variable">Variable.</param>
+    /// <returns>Either a Node or a null.</returns>
+    INode this[string variable] 
+    { 
+        get; 
+    }
+
+    /// <summary>
+    /// Gets the Values in the Set.
+    /// </summary>
+    IEnumerable<INode> Values 
+    { 
+        get;
+    }
+
+    /// <summary>
+    /// Gets the Variables in the Set.
+    /// </summary>
+    IEnumerable<string> Variables 
+    { 
+        get;
+    }
+
+    /// <summary>
+    /// Joins the set to another set.
+    /// </summary>
+    /// <param name="other">Other Set.</param>
+    /// <returns></returns>
+    ISet Join(ISet other);
+
+    /// <summary>
+    /// Copies the Set.
+    /// </summary>
+    /// <returns></returns>
+    ISet Copy();
+
+    /// <summary>
+    /// Return true if this set contains a non-null value for all of the specified variables.
+    /// </summary>
+    /// <param name="vars">Variable names.</param>
+    /// <returns></returns>
+    bool BindsAll(IEnumerable<string> vars);
+}
+
+/// <summary>
+/// Abstract Base Class for implementations of the <see cref="ISet">ISet</see> interface.
+/// </summary>
+public abstract class BaseSet
+    : ISet
+{
+    private int _id = 0;
+
+    /// <summary>
+    /// Adds a Value for a Variable to the Set.
+    /// </summary>
+    /// <param name="variable">Variable.</param>
+    /// <param name="value">Value.</param>
+    public abstract void Add(string variable, INode value);
+
+    /// <summary>
+    /// Checks whether the Set contains a given Variable.
+    /// </summary>
+    /// <param name="variable">Variable.</param>
+    /// <returns></returns>
+    public abstract bool ContainsVariable(string variable);
+
+    /// <summary>
+    /// Gets whether the Set is compatible with a given set based on the given variables.
+    /// </summary>
+    /// <param name="s">Set.</param>
+    /// <param name="vars">Variables.</param>
+    /// <returns></returns>
+    public abstract bool IsCompatibleWith(ISet s, IEnumerable<string> vars);
+
+    /// <summary>
+    /// Gets whether the Set is minus compatible with a given set based on the given variables.
+    /// </summary>
+    /// <param name="s">Set.</param>
+    /// <param name="vars">Variables.</param>
+    /// <returns></returns>
+    public abstract bool IsMinusCompatibleWith(ISet s, IEnumerable<string> vars);
+
+    /// <summary>
+    /// Gets/Sets the ID of the Set.
+    /// </summary>
+    public int ID
     {
-        private int _id = 0;
-
-        /// <summary>
-        /// Adds a Value for a Variable to the Set.
-        /// </summary>
-        /// <param name="variable">Variable.</param>
-        /// <param name="value">Value.</param>
-        public abstract void Add(string variable, INode value);
-
-        /// <summary>
-        /// Checks whether the Set contains a given Variable.
-        /// </summary>
-        /// <param name="variable">Variable.</param>
-        /// <returns></returns>
-        public abstract bool ContainsVariable(string variable);
-
-        /// <summary>
-        /// Gets whether the Set is compatible with a given set based on the given variables.
-        /// </summary>
-        /// <param name="s">Set.</param>
-        /// <param name="vars">Variables.</param>
-        /// <returns></returns>
-        public abstract bool IsCompatibleWith(ISet s, IEnumerable<string> vars);
-
-        /// <summary>
-        /// Gets whether the Set is minus compatible with a given set based on the given variables.
-        /// </summary>
-        /// <param name="s">Set.</param>
-        /// <param name="vars">Variables.</param>
-        /// <returns></returns>
-        public abstract bool IsMinusCompatibleWith(ISet s, IEnumerable<string> vars);
-
-        /// <summary>
-        /// Gets/Sets the ID of the Set.
-        /// </summary>
-        public int ID
+        get
         {
-            get
-            {
-                return _id;
-            }
-            set
-            {
-                _id = value;
-            }
+            return _id;
         }
-
-        /// <summary>
-        /// Removes a Value for a Variable from the Set.
-        /// </summary>
-        /// <param name="variable">Variable.</param>
-        public abstract void Remove(string variable);
-
-        /// <summary>
-        /// Retrieves the Value in this set for the given Variable.
-        /// </summary>
-        /// <param name="variable">Variable.</param>
-        /// <returns>Either a Node or a null.</returns>
-        public abstract INode this[string variable]
+        set
         {
-            get;
+            _id = value;
         }
+    }
 
-        /// <summary>
-        /// Gets the Values in the Set.
-        /// </summary>
-        public abstract IEnumerable<INode> Values
+    /// <summary>
+    /// Removes a Value for a Variable from the Set.
+    /// </summary>
+    /// <param name="variable">Variable.</param>
+    public abstract void Remove(string variable);
+
+    /// <summary>
+    /// Retrieves the Value in this set for the given Variable.
+    /// </summary>
+    /// <param name="variable">Variable.</param>
+    /// <returns>Either a Node or a null.</returns>
+    public abstract INode this[string variable]
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the Values in the Set.
+    /// </summary>
+    public abstract IEnumerable<INode> Values
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the Variables in the Set.
+    /// </summary>
+    public abstract IEnumerable<string> Variables
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Joins the set to another set.
+    /// </summary>
+    /// <param name="other">Other Set.</param>
+    /// <returns></returns>
+    public abstract ISet Join(ISet other);
+
+    /// <summary>
+    /// Copies the Set.
+    /// </summary>
+    /// <returns></returns>
+    public abstract ISet Copy();
+
+
+    /// <inheritdoc />
+    public virtual bool BindsAll(IEnumerable<string> variables)
+    {
+        return variables.All(v => this[v] != null);
+    }
+
+    /// <summary>
+    /// Gets whether the Set is equal to another set.
+    /// </summary>
+    /// <param name="other">Set to compare with.</param>
+    /// <returns></returns>
+    public bool Equals(ISet other)
+    {
+        if (ReferenceEquals(this, other)) return true;
+        if (other == null) return false;
+        return Variables.All(v => other.ContainsVariable(v) && ((this[v] == null && other[v] == null) || this[v].Equals(other[v])));
+    }
+
+    /// <summary>
+    /// Gets whether the Set is equal to another object.
+    /// </summary>
+    /// <param name="obj">Object to compare with.</param>
+    /// <returns></returns>
+    public sealed override bool Equals(object obj)
+    {
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj == null) return false;
+        if (obj is ISet set)
         {
-            get;
+            return Equals(set);
         }
+        return false;
+    }
 
-        /// <summary>
-        /// Gets the Variables in the Set.
-        /// </summary>
-        public abstract IEnumerable<string> Variables
+    /// <summary>
+    /// Gets the Hash Code of the Set.
+    /// </summary>
+    /// <returns></returns>
+    public override int GetHashCode()
+    {
+        return ToString().GetHashCode();
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Set.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        var count = 0;
+        foreach (var var in Variables.OrderBy(v => v))
         {
-            get;
+            output.Append("?" + var + " = " + this[var].ToSafeString());
+            output.Append(" , ");
+            count++;
         }
-
-        /// <summary>
-        /// Joins the set to another set.
-        /// </summary>
-        /// <param name="other">Other Set.</param>
-        /// <returns></returns>
-        public abstract ISet Join(ISet other);
-
-        /// <summary>
-        /// Copies the Set.
-        /// </summary>
-        /// <returns></returns>
-        public abstract ISet Copy();
-
-
-        /// <inheritdoc />
-        public virtual bool BindsAll(IEnumerable<string> variables)
-        {
-            return variables.All(v => this[v] != null);
-        }
-
-        /// <summary>
-        /// Gets whether the Set is equal to another set.
-        /// </summary>
-        /// <param name="other">Set to compare with.</param>
-        /// <returns></returns>
-        public bool Equals(ISet other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            return Variables.All(v => other.ContainsVariable(v) && ((this[v] == null && other[v] == null) || this[v].Equals(other[v])));
-        }
-
-        /// <summary>
-        /// Gets whether the Set is equal to another object.
-        /// </summary>
-        /// <param name="obj">Object to compare with.</param>
-        /// <returns></returns>
-        public sealed override bool Equals(object obj)
-        {
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj == null) return false;
-            if (obj is ISet set)
-            {
-                return Equals(set);
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Gets the Hash Code of the Set.
-        /// </summary>
-        /// <returns></returns>
-        public override int GetHashCode()
-        {
-            return ToString().GetHashCode();
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Set.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            var count = 0;
-            foreach (var var in Variables.OrderBy(v => v))
-            {
-                output.Append("?" + var + " = " + this[var].ToSafeString());
-                output.Append(" , ");
-                count++;
-            }
-            if (count > 0) output.Remove(output.Length - 3, 3);
-            return output.ToString();
-        }
+        if (count > 0) output.Remove(output.Length - 3, 3);
+        return output.ToString();
     }
 }

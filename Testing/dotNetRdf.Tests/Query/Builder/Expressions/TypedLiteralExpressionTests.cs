@@ -26,73 +26,72 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using Xunit;
 using VDS.RDF.Query.Expressions.Comparison;
 
-namespace VDS.RDF.Query.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions;
+
+
+public class TypedLiteralExpressionTests : SparqlExpressionTestsBase
 {
-
-    public class TypedLiteralExpressionTests : SparqlExpressionTestsBase
+    [Fact]
+    public void ShouldAllowComparisonOperationOnTypedLiteralExpressions()
     {
-        [Fact]
-        public void ShouldAllowComparisonOperationOnTypedLiteralExpressions()
-        {
-            // given
-            var left = new TypedLiteralExpression<bool>(true);
-            Left = left.Expression;
-            var right = new TypedLiteralExpression<bool>(true);
-            Right = right.Expression;
+        // given
+        var left = new TypedLiteralExpression<bool>(true);
+        Left = left.Expression;
+        var right = new TypedLiteralExpression<bool>(true);
+        Right = right.Expression;
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<EqualsExpression>(left == right);
-            AssertExpressionTypeAndCorrectArguments<GreaterThanExpression>(left > right);
-            AssertExpressionTypeAndCorrectArguments<GreaterThanOrEqualToExpression>(left >= right);
-            AssertExpressionTypeAndCorrectArguments<LessThanExpression>(left < right);
-            AssertExpressionTypeAndCorrectArguments<LessThanOrEqualToExpression>(left <= right);
-            AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(left != right);
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<EqualsExpression>(left == right);
+        AssertExpressionTypeAndCorrectArguments<GreaterThanExpression>(left > right);
+        AssertExpressionTypeAndCorrectArguments<GreaterThanOrEqualToExpression>(left >= right);
+        AssertExpressionTypeAndCorrectArguments<LessThanExpression>(left < right);
+        AssertExpressionTypeAndCorrectArguments<LessThanOrEqualToExpression>(left <= right);
+        AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(left != right);
+    }
 
-        [Fact]
-        public void ShouldAllowComparisonOperationOnTypedLiteralExpressionAndLiteralValue()
-        {
-            // given
-            const decimal value = 10;
-            var left = new TypedLiteralExpression<decimal>(120);
-            Left = left.Expression;
+    [Fact]
+    public void ShouldAllowComparisonOperationOnTypedLiteralExpressionAndLiteralValue()
+    {
+        // given
+        const decimal value = 10;
+        var left = new TypedLiteralExpression<decimal>(120);
+        Left = left.Expression;
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<EqualsExpression>(left == value,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, value));
-            AssertExpressionTypeAndCorrectArguments<GreaterThanExpression>(left > value,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, value));
-            AssertExpressionTypeAndCorrectArguments<GreaterThanOrEqualToExpression>(left >= value,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, value));
-            AssertExpressionTypeAndCorrectArguments<LessThanExpression>(left < value,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, value));
-            AssertExpressionTypeAndCorrectArguments<LessThanOrEqualToExpression>(left <= value,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, value));
-            AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(left != value,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, value));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<EqualsExpression>(left == value,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, value));
+        AssertExpressionTypeAndCorrectArguments<GreaterThanExpression>(left > value,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, value));
+        AssertExpressionTypeAndCorrectArguments<GreaterThanOrEqualToExpression>(left >= value,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, value));
+        AssertExpressionTypeAndCorrectArguments<LessThanExpression>(left < value,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, value));
+        AssertExpressionTypeAndCorrectArguments<LessThanOrEqualToExpression>(left <= value,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, value));
+        AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(left != value,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, value));
+    }
 
-        [Fact]
-        public void ShouldAllowComparisonOperationOnLiteralValueAndTypedLiteralExpression()
-        {
-            // given
-            const float value = 10.5f;
-            var right = new TypedLiteralExpression<float>(120);
-            Right = right.Expression;
+    [Fact]
+    public void ShouldAllowComparisonOperationOnLiteralValueAndTypedLiteralExpression()
+    {
+        // given
+        const float value = 10.5f;
+        var right = new TypedLiteralExpression<float>(120);
+        Right = right.Expression;
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<EqualsExpression>(value == right,
-                assertLeftOperand: ex=>AssertCorrectConstantTerm(ex, value));
-            AssertExpressionTypeAndCorrectArguments<GreaterThanExpression>(value > right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, value));
-            AssertExpressionTypeAndCorrectArguments<GreaterThanOrEqualToExpression>(value >= right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, value));
-            AssertExpressionTypeAndCorrectArguments<LessThanExpression>(value < right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, value));
-            AssertExpressionTypeAndCorrectArguments<LessThanOrEqualToExpression>(value <= right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, value));
-            AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(value != right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, value));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<EqualsExpression>(value == right,
+            assertLeftOperand: ex=>AssertCorrectConstantTerm(ex, value));
+        AssertExpressionTypeAndCorrectArguments<GreaterThanExpression>(value > right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, value));
+        AssertExpressionTypeAndCorrectArguments<GreaterThanOrEqualToExpression>(value >= right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, value));
+        AssertExpressionTypeAndCorrectArguments<LessThanExpression>(value < right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, value));
+        AssertExpressionTypeAndCorrectArguments<LessThanOrEqualToExpression>(value <= right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, value));
+        AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(value != right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, value));
     }
 }

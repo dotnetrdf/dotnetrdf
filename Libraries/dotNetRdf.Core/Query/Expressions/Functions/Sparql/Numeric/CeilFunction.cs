@@ -24,61 +24,60 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
+
+/// <summary>
+/// Represents the SPARQL CEIL() Function.
+/// </summary>
+public class CeilFunction
+    : XPath.Numeric.CeilingFunction
 {
     /// <summary>
-    /// Represents the SPARQL CEIL() Function.
+    /// Creates a new SPARQL CEIL() Function.
     /// </summary>
-    public class CeilFunction
-        : XPath.Numeric.CeilingFunction
+    /// <param name="expr">Argument Expression.</param>
+    public CeilFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+    /// <summary>
+    /// Gets the Functor of this Expression.
+    /// </summary>
+    public override string Functor
     {
-        /// <summary>
-        /// Creates a new SPARQL CEIL() Function.
-        /// </summary>
-        /// <param name="expr">Argument Expression.</param>
-        public CeilFunction(ISparqlExpression expr)
-            : base(expr) { }
-
-        /// <summary>
-        /// Gets the Functor of this Expression.
-        /// </summary>
-        public override string Functor
+        get
         {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordCeil;
-            }
+            return SparqlSpecsHelper.SparqlKeywordCeil;
         }
+    }
 
-        /// <summary>
-        /// Gets the String representation of this Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordCeil + "(" + InnerExpression + ")";
-        }
+    /// <summary>
+    /// Gets the String representation of this Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return SparqlSpecsHelper.SparqlKeywordCeil + "(" + InnerExpression + ")";
+    }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new CeilFunction(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new CeilFunction(transformer.Transform(InnerExpression));
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessCeilFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessCeilFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitCeilFunction(this);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitCeilFunction(this);
     }
 }

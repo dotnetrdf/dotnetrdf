@@ -27,41 +27,40 @@ using System.Dynamic;
 using System.Linq.Expressions;
 using Xunit;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+public class DynamicGraphTests
 {
-    public class DynamicGraphTests
+    [Fact]
+    public void Subject_base_uri_defaults_to_graph_base_uri()
     {
-        [Fact]
-        public void Subject_base_uri_defaults_to_graph_base_uri()
+        var d = new DynamicGraph
         {
-            var d = new DynamicGraph
-            {
-                BaseUri = UriFactory.Root.Create("urn:")
-            };
+            BaseUri = UriFactory.Root.Create("urn:")
+        };
 
-            Assert.Equal(d.BaseUri, d.SubjectBaseUri);
-        }
+        Assert.Equal(d.BaseUri, d.SubjectBaseUri);
+    }
 
-        [Fact]
-        public void Predicate_base_uri_defaults_to_subject_base_uri()
-        {
-            var d = new DynamicGraph(new Graph(), UriFactory.Root.Create("urn:s"));
+    [Fact]
+    public void Predicate_base_uri_defaults_to_subject_base_uri()
+    {
+        var d = new DynamicGraph(new Graph(), UriFactory.Root.Create("urn:s"));
 
-            Assert.Equal(d.SubjectBaseUri, d.PredicateBaseUri);
-        }
+        Assert.Equal(d.SubjectBaseUri, d.PredicateBaseUri);
+    }
 
-        [Fact]
-        public void Provides_dictionary_meta_object()
-        {
-            var d = new DynamicGraph();
-            d.LoadFromString(@"
+    [Fact]
+    public void Provides_dictionary_meta_object()
+    {
+        var d = new DynamicGraph();
+        d.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var p = (IDynamicMetaObjectProvider)d;
-            var mo = p.GetMetaObject(Expression.Empty());
+        var p = (IDynamicMetaObjectProvider)d;
+        var mo = p.GetMetaObject(Expression.Empty());
 
-            Assert.NotNull(mo);
-        }
+        Assert.NotNull(mo);
     }
 }

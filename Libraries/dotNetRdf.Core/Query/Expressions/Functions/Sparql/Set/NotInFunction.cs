@@ -28,74 +28,73 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set;
+
+/// <summary>
+/// Class representing the SPARQL NOT IN set function.
+/// </summary>
+public class NotInFunction
+    : BaseSetFunction
 {
     /// <summary>
-    /// Class representing the SPARQL NOT IN set function.
+    /// Creates a new SPARQL NOT IN function.
     /// </summary>
-    public class NotInFunction
-        : BaseSetFunction
+    /// <param name="expr">Expression.</param>
+    /// <param name="set">Set.</param>
+    public NotInFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
+        : base(expr, set) { }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
     {
-        /// <summary>
-        /// Creates a new SPARQL NOT IN function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="set">Set.</param>
-        public NotInFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
-            : base(expr, set) { }
+        return processor.ProcessNotInFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitNotInFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return processor.ProcessNotInFunction(this, context, binding);
+            return SparqlSpecsHelper.SparqlKeywordNotIn;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append(_expr);
+        output.Append(" NOT IN (");
+        for (var i = 0; i < _expressions.Count; i++)
         {
-            return visitor.VisitNotInFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
+            output.Append(_expressions[i]);
+            if (i < _expressions.Count - 1)
             {
-                return SparqlSpecsHelper.SparqlKeywordNotIn;
+                output.Append(" , ");
             }
         }
+        output.Append(")");
+        return output.ToString();
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append(_expr);
-            output.Append(" NOT IN (");
-            for (var i = 0; i < _expressions.Count; i++)
-            {
-                output.Append(_expressions[i]);
-                if (i < _expressions.Count - 1)
-                {
-                    output.Append(" , ");
-                }
-            }
-            output.Append(")");
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new NotInFunction(transformer.Transform(_expr), _expressions.Select(e => transformer.Transform(e)));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new NotInFunction(transformer.Transform(_expr), _expressions.Select(e => transformer.Transform(e)));
     }
 }

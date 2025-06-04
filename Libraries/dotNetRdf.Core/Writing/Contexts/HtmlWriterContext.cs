@@ -28,39 +28,38 @@ using System.IO;
 using System.Web.UI;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Writing.Contexts
+namespace VDS.RDF.Writing.Contexts;
+
+/// <summary>
+/// Writer Context for XHTML+RDFa Writers.
+/// </summary>
+public class HtmlWriterContext : BaseWriterContext
 {
+    private HtmlTextWriter _writer;
+
     /// <summary>
-    /// Writer Context for XHTML+RDFa Writers.
+    /// Creates a new HTML Writer Context.
     /// </summary>
-    public class HtmlWriterContext : BaseWriterContext
+    /// <param name="g">Graph.</param>
+    /// <param name="writer">Text Writer.</param>
+    public HtmlWriterContext(IGraph g, TextWriter writer)
+        : base(g, writer) 
     {
-        private HtmlTextWriter _writer;
+        _writer = new HtmlTextWriter(writer);
+        // Have to remove the Empty Prefix since this is reserved in (X)HTML+RDFa for the (X)HTML namespace
+        QNameMapper.RemoveNamespace(string.Empty);
 
-        /// <summary>
-        /// Creates a new HTML Writer Context.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="writer">Text Writer.</param>
-        public HtmlWriterContext(IGraph g, TextWriter writer)
-            : base(g, writer) 
+        _uriFormatter = new HtmlFormatter();
+    }
+
+    /// <summary>
+    /// HTML Writer to use.
+    /// </summary>
+    public HtmlTextWriter HtmlWriter
+    {
+        get
         {
-            _writer = new HtmlTextWriter(writer);
-            // Have to remove the Empty Prefix since this is reserved in (X)HTML+RDFa for the (X)HTML namespace
-            QNameMapper.RemoveNamespace(string.Empty);
-
-            _uriFormatter = new HtmlFormatter();
-        }
-
-        /// <summary>
-        /// HTML Writer to use.
-        /// </summary>
-        public HtmlTextWriter HtmlWriter
-        {
-            get
-            {
-                return _writer;
-            }
+            return _writer;
         }
     }
 }

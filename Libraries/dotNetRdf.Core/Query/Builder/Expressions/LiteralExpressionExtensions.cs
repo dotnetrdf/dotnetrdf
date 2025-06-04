@@ -27,59 +27,58 @@
 using System;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions;
+
+internal static class LiteralExpressionExtensions
 {
-    internal static class LiteralExpressionExtensions
+    private static readonly NodeFactory NodeFactory = new(new NodeFactoryOptions());
+
+    internal static ILiteralNode ToLiteral(object value)
     {
-        private static readonly NodeFactory NodeFactory = new(new NodeFactoryOptions());
-
-        internal static ILiteralNode ToLiteral(object value)
+        switch (value)
         {
-            switch (value)
-            {
-                case int i:
-                    return i.ToLiteral(NodeFactory);
-                case decimal d:
-                    return d.ToLiteral(NodeFactory);
-                case short s:
-                    return s.ToLiteral(NodeFactory);
-                case long l:
-                    return l.ToLiteral(NodeFactory);
-                case float f:
-                    return f.ToLiteral(NodeFactory);
-                case double d:
-                    return d.ToLiteral(NodeFactory);
-                case byte b:
-                    return b.ToLiteral(NodeFactory);
-                case sbyte s:
-                    return s.ToLiteral(NodeFactory);
-                case string s:
-                    return NodeFactory.CreateLiteralNode(s);
-                case DateTime d:
-                    return d.ToLiteral(NodeFactory);
-                case TimeSpan t:
-                    return t.ToLiteral(NodeFactory);
-                case bool b:
-                    return b.ToLiteral(NodeFactory);
-                default:
-                    throw new ArgumentException($"Unsupported type for literal node: {value.GetType()}");
-            }
+            case int i:
+                return i.ToLiteral(NodeFactory);
+            case decimal d:
+                return d.ToLiteral(NodeFactory);
+            case short s:
+                return s.ToLiteral(NodeFactory);
+            case long l:
+                return l.ToLiteral(NodeFactory);
+            case float f:
+                return f.ToLiteral(NodeFactory);
+            case double d:
+                return d.ToLiteral(NodeFactory);
+            case byte b:
+                return b.ToLiteral(NodeFactory);
+            case sbyte s:
+                return s.ToLiteral(NodeFactory);
+            case string s:
+                return NodeFactory.CreateLiteralNode(s);
+            case DateTime d:
+                return d.ToLiteral(NodeFactory);
+            case TimeSpan t:
+                return t.ToLiteral(NodeFactory);
+            case bool b:
+                return b.ToLiteral(NodeFactory);
+            default:
+                throw new ArgumentException($"Unsupported type for literal node: {value.GetType()}");
         }
+    }
 
-        /// <summary>
-        /// Creates a typed literal term.
-        /// </summary>
-        internal static ConstantTerm ToConstantTerm<T>(this T value)
-        {
-            return new ConstantTerm(ToLiteral(value));
-        }
+    /// <summary>
+    /// Creates a typed literal term.
+    /// </summary>
+    internal static ConstantTerm ToConstantTerm<T>(this T value)
+    {
+        return new ConstantTerm(ToLiteral(value));
+    }
 
-        /// <summary>
-        /// Creates an untyped literal term (simple literal).
-        /// </summary>
-        internal static ConstantTerm ToSimpleLiteral(this string value, bool normalizeLiteralValue)
-        {
-            return new ConstantTerm(new LiteralNode(value, normalizeLiteralValue));
-        }
+    /// <summary>
+    /// Creates an untyped literal term (simple literal).
+    /// </summary>
+    internal static ConstantTerm ToSimpleLiteral(this string value, bool normalizeLiteralValue)
+    {
+        return new ConstantTerm(new LiteralNode(value, normalizeLiteralValue));
     }
 }

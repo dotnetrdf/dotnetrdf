@@ -28,79 +28,78 @@ using System.Collections.Generic;
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.LibraryOntology;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class DescribeImpl : QueryImpl, IDescribe
 {
-    internal class DescribeImpl : QueryImpl, IDescribe
+
+    public DescribeImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
-
-        public DescribeImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
-        }
-
-        public List<IResource> getResultNodes()
-        {
-            var results = new List<IResource>();
-            foreach (IResource node in getList(SP.PropertyResultNodes))
-            {
-                IVariable variable = SPINFactory.asVariable(node);
-                if (variable != null)
-                {
-                    results.Add(variable);
-                }
-                else if (node.isUri())
-                {
-                    results.Add(node);
-                }
-            }
-            return results;
-        }
-
-
-        override public void printSPINRDF(ISparqlPrinter context)
-        {
-            printComment(context);
-            printPrefixes(context);
-            context.printKeyword("DESCRIBE");
-            context.print(" ");
-            List<IResource> nodes = getResultNodes();
-            if (nodes.Count == 0)
-            {
-                context.print("*");
-            }
-            else
-            {
-                for (IEnumerator<IResource> nit = nodes.GetEnumerator(); nit.MoveNext(); )
-                {
-                    IResource node = nit.Current;
-                    if (node is IVariable)
-                    {
-                        context.print(node.ToString());
-                    }
-                    else
-                    {
-                        printVarOrResource(context, node);
-                    }
-                    if (nit.MoveNext())
-                    {
-                        context.print(" ");
-                    }
-                }
-            }
-            printStringFrom(context);
-            if (getWhereElements().Count != 0)
-            {
-                context.println();
-                printWhere(context);
-            }
-            printSolutionModifiers(context);
-            printValues(context);
-        }
-
-        override public void Print(ISparqlPrinter p)
-        {
-            // TODO Auto-generated method stub
-        }
-
     }
+
+    public List<IResource> getResultNodes()
+    {
+        var results = new List<IResource>();
+        foreach (IResource node in getList(SP.PropertyResultNodes))
+        {
+            IVariable variable = SPINFactory.asVariable(node);
+            if (variable != null)
+            {
+                results.Add(variable);
+            }
+            else if (node.isUri())
+            {
+                results.Add(node);
+            }
+        }
+        return results;
+    }
+
+
+    override public void printSPINRDF(ISparqlPrinter context)
+    {
+        printComment(context);
+        printPrefixes(context);
+        context.printKeyword("DESCRIBE");
+        context.print(" ");
+        List<IResource> nodes = getResultNodes();
+        if (nodes.Count == 0)
+        {
+            context.print("*");
+        }
+        else
+        {
+            for (IEnumerator<IResource> nit = nodes.GetEnumerator(); nit.MoveNext(); )
+            {
+                IResource node = nit.Current;
+                if (node is IVariable)
+                {
+                    context.print(node.ToString());
+                }
+                else
+                {
+                    printVarOrResource(context, node);
+                }
+                if (nit.MoveNext())
+                {
+                    context.print(" ");
+                }
+            }
+        }
+        printStringFrom(context);
+        if (getWhereElements().Count != 0)
+        {
+            context.println();
+            printWhere(context);
+        }
+        printSolutionModifiers(context);
+        printValues(context);
+    }
+
+    override public void Print(ISparqlPrinter p)
+    {
+        // TODO Auto-generated method stub
+    }
+
 }

@@ -26,49 +26,48 @@
 
 using VDS.RDF.Query.Algebra;
 
-namespace VDS.RDF.Query.Paths
+namespace VDS.RDF.Query.Paths;
+
+/// <summary>
+/// Abstract Base Class for Unary Path operators.
+/// </summary>
+public abstract class BaseUnaryPath : ISparqlPath
 {
     /// <summary>
-    /// Abstract Base Class for Unary Path operators.
+    /// Path.
     /// </summary>
-    public abstract class BaseUnaryPath : ISparqlPath
+    protected ISparqlPath _path;
+
+    /// <summary>
+    /// Creates a new Unary Path.
+    /// </summary>
+    /// <param name="path">Path.</param>
+    public BaseUnaryPath(ISparqlPath path)
     {
-        /// <summary>
-        /// Path.
-        /// </summary>
-        protected ISparqlPath _path;
-
-        /// <summary>
-        /// Creates a new Unary Path.
-        /// </summary>
-        /// <param name="path">Path.</param>
-        public BaseUnaryPath(ISparqlPath path)
-        {
-            _path = path;
-        }
-
-        /// <summary>
-        /// Gets the Inner Path.
-        /// </summary>
-        public ISparqlPath Path
-        {
-            get
-            {
-                return _path;
-            }
-        }
-
-        /// <summary>
-        /// Converts a Path into its Algebra Form.
-        /// </summary>
-        /// <param name="context">Path Transformation Context.</param>
-        /// <returns></returns>
-        public abstract ISparqlAlgebra ToAlgebra(PathTransformContext context);
-
-        /// <summary>
-        /// Gets the String representation of the Path.
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
+        _path = path;
     }
+
+    /// <summary>
+    /// Gets the Inner Path.
+    /// </summary>
+    public ISparqlPath Path
+    {
+        get
+        {
+            return _path;
+        }
+    }
+
+    /// <summary>
+    /// Converts a Path into its Algebra Form.
+    /// </summary>
+    /// <param name="context">Path Transformation Context.</param>
+    /// <returns></returns>
+    public abstract ISparqlAlgebra ToAlgebra(PathTransformContext context);
+
+    /// <summary>
+    /// Gets the String representation of the Path.
+    /// </summary>
+    /// <returns></returns>
+    public abstract override string ToString();
 }

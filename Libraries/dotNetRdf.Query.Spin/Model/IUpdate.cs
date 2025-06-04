@@ -24,14 +24,13 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+/**
+ * Base interface of the top-level SPARQL UPDATE commands.
+ *
+ * @author Holger Knublauch
+ */
+internal interface IUpdate : ICommand
 {
-    /**
-     * Base interface of the top-level SPARQL UPDATE commands.
-     *
-     * @author Holger Knublauch
-     */
-    internal interface IUpdate : ICommand
-    {
-    }
 }

@@ -24,62 +24,61 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.String;
+
+/// <summary>
+/// Represents the SPARQL STRSTARTS Function.
+/// </summary>
+public class StrStartsFunction
+    : BaseBinaryStringFunction
 {
     /// <summary>
-    /// Represents the SPARQL STRSTARTS Function.
+    /// Creates a new STRSTARTS() function.
     /// </summary>
-    public class StrStartsFunction
-        : BaseBinaryStringFunction
+    /// <param name="stringExpr">String Expression.</param>
+    /// <param name="startsExpr">Argument Expression.</param>
+    public StrStartsFunction(ISparqlExpression stringExpr, ISparqlExpression startsExpr)
+        : base(stringExpr, startsExpr) { }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
     {
-        /// <summary>
-        /// Creates a new STRSTARTS() function.
-        /// </summary>
-        /// <param name="stringExpr">String Expression.</param>
-        /// <param name="startsExpr">Argument Expression.</param>
-        public StrStartsFunction(ISparqlExpression stringExpr, ISparqlExpression startsExpr)
-            : base(stringExpr, startsExpr) { }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
+        get
         {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordStrStarts;
-            }
+            return SparqlSpecsHelper.SparqlKeywordStrStarts;
         }
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordStrStarts + "(" + _leftExpr + ", " + _rightExpr + ")";
-        }
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return SparqlSpecsHelper.SparqlKeywordStrStarts + "(" + _leftExpr + ", " + _rightExpr + ")";
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessStrStartsFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessStrStartsFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitStrStartsFunction(this);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitStrStartsFunction(this);
+    }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new StrStartsFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new StrStartsFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
     }
 }

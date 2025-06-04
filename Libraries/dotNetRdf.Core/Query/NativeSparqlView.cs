@@ -24,65 +24,64 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+/// <summary>
+/// Represents a SPARQL View over an arbitrary native Triple Store.
+/// </summary>
+public class NativeSparqlView
+    : BaseSparqlView
 {
     /// <summary>
-    /// Represents a SPARQL View over an arbitrary native Triple Store.
+    /// Creates a new SPARQL View.
     /// </summary>
-    public class NativeSparqlView
-        : BaseSparqlView
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    /// <param name="store">Triple Store to query.</param>
+    public NativeSparqlView(string sparqlQuery, INativelyQueryableStore store)
+        : base(sparqlQuery, store) { }
+
+    /// <summary>
+    /// Creates a new SPARQL View.
+    /// </summary>
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    /// <param name="store">Triple Store to query.</param>
+    public NativeSparqlView(SparqlParameterizedString sparqlQuery, INativelyQueryableStore store)
+        : this(sparqlQuery.ToString(), store) { }
+
+    /// <summary>
+    /// Creates a new SPARQL View.
+    /// </summary>
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    /// <param name="store">Triple Store to query.</param>
+    public NativeSparqlView(SparqlQuery sparqlQuery, INativelyQueryableStore store)
+        : base(sparqlQuery, store) { }
+
+    /// <summary>
+    /// Updates the view by making the query over the Native Store (i.e. the query is handled by the stores SPARQL implementation).
+    /// </summary>
+    protected override void UpdateViewInternal()
     {
-        /// <summary>
-        /// Creates a new SPARQL View.
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <param name="store">Triple Store to query.</param>
-        public NativeSparqlView(string sparqlQuery, INativelyQueryableStore store)
-            : base(sparqlQuery, store) { }
-
-        /// <summary>
-        /// Creates a new SPARQL View.
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <param name="store">Triple Store to query.</param>
-        public NativeSparqlView(SparqlParameterizedString sparqlQuery, INativelyQueryableStore store)
-            : this(sparqlQuery.ToString(), store) { }
-
-        /// <summary>
-        /// Creates a new SPARQL View.
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <param name="store">Triple Store to query.</param>
-        public NativeSparqlView(SparqlQuery sparqlQuery, INativelyQueryableStore store)
-            : base(sparqlQuery, store) { }
-
-        /// <summary>
-        /// Updates the view by making the query over the Native Store (i.e. the query is handled by the stores SPARQL implementation).
-        /// </summary>
-        protected override void UpdateViewInternal()
+        try
         {
-            try
+            var results = ((INativelyQueryableStore)_store).ExecuteQuery(_q.ToString());
+            if (results is IGraph g)
             {
-                var results = ((INativelyQueryableStore)_store).ExecuteQuery(_q.ToString());
-                if (results is IGraph g)
-                {
-                    DetachEventHandlers(_triples);
-                    _triples = g.Triples.ToTripleCollection();
-                    AttachEventHandlers(_triples);
-                }
-                else
-                {
-                    DetachEventHandlers(_triples);
-                    _triples = ((SparqlResultSet)results).ToTripleCollection(this);
-                    AttachEventHandlers(_triples);
-                }
-                LastError = null;
-                RaiseGraphChanged();
+                DetachEventHandlers(_triples);
+                _triples = g.Triples.ToTripleCollection();
+                AttachEventHandlers(_triples);
             }
-            catch (RdfQueryException queryEx)
+            else
             {
-                LastError = new RdfQueryException("Unable to Update a SPARQL View as an error occurred in processing the Query - see Inner Exception for details", queryEx);
+                DetachEventHandlers(_triples);
+                _triples = ((SparqlResultSet)results).ToTripleCollection(this);
+                AttachEventHandlers(_triples);
             }
+            LastError = null;
+            RaiseGraphChanged();
+        }
+        catch (RdfQueryException queryEx)
+        {
+            LastError = new RdfQueryException("Unable to Update a SPARQL View as an error occurred in processing the Query - see Inner Exception for details", queryEx);
         }
     }
 }

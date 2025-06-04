@@ -24,21 +24,20 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Class for representing Triple Stores which are collections of RDF Graphs.
+/// </summary>
+/// <remarks>
+/// The 'Disk Demand' Triple Store is a Triple Store which automatically retrieves Graphs from the Disk based on the URIs of Graphs that you ask it for when those URIs are file:/// URIs.
+/// </remarks>
+public class DiskDemandTripleStore 
+    : TripleStore
 {
     /// <summary>
-    /// Class for representing Triple Stores which are collections of RDF Graphs.
+    /// Creates a new Disk Demand Triple Store.
     /// </summary>
-    /// <remarks>
-    /// The 'Disk Demand' Triple Store is a Triple Store which automatically retrieves Graphs from the Disk based on the URIs of Graphs that you ask it for when those URIs are file:/// URIs.
-    /// </remarks>
-    public class DiskDemandTripleStore 
-        : TripleStore
-    {
-        /// <summary>
-        /// Creates a new Disk Demand Triple Store.
-        /// </summary>
-        public DiskDemandTripleStore()
-            : base(new DiskDemandGraphCollection()) { }
-    }
+    public DiskDemandTripleStore()
+        : base(new DiskDemandGraphCollection()) { }
 }

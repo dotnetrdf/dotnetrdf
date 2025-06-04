@@ -29,32 +29,31 @@ using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+sealed class SelectAssignmentVariableNamePart<TExpression> : AssignmentVariableNamePart<TExpression>, IAssignmentVariableNamePart<ISelectBuilder>
 {
-    sealed class SelectAssignmentVariableNamePart<TExpression> : AssignmentVariableNamePart<TExpression>, IAssignmentVariableNamePart<ISelectBuilder>
+    private readonly SelectBuilder _selectBuilder;
+
+    internal SelectAssignmentVariableNamePart(SelectBuilder selectBuilder, Func<ExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
+        : base(buildAssignmentExpression)
     {
-        private readonly SelectBuilder _selectBuilder;
+        _selectBuilder = selectBuilder;
+    }
 
-        internal SelectAssignmentVariableNamePart(SelectBuilder selectBuilder, Func<ExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
-            : base(buildAssignmentExpression)
+    public ISelectBuilder As(string variableName)
+    {
+        _selectBuilder.And(mapper =>
         {
-            _selectBuilder = selectBuilder;
-        }
+            TExpression assignmentExpression = BuildAssignmentExpression(mapper);
 
-        public ISelectBuilder As(string variableName)
-        {
-            _selectBuilder.And(mapper =>
+            if (assignmentExpression is ISparqlAggregate)
             {
-                TExpression assignmentExpression = BuildAssignmentExpression(mapper);
+                return new SparqlVariable(variableName, (ISparqlAggregate)assignmentExpression);
+            }
 
-                if (assignmentExpression is ISparqlAggregate)
-                {
-                    return new SparqlVariable(variableName, (ISparqlAggregate)assignmentExpression);
-                }
-
-                return new SparqlVariable(variableName, (ISparqlExpression)assignmentExpression);
-            });
-            return _selectBuilder;
-        }
+            return new SparqlVariable(variableName, (ISparqlExpression)assignmentExpression);
+        });
+        return _selectBuilder;
     }
 }

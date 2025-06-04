@@ -29,35 +29,34 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class Disjoint : Constraint
 {
-    internal class Disjoint : Constraint
+    [DebuggerStepThrough]
+    internal Disjoint(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal Disjoint(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage => $"Value must be disjoint with the values of {this}.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.DisjointConstraintComponent;
         }
+    }
 
-        protected override string DefaultMessage => $"Value must be disjoint with the values of {this}.";
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        IEnumerable<INode> invalidValues =
+            from valueNode in valueNodes
+            from sibling in this.ObjectsOf(focusNode, dataGraph)
+            where valueNode.Equals(sibling)
+            select valueNode;
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.DisjointConstraintComponent;
-            }
-        }
-
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            IEnumerable<INode> invalidValues =
-                from valueNode in valueNodes
-                from sibling in this.ObjectsOf(focusNode, dataGraph)
-                where valueNode.Equals(sibling)
-                select valueNode;
-
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
+        return ReportValueNodes(focusNode, invalidValues, report);
     }
 }

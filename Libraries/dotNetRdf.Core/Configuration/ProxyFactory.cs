@@ -27,52 +27,51 @@
 using System;
 using System.Net;
 
-namespace VDS.RDF.Configuration
-{
+namespace VDS.RDF.Configuration;
+
+/// <summary>
+/// Factory class for creating Web Proxies from Configuration Graphs.
+/// </summary>
+public class ProxyFactory : IObjectFactory 
+{  
     /// <summary>
-    /// Factory class for creating Web Proxies from Configuration Graphs.
+    /// Tries to load a Web Proxy based on information from the Configuration Graph.
     /// </summary>
-    public class ProxyFactory : IObjectFactory 
-    {  
-        /// <summary>
-        /// Tries to load a Web Proxy based on information from the Configuration Graph.
-        /// </summary>
-        /// <param name="g">Configuration Graph.</param>
-        /// <param name="objNode">Object Node.</param>
-        /// <param name="targetType">Target Type.</param>
-        /// <param name="obj">Output Object.</param>
-        /// <returns></returns>
-        public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
+    /// <param name="g">Configuration Graph.</param>
+    /// <param name="objNode">Object Node.</param>
+    /// <param name="targetType">Target Type.</param>
+    /// <param name="obj">Output Object.</param>
+    /// <returns></returns>
+    public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
+    {
+        obj = null;
+
+        WebProxy proxy = null;
+
+        // Can we create a Proxy?
+        var server = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyServer)));
+        if (server == null) return false;
+        proxy = new WebProxy(server);
+
+        // Does the proxy have credentials attached?
+        string user, pwd;
+        ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
+        if (user != null && pwd != null)
         {
-            obj = null;
-
-            WebProxy proxy = null;
-
-            // Can we create a Proxy?
-            var server = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyServer)));
-            if (server == null) return false;
-            proxy = new WebProxy(server);
-
-            // Does the proxy have credentials attached?
-            string user, pwd;
-            ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
-            if (user != null && pwd != null)
-            {
-                proxy.Credentials = new NetworkCredential(user, pwd);
-            }
-
-            obj = proxy;
-            return (proxy != null);
+            proxy.Credentials = new NetworkCredential(user, pwd);
         }
 
-        /// <summary>
-        /// Gets whether this Factory can load objects of the given Type.
-        /// </summary>
-        /// <param name="t">Type.</param>
-        /// <returns></returns>
-        public bool CanLoadObject(Type t)
-        {
-            return t.Equals(typeof(WebProxy));
-        }
+        obj = proxy;
+        return (proxy != null);
+    }
+
+    /// <summary>
+    /// Gets whether this Factory can load objects of the given Type.
+    /// </summary>
+    /// <param name="t">Type.</param>
+    /// <returns></returns>
+    public bool CanLoadObject(Type t)
+    {
+        return t.Equals(typeof(WebProxy));
     }
 }

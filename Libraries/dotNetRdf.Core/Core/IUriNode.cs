@@ -26,20 +26,19 @@
 
 using System;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface for URI Nodes.
+/// </summary>
+public interface IUriNode
+    : IRefNode
 {
     /// <summary>
-    /// Interface for URI Nodes.
+    /// Gets the URI the Node represents.
     /// </summary>
-    public interface IUriNode
-        : IRefNode
+    Uri Uri
     {
-        /// <summary>
-        /// Gets the URI the Node represents.
-        /// </summary>
-        Uri Uri
-        {
-            get;
-        }
+        get;
     }
 }

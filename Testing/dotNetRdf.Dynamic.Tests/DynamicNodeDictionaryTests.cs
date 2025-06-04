@@ -27,15 +27,15 @@ using System.Collections;
 using System.Collections.Generic;
 using Xunit;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+public class DynamicNodeDictionaryTests
 {
-    public class DynamicNodeDictionaryTests
+    [Fact]
+    public void Values_are_objects_per_predicate_for_this_subject()
     {
-        [Fact]
-        public void Values_are_objects_per_predicate_for_this_subject()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> . # 1.1
 <urn:s> <urn:s> <urn:p> . # 1.2
 <urn:s> <urn:s> <urn:o> . # 1.3
@@ -65,30 +65,30 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
-            var d = new DynamicNode(s, g);
-            var expected = new[] { s, p, o };
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
+        var d = new DynamicNode(s, g);
+        var expected = new[] { s, p, o };
 
-            void isSPO(object actual)
-            {
-                Assert.Equal(expected, actual);
-                Assert.IsType<DynamicObjectCollection>(actual);
-            }
-
-            Assert.Collection(
-                d.Values,
-                isSPO,
-                isSPO,
-                isSPO);
+        void isSPO(object actual)
+        {
+            Assert.Equal(expected, actual);
+            Assert.IsType<DynamicObjectCollection>(actual);
         }
 
-        [Fact]
-        public void Counts_predicates_for_this_subject()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+        Assert.Collection(
+            d.Values,
+            isSPO,
+            isSPO,
+            isSPO);
+    }
+
+    [Fact]
+    public void Counts_predicates_for_this_subject()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> . # 1
 <urn:s> <urn:s> <urn:p> . # 1
 <urn:s> <urn:s> <urn:o> . # 1
@@ -118,27 +118,27 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var d = new DynamicNode(s, g);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var d = new DynamicNode(s, g);
 
-            Assert.Equal(3, d.Count);
-        }
+        Assert.Equal(3, d.Count);
+    }
 
-        [Fact]
-        public void Is_writable()
-        {
-            var g = new Graph();
-            var s = g.CreateBlankNode();
-            var d = new DynamicNode(s, g);
+    [Fact]
+    public void Is_writable()
+    {
+        var g = new Graph();
+        var s = g.CreateBlankNode();
+        var d = new DynamicNode(s, g);
 
-            Assert.False(d.IsReadOnly);
-        }
+        Assert.False(d.IsReadOnly);
+    }
 
-        [Fact]
-        public void Clear_retracts_statements_with_this_subject()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
+    [Fact]
+    public void Clear_retracts_statements_with_this_subject()
+    {
+        var expected = new Graph();
+        expected.LoadFromString(@"
 # <urn:s> <urn:s> <urn:s> .
 # <urn:s> <urn:s> <urn:p> .
 # <urn:s> <urn:s> <urn:o> .
@@ -168,8 +168,8 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var g = new Graph();
-            g.LoadFromString(@"
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> . # should retract
 <urn:s> <urn:s> <urn:p> . # should retract
 <urn:s> <urn:s> <urn:o> . # should retract
@@ -199,19 +199,19 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var d = new DynamicNode(s, g);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var d = new DynamicNode(s, g);
 
-            d.Clear();
+        d.Clear();
 
-            Assert.Equal(expected, g);
-        }
+        Assert.Equal(expected, g);
+    }
 
-        [Fact]
-        public void Enumerates_pairs_with_predicate_key_and_dynamic_objects_value()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Enumerates_pairs_with_predicate_key_and_dynamic_objects_value()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> . # 1.1
 <urn:s> <urn:s> <urn:p> . # 1.2
 <urn:s> <urn:s> <urn:o> . # 1.3
@@ -241,22 +241,21 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
-            var d = (IEnumerable)new DynamicNode(s, g);
-            var spo = new[] { s, p, o };
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
+        var d = (IEnumerable)new DynamicNode(s, g);
+        var spo = new[] { s, p, o };
 
-            var actual = d.GetEnumerator();
-            var expected = spo.GetEnumerator();
-            while (expected.MoveNext() | actual.MoveNext())
-            {
-                var current = (KeyValuePair<INode, object>)actual.Current;
+        var actual = d.GetEnumerator();
+        var expected = spo.GetEnumerator();
+        while (expected.MoveNext() | actual.MoveNext())
+        {
+            var current = (KeyValuePair<INode, object>)actual.Current;
 
-                Assert.Equal(expected.Current, current.Key);
-                Assert.IsType<DynamicObjectCollection>(current.Value);
-                Assert.Equal(spo, current.Value);
-            }
+            Assert.Equal(expected.Current, current.Key);
+            Assert.IsType<DynamicObjectCollection>(current.Value);
+            Assert.Equal(spo, current.Value);
         }
     }
 }

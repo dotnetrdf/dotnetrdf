@@ -24,54 +24,52 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Inference
+namespace VDS.RDF.Query.Inference;
+
+/*public static class InferenceHelper
 {
-    /*public static class InferenceHelper
-    {
-    }*/
+}*/
 
+/// <summary>
+/// Helper class containing constants and methods for use in implementing OWL support.
+/// </summary>
+public static class OwlHelper
+{
     /// <summary>
-    /// Helper class containing constants and methods for use in implementing OWL support.
+    /// Class containing Extraction Mode constants.
     /// </summary>
-    public static class OwlHelper
+    public static class OwlExtractMode
     {
         /// <summary>
-        /// Class containing Extraction Mode constants.
+        /// OWL Extraction Mode constants.
         /// </summary>
-        public static class OwlExtractMode
-        {
-            /// <summary>
-            /// OWL Extraction Mode constants.
-            /// </summary>
-            public const string DefaultStatements = "DefaultStatements",
-                                AllClass = "AllClass",
-                                AllIndividual = "AllIndividual",
-                                AllProperty = "AllProperty",
-                                AllStatements = "AllStatements",
-                                AllStatementsIncludingJena = "AllStatementsIncludingJena",
-                                ClassAssertion = "ClassAssertion",
-                                ComplementOf = "ComplementOf",
-                                DataPropertyAssertion = "DataPropertyAssertion",
-                                DifferentIndividuals = "DifferentIndividuals",
-                                DirectClassAssertion = "DirectClassAssertion",
-                                DirectSubClassOf = "DirectSubClassOf",
-                                DirectSubPropertyOf = "DirectSubPropertyOf",
-                                DisjointClasses = "DisjointClasses",
-                                DisjointProperties = "DisjointProperties",
-                                EquivalentClasses = "EquivalentClasses",
-                                EquivalentProperties = "EquivalentProperties",
-                                InverseProperties = "InverserProperties",
-                                ObjectPropertyAssertion = "ObjectPropertyAssertion",
-                                PropertyAssertion = "PropertyAssertion",
-                                SameIndividual = "SameIndividual",
-                                SubClassOf = "SubClassOf",
-                                SubPropertyOf = "SubPropertyOf";
-        }
-
-        /// <summary>
-        /// OWL Class and Property Constants.
-        /// </summary>
-        public const string OwlNothing = "http://www.w3.org/2002/07/owl#Nothing";
+        public const string DefaultStatements = "DefaultStatements",
+                            AllClass = "AllClass",
+                            AllIndividual = "AllIndividual",
+                            AllProperty = "AllProperty",
+                            AllStatements = "AllStatements",
+                            AllStatementsIncludingJena = "AllStatementsIncludingJena",
+                            ClassAssertion = "ClassAssertion",
+                            ComplementOf = "ComplementOf",
+                            DataPropertyAssertion = "DataPropertyAssertion",
+                            DifferentIndividuals = "DifferentIndividuals",
+                            DirectClassAssertion = "DirectClassAssertion",
+                            DirectSubClassOf = "DirectSubClassOf",
+                            DirectSubPropertyOf = "DirectSubPropertyOf",
+                            DisjointClasses = "DisjointClasses",
+                            DisjointProperties = "DisjointProperties",
+                            EquivalentClasses = "EquivalentClasses",
+                            EquivalentProperties = "EquivalentProperties",
+                            InverseProperties = "InverserProperties",
+                            ObjectPropertyAssertion = "ObjectPropertyAssertion",
+                            PropertyAssertion = "PropertyAssertion",
+                            SameIndividual = "SameIndividual",
+                            SubClassOf = "SubClassOf",
+                            SubPropertyOf = "SubPropertyOf";
     }
 
+    /// <summary>
+    /// OWL Class and Property Constants.
+    /// </summary>
+    public const string OwlNothing = "http://www.w3.org/2002/07/owl#Nothing";
 }

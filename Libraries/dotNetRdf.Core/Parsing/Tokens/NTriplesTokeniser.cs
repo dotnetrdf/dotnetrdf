@@ -27,428 +27,427 @@
 using System;
 using System.IO;
 
-namespace VDS.RDF.Parsing.Tokens
+namespace VDS.RDF.Parsing.Tokens;
+
+/// <summary>
+/// Tokeniser for NTriples RDF Syntax.
+/// </summary>
+public class NTriplesTokeniser
+    : BaseTokeniser
 {
+    private readonly ParsingTextReader _in;
+
     /// <summary>
-    /// Tokeniser for NTriples RDF Syntax.
+    /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream.
     /// </summary>
-    public class NTriplesTokeniser
-        : BaseTokeniser
+    /// <param name="input">Stream to read Tokens from.</param>
+    /// <param name="syntax">NTriples syntax to tokenise.</param>
+    public NTriplesTokeniser(ParsingTextReader input, NTriplesSyntax syntax)
+        : base(input)
     {
-        private readonly ParsingTextReader _in;
+        _in = input;
+        Format = "NTriples";
+        Syntax = syntax;
+    }
 
-        /// <summary>
-        /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream.
-        /// </summary>
-        /// <param name="input">Stream to read Tokens from.</param>
-        /// <param name="syntax">NTriples syntax to tokenise.</param>
-        public NTriplesTokeniser(ParsingTextReader input, NTriplesSyntax syntax)
-            : base(input)
+    /// <summary>
+    /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream.
+    /// </summary>
+    /// <param name="input">Stream to read Tokens from.</param>
+    public NTriplesTokeniser(ParsingTextReader input)
+        : this(input, NTriplesSyntax.Rdf11) { }
+
+    /// <summary>
+    /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream.
+    /// </summary>
+    /// <param name="input">Stream to read Tokens from.</param>
+    public NTriplesTokeniser(StreamReader input) 
+        : this(ParsingTextReader.Create(input)) { }
+
+    /// <summary>
+    /// Creates a new NTriples Tokeniser which reads Tokens from the given Input.
+    /// </summary>
+    /// <param name="input">Input to read Tokens from.</param>
+    public NTriplesTokeniser(TextReader input)
+        : this(ParsingTextReader.Create(input)) { }
+
+    /// <summary>
+    /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream.
+    /// </summary>
+    /// <param name="input">Stream to read Tokens from.</param>
+    /// <param name="syntax">NTriples syntax to tokenise.</param>
+    public NTriplesTokeniser(StreamReader input, NTriplesSyntax syntax)
+        : this(ParsingTextReader.Create(input), syntax) { }
+
+    /// <summary>
+    /// Creates a new NTriples Tokeniser which reads Tokens from the given Input.
+    /// </summary>
+    /// <param name="input">Input to read Tokens from.</param>
+    /// <param name="syntax">NTriples syntax to tokenise.</param>
+    public NTriplesTokeniser(TextReader input, NTriplesSyntax syntax)
+        : this(ParsingTextReader.Create(input), syntax) { }
+
+    /// <summary>
+    /// Gets/Sets the NTriples syntax that should be supported.
+    /// </summary>
+    public NTriplesSyntax Syntax { get; set; }
+
+    /// <summary>
+    /// Gets/Sets whether the output should be altered slightly to support NQuads parsing.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This is used internally to alter how DataTypes get tokenised, normally these are just returned as a <see cref="UriToken">UriToken</see> since a Literal can only occur as the Object in NTriples and so if we see a Uri after a Literal it must be it's datatype and not part of another Triple.
+    /// </para>
+    /// <para>
+    /// In the case of NQuads a <see cref="UriToken">UriToken</see> may follow a Literal as the Context of that Triple and not its datatype so it's important to distinguish by using a <see cref="DataTypeToken">DataTypeToken</see> instead.
+    /// </para>
+    /// </remarks>
+    [Obsolete("This property is no longer used. The tokenizer now behaves consistently for NQuads and NTriples syntax. This property will be removed in a future release.")]
+    public bool NQuadsMode { get; set; }
+
+    /// <summary>
+    /// Gets the next available Token from the Input Stream.
+    /// </summary>
+    /// <returns></returns>
+    public override IToken GetNextToken()
+    {
+        // Have we read anything yet?
+        if (LastTokenType == -1)
         {
-            _in = input;
-            Format = "NTriples";
-            Syntax = syntax;
+            // Nothing read yet so produce a BOF Token
+            LastTokenType = Token.BOF;
+            return new BOFToken();
         }
-
-        /// <summary>
-        /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream.
-        /// </summary>
-        /// <param name="input">Stream to read Tokens from.</param>
-        public NTriplesTokeniser(ParsingTextReader input)
-            : this(input, NTriplesSyntax.Rdf11) { }
-
-        /// <summary>
-        /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream.
-        /// </summary>
-        /// <param name="input">Stream to read Tokens from.</param>
-        public NTriplesTokeniser(StreamReader input) 
-            : this(ParsingTextReader.Create(input)) { }
-
-        /// <summary>
-        /// Creates a new NTriples Tokeniser which reads Tokens from the given Input.
-        /// </summary>
-        /// <param name="input">Input to read Tokens from.</param>
-        public NTriplesTokeniser(TextReader input)
-            : this(ParsingTextReader.Create(input)) { }
-
-        /// <summary>
-        /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream.
-        /// </summary>
-        /// <param name="input">Stream to read Tokens from.</param>
-        /// <param name="syntax">NTriples syntax to tokenise.</param>
-        public NTriplesTokeniser(StreamReader input, NTriplesSyntax syntax)
-            : this(ParsingTextReader.Create(input), syntax) { }
-
-        /// <summary>
-        /// Creates a new NTriples Tokeniser which reads Tokens from the given Input.
-        /// </summary>
-        /// <param name="input">Input to read Tokens from.</param>
-        /// <param name="syntax">NTriples syntax to tokenise.</param>
-        public NTriplesTokeniser(TextReader input, NTriplesSyntax syntax)
-            : this(ParsingTextReader.Create(input), syntax) { }
-
-        /// <summary>
-        /// Gets/Sets the NTriples syntax that should be supported.
-        /// </summary>
-        public NTriplesSyntax Syntax { get; set; }
-
-        /// <summary>
-        /// Gets/Sets whether the output should be altered slightly to support NQuads parsing.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This is used internally to alter how DataTypes get tokenised, normally these are just returned as a <see cref="UriToken">UriToken</see> since a Literal can only occur as the Object in NTriples and so if we see a Uri after a Literal it must be it's datatype and not part of another Triple.
-        /// </para>
-        /// <para>
-        /// In the case of NQuads a <see cref="UriToken">UriToken</see> may follow a Literal as the Context of that Triple and not its datatype so it's important to distinguish by using a <see cref="DataTypeToken">DataTypeToken</see> instead.
-        /// </para>
-        /// </remarks>
-        [Obsolete("This property is no longer used. The tokenizer now behaves consistently for NQuads and NTriples syntax. This property will be removed in a future release.")]
-        public bool NQuadsMode { get; set; }
-
-        /// <summary>
-        /// Gets the next available Token from the Input Stream.
-        /// </summary>
-        /// <returns></returns>
-        public override IToken GetNextToken()
+        try
         {
-            // Have we read anything yet?
-            if (LastTokenType == -1)
-            {
-                // Nothing read yet so produce a BOF Token
-                LastTokenType = Token.BOF;
-                return new BOFToken();
-            }
-            try
-            {
-                do
-                {
-                    // Reading has started
-                    StartNewToken();
-
-                    // Check for EOF
-                    if (_in.EndOfStream && !HasBacktracked)
-                    {
-                        if (Length == 0)
-                        {
-                            // We're at the End of the Stream and not part-way through reading a Token
-                            return new EOFToken(CurrentLine, CurrentPosition);
-                        }
-                        // We're at the End of the Stream and part-way through reading a Token
-                        // Raise an error
-                        throw UnexpectedEndOfInput("Token");
-                    }
-
-                    var next = Peek();
-
-                    // Always need to do a check for End of Stream after Peeking to handle empty files OK
-                    if (next == char.MaxValue && _in.EndOfStream)
-                    {
-                        if (Length == 0)
-                        {
-                            // We're at the End of the Stream and not part-way through reading a Token
-                            return new EOFToken(CurrentLine, CurrentPosition);
-                        }
-                        // We're at the End of the Stream and part-way through reading a Token
-                        // Raise an error
-                        throw UnexpectedEndOfInput("Token");
-                    }
-
-                    if (char.IsWhiteSpace(next))
-                    {
-                        // Discard white space between Tokens
-                        DiscardWhiteSpace();
-                    }
-                    else
-                    {
-                        switch (next)
-                        {
-                            case '#':
-                                // Comment
-                                return TryGetComment();
-
-                            case '@':
-                                // Start of a Keyword or Language Specifier
-                                return TryGetLangSpec();
-
-                            case '<':
-                                // Start of a Uri
-                                return TryGetUriOrStartQuote();
-
-                            case '>':
-                                // End of a quoted triple
-                                ConsumeCharacter();
-                                next = Peek();
-                                if (next == '>')
-                                {
-                                    ConsumeCharacter();
-                                    LastTokenType = Token.ENDQUOTE;
-                                    return new EndQuoteToken(CurrentLine, StartPosition);
-                                }
-
-                                throw UnexpectedCharacter(next,
-                                    "the second > as part of a >> quoted triple end marker");
-
-                            case '_':
-                                // Start of a  Blank Node ID
-                                return TryGetBlankNode();
-
-                            case '"':
-                                // Start of a Literal
-                                return TryGetLiteral();
-
-                            case '^':
-                                // Data Type Specifier
-                                ConsumeCharacter();
-                                next = Peek();
-                                if (next == '^')
-                                {
-                                    ConsumeCharacter();
-                                    // Try and get the Datatype
-                                    StartNewToken();
-                                    return TryGetDataType();
-                                }
-                                throw UnexpectedCharacter(next, "the second ^ as part of a ^^ Data Type Specifier");
-
-                            case '.':
-                                // Dot Terminator
-                                ConsumeCharacter();
-                                LastTokenType = Token.DOT;
-                                return new DotToken(CurrentLine, StartPosition);
-
-                            default:
-                                // Unexpected Character
-                                if (Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
-                                throw UnexpectedCharacter(next, string.Empty);
-                        }
-                    }
-                } while (true);
-
-            }
-            catch (IOException)
-            {
-                // End Of Stream Check
-                if (_in.EndOfStream)
-                {
-                    // At End of Stream so produce the EOFToken
-                    return new EOFToken(CurrentLine, CurrentPosition);
-                }
-                // Some other Error so throw
-                throw;
-            }
-        }
-
-        private IToken TryGetComment()
-        {
-            // Consume the first character which must have been a #
-            ConsumeCharacter();
-
-            // Consume everything up till we hit the new line
-            var next = Peek();
-            while (next != '\n' && next != '\r')
-            {
-                if (Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
-                if (ConsumeCharacter(true)) break;
-                next = Peek();
-            }
-
-            // Create the Token, discard the new line and return
-            LastTokenType = Token.COMMENT;
-            var comment = new CommentToken(Value, CurrentLine, StartPosition, EndPosition);
-            ConsumeNewLine(false, true);
-            return comment;
-        }
-
-        private IToken TryGetLangSpec()
-        {
-            // Skip the first Character which must have been an @
-            SkipCharacter();
-
-            // Consume characters which can be in the keyword or Language Specifier
-            var next = Peek();
-            while (char.IsLetterOrDigit(next) || next == '-')
-            {
-                if (Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
-                ConsumeCharacter();
-                next = Peek();
-            }
-
-            // Check the output to see if it's valid
-            var output = Value;
-            if (RdfSpecsHelper.IsValidLangSpecifier(output))
-            {
-                LastTokenType = Token.LANGSPEC;
-                return new LanguageSpecifierToken(output, CurrentLine, StartPosition, EndPosition);
-            }
-            throw Error("Unexpected Content '" + output + "' encountered, expected a valid Language Specifier");
-        }
-
-
-        private IToken TryGetUriOrStartQuote()
-        {
-            // Consume the first character which must have been a <
-            ConsumeCharacter();
-            var next = Peek();
-            if (Syntax == NTriplesSyntax.Rdf11Star && next == '<')
-            {
-                ConsumeCharacter();
-                LastTokenType = Token.STARTQUOTE;
-                return new StartQuoteToken(CurrentLine, StartPosition);
-            }
-
-            // Handle as first character of a URI Token
-            HandleUriTokenChar(next);
-            return TryGetUri();
-        }
-
-        private void HandleUriTokenChar(char c)
-        {
-            if (Syntax == NTriplesSyntax.Original && c > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
-
-            // Watch out for escapes
-            if (c == '\\')
-            {
-                HandleEscapes(Syntax == NTriplesSyntax.Original ? TokeniserEscapeMode.PermissiveUri : TokeniserEscapeMode.Uri);
-            }
-            else if (Syntax != NTriplesSyntax.Original && c == ' ')
-            {
-                throw Error("Spaces are not valid in URIs");
-            }
-            else
-            {
-                ConsumeCharacter();
-            }
-        }
-        private IToken TryGetUri()
-        {
-            // Consume the first Character which must have been a <
-            ConsumeCharacter();
-
-            // Consume subsequent characters
-            char next;
             do
             {
-                next = Peek();
+                // Reading has started
+                StartNewToken();
 
-                HandleUriTokenChar(next);
+                // Check for EOF
+                if (_in.EndOfStream && !HasBacktracked)
+                {
+                    if (Length == 0)
+                    {
+                        // We're at the End of the Stream and not part-way through reading a Token
+                        return new EOFToken(CurrentLine, CurrentPosition);
+                    }
+                    // We're at the End of the Stream and part-way through reading a Token
+                    // Raise an error
+                    throw UnexpectedEndOfInput("Token");
+                }
 
-            } while (next != '>');
+                var next = Peek();
 
-            // Return the Token
-            LastTokenType = Token.URI;
-            return new UriToken(Value, CurrentLine, StartPosition, EndPosition);
+                // Always need to do a check for End of Stream after Peeking to handle empty files OK
+                if (next == char.MaxValue && _in.EndOfStream)
+                {
+                    if (Length == 0)
+                    {
+                        // We're at the End of the Stream and not part-way through reading a Token
+                        return new EOFToken(CurrentLine, CurrentPosition);
+                    }
+                    // We're at the End of the Stream and part-way through reading a Token
+                    // Raise an error
+                    throw UnexpectedEndOfInput("Token");
+                }
+
+                if (char.IsWhiteSpace(next))
+                {
+                    // Discard white space between Tokens
+                    DiscardWhiteSpace();
+                }
+                else
+                {
+                    switch (next)
+                    {
+                        case '#':
+                            // Comment
+                            return TryGetComment();
+
+                        case '@':
+                            // Start of a Keyword or Language Specifier
+                            return TryGetLangSpec();
+
+                        case '<':
+                            // Start of a Uri
+                            return TryGetUriOrStartQuote();
+
+                        case '>':
+                            // End of a quoted triple
+                            ConsumeCharacter();
+                            next = Peek();
+                            if (next == '>')
+                            {
+                                ConsumeCharacter();
+                                LastTokenType = Token.ENDQUOTE;
+                                return new EndQuoteToken(CurrentLine, StartPosition);
+                            }
+
+                            throw UnexpectedCharacter(next,
+                                "the second > as part of a >> quoted triple end marker");
+
+                        case '_':
+                            // Start of a  Blank Node ID
+                            return TryGetBlankNode();
+
+                        case '"':
+                            // Start of a Literal
+                            return TryGetLiteral();
+
+                        case '^':
+                            // Data Type Specifier
+                            ConsumeCharacter();
+                            next = Peek();
+                            if (next == '^')
+                            {
+                                ConsumeCharacter();
+                                // Try and get the Datatype
+                                StartNewToken();
+                                return TryGetDataType();
+                            }
+                            throw UnexpectedCharacter(next, "the second ^ as part of a ^^ Data Type Specifier");
+
+                        case '.':
+                            // Dot Terminator
+                            ConsumeCharacter();
+                            LastTokenType = Token.DOT;
+                            return new DotToken(CurrentLine, StartPosition);
+
+                        default:
+                            // Unexpected Character
+                            if (Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
+                            throw UnexpectedCharacter(next, string.Empty);
+                    }
+                }
+            } while (true);
+
+        }
+        catch (IOException)
+        {
+            // End Of Stream Check
+            if (_in.EndOfStream)
+            {
+                // At End of Stream so produce the EOFToken
+                return new EOFToken(CurrentLine, CurrentPosition);
+            }
+            // Some other Error so throw
+            throw;
+        }
+    }
+
+    private IToken TryGetComment()
+    {
+        // Consume the first character which must have been a #
+        ConsumeCharacter();
+
+        // Consume everything up till we hit the new line
+        var next = Peek();
+        while (next != '\n' && next != '\r')
+        {
+            if (Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
+            if (ConsumeCharacter(true)) break;
+            next = Peek();
         }
 
-        private IToken TryGetBlankNode()
+        // Create the Token, discard the new line and return
+        LastTokenType = Token.COMMENT;
+        var comment = new CommentToken(Value, CurrentLine, StartPosition, EndPosition);
+        ConsumeNewLine(false, true);
+        return comment;
+    }
+
+    private IToken TryGetLangSpec()
+    {
+        // Skip the first Character which must have been an @
+        SkipCharacter();
+
+        // Consume characters which can be in the keyword or Language Specifier
+        var next = Peek();
+        while (char.IsLetterOrDigit(next) || next == '-')
         {
-            var colonoccurred = false;
-
-            // Consume the opening underscore
-            ConsumeCharacter();
-
-            // Then expect a :
-            var next = Peek();
-            if (next != ':') throw Error("Expected a colon after a _ to start a Blank Node ID but got a " + next + " (code " + (int) next + ")");
+            if (Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
             ConsumeCharacter();
             next = Peek();
-
-            // Consume remainder of the Node ID
-            switch (Syntax)
-            {
-                case NTriplesSyntax.Original:
-                    // Original NTriples only allows very simple Node IDs
-                    while (char.IsLetterOrDigit(next))
-                    {
-                        if (next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
-                        ConsumeCharacter();
-                        next = Peek();
-                    }
-                    break;
-                default:
-                    // RDF 1.1 Triples allows much more complex Node IDs more similar to Turtle
-                    while (char.IsLetterOrDigit(next) || next == '-' || next == '_' || next == '.')
-                    {
-                        ConsumeCharacter();
-                        if (next == ':')
-                        {
-                            if (colonoccurred)
-                            {
-                                throw Error("Unexpected Colon encountered in input '" + Value + "', a Colon may only occur once in a QName");
-                            }
-                            colonoccurred = true;
-                        }
-
-                        next = Peek();
-                    }
-                    // We may consume the trailing dot which does not form part of the name
-                    if (Value.EndsWith(".")) Backtrack();
-                    break;
-            }
-
-            // Validate the QName
-            if (Value.StartsWith("_:"))
-            {
-                // Blank Node ID
-                LastTokenType = Token.BLANKNODEWITHID;
-                return new BlankNodeWithIDToken(Value, CurrentLine, StartPosition, EndPosition);
-            }
-            throw Error("The input '" + Value + "' is not a valid Blank Node Name in {0}");
         }
 
-        private IToken TryGetLiteral()
+        // Check the output to see if it's valid
+        var output = Value;
+        if (RdfSpecsHelper.IsValidLangSpecifier(output))
         {
-            // Consume first character which must have been a "
+            LastTokenType = Token.LANGSPEC;
+            return new LanguageSpecifierToken(output, CurrentLine, StartPosition, EndPosition);
+        }
+        throw Error("Unexpected Content '" + output + "' encountered, expected a valid Language Specifier");
+    }
+
+
+    private IToken TryGetUriOrStartQuote()
+    {
+        // Consume the first character which must have been a <
+        ConsumeCharacter();
+        var next = Peek();
+        if (Syntax == NTriplesSyntax.Rdf11Star && next == '<')
+        {
+            ConsumeCharacter();
+            LastTokenType = Token.STARTQUOTE;
+            return new StartQuoteToken(CurrentLine, StartPosition);
+        }
+
+        // Handle as first character of a URI Token
+        HandleUriTokenChar(next);
+        return TryGetUri();
+    }
+
+    private void HandleUriTokenChar(char c)
+    {
+        if (Syntax == NTriplesSyntax.Original && c > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
+
+        // Watch out for escapes
+        if (c == '\\')
+        {
+            HandleEscapes(Syntax == NTriplesSyntax.Original ? TokeniserEscapeMode.PermissiveUri : TokeniserEscapeMode.Uri);
+        }
+        else if (Syntax != NTriplesSyntax.Original && c == ' ')
+        {
+            throw Error("Spaces are not valid in URIs");
+        }
+        else
+        {
+            ConsumeCharacter();
+        }
+    }
+    private IToken TryGetUri()
+    {
+        // Consume the first Character which must have been a <
+        ConsumeCharacter();
+
+        // Consume subsequent characters
+        char next;
+        do
+        {
+            next = Peek();
+
+            HandleUriTokenChar(next);
+
+        } while (next != '>');
+
+        // Return the Token
+        LastTokenType = Token.URI;
+        return new UriToken(Value, CurrentLine, StartPosition, EndPosition);
+    }
+
+    private IToken TryGetBlankNode()
+    {
+        var colonoccurred = false;
+
+        // Consume the opening underscore
+        ConsumeCharacter();
+
+        // Then expect a :
+        var next = Peek();
+        if (next != ':') throw Error("Expected a colon after a _ to start a Blank Node ID but got a " + next + " (code " + (int) next + ")");
+        ConsumeCharacter();
+        next = Peek();
+
+        // Consume remainder of the Node ID
+        switch (Syntax)
+        {
+            case NTriplesSyntax.Original:
+                // Original NTriples only allows very simple Node IDs
+                while (char.IsLetterOrDigit(next))
+                {
+                    if (next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
+                    ConsumeCharacter();
+                    next = Peek();
+                }
+                break;
+            default:
+                // RDF 1.1 Triples allows much more complex Node IDs more similar to Turtle
+                while (char.IsLetterOrDigit(next) || next == '-' || next == '_' || next == '.')
+                {
+                    ConsumeCharacter();
+                    if (next == ':')
+                    {
+                        if (colonoccurred)
+                        {
+                            throw Error("Unexpected Colon encountered in input '" + Value + "', a Colon may only occur once in a QName");
+                        }
+                        colonoccurred = true;
+                    }
+
+                    next = Peek();
+                }
+                // We may consume the trailing dot which does not form part of the name
+                if (Value.EndsWith(".")) Backtrack();
+                break;
+        }
+
+        // Validate the QName
+        if (Value.StartsWith("_:"))
+        {
+            // Blank Node ID
+            LastTokenType = Token.BLANKNODEWITHID;
+            return new BlankNodeWithIDToken(Value, CurrentLine, StartPosition, EndPosition);
+        }
+        throw Error("The input '" + Value + "' is not a valid Blank Node Name in {0}");
+    }
+
+    private IToken TryGetLiteral()
+    {
+        // Consume first character which must have been a "
+        ConsumeCharacter();
+
+        // Check if this is an empty literal
+        var next = Peek();
+        if (next == '"')
+        {
+            ConsumeCharacter();
+            // Empty Literal
+            LastTokenType = Token.LITERAL;
+            return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
+        }
+
+        // Otherwise grab the contents of the literal
+        while (true)
+        {
+            // Handle Escapes
+            if (next == '\\') 
+            {
+                HandleEscapes(Syntax == NTriplesSyntax.Original ? TokeniserEscapeMode.QuotedLiterals : TokeniserEscapeMode.QuotedLiteralsBoth);
+                next = Peek();
+                continue;
+            }
+
+            if (Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
+
+            // Add character to output buffer
             ConsumeCharacter();
 
-            // Check if this is an empty literal
-            var next = Peek();
+            // Check for end of Literal
             if (next == '"')
             {
-                ConsumeCharacter();
-                // Empty Literal
+                // End of Literal
                 LastTokenType = Token.LITERAL;
                 return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
             }
 
-            // Otherwise grab the contents of the literal
-            while (true)
-            {
-                // Handle Escapes
-                if (next == '\\') 
-                {
-                    HandleEscapes(Syntax == NTriplesSyntax.Original ? TokeniserEscapeMode.QuotedLiterals : TokeniserEscapeMode.QuotedLiteralsBoth);
-                    next = Peek();
-                    continue;
-                }
-
-                if (Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
-
-                // Add character to output buffer
-                ConsumeCharacter();
-
-                // Check for end of Literal
-                if (next == '"')
-                {
-                    // End of Literal
-                    LastTokenType = Token.LITERAL;
-                    return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
-                }
-
-                // Continue Reading
-                next = Peek();
-            }
+            // Continue Reading
+            next = Peek();
         }
+    }
 
-        private IToken TryGetDataType()
+    private IToken TryGetDataType()
+    {
+        var next = Peek();
+        if (next == '<')
         {
-            var next = Peek();
-            if (next == '<')
-            {
-                // Uri for Data Type
-                IToken temp = TryGetUri();
-                return new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition - 3, temp.EndPosition + 1);
-            }
-            throw UnexpectedCharacter(next, "expected a < to start a URI to specify a Data Type for a Typed Literal");
+            // Uri for Data Type
+            IToken temp = TryGetUri();
+            return new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition - 3, temp.EndPosition + 1);
         }
+        throw UnexpectedCharacter(next, "expected a < to start a URI to specify a Data Type for a Typed Literal");
     }
 }

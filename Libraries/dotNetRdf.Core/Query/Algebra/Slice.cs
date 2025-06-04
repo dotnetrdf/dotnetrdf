@@ -30,130 +30,129 @@ using System.Linq;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Represents the Slice Operation in the SPARQL Algebra.
+/// </summary>
+public class Slice
+    : IUnaryOperator
 {
     /// <summary>
-    /// Represents the Slice Operation in the SPARQL Algebra.
+    /// Creates a new Slice modifier which will detect LIMIT and OFFSET from the query.
     /// </summary>
-    public class Slice
-        : IUnaryOperator
+    /// <param name="pattern">Pattern.</param>
+    public Slice(ISparqlAlgebra pattern)
     {
-        /// <summary>
-        /// Creates a new Slice modifier which will detect LIMIT and OFFSET from the query.
-        /// </summary>
-        /// <param name="pattern">Pattern.</param>
-        public Slice(ISparqlAlgebra pattern)
+        InnerAlgebra = pattern;
+    }
+
+    /// <summary>
+    /// Creates a new Slice modifier which uses a specific LIMIT and OFFSET.
+    /// </summary>
+    /// <param name="pattern">Pattern.</param>
+    /// <param name="limit">Limit.</param>
+    /// <param name="offset">Offset.</param>
+    public Slice(ISparqlAlgebra pattern, int limit, int offset)
+        : this(pattern)
+    {
+        Limit = Math.Max(-1, limit);
+        Offset = Math.Max(0, offset);
+        DetectFromQuery = false;
+    }
+
+
+    /// <summary>
+    /// Gets the Variables used in the Algebra.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
         {
-            InnerAlgebra = pattern;
+            return InnerAlgebra.Variables.Distinct();
         }
+    }
 
-        /// <summary>
-        /// Creates a new Slice modifier which uses a specific LIMIT and OFFSET.
-        /// </summary>
-        /// <param name="pattern">Pattern.</param>
-        /// <param name="limit">Limit.</param>
-        /// <param name="offset">Offset.</param>
-        public Slice(ISparqlAlgebra pattern, int limit, int offset)
-            : this(pattern)
-        {
-            Limit = Math.Max(-1, limit);
-            Offset = Math.Max(0, offset);
-            DetectFromQuery = false;
-        }
+    /// <summary>
+    /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FloatingVariables { get { return InnerAlgebra.FloatingVariables; } }
 
+    /// <summary>
+    /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FixedVariables { get { return InnerAlgebra.FixedVariables; } }
 
-        /// <summary>
-        /// Gets the Variables used in the Algebra.
-        /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get
-            {
-                return InnerAlgebra.Variables.Distinct();
-            }
-        }
+    /// <summary>
+    /// Gets the Limit in use (-1 indicates no Limit).
+    /// </summary>
+    public int Limit { get; } = -1;
 
-        /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FloatingVariables { get { return InnerAlgebra.FloatingVariables; } }
+    /// <summary>
+    /// Gets the Offset in use (0 indicates no Offset).
+    /// </summary>
+    public int Offset { get; } = 0;
 
-        /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FixedVariables { get { return InnerAlgebra.FixedVariables; } }
+    /// <summary>
+    /// Gets whether the Algebra will detect the Limit and Offset to use from the provided query.
+    /// </summary>
+    public bool DetectFromQuery { get; } = true;
 
-        /// <summary>
-        /// Gets the Limit in use (-1 indicates no Limit).
-        /// </summary>
-        public int Limit { get; } = -1;
+    /// <summary>
+    /// Gets the Inner Algebra.
+    /// </summary>
+    public ISparqlAlgebra InnerAlgebra { get; }
 
-        /// <summary>
-        /// Gets the Offset in use (0 indicates no Offset).
-        /// </summary>
-        public int Offset { get; } = 0;
+    /// <summary>
+    /// Gets the String representation of the Algebra.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "Slice(" + InnerAlgebra + ", LIMIT " + Limit + ", OFFSET " + Offset + ")";
+    }
 
-        /// <summary>
-        /// Gets whether the Algebra will detect the Limit and Offset to use from the provided query.
-        /// </summary>
-        public bool DetectFromQuery { get; } = true;
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    {
+        return processor.ProcessSlice(this, context);
+    }
 
-        /// <summary>
-        /// Gets the Inner Algebra.
-        /// </summary>
-        public ISparqlAlgebra InnerAlgebra { get; }
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    {
+        return visitor.VisitSlice(this);
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Algebra.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "Slice(" + InnerAlgebra + ", LIMIT " + Limit + ", OFFSET " + Offset + ")";
-        }
+    /// <summary>
+    /// Converts the Algebra back to a SPARQL Query.
+    /// </summary>
+    /// <returns></returns>
+    public SparqlQuery ToQuery()
+    {
+        SparqlQuery q = InnerAlgebra.ToQuery();
+        q.Limit = Limit;
+        q.Offset = Offset;
+        return q;
+    }
 
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
-        {
-            return processor.ProcessSlice(this, context);
-        }
+    /// <summary>
+    /// Throws an exception since a Slice() cannot be converted back to a Graph Pattern.
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException">Thrown since a Slice() cannot be converted to a Graph Pattern.</exception>
+    public GraphPattern ToGraphPattern()
+    {
+        throw new NotSupportedException("A Slice() cannot be converted to a Graph Pattern");
+    }
 
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
-        {
-            return visitor.VisitSlice(this);
-        }
-
-        /// <summary>
-        /// Converts the Algebra back to a SPARQL Query.
-        /// </summary>
-        /// <returns></returns>
-        public SparqlQuery ToQuery()
-        {
-            SparqlQuery q = InnerAlgebra.ToQuery();
-            q.Limit = Limit;
-            q.Offset = Offset;
-            return q;
-        }
-
-        /// <summary>
-        /// Throws an exception since a Slice() cannot be converted back to a Graph Pattern.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown since a Slice() cannot be converted to a Graph Pattern.</exception>
-        public GraphPattern ToGraphPattern()
-        {
-            throw new NotSupportedException("A Slice() cannot be converted to a Graph Pattern");
-        }
-
-        /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser.
-        /// </summary>
-        /// <param name="optimiser">Optimiser.</param>
-        /// <returns></returns>
-        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
-        {
-            return new Slice(optimiser.Optimise(InnerAlgebra), Limit, Offset);
-        }
+    /// <summary>
+    /// Transforms the Inner Algebra using the given Optimiser.
+    /// </summary>
+    /// <param name="optimiser">Optimiser.</param>
+    /// <returns></returns>
+    public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+    {
+        return new Slice(optimiser.Optimise(InnerAlgebra), Limit, Offset);
     }
 }

@@ -25,22 +25,21 @@
 */
 
 using System;
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+
+/**
+ * A template class definition.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface ITemplate : IModule
 {
 
-
     /**
-     * A template class definition.
-     * 
-     * @author Holger Knublauch
+     * Gets the declared spin:labelTemplate (if any exists).
+     * @return the label template string or null
      */
-    internal interface ITemplate : IModule
-    {
-
-        /**
-         * Gets the declared spin:labelTemplate (if any exists).
-         * @return the label template string or null
-         */
-        String getLabelTemplate();
-    }
+    String getLabelTemplate();
 }

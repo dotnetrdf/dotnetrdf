@@ -26,51 +26,50 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 
-namespace VDS.RDF.Parsing.Suites
+namespace VDS.RDF.Parsing.Suites;
+
+
+public abstract class BaseRdfParserSuite : BaseParserSuite<IRdfReader, Graph>
 {
-
-    public abstract class BaseRdfParserSuite : BaseParserSuite<IRdfReader, Graph>
+    protected BaseRdfParserSuite(IRdfReader testParser, IRdfReader resultsParser, String baseDir)
+        : base(testParser, resultsParser, baseDir)
     {
-        protected BaseRdfParserSuite(IRdfReader testParser, IRdfReader resultsParser, String baseDir)
-            : base(testParser, resultsParser, baseDir)
-        {
-            Parser.Warning += TestTools.WarningPrinter;
-            ResultsParser.Warning += TestTools.WarningPrinter;
-        }
+        Parser.Warning += TestTools.WarningPrinter;
+        ResultsParser.Warning += TestTools.WarningPrinter;
+    }
 
-        protected override Graph TryParseTestInput(string file)
+    protected override Graph TryParseTestInput(string file)
+    {
+        var actual = new Graph
         {
-            var actual = new Graph
-            {
-                BaseUri = new Uri(BaseUri, Path.GetFileName(file))
-            };
-            Parser.Load(actual, file);
-            return actual;
-        }
+            BaseUri = new Uri(BaseUri, Path.GetFileName(file))
+        };
+        Parser.Load(actual, file);
+        return actual;
+    }
 
-        protected override void TryValidateResults(string testName, string resultFile, Graph actual)
+    protected override void TryValidateResults(string testName, string resultFile, Graph actual)
+    {
+        var expected = new Graph();
+        ResultsParser.Load(expected, resultFile);
+
+        GraphDiffReport diff = expected.Difference(actual);
+        if (diff.AreEqual)
         {
-            var expected = new Graph();
-            ResultsParser.Load(expected, resultFile);
-
-            GraphDiffReport diff = expected.Difference(actual);
-            if (diff.AreEqual)
-            {
-                Console.WriteLine("Parsed Graph matches Expected Graph (Test Passed)");
-                PassedTest(testName);
-            }
-            else
-            {
-                Console.WriteLine("Parsed Graph did not match Expected Graph (Test Failed)");
-                Console.Error.WriteLine("Test " + testName + " - Parsed Graph did not match Expected Graph");
-                FailedTest(testName, "Parsed Graph did not match Expected Graph");
-                TestTools.ShowDifferences(diff, "Expected (" + ResultsParser.ToString() + ")", "Actual (" + Parser.ToString() + ")");
-            }
+            Console.WriteLine("Parsed Graph matches Expected Graph (Test Passed)");
+            PassedTest(testName);
         }
-
-        protected override string FileExtension
+        else
         {
-            get { return ".nt"; }
+            Console.WriteLine("Parsed Graph did not match Expected Graph (Test Failed)");
+            Console.Error.WriteLine("Test " + testName + " - Parsed Graph did not match Expected Graph");
+            FailedTest(testName, "Parsed Graph did not match Expected Graph");
+            TestTools.ShowDifferences(diff, "Expected (" + ResultsParser.ToString() + ")", "Actual (" + Parser.ToString() + ")");
         }
+    }
+
+    protected override string FileExtension
+    {
+        get { return ".nt"; }
     }
 }

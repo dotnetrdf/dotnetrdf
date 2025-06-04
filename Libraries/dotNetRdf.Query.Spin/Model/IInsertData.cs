@@ -24,16 +24,15 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+
+/**
+ * A SPARQL Update INSERT DATA operation.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IInsertData : IUpdate
 {
-
-
-    /**
-     * A SPARQL Update INSERT DATA operation.
-     * 
-     * @author Holger Knublauch
-     */
-    internal interface IInsertData : IUpdate
-    {
-    }
 }

@@ -24,20 +24,19 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Struct used for reference counting the quotation of triples in an RDF-star graph.
+/// </summary>
+public class TripleRefs
 {
     /// <summary>
-    /// Struct used for reference counting the quotation of triples in an RDF-star graph.
+    /// Flag indicating if the triple is asserted in the graph.
     /// </summary>
-    public class TripleRefs
-    {
-        /// <summary>
-        /// Flag indicating if the triple is asserted in the graph.
-        /// </summary>
-        public bool Asserted;
-        /// <summary>
-        /// Count of the number of times the triple is quoted in the graph.
-        /// </summary>
-        public uint QuoteCount;
-    }
+    public bool Asserted;
+    /// <summary>
+    /// Count of the number of times the triple is quoted in the graph.
+    /// </summary>
+    public uint QuoteCount;
 }

@@ -26,124 +26,123 @@
 
 using System.Collections.Generic;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Possible Variable Context Types.
+/// </summary>
+public enum VariableContextType
 {
     /// <summary>
-    /// Possible Variable Context Types.
+    /// There is currently no variable context
     /// </summary>
-    public enum VariableContextType
+    None,
+    /// <summary>
+    /// Existential Variable Context
+    /// </summary>
+    Existential,
+    /// <summary>
+    /// Universal Variable Context
+    /// </summary>
+    Universal,
+}
+
+/// <summary>
+/// Represents the Variable Context for Triples.
+/// </summary>
+public class VariableContext : BasicTripleContext
+{
+    private VariableContextType _type;
+    private HashSet<INode> _vars = new HashSet<INode>();
+    private VariableContext _innerContext;
+
+    /// <summary>
+    /// Creates a new Variable Context.
+    /// </summary>
+    /// <param name="type">Context Type.</param>
+    public VariableContext(VariableContextType type)
     {
-        /// <summary>
-        /// There is currently no variable context
-        /// </summary>
-        None,
-        /// <summary>
-        /// Existential Variable Context
-        /// </summary>
-        Existential,
-        /// <summary>
-        /// Universal Variable Context
-        /// </summary>
-        Universal,
+        _type = type;
     }
 
     /// <summary>
-    /// Represents the Variable Context for Triples.
+    /// Gets the Context Type.
     /// </summary>
-    public class VariableContext : BasicTripleContext
+    public VariableContextType Type
     {
-        private VariableContextType _type;
-        private HashSet<INode> _vars = new HashSet<INode>();
-        private VariableContext _innerContext;
-
-        /// <summary>
-        /// Creates a new Variable Context.
-        /// </summary>
-        /// <param name="type">Context Type.</param>
-        public VariableContext(VariableContextType type)
+        get
         {
-            _type = type;
+            return _type;
         }
+    }
 
-        /// <summary>
-        /// Gets the Context Type.
-        /// </summary>
-        public VariableContextType Type
+    /// <summary>
+    /// Gets the Variables in this Context.
+    /// </summary>
+    public IEnumerable<INode> Variables
+    {
+        get
         {
-            get
-            {
-                return _type;
-            }
+            return _vars;
         }
+    }
 
-        /// <summary>
-        /// Gets the Variables in this Context.
-        /// </summary>
-        public IEnumerable<INode> Variables
+    /// <summary>
+    /// Adds a Variable to this Context.
+    /// </summary>
+    /// <param name="var">Variable.</param>
+    public void AddVariable(INode var)
+    {
+        if (var == null) return;
+
+        if (_innerContext == null)
         {
-            get
-            {
-                return _vars;
-            }
+            _vars.Add(var);
         }
-
-        /// <summary>
-        /// Adds a Variable to this Context.
-        /// </summary>
-        /// <param name="var">Variable.</param>
-        public void AddVariable(INode var)
+        else
         {
-            if (var == null) return;
-
-            if (_innerContext == null)
-            {
-                _vars.Add(var);
-            }
-            else
-            {
-                _innerContext.AddVariable(var);
-            }
+            _innerContext.AddVariable(var);
         }
+    }
 
-        /// <summary>
-        /// Gets whether a given Variable exists in this Context.
-        /// </summary>
-        /// <param name="var">Variable Node.</param>
-        /// <returns></returns>
-        public bool IsVariable(INode var)
+    /// <summary>
+    /// Gets whether a given Variable exists in this Context.
+    /// </summary>
+    /// <param name="var">Variable Node.</param>
+    /// <returns></returns>
+    public bool IsVariable(INode var)
+    {
+        if (InnerContext == null)
         {
-            if (InnerContext == null)
-            {
-                return _vars.Contains(var);
-            }
-            else
-            {
-                return _vars.Contains(var) || InnerContext.IsVariable(var);
-            }
+            return _vars.Contains(var);
         }
-
-        /// <summary>
-        /// Gets/Sets the Inner Context.
-        /// </summary>
-        /// <remarks>
-        /// When you set the Inner Context this sets the Inner Context of the most nested inner context, you can remove all nested contexts by setting this to null.
-        /// </remarks>
-        public VariableContext InnerContext
+        else
         {
-            get
+            return _vars.Contains(var) || InnerContext.IsVariable(var);
+        }
+    }
+
+    /// <summary>
+    /// Gets/Sets the Inner Context.
+    /// </summary>
+    /// <remarks>
+    /// When you set the Inner Context this sets the Inner Context of the most nested inner context, you can remove all nested contexts by setting this to null.
+    /// </remarks>
+    public VariableContext InnerContext
+    {
+        get
+        {
+            return _innerContext;
+        }
+        set
+        {
+            if (value == null || _innerContext == null)
             {
-                return _innerContext;
+                _innerContext = value;
             }
-            set
+            else 
             {
-                if (value == null || _innerContext == null)
-                {
-                    _innerContext = value;
-                }
-                else 
-                {
-                    _innerContext.InnerContext = value;
-                }
+                _innerContext.InnerContext = value;
             }
         }
     }

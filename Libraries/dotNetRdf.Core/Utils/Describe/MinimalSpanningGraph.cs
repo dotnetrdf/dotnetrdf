@@ -28,101 +28,100 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Utils.Describe
+namespace VDS.RDF.Utils.Describe;
+
+/// <summary>
+/// Computes the merge of the Minimal Spanning Graphs for all the Values resulting from the Query.
+/// </summary>
+public class MinimalSpanningGraph 
+    : BaseDescribeAlgorithm
 {
     /// <summary>
-    /// Computes the merge of the Minimal Spanning Graphs for all the Values resulting from the Query.
+    /// Generates the Description for each of the Nodes to be described.
     /// </summary>
-    public class MinimalSpanningGraph 
-        : BaseDescribeAlgorithm
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="dataset">Dataset to extract descriptions from.</param>
+    /// <param name="nodes">Nodes to be described.</param>
+    protected override void DescribeInternal(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes)
     {
-        /// <summary>
-        /// Generates the Description for each of the Nodes to be described.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="dataset">Dataset to extract descriptions from.</param>
-        /// <param name="nodes">Nodes to be described.</param>
-        protected override void DescribeInternal(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes)
-        {
-            // Rewrite Blank Node IDs for DESCRIBE Results
-            var bnodeMapping = new Dictionary<string, INode>();
+        // Rewrite Blank Node IDs for DESCRIBE Results
+        var bnodeMapping = new Dictionary<string, INode>();
 
-            // Get Triples for this Subject
-            var bnodes = new Queue<INode>();
-            var expandedBNodes = new HashSet<INode>();
-            foreach (INode n in nodes)
+        // Get Triples for this Subject
+        var bnodes = new Queue<INode>();
+        var expandedBNodes = new HashSet<INode>();
+        foreach (INode n in nodes)
+        {
+            foreach (Triple t in dataset.GetTriplesWithSubject(n).ToList())
             {
-                foreach (Triple t in dataset.GetTriplesWithSubject(n).ToList())
+                if (t.Object.NodeType == NodeType.Blank)
                 {
-                    if (t.Object.NodeType == NodeType.Blank)
-                    {
-                        if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
-                    }
-                    if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
+                    if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
                 }
-                if (n.NodeType == NodeType.Blank)
-                {
-                    foreach (Triple t in dataset.GetTriplesWithPredicate(n).ToList())
-                    {
-                        if (t.Subject.NodeType == NodeType.Blank)
-                        {
-                            if (!expandedBNodes.Contains(t.Subject)) bnodes.Enqueue(t.Subject);
-                        }
-                        if (t.Object.NodeType == NodeType.Blank)
-                        {
-                            if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
-                        }
-                        if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
-                    }
-                }
-                foreach (Triple t in dataset.GetTriplesWithObject(n).ToList())
+                if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
+            }
+            if (n.NodeType == NodeType.Blank)
+            {
+                foreach (Triple t in dataset.GetTriplesWithPredicate(n).ToList())
                 {
                     if (t.Subject.NodeType == NodeType.Blank)
                     {
-                        if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Subject);
+                        if (!expandedBNodes.Contains(t.Subject)) bnodes.Enqueue(t.Subject);
+                    }
+                    if (t.Object.NodeType == NodeType.Blank)
+                    {
+                        if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
                     }
                     if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
                 }
             }
-
-            // Expand BNodes
-            while (bnodes.Count > 0)
+            foreach (Triple t in dataset.GetTriplesWithObject(n).ToList())
             {
-                INode n = bnodes.Dequeue();
-                if (expandedBNodes.Contains(n)) continue;
-                expandedBNodes.Add(n);
-
-                foreach (Triple t in dataset.GetTriplesWithSubject(n).ToList())
+                if (t.Subject.NodeType == NodeType.Blank)
                 {
+                    if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Subject);
+                }
+                if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
+            }
+        }
+
+        // Expand BNodes
+        while (bnodes.Count > 0)
+        {
+            INode n = bnodes.Dequeue();
+            if (expandedBNodes.Contains(n)) continue;
+            expandedBNodes.Add(n);
+
+            foreach (Triple t in dataset.GetTriplesWithSubject(n).ToList())
+            {
+                if (t.Object.NodeType == NodeType.Blank)
+                {
+                    if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
+                }
+                if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
+            }
+            if (n.NodeType == NodeType.Blank)
+            {
+                foreach (Triple t in dataset.GetTriplesWithPredicate(n).ToList())
+                {
+                    if (t.Subject.NodeType == NodeType.Blank)
+                    {
+                        if (!expandedBNodes.Contains(t.Subject)) bnodes.Enqueue(t.Subject);
+                    }
                     if (t.Object.NodeType == NodeType.Blank)
                     {
                         if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
                     }
                     if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
                 }
-                if (n.NodeType == NodeType.Blank)
+            }
+            foreach (Triple t in dataset.GetTriplesWithObject(n).ToList())
+            {
+                if (t.Subject.NodeType == NodeType.Blank)
                 {
-                    foreach (Triple t in dataset.GetTriplesWithPredicate(n).ToList())
-                    {
-                        if (t.Subject.NodeType == NodeType.Blank)
-                        {
-                            if (!expandedBNodes.Contains(t.Subject)) bnodes.Enqueue(t.Subject);
-                        }
-                        if (t.Object.NodeType == NodeType.Blank)
-                        {
-                            if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
-                        }
-                        if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
-                    }
+                    if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Subject);
                 }
-                foreach (Triple t in dataset.GetTriplesWithObject(n).ToList())
-                {
-                    if (t.Subject.NodeType == NodeType.Blank)
-                    {
-                        if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Subject);
-                    }
-                    if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
-                }
+                if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
             }
         }
     }

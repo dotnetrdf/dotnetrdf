@@ -30,40 +30,39 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+
+public class FormattingTests
 {
+    private SparqlQueryParser _parser = new SparqlQueryParser();
 
-    public class FormattingTests
+    [Fact]
+    public void SparqlFormattingOptionalAtRoot()
     {
-        private SparqlQueryParser _parser = new SparqlQueryParser();
+        var q = new SparqlQuery { QueryType = SparqlQueryType.Select };
+        q.AddVariable(new SparqlVariable("s", true));
 
-        [Fact]
-        public void SparqlFormattingOptionalAtRoot()
+        var gp = new GraphPattern
         {
-            var q = new SparqlQuery { QueryType = SparqlQueryType.Select };
-            q.AddVariable(new SparqlVariable("s", true));
+            IsOptional = true
+        };
+        gp.AddTriplePattern(new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o")));
+        q.RootGraphPattern = gp;
 
-            var gp = new GraphPattern
-            {
-                IsOptional = true
-            };
-            gp.AddTriplePattern(new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o")));
-            q.RootGraphPattern = gp;
+        var toStr = q.ToString();
+        Console.WriteLine("ToString() Form:");
+        Console.WriteLine(toStr);
+        Assert.Equal(2, toStr.ToCharArray().Where(c => c == '{').Count());
+        Assert.Equal(2, toStr.ToCharArray().Where(c => c == '}').Count());
+        Console.WriteLine();
 
-            var toStr = q.ToString();
-            Console.WriteLine("ToString() Form:");
-            Console.WriteLine(toStr);
-            Assert.Equal(2, toStr.ToCharArray().Where(c => c == '{').Count());
-            Assert.Equal(2, toStr.ToCharArray().Where(c => c == '}').Count());
-            Console.WriteLine();
-
-            var formatter = new SparqlFormatter();
-            var fmtStr = formatter.Format(q);
-            Console.WriteLine("SparqlFormatter Form:");
-            Console.WriteLine(fmtStr);
-            Assert.Equal(2, fmtStr.ToCharArray().Where(c => c == '{').Count());
-            Assert.Equal(2, fmtStr.ToCharArray().Where(c => c == '}').Count());
-        }
-
+        var formatter = new SparqlFormatter();
+        var fmtStr = formatter.Format(q);
+        Console.WriteLine("SparqlFormatter Form:");
+        Console.WriteLine(fmtStr);
+        Assert.Equal(2, fmtStr.ToCharArray().Where(c => c == '{').Count());
+        Assert.Equal(2, fmtStr.ToCharArray().Where(c => c == '}').Count());
     }
+
 }

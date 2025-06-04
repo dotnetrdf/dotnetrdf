@@ -27,36 +27,35 @@
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.LibraryOntology;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal abstract class TripleImpl : TupleImpl
 {
-    internal abstract class TripleImpl : TupleImpl
+
+    public TripleImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
-
-        public TripleImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
-        }
-
-
-        public IResource getPredicate()
-        {
-            return getResource(SP.PropertyPredicate);
-        }
-
-
-        override public void Print(ISparqlPrinter p)
-        {
-            print(getSubject(), p);
-            p.print(" ");
-            print(getPredicate(), p, true);
-            p.print(" ");
-            print(getObject(), p);
-        }
-
-        override public void PrintEnhancedSPARQL(ISparqlPrinter p)
-        {
-            p.PrintEnhancedSPARQL(this);
-        }
-
     }
+
+
+    public IResource getPredicate()
+    {
+        return getResource(SP.PropertyPredicate);
+    }
+
+
+    override public void Print(ISparqlPrinter p)
+    {
+        print(getSubject(), p);
+        p.print(" ");
+        print(getPredicate(), p, true);
+        p.print(" ");
+        print(getObject(), p);
+    }
+
+    override public void PrintEnhancedSPARQL(ISparqlPrinter p)
+    {
+        p.PrintEnhancedSPARQL(this);
+    }
+
 }

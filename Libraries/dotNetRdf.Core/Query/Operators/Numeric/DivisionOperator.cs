@@ -30,115 +30,114 @@ using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Operators.Numeric
+namespace VDS.RDF.Query.Operators.Numeric;
+
+/// <summary>
+/// Represents the numeric division operator.
+/// </summary>
+public class DivisionOperator
+    : BaseNumericOperator
 {
     /// <summary>
-    /// Represents the numeric division operator.
+    /// Gets the operator type.
     /// </summary>
-    public class DivisionOperator
-        : BaseNumericOperator
+    public override SparqlOperatorType Operator => SparqlOperatorType.Divide;
+
+    /// <inheritdoc />
+    public override bool IsExtension => false;
+
+    /// <summary>
+    /// Applies the operator.
+    /// </summary>
+    /// <param name="ns">Arguments.</param>
+    /// <returns></returns>
+    public override IValuedNode Apply(params IValuedNode[] ns)
     {
-        /// <summary>
-        /// Gets the operator type.
-        /// </summary>
-        public override SparqlOperatorType Operator => SparqlOperatorType.Divide;
+        if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply division when any arguments are null");
 
-        /// <inheritdoc />
-        public override bool IsExtension => false;
+        var type = (SparqlNumericType)ns.Max(n => (int)n.NumericType);
 
-        /// <summary>
-        /// Applies the operator.
-        /// </summary>
-        /// <param name="ns">Arguments.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(params IValuedNode[] ns)
+        try
         {
-            if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply division when any arguments are null");
-
-            var type = (SparqlNumericType)ns.Max(n => (int)n.NumericType);
-
-            try
+            switch (type)
             {
-                switch (type)
-                {
-                    case SparqlNumericType.Integer:
-                    case SparqlNumericType.Decimal:
-                        // For Division Integers are treated as decimals
-                        var d = Divide(ns.Select(n => n.AsDecimal()));
-                        if (decimal.Floor(d).Equals(d) && d >= long.MinValue && d <= long.MaxValue)
-                        {
-                            return new LongNode(Convert.ToInt64(d));
-                        }
-                        return new DecimalNode(d);
-                    case SparqlNumericType.Float:
-                        return new FloatNode(Divide(ns.Select(n => n.AsFloat())));
-                    case SparqlNumericType.Double:
-                        return new DoubleNode(Divide(ns.Select(n => n.AsDouble())));
-                    default:
-                        throw new RdfQueryException("Cannot evaluate an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
-                }
-            }
-            catch (DivideByZeroException)
-            {
-                throw new RdfQueryException("Cannot evaluate a Division Expression where the divisor is Zero");
+                case SparqlNumericType.Integer:
+                case SparqlNumericType.Decimal:
+                    // For Division Integers are treated as decimals
+                    var d = Divide(ns.Select(n => n.AsDecimal()));
+                    if (decimal.Floor(d).Equals(d) && d >= long.MinValue && d <= long.MaxValue)
+                    {
+                        return new LongNode(Convert.ToInt64(d));
+                    }
+                    return new DecimalNode(d);
+                case SparqlNumericType.Float:
+                    return new FloatNode(Divide(ns.Select(n => n.AsFloat())));
+                case SparqlNumericType.Double:
+                    return new DoubleNode(Divide(ns.Select(n => n.AsDouble())));
+                default:
+                    throw new RdfQueryException("Cannot evaluate an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
             }
         }
-
-        private decimal Divide(IEnumerable<decimal> ls)
+        catch (DivideByZeroException)
         {
-            var first = true;
-            decimal total = 0;
-            foreach (var l in ls)
-            {
-                if (first)
-                {
-                    total = l;
-                    first = false;
-                }
-                else
-                {
-                    total /= l;
-                }
-            }
-            return total;
+            throw new RdfQueryException("Cannot evaluate a Division Expression where the divisor is Zero");
         }
+    }
 
-        private float Divide(IEnumerable<float> ls)
+    private decimal Divide(IEnumerable<decimal> ls)
+    {
+        var first = true;
+        decimal total = 0;
+        foreach (var l in ls)
         {
-            var first = true;
-            float total = 0;
-            foreach (var l in ls)
+            if (first)
             {
-                if (first)
-                {
-                    total = l;
-                    first = false;
-                }
-                else
-                {
-                    total /= l;
-                }
+                total = l;
+                first = false;
             }
-            return total;
+            else
+            {
+                total /= l;
+            }
         }
+        return total;
+    }
 
-        private double Divide(IEnumerable<double> ls)
+    private float Divide(IEnumerable<float> ls)
+    {
+        var first = true;
+        float total = 0;
+        foreach (var l in ls)
         {
-            var first = true;
-            double total = 0;
-            foreach (var l in ls)
+            if (first)
             {
-                if (first)
-                {
-                    total = l;
-                    first = false;
-                }
-                else
-                {
-                    total /= l;
-                }
+                total = l;
+                first = false;
             }
-            return total;
+            else
+            {
+                total /= l;
+            }
         }
+        return total;
+    }
+
+    private double Divide(IEnumerable<double> ls)
+    {
+        var first = true;
+        double total = 0;
+        foreach (var l in ls)
+        {
+            if (first)
+            {
+                total = l;
+                first = false;
+            }
+            else
+            {
+                total /= l;
+            }
+        }
+        return total;
     }
 }

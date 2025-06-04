@@ -27,351 +27,350 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Represents a Multiset of possible solutions.
+/// </summary>
+public class Multiset 
+    : BaseMultiset
 {
     /// <summary>
-    /// Represents a Multiset of possible solutions.
+    /// Variables contained in the Multiset.
     /// </summary>
-    public class Multiset 
-        : BaseMultiset
+    protected List<string> _variables = new List<string>();
+    /// <summary>
+    /// Dictionary of Sets in the Multiset.
+    /// </summary>
+    protected Dictionary<int, ISet> _sets = new Dictionary<int,ISet>();
+    /// <summary>
+    /// Counter used to assign Set IDs.
+    /// </summary>
+    protected int _counter = 0;
+    private Dictionary<string, HashSet<INode>> _containsCache;
+    private bool _cacheInvalid = true;
+
+    /// <summary>
+    /// Creates a new Empty Multiset.
+    /// </summary>
+    public Multiset() { }
+
+    /// <summary>
+    /// Creates a new Empty Mutliset that has the list of given Variables.
+    /// </summary>
+    /// <param name="variables"></param>
+    public Multiset(IEnumerable<string> variables)
     {
-        /// <summary>
-        /// Variables contained in the Multiset.
-        /// </summary>
-        protected List<string> _variables = new List<string>();
-        /// <summary>
-        /// Dictionary of Sets in the Multiset.
-        /// </summary>
-        protected Dictionary<int, ISet> _sets = new Dictionary<int,ISet>();
-        /// <summary>
-        /// Counter used to assign Set IDs.
-        /// </summary>
-        protected int _counter = 0;
-        private Dictionary<string, HashSet<INode>> _containsCache;
-        private bool _cacheInvalid = true;
-
-        /// <summary>
-        /// Creates a new Empty Multiset.
-        /// </summary>
-        public Multiset() { }
-
-        /// <summary>
-        /// Creates a new Empty Mutliset that has the list of given Variables.
-        /// </summary>
-        /// <param name="variables"></param>
-        public Multiset(IEnumerable<string> variables)
+        foreach (var var in variables)
         {
-            foreach (var var in variables)
-            {
-                _variables.Add(var);
-            }
+            _variables.Add(var);
         }
+    }
 
-        /// <summary>
-        /// Creates a new Multiset from a SPARQL Result Set.
-        /// </summary>
-        /// <param name="results">Result Set.</param>
-        internal Multiset(SparqlResultSet results)
+    /// <summary>
+    /// Creates a new Multiset from a SPARQL Result Set.
+    /// </summary>
+    /// <param name="results">Result Set.</param>
+    internal Multiset(SparqlResultSet results)
+    {
+        foreach (var var in results.Variables)
         {
-            foreach (var var in results.Variables)
-            {
-                AddVariable(var);
-            }
-            foreach (SparqlResult r in results.Results)
-            {
-                Add(new Set(r));
-            }
+            AddVariable(var);
         }
-
-        /// <summary>
-        /// Creates a new Multiset by flattening a Group Multiset.
-        /// </summary>
-        /// <param name="multiset">Group Multiset.</param>
-        internal Multiset(GroupMultiset multiset)
+        foreach (SparqlResult r in results.Results)
         {
-            foreach (var var in multiset.Variables)
-            {
-                AddVariable(var);
-            }
-            foreach (ISet s in multiset.Sets)
-            {
-                Add(s.Copy());
-            }
+            Add(new Set(r));
         }
+    }
 
-        /// <summary>
-        /// Determines whether a given Value is present for a given Variable in any Set in this Multiset.
-        /// </summary>
-        /// <param name="var">Variable.</param>
-        /// <param name="n">Value.</param>
-        /// <returns></returns>
-        public override bool ContainsValue(string var, INode n)
+    /// <summary>
+    /// Creates a new Multiset by flattening a Group Multiset.
+    /// </summary>
+    /// <param name="multiset">Group Multiset.</param>
+    internal Multiset(GroupMultiset multiset)
+    {
+        foreach (var var in multiset.Variables)
         {
-            if (_variables.Contains(var))
+            AddVariable(var);
+        }
+        foreach (ISet s in multiset.Sets)
+        {
+            Add(s.Copy());
+        }
+    }
+
+    /// <summary>
+    /// Determines whether a given Value is present for a given Variable in any Set in this Multiset.
+    /// </summary>
+    /// <param name="var">Variable.</param>
+    /// <param name="n">Value.</param>
+    /// <returns></returns>
+    public override bool ContainsValue(string var, INode n)
+    {
+        if (_variables.Contains(var))
+        {
+            // Create the Cache if necessary and reset it when necessary
+            if (_containsCache == null || _cacheInvalid)
             {
-                // Create the Cache if necessary and reset it when necessary
-                if (_containsCache == null || _cacheInvalid)
-                {
-                    _containsCache = new Dictionary<string, HashSet<INode>>();
-                    _cacheInvalid = false;
-                }
-                if (!_containsCache.ContainsKey(var))
-                {
-                    _containsCache.Add(var, new HashSet<INode>(_sets.Values.Select(s => s[var])));
-                }
-                // return this._sets.Values.Any(s => n.Equals(s[var]));
-                return _containsCache[var].Contains(n);
+                _containsCache = new Dictionary<string, HashSet<INode>>();
+                _cacheInvalid = false;
             }
-            else
+            if (!_containsCache.ContainsKey(var))
             {
-                return false;
+                _containsCache.Add(var, new HashSet<INode>(_sets.Values.Select(s => s[var])));
             }
+            // return this._sets.Values.Any(s => n.Equals(s[var]));
+            return _containsCache[var].Contains(n);
         }
-
-        /// <summary>
-        /// Returns whether a given Variable is present in any Set in this Multiset.
-        /// </summary>
-        /// <param name="var">Variable.</param>
-        /// <returns></returns>
-        public override bool ContainsVariable(string var)
+        else
         {
-            return _variables.Contains(var);
+            return false;
         }
+    }
 
-        /// <summary>
-        /// Returns whether the given Variables are all present (together or separately) in any Set in this Multiset.
-        /// </summary>
-        /// <param name="vars">Variables.</param>
-        /// <returns></returns>
-        public override bool ContainsVariables(IEnumerable<string> vars)
-        {
-            return vars.All(_variables.Contains);
-        }
+    /// <summary>
+    /// Returns whether a given Variable is present in any Set in this Multiset.
+    /// </summary>
+    /// <param name="var">Variable.</param>
+    /// <returns></returns>
+    public override bool ContainsVariable(string var)
+    {
+        return _variables.Contains(var);
+    }
 
-        /// <summary>
-        /// Determines whether this Multiset is disjoint with another Multiset.
-        /// </summary>
-        /// <param name="other">Other Multiset.</param>
-        /// <returns></returns>
-        public override bool IsDisjointWith(BaseMultiset other)
-        {
-            if (other is IdentityMultiset || other is NullMultiset) return false;
- 
-            return Variables.All(v => !other.ContainsVariable(v));
-        }
+    /// <summary>
+    /// Returns whether the given Variables are all present (together or separately) in any Set in this Multiset.
+    /// </summary>
+    /// <param name="vars">Variables.</param>
+    /// <returns></returns>
+    public override bool ContainsVariables(IEnumerable<string> vars)
+    {
+        return vars.All(_variables.Contains);
+    }
 
-        /// <summary>
-        /// Adds a Set to the Multiset.
-        /// </summary>
-        /// <param name="s">Set.</param>
-        public override void Add(ISet s)
+    /// <summary>
+    /// Determines whether this Multiset is disjoint with another Multiset.
+    /// </summary>
+    /// <param name="other">Other Multiset.</param>
+    /// <returns></returns>
+    public override bool IsDisjointWith(BaseMultiset other)
+    {
+        if (other is IdentityMultiset || other is NullMultiset) return false;
+
+        return Variables.All(v => !other.ContainsVariable(v));
+    }
+
+    /// <summary>
+    /// Adds a Set to the Multiset.
+    /// </summary>
+    /// <param name="s">Set.</param>
+    public override void Add(ISet s)
+    {
+        int id;
+        if (UsePLinqEvaluation)
         {
-            int id;
-            if (UsePLinqEvaluation)
-            {
-                lock (_sets)
-                {
-                    _counter++;
-                    id = _counter;
-                    _sets.Add(id, s);
-                    s.ID = id;
-                }
-                lock (_variables)
-                {
-                    foreach (var var in s.Variables)
-                    {
-                        if (!_variables.Contains(var)) _variables.Add(var);
-                    }
-                }
-            }
-            else
+            lock (_sets)
             {
                 _counter++;
                 id = _counter;
                 _sets.Add(id, s);
                 s.ID = id;
-
+            }
+            lock (_variables)
+            {
                 foreach (var var in s.Variables)
                 {
                     if (!_variables.Contains(var)) _variables.Add(var);
                 }
             }
-            _cacheInvalid = true;
         }
-
-        /// <summary>
-        /// Adds a Variable to the list of Variables present in this Multiset.
-        /// </summary>
-        /// <param name="variable">Variable.</param>
-        public override void AddVariable(string variable)
+        else
         {
-            if (!_variables.Contains(variable)) _variables.Add(variable);
-        }
+            _counter++;
+            id = _counter;
+            _sets.Add(id, s);
+            s.ID = id;
 
-        /// <summary>
-        /// Sets the variable ordering for the multiset.
-        /// </summary>
-        /// <param name="variables">Variable Ordering.</param>
-        public override void SetVariableOrder(IEnumerable<string> variables)
-        {
-            // Validate that the ordering is applicable
-            if (variables.Count() < _variables.Count) throw new RdfQueryException("Cannot set a variable ordering that contains less variables then are currently specified");
-            foreach (var var in _variables)
+            foreach (var var in s.Variables)
             {
-                if (!variables.Contains(var)) throw new RdfQueryException("Cannot set a variable ordering that omits the variable ?" + var + " currently present in the multiset, use Trim(\"" + var + "\") first to remove this variable");
+                if (!_variables.Contains(var)) _variables.Add(var);
             }
-            // Apply ordering
-            _variables = new List<string>(variables);
         }
+        _cacheInvalid = true;
+    }
 
-        /// <summary>
-        /// Removes a Set from the Multiset.
-        /// </summary>
-        /// <param name="id">Set ID.</param>
-        public override void Remove(int id)
+    /// <summary>
+    /// Adds a Variable to the list of Variables present in this Multiset.
+    /// </summary>
+    /// <param name="variable">Variable.</param>
+    public override void AddVariable(string variable)
+    {
+        if (!_variables.Contains(variable)) _variables.Add(variable);
+    }
+
+    /// <summary>
+    /// Sets the variable ordering for the multiset.
+    /// </summary>
+    /// <param name="variables">Variable Ordering.</param>
+    public override void SetVariableOrder(IEnumerable<string> variables)
+    {
+        // Validate that the ordering is applicable
+        if (variables.Count() < _variables.Count) throw new RdfQueryException("Cannot set a variable ordering that contains less variables then are currently specified");
+        foreach (var var in _variables)
         {
-            lock (_sets)
+            if (!variables.Contains(var)) throw new RdfQueryException("Cannot set a variable ordering that omits the variable ?" + var + " currently present in the multiset, use Trim(\"" + var + "\") first to remove this variable");
+        }
+        // Apply ordering
+        _variables = new List<string>(variables);
+    }
+
+    /// <summary>
+    /// Removes a Set from the Multiset.
+    /// </summary>
+    /// <param name="id">Set ID.</param>
+    public override void Remove(int id)
+    {
+        lock (_sets)
+        {
+            if (_sets.ContainsKey(id))
             {
-                if (_sets.ContainsKey(id))
+                _sets.Remove(id);
+                if (_orderedIDs != null)
                 {
-                    _sets.Remove(id);
-                    if (_orderedIDs != null)
-                    {
-                        _orderedIDs.Remove(id);
-                    }
-                    _cacheInvalid = true;
+                    _orderedIDs.Remove(id);
                 }
+                _cacheInvalid = true;
             }
         }
+    }
 
-        /// <summary>
-        /// Trims the Multiset to remove Temporary Variables.
-        /// </summary>
-        public override void Trim()
+    /// <summary>
+    /// Trims the Multiset to remove Temporary Variables.
+    /// </summary>
+    public override void Trim()
+    {
+        foreach (var var in _variables)
         {
-            foreach (var var in _variables)
-            {
-                if (var.StartsWith("_:"))
-                {
-                    foreach (ISet s in _sets.Values)
-                    {
-                        s.Remove(var);
-                    }
-                }
-            }
-            _variables.RemoveAll(v => v.StartsWith("_:"));
-        }
-
-        /// <summary>
-        /// Trims the Multiset to remove the given Variable.
-        /// </summary>
-        /// <param name="variable">Variable.</param>
-        public override void Trim(string variable)
-        {
-            if (variable == null) return;
-            if (_variables.Remove(variable))
+            if (var.StartsWith("_:"))
             {
                 foreach (ISet s in _sets.Values)
                 {
-                    s.Remove(variable);
+                    s.Remove(var);
                 }
             }
         }
-
-        /// <summary>
-        /// Gets whether the Multiset is empty.
-        /// </summary>
-        public override bool IsEmpty
-        {
-            get 
-            {
-                return (_sets.Count == 0);
-            }
-        }
-
-        /// <summary>
-        /// Gets the number of Sets in the Multiset.
-        /// </summary>
-        public override int Count
-        {
-            get
-            {
-                return _sets.Count;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Variables in the Multiset.
-        /// </summary>
-        public override IEnumerable<string> Variables
-        {
-            get 
-            {
-                return (from var in _variables
-                        where var != null
-                        select var);
-            }
-        }
-
-        /// <summary>
-        /// Gets the Sets in the Multiset.
-        /// </summary>
-        public override IEnumerable<ISet> Sets
-        {
-            get 
-            {
-                if (_orderedIDs == null)
-                {
-                    return (from s in _sets.Values
-                            select s);
-                }
-                else
-                {
-                    return (from id in _orderedIDs
-                            select _sets[id]);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the IDs of Sets in the Multiset.
-        /// </summary>
-        public override IEnumerable<int> SetIDs
-        {
-            get 
-            {
-                if (_orderedIDs == null)
-                {
-                    return (from id in _sets.Keys
-                            select id);
-                }
-                else
-                {
-                    return _orderedIDs;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets a Set from the Multiset.
-        /// </summary>
-        /// <param name="id">Set ID.</param>
-        /// <returns></returns>
-        public override ISet this[int id]
-        {
-            get 
-            {
-                ISet s;
-                if (_sets.TryGetValue(id, out s))
-                {
-                    return s;
-                }
-                else
-                {
-                    throw new RdfQueryException("A Set with ID " + id + " does not exist in this Multiset");
-                }
-            }
-        } 
-
+        _variables.RemoveAll(v => v.StartsWith("_:"));
     }
+
+    /// <summary>
+    /// Trims the Multiset to remove the given Variable.
+    /// </summary>
+    /// <param name="variable">Variable.</param>
+    public override void Trim(string variable)
+    {
+        if (variable == null) return;
+        if (_variables.Remove(variable))
+        {
+            foreach (ISet s in _sets.Values)
+            {
+                s.Remove(variable);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets whether the Multiset is empty.
+    /// </summary>
+    public override bool IsEmpty
+    {
+        get 
+        {
+            return (_sets.Count == 0);
+        }
+    }
+
+    /// <summary>
+    /// Gets the number of Sets in the Multiset.
+    /// </summary>
+    public override int Count
+    {
+        get
+        {
+            return _sets.Count;
+        }
+    }
+
+    /// <summary>
+    /// Gets the Variables in the Multiset.
+    /// </summary>
+    public override IEnumerable<string> Variables
+    {
+        get 
+        {
+            return (from var in _variables
+                    where var != null
+                    select var);
+        }
+    }
+
+    /// <summary>
+    /// Gets the Sets in the Multiset.
+    /// </summary>
+    public override IEnumerable<ISet> Sets
+    {
+        get 
+        {
+            if (_orderedIDs == null)
+            {
+                return (from s in _sets.Values
+                        select s);
+            }
+            else
+            {
+                return (from id in _orderedIDs
+                        select _sets[id]);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the IDs of Sets in the Multiset.
+    /// </summary>
+    public override IEnumerable<int> SetIDs
+    {
+        get 
+        {
+            if (_orderedIDs == null)
+            {
+                return (from id in _sets.Keys
+                        select id);
+            }
+            else
+            {
+                return _orderedIDs;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets a Set from the Multiset.
+    /// </summary>
+    /// <param name="id">Set ID.</param>
+    /// <returns></returns>
+    public override ISet this[int id]
+    {
+        get 
+        {
+            ISet s;
+            if (_sets.TryGetValue(id, out s))
+            {
+                return s;
+            }
+            else
+            {
+                throw new RdfQueryException("A Set with ID " + id + " does not exist in this Multiset");
+            }
+        }
+    } 
+
 }

@@ -29,46 +29,45 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Datasets;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+class ExplainDataset 
+    : WrapperDataset
 {
-    class ExplainDataset 
-        : WrapperDataset
+    public ExplainDataset(ISparqlDataset dataset) 
+        : base(dataset) {}
+
+    public ExplainQueryProcessor Processor { get; set; }
+
+    [Obsolete("Replaced by SetActiveGraph(IRefNode)")]
+    public override void SetActiveGraph(Uri graphUri)
     {
-        public ExplainDataset(ISparqlDataset dataset) 
-            : base(dataset) {}
-
-        public ExplainQueryProcessor Processor { get; set; }
-
-        [Obsolete("Replaced by SetActiveGraph(IRefNode)")]
-        public override void SetActiveGraph(Uri graphUri)
+        if (Processor != null)
         {
-            if (Processor != null)
+            if (Processor.HasFlag(ExplanationLevel.AnalyseNamedGraphs))
             {
-                if (Processor.HasFlag(ExplanationLevel.AnalyseNamedGraphs))
+                Processor.PrintExplanations("Switching to named graph " + graphUri.ToSafeString());
+            }
+        }
+        base.SetActiveGraph(graphUri);
+    }
+
+    [Obsolete("Replaced by SetActiveGraph(IList<IRefNode>)")]
+    public override void SetActiveGraph(IEnumerable<Uri> graphUris)
+    {
+        IList<Uri> gs = graphUris as IList<Uri> ?? graphUris.ToList();
+        if (Processor != null)
+        {
+            if (Processor.HasFlag(ExplanationLevel.AnalyseNamedGraphs))
+            {
+                Processor.PrintExplanations("Switching to named graph as merge of the following graphs:");
+                foreach (Uri graphUri in gs)
                 {
-                    Processor.PrintExplanations("Switching to named graph " + graphUri.ToSafeString());
+                    Processor.PrintExplanations(graphUri.ToSafeString());
+                    
                 }
             }
-            base.SetActiveGraph(graphUri);
         }
-
-        [Obsolete("Replaced by SetActiveGraph(IList<IRefNode>)")]
-        public override void SetActiveGraph(IEnumerable<Uri> graphUris)
-        {
-            IList<Uri> gs = graphUris as IList<Uri> ?? graphUris.ToList();
-            if (Processor != null)
-            {
-                if (Processor.HasFlag(ExplanationLevel.AnalyseNamedGraphs))
-                {
-                    Processor.PrintExplanations("Switching to named graph as merge of the following graphs:");
-                    foreach (Uri graphUri in gs)
-                    {
-                        Processor.PrintExplanations(graphUri.ToSafeString());
-                        
-                    }
-                }
-            }
-            base.SetActiveGraph(gs);
-        }
+        base.SetActiveGraph(gs);
     }
 }

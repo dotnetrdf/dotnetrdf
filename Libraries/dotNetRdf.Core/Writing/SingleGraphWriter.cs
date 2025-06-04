@@ -27,66 +27,65 @@
 using System.IO;
 using System.Text;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+/// <summary>
+/// A convenience wrapper that allows a single graph to be written as the default
+/// graph using a store writer.
+/// </summary>
+public class SingleGraphWriter: IRdfWriter
 {
+    private readonly IStoreWriter _storeWriter;
+
     /// <summary>
-    /// A convenience wrapper that allows a single graph to be written as the default
-    /// graph using a store writer.
+    /// Create a new writer instance that wraps the specified <see cref="IStoreWriter"/> instance.
     /// </summary>
-    public class SingleGraphWriter: IRdfWriter
+    /// <param name="storeWriter">The <see cref="IStoreWriter"/> instance that will do the writing.</param>
+    public SingleGraphWriter(IStoreWriter storeWriter)
     {
-        private readonly IStoreWriter _storeWriter;
-
-        /// <summary>
-        /// Create a new writer instance that wraps the specified <see cref="IStoreWriter"/> instance.
-        /// </summary>
-        /// <param name="storeWriter">The <see cref="IStoreWriter"/> instance that will do the writing.</param>
-        public SingleGraphWriter(IStoreWriter storeWriter)
-        {
-            _storeWriter = storeWriter;
-            _storeWriter.Warning += RaiseGraphWriterWarning;
-        }
-
-        private void RaiseGraphWriterWarning(string message)
-        {
-            Warning?.Invoke(message);
-        }
-
-        /// <inheritdoc />
-        public void Save(IGraph g, string filename)
-        {
-            _storeWriter.Save(MakeTripleStoreWrapper(g), filename);
-        }
-
-        /// <inheritdoc />
-        public void Save(IGraph g, string filename, Encoding fileEncoding)
-        {
-            using (FileStream stream = File.Open(filename, FileMode.Create))
-            {
-                Save(g, new StreamWriter(stream, fileEncoding));
-            }
-        }
-
-        /// <inheritdoc />
-        public void Save(IGraph g, TextWriter output)
-        {
-            _storeWriter.Save(MakeTripleStoreWrapper(g), output);
-        }
-
-        /// <inheritdoc />
-        public void Save(IGraph g, TextWriter output, bool leaveOpen)
-        {
-            _storeWriter.Save(MakeTripleStoreWrapper(g), output, leaveOpen);
-        }
-
-        private ITripleStore MakeTripleStoreWrapper(IGraph g)
-        {
-            var store = new SimpleTripleStore(g.UriFactory);
-            store.Add(g);
-            return store;
-        }
-
-        /// <inheritdoc/>
-        public event RdfWriterWarning Warning;
+        _storeWriter = storeWriter;
+        _storeWriter.Warning += RaiseGraphWriterWarning;
     }
+
+    private void RaiseGraphWriterWarning(string message)
+    {
+        Warning?.Invoke(message);
+    }
+
+    /// <inheritdoc />
+    public void Save(IGraph g, string filename)
+    {
+        _storeWriter.Save(MakeTripleStoreWrapper(g), filename);
+    }
+
+    /// <inheritdoc />
+    public void Save(IGraph g, string filename, Encoding fileEncoding)
+    {
+        using (FileStream stream = File.Open(filename, FileMode.Create))
+        {
+            Save(g, new StreamWriter(stream, fileEncoding));
+        }
+    }
+
+    /// <inheritdoc />
+    public void Save(IGraph g, TextWriter output)
+    {
+        _storeWriter.Save(MakeTripleStoreWrapper(g), output);
+    }
+
+    /// <inheritdoc />
+    public void Save(IGraph g, TextWriter output, bool leaveOpen)
+    {
+        _storeWriter.Save(MakeTripleStoreWrapper(g), output, leaveOpen);
+    }
+
+    private ITripleStore MakeTripleStoreWrapper(IGraph g)
+    {
+        var store = new SimpleTripleStore(g.UriFactory);
+        store.Add(g);
+        return store;
+    }
+
+    /// <inheritdoc/>
+    public event RdfWriterWarning Warning;
 }

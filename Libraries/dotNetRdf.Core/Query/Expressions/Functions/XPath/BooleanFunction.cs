@@ -24,73 +24,72 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath
+namespace VDS.RDF.Query.Expressions.Functions.XPath;
+
+/// <summary>
+/// Represents the XPath boolean() function.
+/// </summary>
+public class BooleanFunction
+    : BaseUnaryExpression
 {
     /// <summary>
-    /// Represents the XPath boolean() function.
+    /// Creates a new XPath Boolean Function.
     /// </summary>
-    public class BooleanFunction
-        : BaseUnaryExpression
+    /// <param name="expr">Expression to compute the Effective Boolean Value of.</param>
+    public BooleanFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new XPath Boolean Function.
-        /// </summary>
-        /// <param name="expr">Expression to compute the Effective Boolean Value of.</param>
-        public BooleanFunction(ISparqlExpression expr)
-            : base(expr) { }
+        return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Boolean + ">(" + InnerExpression + ")";
+    }
 
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessBooleanFunction(this, context, binding);
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitBooleanFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get 
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Boolean + ">(" + InnerExpression + ")";
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Boolean;
         }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return processor.ProcessBooleanFunction(this, context, binding);
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitBooleanFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get 
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Boolean;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new BooleanFunction(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new BooleanFunction(transformer.Transform(InnerExpression));
     }
 }

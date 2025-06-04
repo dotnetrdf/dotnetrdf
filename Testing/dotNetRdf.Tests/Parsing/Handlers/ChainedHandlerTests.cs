@@ -27,137 +27,136 @@ using System;
 using System.Linq;
 using Xunit;
 
-namespace VDS.RDF.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers;
+
+
+public class ChainedHandlerTests
 {
-
-    public class ChainedHandlerTests
+    private void EnsureTestData()
     {
-        private void EnsureTestData()
+        if (!System.IO.File.Exists("chained_handler_tests_temp.ttl"))
         {
-            if (!System.IO.File.Exists("chained_handler_tests_temp.ttl"))
-            {
-                var g = new Graph();
-                EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-                g.SaveToFile("chained_handler_tests_temp.ttl");
-            }
-        }
-        
-        [Fact]
-        public void ParsingChainedHandlerBadInstantiation()
-        {
-            Assert.Throws<ArgumentException>(() => new ChainedHandler(Enumerable.Empty<IRdfHandler>()));
-        }
-
-        [Fact]
-        public void ParsingChainedHandlerBadInstantiation2()
-        {
-            Assert.Throws<ArgumentNullException>(() => new ChainedHandler(null));
-        }
-
-        [Fact]
-        public void ParsingChainedHandlerBadInstantiation3()
-        {
-            var h = new GraphHandler(new Graph());
-            Assert.Throws<ArgumentException>(() => new ChainedHandler(new IRdfHandler[] { h, h }));
-        }
-
-        [Fact]
-        public void ParsingChainedHandlerTwoGraphs()
-        {
-            EnsureTestData();
-
             var g = new Graph();
-            var h = new Graph();
-
-            var handler1 = new GraphHandler(g);
-            var handler2 = new GraphHandler(h);
-
-            var handler = new ChainedHandler(new IRdfHandler[] { handler1, handler2 });
-
-            var parser = new TurtleParser();
-            parser.Load(handler, "chained_handler_tests_temp.ttl");
-
-            Assert.Equal(g.Triples.Count, h.Triples.Count);
-            Assert.Equal<IGraph>(g, h);
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+            g.SaveToFile("chained_handler_tests_temp.ttl");
         }
+    }
+    
+    [Fact]
+    public void ParsingChainedHandlerBadInstantiation()
+    {
+        Assert.Throws<ArgumentException>(() => new ChainedHandler(Enumerable.Empty<IRdfHandler>()));
+    }
 
-        [Fact]
-        public void ParsingChainedHandlerGraphAndPaging()
-        {
-            EnsureTestData();
+    [Fact]
+    public void ParsingChainedHandlerBadInstantiation2()
+    {
+        Assert.Throws<ArgumentNullException>(() => new ChainedHandler(null));
+    }
 
-            var g = new Graph();
-            var h = new Graph();
+    [Fact]
+    public void ParsingChainedHandlerBadInstantiation3()
+    {
+        var h = new GraphHandler(new Graph());
+        Assert.Throws<ArgumentException>(() => new ChainedHandler(new IRdfHandler[] { h, h }));
+    }
 
-            var handler1 = new GraphHandler(g);
-            var handler2 = new PagingHandler(new GraphHandler(h), 100);
+    [Fact]
+    public void ParsingChainedHandlerTwoGraphs()
+    {
+        EnsureTestData();
 
-            var handler = new ChainedHandler(new IRdfHandler[] { handler1, handler2 });
+        var g = new Graph();
+        var h = new Graph();
 
-            var parser = new TurtleParser();
-            parser.Load(handler, "chained_handler_tests_temp.ttl");
+        var handler1 = new GraphHandler(g);
+        var handler2 = new GraphHandler(h);
 
-            Assert.Equal(101, g.Triples.Count);
-            Assert.Equal(100, h.Triples.Count);
-            Assert.NotEqual(g.Triples.Count, h.Triples.Count);
-            Assert.NotEqual(g, h);
-        }
+        var handler = new ChainedHandler(new IRdfHandler[] { handler1, handler2 });
 
-        [Fact]
-        public void ParsingChainedHandlerGraphAndPaging2()
-        {
-            EnsureTestData();
+        var parser = new TurtleParser();
+        parser.Load(handler, "chained_handler_tests_temp.ttl");
 
-            var g = new Graph();
-            var h = new Graph();
+        Assert.Equal(g.Triples.Count, h.Triples.Count);
+        Assert.Equal<IGraph>(g, h);
+    }
 
-            var handler1 = new GraphHandler(g);
-            var handler2 = new PagingHandler(new GraphHandler(h), 100);
+    [Fact]
+    public void ParsingChainedHandlerGraphAndPaging()
+    {
+        EnsureTestData();
 
-            var handler = new ChainedHandler(new IRdfHandler[] { handler2, handler1 });
+        var g = new Graph();
+        var h = new Graph();
 
-            var parser = new TurtleParser();
-            parser.Load(handler, "chained_handler_tests_temp.ttl");
+        var handler1 = new GraphHandler(g);
+        var handler2 = new PagingHandler(new GraphHandler(h), 100);
 
-            Assert.Equal(100, g.Triples.Count);
-            Assert.Equal(100, h.Triples.Count);
-            Assert.Equal(g.Triples.Count, h.Triples.Count);
-            Assert.Equal<IGraph>(g, h);
-        }
-        
-        [Fact]
-        public void ParsingChainedHandlerGraphAndCount()
-        {
-            EnsureTestData();
+        var handler = new ChainedHandler(new IRdfHandler[] { handler1, handler2 });
 
-            var g = new Graph();
-            var handler1 = new GraphHandler(g);
+        var parser = new TurtleParser();
+        parser.Load(handler, "chained_handler_tests_temp.ttl");
 
-            var handler2 = new CountHandler();
+        Assert.Equal(101, g.Triples.Count);
+        Assert.Equal(100, h.Triples.Count);
+        Assert.NotEqual(g.Triples.Count, h.Triples.Count);
+        Assert.NotEqual(g, h);
+    }
 
-            var handler = new ChainedHandler(new IRdfHandler[] { handler1, handler2 });
+    [Fact]
+    public void ParsingChainedHandlerGraphAndPaging2()
+    {
+        EnsureTestData();
 
-            var parser = new TurtleParser();
-            parser.Load(handler, "chained_handler_tests_temp.ttl");
+        var g = new Graph();
+        var h = new Graph();
 
-            Assert.Equal(g.Triples.Count, handler2.Count);
- 
-        }
+        var handler1 = new GraphHandler(g);
+        var handler2 = new PagingHandler(new GraphHandler(h), 100);
 
-        [Fact]
-        public void ParsingChainedHandlerGraphAndNull()
-        {
-            EnsureTestData();
+        var handler = new ChainedHandler(new IRdfHandler[] { handler2, handler1 });
 
-            var g = new Graph();
-            var handler1 = new GraphHandler(g);
+        var parser = new TurtleParser();
+        parser.Load(handler, "chained_handler_tests_temp.ttl");
 
-            var handler2 = new NullHandler();
+        Assert.Equal(100, g.Triples.Count);
+        Assert.Equal(100, h.Triples.Count);
+        Assert.Equal(g.Triples.Count, h.Triples.Count);
+        Assert.Equal<IGraph>(g, h);
+    }
+    
+    [Fact]
+    public void ParsingChainedHandlerGraphAndCount()
+    {
+        EnsureTestData();
 
-            var handler = new ChainedHandler(new IRdfHandler[] { handler1, handler2 });
+        var g = new Graph();
+        var handler1 = new GraphHandler(g);
 
-            var parser = new TurtleParser();
-            parser.Load(handler, "chained_handler_tests_temp.ttl");
-        }
+        var handler2 = new CountHandler();
+
+        var handler = new ChainedHandler(new IRdfHandler[] { handler1, handler2 });
+
+        var parser = new TurtleParser();
+        parser.Load(handler, "chained_handler_tests_temp.ttl");
+
+        Assert.Equal(g.Triples.Count, handler2.Count);
+
+    }
+
+    [Fact]
+    public void ParsingChainedHandlerGraphAndNull()
+    {
+        EnsureTestData();
+
+        var g = new Graph();
+        var handler1 = new GraphHandler(g);
+
+        var handler2 = new NullHandler();
+
+        var handler = new ChainedHandler(new IRdfHandler[] { handler1, handler2 });
+
+        var parser = new TurtleParser();
+        parser.Load(handler, "chained_handler_tests_temp.ttl");
     }
 }

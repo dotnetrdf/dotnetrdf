@@ -24,47 +24,46 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.TripleNode
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.TripleNode;
+
+/// <summary>
+/// Class representing the SPARQL-Star PREDICATE() function.
+/// </summary>
+public class PredicateFunction : BaseUnaryExpression
 {
     /// <summary>
-    /// Class representing the SPARQL-Star PREDICATE() function.
+    /// Create a new PREDICATE() function expression.
     /// </summary>
-    public class PredicateFunction : BaseUnaryExpression
+    /// <param name="expr">Expression to apply the function to.</param>
+    public PredicateFunction(ISparqlExpression expr) : base(expr) { }
+
+    /// <inheritdoc />
+    public override string ToString()
     {
-        /// <summary>
-        /// Create a new PREDICATE() function expression.
-        /// </summary>
-        /// <param name="expr">Expression to apply the function to.</param>
-        public PredicateFunction(ISparqlExpression expr) : base(expr) { }
+        return $"PREDICATE({InnerExpression})";
+    }
 
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return $"PREDICATE({InnerExpression})";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessPredicateFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessPredicateFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitPredicateFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitPredicateFunction(this);
-        }
+    /// <inheritdoc />
+    public override SparqlExpressionType Type => SparqlExpressionType.Function;
 
-        /// <inheritdoc />
-        public override SparqlExpressionType Type => SparqlExpressionType.Function;
+    /// <inheritdoc />
+    public override string Functor => SparqlSpecsHelper.SparqlStarKeywordPredicate;
 
-        /// <inheritdoc />
-        public override string Functor => SparqlSpecsHelper.SparqlStarKeywordPredicate;
-
-        /// <inheritdoc />
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new PredicateFunction(transformer.Transform(InnerExpression));
-        }
+    /// <inheritdoc />
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new PredicateFunction(transformer.Transform(InnerExpression));
     }
 }

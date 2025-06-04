@@ -24,36 +24,35 @@
 // </copyright>
 */
 
-namespace VDS.RDF.JsonLd.Syntax
+namespace VDS.RDF.JsonLd.Syntax;
+
+/// <summary>
+/// Enumeration of the allowed values for the object embed option for JSON-LD framing.
+/// </summary>
+public enum JsonLdEmbed
 {
     /// <summary>
-    /// Enumeration of the allowed values for the object embed option for JSON-LD framing.
+    /// @always
     /// </summary>
-    public enum JsonLdEmbed
-    {
-        /// <summary>
-        /// @always
-        /// </summary>
-        Always,
-        /// <summary>
-        /// @first
-        /// </summary>
-        First,
-        /// <summary>
-        /// @last
-        /// </summary>
-        Last,
-        /// <summary>
-        /// @link
-        /// </summary>
-        Link,
-        /// <summary>
-        /// @once
-        /// </summary>
-        Once,
-        /// <summary>
-        /// @never
-        /// </summary>
-        Never,
-    }
+    Always,
+    /// <summary>
+    /// @first
+    /// </summary>
+    First,
+    /// <summary>
+    /// @last
+    /// </summary>
+    Last,
+    /// <summary>
+    /// @link
+    /// </summary>
+    Link,
+    /// <summary>
+    /// @once
+    /// </summary>
+    Once,
+    /// <summary>
+    /// @never
+    /// </summary>
+    Never,
 }

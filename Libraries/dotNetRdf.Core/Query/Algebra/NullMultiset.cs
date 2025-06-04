@@ -29,228 +29,227 @@ using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Represents a Multiset when there are no possible Solutions.
+/// </summary>
+public class NullMultiset 
+    : BaseMultiset
 {
     /// <summary>
-    /// Represents a Multiset when there are no possible Solutions.
+    /// Joins another Multiset to this Null Mutliset.
     /// </summary>
-    public class NullMultiset 
-        : BaseMultiset
+    /// <param name="other">Other Multiset.</param>
+    /// <returns>
+    /// Results in this Null Multiset since Null joined to anything is Null.
+    /// </returns>
+    public override BaseMultiset Join(BaseMultiset other)
     {
-        /// <summary>
-        /// Joins another Multiset to this Null Mutliset.
-        /// </summary>
-        /// <param name="other">Other Multiset.</param>
-        /// <returns>
-        /// Results in this Null Multiset since Null joined to anything is Null.
-        /// </returns>
-        public override BaseMultiset Join(BaseMultiset other)
-        {
-            // Left Join results in Null Multiset
-            return this;
-        }
+        // Left Join results in Null Multiset
+        return this;
+    }
 
-        /// <summary>
-        /// Left Joins another Multiset to this Null Multiset.
-        /// </summary>
-        /// <param name="other">Other Multiset.</param>
-        /// <param name="expr">Expression the join is predicate upon.</param>
-        /// <param name="baseContext">The parent context for the evaluation of the join.</param>
-        /// <param name="expressionProcessor">The processor to use to evaluate <paramref name="expr"/>.</param>
-        /// <returns>
-        /// Results in this Null Multiset since Null joined to anything is Null.
-        /// </returns>
-        public override BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, SparqlEvaluationContext baseContext, ISparqlExpressionProcessor<IValuedNode, SparqlEvaluationContext, int> expressionProcessor)
-        {
-            // Left Outer Join results in Null Multiset
-            return this;
-        }
+    /// <summary>
+    /// Left Joins another Multiset to this Null Multiset.
+    /// </summary>
+    /// <param name="other">Other Multiset.</param>
+    /// <param name="expr">Expression the join is predicate upon.</param>
+    /// <param name="baseContext">The parent context for the evaluation of the join.</param>
+    /// <param name="expressionProcessor">The processor to use to evaluate <paramref name="expr"/>.</param>
+    /// <returns>
+    /// Results in this Null Multiset since Null joined to anything is Null.
+    /// </returns>
+    public override BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, SparqlEvaluationContext baseContext, ISparqlExpressionProcessor<IValuedNode, SparqlEvaluationContext, int> expressionProcessor)
+    {
+        // Left Outer Join results in Null Multiset
+        return this;
+    }
 
-        /// <summary>
-        /// Exists Joins another Multiset to this Null Multiset.
-        /// </summary>
-        /// <param name="other">Other Multiset.</param>
-        /// <param name="mustExist">Whether joinable solutions must exist in the other Multiset for joins to be made.</param>
-        /// <returns>
-        /// Results in this Null Multiset since Null joined to anything is Null.
-        /// </returns>
-        public override BaseMultiset ExistsJoin(BaseMultiset other, bool mustExist)
-        {
-            return this;
-        }
+    /// <summary>
+    /// Exists Joins another Multiset to this Null Multiset.
+    /// </summary>
+    /// <param name="other">Other Multiset.</param>
+    /// <param name="mustExist">Whether joinable solutions must exist in the other Multiset for joins to be made.</param>
+    /// <returns>
+    /// Results in this Null Multiset since Null joined to anything is Null.
+    /// </returns>
+    public override BaseMultiset ExistsJoin(BaseMultiset other, bool mustExist)
+    {
+        return this;
+    }
 
-        /// <summary>
-        /// Minus Joins this Multiset to another Multiset.
-        /// </summary>
-        /// <param name="other">Other Multiset.</param>
-        /// <returns></returns>
-        public override BaseMultiset MinusJoin(BaseMultiset other)
-        {
-            return this;
-        }
+    /// <summary>
+    /// Minus Joins this Multiset to another Multiset.
+    /// </summary>
+    /// <param name="other">Other Multiset.</param>
+    /// <returns></returns>
+    public override BaseMultiset MinusJoin(BaseMultiset other)
+    {
+        return this;
+    }
 
-        /// <summary>
-        /// Computes the Product of this Multiset and another Multiset.
-        /// </summary>
-        /// <param name="other">Other Multiset.</param>
-        /// <returns>
-        /// Results in the Other Multiset since for Product we consider this Multiset to contain a single empty Set.
-        /// </returns>
-        public override BaseMultiset Product(BaseMultiset other)
-        {
-            // Join results in Other Multiset
-            return other;
-        }
+    /// <summary>
+    /// Computes the Product of this Multiset and another Multiset.
+    /// </summary>
+    /// <param name="other">Other Multiset.</param>
+    /// <returns>
+    /// Results in the Other Multiset since for Product we consider this Multiset to contain a single empty Set.
+    /// </returns>
+    public override BaseMultiset Product(BaseMultiset other)
+    {
+        // Join results in Other Multiset
+        return other;
+    }
 
-        /// <summary>
-        /// Unions this Multiset with another Multiset.
-        /// </summary>
-        /// <param name="other">Other Multiset.</param>
-        /// <returns>
-        /// Results in the Other Multiset as this is an empty Multiset.
-        /// </returns>
-        public override BaseMultiset Union(BaseMultiset other)
-        {
-            // Union results in Other Multiset
-            return other;
-        }
+    /// <summary>
+    /// Unions this Multiset with another Multiset.
+    /// </summary>
+    /// <param name="other">Other Multiset.</param>
+    /// <returns>
+    /// Results in the Other Multiset as this is an empty Multiset.
+    /// </returns>
+    public override BaseMultiset Union(BaseMultiset other)
+    {
+        // Union results in Other Multiset
+        return other;
+    }
 
-        /// <summary>
-        /// Returns false since the Null Multiset contains no values.
-        /// </summary>
-        /// <param name="var">Variable.</param>
-        /// <param name="n">Value.</param>
-        /// <returns></returns>
-        public override bool ContainsValue(string var, INode n)
-        {
-            return false;
-        }
+    /// <summary>
+    /// Returns false since the Null Multiset contains no values.
+    /// </summary>
+    /// <param name="var">Variable.</param>
+    /// <param name="n">Value.</param>
+    /// <returns></returns>
+    public override bool ContainsValue(string var, INode n)
+    {
+        return false;
+    }
 
-        /// <summary>
-        /// Returns false since the Null Multiset contains no variables.
-        /// </summary>
-        /// <param name="var">Variable.</param>
-        /// <returns></returns>
-        public override bool ContainsVariable(string var)
-        {
-            return false;
-        }
+    /// <summary>
+    /// Returns false since the Null Multiset contains no variables.
+    /// </summary>
+    /// <param name="var">Variable.</param>
+    /// <returns></returns>
+    public override bool ContainsVariable(string var)
+    {
+        return false;
+    }
 
-        /// <summary>
-        /// Returns false since the Null Multiset contains no variables.
-        /// </summary>
-        /// <param name="vars">Variables.</param>
-        /// <returns></returns>
-        public override bool ContainsVariables(IEnumerable<string> vars)
-        {
-            return false;
-        }
+    /// <summary>
+    /// Returns false since the Null Multiset contains no variables.
+    /// </summary>
+    /// <param name="vars">Variables.</param>
+    /// <returns></returns>
+    public override bool ContainsVariables(IEnumerable<string> vars)
+    {
+        return false;
+    }
 
-        /// <summary>
-        /// Returns true since the Null Multiset is disjoint with any Multiset.
-        /// </summary>
-        /// <param name="other">Other Multiset.</param>
-        /// <returns></returns>
-        public override bool IsDisjointWith(BaseMultiset other)
+    /// <summary>
+    /// Returns true since the Null Multiset is disjoint with any Multiset.
+    /// </summary>
+    /// <param name="other">Other Multiset.</param>
+    /// <returns></returns>
+    public override bool IsDisjointWith(BaseMultiset other)
+    {
+        return true;
+    }
+
+    /// <summary>
+    /// Adds a Set to this Multiset.
+    /// </summary>
+    /// <param name="s">Set.</param>
+    /// <exception cref="RdfQueryException">Thrown since the operation is invalid on a Null Multiset.</exception>
+    public override void Add(ISet s)
+    {
+        throw new RdfQueryException("Cannot add a Set to the Null Multiset");
+    }
+
+    /// <summary>
+    /// Adds a Variable to this Multiset.
+    /// </summary>
+    /// <param name="variable">Variable.</param>
+    /// <exception cref="RdfQueryException">Thrown since the operation is invalid on a Null Multiset.</exception>
+    public override void AddVariable(string variable)
+    {
+        throw new RdfQueryException("Cannot add a Variable to the Null Multiset");
+    }
+
+    /// <summary>
+    /// Sets the variable ordering for the multiset.
+    /// </summary>
+    /// <param name="variables">Variable Ordering.</param>
+    public override void SetVariableOrder(IEnumerable<string> variables)
+    {
+        if (variables.Any()) throw new RdfQueryException("Cannot set variable ordering for the null multiset");
+    }
+
+    /// <summary>
+    /// Removes a Set from a Multiset.
+    /// </summary>
+    /// <param name="id">Set ID.</param>
+    /// <exception cref="RdfQueryException">Thrown since the operation is invalid on a Null Multiset.</exception>
+    public override void Remove(int id)
+    {
+        throw new RdfQueryException("Cannot remove a Set from the Null Multiset");
+    }
+
+    /// <summary>
+    /// Returns true since the Null Multiset is always empty.
+    /// </summary>
+    public override bool IsEmpty
+    {
+        get 
         {
             return true;
         }
+    }
 
-        /// <summary>
-        /// Adds a Set to this Multiset.
-        /// </summary>
-        /// <param name="s">Set.</param>
-        /// <exception cref="RdfQueryException">Thrown since the operation is invalid on a Null Multiset.</exception>
-        public override void Add(ISet s)
+    /// <summary>
+    /// Returns an empty enumerable as the Null Multiset contains no Variables.
+    /// </summary>
+    public override IEnumerable<string> Variables
+    {
+        get 
         {
-            throw new RdfQueryException("Cannot add a Set to the Null Multiset");
+            return Enumerable.Empty<string>();
         }
+    }
 
-        /// <summary>
-        /// Adds a Variable to this Multiset.
-        /// </summary>
-        /// <param name="variable">Variable.</param>
-        /// <exception cref="RdfQueryException">Thrown since the operation is invalid on a Null Multiset.</exception>
-        public override void AddVariable(string variable)
+    /// <summary>
+    /// Returns an empty enumerable as the Null Multiset contains no Sets.
+    /// </summary>
+    public override IEnumerable<ISet> Sets
+    {
+        get 
         {
-            throw new RdfQueryException("Cannot add a Variable to the Null Multiset");
+            return Enumerable.Empty<ISet>();
         }
+    }
 
-        /// <summary>
-        /// Sets the variable ordering for the multiset.
-        /// </summary>
-        /// <param name="variables">Variable Ordering.</param>
-        public override void SetVariableOrder(IEnumerable<string> variables)
+    /// <summary>
+    /// Returns an empty enumerable as the Null Multiset contains no Sets.
+    /// </summary>
+    public override IEnumerable<int> SetIDs
+    {
+        get 
         {
-            if (variables.Any()) throw new RdfQueryException("Cannot set variable ordering for the null multiset");
+            return Enumerable.Empty<int>();
         }
+    }
 
-        /// <summary>
-        /// Removes a Set from a Multiset.
-        /// </summary>
-        /// <param name="id">Set ID.</param>
-        /// <exception cref="RdfQueryException">Thrown since the operation is invalid on a Null Multiset.</exception>
-        public override void Remove(int id)
+    /// <summary>
+    /// Gets the Set with the given ID.
+    /// </summary>
+    /// <param name="index">Set ID.</param>
+    /// <returns></returns>
+    /// <exception cref="RdfQueryException">Thrown since the Null Multiset contains no Sets.</exception>
+    public override ISet this[int index]
+    {
+        get 
         {
-            throw new RdfQueryException("Cannot remove a Set from the Null Multiset");
-        }
-
-        /// <summary>
-        /// Returns true since the Null Multiset is always empty.
-        /// </summary>
-        public override bool IsEmpty
-        {
-            get 
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Returns an empty enumerable as the Null Multiset contains no Variables.
-        /// </summary>
-        public override IEnumerable<string> Variables
-        {
-            get 
-            {
-                return Enumerable.Empty<string>();
-            }
-        }
-
-        /// <summary>
-        /// Returns an empty enumerable as the Null Multiset contains no Sets.
-        /// </summary>
-        public override IEnumerable<ISet> Sets
-        {
-            get 
-            {
-                return Enumerable.Empty<ISet>();
-            }
-        }
-
-        /// <summary>
-        /// Returns an empty enumerable as the Null Multiset contains no Sets.
-        /// </summary>
-        public override IEnumerable<int> SetIDs
-        {
-            get 
-            {
-                return Enumerable.Empty<int>();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Set with the given ID.
-        /// </summary>
-        /// <param name="index">Set ID.</param>
-        /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown since the Null Multiset contains no Sets.</exception>
-        public override ISet this[int index]
-        {
-            get 
-            {
-                throw new RdfQueryException("Cannot retrieve a Set from the Null Multiset");
-            }
+            throw new RdfQueryException("Cannot retrieve a Set from the Null Multiset");
         }
     }
 }

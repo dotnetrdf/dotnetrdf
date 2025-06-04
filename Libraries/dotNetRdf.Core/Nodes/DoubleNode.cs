@@ -30,89 +30,88 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Nodes
+namespace VDS.RDF.Nodes;
+
+/// <summary>
+/// A Valued Node representing double values.
+/// </summary>
+public class DoubleNode
+    : NumericNode
 {
+    private double _value;
+
     /// <summary>
-    /// A Valued Node representing double values.
+    /// Creates a new double valued node.
     /// </summary>
-    public class DoubleNode
-        : NumericNode
+    /// <param name="value">Double value.</param>
+    /// <param name="lexicalValue">Lexical value.</param>
+    public DoubleNode(double value, string lexicalValue)
+        : base(lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble), SparqlNumericType.Double)
     {
-        private double _value;
+        _value = value;
+    }
 
-        /// <summary>
-        /// Creates a new double valued node.
-        /// </summary>
-        /// <param name="value">Double value.</param>
-        /// <param name="lexicalValue">Lexical value.</param>
-        public DoubleNode(double value, string lexicalValue)
-            : base(lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble), SparqlNumericType.Double)
+    /// <summary>
+    /// Creates a new double valued node.
+    /// </summary>
+    /// <param name="value">Double value.</param>
+    public DoubleNode(double value)
+        : this(value, value.ToString(CultureInfo.InvariantCulture)) { }
+
+    /// <summary>
+    /// Gets the integer value of the double.
+    /// </summary>
+    /// <returns></returns>
+    public override long AsInteger()
+    {
+        try
         {
-            _value = value;
+            return Convert.ToInt64(_value);
         }
-
-        /// <summary>
-        /// Creates a new double valued node.
-        /// </summary>
-        /// <param name="value">Double value.</param>
-        public DoubleNode(double value)
-            : this(value, value.ToString(CultureInfo.InvariantCulture)) { }
-
-        /// <summary>
-        /// Gets the integer value of the double.
-        /// </summary>
-        /// <returns></returns>
-        public override long AsInteger()
+        catch
         {
-            try
-            {
-                return Convert.ToInt64(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to downcast Double to Long");
-            }
+            throw new RdfQueryException("Unable to downcast Double to Long");
         }
+    }
 
-        /// <summary>
-        /// Gets the decimal value of the double.
-        /// </summary>
-        /// <returns></returns>
-        public override decimal AsDecimal()
+    /// <summary>
+    /// Gets the decimal value of the double.
+    /// </summary>
+    /// <returns></returns>
+    public override decimal AsDecimal()
+    {
+        try
         {
-            try
-            {
-                return Convert.ToDecimal(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to cast Double to Decimal");
-            }
+            return Convert.ToDecimal(_value);
         }
+        catch
+        {
+            throw new RdfQueryException("Unable to cast Double to Decimal");
+        }
+    }
 
-        /// <summary>
-        /// Gets the float value of the double.
-        /// </summary>
-        /// <returns></returns>
-        public override float AsFloat()
+    /// <summary>
+    /// Gets the float value of the double.
+    /// </summary>
+    /// <returns></returns>
+    public override float AsFloat()
+    {
+        try
         {
-            try
-            {
-                return Convert.ToSingle(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to downcast Double to Float");
-            }
+            return Convert.ToSingle(_value);
         }
+        catch
+        {
+            throw new RdfQueryException("Unable to downcast Double to Float");
+        }
+    }
 
-        /// <summary>
-        /// Gets the double value.
-        /// </summary>
-        /// <returns></returns>
-        public override double AsDouble()
-        {
-            return _value;
-        }
+    /// <summary>
+    /// Gets the double value.
+    /// </summary>
+    /// <returns></returns>
+    public override double AsDouble()
+    {
+        return _value;
     }
 }

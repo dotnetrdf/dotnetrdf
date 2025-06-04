@@ -27,45 +27,44 @@
 using System;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.PropertyFunctions
+namespace VDS.RDF.Query.PropertyFunctions;
+
+/// <summary>
+/// Property Function factory for Full Text functions.
+/// </summary>
+public class FullTextPropertyFunctionFactory
+    : IPropertyFunctionFactory
 {
     /// <summary>
-    /// Property Function factory for Full Text functions.
+    /// Gets whether the given URI is a property function URI.
     /// </summary>
-    public class FullTextPropertyFunctionFactory
-        : IPropertyFunctionFactory
+    /// <param name="u">URI.</param>
+    /// <returns></returns>
+    public bool IsPropertyFunction(Uri u)
     {
-        /// <summary>
-        /// Gets whether the given URI is a property function URI.
-        /// </summary>
-        /// <param name="u">URI.</param>
-        /// <returns></returns>
-        public bool IsPropertyFunction(Uri u)
+        return u.AbsoluteUri switch
         {
-            return u.AbsoluteUri switch
-            {
-                FullTextHelper.FullTextMatchPredicateUri => true,
-                _ => false
-            };
-        }
+            FullTextHelper.FullTextMatchPredicateUri => true,
+            _ => false
+        };
+    }
 
-        /// <summary>
-        /// Tries to create property functions.
-        /// </summary>
-        /// <param name="info">Function information.</param>
-        /// <param name="function">Property Function.</param>
-        /// <returns></returns>
-        public bool TryCreatePropertyFunction(PropertyFunctionInfo info, out IPropertyFunctionPattern function)
+    /// <summary>
+    /// Tries to create property functions.
+    /// </summary>
+    /// <param name="info">Function information.</param>
+    /// <param name="function">Property Function.</param>
+    /// <returns></returns>
+    public bool TryCreatePropertyFunction(PropertyFunctionInfo info, out IPropertyFunctionPattern function)
+    {
+        function = null;
+        switch (info.FunctionUri.AbsoluteUri)
         {
-            function = null;
-            switch (info.FunctionUri.AbsoluteUri)
-            {
-                case FullTextHelper.FullTextMatchPredicateUri:
-                    function = new PropertyFunctionPattern(info, new FullTextMatchPropertyFunction(info));
-                    return true;
-                default:
-                    return false;
-            }
+            case FullTextHelper.FullTextMatchPredicateUri:
+                function = new PropertyFunctionPattern(info, new FullTextMatchPropertyFunction(info));
+                return true;
+            default:
+                return false;
         }
     }
 }

@@ -27,26 +27,25 @@
 using System.Collections.Generic;
 using System;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+/**
+ * A VALUES element (inside of a WHERE clause).
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IValues : IElement
 {
+
     /**
-     * A VALUES element (inside of a WHERE clause).
-     * 
-     * @author Holger Knublauch
+     * Gets the bindings (rows), from top to bottom as entered.
+     * @return the Bindings
      */
-    internal interface IValues : IElement
-    {
+    List<Dictionary<String, IResource>> getBindings();
 
-        /**
-         * Gets the bindings (rows), from top to bottom as entered.
-         * @return the Bindings
-         */
-        List<Dictionary<String, IResource>> getBindings();
-
-        /**
-         * Gets the names of the declared variables, ordered as entered.
-         * @return the variable names
-         */
-        List<String> getVarNames();
-    }
+    /**
+     * Gets the names of the declared variables, ordered as entered.
+     * @return the variable names
+     */
+    List<String> getVarNames();
 }

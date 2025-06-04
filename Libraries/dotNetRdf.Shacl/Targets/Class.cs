@@ -27,19 +27,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace VDS.RDF.Shacl.Targets
-{
-    internal class Class : Target
-    {
-        [DebuggerStepThrough]
-        internal Class(INode node)
-            : base(node)
-        {
-        }
+namespace VDS.RDF.Shacl.Targets;
 
-        internal override IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
-        {
-            return dataGragh.ShaclInstancesOf(this);
-        }
+internal class Class : Target
+{
+    [DebuggerStepThrough]
+    internal Class(INode node)
+        : base(node)
+    {
+    }
+
+    internal override IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
+    {
+        return dataGragh.ShaclInstancesOf(this);
     }
 }

@@ -29,136 +29,135 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Nodes
+namespace VDS.RDF.Nodes;
+
+/// <summary>
+/// Valued Node representing boolean values.
+/// </summary>
+public class BooleanNode
+    : LiteralNode, IValuedNode
 {
+    private bool _value;
+
     /// <summary>
-    /// Valued Node representing boolean values.
+    /// Creates a new boolean valued node.
     /// </summary>
-    public class BooleanNode
-        : LiteralNode, IValuedNode
+    /// <param name="value">Boolean Value.</param>
+    /// <param name="lexicalValue">Lexical Value.</param>
+    /// <param name="normalizeValue">Whether to normalize <paramref name="lexicalValue"/> on node creation.</param>
+    public BooleanNode(bool value, string lexicalValue, bool normalizeValue = false)
+        : base(lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean), normalizeValue)
     {
-        private bool _value;
+        _value = value;
+    }
 
-        /// <summary>
-        /// Creates a new boolean valued node.
-        /// </summary>
-        /// <param name="value">Boolean Value.</param>
-        /// <param name="lexicalValue">Lexical Value.</param>
-        /// <param name="normalizeValue">Whether to normalize <paramref name="lexicalValue"/> on node creation.</param>
-        public BooleanNode(bool value, string lexicalValue, bool normalizeValue = false)
-            : base(lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean), normalizeValue)
+    /// <summary>
+    /// Creates a new boolean valued node.
+    /// </summary>
+    /// <param name="value">Boolean Value.</param>
+    public BooleanNode(bool value)
+        : this(value, value.ToString().ToLower()) { }
+
+    /// <summary>
+    /// Gets the string value of the boolean.
+    /// </summary>
+    /// <returns></returns>
+    public string AsString()
+    {
+        return Value;
+    }
+
+    /// <summary>
+    /// Throws an error as booleans cannot be cast to integers.
+    /// </summary>
+    /// <returns></returns>
+    public long AsInteger()
+    {
+        throw new RdfQueryException("Cannot cast Boolean to other types");
+    }
+
+    /// <summary>
+    /// Throws an error as booleans cannot be cast to decimals.
+    /// </summary>
+    /// <returns></returns>
+    public decimal AsDecimal()
+    {
+        throw new RdfQueryException("Cannot cast Boolean to other types");
+    }
+
+    /// <summary>
+    /// Throws an error as booleans cannot be cast to floats.
+    /// </summary>
+    /// <returns></returns>
+    public float AsFloat()
+    {
+        throw new RdfQueryException("Cannot cast Boolean to other types");
+    }
+
+    /// <summary>
+    /// Throws an error as booleans cannot be cast to doubles.
+    /// </summary>
+    /// <returns></returns>
+    public double AsDouble()
+    {
+        throw new RdfQueryException("Cannot cast Boolean to other types");
+    }
+
+    /// <summary>
+    /// Gets the boolean value.
+    /// </summary>
+    /// <returns></returns>
+    public bool AsBoolean()
+    {
+        return _value;
+    }
+
+    /// <summary>
+    /// Throws an error as booleans cannot be cast to date times.
+    /// </summary>
+    /// <returns></returns>
+    public DateTime AsDateTime()
+    {
+        throw new RdfQueryException("Cannot cast Boolean to other types");
+    }
+
+    /// <summary>
+    /// Throws an error as booleans cannot be cast to date times.
+    /// </summary>
+    /// <returns></returns>
+    public DateTimeOffset AsDateTimeOffset()
+    {
+        throw new RdfQueryException("Cannot cast Boolean to other types");
+    }
+
+    /// <summary>
+    /// Throws an error as booleans cannot be cast to a time span.
+    /// </summary>
+    /// <returns></returns>
+    public TimeSpan AsTimeSpan()
+    {
+        throw new RdfQueryException("Cannot case Boolean to other types");
+    }
+    /// <summary>
+    /// Gets the URI of the datatype this valued node represents as a String.
+    /// </summary>
+    public string EffectiveType
+    {
+        get
         {
-            _value = value;
+            return XmlSpecsHelper.XmlSchemaDataTypeBoolean;
         }
-
-        /// <summary>
-        /// Creates a new boolean valued node.
-        /// </summary>
-        /// <param name="value">Boolean Value.</param>
-        public BooleanNode(bool value)
-            : this(value, value.ToString().ToLower()) { }
-
-        /// <summary>
-        /// Gets the string value of the boolean.
-        /// </summary>
-        /// <returns></returns>
-        public string AsString()
-        {
-            return Value;
-        }
-
-        /// <summary>
-        /// Throws an error as booleans cannot be cast to integers.
-        /// </summary>
-        /// <returns></returns>
-        public long AsInteger()
-        {
-            throw new RdfQueryException("Cannot cast Boolean to other types");
-        }
-
-        /// <summary>
-        /// Throws an error as booleans cannot be cast to decimals.
-        /// </summary>
-        /// <returns></returns>
-        public decimal AsDecimal()
-        {
-            throw new RdfQueryException("Cannot cast Boolean to other types");
-        }
-
-        /// <summary>
-        /// Throws an error as booleans cannot be cast to floats.
-        /// </summary>
-        /// <returns></returns>
-        public float AsFloat()
-        {
-            throw new RdfQueryException("Cannot cast Boolean to other types");
-        }
-
-        /// <summary>
-        /// Throws an error as booleans cannot be cast to doubles.
-        /// </summary>
-        /// <returns></returns>
-        public double AsDouble()
-        {
-            throw new RdfQueryException("Cannot cast Boolean to other types");
-        }
-
-        /// <summary>
-        /// Gets the boolean value.
-        /// </summary>
-        /// <returns></returns>
-        public bool AsBoolean()
-        {
-            return _value;
-        }
-
-        /// <summary>
-        /// Throws an error as booleans cannot be cast to date times.
-        /// </summary>
-        /// <returns></returns>
-        public DateTime AsDateTime()
-        {
-            throw new RdfQueryException("Cannot cast Boolean to other types");
-        }
-
-        /// <summary>
-        /// Throws an error as booleans cannot be cast to date times.
-        /// </summary>
-        /// <returns></returns>
-        public DateTimeOffset AsDateTimeOffset()
-        {
-            throw new RdfQueryException("Cannot cast Boolean to other types");
-        }
-
-        /// <summary>
-        /// Throws an error as booleans cannot be cast to a time span.
-        /// </summary>
-        /// <returns></returns>
-        public TimeSpan AsTimeSpan()
-        {
-            throw new RdfQueryException("Cannot case Boolean to other types");
-        }
-        /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String.
-        /// </summary>
-        public string EffectiveType
-        {
-            get
-            {
-                return XmlSpecsHelper.XmlSchemaDataTypeBoolean;
-            }
-        }
+    }
 
 
-        /// <summary>
-        /// Gets the numeric type of the node.
-        /// </summary>
-        public SparqlNumericType NumericType
-        {
-            get 
-            { 
-                return SparqlNumericType.NaN; 
-            }
+    /// <summary>
+    /// Gets the numeric type of the node.
+    /// </summary>
+    public SparqlNumericType NumericType
+    {
+        get 
+        { 
+            return SparqlNumericType.NaN; 
         }
     }
 }

@@ -1,10 +1,9 @@
-﻿namespace VDS.RDF
+﻿namespace VDS.RDF;
+
+public class TripleCollectionTests: AbstractTripleCollectionTests
 {
-    public class TripleCollectionTests: AbstractTripleCollectionTests
+    protected override BaseTripleCollection GetInstance()
     {
-        protected override BaseTripleCollection GetInstance()
-        {
-            return new TripleCollection();
-        }
+        return new TripleCollection();
     }
 }

@@ -29,93 +29,92 @@ using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Aggregates.Sparql
+namespace VDS.RDF.Query.Aggregates.Sparql;
+
+/// <summary>
+/// Class representing GROUP_CONCAT Aggregate.
+/// </summary>
+public class GroupConcatAggregate
+    : XPath.StringJoinAggregate
 {
+    private bool _customSeparator = false;
+
     /// <summary>
-    /// Class representing GROUP_CONCAT Aggregate.
+    /// Creates a new GROUP_CONCAT aggregate.
     /// </summary>
-    public class GroupConcatAggregate
-        : XPath.StringJoinAggregate
+    /// <param name="expr">Expression.</param>
+    /// <param name="distinct">Should a distinct modifer be applied.</param>
+    public GroupConcatAggregate(ISparqlExpression expr, bool distinct)
+        : base(expr, new ConstantTerm(new LiteralNode(" ", false)))
     {
-        private bool _customSeparator = false;
+        _distinct = distinct;
+    }
 
-        /// <summary>
-        /// Creates a new GROUP_CONCAT aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="distinct">Should a distinct modifer be applied.</param>
-        public GroupConcatAggregate(ISparqlExpression expr, bool distinct)
-            : base(expr, new ConstantTerm(new LiteralNode(" ", false)))
+    /// <summary>
+    /// Creates a new GROUP_CONCAT aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    public GroupConcatAggregate(ISparqlExpression expr)
+        : base(expr, new ConstantTerm(new LiteralNode(" ", false))) { }
+
+    /// <summary>
+    /// Creates a new GROUP_CONCAT aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="sepExpr">Separator Expression.</param>
+    /// <param name="distinct">Should a distinct modifer be applied.</param>
+    public GroupConcatAggregate(ISparqlExpression expr, ISparqlExpression sepExpr, bool distinct)
+        : base(expr, sepExpr)
+    {
+        _distinct = distinct;
+        _customSeparator = true;
+    }
+
+    /// <summary>
+    /// Creates a new GROUP_CONCAT aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="sepExpr">Separator Expression.</param>
+    public GroupConcatAggregate(ISparqlExpression expr, ISparqlExpression sepExpr)
+        : base(expr, sepExpr)
+    {
+        _customSeparator = true;
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Aggregate.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append("GROUP_CONCAT(");
+        if (_distinct) output.Append("DISTINCT ");
+        output.Append(_expr);
+        if (_customSeparator)
         {
-            _distinct = distinct;
+            output.Append(" ; SEPARATOR = ");
+            output.Append(_sep);
         }
+        output.Append(")");
+        return output.ToString();
+    }
 
-        /// <summary>
-        /// Creates a new GROUP_CONCAT aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public GroupConcatAggregate(ISparqlExpression expr)
-            : base(expr, new ConstantTerm(new LiteralNode(" ", false))) { }
-
-        /// <summary>
-        /// Creates a new GROUP_CONCAT aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="sepExpr">Separator Expression.</param>
-        /// <param name="distinct">Should a distinct modifer be applied.</param>
-        public GroupConcatAggregate(ISparqlExpression expr, ISparqlExpression sepExpr, bool distinct)
-            : base(expr, sepExpr)
+    /// <summary>
+    /// Gets the Functor of the Aggregate.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            _distinct = distinct;
-            _customSeparator = true;
+            return SparqlSpecsHelper.SparqlKeywordGroupConcat;
         }
+    }
 
-        /// <summary>
-        /// Creates a new GROUP_CONCAT aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="sepExpr">Separator Expression.</param>
-        public GroupConcatAggregate(ISparqlExpression expr, ISparqlExpression sepExpr)
-            : base(expr, sepExpr)
-        {
-            _customSeparator = true;
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Aggregate.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append("GROUP_CONCAT(");
-            if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr);
-            if (_customSeparator)
-            {
-                output.Append(" ; SEPARATOR = ");
-                output.Append(_sep);
-            }
-            output.Append(")");
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Aggregate.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordGroupConcat;
-            }
-        }
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
-            IEnumerable<TBinding> bindings)
-        {
-            return processor.ProcessGroupConcat(this, context, bindings);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+        IEnumerable<TBinding> bindings)
+    {
+        return processor.ProcessGroupConcat(this, context, bindings);
     }
 }

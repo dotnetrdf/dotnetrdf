@@ -24,75 +24,74 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Arithmetic
+namespace VDS.RDF.Query.Expressions.Arithmetic;
+
+/// <summary>
+/// Class representing Unary Minus expressions (sign of numeric expression is reversed).
+/// </summary>
+public class MinusExpression
+    : BaseUnaryExpression
 {
     /// <summary>
-    /// Class representing Unary Minus expressions (sign of numeric expression is reversed).
+    /// Creates a new Unary Minus Expression.
     /// </summary>
-    public class MinusExpression
-        : BaseUnaryExpression
+    /// <param name="expr">Expression to apply the Minus operator to.</param>
+    public MinusExpression(ISparqlExpression expr) 
+        : base(expr) { }
+
+
+
+
+    /// <summary>
+    /// Gets the String representation of this Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new Unary Minus Expression.
-        /// </summary>
-        /// <param name="expr">Expression to apply the Minus operator to.</param>
-        public MinusExpression(ISparqlExpression expr) 
-            : base(expr) { }
+        return "-" + InnerExpression;
+    }
 
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessMinusExpression(this, context, binding);
+    }
 
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitMinusExpression(this);
+    }
 
-
-        /// <summary>
-        /// Gets the String representation of this Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return "-" + InnerExpression;
+            return SparqlExpressionType.UnaryOperator;
         }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return processor.ProcessMinusExpression(this, context, binding);
+            return "-";
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitMinusExpression(this);
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.UnaryOperator;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return "-";
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new MinusExpression(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new MinusExpression(transformer.Transform(InnerExpression));
     }
 }

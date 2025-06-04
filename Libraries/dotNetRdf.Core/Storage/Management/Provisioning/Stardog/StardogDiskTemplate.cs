@@ -24,19 +24,18 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Storage.Management.Provisioning.Stardog
+namespace VDS.RDF.Storage.Management.Provisioning.Stardog;
+
+/// <summary>
+/// Template for creating Stardog Disk stores.
+/// </summary>
+public class StardogDiskTemplate
+    : BaseStardogTemplate
 {
     /// <summary>
-    /// Template for creating Stardog Disk stores.
+    /// Creates a new template.
     /// </summary>
-    public class StardogDiskTemplate
-        : BaseStardogTemplate
-    {
-        /// <summary>
-        /// Creates a new template.
-        /// </summary>
-        /// <param name="id">Store ID.</param>
-        public StardogDiskTemplate(string id)
-            : base(id, "Stardog Disk", "A Stardog Disk based store", BaseStardogServer.DatabaseOptions.DatabaseTypeDisk) { }
-    }
+    /// <param name="id">Store ID.</param>
+    public StardogDiskTemplate(string id)
+        : base(id, "Stardog Disk", "A Stardog Disk based store", BaseStardogServer.DatabaseOptions.DatabaseTypeDisk) { }
 }

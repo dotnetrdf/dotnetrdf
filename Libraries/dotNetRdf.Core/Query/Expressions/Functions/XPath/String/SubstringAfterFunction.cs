@@ -24,62 +24,61 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.String
+namespace VDS.RDF.Query.Expressions.Functions.XPath.String;
+
+/// <summary>
+/// Represents the XPath fn:substring-after() function.
+/// </summary>
+public class SubstringAfterFunction
+    : BaseBinaryStringFunction
 {
     /// <summary>
-    /// Represents the XPath fn:substring-after() function.
+    /// Creates a new XPath Substring After function.
     /// </summary>
-    public class SubstringAfterFunction
-        : BaseBinaryStringFunction
+    /// <param name="stringExpr">Expression.</param>
+    /// <param name="findExpr">Search Expression.</param>
+    public SubstringAfterFunction(ISparqlExpression stringExpr, ISparqlExpression findExpr)
+        : base(stringExpr, findExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
     {
-        /// <summary>
-        /// Creates a new XPath Substring After function.
-        /// </summary>
-        /// <param name="stringExpr">Expression.</param>
-        /// <param name="findExpr">Search Expression.</param>
-        public SubstringAfterFunction(ISparqlExpression stringExpr, ISparqlExpression findExpr)
-            : base(stringExpr, findExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
+        return processor.ProcessSubstringAfterFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessSubstringAfterFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitSubstringAfterFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitSubstringAfterFunction(this);
-        }
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringAfter + ">(" + _expr + "," + _arg + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringAfter + ">(" + _expr + "," + _arg + ")";
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringAfter;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringAfter;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new SubstringAfterFunction(transformer.Transform(_expr), transformer.Transform(_arg));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new SubstringAfterFunction(transformer.Transform(_expr), transformer.Transform(_arg));
     }
 }

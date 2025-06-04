@@ -26,100 +26,99 @@
 
 using System.Xml;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+/// <summary>
+/// Represents Position Information from Parsers.
+/// </summary>
+public class PositionInfo
 {
+    private int _startLine, _endLine, _startPos, _endPos;
+
     /// <summary>
-    /// Represents Position Information from Parsers.
+    /// Creates a new set of Position Information.
     /// </summary>
-    public class PositionInfo
+    /// <param name="line">Line.</param>
+    /// <param name="position">Column.</param>
+    public PositionInfo(int line, int position)
     {
-        private int _startLine, _endLine, _startPos, _endPos;
+        _startLine = _endLine = line;
+        _startPos = _endPos = position;
+    }
 
-        /// <summary>
-        /// Creates a new set of Position Information.
-        /// </summary>
-        /// <param name="line">Line.</param>
-        /// <param name="position">Column.</param>
-        public PositionInfo(int line, int position)
+    /// <summary>
+    /// Creates a new set of Position Information.
+    /// </summary>
+    /// <param name="line">Line.</param>
+    /// <param name="startPosition">Start Column.</param>
+    /// <param name="endPosition">End Column.</param>
+    public PositionInfo(int line, int startPosition, int endPosition)
+        : this(line, startPosition)
+    {
+        _endPos = endPosition;
+    }
+
+    /// <summary>
+    /// Creates a new set of Position Information.
+    /// </summary>
+    /// <param name="startLine">Start Line.</param>
+    /// <param name="endLine">End Line.</param>
+    /// <param name="startPosition">Start Column.</param>
+    /// <param name="endPosition">End Column.</param>
+    public PositionInfo(int startLine, int endLine, int startPosition, int endPosition)
+        : this(startLine, startPosition, endPosition)
+    {
+        _endLine = endLine;
+    }
+
+    /// <summary>
+    /// Creates a new set of Position Information form some XML Line Information.
+    /// </summary>
+    /// <param name="info">XML Line Information.</param>
+    public PositionInfo(IXmlLineInfo info)
+        : this(info.LineNumber, info.LinePosition) { }
+
+    /// <summary>
+    /// Gets the Start Line.
+    /// </summary>
+    public int StartLine
+    {
+        get
         {
-            _startLine = _endLine = line;
-            _startPos = _endPos = position;
+            return _startLine;
         }
+    }
 
-        /// <summary>
-        /// Creates a new set of Position Information.
-        /// </summary>
-        /// <param name="line">Line.</param>
-        /// <param name="startPosition">Start Column.</param>
-        /// <param name="endPosition">End Column.</param>
-        public PositionInfo(int line, int startPosition, int endPosition)
-            : this(line, startPosition)
+    /// <summary>
+    /// Gets the End Line.
+    /// </summary>
+    public int EndLine
+    {
+        get
         {
-            _endPos = endPosition;
+            return _endLine;
         }
+    }
 
-        /// <summary>
-        /// Creates a new set of Position Information.
-        /// </summary>
-        /// <param name="startLine">Start Line.</param>
-        /// <param name="endLine">End Line.</param>
-        /// <param name="startPosition">Start Column.</param>
-        /// <param name="endPosition">End Column.</param>
-        public PositionInfo(int startLine, int endLine, int startPosition, int endPosition)
-            : this(startLine, startPosition, endPosition)
+    /// <summary>
+    /// Gets the Start Column.
+    /// </summary>
+    public int StartPosition
+    {
+        get
         {
-            _endLine = endLine;
+            return _startPos;
         }
+    }
 
-        /// <summary>
-        /// Creates a new set of Position Information form some XML Line Information.
-        /// </summary>
-        /// <param name="info">XML Line Information.</param>
-        public PositionInfo(IXmlLineInfo info)
-            : this(info.LineNumber, info.LinePosition) { }
-
-        /// <summary>
-        /// Gets the Start Line.
-        /// </summary>
-        public int StartLine
+    /// <summary>
+    /// Gets the End Column.
+    /// </summary>
+    public int EndPosition
+    {
+        get
         {
-            get
-            {
-                return _startLine;
-            }
-        }
-
-        /// <summary>
-        /// Gets the End Line.
-        /// </summary>
-        public int EndLine
-        {
-            get
-            {
-                return _endLine;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Start Column.
-        /// </summary>
-        public int StartPosition
-        {
-            get
-            {
-                return _startPos;
-            }
-        }
-
-        /// <summary>
-        /// Gets the End Column.
-        /// </summary>
-        public int EndPosition
-        {
-            get
-            {
-                return _endPos;
-            }
+            return _endPos;
         }
     }
 }

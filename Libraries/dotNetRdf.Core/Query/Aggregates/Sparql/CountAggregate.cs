@@ -29,64 +29,63 @@ using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Aggregates.Sparql
+namespace VDS.RDF.Query.Aggregates.Sparql;
+
+/// <summary>
+/// Class representing COUNT Aggregate Function.
+/// </summary>
+public class CountAggregate
+    : BaseAggregate
 {
     /// <summary>
-    /// Class representing COUNT Aggregate Function.
+    /// Creates a new COUNT Aggregate.
     /// </summary>
-    public class CountAggregate
-        : BaseAggregate
+    /// <param name="expr">Variable Expression.</param>
+    public CountAggregate(VariableTerm expr)
+        : base(expr)
     {
-        /// <summary>
-        /// Creates a new COUNT Aggregate.
-        /// </summary>
-        /// <param name="expr">Variable Expression.</param>
-        public CountAggregate(VariableTerm expr)
-            : base(expr)
+        Variable = expr.ToString().Substring(1);
+    }
+
+    /// <summary>
+    /// Creates a new Count Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    public CountAggregate(ISparqlExpression expr)
+        : base(expr) { }
+
+    /// <summary>
+    /// The variable to aggregate.
+    /// </summary>
+    public string Variable { get; }
+
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+        IEnumerable<TBinding> bindings)
+    {
+        return processor.ProcessCount(this, context, bindings);
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Aggregate.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append("COUNT(" + _expr + ")");
+        return output.ToString();
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Aggregate.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            Variable = expr.ToString().Substring(1);
-        }
-
-        /// <summary>
-        /// Creates a new Count Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public CountAggregate(ISparqlExpression expr)
-            : base(expr) { }
-
-        /// <summary>
-        /// The variable to aggregate.
-        /// </summary>
-        public string Variable { get; }
-
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
-            IEnumerable<TBinding> bindings)
-        {
-            return processor.ProcessCount(this, context, bindings);
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Aggregate.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append("COUNT(" + _expr + ")");
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Aggregate.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordCount;
-            }
+            return SparqlSpecsHelper.SparqlKeywordCount;
         }
     }
 }

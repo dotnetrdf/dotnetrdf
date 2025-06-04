@@ -28,63 +28,62 @@ using System.Collections.Generic;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Ordering
+namespace VDS.RDF.Query.Ordering;
+
+/// <summary>
+/// Interface for classes that represent SPARQL ORDER BY clauses.
+/// </summary>
+/// <remarks>A SPARQL Order By clause provides a list of orderings, when parsed into the dotNetRDF model this is represented as a single <see cref="ISparqlOrderBy">ISparqlOrderBy</see> for the first term in the clause chained to <see cref="ISparqlOrderBy">ISparqlOrderBy</see>'s for each subsequent term via the <see cref="ISparqlOrderBy.Child">Child</see> property.</remarks>
+public interface ISparqlOrderBy
 {
     /// <summary>
-    /// Interface for classes that represent SPARQL ORDER BY clauses.
+    /// Gets/Sets the Child Ordering that applies if the two Objects are considered equal.
     /// </summary>
-    /// <remarks>A SPARQL Order By clause provides a list of orderings, when parsed into the dotNetRDF model this is represented as a single <see cref="ISparqlOrderBy">ISparqlOrderBy</see> for the first term in the clause chained to <see cref="ISparqlOrderBy">ISparqlOrderBy</see>'s for each subsequent term via the <see cref="ISparqlOrderBy.Child">Child</see> property.</remarks>
-    public interface ISparqlOrderBy
+    ISparqlOrderBy Child
     {
-        /// <summary>
-        /// Gets/Sets the Child Ordering that applies if the two Objects are considered equal.
-        /// </summary>
-        ISparqlOrderBy Child
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Sets whether the Ordering is Descending.
-        /// </summary>
-        bool Descending
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets whether the Ordering is simple (i.e. applies on variables only).
-        /// </summary>
-        bool IsSimple
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets all the Variables used in the Ordering.
-        /// </summary>
-        IEnumerable<string> Variables
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Expression used to do the Ordering.
-        /// </summary>
-        ISparqlExpression Expression
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern.
-        /// </summary>
-        /// <param name="pattern">Triple Pattern.</param>
-        /// <param name="nodeComparer">The node comparer to use.</param>
-        /// <returns></returns>
-        IComparer<Triple> GetComparer(IMatchTriplePattern pattern, ISparqlNodeComparer nodeComparer);
-        
+        get;
+        set;
     }
+
+    /// <summary>
+    /// Sets whether the Ordering is Descending.
+    /// </summary>
+    bool Descending
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Gets whether the Ordering is simple (i.e. applies on variables only).
+    /// </summary>
+    bool IsSimple
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets all the Variables used in the Ordering.
+    /// </summary>
+    IEnumerable<string> Variables
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the Expression used to do the Ordering.
+    /// </summary>
+    ISparqlExpression Expression
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern.
+    /// </summary>
+    /// <param name="pattern">Triple Pattern.</param>
+    /// <param name="nodeComparer">The node comparer to use.</param>
+    /// <returns></returns>
+    IComparer<Triple> GetComparer(IMatchTriplePattern pattern, ISparqlNodeComparer nodeComparer);
+    
 }

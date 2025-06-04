@@ -26,67 +26,66 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System.IO;
 using Xunit;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+
+public class EmptyFileParsing
 {
-
-    public class EmptyFileParsing
-    {
-         private void TestEmptyParsing(IRdfReader reader)
+     private void TestEmptyParsing(IRdfReader reader)
+     {
+         if (!File.Exists("empty.test"))
          {
-             if (!File.Exists("empty.test"))
-             {
-                 FileStream temp = File.Create("empty.test");
-                 temp.Close();
-             }
-
-             var g = new Graph();
-             reader.Load(g, "empty.test");
-
-             Assert.True(g.IsEmpty, "Graph should be empty");
+             FileStream temp = File.Create("empty.test");
+             temp.Close();
          }
 
-         private void TestEmptyDatasetParsing(IStoreReader reader)
-         {
-             if (!File.Exists("empty.test"))
-             {
-                 FileStream temp = File.Create("empty.test");
-                 temp.Close();
-             }
+         var g = new Graph();
+         reader.Load(g, "empty.test");
 
-             var store = new TripleStore();
-             reader.Load(store, "empty.test");
+         Assert.True(g.IsEmpty, "Graph should be empty");
+     }
 
-             Assert.Equal(0, store.Graphs.Count);
-         }
-         
-         [Fact]
-         public void ParsingEmptyFileNTriples()
+     private void TestEmptyDatasetParsing(IStoreReader reader)
+     {
+         if (!File.Exists("empty.test"))
          {
-             TestEmptyParsing(new NTriplesParser());
+             FileStream temp = File.Create("empty.test");
+             temp.Close();
          }
 
-         [Fact]
-         public void ParsingEmptyFileTurtle()
-         {
-             TestEmptyParsing(new TurtleParser());
-         }
+         var store = new TripleStore();
+         reader.Load(store, "empty.test");
 
-         [Fact]
-         public void ParsingEmptyFileNotation3()
-         {
-             TestEmptyParsing(new Notation3Parser());
-         }
+         Assert.Equal(0, store.Graphs.Count);
+     }
+     
+     [Fact]
+     public void ParsingEmptyFileNTriples()
+     {
+         TestEmptyParsing(new NTriplesParser());
+     }
 
-         [Fact]
-         public void ParsingEmptyFileNQuads()
-         {
-             TestEmptyDatasetParsing(new NQuadsParser());
-         }
+     [Fact]
+     public void ParsingEmptyFileTurtle()
+     {
+         TestEmptyParsing(new TurtleParser());
+     }
 
-         [Fact]
-         public void ParsingEmptyFileTriG()
-         {
-             TestEmptyDatasetParsing(new TriGParser());
-         }
-    }
+     [Fact]
+     public void ParsingEmptyFileNotation3()
+     {
+         TestEmptyParsing(new Notation3Parser());
+     }
+
+     [Fact]
+     public void ParsingEmptyFileNQuads()
+     {
+         TestEmptyDatasetParsing(new NQuadsParser());
+     }
+
+     [Fact]
+     public void ParsingEmptyFileTriG()
+     {
+         TestEmptyDatasetParsing(new TriGParser());
+     }
 }

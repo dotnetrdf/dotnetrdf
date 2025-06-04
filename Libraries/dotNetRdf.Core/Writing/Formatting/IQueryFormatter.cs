@@ -27,41 +27,40 @@
 using VDS.RDF.Query;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+
+/// <summary>
+/// Interface for classes which can format SPARQL Queries into Strings.
+/// </summary>
+public interface IQueryFormatter : INodeFormatter, IUriFormatter
 {
+    /// <summary>
+    /// Formats a SPARQL Query into a String.
+    /// </summary>
+    /// <param name="query">SPARQL Query.</param>
+    /// <returns></returns>
+    string Format(SparqlQuery query);
 
     /// <summary>
-    /// Interface for classes which can format SPARQL Queries into Strings.
+    /// Formats a Graph Pattern into a String.
     /// </summary>
-    public interface IQueryFormatter : INodeFormatter, IUriFormatter
-    {
-        /// <summary>
-        /// Formats a SPARQL Query into a String.
-        /// </summary>
-        /// <param name="query">SPARQL Query.</param>
-        /// <returns></returns>
-        string Format(SparqlQuery query);
+    /// <param name="gp">Graph Pattern.</param>
+    /// <returns></returns>
+    string Format(GraphPattern gp);
 
-        /// <summary>
-        /// Formats a Graph Pattern into a String.
-        /// </summary>
-        /// <param name="gp">Graph Pattern.</param>
-        /// <returns></returns>
-        string Format(GraphPattern gp);
+    /// <summary>
+    /// Formats a Triple Pattern into a String.
+    /// </summary>
+    /// <param name="tp">Triple Pattern.</param>
+    /// <returns></returns>
+    string Format(ITriplePattern tp);
 
-        /// <summary>
-        /// Formats a Triple Pattern into a String.
-        /// </summary>
-        /// <param name="tp">Triple Pattern.</param>
-        /// <returns></returns>
-        string Format(ITriplePattern tp);
-
-        /// <summary>
-        /// Formats a Triple Pattern item into a String.
-        /// </summary>
-        /// <param name="item">Pattern Item.</param>
-        /// <param name="segment">Segment of the Triple Pattern in which the Item appears.</param>
-        /// <returns></returns>
-        string Format(PatternItem item, TripleSegment? segment);
-    }
+    /// <summary>
+    /// Formats a Triple Pattern item into a String.
+    /// </summary>
+    /// <param name="item">Pattern Item.</param>
+    /// <param name="segment">Segment of the Triple Pattern in which the Item appears.</param>
+    /// <returns></returns>
+    string Format(PatternItem item, TripleSegment? segment);
 }

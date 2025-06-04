@@ -26,99 +26,98 @@
 
 using System;
 
-namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry;
+
+/// <summary>
+/// Represents the Leviathan lfn:sin() or lfn:sin-1 function.
+/// </summary>
+public class SineFunction
+    : BaseTrigonometricFunction
 {
     /// <summary>
-    /// Represents the Leviathan lfn:sin() or lfn:sin-1 function.
+    /// Creates a new Leviathan Sine Function.
     /// </summary>
-    public class SineFunction
-        : BaseTrigonometricFunction
+    /// <param name="expr">Expression.</param>
+    public SineFunction(ISparqlExpression expr)
+        : base(expr, Math.Sin) { }
+
+    /// <summary>
+    /// Creates a new Leviathan Sine Function.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="inverse">Whether this should be the inverse function.</param>
+    public SineFunction(ISparqlExpression expr, bool inverse)
+        : base(expr)
     {
-        /// <summary>
-        /// Creates a new Leviathan Sine Function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public SineFunction(ISparqlExpression expr)
-            : base(expr, Math.Sin) { }
-
-        /// <summary>
-        /// Creates a new Leviathan Sine Function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="inverse">Whether this should be the inverse function.</param>
-        public SineFunction(ISparqlExpression expr, bool inverse)
-            : base(expr)
+        Inverse = inverse;
+        if (Inverse)
         {
-            Inverse = inverse;
+            _func = Math.Asin;
+        }
+        else
+        {
+            _func = Math.Sin;
+        }
+    }
+
+    /// <summary>
+    /// Get whether this is the inverse function.
+    /// </summary>
+    public bool Inverse { get; }
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        if (Inverse)
+        {
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSinInv + ">(" + InnerExpression + ")";
+        }
+        else
+        {
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSin + ">(" + InnerExpression + ")";
+        }
+    }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessSineFunction(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitSineFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
+        {
             if (Inverse)
             {
-                _func = Math.Asin;
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSinInv;
             }
             else
             {
-                _func = Math.Sin;
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSin;
             }
         }
+    }
 
-        /// <summary>
-        /// Get whether this is the inverse function.
-        /// </summary>
-        public bool Inverse { get; }
-
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            if (Inverse)
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSinInv + ">(" + InnerExpression + ")";
-            }
-            else
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSin + ">(" + InnerExpression + ")";
-            }
-        }
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessSineFunction(this, context, binding);
-        }
-
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitSineFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                if (Inverse)
-                {
-                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSinInv;
-                }
-                else
-                {
-                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSin;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new SineFunction(transformer.Transform(InnerExpression), Inverse);
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new SineFunction(transformer.Transform(InnerExpression), Inverse);
     }
 }

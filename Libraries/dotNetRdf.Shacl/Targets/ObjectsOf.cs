@@ -28,21 +28,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace VDS.RDF.Shacl.Targets
-{
-    internal class ObjectsOf : Target
-    {
-        [DebuggerStepThrough]
-        internal ObjectsOf(INode node)
-            : base(node)
-        {
-        }
+namespace VDS.RDF.Shacl.Targets;
 
-        internal override IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
-        {
-            return
-                from t in dataGragh.GetTriplesWithPredicate(this)
-                select t.Object;
-        }
+internal class ObjectsOf : Target
+{
+    [DebuggerStepThrough]
+    internal ObjectsOf(INode node)
+        : base(node)
+    {
+    }
+
+    internal override IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
+    {
+        return
+            from t in dataGragh.GetTriplesWithPredicate(this)
+            select t.Object;
     }
 }

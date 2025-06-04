@@ -28,76 +28,75 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set;
+
+/// <summary>
+/// Class representing the SPARQL IN set function.
+/// </summary>
+public class InFunction
+    : BaseSetFunction
 {
     /// <summary>
-    /// Class representing the SPARQL IN set function.
+    /// Creates a new SPARQL IN function.
     /// </summary>
-    public class InFunction
-        : BaseSetFunction
+    /// <param name="expr">Expression.</param>
+    /// <param name="set">Set.</param>
+    public InFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
+        : base(expr, set) { }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
     {
-        /// <summary>
-        /// Creates a new SPARQL IN function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="set">Set.</param>
-        public InFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
-            : base(expr, set) { }
+        return processor.ProcessInFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitInFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return processor.ProcessInFunction(this, context, binding);
+            return SparqlSpecsHelper.SparqlKeywordIn;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        if (_expr.Type == SparqlExpressionType.BinaryOperator || _expr.Type == SparqlExpressionType.GraphOperator || _expr.Type == SparqlExpressionType.SetOperator) output.Append('(');
+        output.Append(_expr);
+        if (_expr.Type == SparqlExpressionType.BinaryOperator || _expr.Type == SparqlExpressionType.GraphOperator || _expr.Type == SparqlExpressionType.SetOperator) output.Append(')');
+        output.Append(" IN (");
+        for (var i = 0; i < _expressions.Count; i++)
         {
-            return visitor.VisitInFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
+            output.Append(_expressions[i]);
+            if (i < _expressions.Count - 1)
             {
-                return SparqlSpecsHelper.SparqlKeywordIn;
+                output.Append(" , ");
             }
         }
+        output.Append(")");
+        return output.ToString();
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            if (_expr.Type == SparqlExpressionType.BinaryOperator || _expr.Type == SparqlExpressionType.GraphOperator || _expr.Type == SparqlExpressionType.SetOperator) output.Append('(');
-            output.Append(_expr);
-            if (_expr.Type == SparqlExpressionType.BinaryOperator || _expr.Type == SparqlExpressionType.GraphOperator || _expr.Type == SparqlExpressionType.SetOperator) output.Append(')');
-            output.Append(" IN (");
-            for (var i = 0; i < _expressions.Count; i++)
-            {
-                output.Append(_expressions[i]);
-                if (i < _expressions.Count - 1)
-                {
-                    output.Append(" , ");
-                }
-            }
-            output.Append(")");
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new InFunction(transformer.Transform(_expr), _expressions.Select(e => transformer.Transform(e)));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new InFunction(transformer.Transform(_expr), _expressions.Select(e => transformer.Transform(e)));
     }
 }

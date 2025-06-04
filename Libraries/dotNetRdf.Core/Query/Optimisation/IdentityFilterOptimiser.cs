@@ -33,162 +33,161 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Query.Optimisation
+namespace VDS.RDF.Query.Optimisation;
+
+/// <summary>
+/// An Algebra Optimiser which implements the Identity Filter optimisation.
+/// </summary>
+public class IdentityFilterOptimiser
+    : IAlgebraOptimiser
 {
+    private Type _exprType = typeof(ConstantTerm);
+
+    /// <inheritdoc/>
+    public bool UnsafeOptimisation { get; set; }
+
     /// <summary>
-    /// An Algebra Optimiser which implements the Identity Filter optimisation.
+    /// Optimises the Algebra to use Identity Filters where applicable.
     /// </summary>
-    public class IdentityFilterOptimiser
-        : IAlgebraOptimiser
+    /// <param name="algebra">Algebra.</param>
+    /// <returns></returns>
+    public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
     {
-        private Type _exprType = typeof(ConstantTerm);
-
-        /// <inheritdoc/>
-        public bool UnsafeOptimisation { get; set; }
-
-        /// <summary>
-        /// Optimises the Algebra to use Identity Filters where applicable.
-        /// </summary>
-        /// <param name="algebra">Algebra.</param>
-        /// <returns></returns>
-        public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
+        try
         {
-            try
+            if (algebra is Filter)
             {
-                if (algebra is Filter)
+                var f = (Filter)algebra;
+                string var;
+                INode term;
+                var equals = false;
+                if (IsIdentityExpression(f.SparqlFilter.Expression, out var, out term, out equals))
                 {
-                    var f = (Filter)algebra;
-                    string var;
-                    INode term;
-                    var equals = false;
-                    if (IsIdentityExpression(f.SparqlFilter.Expression, out var, out term, out equals))
+                    try
                     {
-                        try
+                        // Try to use the extend style optimization
+                        var transformer = new VariableSubstitutionTransformer(var, term);
+                        ISparqlAlgebra extAlgebra = transformer.Optimise(f.InnerAlgebra);
+                        return new Extend(extAlgebra, new ConstantTerm(term), var);
+                    }
+                    catch
+                    {
+                        // Fall back to simpler Identity Filter
+                        if (equals)
                         {
-                            // Try to use the extend style optimization
-                            var transformer = new VariableSubstitutionTransformer(var, term);
-                            ISparqlAlgebra extAlgebra = transformer.Optimise(f.InnerAlgebra);
-                            return new Extend(extAlgebra, new ConstantTerm(term), var);
+                            return new IdentityFilter(Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
                         }
-                        catch
+                        else
                         {
-                            // Fall back to simpler Identity Filter
-                            if (equals)
-                            {
-                                return new IdentityFilter(Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
-                            }
-                            else
-                            {
-                                return new SameTermFilter(Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
-                            }
+                            return new SameTermFilter(Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
                         }
                     }
-                    else
-                    {
-                        return f.Transform(this);
-                    }
-                }
-                else if (algebra is IAbstractJoin)
-                {
-                    return ((IAbstractJoin)algebra).Transform(this);
-                }
-                else if (algebra is IUnaryOperator)
-                {
-                    return ((IUnaryOperator)algebra).Transform(this);
                 }
                 else
                 {
-                    return algebra;
+                    return f.Transform(this);
                 }
             }
-            catch
+            else if (algebra is IAbstractJoin)
+            {
+                return ((IAbstractJoin)algebra).Transform(this);
+            }
+            else if (algebra is IUnaryOperator)
+            {
+                return ((IUnaryOperator)algebra).Transform(this);
+            }
+            else
             {
                 return algebra;
             }
         }
-
-        /// <summary>
-        /// Determines whether an expression is an Identity Expression.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="var">Variable.</param>
-        /// <param name="term">Term.</param>
-        /// <param name="equals">Whether it is an equals expression (true) or a same term expression (false).</param>
-        /// <returns></returns>
-        private bool IsIdentityExpression(ISparqlExpression expr, out string var, out INode term, out bool equals)
+        catch
         {
-            var = null;
-            term = null;
-            equals = false;
-            ISparqlExpression lhs, rhs;
-            if (expr is EqualsExpression)
-            {
-                equals = true;
-                var eq = (EqualsExpression)expr;
-                lhs = eq.Arguments.First();
-                rhs = eq.Arguments.Last();
-            } 
-            else if (expr is SameTermFunction)
-            {
-                var st = (SameTermFunction)expr;
-                lhs = st.Arguments.First();
-                rhs = st.Arguments.Last();
-            }
-            else 
-            {
-                return false;
-            }
+            return algebra;
+        }
+    }
 
-            if (lhs is VariableTerm)
+    /// <summary>
+    /// Determines whether an expression is an Identity Expression.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="var">Variable.</param>
+    /// <param name="term">Term.</param>
+    /// <param name="equals">Whether it is an equals expression (true) or a same term expression (false).</param>
+    /// <returns></returns>
+    private bool IsIdentityExpression(ISparqlExpression expr, out string var, out INode term, out bool equals)
+    {
+        var = null;
+        term = null;
+        equals = false;
+        ISparqlExpression lhs, rhs;
+        if (expr is EqualsExpression)
+        {
+            equals = true;
+            var eq = (EqualsExpression)expr;
+            lhs = eq.Arguments.First();
+            rhs = eq.Arguments.Last();
+        } 
+        else if (expr is SameTermFunction)
+        {
+            var st = (SameTermFunction)expr;
+            lhs = st.Arguments.First();
+            rhs = st.Arguments.Last();
+        }
+        else 
+        {
+            return false;
+        }
+
+        if (lhs is VariableTerm)
+        {
+            if (rhs is ConstantTerm constant)
             {
-                if (rhs is ConstantTerm constant)
-                {
-                    var = lhs.Variables.First();
-                    term = constant.Node;
-                    return term.NodeType == NodeType.Uri;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else if (lhs is ConstantTerm constant)
-            {
-                if (rhs is VariableTerm)
-                {
-                    var = rhs.Variables.First();
-                    term = constant.Node;
-                    return term.NodeType == NodeType.Uri;
-                }
-                else
-                {
-                    return false;
-                }
+                var = lhs.Variables.First();
+                term = constant.Node;
+                return term.NodeType == NodeType.Uri;
             }
             else
             {
                 return false;
             }
         }
-
-        /// <summary>
-        /// Returns that this optimiser is applicable to all queries.
-        /// </summary>
-        /// <param name="q">Query.</param>
-        /// <returns></returns>
-        public bool IsApplicable(SparqlQuery q)
+        else if (lhs is ConstantTerm constant)
         {
-            return true;
+            if (rhs is VariableTerm)
+            {
+                var = rhs.Variables.First();
+                term = constant.Node;
+                return term.NodeType == NodeType.Uri;
+            }
+            else
+            {
+                return false;
+            }
         }
-
-        /// <summary>
-        /// Returns that this optimiser is applicable to all updates.
-        /// </summary>
-        /// <param name="cmds">Updates.</param>
-        /// <returns></returns>
-        public bool IsApplicable(SparqlUpdateCommandSet cmds)
+        else
         {
-            return true;
+            return false;
         }
+    }
+
+    /// <summary>
+    /// Returns that this optimiser is applicable to all queries.
+    /// </summary>
+    /// <param name="q">Query.</param>
+    /// <returns></returns>
+    public bool IsApplicable(SparqlQuery q)
+    {
+        return true;
+    }
+
+    /// <summary>
+    /// Returns that this optimiser is applicable to all updates.
+    /// </summary>
+    /// <param name="cmds">Updates.</param>
+    /// <returns></returns>
+    public bool IsApplicable(SparqlUpdateCommandSet cmds)
+    {
+        return true;
     }
 }

@@ -26,20 +26,19 @@
 
 using System.Collections.Generic;
 
-namespace VDS.RDF.Writing.Contexts
+namespace VDS.RDF.Writing.Contexts;
+
+/// <summary>
+/// Interface for Writer Contexts which store collection compression data.
+/// </summary>
+public interface ICollectionCompressingWriterContext : ICompressingWriterContext
 {
     /// <summary>
-    /// Interface for Writer Contexts which store collection compression data.
+    /// Gets the mapping from Blank Nodes to Collections.
     /// </summary>
-    public interface ICollectionCompressingWriterContext : ICompressingWriterContext
+    Dictionary<INode, OutputRdfCollection> Collections
     {
-        /// <summary>
-        /// Gets the mapping from Blank Nodes to Collections.
-        /// </summary>
-        Dictionary<INode, OutputRdfCollection> Collections
-        {
-            get;
-        }
-
+        get;
     }
+
 }

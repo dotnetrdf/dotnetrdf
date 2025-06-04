@@ -24,154 +24,153 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Parsing.Events
+namespace VDS.RDF.Parsing.Events;
+
+/// <summary>
+/// Interface for implementing Event Queues which provide Bufferable wrappers to Event Generators.
+/// </summary>
+public interface IEventQueue<T> where T : IEvent
 {
     /// <summary>
-    /// Interface for implementing Event Queues which provide Bufferable wrappers to Event Generators.
+    /// Removes the first Event from the Queue.
     /// </summary>
-    public interface IEventQueue<T> where T : IEvent
+    /// <returns></returns>
+    T Dequeue();
+
+    /// <summary>
+    /// Adds an Event to the end of the Queue.
+    /// </summary>
+    /// <param name="e">Event to add.</param>
+    void Enqueue(T e);
+
+    /// <summary>
+    /// Gets the first Event from the Queue without removing it.
+    /// </summary>
+    /// <returns></returns>
+    T Peek();
+
+    /// <summary>
+    /// Gets the Event Generator that this Queue uses.
+    /// </summary>
+    IEventGenerator<T> EventGenerator
     {
-        /// <summary>
-        /// Removes the first Event from the Queue.
-        /// </summary>
-        /// <returns></returns>
-        T Dequeue();
+        get;
+    }
 
-        /// <summary>
-        /// Adds an Event to the end of the Queue.
-        /// </summary>
-        /// <param name="e">Event to add.</param>
-        void Enqueue(T e);
+    /// <summary>
+    /// Clears the Event Queue.
+    /// </summary>
+    void Clear();
 
-        /// <summary>
-        /// Gets the first Event from the Queue without removing it.
-        /// </summary>
-        /// <returns></returns>
-        T Peek();
+    /// <summary>
+    /// Gets the number of Events in the Queue.
+    /// </summary>
+    int Count
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gets the Event Generator that this Queue uses.
-        /// </summary>
-        IEventGenerator<T> EventGenerator
+    /// <summary>
+    /// Gets/Sets whether Generator Tracing should be used.
+    /// </summary>
+    bool Tracing
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Gets the Event Type of the last Event dequeued.
+    /// </summary>
+    int LastEventType
+    {
+        get;
+    }
+}
+
+/// <summary>
+/// Abstract base implementation of an Event Queue.
+/// </summary>
+public abstract class BaseEventQueue<T> : IEventQueue<T> where T : IEvent
+{
+    /// <summary>
+    /// Generator used to fill the Event Queue.
+    /// </summary>
+    protected IEventGenerator<T> _eventgen;
+    /// <summary>
+    /// Variable indicating whether Generator Tracing is enabled.
+    /// </summary>
+    protected bool _tracing;
+    /// <summary>
+    /// Type of Last Event dequeued.
+    /// </summary>
+    protected int _lasteventtype;
+
+    /// <summary>
+    /// Dequeues an Event from the Queue.
+    /// </summary>
+    /// <returns></returns>
+    public abstract T Dequeue();
+
+    /// <summary>
+    /// Adds an Event to the Queue.
+    /// </summary>
+    /// <param name="e">Event.</param>
+    public abstract void Enqueue(T e);
+
+    /// <summary>
+    /// Gets the next Event from the Queue without removing it from the queue.
+    /// </summary>
+    /// <returns></returns>
+    public abstract T Peek();
+
+    /// <summary>
+    /// Gets the Event Generator used by the Queue.
+    /// </summary>
+    public IEventGenerator<T> EventGenerator
+    {
+        get
         {
-            get;
-        }
-
-        /// <summary>
-        /// Clears the Event Queue.
-        /// </summary>
-        void Clear();
-
-        /// <summary>
-        /// Gets the number of Events in the Queue.
-        /// </summary>
-        int Count
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets/Sets whether Generator Tracing should be used.
-        /// </summary>
-        bool Tracing
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets the Event Type of the last Event dequeued.
-        /// </summary>
-        int LastEventType
-        {
-            get;
+            return _eventgen;
         }
     }
 
     /// <summary>
-    /// Abstract base implementation of an Event Queue.
+    /// Clears the Event Queue.
     /// </summary>
-    public abstract class BaseEventQueue<T> : IEventQueue<T> where T : IEvent
+    public abstract void Clear();
+
+    /// <summary>
+    /// Gets the number of Events in the Queue.
+    /// </summary>
+    public abstract int Count
     {
-        /// <summary>
-        /// Generator used to fill the Event Queue.
-        /// </summary>
-        protected IEventGenerator<T> _eventgen;
-        /// <summary>
-        /// Variable indicating whether Generator Tracing is enabled.
-        /// </summary>
-        protected bool _tracing;
-        /// <summary>
-        /// Type of Last Event dequeued.
-        /// </summary>
-        protected int _lasteventtype;
+        get;
+    }
 
-        /// <summary>
-        /// Dequeues an Event from the Queue.
-        /// </summary>
-        /// <returns></returns>
-        public abstract T Dequeue();
-
-        /// <summary>
-        /// Adds an Event to the Queue.
-        /// </summary>
-        /// <param name="e">Event.</param>
-        public abstract void Enqueue(T e);
-
-        /// <summary>
-        /// Gets the next Event from the Queue without removing it from the queue.
-        /// </summary>
-        /// <returns></returns>
-        public abstract T Peek();
-
-        /// <summary>
-        /// Gets the Event Generator used by the Queue.
-        /// </summary>
-        public IEventGenerator<T> EventGenerator
+    /// <summary>
+    /// Gets/Sets Tracing for the Event Queue.
+    /// </summary>
+    public bool Tracing
+    {
+        get
         {
-            get
-            {
-                return _eventgen;
-            }
+            return _tracing;
         }
-
-        /// <summary>
-        /// Clears the Event Queue.
-        /// </summary>
-        public abstract void Clear();
-
-        /// <summary>
-        /// Gets the number of Events in the Queue.
-        /// </summary>
-        public abstract int Count
+        set
         {
-            get;
+            _tracing = value;
         }
+    }
 
-        /// <summary>
-        /// Gets/Sets Tracing for the Event Queue.
-        /// </summary>
-        public bool Tracing
+    /// <summary>
+    /// Gets the Event Type of the last Event dequeued.
+    /// </summary>
+    public int LastEventType
+    {
+        get
         {
-            get
-            {
-                return _tracing;
-            }
-            set
-            {
-                _tracing = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Event Type of the last Event dequeued.
-        /// </summary>
-        public int LastEventType
-        {
-            get
-            {
-                return _lasteventtype;
-            }
+            return _lasteventtype;
         }
     }
 }

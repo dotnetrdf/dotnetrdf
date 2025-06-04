@@ -24,18 +24,17 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Formatter for formatting as TSV.
+/// </summary>
+public class TsvFormatter 
+    : DeliminatedLineFormatter
 {
     /// <summary>
-    /// Formatter for formatting as TSV.
+    /// Creates a new TSV Formatter.
     /// </summary>
-    public class TsvFormatter 
-        : DeliminatedLineFormatter
-    {
-        /// <summary>
-        /// Creates a new TSV Formatter.
-        /// </summary>
-        public TsvFormatter()
-            : base("TSV", '\t', '\\', '<', '>', '"', '"', null, true) { }
-    }
+    public TsvFormatter()
+        : base("TSV", '\t', '\\', '<', '>', '"', '"', null, true) { }
 }

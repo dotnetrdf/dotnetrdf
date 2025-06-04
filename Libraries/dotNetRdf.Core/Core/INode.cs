@@ -28,45 +28,44 @@ using System;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface for Nodes.
+/// </summary>
+public interface INode 
+    : IComparable<INode>, IComparable<IBlankNode>, IComparable<IGraphLiteralNode>, IComparable<ILiteralNode>,
+      IComparable<IUriNode>, IComparable<IVariableNode>, IComparable<IRefNode>, IComparable<ITripleNode>,
+      IEquatable<INode>, IEquatable<IBlankNode>, IEquatable<IGraphLiteralNode>, IEquatable<ILiteralNode>,
+      IEquatable<IUriNode>, IEquatable<IVariableNode>, IEquatable<IRefNode>, IEquatable<ITripleNode>
 {
     /// <summary>
-    /// Interface for Nodes.
+    /// Nodes have a Type.
     /// </summary>
-    public interface INode 
-        : IComparable<INode>, IComparable<IBlankNode>, IComparable<IGraphLiteralNode>, IComparable<ILiteralNode>,
-          IComparable<IUriNode>, IComparable<IVariableNode>, IComparable<IRefNode>, IComparable<ITripleNode>,
-          IEquatable<INode>, IEquatable<IBlankNode>, IEquatable<IGraphLiteralNode>, IEquatable<ILiteralNode>,
-          IEquatable<IUriNode>, IEquatable<IVariableNode>, IEquatable<IRefNode>, IEquatable<ITripleNode>
+    /// <remarks>Primarily provided so can do quick integer comparison to see what type of Node you have without having to do actual full blown Type comparison.</remarks>
+    NodeType NodeType
     {
-        /// <summary>
-        /// Nodes have a Type.
-        /// </summary>
-        /// <remarks>Primarily provided so can do quick integer comparison to see what type of Node you have without having to do actual full blown Type comparison.</remarks>
-        NodeType NodeType
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Node.
-        /// </summary>
-        /// <returns></returns>
-        string ToString();
-
-        /// <summary>
-        /// Gets the String representation of the Node formatted with the given Node formatter.
-        /// </summary>
-        /// <param name="formatter">Formatter.</param>
-        /// <returns></returns>
-        string ToString(INodeFormatter formatter);
-
-        /// <summary>
-        /// Gets the String representation of the Node formatted with the given Node formatter.
-        /// </summary>
-        /// <param name="formatter">Formatter.</param>
-        /// <param name="segment">Triple Segment.</param>
-        /// <returns></returns>
-        string ToString(INodeFormatter formatter, TripleSegment segment);
+        get;
     }
+
+    /// <summary>
+    /// Gets the String representation of the Node.
+    /// </summary>
+    /// <returns></returns>
+    string ToString();
+
+    /// <summary>
+    /// Gets the String representation of the Node formatted with the given Node formatter.
+    /// </summary>
+    /// <param name="formatter">Formatter.</param>
+    /// <returns></returns>
+    string ToString(INodeFormatter formatter);
+
+    /// <summary>
+    /// Gets the String representation of the Node formatted with the given Node formatter.
+    /// </summary>
+    /// <param name="formatter">Formatter.</param>
+    /// <param name="segment">Triple Segment.</param>
+    /// <returns></returns>
+    string ToString(INodeFormatter formatter, TripleSegment segment);
 }

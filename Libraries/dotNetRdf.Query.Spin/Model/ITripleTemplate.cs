@@ -24,16 +24,15 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+
+/**
+ * A triple template used in a Construct header.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface ITripleTemplate : ITriple
 {
-
-
-    /**
-     * A triple template used in a Construct header.
-     * 
-     * @author Holger Knublauch
-     */
-    internal interface ITripleTemplate : ITriple
-    {
-    }
 }

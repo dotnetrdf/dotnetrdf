@@ -26,32 +26,31 @@
 
 using System;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+/// <summary>
+/// A collection of options for configuring the RDFa Parser.
+/// </summary>
+public class RdfAParserOptions
 {
     /// <summary>
-    /// A collection of options for configuring the RDFa Parser.
+    /// The base IRI to use when processing the document.
     /// </summary>
-    public class RdfAParserOptions
-    {
-        /// <summary>
-        /// The base IRI to use when processing the document.
-        /// </summary>
-        /// <remarks>If set, this overrides the input document's IRI, but does not override any @base attribute in the document itself.</remarks>
-        public Uri Base { get; set; }
+    /// <remarks>If set, this overrides the input document's IRI, but does not override any @base attribute in the document itself.</remarks>
+    public Uri Base { get; set; }
 
-        /// <summary>
-        /// The RDFa syntax to process.
-        /// </summary>
-        public RdfASyntax Syntax { get; set; }
+    /// <summary>
+    /// The RDFa syntax to process.
+    /// </summary>
+    public RdfASyntax Syntax { get; set; }
 
-        /// <summary>
-        /// Get/set the default RDFa context to use for the resolution of terms and prefixes.
-        /// </summary>
-        public RdfAContext DefaultContext { get; set; } = StaticRdfAContexts.XhtmlRdfAContext;
+    /// <summary>
+    /// Get/set the default RDFa context to use for the resolution of terms and prefixes.
+    /// </summary>
+    public RdfAContext DefaultContext { get; set; } = StaticRdfAContexts.XhtmlRdfAContext;
 
-        /// <summary>
-        /// Get/set the flag that indicates if the parser should perform RDFa property copying.
-        /// </summary>
-        public bool PropertyCopyEnabled { get; set; } = true;
-    }
+    /// <summary>
+    /// Get/set the flag that indicates if the parser should perform RDFa property copying.
+    /// </summary>
+    public bool PropertyCopyEnabled { get; set; } = true;
 }

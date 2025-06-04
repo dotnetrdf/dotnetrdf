@@ -27,26 +27,25 @@
 using System.Diagnostics;
 using System.Linq;
 
-namespace VDS.RDF.Shacl.Paths
-{
-    internal abstract class Unary : Path
-    {
-        [DebuggerStepThrough]
-        protected Unary(INode node, IGraph shapesGraph)
-            : base(node, shapesGraph)
-        {
-        }
+namespace VDS.RDF.Shacl.Paths;
 
-        protected Path Argument
+internal abstract class Unary : Path
+{
+    [DebuggerStepThrough]
+    protected Unary(INode node, IGraph shapesGraph)
+        : base(node, shapesGraph)
+    {
+    }
+
+    protected Path Argument
+    {
+        get
         {
-            get
-            {
-                return
-                    Graph.GetTriplesWithSubject(this)
-                    .Select(t => t.Object)
-                    .Select(x=>Path.Parse(x, Graph))
-                    .Single();
-            }
+            return
+                Graph.GetTriplesWithSubject(this)
+                .Select(t => t.Object)
+                .Select(x=>Path.Parse(x, Graph))
+                .Single();
         }
     }
 }

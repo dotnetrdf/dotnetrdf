@@ -29,89 +29,88 @@ using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Aggregates.Leviathan
+namespace VDS.RDF.Query.Aggregates.Leviathan;
+
+/// <summary>
+/// Class representing NMAX Aggregate Functions.
+/// </summary>
+/// <remarks>
+/// Only operates over numeric data which is typed to one of the supported SPARQL Numeric types (integers, decimals and doubles).
+/// </remarks>
+public class NumericMaxAggregate 
+    : BaseAggregate
 {
     /// <summary>
-    /// Class representing NMAX Aggregate Functions.
+    /// Creates a new NMAX Aggregate.
     /// </summary>
-    /// <remarks>
-    /// Only operates over numeric data which is typed to one of the supported SPARQL Numeric types (integers, decimals and doubles).
-    /// </remarks>
-    public class NumericMaxAggregate 
-        : BaseAggregate
+    /// <param name="expr">Variable Expression.</param>
+    public NumericMaxAggregate(VariableTerm expr)
+        : this(expr, false) { }
+
+    /// <summary>
+    /// Creates a new NMAX Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    public NumericMaxAggregate(ISparqlExpression expr)
+        : this(expr, false) { }
+
+    /// <summary>
+    /// Creates a new NMAX Aggregate.
+    /// </summary>
+    /// <param name="expr">Variable Expression.</param>
+    /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
+    public NumericMaxAggregate(VariableTerm expr, bool distinct)
+        : base(expr, distinct)
     {
-        /// <summary>
-        /// Creates a new NMAX Aggregate.
-        /// </summary>
-        /// <param name="expr">Variable Expression.</param>
-        public NumericMaxAggregate(VariableTerm expr)
-            : this(expr, false) { }
+        Variable = expr.ToString().Substring(1);
+    }
 
-        /// <summary>
-        /// Creates a new NMAX Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public NumericMaxAggregate(ISparqlExpression expr)
-            : this(expr, false) { }
+    /// <summary>
+    /// Creates a new NMAX Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
+    public NumericMaxAggregate(ISparqlExpression expr, bool distinct)
+        : base(expr, distinct) { }
 
-        /// <summary>
-        /// Creates a new NMAX Aggregate.
-        /// </summary>
-        /// <param name="expr">Variable Expression.</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
-        public NumericMaxAggregate(VariableTerm expr, bool distinct)
-            : base(expr, distinct)
+    /// <summary>
+    /// The variable to aggregate.
+    /// </summary>
+    public string Variable { get; }
+
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+        IEnumerable<TBinding> bindings)
+    {
+        return processor.ProcessNumericMax(this, context, bindings);
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Aggregate.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append('<');
+        output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
+        output.Append(LeviathanFunctionFactory.NumericMax);
+        output.Append(">(");
+        if (_distinct) output.Append("DISTINCT ");
+        output.Append(_expr);
+        output.Append(')');
+        return output.ToString();
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Aggregate.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            Variable = expr.ToString().Substring(1);
-        }
-
-        /// <summary>
-        /// Creates a new NMAX Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
-        public NumericMaxAggregate(ISparqlExpression expr, bool distinct)
-            : base(expr, distinct) { }
-
-        /// <summary>
-        /// The variable to aggregate.
-        /// </summary>
-        public string Variable { get; }
-
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
-            IEnumerable<TBinding> bindings)
-        {
-            return processor.ProcessNumericMax(this, context, bindings);
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Aggregate.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append('<');
-            output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
-            output.Append(LeviathanFunctionFactory.NumericMax);
-            output.Append(">(");
-            if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr);
-            output.Append(')');
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Aggregate.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.NumericMax;
-            }
+            return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.NumericMax;
         }
     }
 }

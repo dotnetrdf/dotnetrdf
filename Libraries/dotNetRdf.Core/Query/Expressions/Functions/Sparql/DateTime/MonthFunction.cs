@@ -24,61 +24,60 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime;
+
+/// <summary>
+/// Represents the SPARQL MONTH() Function.
+/// </summary>
+public class MonthFunction
+    : XPath.DateTime.MonthFromDateTimeFunction
 {
     /// <summary>
-    /// Represents the SPARQL MONTH() Function.
+    /// Creates a new SPARQL YEAR() Function.
     /// </summary>
-    public class MonthFunction
-        : XPath.DateTime.MonthFromDateTimeFunction
+    /// <param name="expr">Argument Expression.</param>
+    public MonthFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+    /// <summary>
+    /// Gets the Functor of this Expression.
+    /// </summary>
+    public override string Functor
     {
-        /// <summary>
-        /// Creates a new SPARQL YEAR() Function.
-        /// </summary>
-        /// <param name="expr">Argument Expression.</param>
-        public MonthFunction(ISparqlExpression expr)
-            : base(expr) { }
-
-        /// <summary>
-        /// Gets the Functor of this Expression.
-        /// </summary>
-        public override string Functor
+        get
         {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordMonth;
-            }
+            return SparqlSpecsHelper.SparqlKeywordMonth;
         }
+    }
 
-        /// <summary>
-        /// Gets the String representation of this Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordMonth + "(" + InnerExpression + ")";
-        }
+    /// <summary>
+    /// Gets the String representation of this Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return SparqlSpecsHelper.SparqlKeywordMonth + "(" + InnerExpression + ")";
+    }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new MonthFunction(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new MonthFunction(transformer.Transform(InnerExpression));
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessMonthFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessMonthFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitMonthFunction(this);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitMonthFunction(this);
     }
 }

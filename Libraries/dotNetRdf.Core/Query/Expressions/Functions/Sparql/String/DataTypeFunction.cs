@@ -24,101 +24,100 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.String;
+
+/// <summary>
+/// Class representing the SPARQL Datatype() function.
+/// </summary>
+public class DataTypeFunction
+    : BaseUnaryExpression
 {
     /// <summary>
-    /// Class representing the SPARQL Datatype() function.
+    /// Creates a new Datatype() function expression.
     /// </summary>
-    public class DataTypeFunction
-        : BaseUnaryExpression
+    /// <param name="expr">Expression to apply the function to.</param>
+    public DataTypeFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+    /// <summary>
+    /// Gets the String representation of this Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new Datatype() function expression.
-        /// </summary>
-        /// <param name="expr">Expression to apply the function to.</param>
-        public DataTypeFunction(ISparqlExpression expr)
-            : base(expr) { }
+        return "DATATYPE(" + InnerExpression + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of this Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "DATATYPE(" + InnerExpression + ")";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessDataTypeFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessDataTypeFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitDataTypeFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return visitor.VisitDataTypeFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordDataType;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new DataTypeFunction(transformer.Transform(InnerExpression));
+            return SparqlExpressionType.Function;
         }
     }
 
     /// <summary>
-    /// Class representing the SPARQL Datatype() function in SPARQL 1.1.
+    /// Gets the Functor of the Expression.
     /// </summary>
-    /// <remarks>
-    /// This is required because the changes to the function in SPARQL 1.1 are not backwards compatible with SPARQL 1.0.
-    /// </remarks>
-    public class DataType11Function
-        : DataTypeFunction
+    public override string Functor
     {
-        /// <summary>
-        /// Creates a new DataType function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public DataType11Function(ISparqlExpression expr)
-            : base(expr) { }
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        get
         {
-            return processor.ProcessDataType11Function(this, context, binding);
+            return SparqlSpecsHelper.SparqlKeywordDataType;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitDataType11Function(this);
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new DataTypeFunction(transformer.Transform(InnerExpression));
+    }
+}
+
+/// <summary>
+/// Class representing the SPARQL Datatype() function in SPARQL 1.1.
+/// </summary>
+/// <remarks>
+/// This is required because the changes to the function in SPARQL 1.1 are not backwards compatible with SPARQL 1.0.
+/// </remarks>
+public class DataType11Function
+    : DataTypeFunction
+{
+    /// <summary>
+    /// Creates a new DataType function.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    public DataType11Function(ISparqlExpression expr)
+        : base(expr) { }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessDataType11Function(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitDataType11Function(this);
     }
 }

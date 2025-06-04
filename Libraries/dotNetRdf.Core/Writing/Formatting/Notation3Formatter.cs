@@ -26,121 +26,120 @@
 
 using System.Text;
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Formatter for formatting as Notation 3 without any compression.
+/// </summary>
+public class UncompressedNotation3Formatter
+    : UncompressedTurtleFormatter
 {
     /// <summary>
-    /// Formatter for formatting as Notation 3 without any compression.
+    /// Creates a new Uncompressed Notation 3 Formatter.
     /// </summary>
-    public class UncompressedNotation3Formatter
-        : UncompressedTurtleFormatter
+    public UncompressedNotation3Formatter()
+        : base("Notation 3 (Uncompressed)") { }
+
+    /// <summary>
+    /// Formats a Variable Node for Notation 3.
+    /// </summary>
+    /// <param name="v">Variable.</param>
+    /// <param name="segment">Triple Segment.</param>
+    /// <returns></returns>
+    protected override string FormatVariableNode(IVariableNode v, TripleSegment? segment)
     {
-        /// <summary>
-        /// Creates a new Uncompressed Notation 3 Formatter.
-        /// </summary>
-        public UncompressedNotation3Formatter()
-            : base("Notation 3 (Uncompressed)") { }
-
-        /// <summary>
-        /// Formats a Variable Node for Notation 3.
-        /// </summary>
-        /// <param name="v">Variable.</param>
-        /// <param name="segment">Triple Segment.</param>
-        /// <returns></returns>
-        protected override string FormatVariableNode(IVariableNode v, TripleSegment? segment)
-        {
-            return v.ToString();
-        }
-
-        /// <summary>
-        /// Formats a Graph Literal Node for Notation 3.
-        /// </summary>
-        /// <param name="glit">Graph Literal.</param>
-        /// <param name="segment">Triple Segment.</param>
-        /// <returns></returns>
-        protected override string FormatGraphLiteralNode(IGraphLiteralNode glit, TripleSegment? segment)
-        {
-            if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(FormatName));
-
-            var output = new StringBuilder();
-            output.Append("{");
-            foreach (Triple t in glit.SubGraph.Triples)
-            {
-                output.Append(Format(t));
-            }
-            output.Append("}");
-            return output.ToString();
-        }
+        return v.ToString();
     }
 
     /// <summary>
-    /// Formatter for formatting as Notation 3.
+    /// Formats a Graph Literal Node for Notation 3.
     /// </summary>
-    public class Notation3Formatter 
-        : TurtleFormatter
+    /// <param name="glit">Graph Literal.</param>
+    /// <param name="segment">Triple Segment.</param>
+    /// <returns></returns>
+    protected override string FormatGraphLiteralNode(IGraphLiteralNode glit, TripleSegment? segment)
     {
-        /// <summary>
-        /// Creates a new Notation 3 Formatter.
-        /// </summary>
-        public Notation3Formatter():this(UriFactory.Root){}
+        if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(FormatName));
 
-        /// <summary>
-        /// Creates a new Notation 3 Formatter.
-        /// </summary>
-        /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
-        public Notation3Formatter(IUriFactory uriFactory)
-            : base("Notation 3", new QNameOutputMapper(uriFactory)) { }
-
-        /// <summary>
-        /// Creates a new Notation 3 Formatter using the given Graph.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        public Notation3Formatter(IGraph g)
-            : base("Notation 3", new QNameOutputMapper(g.NamespaceMap, g.UriFactory)) { }
-
-        /// <summary>
-        /// Creates a new Notation 3 Formatter using the given Namespace Map.
-        /// </summary>
-        /// <param name="nsmap">Namespace Map.</param>
-        public Notation3Formatter(INamespaceMapper nsmap)
-            : base("Notation 3", new QNameOutputMapper(nsmap, UriFactory.Root)) { }
-
-        /// <summary>
-        /// Creates a new Notation 3 Formatter using the given Namespace Map.
-        /// </summary>
-        /// <param name="nsmap">Namespace Map.</param>
-        /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
-        public Notation3Formatter(INamespaceMapper nsmap, IUriFactory uriFactory = null)
-            : base("Notation 3", new QNameOutputMapper(nsmap, uriFactory)) { }
-
-        /// <summary>
-        /// Formats a Variable Node for Notation 3.
-        /// </summary>
-        /// <param name="v">Variable.</param>
-        /// <param name="segment">Triple Segment.</param>
-        /// <returns></returns>
-        protected override string FormatVariableNode(IVariableNode v, TripleSegment? segment)
+        var output = new StringBuilder();
+        output.Append("{");
+        foreach (Triple t in glit.SubGraph.Triples)
         {
-            return v.ToString();
+            output.Append(Format(t));
         }
+        output.Append("}");
+        return output.ToString();
+    }
+}
 
-        /// <summary>
-        /// Formats a Graph Literal Node for Notation 3.
-        /// </summary>
-        /// <param name="glit">Graph Literal.</param>
-        /// <param name="segment">Triple Segment.</param>
-        /// <returns></returns>
-        protected override string FormatGraphLiteralNode(IGraphLiteralNode glit, TripleSegment? segment)
+/// <summary>
+/// Formatter for formatting as Notation 3.
+/// </summary>
+public class Notation3Formatter 
+    : TurtleFormatter
+{
+    /// <summary>
+    /// Creates a new Notation 3 Formatter.
+    /// </summary>
+    public Notation3Formatter():this(UriFactory.Root){}
+
+    /// <summary>
+    /// Creates a new Notation 3 Formatter.
+    /// </summary>
+    /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
+    public Notation3Formatter(IUriFactory uriFactory)
+        : base("Notation 3", new QNameOutputMapper(uriFactory)) { }
+
+    /// <summary>
+    /// Creates a new Notation 3 Formatter using the given Graph.
+    /// </summary>
+    /// <param name="g">Graph.</param>
+    public Notation3Formatter(IGraph g)
+        : base("Notation 3", new QNameOutputMapper(g.NamespaceMap, g.UriFactory)) { }
+
+    /// <summary>
+    /// Creates a new Notation 3 Formatter using the given Namespace Map.
+    /// </summary>
+    /// <param name="nsmap">Namespace Map.</param>
+    public Notation3Formatter(INamespaceMapper nsmap)
+        : base("Notation 3", new QNameOutputMapper(nsmap, UriFactory.Root)) { }
+
+    /// <summary>
+    /// Creates a new Notation 3 Formatter using the given Namespace Map.
+    /// </summary>
+    /// <param name="nsmap">Namespace Map.</param>
+    /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
+    public Notation3Formatter(INamespaceMapper nsmap, IUriFactory uriFactory = null)
+        : base("Notation 3", new QNameOutputMapper(nsmap, uriFactory)) { }
+
+    /// <summary>
+    /// Formats a Variable Node for Notation 3.
+    /// </summary>
+    /// <param name="v">Variable.</param>
+    /// <param name="segment">Triple Segment.</param>
+    /// <returns></returns>
+    protected override string FormatVariableNode(IVariableNode v, TripleSegment? segment)
+    {
+        return v.ToString();
+    }
+
+    /// <summary>
+    /// Formats a Graph Literal Node for Notation 3.
+    /// </summary>
+    /// <param name="glit">Graph Literal.</param>
+    /// <param name="segment">Triple Segment.</param>
+    /// <returns></returns>
+    protected override string FormatGraphLiteralNode(IGraphLiteralNode glit, TripleSegment? segment)
+    {
+        if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(FormatName));
+
+        var output = new StringBuilder();
+        output.Append("{");
+        foreach (Triple t in glit.SubGraph.Triples)
         {
-            if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(FormatName));
-
-            var output = new StringBuilder();
-            output.Append("{");
-            foreach (Triple t in glit.SubGraph.Triples)
-            {
-                output.Append(Format(t));
-            }
-            output.Append("}");
-            return output.ToString();
+            output.Append(Format(t));
         }
+        output.Append("}");
+        return output.ToString();
     }
 }

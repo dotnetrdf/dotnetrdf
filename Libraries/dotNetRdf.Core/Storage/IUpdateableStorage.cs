@@ -24,18 +24,17 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+/// <summary>
+/// Interface for storage providers which allow SPARQL Updates to be made against them.
+/// </summary>
+public interface IUpdateableStorage
+    : IQueryableStorage
 {
     /// <summary>
-    /// Interface for storage providers which allow SPARQL Updates to be made against them.
+    /// Processes a SPARQL Update command against the underlying Store.
     /// </summary>
-    public interface IUpdateableStorage
-        : IQueryableStorage
-    {
-        /// <summary>
-        /// Processes a SPARQL Update command against the underlying Store.
-        /// </summary>
-        /// <param name="sparqlUpdate">SPARQL Update.</param>
-        void Update(string sparqlUpdate);
-    }
+    /// <param name="sparqlUpdate">SPARQL Update.</param>
+    void Update(string sparqlUpdate);
 }

@@ -29,35 +29,34 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Shapes
+namespace VDS.RDF.Shacl.Shapes;
+
+internal class Property : Shape
 {
-    internal class Property : Shape
+    [DebuggerStepThrough]
+    internal Property(INode node, IGraph graph)
+        : base(node, graph)
     {
-        [DebuggerStepThrough]
-        internal Property(INode node, IGraph graph)
-            : base(node, graph)
-        {
-        }
+    }
 
-        internal Path Path
+    internal Path Path
+    {
+        get
         {
-            get
-            {
-                return
-                    Vocabulary.Path.ObjectsOf(this)
-                    .Select(x=>Path.Parse(x, Graph))
-                    .Single();
-            }
+            return
+                Vocabulary.Path.ObjectsOf(this)
+                .Select(x=>Path.Parse(x, Graph))
+                .Single();
         }
+    }
 
-        internal IEnumerable<INode> SelectValueNodes(IGraph dataGraph, INode focusNode)
-        {
-            return Path.SelectValueNodes(dataGraph, focusNode);
-        }
+    internal IEnumerable<INode> SelectValueNodes(IGraph dataGraph, INode focusNode)
+    {
+        return Path.SelectValueNodes(dataGraph, focusNode);
+    }
 
-        protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            return valueNodes.All(valueNode => base.ValidateInternal(dataGraph, valueNode, SelectValueNodes(dataGraph, valueNode), report));
-        }
+    protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        return valueNodes.All(valueNode => base.ValidateInternal(dataGraph, valueNode, SelectValueNodes(dataGraph, valueNode), report));
     }
 }

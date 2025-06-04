@@ -30,39 +30,39 @@ using System.Linq;
 using VDS.RDF.Query;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl
+namespace VDS.RDF.Shacl;
+
+/// <summary>
+/// Represents a SHACL shapes graph that acts as a fully compliant SHACL Core and SHACL-SPARQL processor.
+/// </summary>
+/// <remarks>The Datatype constraint component is not supported under .NET Standard 1.4.</remarks>
+public class ShapesGraph : WrapperGraph
 {
     /// <summary>
-    /// Represents a SHACL shapes graph that acts as a fully compliant SHACL Core and SHACL-SPARQL processor.
+    /// Initializes a new instance of the <see cref="ShapesGraph"/> class.
     /// </summary>
-    /// <remarks>The Datatype constraint component is not supported under .NET Standard 1.4.</remarks>
-    public class ShapesGraph : WrapperGraph
+    /// <param name="shapesGraph">The original graph containing SHACL shapes.</param>
+    [DebuggerStepThrough]
+    public ShapesGraph(IGraph shapesGraph)
+        : base(shapesGraph)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ShapesGraph"/> class.
-        /// </summary>
-        /// <param name="shapesGraph">The original graph containing SHACL shapes.</param>
-        [DebuggerStepThrough]
-        public ShapesGraph(IGraph shapesGraph)
-            : base(shapesGraph)
-        {
-        }
+    }
 
-        internal IEnumerable<ConstraintComponent> ConstraintComponents
+    internal IEnumerable<ConstraintComponent> ConstraintComponents
+    {
+        get
         {
-            get
-            {
-                return
-                    from constraintComponent in this.ShaclInstancesOf(Vocabulary.ConstraintComponent)
-                    select new ConstraintComponent(constraintComponent, this._g);
-            }
+            return
+                from constraintComponent in this.ShaclInstancesOf(Vocabulary.ConstraintComponent)
+                select new ConstraintComponent(constraintComponent, this._g);
         }
+    }
 
-        private IEnumerable<Shape> TargetedShapes
+    private IEnumerable<Shape> TargetedShapes
+    {
+        get
         {
-            get
-            {
-                var query = new SparqlParameterizedString(@"
+            var query = new SparqlParameterizedString(@"
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX sh: @shacl
 
@@ -92,47 +92,46 @@ SELECT DISTINCT ?shape {
     }
 }
 ");
-                query.SetUri("shacl", UriFactory.Create(Vocabulary.BaseUri));
-                
-                return
-                    from result in (SparqlResultSet)this.ExecuteQuery(query)
-                    let shape = result["shape"]
-                    select Shape.Parse(shape, this);
-            }
+            query.SetUri("shacl", UriFactory.Create(Vocabulary.BaseUri));
+            
+            return
+                from result in (SparqlResultSet)this.ExecuteQuery(query)
+                let shape = result["shape"]
+                select Shape.Parse(shape, this);
         }
+    }
 
-        /// <summary>
-        /// Checks the given data graph against this shapes graph for SHACL conformance and reports validation results.
-        /// </summary>
-        /// <param name="dataGraph">The data graph to check for SHACL conformance.</param>
-        /// <returns>A SHACL validation report containing possible validation results.</returns>
-        public Report Validate(IGraph dataGraph)
-        {
-            var g = new Graph();
-            g.NamespaceMap.AddNamespace("sh", UriFactory.Create(Vocabulary.BaseUri));
-            var report = Report.Create(g);
+    /// <summary>
+    /// Checks the given data graph against this shapes graph for SHACL conformance and reports validation results.
+    /// </summary>
+    /// <param name="dataGraph">The data graph to check for SHACL conformance.</param>
+    /// <returns>A SHACL validation report containing possible validation results.</returns>
+    public Report Validate(IGraph dataGraph)
+    {
+        var g = new Graph();
+        g.NamespaceMap.AddNamespace("sh", UriFactory.Create(Vocabulary.BaseUri));
+        var report = Report.Create(g);
 
-            Validate(dataGraph, report);
+        Validate(dataGraph, report);
 
-            return report;
-        }
+        return report;
+    }
 
-        /// <summary>
-        /// Checks the given data graph against this shapes graph for SHACL conformance.
-        /// </summary>
-        /// <param name="dataGraph">The data graph to check for SHACL conformance.</param>
-        /// <returns>Whether the data graph SHACL conforms to this shapes graph.</returns>
-        public bool Conforms(IGraph dataGraph)
-        {
-            return Validate(dataGraph, null);
-        }
+    /// <summary>
+    /// Checks the given data graph against this shapes graph for SHACL conformance.
+    /// </summary>
+    /// <param name="dataGraph">The data graph to check for SHACL conformance.</param>
+    /// <returns>Whether the data graph SHACL conforms to this shapes graph.</returns>
+    public bool Conforms(IGraph dataGraph)
+    {
+        return Validate(dataGraph, null);
+    }
 
-        private bool Validate(IGraph dataGraph, Report report)
-        {
-            return (
-                from shape in TargetedShapes
-                select shape.Validate(dataGraph, report))
-                .Aggregate(true, (a, b) => a && b);
-        }
+    private bool Validate(IGraph dataGraph, Report report)
+    {
+        return (
+            from shape in TargetedShapes
+            select shape.Validate(dataGraph, report))
+            .Aggregate(true, (a, b) => a && b);
     }
 }

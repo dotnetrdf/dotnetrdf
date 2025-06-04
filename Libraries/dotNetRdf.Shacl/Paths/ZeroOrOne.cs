@@ -28,30 +28,29 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using VDS.RDF.Query.Paths;
 
-namespace VDS.RDF.Shacl.Paths
+namespace VDS.RDF.Shacl.Paths;
+
+internal class ZeroOrOne : Unary
 {
-    internal class ZeroOrOne : Unary
+    [DebuggerStepThrough]
+    internal ZeroOrOne(INode node, IGraph shapesGraph)
+        : base(node, shapesGraph)
     {
-        [DebuggerStepThrough]
-        internal ZeroOrOne(INode node, IGraph shapesGraph)
-            : base(node, shapesGraph)
-        {
-        }
+    }
 
-        internal override ISparqlPath SparqlPath
+    internal override ISparqlPath SparqlPath
+    {
+        get
         {
-            get
-            {
-                return new Query.Paths.ZeroOrOne(Argument.SparqlPath);
-            }
+            return new Query.Paths.ZeroOrOne(Argument.SparqlPath);
         }
+    }
 
-        internal override IEnumerable<Triple> AsTriples
+    internal override IEnumerable<Triple> AsTriples
+    {
+        get
         {
-            get
-            {
-                return new Triple(this, Vocabulary.ZeroOrOnePath, Argument).AsEnumerable();
-            }
+            return new Triple(this, Vocabulary.ZeroOrOnePath, Argument).AsEnumerable();
         }
     }
 }

@@ -27,148 +27,147 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.String
+namespace VDS.RDF.Query.Expressions.Functions.XPath.String;
+
+/// <summary>
+/// Represents the XPath fn:substring() function.
+/// </summary>
+public class SubstringFunction
+    : ISparqlExpression
 {
     /// <summary>
-    /// Represents the XPath fn:substring() function.
+    /// Creates a new XPath Substring function.
     /// </summary>
-    public class SubstringFunction
-        : ISparqlExpression
+    /// <param name="stringExpr">Expression.</param>
+    /// <param name="startExpr">Start.</param>
+    public SubstringFunction(ISparqlExpression stringExpr, ISparqlExpression startExpr)
+        : this(stringExpr, startExpr, null) { }
+
+    /// <summary>
+    /// Creates a new XPath Substring function.
+    /// </summary>
+    /// <param name="stringExpr">Expression.</param>
+    /// <param name="startExpr">Start.</param>
+    /// <param name="lengthExpr">Length.</param>
+    public SubstringFunction(ISparqlExpression stringExpr, ISparqlExpression startExpr, ISparqlExpression lengthExpr)
     {
-        /// <summary>
-        /// Creates a new XPath Substring function.
-        /// </summary>
-        /// <param name="stringExpr">Expression.</param>
-        /// <param name="startExpr">Start.</param>
-        public SubstringFunction(ISparqlExpression stringExpr, ISparqlExpression startExpr)
-            : this(stringExpr, startExpr, null) { }
+        InnerExpression = stringExpr;
+        StartExpression = startExpr;
+        LengthExpression = lengthExpr;
+    }
 
-        /// <summary>
-        /// Creates a new XPath Substring function.
-        /// </summary>
-        /// <param name="stringExpr">Expression.</param>
-        /// <param name="startExpr">Start.</param>
-        /// <param name="lengthExpr">Length.</param>
-        public SubstringFunction(ISparqlExpression stringExpr, ISparqlExpression startExpr, ISparqlExpression lengthExpr)
-        {
-            InnerExpression = stringExpr;
-            StartExpression = startExpr;
-            LengthExpression = lengthExpr;
-        }
+    /// <summary>
+    /// Expression that returns the string to perform the substring operation on.
+    /// </summary>
+    public ISparqlExpression InnerExpression { get; }
+    /// <summary>
+    /// Get the expression that returns the start index of the substring operation.
+    /// </summary>
+    public ISparqlExpression StartExpression { get; }
+    /// <summary>
+    /// Get the expression that returns the length of substring for the operation to return.
+    /// </summary>
+    public ISparqlExpression LengthExpression { get; }
 
-        /// <summary>
-        /// Expression that returns the string to perform the substring operation on.
-        /// </summary>
-        public ISparqlExpression InnerExpression { get; }
-        /// <summary>
-        /// Get the expression that returns the start index of the substring operation.
-        /// </summary>
-        public ISparqlExpression StartExpression { get; }
-        /// <summary>
-        /// Get the expression that returns the length of substring for the operation to return.
-        /// </summary>
-        public ISparqlExpression LengthExpression { get; }
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessSubstringFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessSubstringFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitSubstringFunction(this);
+    }
 
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitSubstringFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Variables used in the function.
-        /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get
-            {
-                if (LengthExpression != null)
-                {
-                    return InnerExpression.Variables.Concat(StartExpression.Variables).Concat(LengthExpression.Variables);
-                }
-                else
-                {
-                    return InnerExpression.Variables.Concat(StartExpression.Variables);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets the Variables used in the function.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
         {
             if (LengthExpression != null)
             {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + InnerExpression + "," + StartExpression + "," + LengthExpression + ")";
+                return InnerExpression.Variables.Concat(StartExpression.Variables).Concat(LengthExpression.Variables);
             }
             else
             {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + InnerExpression + "," + StartExpression + ")";
+                return InnerExpression.Variables.Concat(StartExpression.Variables);
             }
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public SparqlExpressionType Type
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        if (LengthExpression != null)
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + InnerExpression + "," + StartExpression + "," + LengthExpression + ")";
         }
+        else
+        {
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + InnerExpression + "," + StartExpression + ")";
+        }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public string Functor
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public SparqlExpressionType Type
+    {
+        get
         {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring;
-            }
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <summary>
-        /// Gets the Arguments of the Expression.
-        /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public string Functor
+    {
+        get
         {
-            get
-            {
-                return LengthExpression != null ? new[] { InnerExpression, StartExpression, LengthExpression } : new[] { InnerExpression, StartExpression };
-            }
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring;
         }
+    }
 
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel.
-        /// </summary>
-        public virtual bool CanParallelise
+    /// <summary>
+    /// Gets the Arguments of the Expression.
+    /// </summary>
+    public IEnumerable<ISparqlExpression> Arguments
+    {
+        get
         {
-            get
-            {
-                return InnerExpression.CanParallelise && StartExpression.CanParallelise && (LengthExpression == null || LengthExpression.CanParallelise);
-            }
+            return LengthExpression != null ? new[] { InnerExpression, StartExpression, LengthExpression } : new[] { InnerExpression, StartExpression };
         }
+    }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+    /// <summary>
+    /// Gets whether an expression can safely be evaluated in parallel.
+    /// </summary>
+    public virtual bool CanParallelise
+    {
+        get
         {
-            return LengthExpression != null 
-                ? new SubstringFunction(transformer.Transform(InnerExpression), transformer.Transform(StartExpression), transformer.Transform(LengthExpression)) 
-                : new SubstringFunction(transformer.Transform(InnerExpression), transformer.Transform(StartExpression));
+            return InnerExpression.CanParallelise && StartExpression.CanParallelise && (LengthExpression == null || LengthExpression.CanParallelise);
         }
+    }
+
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return LengthExpression != null 
+            ? new SubstringFunction(transformer.Transform(InnerExpression), transformer.Transform(StartExpression), transformer.Transform(LengthExpression)) 
+            : new SubstringFunction(transformer.Transform(InnerExpression), transformer.Transform(StartExpression));
     }
 }

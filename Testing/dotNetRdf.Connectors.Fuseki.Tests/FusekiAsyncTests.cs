@@ -25,15 +25,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Xunit;
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+[Collection("Fuseki Test Collection")]
+public class FusekiAsyncTests
+    : BaseAsyncTests
 {
-    [Collection("Fuseki Test Collection")]
-    public class FusekiAsyncTests
-        : BaseAsyncTests
+    protected override IAsyncStorageProvider GetAsyncProvider()
     {
-        protected override IAsyncStorageProvider GetAsyncProvider()
-        {
-            return FusekiTests.GetConnection();
-        }
+        return FusekiTests.GetConnection();
     }
 }

@@ -27,34 +27,33 @@
 using System;
 using VDS.RDF.Query.Builder.Expressions;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+/// <summary>
+/// Exposes method for assigning a name to an expression variable.
+/// </summary>
+public interface IAssignmentVariableNamePart<out T>
 {
     /// <summary>
-    /// Exposes method for assigning a name to an expression variable.
+    /// Set the expression's variable name.
     /// </summary>
-    public interface IAssignmentVariableNamePart<out T>
+    /// <returns>the parent query or graph pattern builder.</returns>
+    T As(string variableName);
+}
+
+internal abstract class AssignmentVariableNamePart<TExpression>
+{
+    private readonly Func<ExpressionBuilder, PrimaryExpression<TExpression>> _buildAssignmentExpression;
+
+    protected AssignmentVariableNamePart(Func<ExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
     {
-        /// <summary>
-        /// Set the expression's variable name.
-        /// </summary>
-        /// <returns>the parent query or graph pattern builder.</returns>
-        T As(string variableName);
+        _buildAssignmentExpression = buildAssignmentExpression;
     }
 
-    internal abstract class AssignmentVariableNamePart<TExpression>
+    protected TExpression BuildAssignmentExpression(INamespaceMapper prefixes)
     {
-        private readonly Func<ExpressionBuilder, PrimaryExpression<TExpression>> _buildAssignmentExpression;
-
-        protected AssignmentVariableNamePart(Func<ExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
-        {
-            _buildAssignmentExpression = buildAssignmentExpression;
-        }
-
-        protected TExpression BuildAssignmentExpression(INamespaceMapper prefixes)
-        {
-            var expressionBuilder = new ExpressionBuilder(prefixes);
-            PrimaryExpression<TExpression> assignment = _buildAssignmentExpression(expressionBuilder);
-            return assignment.Expression;
-        }
+        var expressionBuilder = new ExpressionBuilder(prefixes);
+        PrimaryExpression<TExpression> assignment = _buildAssignmentExpression(expressionBuilder);
+        return assignment.Expression;
     }
 }

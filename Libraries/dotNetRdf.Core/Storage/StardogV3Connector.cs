@@ -29,101 +29,100 @@ using System.Net;
 using System.Net.Http;
 using VDS.RDF.Storage.Management;
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+/// <summary>
+/// A Stardog Connector for connecting to Stardog version 3.* servers.
+/// </summary>
+public class StardogV3Connector
+    : StardogV2Connector,
+        IUpdateableStorage,
+        IAsyncUpdateableStorage
 {
     /// <summary>
-    /// A Stardog Connector for connecting to Stardog version 3.* servers.
+    /// Creates a new connection to a Stardog Store.
     /// </summary>
-    public class StardogV3Connector
-        : StardogV2Connector,
-            IUpdateableStorage,
-            IAsyncUpdateableStorage
+    /// <param name="baseUri">Base Uri of the Server.</param>
+    /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+    public StardogV3Connector(string baseUri, string kbID)
+        : this(baseUri, kbID, null, null)
     {
-        /// <summary>
-        /// Creates a new connection to a Stardog Store.
-        /// </summary>
-        /// <param name="baseUri">Base Uri of the Server.</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
-        public StardogV3Connector(string baseUri, string kbID)
-            : this(baseUri, kbID, null, null)
-        {
-        }
+    }
 
-        /// <summary>
-        /// Creates a new connection to a Stardog Store.
-        /// </summary>
-        /// <param name="baseUri">Base Uri of the Server.</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
-        /// <param name="username">Username.</param>
-        /// <param name="password">Password.</param>
-        public StardogV3Connector(string baseUri, string kbID, string username, string password)
-            : base(baseUri, kbID, StardogReasoningMode.DatabaseControlled, username, password)
-        {
-            Server = new StardogV2Server(baseUri, username, password);
-        }
+    /// <summary>
+    /// Creates a new connection to a Stardog Store.
+    /// </summary>
+    /// <param name="baseUri">Base Uri of the Server.</param>
+    /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+    /// <param name="username">Username.</param>
+    /// <param name="password">Password.</param>
+    public StardogV3Connector(string baseUri, string kbID, string username, string password)
+        : base(baseUri, kbID, StardogReasoningMode.DatabaseControlled, username, password)
+    {
+        Server = new StardogV2Server(baseUri, username, password);
+    }
 
-        /// <summary>
-        /// Creates a new connection to a Stardog Store.
-        /// </summary>
-        /// <param name="baseUri">Base Uri of the Server.</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
-        /// <param name="proxy">Proxy Server.</param>
-        public StardogV3Connector(string baseUri, string kbID, IWebProxy proxy)
-            : this(baseUri, kbID, null, null, proxy)
-        {
-        }
+    /// <summary>
+    /// Creates a new connection to a Stardog Store.
+    /// </summary>
+    /// <param name="baseUri">Base Uri of the Server.</param>
+    /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+    /// <param name="proxy">Proxy Server.</param>
+    public StardogV3Connector(string baseUri, string kbID, IWebProxy proxy)
+        : this(baseUri, kbID, null, null, proxy)
+    {
+    }
 
-        /// <summary>
-        /// Creates a new connection to a Stardog Store.
-        /// </summary>
-        /// <param name="baseUri">Base Uri of the Server.</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
-        /// <param name="username">Username.</param>
-        /// <param name="password">Password.</param>
-        /// <param name="proxy">Proxy Server.</param>
-        public StardogV3Connector(string baseUri, string kbID, string username, string password, IWebProxy proxy)
-            : base(baseUri, kbID, StardogReasoningMode.DatabaseControlled, username, password, proxy)
-        {
-            Server = new StardogV2Server(baseUri, username, password, proxy);
-        }
+    /// <summary>
+    /// Creates a new connection to a Stardog Store.
+    /// </summary>
+    /// <param name="baseUri">Base Uri of the Server.</param>
+    /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+    /// <param name="username">Username.</param>
+    /// <param name="password">Password.</param>
+    /// <param name="proxy">Proxy Server.</param>
+    public StardogV3Connector(string baseUri, string kbID, string username, string password, IWebProxy proxy)
+        : base(baseUri, kbID, StardogReasoningMode.DatabaseControlled, username, password, proxy)
+    {
+        Server = new StardogV2Server(baseUri, username, password, proxy);
+    }
 
 
-        /// <summary>
-        /// Creates a new connection to a Stardog store.
-        /// </summary>
-        /// <param name="baseUri">Base URI of the server.</param>
-        /// <param name="kbId">Knowledge base ID.</param>
-        /// <param name="httpClientHandler">Handler to configure outgoing HTTP requests.</param>
-        public StardogV3Connector(string baseUri, string kbId, HttpClientHandler httpClientHandler) 
-            : base(baseUri, kbId, httpClientHandler)
-        {
-        }
+    /// <summary>
+    /// Creates a new connection to a Stardog store.
+    /// </summary>
+    /// <param name="baseUri">Base URI of the server.</param>
+    /// <param name="kbId">Knowledge base ID.</param>
+    /// <param name="httpClientHandler">Handler to configure outgoing HTTP requests.</param>
+    public StardogV3Connector(string baseUri, string kbId, HttpClientHandler httpClientHandler) 
+        : base(baseUri, kbId, httpClientHandler)
+    {
+    }
 
-        /// <inheritdoc />
-        public override StardogReasoningMode Reasoning
-        {
-            get => StardogReasoningMode.DatabaseControlled;
-            set => throw new RdfStorageException(
-                "Stardog 3.x does not support configuring reasoning mode at the connection level, reasoning is instead controlled at the database level ");
-        }
+    /// <inheritdoc />
+    public override StardogReasoningMode Reasoning
+    {
+        get => StardogReasoningMode.DatabaseControlled;
+        set => throw new RdfStorageException(
+            "Stardog 3.x does not support configuring reasoning mode at the connection level, reasoning is instead controlled at the database level ");
+    }
 
-        /// <summary>
-        /// Adds Stardog specific request headers.
-        /// </summary>
-        /// <param name="request"></param>
-        [Obsolete("This method is obsolete and will be removed in a future release")]
-        protected override void AddStardogHeaders(HttpWebRequest request)
-        {
-            // No special headers needed for V3
-        }
+    /// <summary>
+    /// Adds Stardog specific request headers.
+    /// </summary>
+    /// <param name="request"></param>
+    [Obsolete("This method is obsolete and will be removed in a future release")]
+    protected override void AddStardogHeaders(HttpWebRequest request)
+    {
+        // No special headers needed for V3
+    }
 
-        /// <summary>
-        /// Adds Stardog specific request headers.
-        /// </summary>
-        /// <param name="request"></param>
-        protected override void AddStardogHeaders(HttpRequestMessage request)
-        {
-            // No special headers needed for V3
-        }
+    /// <summary>
+    /// Adds Stardog specific request headers.
+    /// </summary>
+    /// <param name="request"></param>
+    protected override void AddStardogHeaders(HttpRequestMessage request)
+    {
+        // No special headers needed for V3
     }
 }

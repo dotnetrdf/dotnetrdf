@@ -25,17 +25,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Xunit;
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+/// <summary>
+/// Summary description for WriteToStoreHandlerTests
+/// </summary>
+[Collection("Fuseki Test Collection")]
+public class FusekiWriteToStoreHandlerTests: WriteToStoreHandlerTests
 {
-    /// <summary>
-    /// Summary description for WriteToStoreHandlerTests
-    /// </summary>
-    [Collection("Fuseki Test Collection")]
-    public class FusekiWriteToStoreHandlerTests: WriteToStoreHandlerTests
+    protected override IStorageProvider GetConnection()
     {
-        protected override IStorageProvider GetConnection()
-        {
-            return FusekiTests.GetConnection();
-        }
+        return FusekiTests.GetConnection();
     }
 }

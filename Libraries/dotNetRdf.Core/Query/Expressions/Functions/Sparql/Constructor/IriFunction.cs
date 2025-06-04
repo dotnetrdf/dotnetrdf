@@ -24,74 +24,73 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
+
+/// <summary>
+/// Class representing the SPARQL IRI() function.
+/// </summary>
+public class IriFunction
+    : BaseUnaryExpression
 {
     /// <summary>
-    /// Class representing the SPARQL IRI() function.
+    /// Creates a new IRI() function expression.
     /// </summary>
-    public class IriFunction
-        : BaseUnaryExpression
+    /// <param name="expr">Expression to apply the function to.</param>
+    public IriFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+    
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new IRI() function expression.
-        /// </summary>
-        /// <param name="expr">Expression to apply the function to.</param>
-        public IriFunction(ISparqlExpression expr)
-            : base(expr) { }
+        return "IRI(" + InnerExpression + ")";
+    }
 
-        
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessIriFunction(this, context, binding);
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitIriFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return "IRI(" + InnerExpression + ")";
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return processor.ProcessIriFunction(this, context, binding);
+            return SparqlSpecsHelper.SparqlKeywordIri;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitIriFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordIri;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new IriFunction(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new IriFunction(transformer.Transform(InnerExpression));
     }
 }

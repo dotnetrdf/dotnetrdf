@@ -29,33 +29,32 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Query.Paths;
 
-namespace VDS.RDF.Shacl.Paths
+namespace VDS.RDF.Shacl.Paths;
+
+internal class Inverse : Unary
 {
-    internal class Inverse : Unary
+    [DebuggerStepThrough]
+    internal Inverse(INode node, IGraph shapesGraph)
+        : base(node, shapesGraph)
     {
-        [DebuggerStepThrough]
-        internal Inverse(INode node, IGraph shapesGraph)
-            : base(node, shapesGraph)
-        {
-        }
+    }
 
-        internal override ISparqlPath SparqlPath
+    internal override ISparqlPath SparqlPath
+    {
+        get
         {
-            get
-            {
-                return new InversePath(Argument.SparqlPath);
-            }
+            return new InversePath(Argument.SparqlPath);
         }
+    }
 
-        internal override IEnumerable<Triple> AsTriples
+    internal override IEnumerable<Triple> AsTriples
+    {
+        get
         {
-            get
-            {
-                return
-                    new Triple(this, Vocabulary.InversePath, Argument).AsEnumerable()
-                    .Union(
-                    Argument.AsTriples);
-            }
+            return
+                new Triple(this, Vocabulary.InversePath, Argument).AsEnumerable()
+                .Union(
+                Argument.AsTriples);
         }
     }
 }

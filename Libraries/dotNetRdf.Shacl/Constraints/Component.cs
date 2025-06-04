@@ -29,67 +29,66 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class Component : Constraint
 {
-    internal class Component : Constraint
+    private readonly IEnumerable<KeyValuePair<string, INode>> parameters;
+
+    // value has to be the ConstraintComponent, not the object of the constraint predicate statement
+    // in which case parameter values have to be passed into constructor
+    [DebuggerStepThrough]
+    internal Component(Shape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
+        : base(shape, value)
     {
-        private readonly IEnumerable<KeyValuePair<string, INode>> parameters;
+        this.parameters = parameters;
+    }
 
-        // value has to be the ConstraintComponent, not the object of the constraint predicate statement
-        // in which case parameter values have to be passed into constructor
-        [DebuggerStepThrough]
-        internal Component(Shape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
-            : base(shape, value)
+    internal override INode ConstraintComponent
+    {
+        get
         {
-            this.parameters = parameters;
+            return this;
         }
+    }
 
-        internal override INode ConstraintComponent
+    private Constraint Validator
+    {
+        get
         {
-            get
+            if (Shape is Shapes.Node)
             {
-                return this;
-            }
-        }
+                INode nodeValidator = Vocabulary.NodeValidator.ObjectsOf(this).SingleOrDefault();
 
-        private Constraint Validator
-        {
-            get
+                if (nodeValidator != null)
+                {
+                    return new Select(Shape, nodeValidator, parameters);
+                }
+            }
+
+            if (Shape is Shapes.Property)
             {
-                if (Shape is Shapes.Node)
+                INode propertyValidator = Vocabulary.PropertyValidator.ObjectsOf(this).SingleOrDefault();
+
+                if (propertyValidator != null)
                 {
-                    INode nodeValidator = Vocabulary.NodeValidator.ObjectsOf(this).SingleOrDefault();
-
-                    if (nodeValidator != null)
-                    {
-                        return new Select(Shape, nodeValidator, parameters);
-                    }
+                    return new Select(Shape, propertyValidator, parameters);
                 }
-
-                if (Shape is Shapes.Property)
-                {
-                    INode propertyValidator = Vocabulary.PropertyValidator.ObjectsOf(this).SingleOrDefault();
-
-                    if (propertyValidator != null)
-                    {
-                        return new Select(Shape, propertyValidator, parameters);
-                    }
-                }
-
-                return Vocabulary.Validator.ObjectsOf(this).Select(v => new Ask(Shape, v, parameters)).SingleOrDefault();
             }
+
+            return Vocabulary.Validator.ObjectsOf(this).Select(v => new Ask(Shape, v, parameters)).SingleOrDefault();
         }
+    }
 
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            Constraint validator = Validator;
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        Constraint validator = Validator;
 
-            IEnumerable<INode> invalidValues =
-                from valueNode in valueNodes
-                where !validator.Validate(dataGraph, focusNode, valueNode.AsEnumerable(), null)
-                select valueNode;
+        IEnumerable<INode> invalidValues =
+            from valueNode in valueNodes
+            where !validator.Validate(dataGraph, focusNode, valueNode.AsEnumerable(), null)
+            select valueNode;
 
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
+        return ReportValueNodes(focusNode, invalidValues, report);
     }
 }

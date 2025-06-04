@@ -29,362 +29,361 @@ using System.Collections.Generic;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing.Contexts;
+
+/// <summary>
+/// Base Class for Store Parser Contexts.
+/// </summary>
+public abstract class BaseStoreParserContext : IParserContext
 {
     /// <summary>
-    /// Base Class for Store Parser Contexts.
+    /// Is Parsing Traced?.
     /// </summary>
-    public abstract class BaseStoreParserContext : IParserContext
+    protected bool _traceParsing = false;
+
+    private NestedNamespaceMapper _nsmap = new NestedNamespaceMapper(true);
+    private Uri _baseUri;
+
+    /// <summary>
+    /// Creates a new Store Parser Context.
+    /// </summary>
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    /// <param name="uriFactory">URI factory to use.</param>
+    public BaseStoreParserContext(IRdfHandler handler, bool traceParsing, IUriFactory uriFactory)
     {
-        /// <summary>
-        /// Is Parsing Traced?.
-        /// </summary>
-        protected bool _traceParsing = false;
+        Handler = handler ?? throw new ArgumentNullException(nameof(handler), "RDF Handler cannot be null");
+        UriFactory = uriFactory ??
+                     throw new ArgumentNullException(nameof(uriFactory), "URI Factory must not be null");
+        _traceParsing = traceParsing;
+    }
 
-        private NestedNamespaceMapper _nsmap = new NestedNamespaceMapper(true);
-        private Uri _baseUri;
+    /// <summary>
+    /// Creates a new Store Parser Context.
+    /// </summary>
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    public BaseStoreParserContext(IRdfHandler handler, bool traceParsing)
+        : this(handler, traceParsing, RDF.UriFactory.Root)
+    {
+    }
 
-        /// <summary>
-        /// Creates a new Store Parser Context.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        /// <param name="uriFactory">URI factory to use.</param>
-        public BaseStoreParserContext(IRdfHandler handler, bool traceParsing, IUriFactory uriFactory)
+    /// <summary>
+    /// Creates a new Store Parser Context.
+    /// </summary>
+    /// <param name="handler">RDF Handler.</param>
+    public BaseStoreParserContext(IRdfHandler handler)
+        : this(handler, false) { }
+
+    /// <summary>
+    /// Creates a new Base Store Parser Context.
+    /// </summary>
+    /// <param name="store">Triple Store.</param>
+    public BaseStoreParserContext(ITripleStore store)
+        : this(new StoreHandler(store)) { }
+
+    /// <summary>
+    /// Creates a new Base Parser Context.
+    /// </summary>
+    /// <param name="store">Triple Store.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    public BaseStoreParserContext(ITripleStore store, bool traceParsing)
+        : this(new StoreHandler(store), traceParsing) { }
+
+    /// <summary>
+    /// Creates a new base parser context.
+    /// </summary>
+    /// <param name="store">Triple Store.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    /// <param name="uriFactory">URI factory to use.</param>
+    public BaseStoreParserContext(ITripleStore store, bool traceParsing, IUriFactory uriFactory)
+        :this(new StoreHandler(store), traceParsing, uriFactory) { }
+
+    /// <summary>
+    /// Gets/Sets whether to trace parsing.
+    /// </summary>
+    public bool TraceParsing
+    {
+        get
         {
-            Handler = handler ?? throw new ArgumentNullException(nameof(handler), "RDF Handler cannot be null");
-            UriFactory = uriFactory ??
-                         throw new ArgumentNullException(nameof(uriFactory), "URI Factory must not be null");
-            _traceParsing = traceParsing;
+            return _traceParsing;
         }
-
-        /// <summary>
-        /// Creates a new Store Parser Context.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        public BaseStoreParserContext(IRdfHandler handler, bool traceParsing)
-            : this(handler, traceParsing, RDF.UriFactory.Root)
+        set
         {
-        }
-
-        /// <summary>
-        /// Creates a new Store Parser Context.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        public BaseStoreParserContext(IRdfHandler handler)
-            : this(handler, false) { }
-
-        /// <summary>
-        /// Creates a new Base Store Parser Context.
-        /// </summary>
-        /// <param name="store">Triple Store.</param>
-        public BaseStoreParserContext(ITripleStore store)
-            : this(new StoreHandler(store)) { }
-
-        /// <summary>
-        /// Creates a new Base Parser Context.
-        /// </summary>
-        /// <param name="store">Triple Store.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        public BaseStoreParserContext(ITripleStore store, bool traceParsing)
-            : this(new StoreHandler(store), traceParsing) { }
-
-        /// <summary>
-        /// Creates a new base parser context.
-        /// </summary>
-        /// <param name="store">Triple Store.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        /// <param name="uriFactory">URI factory to use.</param>
-        public BaseStoreParserContext(ITripleStore store, bool traceParsing, IUriFactory uriFactory)
-            :this(new StoreHandler(store), traceParsing, uriFactory) { }
-
-        /// <summary>
-        /// Gets/Sets whether to trace parsing.
-        /// </summary>
-        public bool TraceParsing
-        {
-            get
-            {
-                return _traceParsing;
-            }
-            set
-            {
-                _traceParsing = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the RDF Handler that is in-use.
-        /// </summary>
-        public IRdfHandler Handler { get; }
-
-        /// <summary>
-        /// Gets the URI factory for the handler.
-        /// </summary>
-        public IUriFactory UriFactory { get; }
-
-        /// <summary>
-        /// Gets the Namespace Map for the parser context.
-        /// </summary>
-        public INestedNamespaceMapper Namespaces
-        {
-            get
-            {
-                return _nsmap;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Base URI for the parser context.
-        /// </summary>
-        public Uri BaseUri
-        {
-            get
-            {
-                return _baseUri;
-            }
-            set
-            {
-                _baseUri = value;
-            }
+            _traceParsing = value;
         }
     }
 
     /// <summary>
-    /// Class for Store Parser Contexts for Tokeniser based Parsing.
+    /// Gets the RDF Handler that is in-use.
     /// </summary>
-    public class TokenisingStoreParserContext : BaseStoreParserContext
+    public IRdfHandler Handler { get; }
+
+    /// <summary>
+    /// Gets the URI factory for the handler.
+    /// </summary>
+    public IUriFactory UriFactory { get; }
+
+    /// <summary>
+    /// Gets the Namespace Map for the parser context.
+    /// </summary>
+    public INestedNamespaceMapper Namespaces
     {
-        /// <summary>
-        /// Tokeniser.
-        /// </summary>
-        protected ITokenQueue _queue;
-        /// <summary>
-        /// Is Tokeniser traced?.
-        /// </summary>
-        protected bool _traceTokeniser = false;
-        /// <summary>
-        /// Local Tokens.
-        /// </summary>
-        protected Stack<IToken> _localTokens;
-
-        /// <summary>
-        /// Creates a new Tokenising Store Parser Context with default settings.
-        /// </summary>
-        /// <param name="store">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser)
-            : base(store)
+        get
         {
-            _queue = new TokenQueue(tokeniser);
+            return _nsmap;
         }
+    }
 
-        /// <summary>
-        /// Creates a new Tokenising Store Parser Context with custom settings.
-        /// </summary>
-        /// <param name="store">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        /// <param name="queueMode">Tokeniser Queue Mode.</param>
-        public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser, TokenQueueMode queueMode)
-            : base(store)
+    /// <summary>
+    /// Gets the Base URI for the parser context.
+    /// </summary>
+    public Uri BaseUri
+    {
+        get
         {
-            switch (queueMode)
-            {
-                case TokenQueueMode.AsynchronousBufferDuringParsing:
-                    _queue = new AsynchronousBufferedTokenQueue(tokeniser);
-                    break;
-                case TokenQueueMode.SynchronousBufferDuringParsing:
-                    _queue = new BufferedTokenQueue(tokeniser);
-                    break;
-                case TokenQueueMode.QueueAllBeforeParsing:
-                default:
-                    _queue = new TokenQueue(tokeniser);
-                    break;
-            }
+            return _baseUri;
         }
-
-        /// <summary>
-        /// Creates a new Tokenising Store Parser Context with custom settings.
-        /// </summary>
-        /// <param name="store">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
-            : this(store, tokeniser)
+        set
         {
-            _traceParsing = traceParsing;
-            _traceTokeniser = traceTokeniser;
-            _queue.Tracing = _traceTokeniser;
+            _baseUri = value;
         }
+    }
+}
 
-        /// <summary>
-        /// Creates a new Tokenising Store Parser Context with custom settings.
-        /// </summary>
-        /// <param name="store">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        /// <param name="queueMode">Tokeniser Queue Mode.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            : this(store, tokeniser, queueMode, traceParsing, traceTokeniser, RDF.UriFactory.Root) { }
+/// <summary>
+/// Class for Store Parser Contexts for Tokeniser based Parsing.
+/// </summary>
+public class TokenisingStoreParserContext : BaseStoreParserContext
+{
+    /// <summary>
+    /// Tokeniser.
+    /// </summary>
+    protected ITokenQueue _queue;
+    /// <summary>
+    /// Is Tokeniser traced?.
+    /// </summary>
+    protected bool _traceTokeniser = false;
+    /// <summary>
+    /// Local Tokens.
+    /// </summary>
+    protected Stack<IToken> _localTokens;
 
-        /// <summary>
-        /// Creates a new Tokenising Store Parser Context with custom settings.
-        /// </summary>
-        /// <param name="store">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        /// <param name="queueMode">Tokeniser Queue Mode.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        /// <param name="uriFactory">The URI factory to use.</param>
-        public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory)
-            : base(store, traceParsing, uriFactory)
+    /// <summary>
+    /// Creates a new Tokenising Store Parser Context with default settings.
+    /// </summary>
+    /// <param name="store">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser)
+        : base(store)
+    {
+        _queue = new TokenQueue(tokeniser);
+    }
+
+    /// <summary>
+    /// Creates a new Tokenising Store Parser Context with custom settings.
+    /// </summary>
+    /// <param name="store">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    /// <param name="queueMode">Tokeniser Queue Mode.</param>
+    public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser, TokenQueueMode queueMode)
+        : base(store)
+    {
+        switch (queueMode)
         {
-            switch (queueMode)
-            {
-                case TokenQueueMode.AsynchronousBufferDuringParsing:
-                    _queue = new AsynchronousBufferedTokenQueue(tokeniser);
-                    break;
-                case TokenQueueMode.SynchronousBufferDuringParsing:
-                    _queue = new BufferedTokenQueue(tokeniser);
-                    break;
-                case TokenQueueMode.QueueAllBeforeParsing:
-                default:
-                    _queue = new TokenQueue(tokeniser);
-                    break;
-            }
-            _traceTokeniser = traceTokeniser;
-            _queue.Tracing = _traceTokeniser;
+            case TokenQueueMode.AsynchronousBufferDuringParsing:
+                _queue = new AsynchronousBufferedTokenQueue(tokeniser);
+                break;
+            case TokenQueueMode.SynchronousBufferDuringParsing:
+                _queue = new BufferedTokenQueue(tokeniser);
+                break;
+            case TokenQueueMode.QueueAllBeforeParsing:
+            default:
+                _queue = new TokenQueue(tokeniser);
+                break;
         }
+    }
 
-        /// <summary>
-        /// Creates a new Tokenising Store Parser Context with default settings.
-        /// </summary>
-        /// <param name="handler">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser)
-            : base(handler)
+    /// <summary>
+    /// Creates a new Tokenising Store Parser Context with custom settings.
+    /// </summary>
+    /// <param name="store">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+    public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
+        : this(store, tokeniser)
+    {
+        _traceParsing = traceParsing;
+        _traceTokeniser = traceTokeniser;
+        _queue.Tracing = _traceTokeniser;
+    }
+
+    /// <summary>
+    /// Creates a new Tokenising Store Parser Context with custom settings.
+    /// </summary>
+    /// <param name="store">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    /// <param name="queueMode">Tokeniser Queue Mode.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+    public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
+        : this(store, tokeniser, queueMode, traceParsing, traceTokeniser, RDF.UriFactory.Root) { }
+
+    /// <summary>
+    /// Creates a new Tokenising Store Parser Context with custom settings.
+    /// </summary>
+    /// <param name="store">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    /// <param name="queueMode">Tokeniser Queue Mode.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+    /// <param name="uriFactory">The URI factory to use.</param>
+    public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory)
+        : base(store, traceParsing, uriFactory)
+    {
+        switch (queueMode)
         {
-            _queue = new TokenQueue(tokeniser);
+            case TokenQueueMode.AsynchronousBufferDuringParsing:
+                _queue = new AsynchronousBufferedTokenQueue(tokeniser);
+                break;
+            case TokenQueueMode.SynchronousBufferDuringParsing:
+                _queue = new BufferedTokenQueue(tokeniser);
+                break;
+            case TokenQueueMode.QueueAllBeforeParsing:
+            default:
+                _queue = new TokenQueue(tokeniser);
+                break;
         }
+        _traceTokeniser = traceTokeniser;
+        _queue.Tracing = _traceTokeniser;
+    }
 
-        /// <summary>
-        /// Creates a new Tokenising Store Parser Context with custom settings.
-        /// </summary>
-        /// <param name="handler">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        /// <param name="queueMode">Tokeniser Queue Mode.</param>
-        public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode)
-            : base(handler)
+    /// <summary>
+    /// Creates a new Tokenising Store Parser Context with default settings.
+    /// </summary>
+    /// <param name="handler">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser)
+        : base(handler)
+    {
+        _queue = new TokenQueue(tokeniser);
+    }
+
+    /// <summary>
+    /// Creates a new Tokenising Store Parser Context with custom settings.
+    /// </summary>
+    /// <param name="handler">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    /// <param name="queueMode">Tokeniser Queue Mode.</param>
+    public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode)
+        : base(handler)
+    {
+        switch (queueMode)
         {
-            switch (queueMode)
-            {
-                case TokenQueueMode.AsynchronousBufferDuringParsing:
-                    _queue = new AsynchronousBufferedTokenQueue(tokeniser);
-                    break;
-                case TokenQueueMode.SynchronousBufferDuringParsing:
-                    _queue = new BufferedTokenQueue(tokeniser);
-                    break;
-                case TokenQueueMode.QueueAllBeforeParsing:
-                default:
-                    _queue = new TokenQueue(tokeniser);
-                    break;
-            }
+            case TokenQueueMode.AsynchronousBufferDuringParsing:
+                _queue = new AsynchronousBufferedTokenQueue(tokeniser);
+                break;
+            case TokenQueueMode.SynchronousBufferDuringParsing:
+                _queue = new BufferedTokenQueue(tokeniser);
+                break;
+            case TokenQueueMode.QueueAllBeforeParsing:
+            default:
+                _queue = new TokenQueue(tokeniser);
+                break;
         }
+    }
 
-        /// <summary>
-        /// Creates a new Tokenising Store Parser Context with custom settings.
-        /// </summary>
-        /// <param name="handler">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
-            : this(handler, tokeniser)
+    /// <summary>
+    /// Creates a new Tokenising Store Parser Context with custom settings.
+    /// </summary>
+    /// <param name="handler">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+    public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
+        : this(handler, tokeniser)
+    {
+        _traceParsing = traceParsing;
+        _traceTokeniser = traceTokeniser;
+        _queue.Tracing = _traceTokeniser;
+    }
+
+    /// <summary>
+    /// Creates a new Tokenising Store Parser Context with custom settings.
+    /// </summary>
+    /// <param name="handler">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    /// <param name="queueMode">Tokeniser Queue Mode.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+    public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
+        :this(handler, tokeniser, queueMode, traceParsing, traceTokeniser, RDF.UriFactory.Root) { }
+
+    /// <summary>
+    /// Creates a new Tokenising Store Parser Context with custom settings.
+    /// </summary>
+    /// <param name="handler">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    /// <param name="queueMode">Tokeniser Queue Mode.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory)
+        : base(handler, traceParsing, uriFactory)
+    {
+        switch (queueMode)
         {
-            _traceParsing = traceParsing;
-            _traceTokeniser = traceTokeniser;
-            _queue.Tracing = _traceTokeniser;
+            case TokenQueueMode.AsynchronousBufferDuringParsing:
+                _queue = new AsynchronousBufferedTokenQueue(tokeniser);
+                break;
+            case TokenQueueMode.SynchronousBufferDuringParsing:
+                _queue = new BufferedTokenQueue(tokeniser);
+                break;
+            case TokenQueueMode.QueueAllBeforeParsing:
+            default:
+                _queue = new TokenQueue(tokeniser);
+                break;
         }
+        _traceTokeniser = traceTokeniser;
+        _queue.Tracing = _traceTokeniser;
+    }
 
-        /// <summary>
-        /// Creates a new Tokenising Store Parser Context with custom settings.
-        /// </summary>
-        /// <param name="handler">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        /// <param name="queueMode">Tokeniser Queue Mode.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            :this(handler, tokeniser, queueMode, traceParsing, traceTokeniser, RDF.UriFactory.Root) { }
-
-        /// <summary>
-        /// Creates a new Tokenising Store Parser Context with custom settings.
-        /// </summary>
-        /// <param name="handler">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        /// <param name="queueMode">Tokeniser Queue Mode.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory)
-            : base(handler, traceParsing, uriFactory)
+    /// <summary>
+    /// Gets the Token Queue.
+    /// </summary>
+    public ITokenQueue Tokens
+    {
+        get
         {
-            switch (queueMode)
-            {
-                case TokenQueueMode.AsynchronousBufferDuringParsing:
-                    _queue = new AsynchronousBufferedTokenQueue(tokeniser);
-                    break;
-                case TokenQueueMode.SynchronousBufferDuringParsing:
-                    _queue = new BufferedTokenQueue(tokeniser);
-                    break;
-                case TokenQueueMode.QueueAllBeforeParsing:
-                default:
-                    _queue = new TokenQueue(tokeniser);
-                    break;
-            }
-            _traceTokeniser = traceTokeniser;
-            _queue.Tracing = _traceTokeniser;
+            return _queue;
         }
+    }
 
-        /// <summary>
-        /// Gets the Token Queue.
-        /// </summary>
-        public ITokenQueue Tokens
+    /// <summary>
+    /// Gets the Local Tokens stack.
+    /// </summary>
+    public Stack<IToken> LocalTokens
+    {
+        get
         {
-            get
-            {
-                return _queue;
-            }
+            if (_localTokens == null) _localTokens = new Stack<IToken>();
+            return _localTokens;
         }
+    }
 
-        /// <summary>
-        /// Gets the Local Tokens stack.
-        /// </summary>
-        public Stack<IToken> LocalTokens
+    /// <summary>
+    /// Gets/Sets whether tokeniser tracing is used.
+    /// </summary>
+    public bool TraceTokeniser
+    {
+        get
         {
-            get
-            {
-                if (_localTokens == null) _localTokens = new Stack<IToken>();
-                return _localTokens;
-            }
+            return _traceTokeniser;
         }
-
-        /// <summary>
-        /// Gets/Sets whether tokeniser tracing is used.
-        /// </summary>
-        public bool TraceTokeniser
+        set
         {
-            get
-            {
-                return _traceTokeniser;
-            }
-            set
-            {
-                _traceTokeniser = value;
-            }
+            _traceTokeniser = value;
         }
     }
 }

@@ -30,212 +30,211 @@ using FluentAssertions;
 using Xunit;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers;
+
+[Collection("RdfServer")]
+public class GraphHandlerTests
 {
-    [Collection("RdfServer")]
-    public class GraphHandlerTests
+    private readonly RdfServerFixture _serverFixture;
+
+    public GraphHandlerTests(RdfServerFixture serverFixture)
     {
-        private readonly RdfServerFixture _serverFixture;
+        _serverFixture = serverFixture;
+    }
 
-        public GraphHandlerTests(RdfServerFixture serverFixture)
+    [Fact]
+    public void ParsingGraphHandlerImplicitTurtle()
+    {
+        var g = new Graph();
+        EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+
+        var formatter = new NTriplesFormatter();
+        foreach (Triple t in g.Triples)
         {
-            _serverFixture = serverFixture;
+            Console.WriteLine(t.ToString(formatter));
         }
 
-        [Fact]
-        public void ParsingGraphHandlerImplicitTurtle()
+        Assert.False(g.IsEmpty, "Graph should not be empty");
+        Assert.True(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
+    }
+
+    #region Explicit GraphHandler Usage
+
+    protected void ParsingUsingGraphHandlerExplicitTest(String tempFile, IRdfReader parser, bool nsCheck)
+    {
+        var g = new Graph();
+        EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+        g.SaveToFile(tempFile);
+
+        var h = new Graph();
+        var handler = new GraphHandler(h);
+        parser.Load(handler, tempFile);
+
+        var formatter = new NTriplesFormatter();
+        foreach (Triple t in h.Triples)
         {
-            var g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-
-            var formatter = new NTriplesFormatter();
-            foreach (Triple t in g.Triples)
-            {
-                Console.WriteLine(t.ToString(formatter));
-            }
-
-            Assert.False(g.IsEmpty, "Graph should not be empty");
-            Assert.True(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
+            Console.WriteLine(t.ToString(formatter));
         }
 
-        #region Explicit GraphHandler Usage
+        Assert.False(g.IsEmpty, "Graph should not be empty");
+        Assert.True(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
+        Assert.False(h.IsEmpty, "Graph should not be empty");
+        if (nsCheck) Assert.True(h.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
+        Assert.Equal(g, h);
+    }
 
-        protected void ParsingUsingGraphHandlerExplicitTest(String tempFile, IRdfReader parser, bool nsCheck)
+    [Fact]
+    public void ParsingGraphHandlerExplicitNTriples()
+    {
+        ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.nt", new NTriplesParser(), false);
+    }
+
+    [Fact]
+    public void ParsingGraphHandlerExplicitTurtle()
+    {
+        ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.ttl", new TurtleParser(), true);
+    }
+
+    [Fact]
+    public void ParsingGraphHandlerExplicitNotation3()
+    {
+        ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.n3", new Notation3Parser(), true);
+    }
+
+    [Fact]
+    public void ParsingGraphHandlerExplicitRdfA()
+    {
+        ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.html", new RdfAParser(), false);
+    }
+
+    [Fact]
+    public void ParsingGraphHandlerExplicitRdfJson()
+    {
+        ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.json", new RdfJsonParser(), false);
+    }
+
+    #endregion
+
+    [Fact]
+    public void ParsingGraphHandlerExplicitMerging()
+    {
+        var g = new Graph();
+        EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+        g.SaveToFile("graph_handler_tests_temp.ttl");
+
+        var h = new Graph();
+        var handler = new GraphHandler(h);
+
+        var parser = new TurtleParser();
+        parser.Load(handler, "graph_handler_tests_temp.ttl");
+
+        Assert.False(g.IsEmpty, "Graph should not be empty");
+        Assert.True(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
+        Assert.False(h.IsEmpty, "Graph should not be empty");
+        Assert.True(h.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
+        Assert.Equal(g, h);
+
+        parser.Load(handler, "graph_handler_tests_temp.ttl");
+        Assert.Equal(g.Triples.Count + 2, h.Triples.Count);
+        Assert.NotEqual(g, h);
+
+        var formatter = new NTriplesFormatter();
+        foreach (Triple t in h.Triples.Where(x => !x.IsGroundTriple))
         {
-            var g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-            g.SaveToFile(tempFile);
-
-            var h = new Graph();
-            var handler = new GraphHandler(h);
-            parser.Load(handler, tempFile);
-
-            var formatter = new NTriplesFormatter();
-            foreach (Triple t in h.Triples)
-            {
-                Console.WriteLine(t.ToString(formatter));
-            }
-
-            Assert.False(g.IsEmpty, "Graph should not be empty");
-            Assert.True(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
-            Assert.False(h.IsEmpty, "Graph should not be empty");
-            if (nsCheck) Assert.True(h.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
-            Assert.Equal(g, h);
+            Console.WriteLine(t.ToString(formatter));
         }
+    }
 
-        [Fact]
-        public void ParsingGraphHandlerExplicitNTriples()
+    [Fact]
+    public void ParsingGraphHandlerImplicitMerging()
+    {
+        var g = new Graph();
+        EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+        g.SaveToFile("graph_handler_tests_temp.ttl");
+
+        var h = new Graph();
+
+        var parser = new TurtleParser();
+        parser.Load(h, "graph_handler_tests_temp.ttl");
+
+        Assert.False(g.IsEmpty, "Graph should not be empty");
+        Assert.True(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
+        Assert.False(h.IsEmpty, "Graph should not be empty");
+        Assert.True(h.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
+        Assert.Equal(g, h);
+
+        parser.Load(h, "graph_handler_tests_temp.ttl");
+        Assert.Equal(g.Triples.Count + 2, h.Triples.Count);
+        Assert.NotEqual(g, h);
+
+        var formatter = new NTriplesFormatter();
+        foreach (Triple t in h.Triples.Where(x => !x.IsGroundTriple))
         {
-            ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.nt", new NTriplesParser(), false);
+            Console.WriteLine(t.ToString(formatter));
         }
+    }
 
-        [Fact]
-        public void ParsingGraphHandlerExplicitTurtle()
+    [Fact]
+    public void ParsingGraphHandlerImplicitInitialBaseUri()
+    {
+        var g = new Graph
         {
-            ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.ttl", new TurtleParser(), true);
-        }
+            BaseUri = new Uri("http://example.org/")
+        };
 
-        [Fact]
-        public void ParsingGraphHandlerExplicitNotation3()
+        var fragment = "<subject> <predicate> <object> .";
+        var parser = new TurtleParser();
+        parser.Load(g, new StringReader(fragment));
+
+        Assert.False(g.IsEmpty, "Graph should not be empty");
+        Assert.Equal(1, g.Triples.Count);
+    }
+
+    [Fact]
+    public void ParsingGraphHandlerExplicitInitialBaseUri()
+    {
+        var g = new Graph
         {
-            ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.n3", new Notation3Parser(), true);
-        }
+            BaseUri = new Uri("http://example.org/")
+        };
 
-        [Fact]
-        public void ParsingGraphHandlerExplicitRdfA()
-        {
-            ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.html", new RdfAParser(), false);
-        }
+        var fragment = "<subject> <predicate> <object> .";
+        var parser = new TurtleParser();
+        var handler = new GraphHandler(g);
+        parser.Load(handler, new StringReader(fragment));
 
-        [Fact]
-        public void ParsingGraphHandlerExplicitRdfJson()
-        {
-            ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.json", new RdfJsonParser(), false);
-        }
+        Assert.False(g.IsEmpty, "Graph should not be empty");
+        Assert.Equal(1, g.Triples.Count);
+    }
 
-        #endregion
+    [Fact]
+    public void ParsingGraphHandlerImplicitBaseUriPropagation()
+    {
+        var loader = new Loader(_serverFixture.Client);
+        var g = new Graph();
+        g.BaseUri.Should().BeNull();
+        Uri targetUri = _serverFixture.UriFor("/one.ttl");
+        loader.LoadGraph(g, targetUri);
+        g.BaseUri.Should().Be(targetUri);
+    }
 
-        [Fact]
-        public void ParsingGraphHandlerExplicitMerging()
-        {
-            var g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-            g.SaveToFile("graph_handler_tests_temp.ttl");
+    [Fact]
+    public void ParsingGraphHandlerImplicitBaseUriPropogation2()
+    {
+        var loader = new Loader(_serverFixture.Client);
+        var g = new Graph();
+        Uri targetUri = _serverFixture.UriFor("/one.ttl");
+        g.BaseUri.Should().BeNull();
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        g.BaseUri.Should().NotBeNull("loading into a graph with no BaseUri should set the BaseUri");
+        Uri baseUri = g.BaseUri;
+        loader.LoadGraph(g, targetUri);
+        g.BaseUri.Should().Be(baseUri, "merging a second graph should not overwrite the BaseUri");
+    }
 
-            var h = new Graph();
-            var handler = new GraphHandler(h);
-
-            var parser = new TurtleParser();
-            parser.Load(handler, "graph_handler_tests_temp.ttl");
-
-            Assert.False(g.IsEmpty, "Graph should not be empty");
-            Assert.True(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
-            Assert.False(h.IsEmpty, "Graph should not be empty");
-            Assert.True(h.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
-            Assert.Equal(g, h);
-
-            parser.Load(handler, "graph_handler_tests_temp.ttl");
-            Assert.Equal(g.Triples.Count + 2, h.Triples.Count);
-            Assert.NotEqual(g, h);
-
-            var formatter = new NTriplesFormatter();
-            foreach (Triple t in h.Triples.Where(x => !x.IsGroundTriple))
-            {
-                Console.WriteLine(t.ToString(formatter));
-            }
-        }
-
-        [Fact]
-        public void ParsingGraphHandlerImplicitMerging()
-        {
-            var g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-            g.SaveToFile("graph_handler_tests_temp.ttl");
-
-            var h = new Graph();
-
-            var parser = new TurtleParser();
-            parser.Load(h, "graph_handler_tests_temp.ttl");
-
-            Assert.False(g.IsEmpty, "Graph should not be empty");
-            Assert.True(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
-            Assert.False(h.IsEmpty, "Graph should not be empty");
-            Assert.True(h.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
-            Assert.Equal(g, h);
-
-            parser.Load(h, "graph_handler_tests_temp.ttl");
-            Assert.Equal(g.Triples.Count + 2, h.Triples.Count);
-            Assert.NotEqual(g, h);
-
-            var formatter = new NTriplesFormatter();
-            foreach (Triple t in h.Triples.Where(x => !x.IsGroundTriple))
-            {
-                Console.WriteLine(t.ToString(formatter));
-            }
-        }
-
-        [Fact]
-        public void ParsingGraphHandlerImplicitInitialBaseUri()
-        {
-            var g = new Graph
-            {
-                BaseUri = new Uri("http://example.org/")
-            };
-
-            var fragment = "<subject> <predicate> <object> .";
-            var parser = new TurtleParser();
-            parser.Load(g, new StringReader(fragment));
-
-            Assert.False(g.IsEmpty, "Graph should not be empty");
-            Assert.Equal(1, g.Triples.Count);
-        }
-
-        [Fact]
-        public void ParsingGraphHandlerExplicitInitialBaseUri()
-        {
-            var g = new Graph
-            {
-                BaseUri = new Uri("http://example.org/")
-            };
-
-            var fragment = "<subject> <predicate> <object> .";
-            var parser = new TurtleParser();
-            var handler = new GraphHandler(g);
-            parser.Load(handler, new StringReader(fragment));
-
-            Assert.False(g.IsEmpty, "Graph should not be empty");
-            Assert.Equal(1, g.Triples.Count);
-        }
-
-        [Fact]
-        public void ParsingGraphHandlerImplicitBaseUriPropagation()
-        {
-            var loader = new Loader(_serverFixture.Client);
-            var g = new Graph();
-            g.BaseUri.Should().BeNull();
-            Uri targetUri = _serverFixture.UriFor("/one.ttl");
-            loader.LoadGraph(g, targetUri);
-            g.BaseUri.Should().Be(targetUri);
-        }
-
-        [Fact]
-        public void ParsingGraphHandlerImplicitBaseUriPropogation2()
-        {
-            var loader = new Loader(_serverFixture.Client);
-            var g = new Graph();
-            Uri targetUri = _serverFixture.UriFor("/one.ttl");
-            g.BaseUri.Should().BeNull();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            g.BaseUri.Should().NotBeNull("loading into a graph with no BaseUri should set the BaseUri");
-            Uri baseUri = g.BaseUri;
-            loader.LoadGraph(g, targetUri);
-            g.BaseUri.Should().Be(baseUri, "merging a second graph should not overwrite the BaseUri");
-        }
-
-        [Fact]
-        public void ParsingGraphHandlerExplicitRdfXml()
-        {
-            ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.rdf", new RdfXmlParser(), true);
-        }
+    [Fact]
+    public void ParsingGraphHandlerExplicitRdfXml()
+    {
+        ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.rdf", new RdfXmlParser(), true);
     }
 }

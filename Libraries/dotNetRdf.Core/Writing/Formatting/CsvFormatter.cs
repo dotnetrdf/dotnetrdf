@@ -27,69 +27,68 @@
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Formatter for generating CSV.
+/// </summary>
+public class CsvFormatter 
+    : BaseFormatter
 {
     /// <summary>
-    /// Formatter for generating CSV.
+    /// Creates a new CSV Formatter.
     /// </summary>
-    public class CsvFormatter 
-        : BaseFormatter
+    public CsvFormatter()
+        : base("CSV") { }
+
+    /// <summary>
+    /// Formats a Triple for CSV output.
+    /// </summary>
+    /// <param name="t">Triple.</param>
+    /// <returns></returns>
+    public override string Format(Triple t)
     {
-        /// <summary>
-        /// Creates a new CSV Formatter.
-        /// </summary>
-        public CsvFormatter()
-            : base("CSV") { }
+        var output = new StringBuilder();
+        output.Append(Format(t.Subject));
+        output.Append(',');
+        output.Append(Format(t.Predicate));
+        output.Append(',');
+        output.Append(Format(t.Object));
+        output.Append("\r\n");
+        return output.ToString();
+    }
 
-        /// <summary>
-        /// Formats a Triple for CSV output.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        public override string Format(Triple t)
+    /// <summary>
+    /// Formats URIs for CSV output.
+    /// </summary>
+    /// <param name="u">URI.</param>
+    /// <param name="segment">Triple Segment.</param>
+    /// <returns></returns>
+    protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
+    {
+        return FormatUri(u.Uri);
+    }
+
+    /// <summary>
+    /// Formats Literals for CSV output.
+    /// </summary>
+    /// <param name="l">Literal.</param>
+    /// <param name="segment">Triple Segment.</param>
+    /// <returns></returns>
+    protected override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment)
+    {
+        var value = l.Value;
+        if (value.Contains('"') || value.Contains(',') || value.Contains('\n') || value.Contains('\r'))
         {
-            var output = new StringBuilder();
-            output.Append(Format(t.Subject));
-            output.Append(',');
-            output.Append(Format(t.Predicate));
-            output.Append(',');
-            output.Append(Format(t.Object));
-            output.Append("\r\n");
-            return output.ToString();
+            return '"' + value.Replace("\"", "\"\"") + '"';
         }
-
-        /// <summary>
-        /// Formats URIs for CSV output.
-        /// </summary>
-        /// <param name="u">URI.</param>
-        /// <param name="segment">Triple Segment.</param>
-        /// <returns></returns>
-        protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
+        else if (value.Equals(string.Empty))
         {
-            return FormatUri(u.Uri);
+            return "\"\"";
         }
-
-        /// <summary>
-        /// Formats Literals for CSV output.
-        /// </summary>
-        /// <param name="l">Literal.</param>
-        /// <param name="segment">Triple Segment.</param>
-        /// <returns></returns>
-        protected override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment)
+        else
         {
-            var value = l.Value;
-            if (value.Contains('"') || value.Contains(',') || value.Contains('\n') || value.Contains('\r'))
-            {
-                return '"' + value.Replace("\"", "\"\"") + '"';
-            }
-            else if (value.Equals(string.Empty))
-            {
-                return "\"\"";
-            }
-            else
-            {
-                return value;
-            }
+            return value;
         }
     }
 }

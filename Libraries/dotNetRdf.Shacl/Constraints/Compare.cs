@@ -28,39 +28,38 @@ using System.Globalization;
 using System.Diagnostics;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Shacl.Constraints
-{
-    internal abstract class Compare : Constraint
-    {
-        /// <summary>
-        /// The internal comparer to use. This instance is not actually used for comparison, just for checking if nodes are comparable,
-        /// so it uses default settings for culture and sort options.
-        /// </summary>
-        private readonly SparqlNodeComparer _comparer = new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
+namespace VDS.RDF.Shacl.Constraints;
 
-        [DebuggerStepThrough]
-        protected Compare(Shape shape, INode node)
-            : base(shape, node)
+internal abstract class Compare : Constraint
+{
+    /// <summary>
+    /// The internal comparer to use. This instance is not actually used for comparison, just for checking if nodes are comparable,
+    /// so it uses default settings for culture and sort options.
+    /// </summary>
+    private readonly SparqlNodeComparer _comparer = new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
+
+    [DebuggerStepThrough]
+    protected Compare(Shape shape, INode node)
+        : base(shape, node)
+    {
+    }
+
+    protected abstract bool IsValidInternal(int v);
+
+    protected bool IsValid(INode first, INode second)
+    {
+        if (first.NodeType != NodeType.Literal)
         {
+            return false;
         }
 
-        protected abstract bool IsValidInternal(int v);
-
-        protected bool IsValid(INode first, INode second)
+        try
         {
-            if (first.NodeType != NodeType.Literal)
-            {
-                return false;
-            }
-
-            try
-            {
-                return IsValidInternal(_comparer.Compare(first, second));
-            }
-            catch (RdfQueryException)
-            {
-                return false;
-            }
+            return IsValidInternal(_comparer.Compare(first, second));
+        }
+        catch (RdfQueryException)
+        {
+            return false;
         }
     }
 }

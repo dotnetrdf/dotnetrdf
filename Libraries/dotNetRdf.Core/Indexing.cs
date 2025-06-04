@@ -24,52 +24,51 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Possible Triple Index types.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Index types are given Integer values with the lowest being the least useful index and the highest being most useful index.  Non-Index based Patterns are given arbitrary high values since these will typically never be used as these items are usually inserted into a Graph Pattern after the ordering step.
+/// </para>
+/// <para>
+/// When used to sort Patterns as part of query optimisation the patterns are partially ordered on the usefullness of their index since more useful indexes are considered more likely to return fewer results which will help restrict the query space earlier in the execution process.
+/// </para>
+/// </remarks>
+public enum TripleIndexType : int
 {
     /// <summary>
-    /// Possible Triple Index types.
+    /// No Index should be used as the Pattern does not use Variables
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Index types are given Integer values with the lowest being the least useful index and the highest being most useful index.  Non-Index based Patterns are given arbitrary high values since these will typically never be used as these items are usually inserted into a Graph Pattern after the ordering step.
-    /// </para>
-    /// <para>
-    /// When used to sort Patterns as part of query optimisation the patterns are partially ordered on the usefullness of their index since more useful indexes are considered more likely to return fewer results which will help restrict the query space earlier in the execution process.
-    /// </para>
-    /// </remarks>
-    public enum TripleIndexType : int
-    {
-        /// <summary>
-        /// No Index should be used as the Pattern does not use Variables
-        /// </summary>
-        NoVariables = -2,
-        /// <summary>
-        /// No Index should be used as the Pattern is three Variables
-        /// </summary>
-        None = -1,
-        /// <summary>
-        /// Subject Index should be used
-        /// </summary>
-        Subject = 2,
-        /// <summary>
-        /// Predicate Index should be used
-        /// </summary>
-        Predicate = 1,
-        /// <summary>
-        /// Object Index should be used
-        /// </summary>
-        Object = 0,
-        /// <summary>
-        /// Subject-Predicate Index should be used
-        /// </summary>
-        SubjectPredicate = 5,
-        /// <summary>
-        /// Predicate-Object Index should be used
-        /// </summary>
-        PredicateObject = 3,
-        /// <summary>
-        /// Subject-Object Index should be used
-        /// </summary>
-        SubjectObject = 4,
-    }
+    NoVariables = -2,
+    /// <summary>
+    /// No Index should be used as the Pattern is three Variables
+    /// </summary>
+    None = -1,
+    /// <summary>
+    /// Subject Index should be used
+    /// </summary>
+    Subject = 2,
+    /// <summary>
+    /// Predicate Index should be used
+    /// </summary>
+    Predicate = 1,
+    /// <summary>
+    /// Object Index should be used
+    /// </summary>
+    Object = 0,
+    /// <summary>
+    /// Subject-Predicate Index should be used
+    /// </summary>
+    SubjectPredicate = 5,
+    /// <summary>
+    /// Predicate-Object Index should be used
+    /// </summary>
+    PredicateObject = 3,
+    /// <summary>
+    /// Subject-Object Index should be used
+    /// </summary>
+    SubjectObject = 4,
 }

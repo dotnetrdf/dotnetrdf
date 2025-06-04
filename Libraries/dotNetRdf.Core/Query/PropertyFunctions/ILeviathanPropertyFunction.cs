@@ -26,18 +26,17 @@
 
 using VDS.RDF.Query.Algebra;
 
-namespace VDS.RDF.Query.PropertyFunctions
+namespace VDS.RDF.Query.PropertyFunctions;
+
+/// <summary>
+/// Extended interface for property functions in the Leviathan query engine.
+/// </summary>
+public interface ILeviathanPropertyFunction : ISparqlPropertyFunction
 {
     /// <summary>
-    /// Extended interface for property functions in the Leviathan query engine.
+    /// Evaluates the function in the given context.
     /// </summary>
-    public interface ILeviathanPropertyFunction : ISparqlPropertyFunction
-    {
-        /// <summary>
-        /// Evaluates the function in the given context.
-        /// </summary>
-        /// <param name="context">Context.</param>
-        /// <returns></returns>
-        BaseMultiset Evaluate(SparqlEvaluationContext context);
-    }
+    /// <param name="context">Context.</param>
+    /// <returns></returns>
+    BaseMultiset Evaluate(SparqlEvaluationContext context);
 }

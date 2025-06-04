@@ -29,123 +29,122 @@ using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Operators.Numeric
+namespace VDS.RDF.Query.Operators.Numeric;
+
+/// <summary>
+/// Represents the numeric multiplication operator.
+/// </summary>
+public class MultiplicationOperator
+    : BaseNumericOperator
 {
     /// <summary>
-    /// Represents the numeric multiplication operator.
+    /// Gets the operator type.
     /// </summary>
-    public class MultiplicationOperator
-        : BaseNumericOperator
+    public override SparqlOperatorType Operator => SparqlOperatorType.Multiply;
+
+    /// <inheritdoc />
+    public override bool IsExtension => false;
+
+    /// <summary>
+    /// Applies the operator.
+    /// </summary>
+    /// <param name="ns">Arguments.</param>
+    /// <returns></returns>
+    public override IValuedNode Apply(params IValuedNode[] ns)
     {
-        /// <summary>
-        /// Gets the operator type.
-        /// </summary>
-        public override SparqlOperatorType Operator => SparqlOperatorType.Multiply;
+        if (ns == null) throw new RdfQueryException("Cannot apply to null arguments");
+        if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply multiplication when any arguments are null");
 
-        /// <inheritdoc />
-        public override bool IsExtension => false;
+        var type = (SparqlNumericType)ns.Max(n => (int)n.NumericType);
 
-        /// <summary>
-        /// Applies the operator.
-        /// </summary>
-        /// <param name="ns">Arguments.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(params IValuedNode[] ns)
+        switch (type)
         {
-            if (ns == null) throw new RdfQueryException("Cannot apply to null arguments");
-            if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply multiplication when any arguments are null");
+            case SparqlNumericType.Integer:
+                return new LongNode(Multiply(ns.Select(n => n.AsInteger())));
+            case SparqlNumericType.Decimal:
+                return new DecimalNode(Multiply(ns.Select(n => n.AsDecimal())));
+            case SparqlNumericType.Float:
+                return new FloatNode(Multiply(ns.Select(n => n.AsFloat())));
+            case SparqlNumericType.Double:
+                return new DoubleNode(Multiply(ns.Select(n => n.AsDouble())));
+            default:
+                throw new RdfQueryException("Cannot evaluate an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
+        }
+    }
 
-            var type = (SparqlNumericType)ns.Max(n => (int)n.NumericType);
-
-            switch (type)
+    private long Multiply(IEnumerable<long> ls)
+    {
+        var first = true;
+        long total = 0;
+        foreach (var l in ls)
+        {
+            if (first)
             {
-                case SparqlNumericType.Integer:
-                    return new LongNode(Multiply(ns.Select(n => n.AsInteger())));
-                case SparqlNumericType.Decimal:
-                    return new DecimalNode(Multiply(ns.Select(n => n.AsDecimal())));
-                case SparqlNumericType.Float:
-                    return new FloatNode(Multiply(ns.Select(n => n.AsFloat())));
-                case SparqlNumericType.Double:
-                    return new DoubleNode(Multiply(ns.Select(n => n.AsDouble())));
-                default:
-                    throw new RdfQueryException("Cannot evaluate an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
+                total = l;
+                first = false;
+            }
+            else
+            {
+                total *= l;
             }
         }
+        return total;
+    }
 
-        private long Multiply(IEnumerable<long> ls)
+    private decimal Multiply(IEnumerable<decimal> ls)
+    {
+        var first = true;
+        decimal total = 0;
+        foreach (var l in ls)
         {
-            var first = true;
-            long total = 0;
-            foreach (var l in ls)
+            if (first)
             {
-                if (first)
-                {
-                    total = l;
-                    first = false;
-                }
-                else
-                {
-                    total *= l;
-                }
+                total = l;
+                first = false;
             }
-            return total;
+            else
+            {
+                total *= l;
+            }
         }
+        return total;
+    }
 
-        private decimal Multiply(IEnumerable<decimal> ls)
+    private float Multiply(IEnumerable<float> ls)
+    {
+        var first = true;
+        float total = 0;
+        foreach (var l in ls)
         {
-            var first = true;
-            decimal total = 0;
-            foreach (var l in ls)
+            if (first)
             {
-                if (first)
-                {
-                    total = l;
-                    first = false;
-                }
-                else
-                {
-                    total *= l;
-                }
+                total = l;
+                first = false;
             }
-            return total;
+            else
+            {
+                total *= l;
+            }
         }
+        return total;
+    }
 
-        private float Multiply(IEnumerable<float> ls)
+    private double Multiply(IEnumerable<double> ls)
+    {
+        var first = true;
+        double total = 0;
+        foreach (var l in ls)
         {
-            var first = true;
-            float total = 0;
-            foreach (var l in ls)
+            if (first)
             {
-                if (first)
-                {
-                    total = l;
-                    first = false;
-                }
-                else
-                {
-                    total *= l;
-                }
+                total = l;
+                first = false;
             }
-            return total;
-        }
-
-        private double Multiply(IEnumerable<double> ls)
-        {
-            var first = true;
-            double total = 0;
-            foreach (var l in ls)
+            else
             {
-                if (first)
-                {
-                    total = l;
-                    first = false;
-                }
-                else
-                {
-                    total *= l;
-                }
+                total *= l;
             }
-            return total;
         }
+        return total;
     }
 }

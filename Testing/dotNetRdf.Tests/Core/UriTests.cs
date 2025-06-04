@@ -26,23 +26,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using Xunit;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+
+public class UriTests
 {
-
-    public class UriTests
+    [Fact]
+    public void UriAbsoluteUriWithQuerystring()
     {
-        [Fact]
-        public void UriAbsoluteUriWithQuerystring()
-        {
-            var u = new Uri("http://example.org/?test");
-            Assert.Equal("http://example.org/?test", u.AbsoluteUri);
-        }
+        var u = new Uri("http://example.org/?test");
+        Assert.Equal("http://example.org/?test", u.AbsoluteUri);
+    }
 
-        [Fact]
-        public void UriAbsoluteUriWithFragment()
-        {
-            var u = new Uri("http://example.org/#test");
-            Assert.Equal("http://example.org/#test", u.AbsoluteUri);
-        }
+    [Fact]
+    public void UriAbsoluteUriWithFragment()
+    {
+        var u = new Uri("http://example.org/#test");
+        Assert.Equal("http://example.org/#test", u.AbsoluteUri);
     }
 }

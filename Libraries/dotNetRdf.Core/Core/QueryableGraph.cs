@@ -28,76 +28,75 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Class for representing Graphs which can be directly queried using SPARQL.
+/// </summary>
+public class QueryableGraph
+    : Graph
 {
+    private ISparqlQueryProcessor _processor;
+    private readonly SparqlQueryParser _parser = new();
+
     /// <summary>
-    /// Class for representing Graphs which can be directly queried using SPARQL.
+    /// Creates a new Queryable Graph.
+    /// <param name="graphName">The name to assign to the new graph.</param>
     /// </summary>
-    public class QueryableGraph
-        : Graph
+    public QueryableGraph(IRefNode graphName = null)
+        : base(graphName) { }
+
+    /// <summary>
+    /// Executes a SPARQL Query on the Graph.
+    /// </summary>
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    /// <returns></returns>
+    public object ExecuteQuery(string sparqlQuery)
     {
-        private ISparqlQueryProcessor _processor;
-        private readonly SparqlQueryParser _parser = new();
+        SparqlQuery q = _parser.ParseFromString(sparqlQuery);
+        return ExecuteQuery(q);
+    }
 
-        /// <summary>
-        /// Creates a new Queryable Graph.
-        /// <param name="graphName">The name to assign to the new graph.</param>
-        /// </summary>
-        public QueryableGraph(IRefNode graphName = null)
-            : base(graphName) { }
+    /// <summary>
+    /// Executes a SPARQL Query on the Graph handling the results with the given handlers.
+    /// </summary>
+    /// <param name="rdfHandler">RDF Handler.</param>
+    /// <param name="resultsHandler">SPARQL Results Handler.</param>
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
+    {
+        SparqlQuery q = _parser.ParseFromString(sparqlQuery);
+        ExecuteQuery(rdfHandler, resultsHandler, q);
+    }
 
-        /// <summary>
-        /// Executes a SPARQL Query on the Graph.
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <returns></returns>
-        public object ExecuteQuery(string sparqlQuery)
+    /// <summary>
+    /// Executes a SPARQL Query on the Graph.
+    /// </summary>
+    /// <param name="query">SPARQL Query.</param>
+    /// <returns></returns>
+    public object ExecuteQuery(SparqlQuery query)
+    {
+        if (_processor == null)
         {
-            SparqlQuery q = _parser.ParseFromString(sparqlQuery);
-            return ExecuteQuery(q);
+            var ds = new InMemoryDataset(this);
+            _processor = new LeviathanQueryProcessor(ds);
         }
+        return _processor.ProcessQuery(query);
+    }
 
-        /// <summary>
-        /// Executes a SPARQL Query on the Graph handling the results with the given handlers.
-        /// </summary>
-        /// <param name="rdfHandler">RDF Handler.</param>
-        /// <param name="resultsHandler">SPARQL Results Handler.</param>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
+    /// <summary>
+    /// Executes a SPARQL Query on the Graph handling the results with the given handlers.
+    /// </summary>
+    /// <param name="rdfHandler">RDF Handler.</param>
+    /// <param name="resultsHandler">SPARQL Results Handler.</param>
+    /// <param name="query">SPARQL Query.</param>
+    public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
+    {
+        if (_processor == null)
         {
-            SparqlQuery q = _parser.ParseFromString(sparqlQuery);
-            ExecuteQuery(rdfHandler, resultsHandler, q);
+            var ds = new InMemoryDataset(this);
+            _processor = new LeviathanQueryProcessor(ds);
         }
-
-        /// <summary>
-        /// Executes a SPARQL Query on the Graph.
-        /// </summary>
-        /// <param name="query">SPARQL Query.</param>
-        /// <returns></returns>
-        public object ExecuteQuery(SparqlQuery query)
-        {
-            if (_processor == null)
-            {
-                var ds = new InMemoryDataset(this);
-                _processor = new LeviathanQueryProcessor(ds);
-            }
-            return _processor.ProcessQuery(query);
-        }
-
-        /// <summary>
-        /// Executes a SPARQL Query on the Graph handling the results with the given handlers.
-        /// </summary>
-        /// <param name="rdfHandler">RDF Handler.</param>
-        /// <param name="resultsHandler">SPARQL Results Handler.</param>
-        /// <param name="query">SPARQL Query.</param>
-        public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
-        {
-            if (_processor == null)
-            {
-                var ds = new InMemoryDataset(this);
-                _processor = new LeviathanQueryProcessor(ds);
-            }
-            _processor.ProcessQuery(rdfHandler, resultsHandler, query);
-        }
+        _processor.ProcessQuery(rdfHandler, resultsHandler, query);
     }
 }

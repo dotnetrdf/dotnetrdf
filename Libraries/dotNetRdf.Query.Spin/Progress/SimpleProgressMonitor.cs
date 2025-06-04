@@ -26,77 +26,76 @@
 
 using System;
 
-namespace VDS.RDF.Query.Spin.Progress
+namespace VDS.RDF.Query.Spin.Progress;
+
+/**
+ * A simple implementation of ProgressMonitor that prints messages
+ * to System.out.
+ *
+ * @author Holger Knublauch
+ */
+internal class SimpleProgressMonitor : IProgressMonitor
 {
-    /**
-     * A simple implementation of ProgressMonitor that prints messages
-     * to System.out.
-     *
-     * @author Holger Knublauch
-     */
-    internal class SimpleProgressMonitor : IProgressMonitor
+
+    private String name;
+
+    private int currentWork;
+
+    private int totalWork;
+
+
+    public SimpleProgressMonitor(String name)
     {
-
-        private String name;
-
-        private int currentWork;
-
-        private int totalWork;
+        this.name = name;
+    }
 
 
-        public SimpleProgressMonitor(String name)
-        {
-            this.name = name;
-        }
+    public void beginTask(String label, int totalWork)
+    {
+        println("Beginning task " + label + " (" + totalWork + ")");
+        this.totalWork = totalWork;
+        currentWork = 0;
+    }
 
 
-        public void beginTask(String label, int totalWork)
-        {
-            println("Beginning task " + label + " (" + totalWork + ")");
-            this.totalWork = totalWork;
-            currentWork = 0;
-        }
+    public void done()
+    {
+        println("Done");
+    }
 
 
-        public void done()
-        {
-            println("Done");
-        }
+    public bool isCanceled()
+    {
+        return false;
+    }
 
 
-        public bool isCanceled()
-        {
-            return false;
-        }
+    protected void println(String text)
+    {
+        Console.WriteLine(name + ": " + text);
+    }
 
 
-        protected void println(String text)
-        {
-            Console.WriteLine(name + ": " + text);
-        }
+    public void setCanceled(bool value)
+    {
+    }
 
 
-        public void setCanceled(bool value)
-        {
-        }
+    public void setTaskName(String value)
+    {
+        println("Task name: " + value);
+    }
 
 
-        public void setTaskName(String value)
-        {
-            println("Task name: " + value);
-        }
+    public void subTask(String label)
+    {
+        println("Subtask: " + label);
+    }
 
 
-        public void subTask(String label)
-        {
-            println("Subtask: " + label);
-        }
-
-
-        public void worked(int amount)
-        {
-            currentWork += amount;
-            println("Worked " + currentWork + " / " + totalWork);
-        }
+    public void worked(int amount)
+    {
+        currentWork += amount;
+        println("Worked " + currentWork + " / " + totalWork);
     }
 }

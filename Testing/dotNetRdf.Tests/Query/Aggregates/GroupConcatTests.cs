@@ -28,69 +28,69 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 
-namespace VDS.RDF.Query.Aggregates
+namespace VDS.RDF.Query.Aggregates;
+
+
+public class GroupConcatTests
 {
+    private SparqlQueryParser _parser = new SparqlQueryParser();
 
-    public class GroupConcatTests
+    private void RunTest(IGraph g, String query, int expected, String var, bool expectNotNull, String expectMatch)
     {
-        private SparqlQueryParser _parser = new SparqlQueryParser();
+        SparqlQuery q = _parser.ParseFromString(query);
+        var processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
 
-        private void RunTest(IGraph g, String query, int expected, String var, bool expectNotNull, String expectMatch)
+        var results = processor.ProcessQuery(q) as SparqlResultSet;
+        Assert.NotNull(results);
+        TestTools.ShowResults(results);
+
+        Assert.Equal(expected, results.Count);
+        Assert.Contains(var, results.Variables);
+
+        foreach (SparqlResult r in results)
         {
-            SparqlQuery q = _parser.ParseFromString(query);
-            var processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
-
-            var results = processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.NotNull(results);
-            TestTools.ShowResults(results);
-
-            Assert.Equal(expected, results.Count);
-            Assert.Contains(var, results.Variables);
-
-            foreach (SparqlResult r in results)
+            Assert.True(r.HasValue(var));
+            if (expectNotNull)
             {
-                Assert.True(r.HasValue(var));
-                if (expectNotNull)
-                {
-                    Assert.True(r.HasBoundValue(var));
-                    INode value = r[var];
-                    Assert.Equal(NodeType.Literal, value.NodeType);
-                    var lexValue = ((ILiteralNode)value).Value;
-                    Assert.Contains(expectMatch, lexValue);
-                }
-                else
-                {
-                    Assert.False(r.HasBoundValue(var));
-                }
+                Assert.True(r.HasBoundValue(var));
+                INode value = r[var];
+                Assert.Equal(NodeType.Literal, value.NodeType);
+                var lexValue = ((ILiteralNode)value).Value;
+                Assert.Contains(expectMatch, lexValue);
+            }
+            else
+            {
+                Assert.False(r.HasBoundValue(var));
             }
         }
+    }
 
-        [Fact]
-        public void SparqlGroupConcat1()
-        {
-            IGraph g = new Graph();
-            g.NamespaceMap.AddNamespace("ex", UriFactory.Root.Create("http://example.org/ns#"));
-            g.Assert(g.CreateUriNode("ex:subject"), g.CreateUriNode("ex:predicate"), g.CreateLiteralNode("object"));
+    [Fact]
+    public void SparqlGroupConcat1()
+    {
+        IGraph g = new Graph();
+        g.NamespaceMap.AddNamespace("ex", UriFactory.Root.Create("http://example.org/ns#"));
+        g.Assert(g.CreateUriNode("ex:subject"), g.CreateUriNode("ex:predicate"), g.CreateLiteralNode("object"));
 
-            RunTest(g, "SELECT (GROUP_CONCAT(?o) AS ?concat) WHERE { ?s ?p ?o }", 1, "concat", true, "object");
-        }
+        RunTest(g, "SELECT (GROUP_CONCAT(?o) AS ?concat) WHERE { ?s ?p ?o }", 1, "concat", true, "object");
+    }
 
-        [Fact]
-        public void SparqlGroupConcat2()
-        {
-            IGraph g = new Graph();
-            g.NamespaceMap.AddNamespace("ex", UriFactory.Root.Create("http://example.org/ns#"));
-            g.Assert(g.CreateUriNode("ex:subject"), g.CreateUriNode("ex:predicate"), g.CreateLiteralNode("object"));
+    [Fact]
+    public void SparqlGroupConcat2()
+    {
+        IGraph g = new Graph();
+        g.NamespaceMap.AddNamespace("ex", UriFactory.Root.Create("http://example.org/ns#"));
+        g.Assert(g.CreateUriNode("ex:subject"), g.CreateUriNode("ex:predicate"), g.CreateLiteralNode("object"));
 
-            RunTest(g, "SELECT (GROUP_CONCAT(?s) AS ?concat) WHERE { ?s ?p ?o }", 1, "concat", true, "subject");
-        }
+        RunTest(g, "SELECT (GROUP_CONCAT(?s) AS ?concat) WHERE { ?s ?p ?o }", 1, "concat", true, "subject");
+    }
 
-        [Fact]
-        public void SparqlGroupConcat3()
-        {
-            IGraph g = new Graph();
+    [Fact]
+    public void SparqlGroupConcat3()
+    {
+        IGraph g = new Graph();
 
-            var query = @"SELECT (GROUP_CONCAT(?x) AS ?concat)
+        var query = @"SELECT (GROUP_CONCAT(?x) AS ?concat)
 WHERE
 {
   VALUES ( ?x )
@@ -100,15 +100,15 @@ WHERE
     ( true )
   }
 }";
-            RunTest(g, query, 1, "concat", true, "1234");
-        }
+        RunTest(g, query, 1, "concat", true, "1234");
+    }
 
-        [Fact]
-        public void SparqlGroupConcat4()
-        {
-            IGraph g = new Graph();
+    [Fact]
+    public void SparqlGroupConcat4()
+    {
+        IGraph g = new Graph();
 
-            var query = @"SELECT (GROUP_CONCAT(?x) AS ?concat)
+        var query = @"SELECT (GROUP_CONCAT(?x) AS ?concat)
 WHERE
 {
   VALUES ( ?x )
@@ -119,7 +119,6 @@ WHERE
     ( 'custom'^^<http://datatype> )
   }
 }";
-            RunTest(g, query, 1, "concat", true, "custom");
-        }
+        RunTest(g, query, 1, "concat", true, "custom");
     }
 }

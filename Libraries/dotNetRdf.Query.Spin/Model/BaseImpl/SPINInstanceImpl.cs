@@ -27,31 +27,30 @@
 using System.Collections.Generic;
 using VDS.RDF.Query.Spin.Util;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+
+internal class SPINInstanceImpl : Resource, ISPINInstance
 {
 
-
-    internal class SPINInstanceImpl : Resource, ISPINInstance
+    public SPINInstanceImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
 
-        public SPINInstanceImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
+    }
 
-        }
-
-        // TODO relocate this into the SparqlWrapperDataset
-        public List<QueryOrTemplateCall> getQueriesAndTemplateCalls(INode predicate)
-        {
-            var results = new List<QueryOrTemplateCall>();
-            //SparqlParameterizedString queryString = new SparqlParameterizedString("SELECT DISTINCT ?class WHERE {@instance a ?class}");
-            //queryString.SetParameter("instance", getSource());
-            //IEnumerator<SparqlResult> types = ((SparqlResultSet)getModel().Query(queryString.ToString())).Results.GetEnumerator();
-            //for (; types.MoveNext(); )
-            //{
-            //    SPINUtil.addQueryOrTemplateCalls(Resource.Get(types.Current.Value("class"),getModel()), predicate, results);
-            //}
-            return results;
-        }
+    // TODO relocate this into the SparqlWrapperDataset
+    public List<QueryOrTemplateCall> getQueriesAndTemplateCalls(INode predicate)
+    {
+        var results = new List<QueryOrTemplateCall>();
+        //SparqlParameterizedString queryString = new SparqlParameterizedString("SELECT DISTINCT ?class WHERE {@instance a ?class}");
+        //queryString.SetParameter("instance", getSource());
+        //IEnumerator<SparqlResult> types = ((SparqlResultSet)getModel().Query(queryString.ToString())).Results.GetEnumerator();
+        //for (; types.MoveNext(); )
+        //{
+        //    SPINUtil.addQueryOrTemplateCalls(Resource.Get(types.Current.Value("class"),getModel()), predicate, results);
+        //}
+        return results;
     }
 }

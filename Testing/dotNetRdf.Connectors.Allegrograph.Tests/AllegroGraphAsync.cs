@@ -25,16 +25,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Xunit;
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+[Collection("AllegroGraph Test Collection")]
+public class AllegroGraphAsync
+    : BaseAsyncTests
 {
-    [Collection("AllegroGraph Test Collection")]
-    public class AllegroGraphAsync
-        : BaseAsyncTests
+    protected override IAsyncStorageProvider GetAsyncProvider()
     {
-        protected override IAsyncStorageProvider GetAsyncProvider()
-        {
-            WaitDelay = 30000;
-            return AllegroGraphTests.GetConnection();
-        }
+        WaitDelay = 30000;
+        return AllegroGraphTests.GetConnection();
     }
 }

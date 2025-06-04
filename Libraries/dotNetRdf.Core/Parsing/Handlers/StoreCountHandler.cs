@@ -27,68 +27,67 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers;
+
+/// <summary>
+/// A RDF Handler which simply counts the Triples and Graphs.
+/// </summary>
+public class StoreCountHandler : BaseRdfHandler
 {
+    private HashSet<string> _graphs;
+
     /// <summary>
-    /// A RDF Handler which simply counts the Triples and Graphs.
+    /// Creates a new Store Count Handler.
     /// </summary>
-    public class StoreCountHandler : BaseRdfHandler
+    public StoreCountHandler()
+        : base(new NodeFactory(new NodeFactoryOptions())) { }
+
+    /// <summary>
+    /// Starts RDF Handling by resetting the counters.
+    /// </summary>
+    protected override void StartRdfInternal()
     {
-        private HashSet<string> _graphs;
-
-        /// <summary>
-        /// Creates a new Store Count Handler.
-        /// </summary>
-        public StoreCountHandler()
-            : base(new NodeFactory(new NodeFactoryOptions())) { }
-
-        /// <summary>
-        /// Starts RDF Handling by resetting the counters.
-        /// </summary>
-        protected override void StartRdfInternal()
-        {
-            TripleCount = 0;
-            _graphs = new HashSet<string>();
-        }
-
-        /// <summary>
-        /// Handles Triples/Quads by counting the Triples and distinct Graph URIs.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        protected override bool HandleTripleInternal(Triple t)
-        {
-            TripleCount++;
-            _graphs.Add(String.Empty);
-            return true;
-        }
-
-        /// <summary>
-        /// Handles Triples/Quads by counting the Triples and distinct Graph URIs.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <param name="graph">The graph containing the triple.</param>
-        /// <returns></returns>
-        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
-        {
-            TripleCount++;
-            _graphs.Add(graph.ToSafeString());
-            return true;
-        }
-
-        /// <summary>
-        /// Gets the count of Triples.
-        /// </summary>
-        public int TripleCount { get; private set; }
-
-        /// <summary>
-        /// Gets the count of distinct Graph URIs.
-        /// </summary>
-        public int GraphCount => _graphs.Count;
-
-        /// <summary>
-        /// Gets that this Handler accepts all Triples.
-        /// </summary>
-        public override bool AcceptsAll => true;
+        TripleCount = 0;
+        _graphs = new HashSet<string>();
     }
+
+    /// <summary>
+    /// Handles Triples/Quads by counting the Triples and distinct Graph URIs.
+    /// </summary>
+    /// <param name="t">Triple.</param>
+    /// <returns></returns>
+    protected override bool HandleTripleInternal(Triple t)
+    {
+        TripleCount++;
+        _graphs.Add(String.Empty);
+        return true;
+    }
+
+    /// <summary>
+    /// Handles Triples/Quads by counting the Triples and distinct Graph URIs.
+    /// </summary>
+    /// <param name="t">Triple.</param>
+    /// <param name="graph">The graph containing the triple.</param>
+    /// <returns></returns>
+    protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+    {
+        TripleCount++;
+        _graphs.Add(graph.ToSafeString());
+        return true;
+    }
+
+    /// <summary>
+    /// Gets the count of Triples.
+    /// </summary>
+    public int TripleCount { get; private set; }
+
+    /// <summary>
+    /// Gets the count of distinct Graph URIs.
+    /// </summary>
+    public int GraphCount => _graphs.Count;
+
+    /// <summary>
+    /// Gets that this Handler accepts all Triples.
+    /// </summary>
+    public override bool AcceptsAll => true;
 }

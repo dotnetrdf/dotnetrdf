@@ -27,31 +27,30 @@
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+/// <summary>
+/// Provides methods for creating aggregates expressions.
+/// </summary>
+public interface IAggregateBuilder : IDistinctAggregateBuilder
 {
     /// <summary>
-    /// Provides methods for creating aggregates expressions.
+    /// Gets a builder which builds a DISTINCT aggregate.
     /// </summary>
-    public interface IAggregateBuilder : IDistinctAggregateBuilder
-    {
-        /// <summary>
-        /// Gets a builder which builds a DISTINCT aggregate.
-        /// </summary>
-        IDistinctAggregateBuilder Distinct { get; }
+    IDistinctAggregateBuilder Distinct { get; }
 
-        /// <summary>
-        /// Creates a SAMPLE aggregate.
-        /// </summary>
-        AggregateExpression Sample(VariableTerm variable);
+    /// <summary>
+    /// Creates a SAMPLE aggregate.
+    /// </summary>
+    AggregateExpression Sample(VariableTerm variable);
 
-        /// <summary>
-        /// Creates a SAMPLE aggregate.
-        /// </summary>
-        AggregateExpression Sample(string variable);
+    /// <summary>
+    /// Creates a SAMPLE aggregate.
+    /// </summary>
+    AggregateExpression Sample(string variable);
 
-        /// <summary>
-        /// Creates a SAMPLE aggregate.
-        /// </summary>
-        AggregateExpression Sample(SparqlExpression expression);
-    }
+    /// <summary>
+    /// Creates a SAMPLE aggregate.
+    /// </summary>
+    AggregateExpression Sample(SparqlExpression expression);
 }

@@ -29,40 +29,39 @@ using Xunit;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions;
+
+public class SparqlExpressionTestsBase
 {
-    public class SparqlExpressionTestsBase
+    protected ISparqlExpression Left;
+    protected ISparqlExpression Right;
+
+    protected void AssertExpressionTypeAndCorrectArguments<TExpressionType>(SparqlExpression expression,
+                                                                            Action<ISparqlExpression> assertLeftOperand = null,
+                                                                            Action<ISparqlExpression> assertRightOperand = null)
     {
-        protected ISparqlExpression Left;
-        protected ISparqlExpression Right;
-
-        protected void AssertExpressionTypeAndCorrectArguments<TExpressionType>(SparqlExpression expression,
-                                                                                Action<ISparqlExpression> assertLeftOperand = null,
-                                                                                Action<ISparqlExpression> assertRightOperand = null)
+        Assert.Equal(typeof(TExpressionType), expression.Expression.GetType());
+        if (assertLeftOperand == null)
         {
-            Assert.Equal(typeof(TExpressionType), expression.Expression.GetType());
-            if (assertLeftOperand == null)
-            {
-                Assert.Same(Left, expression.Expression.Arguments.ElementAt(0));
-            }
-            else
-            {
-                assertLeftOperand(expression.Expression.Arguments.ElementAt(0));
-            }
-            if (assertRightOperand == null)
-            {
-                Assert.Same(Right, expression.Expression.Arguments.ElementAt(1));
-            }
-            else
-            {
-                assertRightOperand(expression.Expression.Arguments.ElementAt(1));
-            }
+            Assert.Same(Left, expression.Expression.Arguments.ElementAt(0));
         }
-
-        protected void AssertCorrectConstantTerm<TConstant>(ISparqlExpression operand, TConstant value)
+        else
         {
-            Assert.True(operand is ConstantTerm);
-            Assert.Equal(value.ToConstantTerm().ToString(), operand.ToString());
+            assertLeftOperand(expression.Expression.Arguments.ElementAt(0));
         }
+        if (assertRightOperand == null)
+        {
+            Assert.Same(Right, expression.Expression.Arguments.ElementAt(1));
+        }
+        else
+        {
+            assertRightOperand(expression.Expression.Arguments.ElementAt(1));
+        }
+    }
+
+    protected void AssertCorrectConstantTerm<TConstant>(ISparqlExpression operand, TConstant value)
+    {
+        Assert.True(operand is ConstantTerm);
+        Assert.Equal(value.ToConstantTerm().ToString(), operand.ToString());
     }
 }

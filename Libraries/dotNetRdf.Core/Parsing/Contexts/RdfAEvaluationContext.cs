@@ -27,76 +27,75 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing.Contexts;
+
+/// <summary>
+/// Evaluation Context for RDFa Parsers.
+/// </summary>
+public class RdfAEvaluationContext
 {
     /// <summary>
-    /// Evaluation Context for RDFa Parsers.
+    /// Creates a new RDFa Evaluation Context.
     /// </summary>
-    public class RdfAEvaluationContext
+    /// <param name="baseUri">Base URI.</param>
+    public RdfAEvaluationContext(Uri baseUri)
     {
-        /// <summary>
-        /// Creates a new RDFa Evaluation Context.
-        /// </summary>
-        /// <param name="baseUri">Base URI.</param>
-        public RdfAEvaluationContext(Uri baseUri)
-        {
-            BaseUri = baseUri;
-            NamespaceMap = new NamespaceMapper(true);
-            NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create(RdfAParser.XHtmlVocabNamespace));
-        }
-
-        /// <summary>
-        /// Creates a new RDFa Evaluation Context.
-        /// </summary>
-        /// <param name="baseUri">Base URI.</param>
-        /// <param name="nsmap">Namespace Map.</param>
-        public RdfAEvaluationContext(Uri baseUri, NamespaceMapper nsmap)
-        {
-            BaseUri = baseUri;
-            NamespaceMap = nsmap;
-        }
-
-        /// <summary>
-        /// Gets/Sets the Base URI.
-        /// </summary>
-        public Uri BaseUri
-        {
-            get; set;
-        }
-
-        /// <summary>
-        /// Gets/Sets the Parent Subject.
-        /// </summary>
-        public INode ParentSubject { get; set; }
-
-        /// <summary>
-        /// Gets/Sets the Parent Object.
-        /// </summary>
-        public INode ParentObject { get; set; }
-
-        /// <summary>
-        /// Gets the Namespace Map.
-        /// </summary>
-        public NamespaceMapper NamespaceMap { get; }
-
-        /// <summary>
-        /// Gets/Sets the Language.
-        /// </summary>
-        public string Language { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets the list of incomplete Triples.
-        /// </summary>
-        public List<IncompleteTriple> IncompleteTriples { get; } = new List<IncompleteTriple>();
-
-        /// <summary>
-        /// Gets/Sets the Local Vocabulary.
-        /// </summary>
-        public IRdfAContext LocalContext { get; set; }
-
-        /// <summary>
-        /// Get the list mapping.
-        /// </summary>
-        public Dictionary<INode, List<INode>> ListMapping { get; set; } = new();
+        BaseUri = baseUri;
+        NamespaceMap = new NamespaceMapper(true);
+        NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create(RdfAParser.XHtmlVocabNamespace));
     }
+
+    /// <summary>
+    /// Creates a new RDFa Evaluation Context.
+    /// </summary>
+    /// <param name="baseUri">Base URI.</param>
+    /// <param name="nsmap">Namespace Map.</param>
+    public RdfAEvaluationContext(Uri baseUri, NamespaceMapper nsmap)
+    {
+        BaseUri = baseUri;
+        NamespaceMap = nsmap;
+    }
+
+    /// <summary>
+    /// Gets/Sets the Base URI.
+    /// </summary>
+    public Uri BaseUri
+    {
+        get; set;
+    }
+
+    /// <summary>
+    /// Gets/Sets the Parent Subject.
+    /// </summary>
+    public INode ParentSubject { get; set; }
+
+    /// <summary>
+    /// Gets/Sets the Parent Object.
+    /// </summary>
+    public INode ParentObject { get; set; }
+
+    /// <summary>
+    /// Gets the Namespace Map.
+    /// </summary>
+    public NamespaceMapper NamespaceMap { get; }
+
+    /// <summary>
+    /// Gets/Sets the Language.
+    /// </summary>
+    public string Language { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets the list of incomplete Triples.
+    /// </summary>
+    public List<IncompleteTriple> IncompleteTriples { get; } = new List<IncompleteTriple>();
+
+    /// <summary>
+    /// Gets/Sets the Local Vocabulary.
+    /// </summary>
+    public IRdfAContext LocalContext { get; set; }
+
+    /// <summary>
+    /// Get the list mapping.
+    /// </summary>
+    public Dictionary<INode, List<INode>> ListMapping { get; set; } = new();
 }

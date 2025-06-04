@@ -27,81 +27,78 @@
 using System;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Class for representing Triple Stores which are collections of RDF Graphs.
+/// </summary>
+/// <remarks>
+/// The 'Web Demand' Triple Store is a Triple Store which automatically retrieves Graphs from the Web based on the URIs of Graphs that you ask it for.
+/// </remarks>
+public class WebDemandTripleStore 
+    : TripleStore
 {
     /// <summary>
-    /// Class for representing Triple Stores which are collections of RDF Graphs.
+    /// Creates a web demand triple store.
     /// </summary>
-    /// <remarks>
-    /// The 'Web Demand' Triple Store is a Triple Store which automatically retrieves Graphs from the Web based on the URIs of Graphs that you ask it for.
-    /// </remarks>
-    public class WebDemandTripleStore 
-        : TripleStore
+    /// <param name="defaultGraphName">The name of the default graph which should be loaded from the web. The graph name MUST be a non-null <see cref="IUriNode"/> instance.</param>
+    /// <exception cref="RdfException">Raised if the graph referenced by <paramref name="defaultGraphName"/> could not be loaded from the web.</exception>
+    public WebDemandTripleStore(IUriNode defaultGraphName) : this()
     {
-        /// <summary>
-        /// Creates a web demand triple store.
-        /// </summary>
-        /// <param name="defaultGraphName">The name of the default graph which should be loaded from the web. The graph name MUST be a non-null <see cref="IUriNode"/> instance.</param>
-        /// <exception cref="RdfException">Raised if the graph referenced by <paramref name="defaultGraphName"/> could not be loaded from the web.</exception>
-        public WebDemandTripleStore(IUriNode defaultGraphName) : this()
+        if (defaultGraphName == null)
         {
-            if (defaultGraphName == null)
-            {
-                throw new ArgumentNullException(nameof(defaultGraphName),
-                    "The default graph URI reference must not be null.");
-            }
-
-            if (!_graphs.Contains(defaultGraphName))
-            {
-                throw new RdfException($"Cannot load the requested default graph from {defaultGraphName.Uri}");
-            }
+            throw new ArgumentNullException(nameof(defaultGraphName),
+                "The default graph URI reference must not be null.");
         }
 
-        /// <summary>
-        /// Creates an Web Demand Triple Store.
-        /// </summary>
-        /// <param name="defaultGraphUri">A Uri for the Default Graph which should be loaded from the Web as the initial Graph.</param>
-        /// <exception cref="RdfException">Raised if the graph referenced by <paramref name="defaultGraphUri"/> could not be loaded from the web.</exception>
-        public WebDemandTripleStore(Uri defaultGraphUri)
-            : this()
+        if (!_graphs.Contains(defaultGraphName))
         {
-            if (defaultGraphUri == null)
-            {
-                throw new ArgumentNullException(nameof(defaultGraphUri),
-                    "The default graph URI reference must not be null.");
-            }
-            // Call Contains() which will try to load the Graph if it exists in the Store
-            if (!_graphs.Contains(new UriNode(defaultGraphUri)))
-            {
-                throw new RdfException("Cannot load the requested Default Graph since a valid Graph with that URI could not be retrieved from the Web");
-            }
+            throw new RdfException($"Cannot load the requested default graph from {defaultGraphName.Uri}");
         }
-
-        /// <summary>
-        /// Creates an Web Demand Triple Store.
-        /// </summary>
-        /// <param name="defaultGraphFile">A Filename for the Default Graph which should be loaded from a local File as the initial Graph.</param>
-        public WebDemandTripleStore(string defaultGraphFile)
-            : this()
-        {
-            try
-            {
-                var g = new Graph();
-                FileLoader.Load(g, defaultGraphFile);
-                _graphs.Add(g, false);
-            }
-            catch (Exception)
-            {
-                throw new RdfException("Cannot load the requested Default Graph since a valid Graph could not be retrieved from the given File");
-            }
-        }
-
-        /// <summary>
-        /// Creates a new Web Demand Triple Store.
-        /// </summary>
-        public WebDemandTripleStore()
-            : base(new WebDemandGraphCollection()) { }
     }
 
+    /// <summary>
+    /// Creates an Web Demand Triple Store.
+    /// </summary>
+    /// <param name="defaultGraphUri">A Uri for the Default Graph which should be loaded from the Web as the initial Graph.</param>
+    /// <exception cref="RdfException">Raised if the graph referenced by <paramref name="defaultGraphUri"/> could not be loaded from the web.</exception>
+    public WebDemandTripleStore(Uri defaultGraphUri)
+        : this()
+    {
+        if (defaultGraphUri == null)
+        {
+            throw new ArgumentNullException(nameof(defaultGraphUri),
+                "The default graph URI reference must not be null.");
+        }
+        // Call Contains() which will try to load the Graph if it exists in the Store
+        if (!_graphs.Contains(new UriNode(defaultGraphUri)))
+        {
+            throw new RdfException("Cannot load the requested Default Graph since a valid Graph with that URI could not be retrieved from the Web");
+        }
+    }
 
+    /// <summary>
+    /// Creates an Web Demand Triple Store.
+    /// </summary>
+    /// <param name="defaultGraphFile">A Filename for the Default Graph which should be loaded from a local File as the initial Graph.</param>
+    public WebDemandTripleStore(string defaultGraphFile)
+        : this()
+    {
+        try
+        {
+            var g = new Graph();
+            FileLoader.Load(g, defaultGraphFile);
+            _graphs.Add(g, false);
+        }
+        catch (Exception)
+        {
+            throw new RdfException("Cannot load the requested Default Graph since a valid Graph could not be retrieved from the given File");
+        }
+    }
+
+    /// <summary>
+    /// Creates a new Web Demand Triple Store.
+    /// </summary>
+    public WebDemandTripleStore()
+        : base(new WebDemandGraphCollection()) { }
 }

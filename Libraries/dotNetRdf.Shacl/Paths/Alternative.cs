@@ -29,37 +29,36 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Query.Paths;
 
-namespace VDS.RDF.Shacl.Paths
+namespace VDS.RDF.Shacl.Paths;
+
+internal class Alternative : Unary
 {
-    internal class Alternative : Unary
+    [DebuggerStepThrough]
+    internal Alternative(INode node, IGraph shapesGraph)
+        : base(node, shapesGraph)
     {
-        [DebuggerStepThrough]
-        internal Alternative(INode node, IGraph shapesGraph)
-            : base(node, shapesGraph)
-        {
-        }
+    }
 
-        internal override ISparqlPath SparqlPath
+    internal override ISparqlPath SparqlPath
+    {
+        get
         {
-            get
-            {
-                return (
-                    from member in Graph.GetListItems(Argument)
-                    let path = Path.Parse(member, Graph)
-                    select path.SparqlPath)
-                    .Aggregate((first, second) => new AlternativePath(first, second));
-            }
+            return (
+                from member in Graph.GetListItems(Argument)
+                let path = Path.Parse(member, Graph)
+                select path.SparqlPath)
+                .Aggregate((first, second) => new AlternativePath(first, second));
         }
+    }
 
-        internal override IEnumerable<Triple> AsTriples
+    internal override IEnumerable<Triple> AsTriples
+    {
+        get
         {
-            get
-            {
-                return
-                    new Triple(this, Vocabulary.AlternativePath, Argument).AsEnumerable()
-                    .Concat(
-                    Graph.GetListAsTriples(Argument));
-            }
+            return
+                new Triple(this, Vocabulary.AlternativePath, Argument).AsEnumerable()
+                .Concat(
+                Graph.GetListAsTriples(Argument));
         }
     }
 }

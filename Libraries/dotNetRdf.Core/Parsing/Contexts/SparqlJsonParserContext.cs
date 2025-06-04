@@ -29,37 +29,36 @@ using Newtonsoft.Json;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing.Contexts;
+
+/// <summary>
+/// SPARQL JSON Parser Context.
+/// </summary>
+public class SparqlJsonParserContext : BaseResultsParserContext
 {
     /// <summary>
-    /// SPARQL JSON Parser Context.
+    /// Creates a new Parser Context.
     /// </summary>
-    public class SparqlJsonParserContext : BaseResultsParserContext
+    /// <param name="reader">JSON Text Reader.</param>
+    /// <param name="handler">Results Handler.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public SparqlJsonParserContext(JsonTextReader reader, ISparqlResultsHandler handler, IUriFactory uriFactory = null)
+        : base(handler, uriFactory)
     {
-        /// <summary>
-        /// Creates a new Parser Context.
-        /// </summary>
-        /// <param name="reader">JSON Text Reader.</param>
-        /// <param name="handler">Results Handler.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public SparqlJsonParserContext(JsonTextReader reader, ISparqlResultsHandler handler, IUriFactory uriFactory = null)
-            : base(handler, uriFactory)
-        {
-            Input = reader ?? throw new ArgumentNullException(nameof(reader));
-        }
-
-        /// <summary>
-        /// Creates a new Parser Context.
-        /// </summary>
-        /// <param name="reader">JSON Text Reader.</param>
-        /// <param name="results">SPARQL Result Set.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public SparqlJsonParserContext(JsonTextReader reader, SparqlResultSet results, IUriFactory uriFactory = null)
-            : this(reader, new ResultSetHandler(results), uriFactory) { }
-
-        /// <summary>
-        /// Gets the JSON Text Reader.
-        /// </summary>
-        public JsonTextReader Input { get; }
+        Input = reader ?? throw new ArgumentNullException(nameof(reader));
     }
+
+    /// <summary>
+    /// Creates a new Parser Context.
+    /// </summary>
+    /// <param name="reader">JSON Text Reader.</param>
+    /// <param name="results">SPARQL Result Set.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public SparqlJsonParserContext(JsonTextReader reader, SparqlResultSet results, IUriFactory uriFactory = null)
+        : this(reader, new ResultSetHandler(results), uriFactory) { }
+
+    /// <summary>
+    /// Gets the JSON Text Reader.
+    /// </summary>
+    public JsonTextReader Input { get; }
 }

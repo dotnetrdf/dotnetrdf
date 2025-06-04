@@ -29,251 +29,250 @@ using System.Text;
 using Newtonsoft.Json;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+/// <summary>
+/// Class for saving Sparql Result Sets to the SPARQL Results JSON Format.
+/// </summary>
+public class SparqlJsonWriter : ISparqlResultsWriter
 {
+
     /// <summary>
-    /// Class for saving Sparql Result Sets to the SPARQL Results JSON Format.
+    /// Saves the Result Set to the given File in the SPARQL Results JSON Format.
     /// </summary>
-    public class SparqlJsonWriter : ISparqlResultsWriter
+    /// <param name="results">Result Set to save.</param>
+    /// <param name="filename">File to save to.</param>
+    /// <remarks>The output file will be written using UTF-8 text encoding with no byte-order mark.</remarks>
+    public void Save(SparqlResultSet results, string filename)
     {
-
-        /// <summary>
-        /// Saves the Result Set to the given File in the SPARQL Results JSON Format.
-        /// </summary>
-        /// <param name="results">Result Set to save.</param>
-        /// <param name="filename">File to save to.</param>
-        /// <remarks>The output file will be written using UTF-8 text encoding with no byte-order mark.</remarks>
-        public void Save(SparqlResultSet results, string filename)
-        {
-            Save(results, filename,
+        Save(results, filename,
 #pragma warning disable CS0618 // Type or member is obsolete
-                    new UTF8Encoding(Options.UseBomForUtf8) //new UTF8Encoding(false)
+                new UTF8Encoding(Options.UseBomForUtf8) //new UTF8Encoding(false)
 #pragma warning restore CS0618 // Type or member is obsolete
-                );
-        }
+            );
+    }
 
-        /// <summary>
-        /// Saves the Result Set to the given File in the SPARQL Results JSON Format.
-        /// </summary>
-        /// <param name="results">Result Set to save.</param>
-        /// <param name="filename">File to save to.</param>
-        /// <param name="fileEncoding">The text encoding to use for the output file.</param>
-        public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
+    /// <summary>
+    /// Saves the Result Set to the given File in the SPARQL Results JSON Format.
+    /// </summary>
+    /// <param name="results">Result Set to save.</param>
+    /// <param name="filename">File to save to.</param>
+    /// <param name="fileEncoding">The text encoding to use for the output file.</param>
+    public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
+    {
+        using FileStream stream = File.Open(filename, FileMode.Create);
+        Save(results, new StreamWriter(stream, fileEncoding));
+    }
+
+    /// <summary>
+    /// Saves the Result Set to the given Stream in the SPARQL Results JSON Format.
+    /// </summary>
+    /// <param name="results">Result Set to save.</param>
+    /// <param name="output">Stream to save to.</param>
+    public void Save(SparqlResultSet results, TextWriter output)
+    {
+        try
         {
-            using FileStream stream = File.Open(filename, FileMode.Create);
-            Save(results, new StreamWriter(stream, fileEncoding));
+            GenerateOutput(results, output);
+            output.Close();
         }
-
-        /// <summary>
-        /// Saves the Result Set to the given Stream in the SPARQL Results JSON Format.
-        /// </summary>
-        /// <param name="results">Result Set to save.</param>
-        /// <param name="output">Stream to save to.</param>
-        public void Save(SparqlResultSet results, TextWriter output)
+        catch
         {
             try
             {
-                GenerateOutput(results, output);
                 output.Close();
             }
             catch
             {
-                try
-                {
-                    output.Close();
-                }
-                catch
-                {
-                    // No Catch Actions
-                }
-                throw;
+                // No Catch Actions
             }
+            throw;
         }
+    }
 
-        /// <summary>
-        /// Internal method which generates the SPARQL Query Results JSON output.
-        /// </summary>
-        /// <param name="results">Result Set to save.</param>
-        /// <param name="output">Stream to save to.</param>
-        private void GenerateOutput(SparqlResultSet results, TextWriter output)
+    /// <summary>
+    /// Internal method which generates the SPARQL Query Results JSON output.
+    /// </summary>
+    /// <param name="results">Result Set to save.</param>
+    /// <param name="output">Stream to save to.</param>
+    private void GenerateOutput(SparqlResultSet results, TextWriter output)
+    {
+        var writer = new JsonTextWriter(output);
+        writer.Formatting = Newtonsoft.Json.Formatting.Indented;
+
+        // Start a Json Object for the Result Set
+        writer.WriteStartObject();
+
+        // Create the Head Object
+        writer.WritePropertyName("head");
+        writer.WriteStartObject();
+
+        if (results.ResultsType == SparqlResultsType.VariableBindings)
         {
-            var writer = new JsonTextWriter(output);
-            writer.Formatting = Newtonsoft.Json.Formatting.Indented;
+            // SELECT query results
 
-            // Start a Json Object for the Result Set
-            writer.WriteStartObject();
-
-            // Create the Head Object
-            writer.WritePropertyName("head");
-            writer.WriteStartObject();
-
-            if (results.ResultsType == SparqlResultsType.VariableBindings)
+            // Create the Variables Object
+            writer.WritePropertyName("vars");
+            writer.WriteStartArray();
+            foreach (var var in results.Variables)
             {
-                // SELECT query results
+                writer.WriteValue(var);
+            }
+            writer.WriteEndArray();
 
-                // Create the Variables Object
-                writer.WritePropertyName("vars");
-                writer.WriteStartArray();
+            // End Head Object
+            writer.WriteEndObject();
+
+            // Create the Result Object
+            writer.WritePropertyName("results");
+            writer.WriteStartObject();
+            writer.WritePropertyName("bindings");
+            writer.WriteStartArray();
+
+            foreach (SparqlResult result in results)
+            {
+                // Create a Binding Object
+                writer.WriteStartObject();
                 foreach (var var in results.Variables)
                 {
-                    writer.WriteValue(var);
+                    if (!result.HasValue(var)) continue; //No output for unbound variables
+
+                    INode value = result.Value(var);
+                    if (value == null) continue;
+
+                    // Create an Object for the Variable
+                    writer.WritePropertyName(var);
+                    WriteValue(value, writer);
                 }
-                writer.WriteEndArray();
-
-                // End Head Object
+                // End the Binding Object
                 writer.WriteEndObject();
+            }
 
-                // Create the Result Object
-                writer.WritePropertyName("results");
-                writer.WriteStartObject();
-                writer.WritePropertyName("bindings");
-                writer.WriteStartArray();
+            // End Result Object
+            writer.WriteEndArray();
+            writer.WriteEndObject();
+        }
+        else
+        {
+            // ASK query result
 
-                foreach (SparqlResult result in results)
+            // Set an empty Json Object in the Head
+            writer.WriteEndObject();
+
+            // Create a Boolean Property
+            writer.WritePropertyName("boolean");
+            writer.WriteValue(results.Result);
+        }
+
+        // End the Json Object for the Result Set
+        writer.WriteEndObject();
+
+    }
+
+    private static void WriteValue(INode value, JsonTextWriter writer)
+    {
+        writer.WriteStartObject();
+        writer.WritePropertyName("type");
+
+        switch (value.NodeType)
+        {
+            case NodeType.Blank:
+                // Blank Node
+                writer.WriteValue("bnode");
+                writer.WritePropertyName("value");
+                var id = ((IBlankNode)value).InternalID;
+                id = id.Substring(id.IndexOf(':') + 1);
+                writer.WriteValue(id);
+                break;
+
+            case NodeType.GraphLiteral:
+                // Error
+                throw new RdfOutputException(
+                    "Result Sets which contain Graph Literal Nodes cannot be serialized in the SPARQL Query Results JSON Format");
+
+            case NodeType.Literal:
+                // Literal
+                var lit = (ILiteralNode)value;
+                if (lit.DataType != null)
                 {
-                    // Create a Binding Object
-                    writer.WriteStartObject();
-                    foreach (var var in results.Variables)
-                    {
-                        if (!result.HasValue(var)) continue; //No output for unbound variables
-
-                        INode value = result.Value(var);
-                        if (value == null) continue;
-
-                        // Create an Object for the Variable
-                        writer.WritePropertyName(var);
-                        WriteValue(value, writer);
-                    }
-                    // End the Binding Object
-                    writer.WriteEndObject();
+                    writer.WriteValue("typed-literal");
+                }
+                else
+                {
+                    writer.WriteValue("literal");
                 }
 
-                // End Result Object
-                writer.WriteEndArray();
+                writer.WritePropertyName("value");
+
+                writer.WriteValue(lit.Value);
+                if (!lit.Language.Equals(string.Empty))
+                {
+                    writer.WritePropertyName("xml:lang");
+                    writer.WriteValue(lit.Language);
+                }
+                else if (lit.DataType != null)
+                {
+                    writer.WritePropertyName("datatype");
+                    writer.WriteValue(lit.DataType.AbsoluteUri);
+                }
+
+                break;
+
+            case NodeType.Uri:
+                // Uri
+                writer.WriteValue("uri");
+                writer.WritePropertyName("value");
+                writer.WriteValue(value.ToString());
+                break;
+
+            case NodeType.Triple:
+                var tn = (ITripleNode)value;
+                // Triple Node
+                writer.WriteValue("triple");
+                writer.WritePropertyName("value");
+                writer.WriteStartObject();
+                writer.WritePropertyName("subject");
+                WriteValue(tn.Triple.Subject, writer);
+                writer.WritePropertyName("predicate");
+                WriteValue(tn.Triple.Predicate, writer);
+                writer.WritePropertyName("object");
+                WriteValue(tn.Triple.Object, writer);
                 writer.WriteEndObject();
-            }
-            else
-            {
-                // ASK query result
+                break;
 
-                // Set an empty Json Object in the Head
-                writer.WriteEndObject();
-
-                // Create a Boolean Property
-                writer.WritePropertyName("boolean");
-                writer.WriteValue(results.Result);
-            }
-
-            // End the Json Object for the Result Set
-            writer.WriteEndObject();
-
+            default:
+                throw new RdfOutputException(
+                    "Result Sets which contain Nodes of unknown Type cannot be serialized in the SPARQL Query Results JSON Format");
         }
 
-        private static void WriteValue(INode value, JsonTextWriter writer)
+        // End the Variable Object
+        writer.WriteEndObject();
+    }
+
+    /// <summary>
+    /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected.
+    /// </summary>
+    /// <param name="message">Warning Message.</param>
+    private void RaiseWarning(string message)
+    {
+        SparqlWarning d = Warning;
+        if (d != null)
         {
-            writer.WriteStartObject();
-            writer.WritePropertyName("type");
-
-            switch (value.NodeType)
-            {
-                case NodeType.Blank:
-                    // Blank Node
-                    writer.WriteValue("bnode");
-                    writer.WritePropertyName("value");
-                    var id = ((IBlankNode)value).InternalID;
-                    id = id.Substring(id.IndexOf(':') + 1);
-                    writer.WriteValue(id);
-                    break;
-
-                case NodeType.GraphLiteral:
-                    // Error
-                    throw new RdfOutputException(
-                        "Result Sets which contain Graph Literal Nodes cannot be serialized in the SPARQL Query Results JSON Format");
-
-                case NodeType.Literal:
-                    // Literal
-                    var lit = (ILiteralNode)value;
-                    if (lit.DataType != null)
-                    {
-                        writer.WriteValue("typed-literal");
-                    }
-                    else
-                    {
-                        writer.WriteValue("literal");
-                    }
-
-                    writer.WritePropertyName("value");
-
-                    writer.WriteValue(lit.Value);
-                    if (!lit.Language.Equals(string.Empty))
-                    {
-                        writer.WritePropertyName("xml:lang");
-                        writer.WriteValue(lit.Language);
-                    }
-                    else if (lit.DataType != null)
-                    {
-                        writer.WritePropertyName("datatype");
-                        writer.WriteValue(lit.DataType.AbsoluteUri);
-                    }
-
-                    break;
-
-                case NodeType.Uri:
-                    // Uri
-                    writer.WriteValue("uri");
-                    writer.WritePropertyName("value");
-                    writer.WriteValue(value.ToString());
-                    break;
-
-                case NodeType.Triple:
-                    var tn = (ITripleNode)value;
-                    // Triple Node
-                    writer.WriteValue("triple");
-                    writer.WritePropertyName("value");
-                    writer.WriteStartObject();
-                    writer.WritePropertyName("subject");
-                    WriteValue(tn.Triple.Subject, writer);
-                    writer.WritePropertyName("predicate");
-                    WriteValue(tn.Triple.Predicate, writer);
-                    writer.WritePropertyName("object");
-                    WriteValue(tn.Triple.Object, writer);
-                    writer.WriteEndObject();
-                    break;
-
-                default:
-                    throw new RdfOutputException(
-                        "Result Sets which contain Nodes of unknown Type cannot be serialized in the SPARQL Query Results JSON Format");
-            }
-
-            // End the Variable Object
-            writer.WriteEndObject();
+            d(message);
         }
+    }
 
-        /// <summary>
-        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected.
-        /// </summary>
-        /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(string message)
-        {
-            SparqlWarning d = Warning;
-            if (d != null)
-            {
-                d(message);
-            }
-        }
+    /// <summary>
+    /// Event raised when a non-fatal issue with the SPARQL Results being written is detected
+    /// </summary>
+    public event SparqlWarning Warning;
 
-        /// <summary>
-        /// Event raised when a non-fatal issue with the SPARQL Results being written is detected
-        /// </summary>
-        public event SparqlWarning Warning;
-
-        /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "SPARQL Results JSON";
-        }
+    /// <summary>
+    /// Gets the String representation of the writer which is a description of the syntax it produces.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "SPARQL Results JSON";
     }
 }

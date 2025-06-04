@@ -28,76 +28,75 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Utils.Describe
+namespace VDS.RDF.Utils.Describe;
+
+/// <summary>
+/// Computes a Labelled Description for all the Values resulting from the Query.
+/// </summary>
+/// <remarks>
+/// <para>
+/// The Description returned is all the Triples for which a Value is a Subject and with any Blank Nodes expanded to include their rdfs:label property if present.
+/// </para>
+/// </remarks>
+public class LabelledDescription
+    : BaseDescribeAlgorithm
 {
+    private readonly IUriFactory _uriFactory;
+
     /// <summary>
-    /// Computes a Labelled Description for all the Values resulting from the Query.
+    /// Create a new instance of the LabelledDescription algorithm.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// The Description returned is all the Triples for which a Value is a Subject and with any Blank Nodes expanded to include their rdfs:label property if present.
-    /// </para>
-    /// </remarks>
-    public class LabelledDescription
-        : BaseDescribeAlgorithm
+    public LabelledDescription() : this(UriFactory.Root)
     {
-        private readonly IUriFactory _uriFactory;
+    }
 
-        /// <summary>
-        /// Create a new instance of the LabelledDescription algorithm.
-        /// </summary>
-        public LabelledDescription() : this(UriFactory.Root)
+    /// <summary>
+    /// Create a new instance of the LabelledDescription algorithm.
+    /// </summary>
+    /// <param name="uriFactory">The factory to use when creating the URI for the rdfs:label property.</param>
+    public LabelledDescription(IUriFactory uriFactory)
+    {
+        _uriFactory = uriFactory;
+    }
+
+    /// <summary>
+    /// Generates the Description for each of the Nodes to be described.
+    /// </summary>
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="dataset">Dataset to extract descriptions from.</param>
+    /// <param name="nodes">Nodes to be described.</param>
+    protected override void DescribeInternal(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes)
+    {
+        // Rewrite Blank Node IDs for DESCRIBE Results
+        var bnodeMapping = new Dictionary<string, INode>();
+
+        // Get Triples for this Subject
+        var bnodes = new Queue<INode>();
+        var expandedBNodes = new HashSet<INode>();
+        
+        INode rdfsLabel = handler.CreateUriNode(_uriFactory.Create(NamespaceMapper.RDFS + "label"));
+        foreach (INode n in nodes)
         {
-        }
-
-        /// <summary>
-        /// Create a new instance of the LabelledDescription algorithm.
-        /// </summary>
-        /// <param name="uriFactory">The factory to use when creating the URI for the rdfs:label property.</param>
-        public LabelledDescription(IUriFactory uriFactory)
-        {
-            _uriFactory = uriFactory;
-        }
-
-        /// <summary>
-        /// Generates the Description for each of the Nodes to be described.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="dataset">Dataset to extract descriptions from.</param>
-        /// <param name="nodes">Nodes to be described.</param>
-        protected override void DescribeInternal(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes)
-        {
-            // Rewrite Blank Node IDs for DESCRIBE Results
-            var bnodeMapping = new Dictionary<string, INode>();
-
-            // Get Triples for this Subject
-            var bnodes = new Queue<INode>();
-            var expandedBNodes = new HashSet<INode>();
-            
-            INode rdfsLabel = handler.CreateUriNode(_uriFactory.Create(NamespaceMapper.RDFS + "label"));
-            foreach (INode n in nodes)
+            // Get Triples where the Node is the Subject
+            foreach (Triple t in dataset.GetTriplesWithSubject(n).ToList())
             {
-                // Get Triples where the Node is the Subject
-                foreach (Triple t in dataset.GetTriplesWithSubject(n).ToList())
+                if (t.Object.NodeType == NodeType.Blank)
                 {
-                    if (t.Object.NodeType == NodeType.Blank)
-                    {
-                        if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
-                    }
-                    if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
+                    if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
                 }
+                if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
+            }
 
-                // Compute the Blank Node Closure for this Subject
-                while (bnodes.Count > 0)
+            // Compute the Blank Node Closure for this Subject
+            while (bnodes.Count > 0)
+            {
+                INode bsubj = bnodes.Dequeue();
+                if (expandedBNodes.Contains(bsubj)) continue;
+                expandedBNodes.Add(bsubj);
+
+                foreach (Triple t2 in dataset.GetTriplesWithSubjectPredicate(bsubj, rdfsLabel).ToList())
                 {
-                    INode bsubj = bnodes.Dequeue();
-                    if (expandedBNodes.Contains(bsubj)) continue;
-                    expandedBNodes.Add(bsubj);
-
-                    foreach (Triple t2 in dataset.GetTriplesWithSubjectPredicate(bsubj, rdfsLabel).ToList())
-                    {
-                        if (!handler.HandleTriple((RewriteDescribeBNodes(t2, bnodeMapping, handler)))) ParserHelper.Stop();
-                    }
+                    if (!handler.HandleTriple((RewriteDescribeBNodes(t2, bnodeMapping, handler)))) ParserHelper.Stop();
                 }
             }
         }

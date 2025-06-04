@@ -37,105 +37,104 @@ using VDS.RDF.Query.FullText.Search;
 using VDS.RDF.Query.FullText.Search.Lucene;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Query.FullText
+namespace VDS.RDF.Query.FullText;
+
+[Collection("FullText")]
+public class FullTextDatasetTests
 {
-    [Collection("FullText")]
-    public class FullTextDatasetTests
+    private NTriplesFormatter _formatter = new NTriplesFormatter();
+
+    [Fact]
+    public void FullTextDatasetLucene1()
     {
-        private NTriplesFormatter _formatter = new NTriplesFormatter();
+        //Lucene Index
+        Directory dir = new RAMDirectory();
+        var indexer = new LuceneSubjectsIndexer(dir, new StandardAnalyzer(LuceneTestHarness.LuceneVersion), new DefaultIndexSchema());
 
-        [Fact]
-        public void FullTextDatasetLucene1()
+        //Test Dataset
+        var memData = new InMemoryDataset();
+        var dataset = new FullTextIndexedDataset(memData, indexer, false);
+
+        //Test Graph
+        var g = new Graph(new UriNode(new Uri("http://example.com/graph1")));
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+
+        dataset.AddGraph(g);
+        Assert.True(dataset.HasGraph(g.Name), "Graph should exist in dataset");
+
+        //Now do a search to check all the triples got indexed
+        var searchTerm = "http";
+        IEnumerable<Triple> searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && ((ILiteralNode)t.Object).Value.Contains("http"));
+        var searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, dir);
+        foreach (Triple searchTriple in searchTriples)
         {
-            //Lucene Index
-            Directory dir = new RAMDirectory();
-            var indexer = new LuceneSubjectsIndexer(dir, new StandardAnalyzer(LuceneTestHarness.LuceneVersion), new DefaultIndexSchema());
-
-            //Test Dataset
-            var memData = new InMemoryDataset();
-            var dataset = new FullTextIndexedDataset(memData, indexer, false);
-
-            //Test Graph
-            var g = new Graph(new UriNode(new Uri("http://example.com/graph1")));
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-
-            dataset.AddGraph(g);
-            Assert.True(dataset.HasGraph(g.Name), "Graph should exist in dataset");
-
-            //Now do a search to check all the triples got indexed
-            var searchTerm = "http";
-            IEnumerable<Triple> searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && ((ILiteralNode)t.Object).Value.Contains("http"));
-            var searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, dir);
-            foreach (Triple searchTriple in searchTriples)
-            {
-                INode targetNode = searchTriple.Subject;
-                IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
-                Assert.True(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node " + targetNode.ToString(_formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
-                Console.WriteLine();
-            }
-
-            //Now remove the Graph
-            dataset.RemoveGraph(g.Name);
-
-            //Repeat the search to check all the triples got unindexed
-            foreach (Triple searchTriple in searchTriples)
-            {
-                INode targetNode = searchTriple.Subject;
-                IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
-                Assert.False(results.Any(r => r.Node.Equals(targetNode)), "Found unexpected node " + targetNode.ToString(_formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
-                Console.WriteLine();
-            }
-
-            searcher.Dispose();
-            indexer.Dispose();
+            INode targetNode = searchTriple.Subject;
+            IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
+            Assert.True(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node " + targetNode.ToString(_formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
+            Console.WriteLine();
         }
 
-        [Fact]
-        public void FullTextDatasetLucene2()
+        //Now remove the Graph
+        dataset.RemoveGraph(g.Name);
+
+        //Repeat the search to check all the triples got unindexed
+        foreach (Triple searchTriple in searchTriples)
         {
-            //Lucene Index
-            Directory dir = new RAMDirectory();
-            var indexer = new LuceneSubjectsIndexer(dir, new StandardAnalyzer(LuceneTestHarness.LuceneVersion), new DefaultIndexSchema());
-            indexer.Flush();
-            var searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, dir);
-
-            //Test Dataset
-            var memData = new InMemoryDataset();
-            var dataset = new FullTextIndexedDataset(memData, indexer, false);
-
-            //Test Graph
-            var g = new Graph(new UriNode(new Uri("http://example.com/graph2")));
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-
-            dataset.AddGraph(g);
-            Assert.True(dataset.HasGraph(g.Name), "Graph should exist in dataset");
-
-            //Now do a search to check all the triples got indexed
-            var searchTerm = "http";
-            IEnumerable<Triple> searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && ((ILiteralNode)t.Object).Value.Contains("http"));
-            foreach (Triple searchTriple in searchTriples)
-            {
-                INode targetNode = searchTriple.Subject;
-                IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
-                Assert.True(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node " + targetNode.ToString(_formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
-                Console.WriteLine();
-            }
-
-            //Now remove the Graph
-            dataset.RemoveGraph(g.Name);
-
-            //Repeat the search to check all the triples got unindexed
-            foreach (Triple searchTriple in searchTriples)
-            {
-                INode targetNode = searchTriple.Subject;
-                IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
-                Assert.False(results.Any(r => r.Node.Equals(targetNode)), "Found unexpected node " + targetNode.ToString(_formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
-                Console.WriteLine();
-            }
-
-            searcher.Dispose();
-            indexer.Dispose();
+            INode targetNode = searchTriple.Subject;
+            IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
+            Assert.False(results.Any(r => r.Node.Equals(targetNode)), "Found unexpected node " + targetNode.ToString(_formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
+            Console.WriteLine();
         }
+
+        searcher.Dispose();
+        indexer.Dispose();
+    }
+
+    [Fact]
+    public void FullTextDatasetLucene2()
+    {
+        //Lucene Index
+        Directory dir = new RAMDirectory();
+        var indexer = new LuceneSubjectsIndexer(dir, new StandardAnalyzer(LuceneTestHarness.LuceneVersion), new DefaultIndexSchema());
+        indexer.Flush();
+        var searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, dir);
+
+        //Test Dataset
+        var memData = new InMemoryDataset();
+        var dataset = new FullTextIndexedDataset(memData, indexer, false);
+
+        //Test Graph
+        var g = new Graph(new UriNode(new Uri("http://example.com/graph2")));
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+
+        dataset.AddGraph(g);
+        Assert.True(dataset.HasGraph(g.Name), "Graph should exist in dataset");
+
+        //Now do a search to check all the triples got indexed
+        var searchTerm = "http";
+        IEnumerable<Triple> searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && ((ILiteralNode)t.Object).Value.Contains("http"));
+        foreach (Triple searchTriple in searchTriples)
+        {
+            INode targetNode = searchTriple.Subject;
+            IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
+            Assert.True(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node " + targetNode.ToString(_formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
+            Console.WriteLine();
+        }
+
+        //Now remove the Graph
+        dataset.RemoveGraph(g.Name);
+
+        //Repeat the search to check all the triples got unindexed
+        foreach (Triple searchTriple in searchTriples)
+        {
+            INode targetNode = searchTriple.Subject;
+            IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
+            Assert.False(results.Any(r => r.Node.Equals(targetNode)), "Found unexpected node " + targetNode.ToString(_formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
+            Console.WriteLine();
+        }
+
+        searcher.Dispose();
+        indexer.Dispose();
     }
 }
 #endif

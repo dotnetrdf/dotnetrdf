@@ -27,37 +27,36 @@
 using System;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Update
-{    
-    /// <summary>
-    /// A class encapsulating run-time options that can be configured for a <see cref="LeviathanUpdateProcessor"/>.
-    /// </summary>
-    public class LeviathanUpdateOptions : LeviathanQueryOptions
-    {
+namespace VDS.RDF.Update;
+
+/// <summary>
+/// A class encapsulating run-time options that can be configured for a <see cref="LeviathanUpdateProcessor"/>.
+/// </summary>
+public class LeviathanUpdateOptions : LeviathanQueryOptions
+{
 #pragma warning disable CS0618 // Type or member is obsolete
-        private long _updateExecutionTimeout = Options.UpdateExecutionTimeout; // = 180000;
+    private long _updateExecutionTimeout = Options.UpdateExecutionTimeout; // = 180000;
 #pragma warning restore CS0618 // Type or member is obsolete
 
-        /// <summary>
-        /// Get or set whether to automatically flush dataset changes after an update changeset is processed.
-        /// </summary>
-        /// <remarks>Defaults to true.</remarks>
-        public bool AutoCommit { get; set; } = true;
+    /// <summary>
+    /// Get or set whether to automatically flush dataset changes after an update changeset is processed.
+    /// </summary>
+    /// <remarks>Defaults to true.</remarks>
+    public bool AutoCommit { get; set; } = true;
 
-        /// <summary>
-        /// Gets/Sets the Hard Timeout limit for SPARQL Update Execution (in milliseconds).
-        /// </summary>
-        /// <remarks>
-        /// This is used to stop SPARQL Updates running away and never completing execution, it defaults to 3 mins (180,000 milliseconds).
-        /// </remarks>
-        public long UpdateExecutionTimeout
+    /// <summary>
+    /// Gets/Sets the Hard Timeout limit for SPARQL Update Execution (in milliseconds).
+    /// </summary>
+    /// <remarks>
+    /// This is used to stop SPARQL Updates running away and never completing execution, it defaults to 3 mins (180,000 milliseconds).
+    /// </remarks>
+    public long UpdateExecutionTimeout
+    {
+        get => _updateExecutionTimeout;
+        set
         {
-            get => _updateExecutionTimeout;
-            set
-            {
-                _updateExecutionTimeout = Math.Max(0, value);
-                QueryExecutionTimeout = _updateExecutionTimeout;
-            }
+            _updateExecutionTimeout = Math.Max(0, value);
+            QueryExecutionTimeout = _updateExecutionTimeout;
         }
     }
 }

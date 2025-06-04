@@ -24,17 +24,16 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+/// <summary>
+/// Gives access to application settings from external source.
+/// </summary>
+public interface ISettingsProvider
 {
     /// <summary>
-    /// Gives access to application settings from external source.
+    /// Gets a setting for the provided key.
     /// </summary>
-    public interface ISettingsProvider
-    {
-        /// <summary>
-        /// Gets a setting for the provided key.
-        /// </summary>
-        /// <returns>null if the <paramref name="key"/> was not found.</returns>
-        string GetSetting(string key);
-    }
+    /// <returns>null if the <paramref name="key"/> was not found.</returns>
+    string GetSetting(string key);
 }

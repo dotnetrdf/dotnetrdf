@@ -1,10 +1,9 @@
-﻿namespace VDS.RDF.JsonLd
+﻿namespace VDS.RDF.JsonLd;
+
+public enum JsonLdTestType
 {
-    public enum JsonLdTestType
-    {
-        PositiveEvaluationTest,
-        NegativeEvaluationTest,
-        PositiveSyntaxTest,
-        NegativeSyntaxTest
-    }
+    PositiveEvaluationTest,
+    NegativeEvaluationTest,
+    PositiveSyntaxTest,
+    NegativeSyntaxTest
 }

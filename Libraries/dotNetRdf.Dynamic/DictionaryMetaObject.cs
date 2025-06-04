@@ -28,57 +28,56 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq.Expressions;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+internal class DictionaryMetaObject : EnumerableMetaObject
 {
-    internal class DictionaryMetaObject : EnumerableMetaObject
+    internal DictionaryMetaObject(Expression parameter, object value)
+        : base(parameter, value)
     {
-        internal DictionaryMetaObject(Expression parameter, object value)
-            : base(parameter, value)
-        {
-        }
+    }
 
-        public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
-        {
-            return binder.FallbackGetMember(
-                this,
-                CreateMetaObject(
-                    CreateIndexExpression(
-                        binder.Name)));
-        }
+    public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
+    {
+        return binder.FallbackGetMember(
+            this,
+            CreateMetaObject(
+                CreateIndexExpression(
+                    binder.Name)));
+    }
 
-        public override DynamicMetaObject BindSetMember(SetMemberBinder binder, DynamicMetaObject value)
-        {
-            return binder.FallbackSetMember(
-                this,
-                value,
-                CreateMetaObject(
-                    Expression.Assign(
-                        CreateIndexExpression(binder.Name),
-                        value.Expression)));
-        }
+    public override DynamicMetaObject BindSetMember(SetMemberBinder binder, DynamicMetaObject value)
+    {
+        return binder.FallbackSetMember(
+            this,
+            value,
+            CreateMetaObject(
+                Expression.Assign(
+                    CreateIndexExpression(binder.Name),
+                    value.Expression)));
+    }
 
-        public override IEnumerable<string> GetDynamicMemberNames()
-        {
-            return ((IDictionary<string, object>)Value).Keys;
-        }
+    public override IEnumerable<string> GetDynamicMemberNames()
+    {
+        return ((IDictionary<string, object>)Value).Keys;
+    }
 
-        private IndexExpression CreateIndexExpression(string name)
-        {
-            return Expression.Property(
-                Expression.Convert(
-                    Expression,
-                    RuntimeType),
-                "Item",
-                new[] { Expression.Constant(name) });
-        }
+    private IndexExpression CreateIndexExpression(string name)
+    {
+        return Expression.Property(
+            Expression.Convert(
+                Expression,
+                RuntimeType),
+            "Item",
+            new[] { Expression.Constant(name) });
+    }
 
-        private DynamicMetaObject CreateMetaObject(Expression expression)
-        {
-            return new DynamicMetaObject(
-                expression,
-                BindingRestrictions.GetTypeRestriction(
-                    Expression,
-                    LimitType));
-        }
+    private DynamicMetaObject CreateMetaObject(Expression expression)
+    {
+        return new DynamicMetaObject(
+            expression,
+            BindingRestrictions.GetTypeRestriction(
+                Expression,
+                LimitType));
     }
 }

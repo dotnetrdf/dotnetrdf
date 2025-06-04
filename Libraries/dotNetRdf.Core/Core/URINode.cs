@@ -26,41 +26,40 @@
 
 using System;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Class for representing URI Nodes.
+/// </summary>
+public class UriNode
+    : BaseUriNode, IEquatable<UriNode>, IComparable<UriNode>
 {
     /// <summary>
-    /// Class for representing URI Nodes.
+    /// Constructor for URI Nodes.
     /// </summary>
-    public class UriNode
-        : BaseUriNode, IEquatable<UriNode>, IComparable<UriNode>
+    /// <param name="uri">URI for the Node.</param>
+    public UriNode(Uri uri) : base(uri) { }
+
+    /// <summary>
+    /// Implementation of Compare To for URI Nodes.
+    /// </summary>
+    /// <param name="other">URI Node to Compare To.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Simply invokes the more general implementation of this method.
+    /// </remarks>
+    public int CompareTo(UriNode other)
     {
-        /// <summary>
-        /// Constructor for URI Nodes.
-        /// </summary>
-        /// <param name="uri">URI for the Node.</param>
-        public UriNode(Uri uri) : base(uri) { }
+        return base.CompareTo((IUriNode)other);
+    }
 
-        /// <summary>
-        /// Implementation of Compare To for URI Nodes.
-        /// </summary>
-        /// <param name="other">URI Node to Compare To.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Simply invokes the more general implementation of this method.
-        /// </remarks>
-        public int CompareTo(UriNode other)
-        {
-            return base.CompareTo((IUriNode)other);
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a URI Node.
-        /// </summary>
-        /// <param name="other">URI Node.</param>
-        /// <returns></returns>
-        public bool Equals(UriNode other)
-        {
-            return base.Equals((IUriNode)other);
-        }
+    /// <summary>
+    /// Determines whether this Node is equal to a URI Node.
+    /// </summary>
+    /// <param name="other">URI Node.</param>
+    /// <returns></returns>
+    public bool Equals(UriNode other)
+    {
+        return base.Equals((IUriNode)other);
     }
 }

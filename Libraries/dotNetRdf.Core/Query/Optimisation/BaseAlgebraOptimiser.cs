@@ -27,47 +27,46 @@
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Query.Optimisation
+namespace VDS.RDF.Query.Optimisation;
+
+
+/// <summary>
+/// Abstract Base Class for Algebra Transformers where the Transformer may care about the depth of the Algebra in the Algebra Tree.
+/// </summary>
+public abstract class BaseAlgebraOptimiser : IAlgebraOptimiser
 {
+    /// <summary>
+    /// Attempts to optimise an Algebra to another more optimal form.
+    /// </summary>
+    /// <param name="algebra">Algebra.</param>
+    /// <returns></returns>
+    public virtual ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
+    {
+        return OptimiseInternal(algebra, 0);
+    }
 
     /// <summary>
-    /// Abstract Base Class for Algebra Transformers where the Transformer may care about the depth of the Algebra in the Algebra Tree.
+    /// Transforms the Algebra to another form tracking the depth in the Algebra tree.
     /// </summary>
-    public abstract class BaseAlgebraOptimiser : IAlgebraOptimiser
-    {
-        /// <summary>
-        /// Attempts to optimise an Algebra to another more optimal form.
-        /// </summary>
-        /// <param name="algebra">Algebra.</param>
-        /// <returns></returns>
-        public virtual ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
-        {
-            return OptimiseInternal(algebra, 0);
-        }
+    /// <param name="algebra">Algebra.</param>
+    /// <param name="depth">Depth.</param>
+    /// <returns></returns>
+    protected abstract ISparqlAlgebra OptimiseInternal(ISparqlAlgebra algebra, int depth);
 
-        /// <summary>
-        /// Transforms the Algebra to another form tracking the depth in the Algebra tree.
-        /// </summary>
-        /// <param name="algebra">Algebra.</param>
-        /// <param name="depth">Depth.</param>
-        /// <returns></returns>
-        protected abstract ISparqlAlgebra OptimiseInternal(ISparqlAlgebra algebra, int depth);
+    /// <summary>
+    /// Determines whether the Optimiser can be applied to a given Query.
+    /// </summary>
+    /// <param name="q">Query.</param>
+    /// <returns></returns>
+    public abstract bool IsApplicable(SparqlQuery q);
 
-        /// <summary>
-        /// Determines whether the Optimiser can be applied to a given Query.
-        /// </summary>
-        /// <param name="q">Query.</param>
-        /// <returns></returns>
-        public abstract bool IsApplicable(SparqlQuery q);
+    /// <summary>
+    /// Determines whether the Optimiser can be applied to a given Update Command Set.
+    /// </summary>
+    /// <param name="cmds">Command Set.</param>
+    /// <returns></returns>
+    public abstract bool IsApplicable(SparqlUpdateCommandSet cmds);
 
-        /// <summary>
-        /// Determines whether the Optimiser can be applied to a given Update Command Set.
-        /// </summary>
-        /// <param name="cmds">Command Set.</param>
-        /// <returns></returns>
-        public abstract bool IsApplicable(SparqlUpdateCommandSet cmds);
-
-        /// <inheritdoc/>
-        public bool UnsafeOptimisation { get; set; } = false;
-    }
+    /// <inheritdoc/>
+    public bool UnsafeOptimisation { get; set; } = false;
 }

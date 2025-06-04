@@ -24,72 +24,71 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry;
+
+/// <summary>
+/// Represents the Leviathan lfn:radians-to-degrees() function.
+/// </summary>
+public class RadiansToDegreesFunction
+    : BaseUnaryExpression
 {
     /// <summary>
-    /// Represents the Leviathan lfn:radians-to-degrees() function.
+    /// Creates a new Leviathan Radians to Degrees Function.
     /// </summary>
-    public class RadiansToDegreesFunction
-        : BaseUnaryExpression
+    /// <param name="expr">Expression.</param>
+    public RadiansToDegreesFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new Leviathan Radians to Degrees Function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public RadiansToDegreesFunction(ISparqlExpression expr)
-            : base(expr) { }
+        return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.RadiansToDegrees + ">(" + InnerExpression + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.RadiansToDegrees + ">(" + InnerExpression + ")";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessRadiansToDegreesFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessRadiansToDegreesFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitRadiansToDegreesFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return visitor.VisitRadiansToDegreesFunction(this);
+            return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.RadiansToDegrees;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
+    /// <summary>
+    /// Gets the type of the expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            get
-            {
-                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.RadiansToDegrees;
-            }
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <summary>
-        /// Gets the type of the expression.
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new RadiansToDegreesFunction(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new RadiansToDegreesFunction(transformer.Transform(InnerExpression));
     }
 }

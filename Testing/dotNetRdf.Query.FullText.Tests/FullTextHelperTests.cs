@@ -32,103 +32,102 @@ using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.PropertyFunctions;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Query.FullText
+namespace VDS.RDF.Query.FullText;
+
+
+public class FullTextHelperTests
 {
+    private SparqlQueryParser _parser = new SparqlQueryParser();
 
-    public class FullTextHelperTests
+    private void TestExtractPatterns(String query, int expectedPatterns)
     {
-        private SparqlQueryParser _parser = new SparqlQueryParser();
+        TestExtractPatterns(query, expectedPatterns, 0, 0);
+    }
 
-        private void TestExtractPatterns(String query, int expectedPatterns)
+    private void TestExtractPatterns(String query, int expectedPatterns, int expectedSubjArgs, int expectedObjArgs)
+    {
+        var factory = new FullTextPropertyFunctionFactory();
+        try
         {
-            TestExtractPatterns(query, expectedPatterns, 0, 0);
-        }
+            PropertyFunctionFactory.AddFactory(factory);
 
-        private void TestExtractPatterns(String query, int expectedPatterns, int expectedSubjArgs, int expectedObjArgs)
-        {
-            var factory = new FullTextPropertyFunctionFactory();
-            try
+            var queryString = new SparqlParameterizedString(query);
+            queryString.Namespaces.AddNamespace("pf", new Uri(FullTextHelper.FullTextMatchNamespace));
+            SparqlQuery q = _parser.ParseFromString(queryString);
+            var formatter = new SparqlFormatter(queryString.Namespaces);
+
+            Console.WriteLine(formatter.Format(q));
+            Console.WriteLine();
+
+            List<IPropertyFunctionPattern> ps = PropertyFunctionHelper.ExtractPatterns(q.RootGraphPattern.TriplePatterns);
+            Console.WriteLine(ps.Count + " Pattern(s) extracted");
+            foreach (IPropertyFunctionPattern propFunc in ps.Where(p => p.PropertyFunction is FullTextMatchPropertyFunction))
             {
-                PropertyFunctionFactory.AddFactory(factory);
-
-                var queryString = new SparqlParameterizedString(query);
-                queryString.Namespaces.AddNamespace("pf", new Uri(FullTextHelper.FullTextMatchNamespace));
-                SparqlQuery q = _parser.ParseFromString(queryString);
-                var formatter = new SparqlFormatter(queryString.Namespaces);
-
-                Console.WriteLine(formatter.Format(q));
+                Console.WriteLine("Match Variable: " + propFunc.SubjectArgs.First().ToString());
+                Console.WriteLine("Score Variable: " + (propFunc.SubjectArgs.Count() > 1 ? propFunc.SubjectArgs.Skip(1).First().ToString() : "N/A"));
+                Console.WriteLine("Search Term: " + propFunc.ObjectArgs.First().ToString());
+                Console.WriteLine("Threshold/Limit: " + (propFunc.ObjectArgs.Count() > 1 ? propFunc.ObjectArgs.Skip(1).First().ToString() : "N/A"));
+                Console.WriteLine("Limit: " + (propFunc.ObjectArgs.Count() > 2 ? propFunc.ObjectArgs.Skip(2).First().ToString() : "N/A"));
                 Console.WriteLine();
 
-                List<IPropertyFunctionPattern> ps = PropertyFunctionHelper.ExtractPatterns(q.RootGraphPattern.TriplePatterns);
-                Console.WriteLine(ps.Count + " Pattern(s) extracted");
-                foreach (IPropertyFunctionPattern propFunc in ps.Where(p => p.PropertyFunction is FullTextMatchPropertyFunction))
-                {
-                    Console.WriteLine("Match Variable: " + propFunc.SubjectArgs.First().ToString());
-                    Console.WriteLine("Score Variable: " + (propFunc.SubjectArgs.Count() > 1 ? propFunc.SubjectArgs.Skip(1).First().ToString() : "N/A"));
-                    Console.WriteLine("Search Term: " + propFunc.ObjectArgs.First().ToString());
-                    Console.WriteLine("Threshold/Limit: " + (propFunc.ObjectArgs.Count() > 1 ? propFunc.ObjectArgs.Skip(1).First().ToString() : "N/A"));
-                    Console.WriteLine("Limit: " + (propFunc.ObjectArgs.Count() > 2 ? propFunc.ObjectArgs.Skip(2).First().ToString() : "N/A"));
-                    Console.WriteLine();
-
-                    if (expectedSubjArgs > 0) Assert.Equal(expectedSubjArgs, propFunc.SubjectArgs.Count());
-                    if (expectedObjArgs > 0) Assert.Equal(expectedObjArgs, propFunc.ObjectArgs.Count());
-                }
-
-                Assert.Equal(expectedPatterns, ps.Count);
+                if (expectedSubjArgs > 0) Assert.Equal(expectedSubjArgs, propFunc.SubjectArgs.Count());
+                if (expectedObjArgs > 0) Assert.Equal(expectedObjArgs, propFunc.ObjectArgs.Count());
             }
-            finally
-            {
-                PropertyFunctionFactory.RemoveFactory(factory);
-            }
-        }
 
-        [Fact]
-        public void FullTextHelperExtractPatterns1()
-        {
-            TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch 'text' }", 1, 1, 1);
+            Assert.Equal(expectedPatterns, ps.Count);
         }
+        finally
+        {
+            PropertyFunctionFactory.RemoveFactory(factory);
+        }
+    }
 
-        [Fact]
-        public void FullTextHelperExtractPatterns2()
-        {
-            TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch 'text' . ?s2 pf:textMatch 'text2' }", 2, 1, 1);
-        }
+    [Fact]
+    public void FullTextHelperExtractPatterns1()
+    {
+        TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch 'text' }", 1, 1, 1);
+    }
 
-        [Fact]
-        public void FullTextHelperExtractPatterns3()
-        {
-            TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' }", 1, 2, 1);
-        }
+    [Fact]
+    public void FullTextHelperExtractPatterns2()
+    {
+        TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch 'text' . ?s2 pf:textMatch 'text2' }", 2, 1, 1);
+    }
 
-        [Fact]
-        public void FullTextHelperExtractPatterns4()
-        {
-            TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' . ?match2 pf:textMatch 'text2' }", 2, 0, 1);
-        }
+    [Fact]
+    public void FullTextHelperExtractPatterns3()
+    {
+        TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' }", 1, 2, 1);
+    }
 
-        [Fact]
-        public void FullTextHelperExtractPatterns5()
-        {
-            TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' . (?match2 ?score2) pf:textMatch 'text2' }", 2, 2, 1);
-        }
+    [Fact]
+    public void FullTextHelperExtractPatterns4()
+    {
+        TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' . ?match2 pf:textMatch 'text2' }", 2, 0, 1);
+    }
 
-        [Fact]
-        public void FullTextHelperExtractPatterns6()
-        {
-            TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 0.75) }", 1, 1, 2);
-        }
+    [Fact]
+    public void FullTextHelperExtractPatterns5()
+    {
+        TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' . (?match2 ?score2) pf:textMatch 'text2' }", 2, 2, 1);
+    }
 
-        [Fact]
-        public void FullTextHelperExtractPatterns7()
-        {
-            TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 0.75 25) }", 1, 1, 3);
-        }
+    [Fact]
+    public void FullTextHelperExtractPatterns6()
+    {
+        TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 0.75) }", 1, 1, 2);
+    }
 
-        [Fact]
-        public void FullTextHelperExtractPatterns8()
-        {
-            TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 25) }", 1, 1, 2);
-        }
+    [Fact]
+    public void FullTextHelperExtractPatterns7()
+    {
+        TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 0.75 25) }", 1, 1, 3);
+    }
+
+    [Fact]
+    public void FullTextHelperExtractPatterns8()
+    {
+        TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 25) }", 1, 1, 2);
     }
 }
 #endif

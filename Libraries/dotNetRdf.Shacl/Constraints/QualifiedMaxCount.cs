@@ -29,32 +29,31 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class QualifiedMaxCount : Qualified
 {
-    internal class QualifiedMaxCount : Qualified
+    [DebuggerStepThrough]
+    internal QualifiedMaxCount(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal QualifiedMaxCount(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage =>
+        $"Number of value nodes matching the shape {Shape} must not exceed {NumericValue}.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.QualifiedMaxCountConstraintComponent;
         }
+    }
 
-        protected override string DefaultMessage =>
-            $"Number of value nodes matching the shape {Shape} must not exceed {NumericValue}.";
+    protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        IEnumerable<INode> invalidValues = QualifiedValueNodes(dataGraph, focusNode, valueNodes).Skip(NumericValue);
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.QualifiedMaxCountConstraintComponent;
-            }
-        }
-
-        protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            IEnumerable<INode> invalidValues = QualifiedValueNodes(dataGraph, focusNode, valueNodes).Skip(NumericValue);
-
-            return ReportFocusNode(focusNode, invalidValues, report);
-        }
+        return ReportFocusNode(focusNode, invalidValues, report);
     }
 }

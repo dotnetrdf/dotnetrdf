@@ -24,17 +24,16 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+
+/**
+ * An ASK Query.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IAsk : IQuery
 {
 
-
-    /**
-     * An ASK Query.
-     * 
-     * @author Holger Knublauch
-     */
-    internal interface IAsk : IQuery
-    {
-
-    }
 }

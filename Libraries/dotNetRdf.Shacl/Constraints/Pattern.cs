@@ -30,59 +30,58 @@ using System.Linq;
 using VDS.RDF.Query;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class Pattern : Constraint
 {
-    internal class Pattern : Constraint
+    [DebuggerStepThrough]
+    internal Pattern(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal Pattern(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage =>
+        $"Value must match the expected regular expression \"{this}\" with flags \"{Flags}\".";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.PatternConstraintComponent;
         }
+    }
 
-        protected override string DefaultMessage =>
-            $"Value must match the expected regular expression \"{this}\" with flags \"{Flags}\".";
-
-        internal override INode ConstraintComponent
+    private INode Flags
+    {
+        get
         {
-            get
-            {
-                return Vocabulary.PatternConstraintComponent;
-            }
+            return Vocabulary.Flags.ObjectsOf(Shape).SingleOrDefault();
         }
+    }
 
-        private INode Flags
-        {
-            get
-            {
-                return Vocabulary.Flags.ObjectsOf(Shape).SingleOrDefault();
-            }
-        }
-
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            var query = new SparqlParameterizedString(@"
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        var query = new SparqlParameterizedString(@"
 ASK {
     BIND($flags AS ?f)
     FILTER(IF(BOUND(?f), REGEX(STR($value), $pattern, ?f), REGEX(STR($value), $pattern)))
 }");
-            query.SetVariable("pattern", this);
-            query.SetVariable("flags", Flags);
+        query.SetVariable("pattern", this);
+        query.SetVariable("flags", Flags);
 
-            bool isInvalid(INode node)
+        bool isInvalid(INode node)
+        {
+            if (node.NodeType == NodeType.Blank)
             {
-                if (node.NodeType == NodeType.Blank)
-                {
-                    return true;
-                }
-
-                query.SetVariable("value", node);
-                return !((SparqlResultSet)dataGraph.ExecuteQuery(query)).Result;
+                return true;
             }
 
-            IEnumerable<INode> invalidValues = valueNodes.Where(isInvalid);
-
-            return ReportValueNodes(focusNode, invalidValues, report);
+            query.SetVariable("value", node);
+            return !((SparqlResultSet)dataGraph.ExecuteQuery(query)).Result;
         }
+
+        IEnumerable<INode> invalidValues = valueNodes.Where(isInvalid);
+
+        return ReportValueNodes(focusNode, invalidValues, report);
     }
 }

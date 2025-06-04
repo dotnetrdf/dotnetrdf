@@ -27,25 +27,24 @@
 using System;
 using VDS.RDF.Query.Spin.Util;
 
-namespace VDS.RDF.Query.Spin.LibraryOntology
+namespace VDS.RDF.Query.Spin.LibraryOntology;
+
+
+/**
+ * Vocabulary for http://spinrdf.org/spra
+ *
+ * @author Holger Knublauch
+ */
+internal class SPRA
 {
 
-    /**
-     * Vocabulary for http://spinrdf.org/spra
-     *
-     * @author Holger Knublauch
-     */
-    internal class SPRA
-    {
+    public const String BASE_URI = "http://spinrdf.org/spra";
 
-        public const String BASE_URI = "http://spinrdf.org/spra";
+    public const String NS_URI = BASE_URI + "#";
 
-        public const String NS_URI = BASE_URI + "#";
-
-        public const String PREFIX = "spra";
+    public const String PREFIX = "spra";
 
 
-        public static readonly IUriNode ClassTable = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "Table"));
+    public static readonly IUriNode ClassTable = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "Table"));
 
-    }
 }

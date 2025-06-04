@@ -26,61 +26,60 @@
 
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
+namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast;
+
+/// <summary>
+/// Class representing an XPath Decimal Cast Function.
+/// </summary>
+public class DecimalCast
+    : BaseCast
 {
     /// <summary>
-    /// Class representing an XPath Decimal Cast Function.
+    /// Creates a new XPath Decimal Cast Function Expression.
     /// </summary>
-    public class DecimalCast
-        : BaseCast
+    /// <param name="expr">Expression to be cast.</param>
+    public DecimalCast(ISparqlExpression expr)
+        : base(expr) { }
+
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new XPath Decimal Cast Function Expression.
-        /// </summary>
-        /// <param name="expr">Expression to be cast.</param>
-        public DecimalCast(ISparqlExpression expr)
-            : base(expr) { }
+        return "<" + XmlSpecsHelper.XmlSchemaDataTypeDecimal + ">(" + _expr + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeDecimal + ">(" + _expr + ")";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessDecimalCast(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessDecimalCast(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitDecimalCast(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return visitor.VisitDecimalCast(this);
+            return XmlSpecsHelper.XmlSchemaDataTypeDecimal;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XmlSpecsHelper.XmlSchemaDataTypeDecimal;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new DecimalCast(transformer.Transform(_expr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new DecimalCast(transformer.Transform(_expr));
     }
 }

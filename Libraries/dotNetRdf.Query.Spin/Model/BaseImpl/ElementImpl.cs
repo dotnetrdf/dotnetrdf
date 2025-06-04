@@ -24,17 +24,16 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal abstract class ElementImpl : AbstractSPINResource, IElement
 {
-    internal abstract class ElementImpl : AbstractSPINResource, IElement
+
+    public ElementImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
-
-        public ElementImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
-        }
-
-        //public abstract void visit(IElementVisitor visitor);
-        
     }
+
+    //public abstract void visit(IElementVisitor visitor);
+    
 }

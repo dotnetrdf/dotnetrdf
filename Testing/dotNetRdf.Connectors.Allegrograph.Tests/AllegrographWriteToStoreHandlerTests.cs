@@ -1,19 +1,18 @@
 ﻿using Xunit;
 
-namespace VDS.RDF.Storage
-{
-    [Collection("AllegroGraph Test Collection")]
-    public class AllegrographWriteToStoreHandlerTests : WriteToStoreHandlerTests
-    {
-        [Fact]
-        public void CanWriteToStoreHandler()
-        {
-            TestWriteToStoreHandler(GetConnection());
-        }
+namespace VDS.RDF.Storage;
 
-        protected override IStorageProvider GetConnection()
-        {
-            return AllegroGraphTests.GetConnection();
-        }
+[Collection("AllegroGraph Test Collection")]
+public class AllegrographWriteToStoreHandlerTests : WriteToStoreHandlerTests
+{
+    [Fact]
+    public void CanWriteToStoreHandler()
+    {
+        TestWriteToStoreHandler(GetConnection());
+    }
+
+    protected override IStorageProvider GetConnection()
+    {
+        return AllegroGraphTests.GetConnection();
     }
 }

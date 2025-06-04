@@ -24,77 +24,76 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers;
+
+/// <summary>
+/// A RDF Handler which simply counts the Triples.
+/// </summary>
+public class CountHandler 
+    : BaseRdfHandler
 {
+    private int _counter;
+
     /// <summary>
-    /// A RDF Handler which simply counts the Triples.
+    /// Creates a Handler which counts Triples.
     /// </summary>
-    public class CountHandler 
-        : BaseRdfHandler
+    public CountHandler()
+        : base(new MockNodeFactory())
+    { }
+
+    /// <summary>
+    /// Resets the current count to zero.
+    /// </summary>
+    protected override void StartRdfInternal()
     {
-        private int _counter;
+        _counter = 0;
+    }
 
-        /// <summary>
-        /// Creates a Handler which counts Triples.
-        /// </summary>
-        public CountHandler()
-            : base(new MockNodeFactory())
-        { }
+    /// <summary>
+    /// Handles the Triple by incrementing the Triple count.
+    /// </summary>
+    /// <param name="t">Triple.</param>
+    /// <returns></returns>
+    protected override bool HandleTripleInternal(Triple t)
+    {
+        _counter++;
+        return true;
+    }
 
-        /// <summary>
-        /// Resets the current count to zero.
-        /// </summary>
-        protected override void StartRdfInternal()
+    /// <summary>
+    /// Handles the Quad by incrementing the Triple count.
+    /// </summary>
+    /// <param name="t">Triple.</param>
+    /// <param name="graph">The name of the graph containing the triple.</param>
+    /// <returns></returns>
+    protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+    {
+        _counter++;
+        return true;
+    }
+
+    /// <summary>
+    /// Gets the Count of Triples handled in the most recent parsing operation.
+    /// </summary>
+    /// <remarks>
+    /// Note that each time you reuse the handler the count is reset to 0.
+    /// </remarks>
+    public int Count
+    {
+        get
         {
-            _counter = 0;
+            return _counter;
         }
+    }
 
-        /// <summary>
-        /// Handles the Triple by incrementing the Triple count.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        protected override bool HandleTripleInternal(Triple t)
+    /// <summary>
+    /// Gets that the Handler accepts all Triples.
+    /// </summary>
+    public override bool AcceptsAll
+    {
+        get 
         {
-            _counter++;
-            return true;
-        }
-
-        /// <summary>
-        /// Handles the Quad by incrementing the Triple count.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <param name="graph">The name of the graph containing the triple.</param>
-        /// <returns></returns>
-        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
-        {
-            _counter++;
-            return true;
-        }
-
-        /// <summary>
-        /// Gets the Count of Triples handled in the most recent parsing operation.
-        /// </summary>
-        /// <remarks>
-        /// Note that each time you reuse the handler the count is reset to 0.
-        /// </remarks>
-        public int Count
-        {
-            get
-            {
-                return _counter;
-            }
-        }
-
-        /// <summary>
-        /// Gets that the Handler accepts all Triples.
-        /// </summary>
-        public override bool AcceptsAll
-        {
-            get 
-            {
-                return true; 
-            }
+            return true; 
         }
     }
 }

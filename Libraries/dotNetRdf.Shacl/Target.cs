@@ -29,29 +29,28 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using VDS.RDF.Shacl.Targets;
 
-namespace VDS.RDF.Shacl
+namespace VDS.RDF.Shacl;
+
+internal abstract class Target : WrapperNode
 {
-    internal abstract class Target : WrapperNode
+    [DebuggerStepThrough]
+    protected Target(INode node)
+        : base(node)
     {
-        [DebuggerStepThrough]
-        protected Target(INode node)
-            : base(node)
-        {
-        }
-
-        internal static Target Parse(INode type, INode value)
-        {
-            switch (type)
-            {
-                case INode t when t.Equals(Vocabulary.TargetNode): return new Node(value);
-                case INode t when t.Equals(Vocabulary.TargetClass): return new Class(value);
-                case INode t when t.Equals(Vocabulary.TargetSubjectsOf): return new SubjectsOf(value);
-                case INode t when t.Equals(Vocabulary.TargetObjectsOf): return new ObjectsOf(value);
-
-                default: throw new Exception();
-            }
-        }
-
-        internal abstract IEnumerable<INode> SelectFocusNodes(IGraph dataGragh);
     }
+
+    internal static Target Parse(INode type, INode value)
+    {
+        switch (type)
+        {
+            case INode t when t.Equals(Vocabulary.TargetNode): return new Node(value);
+            case INode t when t.Equals(Vocabulary.TargetClass): return new Class(value);
+            case INode t when t.Equals(Vocabulary.TargetSubjectsOf): return new SubjectsOf(value);
+            case INode t when t.Equals(Vocabulary.TargetObjectsOf): return new ObjectsOf(value);
+
+            default: throw new Exception();
+        }
+    }
+
+    internal abstract IEnumerable<INode> SelectFocusNodes(IGraph dataGragh);
 }

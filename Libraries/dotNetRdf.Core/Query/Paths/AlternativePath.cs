@@ -27,48 +27,47 @@
 using System.Text;
 using VDS.RDF.Query.Algebra;
 
-namespace VDS.RDF.Query.Paths
+namespace VDS.RDF.Query.Paths;
+
+/// <summary>
+/// Represents Alternative Paths.
+/// </summary>
+public class AlternativePath : BaseBinaryPath
 {
     /// <summary>
-    /// Represents Alternative Paths.
+    /// Creates a new Alternative Path.
     /// </summary>
-    public class AlternativePath : BaseBinaryPath
+    /// <param name="lhs">LHS Path.</param>
+    /// <param name="rhs">RHS Path.</param>
+    public AlternativePath(ISparqlPath lhs, ISparqlPath rhs)
+        : base(lhs, rhs) { }
+
+    /// <summary>
+    /// Gets the String representation of the Path.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new Alternative Path.
-        /// </summary>
-        /// <param name="lhs">LHS Path.</param>
-        /// <param name="rhs">RHS Path.</param>
-        public AlternativePath(ISparqlPath lhs, ISparqlPath rhs)
-            : base(lhs, rhs) { }
+        var output = new StringBuilder();
+        output.Append('(');
+        output.Append(_lhs.ToString());
+        output.Append(" | ");
+        output.Append(_rhs.ToString());
+        output.Append(')');
+        return output.ToString();
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Path.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append('(');
-            output.Append(_lhs.ToString());
-            output.Append(" | ");
-            output.Append(_rhs.ToString());
-            output.Append(')');
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Converts a Path into its Algebra Form.
-        /// </summary>
-        /// <param name="context">Path Transformation Context.</param>
-        /// <returns></returns>
-        public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
-        {
-            var lhsContext = new PathTransformContext(context);
-            var rhsContext = new PathTransformContext(context);
-            ISparqlAlgebra lhs = _lhs.ToAlgebra(lhsContext);
-            ISparqlAlgebra rhs = _rhs.ToAlgebra(rhsContext);
-            return new Union(lhs, rhs);
-        }
+    /// <summary>
+    /// Converts a Path into its Algebra Form.
+    /// </summary>
+    /// <param name="context">Path Transformation Context.</param>
+    /// <returns></returns>
+    public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
+    {
+        var lhsContext = new PathTransformContext(context);
+        var rhsContext = new PathTransformContext(context);
+        ISparqlAlgebra lhs = _lhs.ToAlgebra(lhsContext);
+        ISparqlAlgebra rhs = _rhs.ToAlgebra(rhsContext);
+        return new Union(lhs, rhs);
     }
 }

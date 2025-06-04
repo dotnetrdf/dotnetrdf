@@ -28,89 +28,88 @@ using System.Collections.Generic;
 using System.IO;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Writing.Contexts
+namespace VDS.RDF.Writing.Contexts;
+
+/// <summary>
+/// Writer Context for Compressing Turtle Writers.
+/// </summary>
+public class CompressingTurtleWriterContext 
+    : TurtleWriterContext, ICollectionCompressingWriterContext, IAnnotationCompressingWriterContext
 {
+    private readonly TripleCollection _triplesDone = new TripleCollection();
+
     /// <summary>
-    /// Writer Context for Compressing Turtle Writers.
+    /// Creates a new Turtle Writer Context with default settings.
     /// </summary>
-    public class CompressingTurtleWriterContext 
-        : TurtleWriterContext, ICollectionCompressingWriterContext, IAnnotationCompressingWriterContext
-    {
-        private readonly TripleCollection _triplesDone = new TripleCollection();
+    /// <param name="g">Graph to write.</param>
+    /// <param name="output">TextWriter to write to.</param>
+    public CompressingTurtleWriterContext(IGraph g, TextWriter output)
+        : this(g, output, TurtleSyntax.Original) { }
 
-        /// <summary>
-        /// Creates a new Turtle Writer Context with default settings.
-        /// </summary>
-        /// <param name="g">Graph to write.</param>
-        /// <param name="output">TextWriter to write to.</param>
-        public CompressingTurtleWriterContext(IGraph g, TextWriter output)
-            : this(g, output, TurtleSyntax.Original) { }
+    /// <summary>
+    /// Creates a new Turtle Writer Context with default settings.
+    /// </summary>
+    /// <param name="g">Graph to write.</param>
+    /// <param name="output">TextWriter to write to.</param>
+    /// <param name="syntax">Turtle Syntax.</param>
+    public CompressingTurtleWriterContext(IGraph g, TextWriter output, TurtleSyntax syntax)
+        : this(g, output, WriterCompressionLevel.More, true, true, syntax) { }
 
-        /// <summary>
-        /// Creates a new Turtle Writer Context with default settings.
-        /// </summary>
-        /// <param name="g">Graph to write.</param>
-        /// <param name="output">TextWriter to write to.</param>
-        /// <param name="syntax">Turtle Syntax.</param>
-        public CompressingTurtleWriterContext(IGraph g, TextWriter output, TurtleSyntax syntax)
-            : this(g, output, WriterCompressionLevel.More, true, true, syntax) { }
+    /// <summary>
+    /// Creates a new Turtle Writer Context with custom settings.
+    /// </summary>
+    /// <param name="g">Graph to write.</param>
+    /// <param name="output">TextWriter to write to.</param>
+    /// <param name="prettyPrint">Pretty Print Mode.</param>
+    /// <param name="hiSpeed">High Speed Mode.</param>
+    public CompressingTurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed)
+        : this(g, output, WriterCompressionLevel.More, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
 
-        /// <summary>
-        /// Creates a new Turtle Writer Context with custom settings.
-        /// </summary>
-        /// <param name="g">Graph to write.</param>
-        /// <param name="output">TextWriter to write to.</param>
-        /// <param name="prettyPrint">Pretty Print Mode.</param>
-        /// <param name="hiSpeed">High Speed Mode.</param>
-        public CompressingTurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed)
-            : this(g, output, WriterCompressionLevel.More, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
+    
+    /// <summary>
+    /// Creates a new Turtle Writer Context with custom settings.
+    /// </summary>
+    /// <param name="g">Graph to write.</param>
+    /// <param name="output">TextWriter to write to.</param>
+    /// <param name="prettyPrint">Pretty Print Mode.</param>
+    /// <param name="hiSpeed">High Speed Mode.</param>
+    /// <param name="syntax">Turtle Syntax.</param>
+    public CompressingTurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
+        : this(g, output, WriterCompressionLevel.More, true, true, syntax) { }
 
-        
-        /// <summary>
-        /// Creates a new Turtle Writer Context with custom settings.
-        /// </summary>
-        /// <param name="g">Graph to write.</param>
-        /// <param name="output">TextWriter to write to.</param>
-        /// <param name="prettyPrint">Pretty Print Mode.</param>
-        /// <param name="hiSpeed">High Speed Mode.</param>
-        /// <param name="syntax">Turtle Syntax.</param>
-        public CompressingTurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
-            : this(g, output, WriterCompressionLevel.More, true, true, syntax) { }
+    /// <summary>
+    /// Creates a new Turtle Writer Context with custom settings.
+    /// </summary>
+    /// <param name="g">Graph to write.</param>
+    /// <param name="output">TextWriter to write to.</param>
+    /// <param name="compressionLevel">Compression Level to use.</param>
+    /// <param name="prettyPrint">Pretty Print Mode.</param>
+    /// <param name="hiSpeed">High Speed Mode.</param>
+    public CompressingTurtleWriterContext(IGraph g, TextWriter output, int compressionLevel, bool prettyPrint, bool hiSpeed)
+        : this(g, output, compressionLevel, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
 
-        /// <summary>
-        /// Creates a new Turtle Writer Context with custom settings.
-        /// </summary>
-        /// <param name="g">Graph to write.</param>
-        /// <param name="output">TextWriter to write to.</param>
-        /// <param name="compressionLevel">Compression Level to use.</param>
-        /// <param name="prettyPrint">Pretty Print Mode.</param>
-        /// <param name="hiSpeed">High Speed Mode.</param>
-        public CompressingTurtleWriterContext(IGraph g, TextWriter output, int compressionLevel, bool prettyPrint, bool hiSpeed)
-            : this(g, output, compressionLevel, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
+    /// <summary>
+    /// Creates a new Turtle Writer Context with custom settings.
+    /// </summary>
+    /// <param name="g">Graph to write.</param>
+    /// <param name="output">TextWriter to write to.</param>
+    /// <param name="compressionLevel">Compression Level to use.</param>
+    /// <param name="prettyPrint">Pretty Print Mode.</param>
+    /// <param name="hiSpeed">High Speed Mode.</param>
+    /// <param name="syntax">Turtle Syntax.</param>
+    public CompressingTurtleWriterContext(IGraph g, TextWriter output, int compressionLevel, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
+        : base(g, output, compressionLevel, prettyPrint, hiSpeed, syntax) { }
 
-        /// <summary>
-        /// Creates a new Turtle Writer Context with custom settings.
-        /// </summary>
-        /// <param name="g">Graph to write.</param>
-        /// <param name="output">TextWriter to write to.</param>
-        /// <param name="compressionLevel">Compression Level to use.</param>
-        /// <param name="prettyPrint">Pretty Print Mode.</param>
-        /// <param name="hiSpeed">High Speed Mode.</param>
-        /// <param name="syntax">Turtle Syntax.</param>
-        public CompressingTurtleWriterContext(IGraph g, TextWriter output, int compressionLevel, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
-            : base(g, output, compressionLevel, prettyPrint, hiSpeed, syntax) { }
+    /// <summary>
+    /// Represents the mapping from Blank Nodes to Collections.
+    /// </summary>
+    public Dictionary<INode, OutputRdfCollection> Collections { get; } = new Dictionary<INode, OutputRdfCollection>();
 
-        /// <summary>
-        /// Represents the mapping from Blank Nodes to Collections.
-        /// </summary>
-        public Dictionary<INode, OutputRdfCollection> Collections { get; } = new Dictionary<INode, OutputRdfCollection>();
+    /// <inheritdoc />
+    public Dictionary<Triple, List<Triple>> Annotations { get; } = new Dictionary<Triple, List<Triple>>();
 
-        /// <inheritdoc />
-        public Dictionary<Triple, List<Triple>> Annotations { get; } = new Dictionary<Triple, List<Triple>>();
-
-        /// <summary>
-        /// Stores the Triples that should be excluded from standard output as they are part of collections or triple annotations.
-        /// </summary>
-        public BaseTripleCollection TriplesDone => _triplesDone;
-    }
+    /// <summary>
+    /// Stores the Triples that should be excluded from standard output as they are part of collections or triple annotations.
+    /// </summary>
+    public BaseTripleCollection TriplesDone => _triplesDone;
 }

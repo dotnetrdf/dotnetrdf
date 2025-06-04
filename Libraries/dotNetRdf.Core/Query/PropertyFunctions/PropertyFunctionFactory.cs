@@ -29,129 +29,128 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.PropertyFunctions
+namespace VDS.RDF.Query.PropertyFunctions;
+
+/// <summary>
+/// Factory for creating property functions.
+/// </summary>
+public static class PropertyFunctionFactory
 {
+    private static List<IPropertyFunctionFactory> _factories = new List<IPropertyFunctionFactory>();
+
     /// <summary>
-    /// Factory for creating property functions.
+    /// Gets the number of globally registered factories.
     /// </summary>
-    public static class PropertyFunctionFactory
+    public static int FactoryCount
     {
-        private static List<IPropertyFunctionFactory> _factories = new List<IPropertyFunctionFactory>();
-
-        /// <summary>
-        /// Gets the number of globally registered factories.
-        /// </summary>
-        public static int FactoryCount
+        get
         {
-            get
-            {
-                return _factories.Count;
-            }
+            return _factories.Count;
         }
+    }
 
-        /// <summary>
-        /// Adds a globally registered factory.
-        /// </summary>
-        /// <param name="factory">Factory.</param>
-        public static void AddFactory(IPropertyFunctionFactory factory)
+    /// <summary>
+    /// Adds a globally registered factory.
+    /// </summary>
+    /// <param name="factory">Factory.</param>
+    public static void AddFactory(IPropertyFunctionFactory factory)
+    {
+        lock (_factories)
         {
-            lock (_factories)
-            {
-                _factories.Add(factory);
-            }
+            _factories.Add(factory);
         }
+    }
 
-        /// <summary>
-        /// Removes a globally registered factory.
-        /// </summary>
-        /// <param name="factory">Factory.</param>
-        public static void RemoveFactory(IPropertyFunctionFactory factory)
+    /// <summary>
+    /// Removes a globally registered factory.
+    /// </summary>
+    /// <param name="factory">Factory.</param>
+    public static void RemoveFactory(IPropertyFunctionFactory factory)
+    {
+        lock (_factories)
         {
-            lock (_factories)
-            {
-                _factories.Remove(factory);
-            }
+            _factories.Remove(factory);
         }
+    }
 
-        /// <summary>
-        /// Gets whether a factory is registered.
-        /// </summary>
-        /// <param name="factoryType">Factory Type.</param>
-        /// <returns></returns>
-        public static bool IsRegisteredFactory(Type factoryType)
+    /// <summary>
+    /// Gets whether a factory is registered.
+    /// </summary>
+    /// <param name="factoryType">Factory Type.</param>
+    /// <returns></returns>
+    public static bool IsRegisteredFactory(Type factoryType)
+    {
+        lock (_factories)
         {
-            lock (_factories)
-            {
-                return _factories.Any(f => f.GetType().Equals(factoryType));
-            }
+            return _factories.Any(f => f.GetType().Equals(factoryType));
         }
+    }
 
-        /// <summary>
-        /// Gets whether a factory is registered.
-        /// </summary>
-        /// <param name="factory">Factory.</param>
-        /// <returns></returns>
-        public static bool IsRegisteredFactory(IPropertyFunctionFactory factory)
+    /// <summary>
+    /// Gets whether a factory is registered.
+    /// </summary>
+    /// <param name="factory">Factory.</param>
+    /// <returns></returns>
+    public static bool IsRegisteredFactory(IPropertyFunctionFactory factory)
+    {
+        lock (_factories)
         {
-            lock (_factories)
-            {
-                return _factories.Contains(factory);
-            }
+            return _factories.Contains(factory);
         }
+    }
 
-        /// <summary>
-        /// Gets whether a URI is considered a property function by the global factories.
-        /// </summary>
-        /// <param name="u">Function URI.</param>
-        /// <returns></returns>
-        public static bool IsPropertyFunction(Uri u)
-        {
-            return IsPropertyFunction(u, Enumerable.Empty<IPropertyFunctionFactory>());
-        }
+    /// <summary>
+    /// Gets whether a URI is considered a property function by the global factories.
+    /// </summary>
+    /// <param name="u">Function URI.</param>
+    /// <returns></returns>
+    public static bool IsPropertyFunction(Uri u)
+    {
+        return IsPropertyFunction(u, Enumerable.Empty<IPropertyFunctionFactory>());
+    }
 
-        /// <summary>
-        /// Gets whether a URI is considered a property function by any global/local factory.
-        /// </summary>
-        /// <param name="u">Function URI.</param>
-        /// <param name="localFactories">Locally scoped factories.</param>
-        /// <returns></returns>
-        public static bool IsPropertyFunction(Uri u, IEnumerable<IPropertyFunctionFactory> localFactories)
-        {
-            return localFactories.Any(f => f.IsPropertyFunction(u)) || _factories.Any(f => f.IsPropertyFunction(u));
-        }
+    /// <summary>
+    /// Gets whether a URI is considered a property function by any global/local factory.
+    /// </summary>
+    /// <param name="u">Function URI.</param>
+    /// <param name="localFactories">Locally scoped factories.</param>
+    /// <returns></returns>
+    public static bool IsPropertyFunction(Uri u, IEnumerable<IPropertyFunctionFactory> localFactories)
+    {
+        return localFactories.Any(f => f.IsPropertyFunction(u)) || _factories.Any(f => f.IsPropertyFunction(u));
+    }
 
-        /// <summary>
-        /// Tries to create a property function.
-        /// </summary>
-        /// <param name="info">Property Function information.</param>
-        /// <param name="function">Property Function.</param>
-        /// <returns></returns>
-        public static bool TryCreatePropertyFunction(PropertyFunctionInfo info, out IPropertyFunctionPattern function)
-        {
-            return TryCreatePropertyFunction(info, Enumerable.Empty<IPropertyFunctionFactory>(), out function);
-        }
+    /// <summary>
+    /// Tries to create a property function.
+    /// </summary>
+    /// <param name="info">Property Function information.</param>
+    /// <param name="function">Property Function.</param>
+    /// <returns></returns>
+    public static bool TryCreatePropertyFunction(PropertyFunctionInfo info, out IPropertyFunctionPattern function)
+    {
+        return TryCreatePropertyFunction(info, Enumerable.Empty<IPropertyFunctionFactory>(), out function);
+    }
 
-        /// <summary>
-        /// Tries to create a property function.
-        /// </summary>
-        /// <param name="info">Property Function information.</param>
-        /// <param name="localFactories">Locally Scoped factories.</param>
-        /// <param name="function">Property Function.</param>
-        /// <returns></returns>
-        public static bool TryCreatePropertyFunction(PropertyFunctionInfo info, IEnumerable<IPropertyFunctionFactory> localFactories, out IPropertyFunctionPattern function)
+    /// <summary>
+    /// Tries to create a property function.
+    /// </summary>
+    /// <param name="info">Property Function information.</param>
+    /// <param name="localFactories">Locally Scoped factories.</param>
+    /// <param name="function">Property Function.</param>
+    /// <returns></returns>
+    public static bool TryCreatePropertyFunction(PropertyFunctionInfo info, IEnumerable<IPropertyFunctionFactory> localFactories, out IPropertyFunctionPattern function)
+    {
+        function = null;
+        // First try locally scoped factories
+        foreach (IPropertyFunctionFactory factory in localFactories)
         {
-            function = null;
-            // First try locally scoped factories
-            foreach (IPropertyFunctionFactory factory in localFactories)
-            {
-                if (factory.TryCreatePropertyFunction(info, out function)) return true;
-            }
-            // Then try global factories
-            foreach (IPropertyFunctionFactory factory in _factories)
-            {
-                if (factory.TryCreatePropertyFunction(info, out function)) return true;
-            }
-            return false;
+            if (factory.TryCreatePropertyFunction(info, out function)) return true;
         }
+        // Then try global factories
+        foreach (IPropertyFunctionFactory factory in _factories)
+        {
+            if (factory.TryCreatePropertyFunction(info, out function)) return true;
+        }
+        return false;
     }
 }

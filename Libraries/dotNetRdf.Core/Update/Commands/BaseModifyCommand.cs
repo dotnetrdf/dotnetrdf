@@ -29,132 +29,131 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Update.Commands
+namespace VDS.RDF.Update.Commands;
+
+/// <summary>
+/// Abstract Base class for classes that represent SPARQL Update INSERT, DELETE and INSERT/DELETE commands.
+/// </summary>
+public abstract class BaseModificationCommand
+    : SparqlUpdateCommand
 {
     /// <summary>
-    /// Abstract Base class for classes that represent SPARQL Update INSERT, DELETE and INSERT/DELETE commands.
+    /// URIs for the USING clauses.
     /// </summary>
-    public abstract class BaseModificationCommand
-        : SparqlUpdateCommand
+    protected List<Uri> _usingUris;
+    /// <summary>
+    /// URIS for the USING NAMED clauses.
+    /// </summary>
+    protected List<Uri> _usingNamedUris;
+
+    /// <summary>
+    /// Creates a new Base Modification Command.
+    /// </summary>
+    /// <param name="type">Update Command Type.</param>
+    public BaseModificationCommand(SparqlUpdateCommandType type)
+        : base(type) { }
+
+    /// <summary>
+    /// Gets the URIs specified in USING clauses.
+    /// </summary>
+    public IEnumerable<Uri> UsingUris
     {
-        /// <summary>
-        /// URIs for the USING clauses.
-        /// </summary>
-        protected List<Uri> _usingUris;
-        /// <summary>
-        /// URIS for the USING NAMED clauses.
-        /// </summary>
-        protected List<Uri> _usingNamedUris;
-
-        /// <summary>
-        /// Creates a new Base Modification Command.
-        /// </summary>
-        /// <param name="type">Update Command Type.</param>
-        public BaseModificationCommand(SparqlUpdateCommandType type)
-            : base(type) { }
-
-        /// <summary>
-        /// Gets the URIs specified in USING clauses.
-        /// </summary>
-        public IEnumerable<Uri> UsingUris
+        get
         {
-            get
+            if (_usingUris == null)
             {
-                if (_usingUris == null)
-                {
-                    return Enumerable.Empty<Uri>();
-                }
-                else
-                {
-                    return _usingUris;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the URIs specified in USING NAMED clauses.
-        /// </summary>
-        public IEnumerable<Uri> UsingNamedUris
-        {
-            get
-            {
-                if (_usingNamedUris == null)
-                {
-                    return Enumerable.Empty<Uri>();
-                }
-                else
-                {
-                    return _usingNamedUris;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the URI of the Graph specified in the WITH clause.
-        /// </summary>
-        [Obsolete("Replaced by WithGraphName")]
-        public Uri GraphUri
-        {
-            get
-            {
-                return (WithGraphName as IUriNode)?.Uri;
-            }
-            internal set
-            {
-                WithGraphName = new UriNode(value);
-            }
-        }
-
-        /// <summary>
-        /// The name of the graph specified in the WITH clause.
-        /// </summary>
-        public IRefNode WithGraphName { get; protected internal set; }
-
-        /// <summary>
-        /// Adds a new USING URI.
-        /// </summary>
-        /// <param name="u">URI.</param>
-        public void AddUsingUri(Uri u)
-        {
-            if (_usingUris == null) _usingUris = new List<Uri>();
-            _usingUris.Add(u);
-        }
-
-        /// <summary>
-        /// Adds a new USING NAMED URI.
-        /// </summary>
-        /// <param name="u">URI.</param>
-        public void AddUsingNamedUri(Uri u)
-        {
-            if (_usingNamedUris == null) _usingNamedUris = new List<Uri>();
-            _usingNamedUris.Add(u);
-        }
-
-        /// <summary>
-        /// Determines whether a Graph Pattern is valid for use in an DELETE pattern.
-        /// </summary>
-        /// <param name="p">Graph Pattern.</param>
-        /// <param name="top">Is this the top level pattern?.</param>
-        /// <returns></returns>
-        protected bool IsValidDeletePattern(GraphPattern p, bool top)
-        {
-            if (p.IsGraph)
-            {
-                // If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
-                return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoBlankVariables);
-            }
-            else if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
-            {
-                // EXISTS/MINUS/NOT EXISTS/OPTIONAL/SERVICE/Sub queries/UNIONs are not permitted
-                return false;
+                return Enumerable.Empty<Uri>();
             }
             else
             {
-                // For other patterns all Triple patterns must be constructable with no blank variables
-                // If top level then any Child Graph Patterns must be valid
-                // Otherwise must have no Child Graph Patterns
-                return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoBlankVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDeletePattern(gp, false))) || !p.HasChildGraphPatterns);
+                return _usingUris;
             }
+        }
+    }
+
+    /// <summary>
+    /// Gets the URIs specified in USING NAMED clauses.
+    /// </summary>
+    public IEnumerable<Uri> UsingNamedUris
+    {
+        get
+        {
+            if (_usingNamedUris == null)
+            {
+                return Enumerable.Empty<Uri>();
+            }
+            else
+            {
+                return _usingNamedUris;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the URI of the Graph specified in the WITH clause.
+    /// </summary>
+    [Obsolete("Replaced by WithGraphName")]
+    public Uri GraphUri
+    {
+        get
+        {
+            return (WithGraphName as IUriNode)?.Uri;
+        }
+        internal set
+        {
+            WithGraphName = new UriNode(value);
+        }
+    }
+
+    /// <summary>
+    /// The name of the graph specified in the WITH clause.
+    /// </summary>
+    public IRefNode WithGraphName { get; protected internal set; }
+
+    /// <summary>
+    /// Adds a new USING URI.
+    /// </summary>
+    /// <param name="u">URI.</param>
+    public void AddUsingUri(Uri u)
+    {
+        if (_usingUris == null) _usingUris = new List<Uri>();
+        _usingUris.Add(u);
+    }
+
+    /// <summary>
+    /// Adds a new USING NAMED URI.
+    /// </summary>
+    /// <param name="u">URI.</param>
+    public void AddUsingNamedUri(Uri u)
+    {
+        if (_usingNamedUris == null) _usingNamedUris = new List<Uri>();
+        _usingNamedUris.Add(u);
+    }
+
+    /// <summary>
+    /// Determines whether a Graph Pattern is valid for use in an DELETE pattern.
+    /// </summary>
+    /// <param name="p">Graph Pattern.</param>
+    /// <param name="top">Is this the top level pattern?.</param>
+    /// <returns></returns>
+    protected bool IsValidDeletePattern(GraphPattern p, bool top)
+    {
+        if (p.IsGraph)
+        {
+            // If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
+            return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoBlankVariables);
+        }
+        else if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
+        {
+            // EXISTS/MINUS/NOT EXISTS/OPTIONAL/SERVICE/Sub queries/UNIONs are not permitted
+            return false;
+        }
+        else
+        {
+            // For other patterns all Triple patterns must be constructable with no blank variables
+            // If top level then any Child Graph Patterns must be valid
+            // Otherwise must have no Child Graph Patterns
+            return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoBlankVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDeletePattern(gp, false))) || !p.HasChildGraphPatterns);
         }
     }
 }

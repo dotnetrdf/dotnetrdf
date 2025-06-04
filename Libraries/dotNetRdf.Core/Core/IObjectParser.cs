@@ -26,46 +26,45 @@
 
 using System.IO;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface for parsers that generate objects of some sort.
+/// </summary>
+/// <typeparam name="T">Generated Object Type.</typeparam>
+/// <remarks>
+/// <para>
+/// Primarily used as a marker interface in relation to <see cref="MimeTypesHelper">MimeTypesHelper</see> to provide a mechanism whereby parsers for arbitrary objects can be registered and associated with MIME Types and File Extensions.
+/// </para>
+/// </remarks>
+public interface IObjectParser<T>
 {
     /// <summary>
-    /// Interface for parsers that generate objects of some sort.
+    /// Parses an Object from an Input Stream.
     /// </summary>
-    /// <typeparam name="T">Generated Object Type.</typeparam>
-    /// <remarks>
-    /// <para>
-    /// Primarily used as a marker interface in relation to <see cref="MimeTypesHelper">MimeTypesHelper</see> to provide a mechanism whereby parsers for arbitrary objects can be registered and associated with MIME Types and File Extensions.
-    /// </para>
-    /// </remarks>
-    public interface IObjectParser<T>
-    {
-        /// <summary>
-        /// Parses an Object from an Input Stream.
-        /// </summary>
-        /// <param name="input">Input Stream.</param>
-        /// <returns></returns>
-        T Parse(StreamReader input);
+    /// <param name="input">Input Stream.</param>
+    /// <returns></returns>
+    T Parse(StreamReader input);
 
-        /// <summary>
-        /// Parses an Object from a Text Stream.
-        /// </summary>
-        /// <param name="input">Text Stream.</param>
-        /// <returns></returns>
-        T Parse(TextReader input);
+    /// <summary>
+    /// Parses an Object from a Text Stream.
+    /// </summary>
+    /// <param name="input">Text Stream.</param>
+    /// <returns></returns>
+    T Parse(TextReader input);
 
-        /// <summary>
-        /// Parses an Object from a File.
-        /// </summary>
-        /// <param name="file">Filename.</param>
-        /// <returns></returns>
-        T ParseFromFile(string file);
+    /// <summary>
+    /// Parses an Object from a File.
+    /// </summary>
+    /// <param name="file">Filename.</param>
+    /// <returns></returns>
+    T ParseFromFile(string file);
 
-        /// <summary>
-        /// Parses an Object from a String.
-        /// </summary>
-        /// <param name="data">String.</param>
-        /// <returns></returns>
-        T ParseFromString(string data);
+    /// <summary>
+    /// Parses an Object from a String.
+    /// </summary>
+    /// <param name="data">String.</param>
+    /// <returns></returns>
+    T ParseFromString(string data);
 
-    }
 }

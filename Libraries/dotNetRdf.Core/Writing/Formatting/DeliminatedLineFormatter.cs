@@ -30,201 +30,200 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Abstract Base Class for formatters where things are formatted as lines of plain text deliminated by specific characters.
+/// </summary>
+public abstract class DeliminatedLineFormatter 
+    : BaseFormatter
 {
+    private Nullable<char> _uriStartChar, _uriEndChar, _literalWrapperChar, _longLiteralWrapperChar, _lineEndChar;
+    private char _deliminatorChar = ' ';
+    private char _escapeChar = '\\';
+    private bool _fullLiteralOutput = true;
+
+    private List<string[]> _delimEscapes;
+
     /// <summary>
-    /// Abstract Base Class for formatters where things are formatted as lines of plain text deliminated by specific characters.
+    /// Creates a new Deliminated Line Formatter.
     /// </summary>
-    public abstract class DeliminatedLineFormatter 
-        : BaseFormatter
+    /// <param name="formatName">Format Name.</param>
+    /// <param name="deliminator">Item Deliminator Character.</param>
+    /// <param name="escape">Escape Character.</param>
+    /// <param name="uriStartChar">Character to start URIs (may be null).</param>
+    /// <param name="uriEndChar">Character to end URIs (may be null).</param>
+    /// <param name="literalWrapperChar">Character to wrap Literals in (may be null).</param>
+    /// <param name="longLiteralWrapperChar">Character to wrap Long Literals in (may be null).</param>
+    /// <param name="lineEndChar">Character to add at end of line (may be null).</param>
+    /// <param name="fullLiteralOutput">Whether Literals are output with Language/Datatype information.</param>
+    public DeliminatedLineFormatter(string formatName, char deliminator, char escape, Nullable<char> uriStartChar, Nullable<char> uriEndChar, Nullable<char> literalWrapperChar, Nullable<char> longLiteralWrapperChar, Nullable<char> lineEndChar, bool fullLiteralOutput)
+        : base(formatName)
     {
-        private Nullable<char> _uriStartChar, _uriEndChar, _literalWrapperChar, _longLiteralWrapperChar, _lineEndChar;
-        private char _deliminatorChar = ' ';
-        private char _escapeChar = '\\';
-        private bool _fullLiteralOutput = true;
+        _deliminatorChar = deliminator;
+        _escapeChar = escape;
+        _uriStartChar = uriStartChar;
+        _uriEndChar = uriEndChar;
+        _literalWrapperChar = literalWrapperChar;
+        _longLiteralWrapperChar = longLiteralWrapperChar;
+        _lineEndChar = lineEndChar;
+        _fullLiteralOutput = fullLiteralOutput;
 
-        private List<string[]> _delimEscapes;
+        _delimEscapes = new List<string[]>();
+        _delimEscapes.Add(new string[] { new string(new char[] { _deliminatorChar }), new string(new char[] { _escapeChar, _deliminatorChar }) });
+        _delimEscapes.Add(new string[] { new string(new char[] { '\n' }), new string(new char[] { _escapeChar, 'n' }) });
+        _delimEscapes.Add(new string[] { new string(new char[] { '\r' }), new string(new char[] { _escapeChar, 'r' }) });
+        _delimEscapes.Add(new string[] { new string(new char[] { '\t' }), new string(new char[] { _escapeChar, 't' }) });
 
-        /// <summary>
-        /// Creates a new Deliminated Line Formatter.
-        /// </summary>
-        /// <param name="formatName">Format Name.</param>
-        /// <param name="deliminator">Item Deliminator Character.</param>
-        /// <param name="escape">Escape Character.</param>
-        /// <param name="uriStartChar">Character to start URIs (may be null).</param>
-        /// <param name="uriEndChar">Character to end URIs (may be null).</param>
-        /// <param name="literalWrapperChar">Character to wrap Literals in (may be null).</param>
-        /// <param name="longLiteralWrapperChar">Character to wrap Long Literals in (may be null).</param>
-        /// <param name="lineEndChar">Character to add at end of line (may be null).</param>
-        /// <param name="fullLiteralOutput">Whether Literals are output with Language/Datatype information.</param>
-        public DeliminatedLineFormatter(string formatName, char deliminator, char escape, Nullable<char> uriStartChar, Nullable<char> uriEndChar, Nullable<char> literalWrapperChar, Nullable<char> longLiteralWrapperChar, Nullable<char> lineEndChar, bool fullLiteralOutput)
-            : base(formatName)
+        // TODO: Need to handle difference between standard and long literals better
+        if (_literalWrapperChar.HasValue)
         {
-            _deliminatorChar = deliminator;
-            _escapeChar = escape;
-            _uriStartChar = uriStartChar;
-            _uriEndChar = uriEndChar;
-            _literalWrapperChar = literalWrapperChar;
-            _longLiteralWrapperChar = longLiteralWrapperChar;
-            _lineEndChar = lineEndChar;
-            _fullLiteralOutput = fullLiteralOutput;
-
-            _delimEscapes = new List<string[]>();
-            _delimEscapes.Add(new string[] { new string(new char[] { _deliminatorChar }), new string(new char[] { _escapeChar, _deliminatorChar }) });
-            _delimEscapes.Add(new string[] { new string(new char[] { '\n' }), new string(new char[] { _escapeChar, 'n' }) });
-            _delimEscapes.Add(new string[] { new string(new char[] { '\r' }), new string(new char[] { _escapeChar, 'r' }) });
-            _delimEscapes.Add(new string[] { new string(new char[] { '\t' }), new string(new char[] { _escapeChar, 't' }) });
-
-            // TODO: Need to handle difference between standard and long literals better
-            if (_literalWrapperChar.HasValue)
-            {
-                _delimEscapes.Add(new string[] { new string(new char[] { _literalWrapperChar.Value }), new string(new char[] { _escapeChar, _literalWrapperChar.Value }) });
-            }
+            _delimEscapes.Add(new string[] { new string(new char[] { _literalWrapperChar.Value }), new string(new char[] { _escapeChar, _literalWrapperChar.Value }) });
         }
+    }
 
-        /// <summary>
-        /// Formats a Triple.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        public override string Format(Triple t)
+    /// <summary>
+    /// Formats a Triple.
+    /// </summary>
+    /// <param name="t">Triple.</param>
+    /// <returns></returns>
+    public override string Format(Triple t)
+    {
+        var output = new StringBuilder();
+        output.Append(Format(t.Subject));
+        output.Append(_deliminatorChar);
+        output.Append(Format(t.Predicate));
+        output.Append(_deliminatorChar);
+        output.Append(Format(t.Object));
+        if (_lineEndChar != null)
         {
-            var output = new StringBuilder();
-            output.Append(Format(t.Subject));
-            output.Append(_deliminatorChar);
-            output.Append(Format(t.Predicate));
-            output.Append(_deliminatorChar);
-            output.Append(Format(t.Object));
-            if (_lineEndChar != null)
-            {
-                output.Append(_lineEndChar);
-            }
-            return output.ToString();
+            output.Append(_lineEndChar);
         }
+        return output.ToString();
+    }
 
-        /// <summary>
-        /// Formats a URI Node.
-        /// </summary>
-        /// <param name="u">URI Node.</param>
-        /// <param name="segment">Triple Segment.</param>
-        /// <returns></returns>
-        protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
+    /// <summary>
+    /// Formats a URI Node.
+    /// </summary>
+    /// <param name="u">URI Node.</param>
+    /// <param name="segment">Triple Segment.</param>
+    /// <returns></returns>
+    protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
+    {
+        var output = new StringBuilder();
+        if (_uriStartChar != null) output.Append(_uriStartChar);
+        if (_uriEndChar != null)
         {
-            var output = new StringBuilder();
-            if (_uriStartChar != null) output.Append(_uriStartChar);
-            if (_uriEndChar != null)
-            {
-                output.Append(FormatUri(u.Uri));
-                output.Append(_uriEndChar);
-            }
-            else
-            {
-                output.Append(FormatUri(u.Uri));
-            }
-            return output.ToString();
+            output.Append(FormatUri(u.Uri));
+            output.Append(_uriEndChar);
         }
-
-        /// <summary>
-        /// Formats a Literal Node.
-        /// </summary>
-        /// <param name="lit">Literal Node.</param>
-        /// <param name="segment">Triple Segment.</param>
-        /// <returns></returns>
-        protected override string FormatLiteralNode(ILiteralNode lit, TripleSegment? segment)
+        else
         {
-            var output = new StringBuilder();
-            if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType, TurtleSyntax.Original))
-            {
-                output.Append(lit.Value);
-            }
-            else
-            {
-                var value = lit.Value;
+            output.Append(FormatUri(u.Uri));
+        }
+        return output.ToString();
+    }
 
-                if (TurtleSpecsHelper.IsLongLiteral(value))
+    /// <summary>
+    /// Formats a Literal Node.
+    /// </summary>
+    /// <param name="lit">Literal Node.</param>
+    /// <param name="segment">Triple Segment.</param>
+    /// <returns></returns>
+    protected override string FormatLiteralNode(ILiteralNode lit, TripleSegment? segment)
+    {
+        var output = new StringBuilder();
+        if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType, TurtleSyntax.Original))
+        {
+            output.Append(lit.Value);
+        }
+        else
+        {
+            var value = lit.Value;
+
+            if (TurtleSpecsHelper.IsLongLiteral(value))
+            {
+                value = Escape(value, _delimEscapes);
+
+                // If there are no wrapper characters then we must escape the deliminator
+                if (value.Contains(_deliminatorChar))
                 {
-                    value = Escape(value, _delimEscapes);
+                    if (_literalWrapperChar == null && _longLiteralWrapperChar == null)
+                    {
+                        // Replace the deliminator
+                        value = value.Replace(new string(new char[] { _deliminatorChar }), new string(new char[] { _escapeChar, _deliminatorChar }));
+                    }
+                }
 
-                    // If there are no wrapper characters then we must escape the deliminator
-                    if (value.Contains(_deliminatorChar))
-                    {
-                        if (_literalWrapperChar == null && _longLiteralWrapperChar == null)
-                        {
-                            // Replace the deliminator
-                            value = value.Replace(new string(new char[] { _deliminatorChar }), new string(new char[] { _escapeChar, _deliminatorChar }));
-                        }
-                    }
-
-                    // Apply appropriate wrapper characters
-                    if (_longLiteralWrapperChar != null)
-                    {
-                        output.Append(_longLiteralWrapperChar + value + _longLiteralWrapperChar);
-                    }
-                    else if (_literalWrapperChar != null)
-                    {
-                        output.Append(_literalWrapperChar + value + _literalWrapperChar);
-                    }
-                    else
-                    {
-                        output.Append(value);
-                    }
+                // Apply appropriate wrapper characters
+                if (_longLiteralWrapperChar != null)
+                {
+                    output.Append(_longLiteralWrapperChar + value + _longLiteralWrapperChar);
+                }
+                else if (_literalWrapperChar != null)
+                {
+                    output.Append(_literalWrapperChar + value + _literalWrapperChar);
                 }
                 else
                 {
-                    // Replace the deliminator
-                    value = Escape(value, _delimEscapes);
-
-                    // Apply appropriate wrapper characters
-                    if (_literalWrapperChar != null)
-                    {
-                        output.Append(_literalWrapperChar + value + _literalWrapperChar);
-                    }
-                    else
-                    {
-                        output.Append(value);
-                    }
+                    output.Append(value);
                 }
-
-                if (_fullLiteralOutput)
-                {
-                    if (!lit.Language.Equals(string.Empty))
-                    {
-                        output.Append("@" + lit.Language.ToLower());
-                    }
-                    else if (lit.DataType != null)
-                    {
-                        output.Append("^^");
-                        if (_uriStartChar != null) output.Append(_uriStartChar);
-                        if (_uriEndChar != null)
-                        {
-                            output.Append(FormatUri(lit.DataType));
-                            output.Append(_uriEndChar);
-                        }
-                        else
-                        {
-                            output.Append(FormatUri(lit.DataType));
-                        }
-                    }
-                }
-            }
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Formats URIs.
-        /// </summary>
-        /// <param name="u"></param>
-        /// <returns></returns>
-        public override string FormatUri(string u)
-        {
-            if (_uriEndChar != null)
-            {
-                return u.Replace(new string(new char[] { (char)_uriEndChar }), new string(new char[] { _escapeChar, (char)_uriEndChar }));
             }
             else
             {
-                return u;
+                // Replace the deliminator
+                value = Escape(value, _delimEscapes);
+
+                // Apply appropriate wrapper characters
+                if (_literalWrapperChar != null)
+                {
+                    output.Append(_literalWrapperChar + value + _literalWrapperChar);
+                }
+                else
+                {
+                    output.Append(value);
+                }
             }
+
+            if (_fullLiteralOutput)
+            {
+                if (!lit.Language.Equals(string.Empty))
+                {
+                    output.Append("@" + lit.Language.ToLower());
+                }
+                else if (lit.DataType != null)
+                {
+                    output.Append("^^");
+                    if (_uriStartChar != null) output.Append(_uriStartChar);
+                    if (_uriEndChar != null)
+                    {
+                        output.Append(FormatUri(lit.DataType));
+                        output.Append(_uriEndChar);
+                    }
+                    else
+                    {
+                        output.Append(FormatUri(lit.DataType));
+                    }
+                }
+            }
+        }
+        return output.ToString();
+    }
+
+    /// <summary>
+    /// Formats URIs.
+    /// </summary>
+    /// <param name="u"></param>
+    /// <returns></returns>
+    public override string FormatUri(string u)
+    {
+        if (_uriEndChar != null)
+        {
+            return u.Replace(new string(new char[] { (char)_uriEndChar }), new string(new char[] { _escapeChar, (char)_uriEndChar }));
+        }
+        else
+        {
+            return u;
         }
     }
 }

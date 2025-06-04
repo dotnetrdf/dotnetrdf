@@ -31,103 +31,102 @@ using VDS.RDF.Query.Optimisation;
 using System.Reflection;
 #endif
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+/// <summary>
+/// An Object Factory that can generate SPARQL Query and Algebra Optimisers.
+/// </summary>
+public class OptimiserFactory
+    : IObjectFactory
 {
+    private const string QueryOptimiserDefault = "VDS.RDF.Query.Optimisation.DefaultOptimiser";
+    private const string QueryOptimiserNoReorder = "VDS.RDF.Query.Optimisation.NoReorderOptimiser";
+    private const string QueryOptimiserWeighted = "VDS.RDF.Query.Optimisation.WeightedOptimiser";
+
     /// <summary>
-    /// An Object Factory that can generate SPARQL Query and Algebra Optimisers.
+    /// Tries to load a SPARQL Query/Algebra Optimiser based on information from the Configuration Graph.
     /// </summary>
-    public class OptimiserFactory
-        : IObjectFactory
+    /// <param name="g">Configuration Graph.</param>
+    /// <param name="objNode">Object Node.</param>
+    /// <param name="targetType">Target Type.</param>
+    /// <param name="obj">Output Object.</param>
+    /// <returns></returns>
+    public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
     {
-        private const string QueryOptimiserDefault = "VDS.RDF.Query.Optimisation.DefaultOptimiser";
-        private const string QueryOptimiserNoReorder = "VDS.RDF.Query.Optimisation.NoReorderOptimiser";
-        private const string QueryOptimiserWeighted = "VDS.RDF.Query.Optimisation.WeightedOptimiser";
+        obj = null;
+        object temp;
 
-        /// <summary>
-        /// Tries to load a SPARQL Query/Algebra Optimiser based on information from the Configuration Graph.
-        /// </summary>
-        /// <param name="g">Configuration Graph.</param>
-        /// <param name="objNode">Object Node.</param>
-        /// <param name="targetType">Target Type.</param>
-        /// <param name="obj">Output Object.</param>
-        /// <returns></returns>
-        public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
+        switch (targetType.FullName)
         {
-            obj = null;
-            object temp;
+            case QueryOptimiserDefault:
+                obj = new DefaultOptimiser();
+                break;
 
-            switch (targetType.FullName)
-            {
-                case QueryOptimiserDefault:
-                    obj = new DefaultOptimiser();
-                    break;
+            case QueryOptimiserNoReorder:
+                obj = new NoReorderOptimiser();
+                break;
 
-                case QueryOptimiserNoReorder:
-                    obj = new NoReorderOptimiser();
-                    break;
-
-                case QueryOptimiserWeighted:
-                    INode statsObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
-                    if (statsObj != null)
+            case QueryOptimiserWeighted:
+                INode statsObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
+                if (statsObj != null)
+                {
+                    temp = ConfigurationLoader.LoadObject(g, statsObj);
+                    if (temp is IGraph)
                     {
-                        temp = ConfigurationLoader.LoadObject(g, statsObj);
-                        if (temp is IGraph)
-                        {
-                            obj = new WeightedOptimiser((IGraph)temp);
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to create the Weighted Query Optimiser identified by the Node '" + objNode.ToString() + "' since the dnr:usingGraph property points to an object that cannot be loaded as an Object that imlements the required IGraph interface");
-                        }
+                        obj = new WeightedOptimiser((IGraph)temp);
                     }
                     else
                     {
-                        obj = new WeightedOptimiser();
+                        throw new DotNetRdfConfigurationException("Unable to create the Weighted Query Optimiser identified by the Node '" + objNode.ToString() + "' since the dnr:usingGraph property points to an object that cannot be loaded as an Object that imlements the required IGraph interface");
                     }
-                    break;
+                }
+                else
+                {
+                    obj = new WeightedOptimiser();
+                }
+                break;
 
-                default:
-                    // Try and create an Algebra Optimiser
-                    try
-                    {
-                        obj = (IAlgebraOptimiser)Activator.CreateInstance(targetType);
-                    }
-                    catch
-                    {
-                        // Any error means this loader can't load this type
-                        return false;
-                    }
-                    break;
-            }
-
-            // Return true only if we've loaded something into the output object
-            if (obj != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            default:
+                // Try and create an Algebra Optimiser
+                try
+                {
+                    obj = (IAlgebraOptimiser)Activator.CreateInstance(targetType);
+                }
+                catch
+                {
+                    // Any error means this loader can't load this type
+                    return false;
+                }
+                break;
         }
 
-        /// <summary>
-        /// Gets whether this Factory can load objects of the given Type.
-        /// </summary>
-        /// <param name="t">Type.</param>
-        /// <returns></returns>
-        public bool CanLoadObject(Type t)
+        // Return true only if we've loaded something into the output object
+        if (obj != null)
         {
-            switch (t.FullName)
-            {
-                case QueryOptimiserDefault:
-                case QueryOptimiserNoReorder:
-                case QueryOptimiserWeighted:
-                    return true;
-                default:
-                    Type algOptType = typeof(IAlgebraOptimiser);
-                    return t.GetInterfaces().Any(i => i.Equals(algOptType));
-            }
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Gets whether this Factory can load objects of the given Type.
+    /// </summary>
+    /// <param name="t">Type.</param>
+    /// <returns></returns>
+    public bool CanLoadObject(Type t)
+    {
+        switch (t.FullName)
+        {
+            case QueryOptimiserDefault:
+            case QueryOptimiserNoReorder:
+            case QueryOptimiserWeighted:
+                return true;
+            default:
+                Type algOptType = typeof(IAlgebraOptimiser);
+                return t.GetInterfaces().Any(i => i.Equals(algOptType));
         }
     }
 }

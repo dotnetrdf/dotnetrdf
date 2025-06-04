@@ -26,95 +26,94 @@
 
 using System;
 
-namespace VDS.RDF.Query.FullText.Search
+namespace VDS.RDF.Query.FullText.Search;
+
+/// <summary>
+/// Interface for representing Full Text Search Results.
+/// </summary>
+public interface IFullTextSearchResult
 {
     /// <summary>
-    /// Interface for representing Full Text Search Results.
+    /// Gets the Node that was returned for this result.
     /// </summary>
-    public interface IFullTextSearchResult
+    INode Node
     {
-        /// <summary>
-        /// Gets the Node that was returned for this result.
-        /// </summary>
-        INode Node
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Score for this result.
-        /// </summary>
-        double Score
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Graph URI for this result.
-        /// </summary>
-        [Obsolete("Replaced by GraphName")]
-        Uri GraphUri
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the name of the graph that contains this result.
-        /// </summary>
-        IRefNode GraphName { get; }
+        get;
     }
 
     /// <summary>
-    /// Basic Implementation of a Full Text Search Result.
+    /// Gets the Score for this result.
     /// </summary>
-    public sealed class FullTextSearchResult
-        : IFullTextSearchResult
+    double Score
     {
-        /// <summary>
-        /// Creates a new Full Text Search Result.
-        /// </summary>
-        /// <param name="graphName">Graph name.</param>
-        /// <param name="n">Node.</param>
-        /// <param name="score">Score.</param>
-        public FullTextSearchResult(IRefNode graphName, INode n, double score)
-        {
-            GraphName = graphName;
-            Node = n;
-            Score = score;
-        }
-
-        /// <summary>
-        /// Creates a new Full Text Search Result.
-        /// </summary>
-        /// <param name="n">Node.</param>
-        /// <param name="score">Score.</param>
-        public FullTextSearchResult(INode n, double score)
-            : this(null, n, score) { }
-
-        /// <summary>
-        /// Gets the Node.
-        /// </summary>
-        public INode Node
-        {
-            get; 
-        }
-
-        /// <summary>
-        /// Gets the Score.
-        /// </summary>
-        public double Score
-        {
-            get; 
-        }
-
-        /// <summary>
-        /// Gets the Graph URI of the result.
-        /// </summary>
-        public Uri GraphUri => (GraphName as IUriNode)?.Uri;
-
-        /// <summary>
-        /// Gets the name of the graph that contains the result.
-        /// </summary>
-        public IRefNode GraphName { get; }
+        get;
     }
+
+    /// <summary>
+    /// Gets the Graph URI for this result.
+    /// </summary>
+    [Obsolete("Replaced by GraphName")]
+    Uri GraphUri
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the name of the graph that contains this result.
+    /// </summary>
+    IRefNode GraphName { get; }
+}
+
+/// <summary>
+/// Basic Implementation of a Full Text Search Result.
+/// </summary>
+public sealed class FullTextSearchResult
+    : IFullTextSearchResult
+{
+    /// <summary>
+    /// Creates a new Full Text Search Result.
+    /// </summary>
+    /// <param name="graphName">Graph name.</param>
+    /// <param name="n">Node.</param>
+    /// <param name="score">Score.</param>
+    public FullTextSearchResult(IRefNode graphName, INode n, double score)
+    {
+        GraphName = graphName;
+        Node = n;
+        Score = score;
+    }
+
+    /// <summary>
+    /// Creates a new Full Text Search Result.
+    /// </summary>
+    /// <param name="n">Node.</param>
+    /// <param name="score">Score.</param>
+    public FullTextSearchResult(INode n, double score)
+        : this(null, n, score) { }
+
+    /// <summary>
+    /// Gets the Node.
+    /// </summary>
+    public INode Node
+    {
+        get; 
+    }
+
+    /// <summary>
+    /// Gets the Score.
+    /// </summary>
+    public double Score
+    {
+        get; 
+    }
+
+    /// <summary>
+    /// Gets the Graph URI of the result.
+    /// </summary>
+    public Uri GraphUri => (GraphName as IUriNode)?.Uri;
+
+    /// <summary>
+    /// Gets the name of the graph that contains the result.
+    /// </summary>
+    public IRefNode GraphName { get; }
 }

@@ -27,55 +27,54 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Query.Ordering
+namespace VDS.RDF.Query.Ordering;
+
+class TripleComparer : IComparer<Triple>
 {
-    class TripleComparer : IComparer<Triple>
+    private IComparer<Triple> _child;
+    private Func<Triple, Triple, int> _compareFunc;
+   
+    private int _modifier = 1;
+
+    public TripleComparer(Func<Triple, Triple, int> compareFunc, bool descending, IComparer<Triple> child)
     {
-        private IComparer<Triple> _child;
-        private Func<Triple, Triple, int> _compareFunc;
-       
-        private int _modifier = 1;
-
-        public TripleComparer(Func<Triple, Triple, int> compareFunc, bool descending, IComparer<Triple> child)
+        _compareFunc = compareFunc;
+        _child = child;
+        if (descending)
         {
-            _compareFunc = compareFunc;
-            _child = child;
-            if (descending)
-            {
-                _modifier = -1;
-            }
+            _modifier = -1;
         }
+    }
 
-        public TripleComparer(Func<Triple, Triple, int> compareFunc, IComparer<Triple> child)
-            : this(compareFunc, false, child) { }
+    public TripleComparer(Func<Triple, Triple, int> compareFunc, IComparer<Triple> child)
+        : this(compareFunc, false, child) { }
 
-        public TripleComparer(Func<Triple, Triple, int> compareFunc)
-            : this(compareFunc, null) { }
+    public TripleComparer(Func<Triple, Triple, int> compareFunc)
+        : this(compareFunc, null) { }
 
-        public int Compare(Triple x, Triple y)
+    public int Compare(Triple x, Triple y)
+    {
+        if (_compareFunc == null)
         {
-            if (_compareFunc == null)
+            return 0;
+        }
+        else
+        {
+            var c = _compareFunc(x, y);
+            if (c == 0)
             {
-                return 0;
-            }
-            else
-            {
-                var c = _compareFunc(x, y);
-                if (c == 0)
+                if (_child != null)
                 {
-                    if (_child != null)
-                    {
-                        return _modifier * _child.Compare(x, y);
-                    }
-                    else
-                    {
-                        return _modifier * c;
-                    }
+                    return _modifier * _child.Compare(x, y);
                 }
                 else
                 {
                     return _modifier * c;
                 }
+            }
+            else
+            {
+                return _modifier * c;
             }
         }
     }

@@ -30,121 +30,120 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Paths;
 
-namespace VDS.RDF.Query.Patterns
+namespace VDS.RDF.Query.Patterns;
+
+/// <summary>
+/// Class for representing property patterns in SPARQL Queries.
+/// </summary>
+public class PropertyPathPattern
+    : BaseTriplePattern, IPropertyPathPattern, IComparable<PropertyPathPattern>
 {
     /// <summary>
-    /// Class for representing property patterns in SPARQL Queries.
+    /// Creates a new Property Path Pattern.
     /// </summary>
-    public class PropertyPathPattern
-        : BaseTriplePattern, IPropertyPathPattern, IComparable<PropertyPathPattern>
+    /// <param name="subj">Subject.</param>
+    /// <param name="path">Property Path.</param>
+    /// <param name="obj">Object.</param>
+    public PropertyPathPattern(PatternItem subj, ISparqlPath path, PatternItem obj)
     {
-        /// <summary>
-        /// Creates a new Property Path Pattern.
-        /// </summary>
-        /// <param name="subj">Subject.</param>
-        /// <param name="path">Property Path.</param>
-        /// <param name="obj">Object.</param>
-        public PropertyPathPattern(PatternItem subj, ISparqlPath path, PatternItem obj)
+        Subject = subj;
+        Path = path;
+        Object = obj;
+        Subject.RigorousEvaluation = true;
+        Object.RigorousEvaluation = true;
+
+        // Build our list of Variables
+        foreach (var variableName in Subject.Variables.Concat(Object.Variables))
         {
-            Subject = subj;
-            Path = path;
-            Object = obj;
-            Subject.RigorousEvaluation = true;
-            Object.RigorousEvaluation = true;
-
-            // Build our list of Variables
-            foreach (var variableName in Subject.Variables.Concat(Object.Variables))
-            {
-                if (!_vars.Contains(variableName)) _vars.Add(variableName);
-            }
-            _vars.Sort();
+            if (!_vars.Contains(variableName)) _vars.Add(variableName);
         }
+        _vars.Sort();
+    }
 
-        /// <summary>
-        /// Gets the pattern type.
-        /// </summary>
-        public override TriplePatternType PatternType => TriplePatternType.Path;
+    /// <summary>
+    /// Gets the pattern type.
+    /// </summary>
+    public override TriplePatternType PatternType => TriplePatternType.Path;
 
-        /// <summary>
-        /// Gets the Subject of the Property Path.
-        /// </summary>
-        public PatternItem Subject { get; }
+    /// <summary>
+    /// Gets the Subject of the Property Path.
+    /// </summary>
+    public PatternItem Subject { get; }
 
-        /// <summary>
-        /// Gets the Property Path.
-        /// </summary>
-        public ISparqlPath Path { get; }
+    /// <summary>
+    /// Gets the Property Path.
+    /// </summary>
+    public ISparqlPath Path { get; }
 
-        /// <summary>
-        /// Gets the Object of the Property Path.
-        /// </summary>
-        public PatternItem Object { get; }
+    /// <summary>
+    /// Gets the Object of the Property Path.
+    /// </summary>
+    public PatternItem Object { get; }
 
-        /// <summary>
-        /// Gets the enumeration of fixed variables in the pattern i.e. variables that are guaranteed to have a bound value.
-        /// </summary>
-        public override IEnumerable<string> FixedVariables => _vars;
+    /// <summary>
+    /// Gets the enumeration of fixed variables in the pattern i.e. variables that are guaranteed to have a bound value.
+    /// </summary>
+    public override IEnumerable<string> FixedVariables => _vars;
 
-        /// <summary>
-        /// Gets the enumeration of floating variables in the pattern i.e. variables that are not guaranteed to have a bound value.
-        /// </summary>
-        public override IEnumerable<string> FloatingVariables { get; } = Enumerable.Empty<string>();
+    /// <summary>
+    /// Gets the enumeration of floating variables in the pattern i.e. variables that are not guaranteed to have a bound value.
+    /// </summary>
+    public override IEnumerable<string> FloatingVariables { get; } = Enumerable.Empty<string>();
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
-        {
-            return processor.ProcessPropertyPathPattern(this, context);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    {
+        return processor.ProcessPropertyPathPattern(this, context);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
-        {
-            return visitor.VisitPropertyPathPattern(this);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    {
+        return visitor.VisitPropertyPathPattern(this);
+    }
 
-        /// <summary>
-        /// Gets whether the Pattern accepts all Triple Patterns.
-        /// </summary>
-        public override bool IsAcceptAll => false;
+    /// <summary>
+    /// Gets whether the Pattern accepts all Triple Patterns.
+    /// </summary>
+    public override bool IsAcceptAll => false;
 
-        /// <summary>
-        /// Returns false a property path may always contain implicit blank variables.
-        /// </summary>
-        public override bool HasNoBlankVariables => false;
+    /// <summary>
+    /// Returns false a property path may always contain implicit blank variables.
+    /// </summary>
+    public override bool HasNoBlankVariables => false;
 
-        /// <summary>
-        /// Compares a property path pattern to another.
-        /// </summary>
-        /// <param name="other">Pattern.</param>
-        /// <returns></returns>
-        public int CompareTo(PropertyPathPattern other)
-        {
-            return CompareTo((IPropertyPathPattern)other);
-        }
+    /// <summary>
+    /// Compares a property path pattern to another.
+    /// </summary>
+    /// <param name="other">Pattern.</param>
+    /// <returns></returns>
+    public int CompareTo(PropertyPathPattern other)
+    {
+        return CompareTo((IPropertyPathPattern)other);
+    }
 
-        /// <summary>
-        /// Compares a property path pattern to another.
-        /// </summary>
-        /// <param name="other">Pattern.</param>
-        /// <returns></returns>
-        public int CompareTo(IPropertyPathPattern other)
-        {
-            return base.CompareTo(other);
-        }
+    /// <summary>
+    /// Compares a property path pattern to another.
+    /// </summary>
+    /// <param name="other">Pattern.</param>
+    /// <returns></returns>
+    public int CompareTo(IPropertyPathPattern other)
+    {
+        return base.CompareTo(other);
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Pattern.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append(Subject);
-            output.Append(' ');
-            output.Append(Path.ToString());
-            output.Append(' ');
-            output.Append(Object);
-            return output.ToString();
-        }
+    /// <summary>
+    /// Gets the String representation of the Pattern.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append(Subject);
+        output.Append(' ');
+        output.Append(Path.ToString());
+        output.Append(' ');
+        output.Append(Object);
+        return output.ToString();
     }
 }

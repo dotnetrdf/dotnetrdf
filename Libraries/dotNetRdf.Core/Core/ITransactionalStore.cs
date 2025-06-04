@@ -24,22 +24,21 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface for Triple Stores which are backed by some storage layer that may delay persistence and thus require flushing to ensure changes are persisted to the backing store, as a by product such stores will typically have some notion of transactionality.
+/// </summary>
+public interface ITransactionalStore
+    : ITripleStore
 {
     /// <summary>
-    /// Interface for Triple Stores which are backed by some storage layer that may delay persistence and thus require flushing to ensure changes are persisted to the backing store, as a by product such stores will typically have some notion of transactionality.
+    /// Flushes any outstanding changes to the underlying store.
     /// </summary>
-    public interface ITransactionalStore
-        : ITripleStore
-    {
-        /// <summary>
-        /// Flushes any outstanding changes to the underlying store.
-        /// </summary>
-        void Flush();
+    void Flush();
 
-        /// <summary>
-        /// Discards any outstanding changes to the underlying store.
-        /// </summary>
-        void Discard();
-    }
+    /// <summary>
+    /// Discards any outstanding changes to the underlying store.
+    /// </summary>
+    void Discard();
 }

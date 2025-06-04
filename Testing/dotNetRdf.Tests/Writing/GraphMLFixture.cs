@@ -27,59 +27,58 @@ using System;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+public class GraphMLFixture
 {
-    public class GraphMLFixture
+    internal ITripleStore Input { get; private set; }
+
+    internal XDocument Output { get; private set; }
+
+    public GraphMLFixture()
     {
-        internal ITripleStore Input { get; private set; }
+        Output = new XDocument();
+        Input = GraphMLFixture.Load();
 
-        internal XDocument Output { get; private set; }
-
-        public GraphMLFixture()
+        using (var outputWriter = Output.CreateWriter())
         {
-            Output = new XDocument();
-            Input = GraphMLFixture.Load();
-
-            using (var outputWriter = Output.CreateWriter())
-            {
-                new GraphMLWriter().Save(Input, outputWriter);
-            }
+            new GraphMLWriter().Save(Input, outputWriter);
         }
-
-        private static ITripleStore Load()
-        {
-            var store = new TripleStore();
-
-            var graph1 = new Graph();
-            graph1.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            store.Add(graph1);
-
-            var graph2 = new Graph(new UriNode(new Uri("http://example.com/graph2")));
-            graph2.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            store.Add(graph2);
-
-            return store;
-        }
-
-        internal XElement GraphElementByBaseUri(Uri baseUri)
-        {
-            var graphElements = Output.Descendants(XName.Get(GraphMLSpecsHelper.Graph, GraphMLSpecsHelper.NS));
-
-            if (baseUri == null)
-            {
-                return graphElements.Single(element =>
-                    element.Elements().All(child => child.Name.LocalName != GraphMLSpecsHelper.Data));
-                //return graphElements.Single(element => element.Attribute(GraphMLSpecsHelper.Id) == null);
-            }
-            else
-            {
-                return graphElements.Single(element => element.Elements().Any(child =>
-                    child.Name.LocalName == GraphMLSpecsHelper.Data &&
-                    child.Attribute("key").Value.Equals(GraphMLSpecsHelper.GraphLabel) && 
-                    child.Value.Equals(baseUri.AbsoluteUri)));
-                //return graphElements.Single(element => element.Attribute(GraphMLSpecsHelper.Id)?.Value == baseUri.AbsoluteUri);
-            }
-        }
-
     }
+
+    private static ITripleStore Load()
+    {
+        var store = new TripleStore();
+
+        var graph1 = new Graph();
+        graph1.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        store.Add(graph1);
+
+        var graph2 = new Graph(new UriNode(new Uri("http://example.com/graph2")));
+        graph2.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        store.Add(graph2);
+
+        return store;
+    }
+
+    internal XElement GraphElementByBaseUri(Uri baseUri)
+    {
+        var graphElements = Output.Descendants(XName.Get(GraphMLSpecsHelper.Graph, GraphMLSpecsHelper.NS));
+
+        if (baseUri == null)
+        {
+            return graphElements.Single(element =>
+                element.Elements().All(child => child.Name.LocalName != GraphMLSpecsHelper.Data));
+            //return graphElements.Single(element => element.Attribute(GraphMLSpecsHelper.Id) == null);
+        }
+        else
+        {
+            return graphElements.Single(element => element.Elements().Any(child =>
+                child.Name.LocalName == GraphMLSpecsHelper.Data &&
+                child.Attribute("key").Value.Equals(GraphMLSpecsHelper.GraphLabel) && 
+                child.Value.Equals(baseUri.AbsoluteUri)));
+            //return graphElements.Single(element => element.Attribute(GraphMLSpecsHelper.Id)?.Value == baseUri.AbsoluteUri);
+        }
+    }
+
 }

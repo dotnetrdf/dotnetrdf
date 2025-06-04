@@ -24,60 +24,59 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
+
+/// <summary>
+/// Represents the SPARQL SHA384() Function.
+/// </summary>
+public class Sha384HashFunction 
+    : BaseHashFunction
 {
     /// <summary>
-    /// Represents the SPARQL SHA384() Function.
+    /// Creates a new SHA384() Function.
     /// </summary>
-    public class Sha384HashFunction 
-        : BaseHashFunction
+    /// <param name="expr">Argument Expression.</param>
+    public Sha384HashFunction(ISparqlExpression expr)
+        : base(expr) { }
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
     {
-        /// <summary>
-        /// Creates a new SHA384() Function.
-        /// </summary>
-        /// <param name="expr">Argument Expression.</param>
-        public Sha384HashFunction(ISparqlExpression expr)
-            : base(expr) { }
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
+        get 
         {
-            get 
-            {
-                return SparqlSpecsHelper.SparqlKeywordSha384; 
-            }
+            return SparqlSpecsHelper.SparqlKeywordSha384; 
         }
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordSha384 + "(" + InnerExpression + ")";
-        }
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return SparqlSpecsHelper.SparqlKeywordSha384 + "(" + InnerExpression + ")";
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessSha384HashFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessSha384HashFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitSha384HashFunction(this);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitSha384HashFunction(this);
+    }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new Sha384HashFunction(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new Sha384HashFunction(transformer.Transform(InnerExpression));
     }
 }

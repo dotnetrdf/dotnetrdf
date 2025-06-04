@@ -26,22 +26,21 @@
 
 using System.Threading;
 
-namespace VDS.RDF.Query.Datasets
+namespace VDS.RDF.Query.Datasets;
+
+/// <summary>
+/// Interface for SPARQL Datasets which also provide a Lock by which threading can be controlled.
+/// </summary>
+/// <remarks>
+/// Note that there is no guarantees that consuming code will respect the fact that a Dataset is Thread Safe and use the <see cref="IThreadSafeDataset.Lock">Lock</see> property appropriately.  Additionally some datasets may choose to implement thread safety in other ways which don't rely on this interface.
+/// </remarks>
+public interface IThreadSafeDataset : ISparqlDataset
 {
     /// <summary>
-    /// Interface for SPARQL Datasets which also provide a Lock by which threading can be controlled.
+    /// Gets the Lock used to ensure MRSW concurrency of the Dataset when used with the Leviathan SPARQL processors.
     /// </summary>
-    /// <remarks>
-    /// Note that there is no guarantees that consuming code will respect the fact that a Dataset is Thread Safe and use the <see cref="IThreadSafeDataset.Lock">Lock</see> property appropriately.  Additionally some datasets may choose to implement thread safety in other ways which don't rely on this interface.
-    /// </remarks>
-    public interface IThreadSafeDataset : ISparqlDataset
+    ReaderWriterLockSlim Lock
     {
-        /// <summary>
-        /// Gets the Lock used to ensure MRSW concurrency of the Dataset when used with the Leviathan SPARQL processors.
-        /// </summary>
-        ReaderWriterLockSlim Lock
-        {
-            get;
-        }
+        get;
     }
 }

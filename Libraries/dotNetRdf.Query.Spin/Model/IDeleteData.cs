@@ -24,16 +24,15 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+
+/**
+ * A SPARQL Update DELETE DATA operation.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IDeleteData : IUpdate
 {
-
-
-    /**
-     * A SPARQL Update DELETE DATA operation.
-     * 
-     * @author Holger Knublauch
-     */
-    internal interface IDeleteData : IUpdate
-    {
-    }
 }

@@ -26,60 +26,59 @@
 
 using System.Net;
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+/// <summary>
+/// A Stardog connector for connecting to Stardog servers running the latest version, currently this is version 3.*.
+/// </summary>
+public class StardogConnector
+    : StardogV3Connector
 {
     /// <summary>
-    /// A Stardog connector for connecting to Stardog servers running the latest version, currently this is version 3.*.
+    /// Creates a new connection to a Stardog Store.
     /// </summary>
-    public class StardogConnector
-        : StardogV3Connector
+    /// <param name="baseUri">Base Uri of the Server.</param>
+    /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+    public StardogConnector(string baseUri, string kbID)
+        : this(baseUri, kbID, null, null)
     {
-        /// <summary>
-        /// Creates a new connection to a Stardog Store.
-        /// </summary>
-        /// <param name="baseUri">Base Uri of the Server.</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
-        public StardogConnector(string baseUri, string kbID)
-            : this(baseUri, kbID, null, null)
-        {
-        }
-
-        /// <summary>
-        /// Creates a new connection to a Stardog Store.
-        /// </summary>
-        /// <param name="baseUri">Base Uri of the Server.</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
-        /// <param name="username">Username.</param>
-        /// <param name="password">Password.</param>
-        public StardogConnector(string baseUri, string kbID, string username, string password)
-            : base(baseUri, kbID, username, password)
-        {
-        }
-
-        /// <summary>
-        /// Creates a new connection to a Stardog Store.
-        /// </summary>
-        /// <param name="baseUri">Base Uri of the Server.</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
-        /// <param name="proxy">Proxy Server.</param>
-        public StardogConnector(string baseUri, string kbID, IWebProxy proxy)
-            : this(baseUri, kbID, null, null, proxy)
-        {
-        }
-
-        /// <summary>
-        /// Creates a new connection to a Stardog Store.
-        /// </summary>
-        /// <param name="baseUri">Base Uri of the Server.</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
-        /// <param name="username">Username.</param>
-        /// <param name="password">Password.</param>
-        /// <param name="proxy">Proxy Server.</param>
-        public StardogConnector(string baseUri, string kbID, string username,
-            string password, IWebProxy proxy)
-            : base(baseUri, kbID, username, password, proxy)
-        {
-        }
-
     }
+
+    /// <summary>
+    /// Creates a new connection to a Stardog Store.
+    /// </summary>
+    /// <param name="baseUri">Base Uri of the Server.</param>
+    /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+    /// <param name="username">Username.</param>
+    /// <param name="password">Password.</param>
+    public StardogConnector(string baseUri, string kbID, string username, string password)
+        : base(baseUri, kbID, username, password)
+    {
+    }
+
+    /// <summary>
+    /// Creates a new connection to a Stardog Store.
+    /// </summary>
+    /// <param name="baseUri">Base Uri of the Server.</param>
+    /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+    /// <param name="proxy">Proxy Server.</param>
+    public StardogConnector(string baseUri, string kbID, IWebProxy proxy)
+        : this(baseUri, kbID, null, null, proxy)
+    {
+    }
+
+    /// <summary>
+    /// Creates a new connection to a Stardog Store.
+    /// </summary>
+    /// <param name="baseUri">Base Uri of the Server.</param>
+    /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+    /// <param name="username">Username.</param>
+    /// <param name="password">Password.</param>
+    /// <param name="proxy">Proxy Server.</param>
+    public StardogConnector(string baseUri, string kbID, string username,
+        string password, IWebProxy proxy)
+        : base(baseUri, kbID, username, password, proxy)
+    {
+    }
+
 }

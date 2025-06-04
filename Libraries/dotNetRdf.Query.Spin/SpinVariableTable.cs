@@ -27,28 +27,27 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Query.Spin
+namespace VDS.RDF.Query.Spin;
+
+internal class SpinVariableTable
 {
-    internal class SpinVariableTable
+    private Dictionary<String, INode> _vars = new Dictionary<string, INode>();
+    private IGraph _g;
+
+    public SpinVariableTable(IGraph g)
     {
-        private Dictionary<String, INode> _vars = new Dictionary<string, INode>();
-        private IGraph _g;
+        _g = g;
+    }
 
-        public SpinVariableTable(IGraph g)
+    public INode this[String var]
+    {
+        get
         {
-            _g = g;
-        }
-
-        public INode this[String var]
-        {
-            get
+            if (!_vars.ContainsKey(var))
             {
-                if (!_vars.ContainsKey(var))
-                {
-                    _vars.Add(var, _g.CreateBlankNode());
-                }
-                return _vars[var];
+                _vars.Add(var, _g.CreateBlankNode());
             }
+            return _vars[var];
         }
     }
 }

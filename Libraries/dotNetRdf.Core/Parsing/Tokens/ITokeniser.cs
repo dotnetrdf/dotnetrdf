@@ -24,41 +24,40 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Parsing.Tokens
+namespace VDS.RDF.Parsing.Tokens;
+
+/// <summary>
+/// Token Queue Mode Constants.
+/// </summary>
+public enum TokenQueueMode : int
 {
     /// <summary>
-    /// Token Queue Mode Constants.
+    /// No Buffering used
     /// </summary>
-    public enum TokenQueueMode : int
-    {
-        /// <summary>
-        /// No Buffering used
-        /// </summary>
-        QueueAllBeforeParsing = 0,
-        /// <summary>
-        /// Synchronous Buffering used
-        /// </summary>
-        SynchronousBufferDuringParsing = 1,
-        /// <summary>
-        /// Asynchronous Buffering used
-        /// </summary>
-        AsynchronousBufferDuringParsing = 2,
-    }
-
+    QueueAllBeforeParsing = 0,
     /// <summary>
-    /// Interface for Tokenisers.
+    /// Synchronous Buffering used
     /// </summary>
-    /// <remarks>
-    /// A Tokeniser is a class that takes an input stream and produces textual tokens from it for use in token based parsers.
-    /// </remarks>
-    public interface ITokeniser
-    {
-        /// <summary>
-        /// Causes the Tokeniser to attempt to retrieve the next Token.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="RdfParseException">Thrown if a valid Token cannot be parsed.</exception>
-        /// <exception cref="System.IO.IOException">Thrown if there is a problem reading the Input Stream.</exception>
-        IToken GetNextToken();
-    }
+    SynchronousBufferDuringParsing = 1,
+    /// <summary>
+    /// Asynchronous Buffering used
+    /// </summary>
+    AsynchronousBufferDuringParsing = 2,
+}
+
+/// <summary>
+/// Interface for Tokenisers.
+/// </summary>
+/// <remarks>
+/// A Tokeniser is a class that takes an input stream and produces textual tokens from it for use in token based parsers.
+/// </remarks>
+public interface ITokeniser
+{
+    /// <summary>
+    /// Causes the Tokeniser to attempt to retrieve the next Token.
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="RdfParseException">Thrown if a valid Token cannot be parsed.</exception>
+    /// <exception cref="System.IO.IOException">Thrown if there is a problem reading the Input Stream.</exception>
+    IToken GetNextToken();
 }

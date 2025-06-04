@@ -29,132 +29,131 @@ using System.Collections.Generic;
 using System.IO;
 using VDS.RDF.Parsing.Handlers;
 
-namespace VDS.RDF.Parsing.Validation
+namespace VDS.RDF.Parsing.Validation;
+
+/// <summary>
+/// Syntax Validator for validating RDF Graph syntaxes.
+/// </summary>
+public class RdfSyntaxValidator : ISyntaxValidator
 {
     /// <summary>
-    /// Syntax Validator for validating RDF Graph syntaxes.
+    /// Parser to use.
     /// </summary>
-    public class RdfSyntaxValidator : ISyntaxValidator
+    protected IRdfReader _parser;
+
+    /// <summary>
+    /// Creates a new RDF Syntax Validator using the given Parser.
+    /// </summary>
+    /// <param name="parser">Parser.</param>
+    public RdfSyntaxValidator(IRdfReader parser)
     {
-        /// <summary>
-        /// Parser to use.
-        /// </summary>
-        protected IRdfReader _parser;
-
-        /// <summary>
-        /// Creates a new RDF Syntax Validator using the given Parser.
-        /// </summary>
-        /// <param name="parser">Parser.</param>
-        public RdfSyntaxValidator(IRdfReader parser)
-        {
-            _parser = parser;
-        }
-
-        /// <summary>
-        /// Validates the given data to see if it is valid RDF Syntax.
-        /// </summary>
-        /// <param name="data">Data.</param>
-        /// <returns></returns>
-        public virtual ISyntaxValidationResults Validate(string data)
-        {
-            string message;
-            try
-            {
-                var handler = new CountHandler();
-                _parser.Load(handler, new StringReader(data));
-
-                message = "Valid RDF - " + handler.Count + " Triples - Parser: " + _parser.GetType().Name;
-                return new SyntaxValidationResults(true, message, handler);
-            }
-            catch (RdfParseException parseEx)
-            {
-                message = "Invalid RDF - Parsing Error from Parser: " + _parser.GetType().Name + " - " + parseEx.Message;
-                return new SyntaxValidationResults(message, parseEx);
-            }
-            catch (RdfException rdfEx)
-            {
-                message = "Invalid RDF - RDF Error from Parser: " + _parser.GetType().Name + " - " + rdfEx.Message;
-                return new SyntaxValidationResults(message, rdfEx);
-            }
-            catch (Exception ex)
-            {
-                message = "Invalid RDF - Error from Parser: " + _parser.GetType().Name + " - " + ex.Message;
-                return new SyntaxValidationResults(message, ex);
-            }
-        }
+        _parser = parser;
     }
 
     /// <summary>
-    /// Syntax Validator for RDF Graph syntaxes which is strict (any warnings are treated as errors).
+    /// Validates the given data to see if it is valid RDF Syntax.
     /// </summary>
-    public class RdfStrictSyntaxValidator : RdfSyntaxValidator
+    /// <param name="data">Data.</param>
+    /// <returns></returns>
+    public virtual ISyntaxValidationResults Validate(string data)
     {
-        private bool _gotWarning = false;
-        private List<string> _messages = new List<string>();
-
-        /// <summary>
-        /// Creates a new Strict RDF Syntax Validator.
-        /// </summary>
-        /// <param name="parser">Parser.</param>
-        public RdfStrictSyntaxValidator(IRdfReader parser)
-            : base(parser)
+        string message;
+        try
         {
-            parser.Warning += OnWarning;
+            var handler = new CountHandler();
+            _parser.Load(handler, new StringReader(data));
+
+            message = "Valid RDF - " + handler.Count + " Triples - Parser: " + _parser.GetType().Name;
+            return new SyntaxValidationResults(true, message, handler);
         }
-
-        private void OnWarning(string message)
+        catch (RdfParseException parseEx)
         {
-            _gotWarning = true;
-            _messages.Add(message);
+            message = "Invalid RDF - Parsing Error from Parser: " + _parser.GetType().Name + " - " + parseEx.Message;
+            return new SyntaxValidationResults(message, parseEx);
         }
-
-        /// <summary>
-        /// Validates the data to see if it is valid RDF syntax which does not produce any warnings.
-        /// </summary>
-        /// <param name="data">Data.</param>
-        /// <returns></returns>
-        public override ISyntaxValidationResults Validate(string data)
+        catch (RdfException rdfEx)
         {
-            string message;
-            try
-            {
-                _gotWarning = false;
-                _messages.Clear();
-                var handler = new CountHandler();
-                _parser.Load(handler, new StringReader(data));
+            message = "Invalid RDF - RDF Error from Parser: " + _parser.GetType().Name + " - " + rdfEx.Message;
+            return new SyntaxValidationResults(message, rdfEx);
+        }
+        catch (Exception ex)
+        {
+            message = "Invalid RDF - Error from Parser: " + _parser.GetType().Name + " - " + ex.Message;
+            return new SyntaxValidationResults(message, ex);
+        }
+    }
+}
 
-                if (!_gotWarning)
+/// <summary>
+/// Syntax Validator for RDF Graph syntaxes which is strict (any warnings are treated as errors).
+/// </summary>
+public class RdfStrictSyntaxValidator : RdfSyntaxValidator
+{
+    private bool _gotWarning = false;
+    private List<string> _messages = new List<string>();
+
+    /// <summary>
+    /// Creates a new Strict RDF Syntax Validator.
+    /// </summary>
+    /// <param name="parser">Parser.</param>
+    public RdfStrictSyntaxValidator(IRdfReader parser)
+        : base(parser)
+    {
+        parser.Warning += OnWarning;
+    }
+
+    private void OnWarning(string message)
+    {
+        _gotWarning = true;
+        _messages.Add(message);
+    }
+
+    /// <summary>
+    /// Validates the data to see if it is valid RDF syntax which does not produce any warnings.
+    /// </summary>
+    /// <param name="data">Data.</param>
+    /// <returns></returns>
+    public override ISyntaxValidationResults Validate(string data)
+    {
+        string message;
+        try
+        {
+            _gotWarning = false;
+            _messages.Clear();
+            var handler = new CountHandler();
+            _parser.Load(handler, new StringReader(data));
+
+            if (!_gotWarning)
+            {
+                message = "Valid RDF - " + handler.Count + " Triples - Parser: " + _parser.GetType().Name;
+                return new SyntaxValidationResults(true, message, handler);
+            }
+            else
+            {
+                message = "Valid RDF with Warnings - " + handler.Count + " Triples - Parser: " + _parser.GetType().Name + " - " + _messages.Count + " Warnings";
+                var i = 1;
+                foreach (var m in _messages)
                 {
-                    message = "Valid RDF - " + handler.Count + " Triples - Parser: " + _parser.GetType().Name;
-                    return new SyntaxValidationResults(true, message, handler);
+                    message += "\n" + i + " - " + m;
+                    i++;
                 }
-                else
-                {
-                    message = "Valid RDF with Warnings - " + handler.Count + " Triples - Parser: " + _parser.GetType().Name + " - " + _messages.Count + " Warnings";
-                    var i = 1;
-                    foreach (var m in _messages)
-                    {
-                        message += "\n" + i + " - " + m;
-                        i++;
-                    }
-                    return new SyntaxValidationResults(false, message, handler, _messages);
-                }
+                return new SyntaxValidationResults(false, message, handler, _messages);
             }
-            catch (RdfParseException parseEx)
-            {
-                message = "Invalid RDF - Parsing Error from Parser: " + _parser.GetType().Name + " - " + parseEx.Message;
-                return new SyntaxValidationResults(message, parseEx);
-            }
-            catch (RdfException rdfEx)
-            {
-                message = "Invalid RDF - RDF Error from Parser: " + _parser.GetType().Name + " - " + rdfEx.Message;
-                return new SyntaxValidationResults(message, rdfEx);
-            }
-            catch (Exception ex)
-            {
-                message = "Invalid RDF - Error from Parser: " + _parser.GetType().Name + " - " + ex.Message;
-                return new SyntaxValidationResults(message, ex);
-            }
+        }
+        catch (RdfParseException parseEx)
+        {
+            message = "Invalid RDF - Parsing Error from Parser: " + _parser.GetType().Name + " - " + parseEx.Message;
+            return new SyntaxValidationResults(message, parseEx);
+        }
+        catch (RdfException rdfEx)
+        {
+            message = "Invalid RDF - RDF Error from Parser: " + _parser.GetType().Name + " - " + rdfEx.Message;
+            return new SyntaxValidationResults(message, rdfEx);
+        }
+        catch (Exception ex)
+        {
+            message = "Invalid RDF - Error from Parser: " + _parser.GetType().Name + " - " + ex.Message;
+            return new SyntaxValidationResults(message, ex);
         }
     }
 }

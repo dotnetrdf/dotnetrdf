@@ -27,53 +27,52 @@
 using System.Collections.Generic;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Grouping
+namespace VDS.RDF.Query.Grouping;
+
+/// <summary>
+/// Interface for Classes that represent SPARQL GROUP BY clauses.
+/// </summary>
+public interface ISparqlGroupBy
 {
     /// <summary>
-    /// Interface for Classes that represent SPARQL GROUP BY clauses.
+    /// Gets/Sets the child GROUP BY Clause.
     /// </summary>
-    public interface ISparqlGroupBy
+    ISparqlGroupBy Child
     {
-        /// <summary>
-        /// Gets/Sets the child GROUP BY Clause.
-        /// </summary>
-        ISparqlGroupBy Child
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
 
-        /// <summary>
-        /// Gets the Variables used in the GROUP BY.
-        /// </summary>
-        IEnumerable<string> Variables
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets the Variables used in the GROUP BY.
+    /// </summary>
+    IEnumerable<string> Variables
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
-        /// </summary>
-        IEnumerable<string> ProjectableVariables
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
+    /// </summary>
+    IEnumerable<string> ProjectableVariables
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gets the Expression used to GROUP BY.
-        /// </summary>
-        ISparqlExpression Expression
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets the Expression used to GROUP BY.
+    /// </summary>
+    ISparqlExpression Expression
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gets/Sets the Variable the value of the GROUP BY expression should be bound to (may be null if not bound to anything).
-        /// </summary>
-        string AssignVariable
-        {
-            get;
-            set;
-        }
+    /// <summary>
+    /// Gets/Sets the Variable the value of the GROUP BY expression should be bound to (may be null if not bound to anything).
+    /// </summary>
+    string AssignVariable
+    {
+        get;
+        set;
     }
 }

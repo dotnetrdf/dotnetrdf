@@ -26,51 +26,50 @@
 
 using System;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Class for representing Blank RDF Nodes.
+/// </summary>
+public class BlankNode 
+    : BaseBlankNode, IEquatable<BlankNode>, IComparable<BlankNode>
 {
     /// <summary>
-    /// Class for representing Blank RDF Nodes.
+    /// Create a new blank node.
     /// </summary>
-    public class BlankNode 
-        : BaseBlankNode, IEquatable<BlankNode>, IComparable<BlankNode>
+    /// <param name="id">Custom Node ID to use.</param>
+    /// <remarks>This constructor does not check for identifier collisions in a graph. When creating blank nodes to store in a <see cref="IGraph"/>, it is strongly recommended to only create blank nodes through the <see cref="INodeFactory"/> interface of the target graph so as to avoid the possibility of duplicating existing blank nodes.</remarks>
+    public BlankNode(string id)
+        : base(id) { }
+
+    /// <summary>
+    /// Internal Only constructor for Blank Nodes.
+    /// </summary>
+    /// <param name="factory">Node Factory from which to obtain a Node ID.</param>
+    protected internal BlankNode(INodeFactory factory)
+        : base(factory) { }
+
+
+    /// <summary>
+    /// Implementation of Compare To for Blank Nodes.
+    /// </summary>
+    /// <param name="other">Blank Node to Compare To.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Simply invokes the more general implementation of this method.
+    /// </remarks>
+    public int CompareTo(BlankNode other)
     {
-        /// <summary>
-        /// Create a new blank node.
-        /// </summary>
-        /// <param name="id">Custom Node ID to use.</param>
-        /// <remarks>This constructor does not check for identifier collisions in a graph. When creating blank nodes to store in a <see cref="IGraph"/>, it is strongly recommended to only create blank nodes through the <see cref="INodeFactory"/> interface of the target graph so as to avoid the possibility of duplicating existing blank nodes.</remarks>
-        public BlankNode(string id)
-            : base(id) { }
+        return CompareTo((IBlankNode)other);
+    }
 
-        /// <summary>
-        /// Internal Only constructor for Blank Nodes.
-        /// </summary>
-        /// <param name="factory">Node Factory from which to obtain a Node ID.</param>
-        protected internal BlankNode(INodeFactory factory)
-            : base(factory) { }
-
-
-        /// <summary>
-        /// Implementation of Compare To for Blank Nodes.
-        /// </summary>
-        /// <param name="other">Blank Node to Compare To.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Simply invokes the more general implementation of this method.
-        /// </remarks>
-        public int CompareTo(BlankNode other)
-        {
-            return CompareTo((IBlankNode)other);
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Blank Node.
-        /// </summary>
-        /// <param name="other">Blank Node.</param>
-        /// <returns></returns>
-        public bool Equals(BlankNode other)
-        {
-            return base.Equals((IBlankNode)other);
-        }
+    /// <summary>
+    /// Determines whether this Node is equal to a Blank Node.
+    /// </summary>
+    /// <param name="other">Blank Node.</param>
+    /// <returns></returns>
+    public bool Equals(BlankNode other)
+    {
+        return base.Equals((IBlankNode)other);
     }
 }

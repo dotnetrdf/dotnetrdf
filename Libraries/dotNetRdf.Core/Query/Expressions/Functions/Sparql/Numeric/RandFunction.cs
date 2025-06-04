@@ -27,98 +27,97 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
+
+/// <summary>
+/// Represents the SPARQL RAND() Function.
+/// </summary>
+public class RandFunction
+    : ISparqlExpression
 {
-    /// <summary>
-    /// Represents the SPARQL RAND() Function.
-    /// </summary>
-    public class RandFunction
-        : ISparqlExpression
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
     {
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessRandFunction(this, context, binding);
-        }
+        return processor.ProcessRandFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitRandFunction(this);
-        }
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitRandFunction(this);
+    }
 
-        /// <summary>
-        /// Gets the Variables used in this Expression.
-        /// </summary>
-        public IEnumerable<string> Variables
+    /// <summary>
+    /// Gets the Variables used in this Expression.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
         {
-            get
-            {
-                return Enumerable.Empty<string>();
-            }
+            return Enumerable.Empty<string>();
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of this Expression.
-        /// </summary>
-        public SparqlExpressionType Type
+    /// <summary>
+    /// Gets the Type of this Expression.
+    /// </summary>
+    public SparqlExpressionType Type
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <summary>
-        /// Gets the Arguments of this Expression.
-        /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+    /// <summary>
+    /// Gets the Arguments of this Expression.
+    /// </summary>
+    public IEnumerable<ISparqlExpression> Arguments
+    {
+        get
         {
-            get
-            {
-                return Enumerable.Empty<ISparqlExpression>();
-            }
+            return Enumerable.Empty<ISparqlExpression>();
         }
+    }
 
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel.
-        /// </summary>
-        public virtual bool CanParallelise
+    /// <summary>
+    /// Gets whether an expression can safely be evaluated in parallel.
+    /// </summary>
+    public virtual bool CanParallelise
+    {
+        get
         {
-            get
-            {
-                return true;
-            }
+            return true;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of this Expression.
-        /// </summary>
-        public string Functor
+    /// <summary>
+    /// Gets the Functor of this Expression.
+    /// </summary>
+    public string Functor
+    {
+        get
         {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordRand;
-            }
+            return SparqlSpecsHelper.SparqlKeywordRand;
         }
+    }
 
-        /// <summary>
-        /// Gets the String representation of this Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordRand + "()";
-        }
+    /// <summary>
+    /// Gets the String representation of this Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return SparqlSpecsHelper.SparqlKeywordRand + "()";
+    }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return this;
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return this;
     }
 }

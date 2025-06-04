@@ -31,74 +31,73 @@ using System.Xml;
 using System.Xml.Xsl;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+/// <summary>
+/// Class for generating arbitrary XML Output from SPARQL Result Sets by transforming the XML Results Format via an XSLT stylesheet.
+/// </summary>
+public class SparqlXsltWriter : SparqlXmlWriter
 {
+    private readonly XslCompiledTransform _transform;
+
     /// <summary>
-    /// Class for generating arbitrary XML Output from SPARQL Result Sets by transforming the XML Results Format via an XSLT stylesheet.
+    /// Creates a new SPARQL XSLT Writer.
     /// </summary>
-    public class SparqlXsltWriter : SparqlXmlWriter
+    /// <param name="stylesheetUri">Stylesheet URI.</param>
+    public SparqlXsltWriter(Uri stylesheetUri)
+        : this(stylesheetUri.AbsoluteUri) { }
+
+    /// <summary>
+    /// Creates a new SPARQL XSLT Writer.
+    /// </summary>
+    /// <param name="stylesheetUri">Stylesheet URI.</param>
+    public SparqlXsltWriter(string stylesheetUri)
     {
-        private readonly XslCompiledTransform _transform;
+        // Load the Transform
+        _transform = new XslCompiledTransform();
+        var settings = new XsltSettings();
+        _transform.Load(stylesheetUri, settings, null);
+    }
 
-        /// <summary>
-        /// Creates a new SPARQL XSLT Writer.
-        /// </summary>
-        /// <param name="stylesheetUri">Stylesheet URI.</param>
-        public SparqlXsltWriter(Uri stylesheetUri)
-            : this(stylesheetUri.AbsoluteUri) { }
 
-        /// <summary>
-        /// Creates a new SPARQL XSLT Writer.
-        /// </summary>
-        /// <param name="stylesheetUri">Stylesheet URI.</param>
-        public SparqlXsltWriter(string stylesheetUri)
+    /// <summary>
+    /// Saves a SPARQL Result Set to the given Text Writer.
+    /// </summary>
+    /// <param name="results">Result Set.</param>
+    /// <param name="output">Text Writer to write to.</param>
+    public override void Save(SparqlResultSet results, TextWriter output)
+    {
+        try
         {
-            // Load the Transform
-            _transform = new XslCompiledTransform();
-            var settings = new XsltSettings();
-            _transform.Load(stylesheetUri, settings, null);
+            // XmlDocument doc = this.GenerateOutput(results);
+            var temp = new StringBuilder();
+            var writer = new System.IO.StringWriter(temp);
+            base.Save(results, writer);
+            // this._transform.Transform(doc, null, XmlWriter.Create(output));
+            _transform.Transform(XmlReader.Create(new StringReader(temp.ToString())), null, XmlWriter.Create(output));
+
+            output.Close();
         }
-
-
-        /// <summary>
-        /// Saves a SPARQL Result Set to the given Text Writer.
-        /// </summary>
-        /// <param name="results">Result Set.</param>
-        /// <param name="output">Text Writer to write to.</param>
-        public override void Save(SparqlResultSet results, TextWriter output)
+        catch
         {
             try
             {
-                // XmlDocument doc = this.GenerateOutput(results);
-                var temp = new StringBuilder();
-                var writer = new System.IO.StringWriter(temp);
-                base.Save(results, writer);
-                // this._transform.Transform(doc, null, XmlWriter.Create(output));
-                _transform.Transform(XmlReader.Create(new StringReader(temp.ToString())), null, XmlWriter.Create(output));
-
                 output.Close();
             }
             catch
             {
-                try
-                {
-                    output.Close();
-                }
-                catch
-                {
-                    // No catch - just trying to clean up
-                }
-                throw;
+                // No catch - just trying to clean up
             }
+            throw;
         }
+    }
 
-        /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "SPARQL Results XML transformed using XSLT";
-        }
+    /// <summary>
+    /// Gets the String representation of the writer which is a description of the syntax it produces.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "SPARQL Results XML transformed using XSLT";
     }
 }

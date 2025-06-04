@@ -30,57 +30,56 @@ using System.Threading.Tasks;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+/// <summary>
+/// Interface for storage providers which allow SPARQL Queries to be made against them asynchronously.
+/// </summary>
+public interface IAsyncQueryableStorage
+    : IAsyncStorageProvider
 {
     /// <summary>
-    /// Interface for storage providers which allow SPARQL Queries to be made against them asynchronously.
+    /// Queries the store asynchronously.
     /// </summary>
-    public interface IAsyncQueryableStorage
-        : IAsyncStorageProvider
-    {
-        /// <summary>
-        /// Queries the store asynchronously.
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <param name="callback">Callback.</param>
-        /// <param name="state">State to pass to the callback.</param>
-        /// <exception cref="RdfQueryException">Thrown if an error occurs performing the query.</exception>
-        /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query.</exception>
-        /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results.</exception>
-        /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand.</exception>
-        [Obsolete("This method is obsolete and will be removed in a future version. Replaced by QueryAsync(string, CancellationToken)")]
-        void Query(string sparqlQuery, AsyncStorageCallback callback, object state);
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    /// <param name="callback">Callback.</param>
+    /// <param name="state">State to pass to the callback.</param>
+    /// <exception cref="RdfQueryException">Thrown if an error occurs performing the query.</exception>
+    /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query.</exception>
+    /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results.</exception>
+    /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand.</exception>
+    [Obsolete("This method is obsolete and will be removed in a future version. Replaced by QueryAsync(string, CancellationToken)")]
+    void Query(string sparqlQuery, AsyncStorageCallback callback, object state);
 
-        /// <summary>
-        /// Queries the store asynchronously.
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <param name="rdfHandler">RDF Handler.</param>
-        /// <param name="resultsHandler">Results Handler.</param>
-        /// <param name="callback">Callback.</param>
-        /// <param name="state">State to pass to the callback.</param>
-        /// <exception cref="RdfQueryException">Thrown if an error occurs performing the query.</exception>
-        /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query.</exception>
-        /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results.</exception>
-        /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand.</exception>
-        [Obsolete("Replaced by QueryAsync(IRdfHandler, ISparqlResultsHandler, string")]
-        void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state);
+    /// <summary>
+    /// Queries the store asynchronously.
+    /// </summary>
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    /// <param name="rdfHandler">RDF Handler.</param>
+    /// <param name="resultsHandler">Results Handler.</param>
+    /// <param name="callback">Callback.</param>
+    /// <param name="state">State to pass to the callback.</param>
+    /// <exception cref="RdfQueryException">Thrown if an error occurs performing the query.</exception>
+    /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query.</exception>
+    /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results.</exception>
+    /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand.</exception>
+    [Obsolete("Replaced by QueryAsync(IRdfHandler, ISparqlResultsHandler, string")]
+    void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state);
 
-        /// <summary>
-        /// Queries the store asynchronously.
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <param name="cancellationToken"></param>
-        Task<object> QueryAsync(string sparqlQuery, CancellationToken cancellationToken);
+    /// <summary>
+    /// Queries the store asynchronously.
+    /// </summary>
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    /// <param name="cancellationToken"></param>
+    Task<object> QueryAsync(string sparqlQuery, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Queries the store asynchronously.
-        /// </summary>
-        /// <param name="rdfHandler">RDF Handler that will receive graph results from CONSTRUCT or DESCRIBE queries.</param>
-        /// <param name="resultsHandler">SPARQL Results set handler that will receive results from ASK or SELECT queries.</param>
-        /// <param name="sparqlQuery">The SPARQL query to execute.</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task QueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, CancellationToken cancellationToken);
-    }
+    /// <summary>
+    /// Queries the store asynchronously.
+    /// </summary>
+    /// <param name="rdfHandler">RDF Handler that will receive graph results from CONSTRUCT or DESCRIBE queries.</param>
+    /// <param name="resultsHandler">SPARQL Results set handler that will receive results from ASK or SELECT queries.</param>
+    /// <param name="sparqlQuery">The SPARQL query to execute.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task QueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, CancellationToken cancellationToken);
 }

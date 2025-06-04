@@ -31,108 +31,107 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+internal partial class ExpressionBuilder
 {
-    internal partial class ExpressionBuilder
+    public BooleanExpression Bound(VariableExpression var)
     {
-        public BooleanExpression Bound(VariableExpression var)
-        {
-            return new BooleanExpression(new BoundFunction(var.Expression));
-        }
+        return new BooleanExpression(new BoundFunction(var.Expression));
+    }
 
-        public BooleanExpression Bound(string var)
-        {
-            return Bound(Variable(var));
-        }
+    public BooleanExpression Bound(string var)
+    {
+        return Bound(Variable(var));
+    }
 
-        public IfThenPart If(BooleanExpression ifExpression)
-        {
-            return new IfThenPart(ifExpression.Expression);
-        }
+    public IfThenPart If(BooleanExpression ifExpression)
+    {
+        return new IfThenPart(ifExpression.Expression);
+    }
 
-        public IfThenPart If(VariableExpression ifExpression)
-        {
-            return new IfThenPart(ifExpression.Expression);
-        }
+    public IfThenPart If(VariableExpression ifExpression)
+    {
+        return new IfThenPart(ifExpression.Expression);
+    }
 
-        public RdfTermExpression Coalesce(params SparqlExpression[] expressions)
-        {
-            var coalesce = new CoalesceFunction(expressions.Select(e => e.Expression));
-            return new RdfTermExpression(coalesce);
-        }
+    public RdfTermExpression Coalesce(params SparqlExpression[] expressions)
+    {
+        var coalesce = new CoalesceFunction(expressions.Select(e => e.Expression));
+        return new RdfTermExpression(coalesce);
+    }
 
-        public BooleanExpression Exists(Action<IGraphPatternBuilder> buildExistsPattern)
-        {
-            var builder = new GraphPatternBuilder();
-            buildExistsPattern(builder);
-            var existsFunction = new ExistsFunction(builder.BuildGraphPattern(Prefixes), true);
-            return new BooleanExpression(existsFunction);
-        }
+    public BooleanExpression Exists(Action<IGraphPatternBuilder> buildExistsPattern)
+    {
+        var builder = new GraphPatternBuilder();
+        buildExistsPattern(builder);
+        var existsFunction = new ExistsFunction(builder.BuildGraphPattern(Prefixes), true);
+        return new BooleanExpression(existsFunction);
+    }
 
-        public BooleanExpression SameTerm(SparqlExpression left, SparqlExpression right)
-        {
-            var sameTerm = new SameTermFunction(left.Expression, right.Expression);
-            return new BooleanExpression(sameTerm);
-        }
+    public BooleanExpression SameTerm(SparqlExpression left, SparqlExpression right)
+    {
+        var sameTerm = new SameTermFunction(left.Expression, right.Expression);
+        return new BooleanExpression(sameTerm);
+    }
 
-        public BooleanExpression SameTerm(string left, SparqlExpression right)
-        {
-            return SameTerm(Variable(left), right);
-        }
+    public BooleanExpression SameTerm(string left, SparqlExpression right)
+    {
+        return SameTerm(Variable(left), right);
+    }
 
-        public BooleanExpression SameTerm(SparqlExpression left, string right)
-        {
-            return SameTerm(left, Variable(right));
-        }
+    public BooleanExpression SameTerm(SparqlExpression left, string right)
+    {
+        return SameTerm(left, Variable(right));
+    }
 
-        public BooleanExpression SameTerm(string left, string right)
-        {
-            return SameTerm(Variable(left), Variable(right));
-        }
+    public BooleanExpression SameTerm(string left, string right)
+    {
+        return SameTerm(Variable(left), Variable(right));
+    }
+}
+
+/// <summary>
+/// Provides methods to supply the "then" expression for the IF function call.
+/// </summary>
+public sealed class IfThenPart
+{
+    private readonly ISparqlExpression _ifExpression;
+
+    internal IfThenPart(ISparqlExpression ifExpression)
+    {
+        _ifExpression = ifExpression;
     }
 
     /// <summary>
-    /// Provides methods to supply the "then" expression for the IF function call.
+    /// Sets the second parameter of the IF function call.
     /// </summary>
-    public sealed class IfThenPart
+    public IfElsePart Then(SparqlExpression thenExpression)
     {
-        private readonly ISparqlExpression _ifExpression;
+        return new IfElsePart(_ifExpression, thenExpression.Expression);
+    }
+}
 
-        internal IfThenPart(ISparqlExpression ifExpression)
-        {
-            _ifExpression = ifExpression;
-        }
+/// <summary>
+/// Provides methods to supply the "else" expression for the IF function call.
+/// </summary>
+public sealed class IfElsePart
+{
+    private readonly ISparqlExpression _ifExpression;
+    private readonly ISparqlExpression _thenExpression;
 
-        /// <summary>
-        /// Sets the second parameter of the IF function call.
-        /// </summary>
-        public IfElsePart Then(SparqlExpression thenExpression)
-        {
-            return new IfElsePart(_ifExpression, thenExpression.Expression);
-        }
+    internal IfElsePart(ISparqlExpression ifExpression, ISparqlExpression thenExpression)
+    {
+        _ifExpression = ifExpression;
+        _thenExpression = thenExpression;
     }
 
     /// <summary>
-    /// Provides methods to supply the "else" expression for the IF function call.
+    /// Sets the third parameter of the IF function call.
     /// </summary>
-    public sealed class IfElsePart
+    public RdfTermExpression Else(SparqlExpression elseExpression)
     {
-        private readonly ISparqlExpression _ifExpression;
-        private readonly ISparqlExpression _thenExpression;
-
-        internal IfElsePart(ISparqlExpression ifExpression, ISparqlExpression thenExpression)
-        {
-            _ifExpression = ifExpression;
-            _thenExpression = thenExpression;
-        }
-
-        /// <summary>
-        /// Sets the third parameter of the IF function call.
-        /// </summary>
-        public RdfTermExpression Else(SparqlExpression elseExpression)
-        {
-            var ifElseFunc = new IfElseFunction(_ifExpression, _thenExpression, elseExpression.Expression);
-            return new RdfTermExpression(ifElseFunc);
-        }
+        var ifElseFunc = new IfElseFunction(_ifExpression, _thenExpression, elseExpression.Expression);
+        return new RdfTermExpression(ifElseFunc);
     }
 }

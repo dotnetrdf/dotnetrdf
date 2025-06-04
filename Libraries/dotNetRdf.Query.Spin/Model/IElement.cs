@@ -26,21 +26,20 @@
 
 using VDS.RDF.Query.Spin.SparqlUtil;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+/**
+ * The abstract base interface for the various Element types.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IElement : IPrintable, IResource
 {
 
-    /**
-     * The abstract base interface for the various Element types.
-     * 
-     * @author Holger Knublauch
+    /*
+     * Visits this with a given visitor.
+     * @param visitor  the visitor to visit this with
      */
-    internal interface IElement : IPrintable, IResource
-    {
-
-        /*
-         * Visits this with a given visitor.
-         * @param visitor  the visitor to visit this with
-         */
-        //void visit(IElementVisitor visitor);
-    }
+    //void visit(IElementVisitor visitor);
 }

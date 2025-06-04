@@ -28,36 +28,35 @@ using System;
 using System.Collections.Generic;
 using VDS.RDF.Query.Spin.SparqlUtil;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+
+/**
+ * A variable in a SPIN query.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IVariable : IResource, IPrintable
 {
+
+    /**
+     * Gets the name of this variable (without the '?').
+     * @return the variable name
+     */
+    String getName();
 
 
     /**
-     * A variable in a SPIN query.
-     * 
-     * @author Holger Knublauch
+     * Gets all TriplePatterns where this Variable is mentioned.
+     * @return the TriplePatterns
      */
-    internal interface IVariable : IResource, IPrintable
-    {
-
-        /**
-         * Gets the name of this variable (without the '?').
-         * @return the variable name
-         */
-        String getName();
+    HashSet<ITriplePattern> getTriplePatterns();
 
 
-        /**
-         * Gets all TriplePatterns where this Variable is mentioned.
-         * @return the TriplePatterns
-         */
-        HashSet<ITriplePattern> getTriplePatterns();
-
-
-        /**
-         * Checks if this represents a blank node var.
-         * @return true  if a blank node var
-         */
-        bool isBlankNodeVar();
-    }
+    /**
+     * Checks if this represents a blank node var.
+     * @return true  if a blank node var
+     */
+    bool isBlankNodeVar();
 }

@@ -26,102 +26,101 @@
 
 using System;
 
-namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry;
+
+/// <summary>
+/// Represents the Leviathan lfn:sec() or lfn:sec-1 function.
+/// </summary>
+public class SecantFunction
+    : BaseTrigonometricFunction
 {
+    private static Func<double, double> _secant = (d => (1 / Math.Cos(d)));
+    private static Func<double, double> _arcsecant = (d => Math.Acos(1 / d));
+
     /// <summary>
-    /// Represents the Leviathan lfn:sec() or lfn:sec-1 function.
+    /// Creates a new Leviathan Secant Function.
     /// </summary>
-    public class SecantFunction
-        : BaseTrigonometricFunction
+    /// <param name="expr">Expression.</param>
+    public SecantFunction(ISparqlExpression expr)
+        : base(expr, _secant) { }
+
+    /// <summary>
+    /// Creates a new Leviathan Secant Function.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="inverse">Whether this should be the inverse function.</param>
+    public SecantFunction(ISparqlExpression expr, bool inverse)
+        : base(expr)
     {
-        private static Func<double, double> _secant = (d => (1 / Math.Cos(d)));
-        private static Func<double, double> _arcsecant = (d => Math.Acos(1 / d));
-
-        /// <summary>
-        /// Creates a new Leviathan Secant Function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public SecantFunction(ISparqlExpression expr)
-            : base(expr, _secant) { }
-
-        /// <summary>
-        /// Creates a new Leviathan Secant Function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="inverse">Whether this should be the inverse function.</param>
-        public SecantFunction(ISparqlExpression expr, bool inverse)
-            : base(expr)
+        Inverse = inverse;
+        if (Inverse)
         {
-            Inverse = inverse;
+            _func = _arcsecant;
+        }
+        else
+        {
+            _func = _secant;
+        }
+    }
+
+    /// <summary>
+    /// Get whether this is the inverse function.
+    /// </summary>
+    public bool Inverse { get; }
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        if (Inverse)
+        {
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSecInv + ">(" + InnerExpression + ")";
+        }
+        else
+        {
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSec + ">(" + InnerExpression + ")";
+        }
+    }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessSecantFunction(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitSecantFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
+        {
             if (Inverse)
             {
-                _func = _arcsecant;
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSecInv;
             }
             else
             {
-                _func = _secant;
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSec;
             }
         }
+    }
 
-        /// <summary>
-        /// Get whether this is the inverse function.
-        /// </summary>
-        public bool Inverse { get; }
-
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            if (Inverse)
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSecInv + ">(" + InnerExpression + ")";
-            }
-            else
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSec + ">(" + InnerExpression + ")";
-            }
-        }
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessSecantFunction(this, context, binding);
-        }
-
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitSecantFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                if (Inverse)
-                {
-                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSecInv;
-                }
-                else
-                {
-                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSec;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new SecantFunction(transformer.Transform(InnerExpression), Inverse);
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new SecantFunction(transformer.Transform(InnerExpression), Inverse);
     }
 }

@@ -26,113 +26,112 @@
 
 using VDS.RDF.Update.Commands;
 
-namespace VDS.RDF.Update
+namespace VDS.RDF.Update;
+
+/// <summary>
+/// Interface for SPARQL Update Processors.
+/// </summary>
+/// <remarks>
+/// <para>
+/// A SPARQL Update Processor is a class that knows how apply SPARQL Update Commands to some data source to which the processor has access.
+/// </para>
+/// <para>
+/// The point of this interface is to allow for end users to implement custom update processors or to extend and modify the behaviour of the default Leviathan engine as required.
+/// </para>
+/// </remarks>
+public interface ISparqlUpdateProcessor
 {
     /// <summary>
-    /// Interface for SPARQL Update Processors.
+    /// Processes an ADD command.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// A SPARQL Update Processor is a class that knows how apply SPARQL Update Commands to some data source to which the processor has access.
-    /// </para>
-    /// <para>
-    /// The point of this interface is to allow for end users to implement custom update processors or to extend and modify the behaviour of the default Leviathan engine as required.
-    /// </para>
-    /// </remarks>
-    public interface ISparqlUpdateProcessor
-    {
-        /// <summary>
-        /// Processes an ADD command.
-        /// </summary>
-        /// <param name="cmd">Add Command.</param>
-        void ProcessAddCommand(AddCommand cmd);
+    /// <param name="cmd">Add Command.</param>
+    void ProcessAddCommand(AddCommand cmd);
 
-        /// <summary>
-        /// Processes a CLEAR command.
-        /// </summary>
-        /// <param name="cmd">Clear Command.</param>
-        void ProcessClearCommand(ClearCommand cmd);
+    /// <summary>
+    /// Processes a CLEAR command.
+    /// </summary>
+    /// <param name="cmd">Clear Command.</param>
+    void ProcessClearCommand(ClearCommand cmd);
 
-        /// <summary>
-        /// Processes a COPY command.
-        /// </summary>
-        /// <param name="cmd">Copy Command.</param>
-        void ProcessCopyCommand(CopyCommand cmd);
+    /// <summary>
+    /// Processes a COPY command.
+    /// </summary>
+    /// <param name="cmd">Copy Command.</param>
+    void ProcessCopyCommand(CopyCommand cmd);
 
-        /// <summary>
-        /// Processes a CREATE command.
-        /// </summary>
-        /// <param name="cmd">Create Command.</param>
-        void ProcessCreateCommand(CreateCommand cmd);
+    /// <summary>
+    /// Processes a CREATE command.
+    /// </summary>
+    /// <param name="cmd">Create Command.</param>
+    void ProcessCreateCommand(CreateCommand cmd);
 
-        /// <summary>
-        /// Processes a command.
-        /// </summary>
-        /// <param name="cmd">Command.</param>
-        void ProcessCommand(SparqlUpdateCommand cmd);
+    /// <summary>
+    /// Processes a command.
+    /// </summary>
+    /// <param name="cmd">Command.</param>
+    void ProcessCommand(SparqlUpdateCommand cmd);
 
-        /// <summary>
-        /// Processes a command set.
-        /// </summary>
-        /// <param name="commands">Command Set.</param>
-        void ProcessCommandSet(SparqlUpdateCommandSet commands);
+    /// <summary>
+    /// Processes a command set.
+    /// </summary>
+    /// <param name="commands">Command Set.</param>
+    void ProcessCommandSet(SparqlUpdateCommandSet commands);
 
-        /// <summary>
-        /// Processes a DELETE command.
-        /// </summary>
-        /// <param name="cmd">Delete Command.</param>
-        void ProcessDeleteCommand(DeleteCommand cmd);
+    /// <summary>
+    /// Processes a DELETE command.
+    /// </summary>
+    /// <param name="cmd">Delete Command.</param>
+    void ProcessDeleteCommand(DeleteCommand cmd);
 
-        /// <summary>
-        /// Processes a DELETE DATA command.
-        /// </summary>
-        /// <param name="cmd">DELETE Data Command.</param>
-        void ProcessDeleteDataCommand(DeleteDataCommand cmd);
+    /// <summary>
+    /// Processes a DELETE DATA command.
+    /// </summary>
+    /// <param name="cmd">DELETE Data Command.</param>
+    void ProcessDeleteDataCommand(DeleteDataCommand cmd);
 
-        /// <summary>
-        /// Processes a DROP command.
-        /// </summary>
-        /// <param name="cmd">Drop Command.</param>
-        void ProcessDropCommand(DropCommand cmd);
+    /// <summary>
+    /// Processes a DROP command.
+    /// </summary>
+    /// <param name="cmd">Drop Command.</param>
+    void ProcessDropCommand(DropCommand cmd);
 
-        /// <summary>
-        /// Processes an INSERT command.
-        /// </summary>
-        /// <param name="cmd">Insert Command.</param>
-        void ProcessInsertCommand(InsertCommand cmd);
+    /// <summary>
+    /// Processes an INSERT command.
+    /// </summary>
+    /// <param name="cmd">Insert Command.</param>
+    void ProcessInsertCommand(InsertCommand cmd);
 
-        /// <summary>
-        /// Processes an INSERT DATA command.
-        /// </summary>
-        /// <param name="cmd">Insert Data Command.</param>
-        void ProcessInsertDataCommand(InsertDataCommand cmd);
+    /// <summary>
+    /// Processes an INSERT DATA command.
+    /// </summary>
+    /// <param name="cmd">Insert Data Command.</param>
+    void ProcessInsertDataCommand(InsertDataCommand cmd);
 
-        /// <summary>
-        /// Processes a LOAD command.
-        /// </summary>
-        /// <param name="cmd">Load Command.</param>
-        void ProcessLoadCommand(LoadCommand cmd);
+    /// <summary>
+    /// Processes a LOAD command.
+    /// </summary>
+    /// <param name="cmd">Load Command.</param>
+    void ProcessLoadCommand(LoadCommand cmd);
 
-        /// <summary>
-        /// Processes an INSERT/DELETE command.
-        /// </summary>
-        /// <param name="cmd">Insert/Delete Command.</param>
-        void ProcessModifyCommand(ModifyCommand cmd);
+    /// <summary>
+    /// Processes an INSERT/DELETE command.
+    /// </summary>
+    /// <param name="cmd">Insert/Delete Command.</param>
+    void ProcessModifyCommand(ModifyCommand cmd);
 
-        /// <summary>
-        /// Processes a MOVE command.
-        /// </summary>
-        /// <param name="cmd">Move Command.</param>
-        void ProcessMoveCommand(MoveCommand cmd);
+    /// <summary>
+    /// Processes a MOVE command.
+    /// </summary>
+    /// <param name="cmd">Move Command.</param>
+    void ProcessMoveCommand(MoveCommand cmd);
 
-        /// <summary>
-        /// Causes any outstanding changes to be discarded.
-        /// </summary>
-        void Discard();
+    /// <summary>
+    /// Causes any outstanding changes to be discarded.
+    /// </summary>
+    void Discard();
 
-        /// <summary>
-        /// Causes any outstanding changes to be flushed to the underlying storage.
-        /// </summary>
-        void Flush();
-    }
+    /// <summary>
+    /// Causes any outstanding changes to be flushed to the underlying storage.
+    /// </summary>
+    void Flush();
 }

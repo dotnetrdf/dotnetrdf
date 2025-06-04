@@ -32,59 +32,58 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+internal class DatasetContent : HttpContent
 {
-    internal class DatasetContent : HttpContent
+    private readonly ITripleStore _store;
+    private readonly IStoreWriter _writer;
+    public DatasetContent(IGraph graph, string contentType)
     {
-        private readonly ITripleStore _store;
-        private readonly IStoreWriter _writer;
-        public DatasetContent(IGraph graph, string contentType)
-        {
-            _store = new SimpleTripleStore();
-            _store.Add(graph);
-            _writer = MimeTypesHelper.GetStoreWriter(contentType);
-            Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
-        }
+        _store = new SimpleTripleStore();
+        _store.Add(graph);
+        _writer = MimeTypesHelper.GetStoreWriter(contentType);
+        Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
+    }
 
-        public DatasetContent(IGraph graph, IStoreWriter writer)
-        {
-            _store = new SimpleTripleStore();
-            _store.Add(graph);
-            _writer = writer;
-            var contentType = MimeTypesHelper.GetDefinitionsByFileExtension(MimeTypesHelper.GetFileExtension(writer))
-                .Select(x => x.CanonicalMimeType).FirstOrDefault();
-            Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
-        }
+    public DatasetContent(IGraph graph, IStoreWriter writer)
+    {
+        _store = new SimpleTripleStore();
+        _store.Add(graph);
+        _writer = writer;
+        var contentType = MimeTypesHelper.GetDefinitionsByFileExtension(MimeTypesHelper.GetFileExtension(writer))
+            .Select(x => x.CanonicalMimeType).FirstOrDefault();
+        Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
+    }
 
-        public DatasetContent(ITripleStore store, IStoreWriter writer)
-        {
-            _store = store;
-            _writer = writer;
-            var contentType = MimeTypesHelper.GetDefinitionsByFileExtension(MimeTypesHelper.GetFileExtension(writer))
-                .Select(x => x.CanonicalMimeType).FirstOrDefault();
-            Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
-        }
+    public DatasetContent(ITripleStore store, IStoreWriter writer)
+    {
+        _store = store;
+        _writer = writer;
+        var contentType = MimeTypesHelper.GetDefinitionsByFileExtension(MimeTypesHelper.GetFileExtension(writer))
+            .Select(x => x.CanonicalMimeType).FirstOrDefault();
+        Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
+    }
 
-        public DatasetContent(ITripleStore store, string contentType)
-        {
-            _store = store;
-            _writer = MimeTypesHelper.GetStoreWriter(contentType);
-            Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
-        }
+    public DatasetContent(ITripleStore store, string contentType)
+    {
+        _store = store;
+        _writer = MimeTypesHelper.GetStoreWriter(contentType);
+        Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
+    }
 
-        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
+    protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
+    {
+        return Task.Run(() =>
         {
-            return Task.Run(() =>
-            {
-                var streamWriter = new StreamWriter(stream, Encoding.UTF8, 4096, true);
-                _writer.Save(_store, streamWriter);
-            });
-        }
+            var streamWriter = new StreamWriter(stream, Encoding.UTF8, 4096, true);
+            _writer.Save(_store, streamWriter);
+        });
+    }
 
-        protected override bool TryComputeLength(out long length)
-        {
-            length = 0;
-            return false;
-        }
+    protected override bool TryComputeLength(out long length)
+    {
+        length = 0;
+        return false;
     }
 }

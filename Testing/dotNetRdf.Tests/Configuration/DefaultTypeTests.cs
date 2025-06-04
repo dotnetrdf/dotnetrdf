@@ -26,74 +26,73 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using Xunit;
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+public class DefaultTypeTests
 {
-    public class DefaultTypeTests
+    private void TestDefaultType(String typeUri, String expectedType)
     {
-        private void TestDefaultType(String typeUri, String expectedType)
-        {
-            var actualType = ConfigurationLoader.GetDefaultType(typeUri);
-            Assert.Equal(expectedType, actualType);
-        }
+        var actualType = ConfigurationLoader.GetDefaultType(typeUri);
+        Assert.Equal(expectedType, actualType);
+    }
 
-        [Fact]
-        public void ConfigurationDefaultTypeGraph()
-        {
-            TestDefaultType(ConfigurationLoader.ClassGraph, ConfigurationLoader.DefaultTypeGraph);
-        }
+    [Fact]
+    public void ConfigurationDefaultTypeGraph()
+    {
+        TestDefaultType(ConfigurationLoader.ClassGraph, ConfigurationLoader.DefaultTypeGraph);
+    }
 
-        [Fact]
-        public void ConfigurationDefaultTypeGraphCollection()
-        {
-            TestDefaultType(ConfigurationLoader.ClassGraphCollection, ConfigurationLoader.DefaultTypeGraphCollection);
-        }
+    [Fact]
+    public void ConfigurationDefaultTypeGraphCollection()
+    {
+        TestDefaultType(ConfigurationLoader.ClassGraphCollection, ConfigurationLoader.DefaultTypeGraphCollection);
+    }
 
-        [Fact]
-        public void ConfigurationDefaultTypeSparqlHttpProtocolProcessor()
-        {
-            TestDefaultType(ConfigurationLoader.ClassSparqlHttpProtocolProcessor, ConfigurationLoader.DefaultTypeSparqlHttpProtocolProcessor);
-        }
+    [Fact]
+    public void ConfigurationDefaultTypeSparqlHttpProtocolProcessor()
+    {
+        TestDefaultType(ConfigurationLoader.ClassSparqlHttpProtocolProcessor, ConfigurationLoader.DefaultTypeSparqlHttpProtocolProcessor);
+    }
 
-        [Fact]
-        public void ConfigurationDefaultTypeSparqlQueryProcessor()
-        {
-            TestDefaultType(ConfigurationLoader.ClassSparqlQueryProcessor, ConfigurationLoader.DefaultTypeSparqlQueryProcessor);
-        }
+    [Fact]
+    public void ConfigurationDefaultTypeSparqlQueryProcessor()
+    {
+        TestDefaultType(ConfigurationLoader.ClassSparqlQueryProcessor, ConfigurationLoader.DefaultTypeSparqlQueryProcessor);
+    }
 
-        [Fact]
-        public void ConfigurationDefaultTypeSparqlUpdateProcessor()
-        {
-            TestDefaultType(ConfigurationLoader.ClassSparqlUpdateProcessor, ConfigurationLoader.DefaultTypeSparqlUpdateProcessor);
-        }
+    [Fact]
+    public void ConfigurationDefaultTypeSparqlUpdateProcessor()
+    {
+        TestDefaultType(ConfigurationLoader.ClassSparqlUpdateProcessor, ConfigurationLoader.DefaultTypeSparqlUpdateProcessor);
+    }
 
-        [Fact]
-        public void ConfigurationDefaultTypeTripleCollection()
-        {
-            TestDefaultType(ConfigurationLoader.ClassTripleCollection, ConfigurationLoader.DefaultTypeTripleCollection);
-        }
+    [Fact]
+    public void ConfigurationDefaultTypeTripleCollection()
+    {
+        TestDefaultType(ConfigurationLoader.ClassTripleCollection, ConfigurationLoader.DefaultTypeTripleCollection);
+    }
 
-        [Fact]
-        public void ConfigurationDefaultTypeTripleStore()
-        {
-            TestDefaultType(ConfigurationLoader.ClassTripleStore, ConfigurationLoader.DefaultTypeTripleStore);
-        }
+    [Fact]
+    public void ConfigurationDefaultTypeTripleStore()
+    {
+        TestDefaultType(ConfigurationLoader.ClassTripleStore, ConfigurationLoader.DefaultTypeTripleStore);
+    }
 
-        [Fact]
-        public void ConfigurationDefaultTypeUser()
-        {
-            TestDefaultType(ConfigurationLoader.ClassUser, typeof(System.Net.NetworkCredential).AssemblyQualifiedName);
-        }
+    [Fact]
+    public void ConfigurationDefaultTypeUser()
+    {
+        TestDefaultType(ConfigurationLoader.ClassUser, typeof(System.Net.NetworkCredential).AssemblyQualifiedName);
+    }
 
-        [Fact]
-        public void ConfigurationDefaultTypeUserGroup()
-        {
-            TestDefaultType(ConfigurationLoader.ClassUserGroup, ConfigurationLoader.DefaultTypeUserGroup);
-        }
+    [Fact]
+    public void ConfigurationDefaultTypeUserGroup()
+    {
+        TestDefaultType(ConfigurationLoader.ClassUserGroup, ConfigurationLoader.DefaultTypeUserGroup);
+    }
 
-        [Fact]
-        public void ConfigurationDefaultTypeProxy()
-        {
-            TestDefaultType(ConfigurationLoader.ClassProxy, typeof(System.Net.WebProxy).AssemblyQualifiedName);
-        }
+    [Fact]
+    public void ConfigurationDefaultTypeProxy()
+    {
+        TestDefaultType(ConfigurationLoader.ClassProxy, typeof(System.Net.WebProxy).AssemblyQualifiedName);
     }
 }

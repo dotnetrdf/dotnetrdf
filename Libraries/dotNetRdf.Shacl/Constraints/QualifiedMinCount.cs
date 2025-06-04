@@ -29,40 +29,39 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class QualifiedMinCount : Qualified
 {
-    internal class QualifiedMinCount : Qualified
+    [DebuggerStepThrough]
+    internal QualifiedMinCount(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal QualifiedMinCount(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage =>
+        $"Number of value nodes matching the shape {Shape} must be at least {NumericValue}.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.QualifiedMinCountConstraintComponent;
+        }
+    }
+
+    protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        if (NumericValue == 0)
+        {
+            return true;
         }
 
-        protected override string DefaultMessage =>
-            $"Number of value nodes matching the shape {Shape} must be at least {NumericValue}.";
+        IEnumerable<INode> invalidValues =
+            from valueNode in focusNode.AsEnumerable()
+            where !QualifiedValueNodes(dataGraph, focusNode, valueNodes).Skip(NumericValue - 1).Any()
+            select valueNode;
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.QualifiedMinCountConstraintComponent;
-            }
-        }
-
-        protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            if (NumericValue == 0)
-            {
-                return true;
-            }
-
-            IEnumerable<INode> invalidValues =
-                from valueNode in focusNode.AsEnumerable()
-                where !QualifiedValueNodes(dataGraph, focusNode, valueNodes).Skip(NumericValue - 1).Any()
-                select valueNode;
-
-            return ReportFocusNode(focusNode, invalidValues, report);
-        }
+        return ReportFocusNode(focusNode, invalidValues, report);
     }
 }

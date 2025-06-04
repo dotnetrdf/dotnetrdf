@@ -24,21 +24,20 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+/**
+ * A SPARQL Update CREATE operation.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface ICreate : IUpdate
 {
 
     /**
-     * A SPARQL Update CREATE operation.
-     * 
-     * @author Holger Knublauch
+     * Checks if this Update operation has been marked to be SILENT.
+     * @return true if SILENT
      */
-    internal interface ICreate : IUpdate
-    {
-
-        /**
-         * Checks if this Update operation has been marked to be SILENT.
-         * @return true if SILENT
-         */
-        bool isSilent();
-    }
+    bool isSilent();
 }

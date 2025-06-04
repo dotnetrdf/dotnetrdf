@@ -29,35 +29,34 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace VDS.RDF.Shacl
+namespace VDS.RDF.Shacl;
+
+internal class Prefixes : GraphWrapperNode, IEnumerable<PrefixDeclaration>
 {
-    internal class Prefixes : GraphWrapperNode, IEnumerable<PrefixDeclaration>
+    [DebuggerStepThrough]
+    internal Prefixes(INode node, IGraph graph)
+        : base(node, graph)
     {
-        [DebuggerStepThrough]
-        internal Prefixes(INode node, IGraph graph)
-            : base(node, graph)
-        {
-        }
+    }
 
-        private IEnumerable<PrefixDeclaration> Declarations
+    private IEnumerable<PrefixDeclaration> Declarations
+    {
+        get
         {
-            get
-            {
-                return 
-                    Vocabulary.Declare.ObjectsOf(this)
-                    .Union(
-                    Vocabulary.OwlImports.ObjectsOf(this).SelectMany(x=>Vocabulary.Declare.ObjectsOf(x, Graph))).Select(d => new PrefixDeclaration(d, Graph));
-            }
+            return 
+                Vocabulary.Declare.ObjectsOf(this)
+                .Union(
+                Vocabulary.OwlImports.ObjectsOf(this).SelectMany(x=>Vocabulary.Declare.ObjectsOf(x, Graph))).Select(d => new PrefixDeclaration(d, Graph));
         }
+    }
 
-        IEnumerator<PrefixDeclaration> IEnumerable<PrefixDeclaration>.GetEnumerator()
-        {
-            return Declarations.GetEnumerator();
-        }
+    IEnumerator<PrefixDeclaration> IEnumerable<PrefixDeclaration>.GetEnumerator()
+    {
+        return Declarations.GetEnumerator();
+    }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable<PrefixDeclaration>)this).GetEnumerator();
-        }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable<PrefixDeclaration>)this).GetEnumerator();
     }
 }

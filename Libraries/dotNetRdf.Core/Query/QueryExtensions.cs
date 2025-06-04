@@ -28,46 +28,45 @@ using System.Linq;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+/// <summary>
+/// Static Helper class containing extension methods related to queries.
+/// </summary>
+static class QueryExtensions
 {
     /// <summary>
-    /// Static Helper class containing extension methods related to queries.
+    /// Determines whether an Expresion uses the Default Dataset.
     /// </summary>
-    static class QueryExtensions
+    /// <param name="expr">Expression.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Almost all Expressions use the Default Dataset.  The only ones that does are EXISTS/NOT EXISTS expressions where the graph pattern does not use the default dataset.
+    /// </remarks>
+    internal static bool UsesDefaultDataset(this ISparqlExpression expr)
     {
-        /// <summary>
-        /// Determines whether an Expresion uses the Default Dataset.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Almost all Expressions use the Default Dataset.  The only ones that does are EXISTS/NOT EXISTS expressions where the graph pattern does not use the default dataset.
-        /// </remarks>
-        internal static bool UsesDefaultDataset(this ISparqlExpression expr)
+        switch (expr.Type)
         {
-            switch (expr.Type)
-            {
-                case SparqlExpressionType.Aggregate:
-                case SparqlExpressionType.BinaryOperator:
-                case SparqlExpressionType.Function:
-                case SparqlExpressionType.GraphOperator:
-                case SparqlExpressionType.SetOperator:
-                case SparqlExpressionType.UnaryOperator:
-                    return expr.Arguments.All(arg => arg.UsesDefaultDataset());
-                case SparqlExpressionType.Primary:
-                    if (expr is GraphPatternTerm)
-                    {
-                        return ((GraphPatternTerm)expr).Pattern.UsesDefaultDataset;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-                default:
+            case SparqlExpressionType.Aggregate:
+            case SparqlExpressionType.BinaryOperator:
+            case SparqlExpressionType.Function:
+            case SparqlExpressionType.GraphOperator:
+            case SparqlExpressionType.SetOperator:
+            case SparqlExpressionType.UnaryOperator:
+                return expr.Arguments.All(arg => arg.UsesDefaultDataset());
+            case SparqlExpressionType.Primary:
+                if (expr is GraphPatternTerm)
+                {
+                    return ((GraphPatternTerm)expr).Pattern.UsesDefaultDataset;
+                }
+                else
+                {
                     return true;
-            }
+                }
+            default:
+                return true;
         }
-
-        
     }
+
+    
 }

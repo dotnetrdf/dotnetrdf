@@ -24,32 +24,31 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+/// <summary>
+/// Interface for storage providers which have controllable transactions which can be managed asynchronously.
+/// </summary>
+public interface IAsyncTransactionalStorage
 {
     /// <summary>
-    /// Interface for storage providers which have controllable transactions which can be managed asynchronously.
+    /// Begins a transaction asynchronously.
     /// </summary>
-    public interface IAsyncTransactionalStorage
-    {
-        /// <summary>
-        /// Begins a transaction asynchronously.
-        /// </summary>
-        /// <param name="callback">Callback.</param>
-        /// <param name="state">State to pass to the callback.</param>
-        void Begin(AsyncStorageCallback callback, object state);
+    /// <param name="callback">Callback.</param>
+    /// <param name="state">State to pass to the callback.</param>
+    void Begin(AsyncStorageCallback callback, object state);
 
-        /// <summary>
-        /// Commits a transaction asynchronously.
-        /// </summary>
-        /// <param name="callback">Callback.</param>
-        /// <param name="state">State to pass to the callback.</param>
-        void Commit(AsyncStorageCallback callback, object state);
+    /// <summary>
+    /// Commits a transaction asynchronously.
+    /// </summary>
+    /// <param name="callback">Callback.</param>
+    /// <param name="state">State to pass to the callback.</param>
+    void Commit(AsyncStorageCallback callback, object state);
 
-        /// <summary>
-        /// Rolls back a transaction asynchronously.
-        /// </summary>
-        /// <param name="callback">Callback.</param>
-        /// <param name="state">State to pass to the callback.</param>
-        void Rollback(AsyncStorageCallback callback, object state);
-    }
+    /// <summary>
+    /// Rolls back a transaction asynchronously.
+    /// </summary>
+    /// <param name="callback">Callback.</param>
+    /// <param name="state">State to pass to the callback.</param>
+    void Rollback(AsyncStorageCallback callback, object state);
 }

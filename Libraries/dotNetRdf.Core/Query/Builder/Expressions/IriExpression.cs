@@ -28,27 +28,26 @@ using System;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions;
+
+/// <summary>
+/// Represents a IRI expression.
+/// </summary>
+public class IriExpression : RdfTermExpression
 {
     /// <summary>
-    /// Represents a IRI expression.
+    /// Wraps the <paramref name="iri"/> as a constant IRI expression.
     /// </summary>
-    public class IriExpression : RdfTermExpression
+    /// <param name="iri"></param>
+    public IriExpression(Uri iri) 
+        : base(new ConstantTerm(new UriNode(iri)))
     {
-        /// <summary>
-        /// Wraps the <paramref name="iri"/> as a constant IRI expression.
-        /// </summary>
-        /// <param name="iri"></param>
-        public IriExpression(Uri iri) 
-            : base(new ConstantTerm(new UriNode(iri)))
-        {
-        }
+    }
 
-        /// <summary>
-        /// Wraps the <paramref name="expression"/> as an IRI expression.
-        /// </summary>
-        public IriExpression(ISparqlExpression expression) : base(expression)
-        {
-        }
+    /// <summary>
+    /// Wraps the <paramref name="expression"/> as an IRI expression.
+    /// </summary>
+    public IriExpression(ISparqlExpression expression) : base(expression)
+    {
     }
 }

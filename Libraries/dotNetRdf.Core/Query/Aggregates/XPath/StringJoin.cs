@@ -29,84 +29,83 @@ using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Aggregates.XPath
+namespace VDS.RDF.Query.Aggregates.XPath;
+
+/// <summary>
+/// Represents the XPath fn:string-join() aggregate.
+/// </summary>
+public class StringJoinAggregate
+    : BaseAggregate
 {
     /// <summary>
-    /// Represents the XPath fn:string-join() aggregate.
+    /// Separator Expression.
     /// </summary>
-    public class StringJoinAggregate
-        : BaseAggregate
+    protected ISparqlExpression _sep;
+    private bool _customSep = true;
+
+    /// <summary>
+    /// Creates a new XPath String Join aggregate which uses no separator.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    public StringJoinAggregate(ISparqlExpression expr)
+        : this(expr, new ConstantTerm(new LiteralNode(string.Empty, false)))
     {
-        /// <summary>
-        /// Separator Expression.
-        /// </summary>
-        protected ISparqlExpression _sep;
-        private bool _customSep = true;
+        _customSep = false;
+    }
 
-        /// <summary>
-        /// Creates a new XPath String Join aggregate which uses no separator.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public StringJoinAggregate(ISparqlExpression expr)
-            : this(expr, new ConstantTerm(new LiteralNode(string.Empty, false)))
+    /// <summary>
+    /// Creates a new XPath String Join aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="sep">Separator Expression.</param>
+    public StringJoinAggregate(ISparqlExpression expr, ISparqlExpression sep)
+        : base(expr)
+    {
+        _sep = sep;
+    }
+
+    /// <summary>
+    /// An expression whose value is the string to use to join the values passed into this aggregation.
+    /// </summary>
+    public ISparqlExpression SeparatorExpression { get => _sep; }
+
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+        IEnumerable<TBinding> bindings)
+    {
+        return processor.ProcessStringJoin(this, context, bindings);
+    }
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append('<');
+        output.Append(XPathFunctionFactory.XPathFunctionsNamespace);
+        output.Append(XPathFunctionFactory.StringJoin);
+        output.Append(">(");
+        if (_distinct) output.Append("DISTINCT ");
+        output.Append(_expr);
+        if (_customSep)
         {
-            _customSep = false;
+            output.Append(_sep);
         }
+        output.Append(')');
+        return output.ToString();
+    }
 
-        /// <summary>
-        /// Creates a new XPath String Join aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="sep">Separator Expression.</param>
-        public StringJoinAggregate(ISparqlExpression expr, ISparqlExpression sep)
-            : base(expr)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            _sep = sep;
-        }
-
-        /// <summary>
-        /// An expression whose value is the string to use to join the values passed into this aggregation.
-        /// </summary>
-        public ISparqlExpression SeparatorExpression { get => _sep; }
-
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
-            IEnumerable<TBinding> bindings)
-        {
-            return processor.ProcessStringJoin(this, context, bindings);
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append('<');
-            output.Append(XPathFunctionFactory.XPathFunctionsNamespace);
-            output.Append(XPathFunctionFactory.StringJoin);
-            output.Append(">(");
-            if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr);
-            if (_customSep)
-            {
-                output.Append(_sep);
-            }
-            output.Append(')');
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StringJoin;
-            }
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StringJoin;
         }
     }
 }

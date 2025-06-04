@@ -26,56 +26,55 @@
 
 using System;
 
-namespace VDS.RDF.Query.Datasets
+namespace VDS.RDF.Query.Datasets;
+
+/// <summary>
+/// Abstract Base Class for Immutable Datasets.
+/// </summary>
+public abstract class BaseImmutableDataset
+    : BaseDataset
 {
     /// <summary>
-    /// Abstract Base Class for Immutable Datasets.
+    /// Throws an exception since Immutable Datasets cannot be altered.
     /// </summary>
-    public abstract class BaseImmutableDataset
-        : BaseDataset
+    /// <param name="g">Graph to add.</param>
+    public override bool AddGraph(IGraph g)
     {
-        /// <summary>
-        /// Throws an exception since Immutable Datasets cannot be altered.
-        /// </summary>
-        /// <param name="g">Graph to add.</param>
-        public override bool AddGraph(IGraph g)
-        {
-            throw new NotSupportedException("Cannot add a Graph to an immutable Dataset");
-        }
+        throw new NotSupportedException("Cannot add a Graph to an immutable Dataset");
+    }
 
-        /// <summary>
-        /// Throws an exception since Immutable Datasets cannot be altered.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        [Obsolete("Replaced by RemoveGraph(IRefNode)")]
-        public override bool RemoveGraph(Uri graphUri)
-        {
-            throw new NotSupportedException("Cannot remove a Graph from an immutable Dataset");
-        }
+    /// <summary>
+    /// Throws an exception since Immutable Datasets cannot be altered.
+    /// </summary>
+    /// <param name="graphUri">Graph URI.</param>
+    [Obsolete("Replaced by RemoveGraph(IRefNode)")]
+    public override bool RemoveGraph(Uri graphUri)
+    {
+        throw new NotSupportedException("Cannot remove a Graph from an immutable Dataset");
+    }
 
-        /// <summary>
-        /// Throws an exception since Immutable Datasets cannot be altered.
-        /// </summary>
-        /// <param name="graphName">Graph URI.</param>
-        public override IGraph GetModifiableGraph(IRefNode graphName)
-        {
-            throw new NotSupportedException("Cannot retrieve a Modifiable Graph from an immutable Dataset");
-        }
+    /// <summary>
+    /// Throws an exception since Immutable Datasets cannot be altered.
+    /// </summary>
+    /// <param name="graphName">Graph URI.</param>
+    public override IGraph GetModifiableGraph(IRefNode graphName)
+    {
+        throw new NotSupportedException("Cannot retrieve a Modifiable Graph from an immutable Dataset");
+    }
 
-        /// <summary>
-        /// Ensures that any changes to the Dataset (if any) are flushed to the underlying Storage.
-        /// </summary>
-        public sealed override void Flush()
-        {
-            // Does Nothing
-        }
+    /// <summary>
+    /// Ensures that any changes to the Dataset (if any) are flushed to the underlying Storage.
+    /// </summary>
+    public sealed override void Flush()
+    {
+        // Does Nothing
+    }
 
-        /// <summary>
-        /// Ensures that any changes to the Dataset (if any) are discarded.
-        /// </summary>
-        public sealed override void Discard()
-        {
-            // Does Nothing
-        }
+    /// <summary>
+    /// Ensures that any changes to the Dataset (if any) are discarded.
+    /// </summary>
+    public sealed override void Discard()
+    {
+        // Does Nothing
     }
 }

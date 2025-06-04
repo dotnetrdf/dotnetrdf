@@ -28,29 +28,28 @@ using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Query.Operators.DateTime
-{
-    /// <summary>
-    /// Abstract base operator for date time operations.
-    /// </summary>
-    public abstract class BaseDateTimeOperator
-        : BaseOperator
-    {
-        /// <inheritdoc />
-        public override bool IsExtension => true;
+namespace VDS.RDF.Query.Operators.DateTime;
 
-        /// <summary>
-        /// Gets whether the arguments are applicable for this operator.
-        /// </summary>
-        /// <param name="ns">Arguments.</param>
-        /// <returns></returns>
-        public override bool IsApplicable(params IValuedNode[] ns)
-        {
-            return ns != null
-                   && ns.Length == 2
-                   && ns.All(n => n!= null) 
-                   && ns[0].EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime) 
-                   && (ns[1].EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration) || ns[1].EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDuration));
-        }
+/// <summary>
+/// Abstract base operator for date time operations.
+/// </summary>
+public abstract class BaseDateTimeOperator
+    : BaseOperator
+{
+    /// <inheritdoc />
+    public override bool IsExtension => true;
+
+    /// <summary>
+    /// Gets whether the arguments are applicable for this operator.
+    /// </summary>
+    /// <param name="ns">Arguments.</param>
+    /// <returns></returns>
+    public override bool IsApplicable(params IValuedNode[] ns)
+    {
+        return ns != null
+               && ns.Length == 2
+               && ns.All(n => n!= null) 
+               && ns[0].EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime) 
+               && (ns[1].EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration) || ns[1].EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDuration));
     }
 }

@@ -30,163 +30,162 @@ using System.Linq;
 using System.Threading.Tasks;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Static Helper class containing extensions used in the Algebra evaluation process.
+/// </summary>
+public static class AlgebraExtensions
 {
     /// <summary>
-    /// Static Helper class containing extensions used in the Algebra evaluation process.
+    /// Calculates the product of two multi-sets asynchronously with a timeout to restrict long running computations.
     /// </summary>
-    public static class AlgebraExtensions
+    /// <param name="multiset">Multiset.</param>
+    /// <param name="other">Other Multiset.</param>
+    /// <param name="timeout">Timeout, if &lt;=0 no timeout is used and product will be computed synchronously.</param>
+    /// <returns></returns>
+    public static BaseMultiset ProductWithTimeout(this BaseMultiset multiset, BaseMultiset other, long timeout)
     {
-        /// <summary>
-        /// Calculates the product of two multi-sets asynchronously with a timeout to restrict long running computations.
-        /// </summary>
-        /// <param name="multiset">Multiset.</param>
-        /// <param name="other">Other Multiset.</param>
-        /// <param name="timeout">Timeout, if &lt;=0 no timeout is used and product will be computed synchronously.</param>
-        /// <returns></returns>
-        public static BaseMultiset ProductWithTimeout(this BaseMultiset multiset, BaseMultiset other, long timeout)
+        if (other is IdentityMultiset) return multiset;
+        if (other is NullMultiset) return other;
+        if (other.IsEmpty) return new NullMultiset();
+
+        // If no timeout use default implementation
+        if (timeout <= 0)
         {
-            if (other is IdentityMultiset) return multiset;
-            if (other is NullMultiset) return other;
-            if (other.IsEmpty) return new NullMultiset();
+            return multiset.Product(other);
+        }
 
-            // If no timeout use default implementation
-            if (timeout <= 0)
+        // Otherwise Invoke using an Async call
+        BaseMultiset productSet;
+        if (multiset.UsePLinqEvaluation)
+        {
+            if (multiset.Count >= other.Count)
             {
-                return multiset.Product(other);
-            }
-
-            // Otherwise Invoke using an Async call
-            BaseMultiset productSet;
-            if (multiset.UsePLinqEvaluation)
-            {
-                if (multiset.Count >= other.Count)
-                {
-                    productSet = new PartitionedMultiset(multiset.Count, other.Count);
-                }
-                else
-                {
-                    productSet = new PartitionedMultiset(other.Count, multiset.Count);
-                }
+                productSet = new PartitionedMultiset(multiset.Count, other.Count);
             }
             else
             {
-                productSet = new Multiset();
+                productSet = new PartitionedMultiset(other.Count, multiset.Count);
             }
-
-            var stop = new StopToken();
-            var t = (int)Math.Min(timeout, int.MaxValue);
-            Task productTask = Task.Factory.StartNew(() => GenerateProduct(multiset, other, productSet, stop));
-            if (!productTask.Wait(t))
-            {
-                stop.ShouldStop = true;
-                productTask.Wait();
-            }
-
-            return productSet;
+        }
+        else
+        {
+            productSet = new Multiset();
         }
 
-        /// <summary>
-        /// Method for generating product of two multisets asynchronously.
-        /// </summary>
-        /// <param name="multiset">Multiset.</param>
-        /// <param name="other">Other Multiset.</param>
-        /// <param name="target">Multiset to generate the product in.</param>
-        /// <param name="stop">Stop Token.</param>
-        private static void GenerateProduct(BaseMultiset multiset, BaseMultiset other, BaseMultiset target, StopToken stop)
+        var stop = new StopToken();
+        var t = (int)Math.Min(timeout, int.MaxValue);
+        Task productTask = Task.Factory.StartNew(() => GenerateProduct(multiset, other, productSet, stop));
+        if (!productTask.Wait(t))
         {
-            if (multiset.UsePLinqEvaluation)
+            stop.ShouldStop = true;
+            productTask.Wait();
+        }
+
+        return productSet;
+    }
+
+    /// <summary>
+    /// Method for generating product of two multisets asynchronously.
+    /// </summary>
+    /// <param name="multiset">Multiset.</param>
+    /// <param name="other">Other Multiset.</param>
+    /// <param name="target">Multiset to generate the product in.</param>
+    /// <param name="stop">Stop Token.</param>
+    private static void GenerateProduct(BaseMultiset multiset, BaseMultiset other, BaseMultiset target, StopToken stop)
+    {
+        if (multiset.UsePLinqEvaluation)
+        {
+            // Determine partition sizes so we can do a parallel product
+            // Want to parallelize over whichever side is larger
+            if (multiset.Count >= other.Count)
             {
-                // Determine partition sizes so we can do a parallel product
-                // Want to parallelize over whichever side is larger
-                if (multiset.Count >= other.Count)
-                {
-                    multiset.Sets.AsParallel().ForAll(x => EvalProduct(x, other, target as PartitionedMultiset, stop));
-                }
-                else
-                {
-                    other.Sets.AsParallel().ForAll(y => EvalProduct(y, multiset, target as PartitionedMultiset, stop));
-                }
+                multiset.Sets.AsParallel().ForAll(x => EvalProduct(x, other, target as PartitionedMultiset, stop));
             }
             else
             {
-                foreach (ISet x in multiset.Sets)
-                {
-                    foreach (ISet y in other.Sets)
-                    {
-                        target.Add(x.Join(y));
-                        // if (stop.ShouldStop) break;
-                    }
-                    if (stop.ShouldStop) break;
-                }
+                other.Sets.AsParallel().ForAll(y => EvalProduct(y, multiset, target as PartitionedMultiset, stop));
             }
         }
-
-        private static void EvalProduct(ISet x, BaseMultiset other, PartitionedMultiset productSet, StopToken stop)
+        else
         {
-            if (stop.ShouldStop) return;
-            var id = productSet.GetNextBaseID();
-            foreach (ISet y in other.Sets)
+            foreach (ISet x in multiset.Sets)
             {
-                id++;
-                ISet z = x.Join(y);
-                z.ID = id;
-                productSet.Add(z);
-                if (stop.ShouldStop) return;
-            }
-        }
-
-        /// <summary>
-        /// Converts a Bindings Clause to a Multiset.
-        /// </summary>
-        /// <returns></returns>
-        public static BaseMultiset ToMultiset(this BindingsPattern pattern)
-        {
-            if (pattern.Variables.Any())
-            {
-                var m = new Multiset();
-                foreach (var var in pattern.Variables)
+                foreach (ISet y in other.Sets)
                 {
-                    m.AddVariable(var);
+                    target.Add(x.Join(y));
+                    // if (stop.ShouldStop) break;
                 }
-                foreach (BindingTuple tuple in pattern.Tuples)
-                {
-                    var set = new Set();
-                    foreach (KeyValuePair<string, PatternItem> binding in tuple.Values)
-                    {
-                        set.Add(binding.Key, tuple[binding.Key]);
-                    }
-                    m.Add(set);
-                }
-                return m;
-            }
-            else
-            {
-                return new IdentityMultiset();
+                if (stop.ShouldStop) break;
             }
         }
     }
 
-    /// <summary>
-    /// Token passed to asynchronous code to allow stop signalling.
-    /// </summary>
-    internal class StopToken
+    private static void EvalProduct(ISet x, BaseMultiset other, PartitionedMultiset productSet, StopToken stop)
     {
-        private bool _stop;
-
-        /// <summary>
-        /// Gets/Sets whether the code should stop.
-        /// </summary>
-        /// <remarks>
-        /// Once set to true cannot be reset.
-        /// </remarks>
-        public bool ShouldStop
+        if (stop.ShouldStop) return;
+        var id = productSet.GetNextBaseID();
+        foreach (ISet y in other.Sets)
         {
-            get => _stop;
-            set 
+            id++;
+            ISet z = x.Join(y);
+            z.ID = id;
+            productSet.Add(z);
+            if (stop.ShouldStop) return;
+        }
+    }
+
+    /// <summary>
+    /// Converts a Bindings Clause to a Multiset.
+    /// </summary>
+    /// <returns></returns>
+    public static BaseMultiset ToMultiset(this BindingsPattern pattern)
+    {
+        if (pattern.Variables.Any())
+        {
+            var m = new Multiset();
+            foreach (var var in pattern.Variables)
             {
-                if (!_stop) _stop = value;
+                m.AddVariable(var);
             }
+            foreach (BindingTuple tuple in pattern.Tuples)
+            {
+                var set = new Set();
+                foreach (KeyValuePair<string, PatternItem> binding in tuple.Values)
+                {
+                    set.Add(binding.Key, tuple[binding.Key]);
+                }
+                m.Add(set);
+            }
+            return m;
+        }
+        else
+        {
+            return new IdentityMultiset();
+        }
+    }
+}
+
+/// <summary>
+/// Token passed to asynchronous code to allow stop signalling.
+/// </summary>
+internal class StopToken
+{
+    private bool _stop;
+
+    /// <summary>
+    /// Gets/Sets whether the code should stop.
+    /// </summary>
+    /// <remarks>
+    /// Once set to true cannot be reset.
+    /// </remarks>
+    public bool ShouldStop
+    {
+        get => _stop;
+        set 
+        {
+            if (!_stop) _stop = value;
         }
     }
 }

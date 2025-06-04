@@ -24,21 +24,20 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Progress
-{
-    /**
-     * A generic interface similar to Runnable, but with an additional
-     * argument that allows the Runnable to display progress.
-     *
-     * @author Holger Knublauch
-     */
-    internal interface IRunnableWithProgress
-    {
+namespace VDS.RDF.Query.Spin.Progress;
 
-        /**
-         * Runs the runnable.
-         * @param monitor  an optional ProgressMonitor
-         */
-        void run(IProgressMonitor monitor);
-    }
+/**
+ * A generic interface similar to Runnable, but with an additional
+ * argument that allows the Runnable to display progress.
+ *
+ * @author Holger Knublauch
+ */
+internal interface IRunnableWithProgress
+{
+
+    /**
+     * Runs the runnable.
+     * @param monitor  an optional ProgressMonitor
+     */
+    void run(IProgressMonitor monitor);
 }

@@ -29,141 +29,140 @@ using System.Collections.Generic;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 
-namespace VDS.RDF.Utils.Describe
+namespace VDS.RDF.Utils.Describe;
+
+/// <summary>
+/// Abstract Base Class for SPARQL Describe Algorithms which provides BNode rewriting functionality.
+/// </summary>
+public abstract class BaseDescribeAlgorithm
+    : IDescribeAlgorithm
 {
-    /// <summary>
-    /// Abstract Base Class for SPARQL Describe Algorithms which provides BNode rewriting functionality.
-    /// </summary>
-    public abstract class BaseDescribeAlgorithm
-        : IDescribeAlgorithm
+    /// <inheritdoc />
+    public IGraph Describe(ITripleIndex dataset, IEnumerable<INode> nodes)
     {
-        /// <inheritdoc />
-        public IGraph Describe(ITripleIndex dataset, IEnumerable<INode> nodes)
-        {
-            var g = new Graph();
-            Describe(new GraphHandler(g), dataset, nodes);
-            return g;
-        }
+        var g = new Graph();
+        Describe(new GraphHandler(g), dataset, nodes);
+        return g;
+    }
 
-        /// <inheritdoc />
-        public void Describe(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes, Uri baseUri = null,
-            INamespaceMapper namespaceMap = null)
+    /// <inheritdoc />
+    public void Describe(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes, Uri baseUri = null,
+        INamespaceMapper namespaceMap = null)
+    {
+        try
         {
-            try
+            handler.StartRdf();
+
+            // Apply Base URI and Namespaces to the Handler
+            if (baseUri != null)
             {
-                handler.StartRdf();
-
-                // Apply Base URI and Namespaces to the Handler
-                if (baseUri != null)
+                if (!handler.HandleBaseUri(baseUri))
                 {
-                    if (!handler.HandleBaseUri(baseUri))
+                    ParserHelper.Stop();
+                }
+            }
+
+            if (namespaceMap != null)
+            {
+                foreach (var prefix in namespaceMap.Prefixes)
+                {
+                    if (!handler.HandleNamespace(prefix, namespaceMap.GetNamespaceUri(prefix)))
                     {
                         ParserHelper.Stop();
                     }
                 }
-
-                if (namespaceMap != null)
-                {
-                    foreach (var prefix in namespaceMap.Prefixes)
-                    {
-                        if (!handler.HandleNamespace(prefix, namespaceMap.GetNamespaceUri(prefix)))
-                        {
-                            ParserHelper.Stop();
-                        }
-                    }
-                }
-
-                DescribeInternal(handler, dataset, nodes);
-
-                handler.EndRdf(true);
             }
-            catch (RdfParsingTerminatedException)
-            {
-                handler.EndRdf(true);
-            }
-            catch
-            {
-                handler.EndRdf(false);
-                throw;
-            }
+
+            DescribeInternal(handler, dataset, nodes);
+
+            handler.EndRdf(true);
         }
-
-        /// <summary>
-        /// Generates the Description for each of the Nodes to be described.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="dataset">Dataset to extract descriptions from.</param>
-        /// <param name="nodes">Nodes to be described.</param>
-        protected abstract void DescribeInternal(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes);
-
-        
-        /// <summary>
-        /// Helper method which rewrites Blank Node IDs for Describe Queries.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <param name="mapping">Mapping of IDs to new Blank Nodes.</param>
-        /// <param name="factory">Factory to create Nodes in.</param>
-        /// <returns></returns>
-        protected Triple RewriteDescribeBNodes(Triple t, Dictionary<string, INode> mapping, INodeFactory factory)
+        catch (RdfParsingTerminatedException)
         {
-            INode s, p, o;
-            string id;
-
-            if (t.Subject.NodeType == NodeType.Blank)
-            {
-                id = t.Subject.GetHashCode().ToString();
-                if (mapping.ContainsKey(id))
-                {
-                    s = mapping[id];
-                }
-                else
-                {
-                    s = factory.CreateBlankNode(id);
-                    mapping.Add(id, s);
-                }
-            }
-            else
-            {
-                s = t.Subject;
-            }
-
-            if (t.Predicate.NodeType == NodeType.Blank)
-            {
-                id = t.Predicate.GetHashCode().ToString();
-                if (mapping.ContainsKey(id))
-                {
-                    p = mapping[id];
-                }
-                else
-                {
-                    p = factory.CreateBlankNode(id);
-                    mapping.Add(id, p);
-                }
-            }
-            else
-            {
-                p = t.Predicate;
-            }
-
-            if (t.Object.NodeType == NodeType.Blank)
-            {
-                id = t.Object.GetHashCode().ToString();
-                if (mapping.ContainsKey(id))
-                {
-                    o = mapping[id];
-                }
-                else
-                {
-                    o = factory.CreateBlankNode(id);
-                    mapping.Add(id, o);
-                }
-            }
-            else
-            {
-                o = t.Object;
-            }
-
-            return new Triple(s, p, o);
+            handler.EndRdf(true);
         }
+        catch
+        {
+            handler.EndRdf(false);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Generates the Description for each of the Nodes to be described.
+    /// </summary>
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="dataset">Dataset to extract descriptions from.</param>
+    /// <param name="nodes">Nodes to be described.</param>
+    protected abstract void DescribeInternal(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes);
+
+    
+    /// <summary>
+    /// Helper method which rewrites Blank Node IDs for Describe Queries.
+    /// </summary>
+    /// <param name="t">Triple.</param>
+    /// <param name="mapping">Mapping of IDs to new Blank Nodes.</param>
+    /// <param name="factory">Factory to create Nodes in.</param>
+    /// <returns></returns>
+    protected Triple RewriteDescribeBNodes(Triple t, Dictionary<string, INode> mapping, INodeFactory factory)
+    {
+        INode s, p, o;
+        string id;
+
+        if (t.Subject.NodeType == NodeType.Blank)
+        {
+            id = t.Subject.GetHashCode().ToString();
+            if (mapping.ContainsKey(id))
+            {
+                s = mapping[id];
+            }
+            else
+            {
+                s = factory.CreateBlankNode(id);
+                mapping.Add(id, s);
+            }
+        }
+        else
+        {
+            s = t.Subject;
+        }
+
+        if (t.Predicate.NodeType == NodeType.Blank)
+        {
+            id = t.Predicate.GetHashCode().ToString();
+            if (mapping.ContainsKey(id))
+            {
+                p = mapping[id];
+            }
+            else
+            {
+                p = factory.CreateBlankNode(id);
+                mapping.Add(id, p);
+            }
+        }
+        else
+        {
+            p = t.Predicate;
+        }
+
+        if (t.Object.NodeType == NodeType.Blank)
+        {
+            id = t.Object.GetHashCode().ToString();
+            if (mapping.ContainsKey(id))
+            {
+                o = mapping[id];
+            }
+            else
+            {
+                o = factory.CreateBlankNode(id);
+                mapping.Add(id, o);
+            }
+        }
+        else
+        {
+            o = t.Object;
+        }
+
+        return new Triple(s, p, o);
     }
 }

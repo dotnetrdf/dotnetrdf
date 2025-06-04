@@ -28,75 +28,74 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
+
+/// <summary>
+/// Class representing the SPARQL-Star TRIPLE() function.
+/// </summary>
+public class TripleFunction : ISparqlExpression
 {
     /// <summary>
-    /// Class representing the SPARQL-Star TRIPLE() function.
+    /// Get the first argument to this function that specifies the subject of the triple.
     /// </summary>
-    public class TripleFunction : ISparqlExpression
+    public ISparqlExpression SubjectExpression { get; }
+    /// <summary>
+    /// Get the second argument to this function that specifies the predicate of the triple.
+    /// </summary>
+    public ISparqlExpression PredicateExpression { get; }
+    /// <summary>
+    /// Get the third argument to this function that specifies the object of the triple.
+    /// </summary>
+    public ISparqlExpression ObjectExpression { get; }
+
+    /// <summary>
+    /// Create a new TRIPLE function expression.
+    /// </summary>
+    /// <param name="subjectExpression">Subject argument expression.</param>
+    /// <param name="predicateExpression">Predicate argument expression.</param>
+    /// <param name="objectExpression">Object argument expression.</param>
+    public TripleFunction(ISparqlExpression subjectExpression, ISparqlExpression predicateExpression,
+        ISparqlExpression objectExpression)
     {
-        /// <summary>
-        /// Get the first argument to this function that specifies the subject of the triple.
-        /// </summary>
-        public ISparqlExpression SubjectExpression { get; }
-        /// <summary>
-        /// Get the second argument to this function that specifies the predicate of the triple.
-        /// </summary>
-        public ISparqlExpression PredicateExpression { get; }
-        /// <summary>
-        /// Get the third argument to this function that specifies the object of the triple.
-        /// </summary>
-        public ISparqlExpression ObjectExpression { get; }
-
-        /// <summary>
-        /// Create a new TRIPLE function expression.
-        /// </summary>
-        /// <param name="subjectExpression">Subject argument expression.</param>
-        /// <param name="predicateExpression">Predicate argument expression.</param>
-        /// <param name="objectExpression">Object argument expression.</param>
-        public TripleFunction(ISparqlExpression subjectExpression, ISparqlExpression predicateExpression,
-            ISparqlExpression objectExpression)
-        {
-            SubjectExpression = subjectExpression;
-            PredicateExpression = predicateExpression;
-            ObjectExpression = objectExpression;
-        }
-
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public IEnumerable<string> Variables => SubjectExpression.Variables.Concat(PredicateExpression.Variables)
-            .Concat(ObjectExpression.Variables);
-
-        /// <inheritdoc />
-        public SparqlExpressionType Type => SparqlExpressionType.Function;
-
-        /// <inheritdoc />
-        public string Functor => SparqlSpecsHelper.SparqlStarKeywordTriple;
-
-        /// <inheritdoc />
-        public IEnumerable<ISparqlExpression> Arguments =>
-            new[] { SubjectExpression, PredicateExpression, ObjectExpression };
-
-        /// <inheritdoc />
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new TripleFunction(transformer.Transform(SubjectExpression),
-                transformer.Transform(PredicateExpression),
-                transformer.Transform(ObjectExpression));
-        }
-
-        /// <inheritdoc />
-        public bool CanParallelise => false;
+        SubjectExpression = subjectExpression;
+        PredicateExpression = predicateExpression;
+        ObjectExpression = objectExpression;
     }
+
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<string> Variables => SubjectExpression.Variables.Concat(PredicateExpression.Variables)
+        .Concat(ObjectExpression.Variables);
+
+    /// <inheritdoc />
+    public SparqlExpressionType Type => SparqlExpressionType.Function;
+
+    /// <inheritdoc />
+    public string Functor => SparqlSpecsHelper.SparqlStarKeywordTriple;
+
+    /// <inheritdoc />
+    public IEnumerable<ISparqlExpression> Arguments =>
+        new[] { SubjectExpression, PredicateExpression, ObjectExpression };
+
+    /// <inheritdoc />
+    public ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new TripleFunction(transformer.Transform(SubjectExpression),
+            transformer.Transform(PredicateExpression),
+            transformer.Transform(ObjectExpression));
+    }
+
+    /// <inheritdoc />
+    public bool CanParallelise => false;
 }

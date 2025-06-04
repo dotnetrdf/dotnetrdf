@@ -27,23 +27,22 @@
 using System.Diagnostics;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Shacl.Constraints
-{
-    internal abstract class Boolean : Constraint
-    {
-        [DebuggerStepThrough]
-        internal Boolean(Shape shape, INode value)
-            : base(shape, value)
-        {
-        }
+namespace VDS.RDF.Shacl.Constraints;
 
-        internal bool BooleanValue
+internal abstract class Boolean : Constraint
+{
+    [DebuggerStepThrough]
+    internal Boolean(Shape shape, INode value)
+        : base(shape, value)
+    {
+    }
+
+    internal bool BooleanValue
+    {
+        get
         {
-            get
-            {
-                return this.AsValuedNode().AsBoolean() 
-                       && ((ILiteralNode)this).Value.Equals("true"); // SPARQL allows "1" to be interpreted as True, but SHACL does not (see test core/property/uniqueLang-002.ttl)
-            }
+            return this.AsValuedNode().AsBoolean() 
+                   && ((ILiteralNode)this).Value.Equals("true"); // SPARQL allows "1" to be interpreted as True, but SHACL does not (see test core/property/uniqueLang-002.ttl)
         }
     }
 }

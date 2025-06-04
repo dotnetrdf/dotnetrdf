@@ -27,115 +27,114 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set;
+
+/// <summary>
+/// Abstract base class for SPARQL Functions which operate on Sets.
+/// </summary>
+public abstract class BaseSetFunction
+    : ISparqlExpression
 {
     /// <summary>
-    /// Abstract base class for SPARQL Functions which operate on Sets.
+    /// Variable Expression Term that the Set function applies to.
     /// </summary>
-    public abstract class BaseSetFunction
-        : ISparqlExpression
+    protected ISparqlExpression _expr;
+    /// <summary>
+    /// Set that is used in the function.
+    /// </summary>
+    protected List<ISparqlExpression> _expressions = new List<ISparqlExpression>();
+
+    /// <summary>
+    /// Creates a new SPARQL Set function.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="set">Set.</param>
+    protected BaseSetFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
     {
-        /// <summary>
-        /// Variable Expression Term that the Set function applies to.
-        /// </summary>
-        protected ISparqlExpression _expr;
-        /// <summary>
-        /// Set that is used in the function.
-        /// </summary>
-        protected List<ISparqlExpression> _expressions = new List<ISparqlExpression>();
-
-        /// <summary>
-        /// Creates a new SPARQL Set function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="set">Set.</param>
-        protected BaseSetFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
-        {
-            _expr = expr;
-            _expressions.AddRange(set);
-        }
-
-        /// <summary>
-        /// Get the expression term that the set function applies to.
-        /// </summary>
-        public ISparqlExpression InnerExpression { get => _expr; }
-
-        /// <summary>
-        /// Get the expressions that make up the set used in the function.
-        /// </summary>
-        public IList<ISparqlExpression> SetExpressions { get => _expressions; }
-
-        /// <inheritdoc />
-        public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
-
-        /// <inheritdoc />
-        public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
-
-        /// <summary>
-        /// Gets the Variable the function applies to.
-        /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get
-            {
-                return _expr.Variables.Concat(from e in _expressions
-                                                   from v in e.Variables
-                                                   select v);
-            }
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.SetOperator;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public abstract string Functor
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Exception.
-        /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
-        {
-            get
-            {
-                return _expr.AsEnumerable<ISparqlExpression>().Concat(_expressions);
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel.
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return _expr.CanParallelise;
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
+        _expr = expr;
+        _expressions.AddRange(set);
     }
+
+    /// <summary>
+    /// Get the expression term that the set function applies to.
+    /// </summary>
+    public ISparqlExpression InnerExpression { get => _expr; }
+
+    /// <summary>
+    /// Get the expressions that make up the set used in the function.
+    /// </summary>
+    public IList<ISparqlExpression> SetExpressions { get => _expressions; }
+
+    /// <inheritdoc />
+    public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
+
+    /// <inheritdoc />
+    public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
+
+    /// <summary>
+    /// Gets the Variable the function applies to.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
+        {
+            return _expr.Variables.Concat(from e in _expressions
+                                               from v in e.Variables
+                                               select v);
+        }
+    }
+
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public SparqlExpressionType Type
+    {
+        get
+        {
+            return SparqlExpressionType.SetOperator;
+        }
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public abstract string Functor
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the Arguments of the Exception.
+    /// </summary>
+    public IEnumerable<ISparqlExpression> Arguments
+    {
+        get
+        {
+            return _expr.AsEnumerable<ISparqlExpression>().Concat(_expressions);
+        }
+    }
+
+    /// <summary>
+    /// Gets whether an expression can safely be evaluated in parallel.
+    /// </summary>
+    public virtual bool CanParallelise
+    {
+        get
+        {
+            return _expr.CanParallelise;
+        }
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public abstract override string ToString();
+
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
 }

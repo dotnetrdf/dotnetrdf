@@ -27,12 +27,12 @@
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.LibraryOntology;
 
-namespace  VDS.RDF.Query.Spin.Model {
-    internal class LoadImpl : UpdateImpl, ILoad {
+namespace  VDS.RDF.Query.Spin.Model; 
+internal class LoadImpl : UpdateImpl, ILoad {
 
-    public LoadImpl(INode node, IGraph graph, SpinProcessor spinModel)
-        : base(node, graph, spinModel)
-    {
+public LoadImpl(INode node, IGraph graph, SpinProcessor spinModel)
+    : base(node, graph, spinModel)
+{
 		
 	}
 
@@ -41,9 +41,9 @@ namespace  VDS.RDF.Query.Spin.Model {
 		p.printKeyword("LOAD");
 		p.print(" ");
 		printSilent(p);
-        IResource document = getResource(SP.PropertyDocument);
+    IResource document = getResource(SP.PropertyDocument);
 		p.printURIResource(document);
-        IResource into = getResource(SP.PropertyInto);
+    IResource into = getResource(SP.PropertyInto);
 		if(into != null) {
 			p.print(" ");
 			p.printKeyword("INTO");
@@ -53,5 +53,4 @@ namespace  VDS.RDF.Query.Spin.Model {
 			p.printURIResource(into);
 		}
 	}
-}
 }

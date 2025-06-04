@@ -30,106 +30,105 @@ using System.Text;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Paths
+namespace VDS.RDF.Query.Paths;
+
+/// <summary>
+/// Represents a Negated Property Set.
+/// </summary>
+public class NegatedSet : ISparqlPath
 {
+    private List<Property> _properties = new List<Property>();
+    private List<Property> _inverseProperties = new List<Property>();
+
     /// <summary>
-    /// Represents a Negated Property Set.
+    /// Creates a new Negated Property Set.
     /// </summary>
-    public class NegatedSet : ISparqlPath
+    /// <param name="properties">Negated Properties.</param>
+    /// <param name="inverseProperties">Inverse Negated Properties.</param>
+    public NegatedSet(IEnumerable<Property> properties, IEnumerable<Property> inverseProperties)
     {
-        private List<Property> _properties = new List<Property>();
-        private List<Property> _inverseProperties = new List<Property>();
+        _properties.AddRange(properties);
+        _inverseProperties.AddRange(inverseProperties);
+    }
 
-        /// <summary>
-        /// Creates a new Negated Property Set.
-        /// </summary>
-        /// <param name="properties">Negated Properties.</param>
-        /// <param name="inverseProperties">Inverse Negated Properties.</param>
-        public NegatedSet(IEnumerable<Property> properties, IEnumerable<Property> inverseProperties)
+    /// <summary>
+    /// Gets the Negated Properties.
+    /// </summary>
+    public IEnumerable<Property> Properties
+    {
+        get
         {
-            _properties.AddRange(properties);
-            _inverseProperties.AddRange(inverseProperties);
+            return _properties;
+        }
+    }
+
+    /// <summary>
+    /// Gets the Inverse Negated Properties.
+    /// </summary>
+    public IEnumerable<Property> InverseProperties
+    {
+        get
+        {
+            return _inverseProperties;
+        }
+    }
+
+    /// <summary>
+    /// Converts a Path into its Algebra Form.
+    /// </summary>
+    /// <param name="context">Path Transformation Context.</param>
+    /// <returns></returns>
+    public ISparqlAlgebra ToAlgebra(PathTransformContext context)
+    {
+        if (_properties.Count > 0 && _inverseProperties.Count == 0)
+        {
+            return new NegatedPropertySet(context.Subject, context.Object, _properties);
+        }
+        else if (_properties.Count == 0 && _inverseProperties.Count > 0)
+        {
+            return new NegatedPropertySet(context.Object, context.Subject, _inverseProperties, true);
+        }
+        else
+        {
+            var lhsContext = new PathTransformContext(context);
+            var rhsContext = new PathTransformContext(context);
+            lhsContext.AddTriplePattern(new PropertyPathPattern(lhsContext.Subject, new NegatedSet(_properties, Enumerable.Empty<Property>()), lhsContext.Object));
+            rhsContext.AddTriplePattern(new PropertyPathPattern(rhsContext.Subject, new NegatedSet(Enumerable.Empty<Property>(), _inverseProperties), rhsContext.Object));
+            ISparqlAlgebra lhs = lhsContext.ToAlgebra();
+            ISparqlAlgebra rhs = rhsContext.ToAlgebra();
+            return new Union(lhs, rhs);
+        }
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Path.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append('!');
+        if (_properties.Count + _inverseProperties.Count > 1) output.Append('(');
+
+        for (var i = 0; i < _properties.Count; i++)
+        {
+            output.Append(_properties[i]);
+            if (i < _properties.Count - 1 || _inverseProperties.Count > 0)
+            {
+                output.Append(" | ");
+            }
+        }
+        for (var i = 0; i < _inverseProperties.Count; i++)
+        {
+            output.Append(_inverseProperties[i]);
+            if (i < _inverseProperties.Count - 1)
+            {
+                output.Append(" | ");
+            }
         }
 
-        /// <summary>
-        /// Gets the Negated Properties.
-        /// </summary>
-        public IEnumerable<Property> Properties
-        {
-            get
-            {
-                return _properties;
-            }
-        }
+        if (_properties.Count + _inverseProperties.Count > 1) output.Append(')');
 
-        /// <summary>
-        /// Gets the Inverse Negated Properties.
-        /// </summary>
-        public IEnumerable<Property> InverseProperties
-        {
-            get
-            {
-                return _inverseProperties;
-            }
-        }
-
-        /// <summary>
-        /// Converts a Path into its Algebra Form.
-        /// </summary>
-        /// <param name="context">Path Transformation Context.</param>
-        /// <returns></returns>
-        public ISparqlAlgebra ToAlgebra(PathTransformContext context)
-        {
-            if (_properties.Count > 0 && _inverseProperties.Count == 0)
-            {
-                return new NegatedPropertySet(context.Subject, context.Object, _properties);
-            }
-            else if (_properties.Count == 0 && _inverseProperties.Count > 0)
-            {
-                return new NegatedPropertySet(context.Object, context.Subject, _inverseProperties, true);
-            }
-            else
-            {
-                var lhsContext = new PathTransformContext(context);
-                var rhsContext = new PathTransformContext(context);
-                lhsContext.AddTriplePattern(new PropertyPathPattern(lhsContext.Subject, new NegatedSet(_properties, Enumerable.Empty<Property>()), lhsContext.Object));
-                rhsContext.AddTriplePattern(new PropertyPathPattern(rhsContext.Subject, new NegatedSet(Enumerable.Empty<Property>(), _inverseProperties), rhsContext.Object));
-                ISparqlAlgebra lhs = lhsContext.ToAlgebra();
-                ISparqlAlgebra rhs = rhsContext.ToAlgebra();
-                return new Union(lhs, rhs);
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Path.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append('!');
-            if (_properties.Count + _inverseProperties.Count > 1) output.Append('(');
-
-            for (var i = 0; i < _properties.Count; i++)
-            {
-                output.Append(_properties[i]);
-                if (i < _properties.Count - 1 || _inverseProperties.Count > 0)
-                {
-                    output.Append(" | ");
-                }
-            }
-            for (var i = 0; i < _inverseProperties.Count; i++)
-            {
-                output.Append(_inverseProperties[i]);
-                if (i < _inverseProperties.Count - 1)
-                {
-                    output.Append(" | ");
-                }
-            }
-
-            if (_properties.Count + _inverseProperties.Count > 1) output.Append(')');
-
-            return output.ToString();
-        }
+        return output.ToString();
     }
 }

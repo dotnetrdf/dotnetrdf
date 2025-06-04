@@ -59,24 +59,23 @@ terms.
 
 */
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing.Contexts;
+
+/// <summary>
+/// Interface for SPARQL Results Parser Contexts.
+/// </summary>
+public interface IResultsParserContext
 {
     /// <summary>
-    /// Interface for SPARQL Results Parser Contexts.
+    /// Gets the SPARQL Results Handler to use.
     /// </summary>
-    public interface IResultsParserContext
+    ISparqlResultsHandler Handler
     {
-        /// <summary>
-        /// Gets the SPARQL Results Handler to use.
-        /// </summary>
-        ISparqlResultsHandler Handler
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the URI factory to use.
-        /// </summary>
-        IUriFactory UriFactory { get; }
+        get;
     }
+
+    /// <summary>
+    /// Gets the URI factory to use.
+    /// </summary>
+    IUriFactory UriFactory { get; }
 }

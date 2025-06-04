@@ -27,93 +27,92 @@ using System;
 using System.IO;
 using Xunit;
 
-namespace VDS.RDF.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers;
+
+public partial class StripStringHandlerTests
 {
-    public partial class StripStringHandlerTests
+    [Fact]
+    public void ThrowsOnBadInstantiation()
     {
-        [Fact]
-        public void ThrowsOnBadInstantiation()
+        Assert.Throws<ArgumentNullException>(() => new StripStringHandler(null));
+    }
+
+    [Fact]
+    public void StripsStringDatatype()
+    {
+        var graphA = Load("<http://example.com/subject> <http://example.com/predicate> \"object\".");
+        var graphB = Load("<http://example.com/subject> <http://example.com/predicate> \"object\"^^<http://www.w3.org/2001/XMLSchema#string>.");
+
+        var diff = graphA.Difference(graphB);
+
+        Assert.True(diff.AreEqual, "Graphs should be equal.");
+    }
+
+    [Fact]
+    public void DoesntStripOtherDatatype()
+    {
+        var graphA = Load("<http://example.com/subject> <http://example.com/predicate> \"object\".");
+        var graphB = Load("<http://example.com/subject> <http://example.com/predicate> \"object\"^^<http://example.com/schema/string>.");
+
+        var diff = graphA.Difference(graphB);
+
+        Assert.False(diff.AreEqual, "Graphs should be different.");
+    }
+
+    [Fact]
+    public void WorksWithApply()
+    {
+        var originalRDF = "<http://example.com/subject> <http://example.com/predicate> \"object\"^^<http://www.w3.org/2001/XMLSchema#string>.";
+        var referenceRDF = "<http://example.com/subject> <http://example.com/predicate> \"object\".";
+
+        using (var originalGraph = new Graph())
         {
-            Assert.Throws<ArgumentNullException>(() => new StripStringHandler(null));
-        }
+            originalGraph.LoadFromString(originalRDF);
 
-        [Fact]
-        public void StripsStringDatatype()
-        {
-            var graphA = Load("<http://example.com/subject> <http://example.com/predicate> \"object\".");
-            var graphB = Load("<http://example.com/subject> <http://example.com/predicate> \"object\"^^<http://www.w3.org/2001/XMLSchema#string>.");
-
-            var diff = graphA.Difference(graphB);
-
-            Assert.True(diff.AreEqual, "Graphs should be equal.");
-        }
-
-        [Fact]
-        public void DoesntStripOtherDatatype()
-        {
-            var graphA = Load("<http://example.com/subject> <http://example.com/predicate> \"object\".");
-            var graphB = Load("<http://example.com/subject> <http://example.com/predicate> \"object\"^^<http://example.com/schema/string>.");
-
-            var diff = graphA.Difference(graphB);
-
-            Assert.False(diff.AreEqual, "Graphs should be different.");
-        }
-
-        [Fact]
-        public void WorksWithApply()
-        {
-            var originalRDF = "<http://example.com/subject> <http://example.com/predicate> \"object\"^^<http://www.w3.org/2001/XMLSchema#string>.";
-            var referenceRDF = "<http://example.com/subject> <http://example.com/predicate> \"object\".";
-
-            using (var originalGraph = new Graph())
+            using (var resultGraph = new Graph())
             {
-                originalGraph.LoadFromString(originalRDF);
+                new StripStringHandler(new GraphHandler(resultGraph)).Apply(originalGraph);
 
-                using (var resultGraph = new Graph())
+                using (var referenceGraph = new Graph())
                 {
-                    new StripStringHandler(new GraphHandler(resultGraph)).Apply(originalGraph);
+                    referenceGraph.LoadFromString(referenceRDF);
 
-                    using (var referenceGraph = new Graph())
-                    {
-                        referenceGraph.LoadFromString(referenceRDF);
-
-                        Assert.True(resultGraph.Difference(referenceGraph).AreEqual, "Graphs should be equal.");
-                    }
+                    Assert.True(resultGraph.Difference(referenceGraph).AreEqual, "Graphs should be equal.");
                 }
             }
         }
+    }
 
-        [Fact]
-        public void DoesntConfuseFragmentUris()
+    [Fact]
+    public void DoesntConfuseFragmentUris()
+    {
+        var originalRDF = "<http://example.com/subject> <http://example.com/predicate> \"0\"^^<http://www.w3.org/2001/XMLSchema#integer>.";
+
+        using (var originalGraph = new Graph())
         {
-            var originalRDF = "<http://example.com/subject> <http://example.com/predicate> \"0\"^^<http://www.w3.org/2001/XMLSchema#integer>.";
+            originalGraph.LoadFromString(originalRDF);
 
-            using (var originalGraph = new Graph())
+            using (var resultGraph = new Graph())
             {
-                originalGraph.LoadFromString(originalRDF);
+                new StripStringHandler(new GraphHandler(resultGraph)).Apply(originalGraph);
 
-                using (var resultGraph = new Graph())
-                {
-                    new StripStringHandler(new GraphHandler(resultGraph)).Apply(originalGraph);
-
-                    Assert.True(resultGraph.Difference(originalGraph).AreEqual, "Graphs should be equal.");
-                }
+                Assert.True(resultGraph.Difference(originalGraph).AreEqual, "Graphs should be equal.");
             }
         }
+    }
 
-        private static IGraph Load(string source)
+    private static IGraph Load(string source)
+    {
+        var result = new Graph();
+        var graphHandler = new GraphHandler(result);
+        var strippingHandler = new StripStringHandler(graphHandler);
+        var parser = new NTriplesParser();
+
+        using (var reader = new StringReader(source))
         {
-            var result = new Graph();
-            var graphHandler = new GraphHandler(result);
-            var strippingHandler = new StripStringHandler(graphHandler);
-            var parser = new NTriplesParser();
-
-            using (var reader = new StringReader(source))
-            {
-                parser.Load(strippingHandler, reader);
-            }
-
-            return result;
+            parser.Load(strippingHandler, reader);
         }
+
+        return result;
     }
 }

@@ -24,19 +24,18 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Interface for formatting triples in the context of a graph.
+/// </summary>
+public interface IQuadFormatter
 {
     /// <summary>
-    /// Interface for formatting triples in the context of a graph.
+    /// Formats a triple in the context of a graph as a string.
     /// </summary>
-    public interface IQuadFormatter
-    {
-        /// <summary>
-        /// Formats a triple in the context of a graph as a string.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <param name="graph">Containing graph name.</param>
-        /// <returns></returns>
-        string Format(Triple t, IRefNode graph);
-    }
+    /// <param name="t">Triple.</param>
+    /// <param name="graph">Containing graph name.</param>
+    /// <returns></returns>
+    string Format(Triple t, IRefNode graph);
 }

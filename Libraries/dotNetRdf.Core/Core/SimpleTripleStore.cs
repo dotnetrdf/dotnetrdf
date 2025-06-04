@@ -24,38 +24,37 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// A minimal implementation of the ITripleStore interface that provides only graph management functionality.
+/// </summary>
+/// <remarks>More comprehensive implementations that provide additional query and update functionality can be found in the dotNetRDF.InMemory package.</remarks>
+public sealed class SimpleTripleStore: BaseTripleStore
 {
     /// <summary>
-    /// A minimal implementation of the ITripleStore interface that provides only graph management functionality.
+    /// Create a new empty triple store.
     /// </summary>
-    /// <remarks>More comprehensive implementations that provide additional query and update functionality can be found in the dotNetRDF.InMemory package.</remarks>
-    public sealed class SimpleTripleStore: BaseTripleStore
+    public SimpleTripleStore() : this(RDF.UriFactory.Root)
     {
-        /// <summary>
-        /// Create a new empty triple store.
-        /// </summary>
-        public SimpleTripleStore() : this(RDF.UriFactory.Root)
-        {
-        }
-
-        /// <summary>
-        /// Create a new empty triple store.
-        /// </summary>
-        /// <param name="uriFactory">The factory to use when creating new URIs in the context of this triple store.</param>
-        public SimpleTripleStore(IUriFactory uriFactory):base(new GraphCollection())
-        {
-            UriFactory = uriFactory;
-        }
-
-        /// <inheritdoc />
-        public override IUriFactory UriFactory { get; }
-
-        /// <inheritdoc />
-        public override void Dispose()
-        {
-            Graphs.Dispose();
-        }
-
     }
+
+    /// <summary>
+    /// Create a new empty triple store.
+    /// </summary>
+    /// <param name="uriFactory">The factory to use when creating new URIs in the context of this triple store.</param>
+    public SimpleTripleStore(IUriFactory uriFactory):base(new GraphCollection())
+    {
+        UriFactory = uriFactory;
+    }
+
+    /// <inheritdoc />
+    public override IUriFactory UriFactory { get; }
+
+    /// <inheritdoc />
+    public override void Dispose()
+    {
+        Graphs.Dispose();
+    }
+
 }

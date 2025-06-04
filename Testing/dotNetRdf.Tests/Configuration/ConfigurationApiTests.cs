@@ -26,161 +26,160 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System.IO;
 using Xunit;
 
-namespace VDS.RDF.Configuration
-{
+namespace VDS.RDF.Configuration;
 
-    public class ConfigurationApiTests
+
+public class ConfigurationApiTests
+{
+    [Fact]
+    public void ConfigurationCircularReference()
     {
-        [Fact]
-        public void ConfigurationCircularReference()
-        {
-            var graph = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+        var graph = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 _:a a dnr:Graph ;
   dnr:fromGraph _:b .
 _:b a dnr:Graph ;
   dnr:fromGraph _:a .";
 
-            var g = new Graph();
-            g.LoadFromString(graph);
+        var g = new Graph();
+        g.LoadFromString(graph);
 
-            Assert.Throws<DotNetRdfConfigurationException>(() => ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")));
-        }
+        Assert.Throws<DotNetRdfConfigurationException>(() => ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")));
+    }
 
-        [Fact]
-        public void ConfigurationImports1()
-        {
-            //Single Import
-            var graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+    [Fact]
+    public void ConfigurationImports1()
+    {
+        //Single Import
+        var graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 _:a a dnr:Graph ;
   dnr:usingTripleCollection <ex:collection> .
 
 [] dnr:imports ""ConfigurationImports1-b.ttl"" . ";
 
-            var graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+        var graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 <ex:collection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" .";
 
-            File.WriteAllText("ConfigurationImports1-a.ttl", graph1);
-            File.WriteAllText("ConfigurationImports1-b.ttl", graph2);
+        File.WriteAllText("ConfigurationImports1-a.ttl", graph1);
+        File.WriteAllText("ConfigurationImports1-b.ttl", graph2);
 
-            IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports1-a.ttl");
+        IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports1-a.ttl");
 
-            TestTools.ShowGraph(g);
+        TestTools.ShowGraph(g);
 
-            var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
-            Assert.NotNull(result);
-            Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
-        }
+        var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+        Assert.NotNull(result);
+        Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
+    }
 
-        [Fact]
-        public void ConfigurationImports2()
-        {
-            //Chained Import
-            var graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+    [Fact]
+    public void ConfigurationImports2()
+    {
+        //Chained Import
+        var graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 _:a a dnr:Graph ;
   dnr:usingTripleCollection <ex:collection> .
 
 [] dnr:imports ""ConfigurationImports2-b.ttl"" . ";
 
-            var graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+        var graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 <ex:collection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" ;
   dnr:usingTripleCollection <ex:innerCollection> .
 
 [] dnr:imports ""ConfigurationImports2-c.ttl"" .";
 
-            var graph3 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+        var graph3 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 <ex:innerCollection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.SubTreeIndexedTripleCollection"" .";
 
-            File.WriteAllText("ConfigurationImports2-a.ttl", graph1);
-            File.WriteAllText("ConfigurationImports2-b.ttl", graph2);
-            File.WriteAllText("ConfigurationImports2-c.ttl", graph3);
+        File.WriteAllText("ConfigurationImports2-a.ttl", graph1);
+        File.WriteAllText("ConfigurationImports2-b.ttl", graph2);
+        File.WriteAllText("ConfigurationImports2-c.ttl", graph3);
 
-            IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports2-a.ttl");
+        IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports2-a.ttl");
 
-            TestTools.ShowGraph(g);
+        TestTools.ShowGraph(g);
 
-            var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
-            Assert.NotNull(result);
-            Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
-        }
+        var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+        Assert.NotNull(result);
+        Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
+    }
 
-        [Fact]
-        public void ConfigurationImports3()
-        {
-            //Multiple Imports
-            var graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+    [Fact]
+    public void ConfigurationImports3()
+    {
+        //Multiple Imports
+        var graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 _:a a dnr:Graph ;
   dnr:usingTripleCollection <ex:collection> .
 
 [] dnr:imports ""ConfigurationImports3-b.ttl"" , ""ConfigurationImports3-c.ttl"" . ";
 
-            var graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+        var graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 <ex:collection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" ;
   dnr:usingTripleCollection <ex:innerCollection> .";
 
-            var graph3 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+        var graph3 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 <ex:innerCollection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.SubTreeIndexedTripleCollection"" .";
 
-            File.WriteAllText("ConfigurationImports3-a.ttl", graph1);
-            File.WriteAllText("ConfigurationImports3-b.ttl", graph2);
-            File.WriteAllText("ConfigurationImports3-c.ttl", graph3);
+        File.WriteAllText("ConfigurationImports3-a.ttl", graph1);
+        File.WriteAllText("ConfigurationImports3-b.ttl", graph2);
+        File.WriteAllText("ConfigurationImports3-c.ttl", graph3);
 
-            IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports3-a.ttl");
+        IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports3-a.ttl");
 
-            TestTools.ShowGraph(g);
+        TestTools.ShowGraph(g);
 
-            var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
-            Assert.NotNull(result);
-            Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
-        }
+        var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+        Assert.NotNull(result);
+        Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
+    }
 
-        [Fact]
-        public void ConfigurationImports4()
-        {
-            //Repeated Imports
-            var graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+    [Fact]
+    public void ConfigurationImports4()
+    {
+        //Repeated Imports
+        var graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 _:a a dnr:Graph ;
   dnr:usingTripleCollection <ex:collection> .
 
 [] dnr:imports ""ConfigurationImports4-b.ttl"" , ""ConfigurationImports4-c.ttl"", ""ConfigurationImports4-c.ttl"" . ";
 
-            var graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+        var graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 <ex:collection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" ;
   dnr:usingTripleCollection <ex:innerCollection> .";
 
-            var graph3 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+        var graph3 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 <ex:innerCollection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.SubTreeIndexedTripleCollection"" .";
 
-            File.WriteAllText("ConfigurationImports4-a.ttl", graph1);
-            File.WriteAllText("ConfigurationImports4-b.ttl", graph2);
-            File.WriteAllText("ConfigurationImports4-c.ttl", graph3);
+        File.WriteAllText("ConfigurationImports4-a.ttl", graph1);
+        File.WriteAllText("ConfigurationImports4-b.ttl", graph2);
+        File.WriteAllText("ConfigurationImports4-c.ttl", graph3);
 
-            IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports4-a.ttl");
+        IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports4-a.ttl");
 
-            TestTools.ShowGraph(g);
+        TestTools.ShowGraph(g);
 
-            var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
-            Assert.NotNull(result);
-            Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
-        }
+        var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+        Assert.NotNull(result);
+        Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
+    }
 
-        [Fact]
-        public void ConfigurationImportsCircular1()
-        {
-            var graph1 = @"[] <http://www.dotnetrdf.org/configuration#imports> ""ConfigurationImportsCircular1-b.ttl"" . ";
-            var graph2 = @"[] <http://www.dotnetrdf.org/configuration#imports> ""ConfigurationImportsCircular1-a.ttl"" . ";
+    [Fact]
+    public void ConfigurationImportsCircular1()
+    {
+        var graph1 = @"[] <http://www.dotnetrdf.org/configuration#imports> ""ConfigurationImportsCircular1-b.ttl"" . ";
+        var graph2 = @"[] <http://www.dotnetrdf.org/configuration#imports> ""ConfigurationImportsCircular1-a.ttl"" . ";
 
-            File.WriteAllText("ConfigurationImportsCircular1-a.ttl", graph1);
-            File.WriteAllText("ConfigurationImportsCircular1-b.ttl", graph2);
+        File.WriteAllText("ConfigurationImportsCircular1-a.ttl", graph1);
+        File.WriteAllText("ConfigurationImportsCircular1-b.ttl", graph2);
 
-            IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImportsCircular1-a.ttl");
-            Assert.Equal(2, g.Triples.Count);
-        }
+        IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImportsCircular1-a.ttl");
+        Assert.Equal(2, g.Triples.Count);
     }
 }

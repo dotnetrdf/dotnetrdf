@@ -30,89 +30,88 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Nodes
+namespace VDS.RDF.Nodes;
+
+/// <summary>
+/// A Valued Node representing float values.
+/// </summary>
+public class FloatNode
+    : NumericNode
 {
+    private float _value;
+
     /// <summary>
-    /// A Valued Node representing float values.
+    /// Creates a new Float valued node.
     /// </summary>
-    public class FloatNode
-        : NumericNode
+    /// <param name="value">Float value.</param>
+    /// <param name="lexicalValue">Lexical value.</param>
+    public FloatNode(float value, string lexicalValue)
+        : base(lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeFloat), SparqlNumericType.Float)
     {
-        private float _value;
+        _value = value;
+    }
 
-        /// <summary>
-        /// Creates a new Float valued node.
-        /// </summary>
-        /// <param name="value">Float value.</param>
-        /// <param name="lexicalValue">Lexical value.</param>
-        public FloatNode(float value, string lexicalValue)
-            : base(lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeFloat), SparqlNumericType.Float)
+    /// <summary>
+    /// Creates a new Float valued node.
+    /// </summary>
+    /// <param name="value">Float value.</param>
+    public FloatNode(float value)
+        : this(value, value.ToString(CultureInfo.InvariantCulture)) { }
+
+    /// <summary>
+    /// Gets the integer value of the float.
+    /// </summary>
+    /// <returns></returns>
+    public override long AsInteger()
+    {
+        try
         {
-            _value = value;
+            return Convert.ToInt64(_value);
         }
-
-        /// <summary>
-        /// Creates a new Float valued node.
-        /// </summary>
-        /// <param name="value">Float value.</param>
-        public FloatNode(float value)
-            : this(value, value.ToString(CultureInfo.InvariantCulture)) { }
-
-        /// <summary>
-        /// Gets the integer value of the float.
-        /// </summary>
-        /// <returns></returns>
-        public override long AsInteger()
+        catch
         {
-            try
-            {
-                return Convert.ToInt64(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to downcast Float to Long");
-            }
+            throw new RdfQueryException("Unable to downcast Float to Long");
         }
+    }
 
-        /// <summary>
-        /// Gets the decimal value of the float.
-        /// </summary>
-        /// <returns></returns>
-        public override decimal AsDecimal()
+    /// <summary>
+    /// Gets the decimal value of the float.
+    /// </summary>
+    /// <returns></returns>
+    public override decimal AsDecimal()
+    {
+        try
         {
-            try
-            {
-                return Convert.ToDecimal(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to cast Float to Decimal");
-            }
+            return Convert.ToDecimal(_value);
         }
-
-        /// <summary>
-        /// Gets the float value.
-        /// </summary>
-        /// <returns></returns>
-        public override float AsFloat()
+        catch
         {
-            return _value;
+            throw new RdfQueryException("Unable to cast Float to Decimal");
         }
+    }
 
-        /// <summary>
-        /// Gets the double value of the float.
-        /// </summary>
-        /// <returns></returns>
-        public override double AsDouble()
+    /// <summary>
+    /// Gets the float value.
+    /// </summary>
+    /// <returns></returns>
+    public override float AsFloat()
+    {
+        return _value;
+    }
+
+    /// <summary>
+    /// Gets the double value of the float.
+    /// </summary>
+    /// <returns></returns>
+    public override double AsDouble()
+    {
+        try
         {
-            try
-            {
-                return Convert.ToDouble(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to upcast Float to Double");
-            }
+            return Convert.ToDouble(_value);
+        }
+        catch
+        {
+            throw new RdfQueryException("Unable to upcast Float to Double");
         }
     }
 }

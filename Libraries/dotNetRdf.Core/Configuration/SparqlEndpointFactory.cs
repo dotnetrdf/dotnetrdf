@@ -31,131 +31,130 @@ using System.Net;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+/// <summary>
+/// Factory class for producing SPARQL Endpoints from Configuration Graphs.
+/// </summary>
+[Obsolete("This class is obsolete and will be removed in a future release. Replaced by VDS.RDF.Configuration.SparqlClientFactory")]
+public class SparqlEndpointFactory 
+    : IObjectFactory
 {
+    private const string QueryEndpoint = "VDS.RDF.Query.SparqlRemoteEndpoint",
+                         UpdateEndpoint = "VDS.RDF.Update.SparqlRemoteUpdateEndpoint",
+                         FederatedEndpoint = "VDS.RDF.Query.FederatedSparqlRemoteEndpoint";
+
     /// <summary>
-    /// Factory class for producing SPARQL Endpoints from Configuration Graphs.
+    /// Tries to load a SPARQL Endpoint based on information from the Configuration Graph.
     /// </summary>
-    [Obsolete("This class is obsolete and will be removed in a future release. Replaced by VDS.RDF.Configuration.SparqlClientFactory")]
-    public class SparqlEndpointFactory 
-        : IObjectFactory
+    /// <param name="g">Configuration Graph.</param>
+    /// <param name="objNode">Object Node.</param>
+    /// <param name="targetType">Target Type.</param>
+    /// <param name="obj">Output Object.</param>
+    /// <returns></returns>
+    public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
     {
-        private const string QueryEndpoint = "VDS.RDF.Query.SparqlRemoteEndpoint",
-                             UpdateEndpoint = "VDS.RDF.Update.SparqlRemoteUpdateEndpoint",
-                             FederatedEndpoint = "VDS.RDF.Query.FederatedSparqlRemoteEndpoint";
+        BaseEndpoint endpoint = null;
+        obj = null;
 
-        /// <summary>
-        /// Tries to load a SPARQL Endpoint based on information from the Configuration Graph.
-        /// </summary>
-        /// <param name="g">Configuration Graph.</param>
-        /// <param name="objNode">Object Node.</param>
-        /// <param name="targetType">Target Type.</param>
-        /// <param name="obj">Output Object.</param>
-        /// <returns></returns>
-        public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
+        switch (targetType.FullName)
         {
-            BaseEndpoint endpoint = null;
-            obj = null;
+            case QueryEndpoint:
+                var queryEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+                if (queryEndpointUri == null) return false;
 
-            switch (targetType.FullName)
-            {
-                case QueryEndpoint:
-                    var queryEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
-                    if (queryEndpointUri == null) return false;
+                // Get Default/Named Graphs if specified
+                IEnumerable<string> defaultGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
+                                                    select n.ToString();
+                IEnumerable<string> namedGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
+                                                  select n.ToString();
+                endpoint = new SparqlRemoteEndpoint(g.UriFactory.Create(queryEndpointUri), defaultGraphs, namedGraphs);
+                break;
 
-                    // Get Default/Named Graphs if specified
-                    IEnumerable<string> defaultGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
-                                                        select n.ToString();
-                    IEnumerable<string> namedGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
-                                                      select n.ToString();
-                    endpoint = new SparqlRemoteEndpoint(g.UriFactory.Create(queryEndpointUri), defaultGraphs, namedGraphs);
-                    break;
+            case UpdateEndpoint:
+                var updateEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+                if (updateEndpointUri == null) return false;
 
-                case UpdateEndpoint:
-                    var updateEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
-                    if (updateEndpointUri == null) return false;
+                endpoint = new SparqlRemoteUpdateEndpoint(g.UriFactory.Create(updateEndpointUri));
+                break;
 
-                    endpoint = new SparqlRemoteUpdateEndpoint(g.UriFactory.Create(updateEndpointUri));
-                    break;
-
-                case FederatedEndpoint:
-                    IEnumerable<INode> endpoints = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)))
-                        .Concat(ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint))));
-                    foreach (INode e in endpoints)
+            case FederatedEndpoint:
+                IEnumerable<INode> endpoints = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)))
+                    .Concat(ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint))));
+                foreach (INode e in endpoints)
+                {
+                    var temp = ConfigurationLoader.LoadObject(g, e);
+                    if (temp is SparqlRemoteEndpoint)
                     {
-                        var temp = ConfigurationLoader.LoadObject(g, e);
-                        if (temp is SparqlRemoteEndpoint)
+                        if (endpoint == null)
                         {
-                            if (endpoint == null)
-                            {
-                                endpoint = new FederatedSparqlRemoteEndpoint((SparqlRemoteEndpoint)temp);
-                            }
-                            else
-                            {
-                                ((FederatedSparqlRemoteEndpoint)endpoint).AddEndpoint((SparqlRemoteEndpoint)temp);
-                            }
+                            endpoint = new FederatedSparqlRemoteEndpoint((SparqlRemoteEndpoint)temp);
                         }
                         else
                         {
-                            throw new DotNetRdfConfigurationException("Unable to load the SPARQL Endpoint identified by the Node '" + e.ToString() + "' as one of the values for the dnr:queryEndpoint/dnr:endpoint property points to an Object which cannot be loaded as an object which is a SparqlRemoteEndpoint");
+                            ((FederatedSparqlRemoteEndpoint)endpoint).AddEndpoint((SparqlRemoteEndpoint)temp);
                         }
                     }
-                    break;
-            }
-
-            if (endpoint != null)
-            {
-                // Are there any credentials specified?
-                string user, pwd;
-                ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
-                if (user != null && pwd != null)
-                {
-                    endpoint.SetCredentials(user, pwd);
-                }
-
-                // Is there a Proxy Server specified
-                INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyProxy)));
-                if (proxyNode != null)
-                {
-                    var proxy = ConfigurationLoader.LoadObject(g, proxyNode);
-                    if (proxy is IWebProxy)
-                    {
-                        endpoint.Proxy = (IWebProxy)proxy;
-
-                        // Are we supposed to use the same credentials for the proxy as for the endpoint?
-                        var useCredentialsForProxy = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy)), false);
-                        if (useCredentialsForProxy)
-                        {
-                            endpoint.UseCredentialsForProxy = true;
-                        }
-                      }
                     else
                     {
-                        throw new DotNetRdfConfigurationException("Unable to load SPARQL Endpoint identified by the Node '" + objNode.ToString() + "' as the value for the dnr:proxy property points to an Object which cannot be loaded as an object of type WebProxy");
+                        throw new DotNetRdfConfigurationException("Unable to load the SPARQL Endpoint identified by the Node '" + e.ToString() + "' as one of the values for the dnr:queryEndpoint/dnr:endpoint property points to an Object which cannot be loaded as an object which is a SparqlRemoteEndpoint");
                     }
                 }
-            }
-
-            obj = endpoint;
-            return (endpoint != null);
+                break;
         }
 
-        /// <summary>
-        /// Gets whether this Factory can load objects of the given Type.
-        /// </summary>
-        /// <param name="t">Type.</param>
-        /// <returns></returns>
-        public bool CanLoadObject(Type t)
+        if (endpoint != null)
         {
-            switch (t.FullName)
+            // Are there any credentials specified?
+            string user, pwd;
+            ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
+            if (user != null && pwd != null)
             {
-                case QueryEndpoint:
-                case UpdateEndpoint:
-                case FederatedEndpoint:
-                    return true;
-                default:
-                    return false;
+                endpoint.SetCredentials(user, pwd);
             }
+
+            // Is there a Proxy Server specified
+            INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyProxy)));
+            if (proxyNode != null)
+            {
+                var proxy = ConfigurationLoader.LoadObject(g, proxyNode);
+                if (proxy is IWebProxy)
+                {
+                    endpoint.Proxy = (IWebProxy)proxy;
+
+                    // Are we supposed to use the same credentials for the proxy as for the endpoint?
+                    var useCredentialsForProxy = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy)), false);
+                    if (useCredentialsForProxy)
+                    {
+                        endpoint.UseCredentialsForProxy = true;
+                    }
+                  }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to load SPARQL Endpoint identified by the Node '" + objNode.ToString() + "' as the value for the dnr:proxy property points to an Object which cannot be loaded as an object of type WebProxy");
+                }
+            }
+        }
+
+        obj = endpoint;
+        return (endpoint != null);
+    }
+
+    /// <summary>
+    /// Gets whether this Factory can load objects of the given Type.
+    /// </summary>
+    /// <param name="t">Type.</param>
+    /// <returns></returns>
+    public bool CanLoadObject(Type t)
+    {
+        switch (t.FullName)
+        {
+            case QueryEndpoint:
+            case UpdateEndpoint:
+            case FederatedEndpoint:
+                return true;
+            default:
+                return false;
         }
     }
 }

@@ -30,71 +30,70 @@ using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.Util;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class VariableImpl : AbstractSPINResource, IVariable
 {
-    internal class VariableImpl : AbstractSPINResource, IVariable
+    internal VariableImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
-        internal VariableImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
-        }
-
-
-        private void addTriplePatterns(INode predicate, HashSet<ITriplePattern> results)
-        {
-            IEnumerator<Triple> it = getModel().GetTriplesWithPredicateObject(predicate, this).GetEnumerator();
-            while (it.MoveNext())
-            {
-                IResource subject = Resource.Get(it.Current.Subject, Graph, getModel());
-                results.Add((TriplePatternImpl)subject.As(typeof(TriplePatternImpl)));
-            }
-        }
-
-
-        public String getName()
-        {
-            return getString(SP.PropertyVarName);
-        }
-
-
-        public HashSet<ITriplePattern> getTriplePatterns()
-        {
-            var results = new HashSet<ITriplePattern>();
-            addTriplePatterns(SP.PropertySubject, results);
-            addTriplePatterns(SP.PropertyPredicate, results);
-            addTriplePatterns(SP.PropertyObject, results);
-            return results;
-        }
-
-
-        public bool isBlankNodeVar()
-        {
-            var name = getName();
-            if (name != null)
-            {
-                return name.StartsWith("?");
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-
-        override public void Print(ISparqlPrinter p)
-        {
-            var name = getName();
-            if (name.StartsWith("?"))
-            {
-                p.print("_:");
-                p.print(name.Substring(1));
-            }
-            else
-            {
-                p.printVariable(name);
-            }
-        }
-
-
     }
+
+
+    private void addTriplePatterns(INode predicate, HashSet<ITriplePattern> results)
+    {
+        IEnumerator<Triple> it = getModel().GetTriplesWithPredicateObject(predicate, this).GetEnumerator();
+        while (it.MoveNext())
+        {
+            IResource subject = Resource.Get(it.Current.Subject, Graph, getModel());
+            results.Add((TriplePatternImpl)subject.As(typeof(TriplePatternImpl)));
+        }
+    }
+
+
+    public String getName()
+    {
+        return getString(SP.PropertyVarName);
+    }
+
+
+    public HashSet<ITriplePattern> getTriplePatterns()
+    {
+        var results = new HashSet<ITriplePattern>();
+        addTriplePatterns(SP.PropertySubject, results);
+        addTriplePatterns(SP.PropertyPredicate, results);
+        addTriplePatterns(SP.PropertyObject, results);
+        return results;
+    }
+
+
+    public bool isBlankNodeVar()
+    {
+        var name = getName();
+        if (name != null)
+        {
+            return name.StartsWith("?");
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    override public void Print(ISparqlPrinter p)
+    {
+        var name = getName();
+        if (name.StartsWith("?"))
+        {
+            p.print("_:");
+            p.print(name.Substring(1));
+        }
+        else
+        {
+            p.printVariable(name);
+        }
+    }
+
+
 }

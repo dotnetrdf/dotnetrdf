@@ -31,50 +31,49 @@ using VDS.RDF.Query.Spin.LibraryOntology;
  *******************************************************************************/
 using VDS.RDF.Query.Spin.SparqlUtil;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class FilterImpl : ElementImpl, IFilter
 {
-    internal class FilterImpl : ElementImpl, IFilter
+
+    public FilterImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
-
-        public FilterImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
-        }
-
-
-        public IResource getExpression()
-        {
-            IResource expr = getObject(SP.PropertyExpression);
-            if (expr != null)
-            {
-                return SPINFactory.asExpression(expr);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-
-        override public void Print(ISparqlPrinter context)
-        {
-            context.printKeyword("FILTER");
-            context.print(" ");
-            IResource expression = getExpression();
-            if (expression == null)
-            {
-                context.print("<Exception: Missing expression>");
-            }
-            else
-            {
-                printNestedExpressionString(context, expression, true);
-            }
-        }
-
-
-        //override public void visit(IElementVisitor visitor)
-        //{
-        //    visitor.visit(this);
-        //}
     }
+
+
+    public IResource getExpression()
+    {
+        IResource expr = getObject(SP.PropertyExpression);
+        if (expr != null)
+        {
+            return SPINFactory.asExpression(expr);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    override public void Print(ISparqlPrinter context)
+    {
+        context.printKeyword("FILTER");
+        context.print(" ");
+        IResource expression = getExpression();
+        if (expression == null)
+        {
+            context.print("<Exception: Missing expression>");
+        }
+        else
+        {
+            printNestedExpressionString(context, expression, true);
+        }
+    }
+
+
+    //override public void visit(IElementVisitor visitor)
+    //{
+    //    visitor.visit(this);
+    //}
 }

@@ -24,23 +24,22 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Builder.Expressions
-{
-    /// <summary>
-    /// Represents a SPARQL expression (variable, function, operator, term or aggregate).
-    /// </summary>
-#pragma warning disable 660,661
-    public abstract class PrimaryExpression<TExpression>
-#pragma warning restore 660,661
-    {
-        internal PrimaryExpression(TExpression expression)
-        {
-            Expression = expression;
-        }
+namespace VDS.RDF.Query.Builder.Expressions;
 
-        /// <summary>
-        /// The undelrying expression.
-        /// </summary>
-        public TExpression Expression { get; set; }
+/// <summary>
+/// Represents a SPARQL expression (variable, function, operator, term or aggregate).
+/// </summary>
+#pragma warning disable 660,661
+public abstract class PrimaryExpression<TExpression>
+#pragma warning restore 660,661
+{
+    internal PrimaryExpression(TExpression expression)
+    {
+        Expression = expression;
     }
+
+    /// <summary>
+    /// The undelrying expression.
+    /// </summary>
+    public TExpression Expression { get; set; }
 }

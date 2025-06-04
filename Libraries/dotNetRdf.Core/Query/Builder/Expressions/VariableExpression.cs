@@ -26,47 +26,46 @@
 
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Builder.Expressions
-{
+namespace VDS.RDF.Query.Builder.Expressions;
+
 #pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-    /// <summary>
-    /// Represents an expression, which evaluates to a variable.
-    /// </summary>
-    public partial class VariableExpression : SparqlExpression
+/// <summary>
+/// Represents an expression, which evaluates to a variable.
+/// </summary>
+public partial class VariableExpression : SparqlExpression
 #pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
 #pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+{
+    internal VariableExpression(string variable)
+        : base(new VariableTerm(variable))
     {
-        internal VariableExpression(string variable)
-            : base(new VariableTerm(variable))
-        {
-        }
+    }
 
-        /// <summary>
-        /// Gets the <see cref="VariableTerm"/> represented by this variable expression.
-        /// </summary>
-        public new VariableTerm Expression => (VariableTerm)base.Expression;
+    /// <summary>
+    /// Gets the <see cref="VariableTerm"/> represented by this variable expression.
+    /// </summary>
+    public new VariableTerm Expression => (VariableTerm)base.Expression;
 
 #pragma warning disable 1591
-        public static BooleanExpression operator >(VariableExpression left, VariableExpression right)
-        {
-            return Gt(left.Expression, right.Expression);
-        }
-
-        public static BooleanExpression operator <(VariableExpression left, VariableExpression right)
-        {
-            return Lt(left.Expression, right.Expression);
-        }
-
-        public static BooleanExpression operator >=(VariableExpression left, VariableExpression right)
-        {
-            return Ge(left.Expression, right.Expression);
-        }
-
-        public static BooleanExpression operator <=(VariableExpression left, VariableExpression right)
-        {
-            return Le(left.Expression, right.Expression);
-        }
-#pragma warning restore 1591
+    public static BooleanExpression operator >(VariableExpression left, VariableExpression right)
+    {
+        return Gt(left.Expression, right.Expression);
     }
+
+    public static BooleanExpression operator <(VariableExpression left, VariableExpression right)
+    {
+        return Lt(left.Expression, right.Expression);
+    }
+
+    public static BooleanExpression operator >=(VariableExpression left, VariableExpression right)
+    {
+        return Ge(left.Expression, right.Expression);
+    }
+
+    public static BooleanExpression operator <=(VariableExpression left, VariableExpression right)
+    {
+        return Le(left.Expression, right.Expression);
+    }
+#pragma warning restore 1591
 }

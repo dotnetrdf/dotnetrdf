@@ -29,37 +29,36 @@ using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 
-namespace VDS.RDF.Utils.Describe
+namespace VDS.RDF.Utils.Describe;
+
+/// <summary>
+/// Computes a Description for all the results such that the description is the merge of all the Graphs named with a resulting URI.
+/// </summary>
+public class NamedGraphDescription 
+    : BaseDescribeAlgorithm
 {
     /// <summary>
-    /// Computes a Description for all the results such that the description is the merge of all the Graphs named with a resulting URI.
+    /// Generates the Description for each of the Nodes to be described.
     /// </summary>
-    public class NamedGraphDescription 
-        : BaseDescribeAlgorithm
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="dataset">The dataset to extract descriptions from.</param>
+    /// <param name="nodes">Nodes to be described.</param>
+    protected override void DescribeInternal(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes)
     {
-        /// <summary>
-        /// Generates the Description for each of the Nodes to be described.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="dataset">The dataset to extract descriptions from.</param>
-        /// <param name="nodes">Nodes to be described.</param>
-        protected override void DescribeInternal(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes)
-        {
-            // Rewrite Blank Node IDs for DESCRIBE Results
-            var bnodeMapping = new Dictionary<string, INode>();
+        // Rewrite Blank Node IDs for DESCRIBE Results
+        var bnodeMapping = new Dictionary<string, INode>();
 
-            if (dataset is ISparqlDataset sparqlDataset)
+        if (dataset is ISparqlDataset sparqlDataset)
+        {
+            foreach (INode n in nodes)
             {
-                foreach (INode n in nodes)
+                if (n.NodeType is NodeType.Uri or NodeType.Blank)
                 {
-                    if (n.NodeType is NodeType.Uri or NodeType.Blank)
+                    IGraph g = sparqlDataset[(IRefNode)n];
+                    foreach (Triple t in g.Triples.ToList())
                     {
-                        IGraph g = sparqlDataset[(IRefNode)n];
-                        foreach (Triple t in g.Triples.ToList())
-                        {
-                            if (!handler.HandleTriple(RewriteDescribeBNodes(t, bnodeMapping, handler)))
-                                ParserHelper.Stop();
-                        }
+                        if (!handler.HandleTriple(RewriteDescribeBNodes(t, bnodeMapping, handler)))
+                            ParserHelper.Stop();
                     }
                 }
             }

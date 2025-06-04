@@ -24,17 +24,16 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Inference
+namespace VDS.RDF.Query.Spin.Inference;
+
+/// <summary>
+/// Provides extensions to the SpinWrappedDataset class to process SPIN Rules
+/// </summary>
+public static class InferenceExtensions
 {
-    /// <summary>
-    /// Provides extensions to the SpinWrappedDataset class to process SPIN Rules
-    /// </summary>
-    public static class InferenceExtensions
-    {
 
-        //public static void ApplyRules(this SpinWrappedDataset dataset)
-        //{
-        //}
+    //public static void ApplyRules(this SpinWrappedDataset dataset)
+    //{
+    //}
 
-    }
 }

@@ -34,50 +34,49 @@ using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+
+public class SparqlQueryTests
 {
-
-    public class SparqlQueryTests
+    [Fact]
+    public void SparqlFilterShouldGetPlaced()
     {
-        [Fact]
-        public void SparqlFilterShouldGetPlaced()
-        {
-            // given
-            var query = new SparqlQuery { QueryType = SparqlQueryType.SelectDistinct };
-            query.AddVariable(new SparqlVariable("s", true));
-            query.RootGraphPattern = new GraphPattern();
-            var subj = new VariablePattern("s");
-            var rdfType = new NodeMatchPattern(new UriNode(new Uri(RdfSpecsHelper.RdfType)));
-            var type = new VariablePattern("type");
-            var triplePattern = new TriplePattern(subj, rdfType, type);
-            query.RootGraphPattern.AddTriplePattern(triplePattern);
-            query.RootGraphPattern.AddFilter(new UnaryExpressionFilter(new InFunction(new VariableTerm("type"), new[]
-                {
-                    new ConstantTerm(new UriNode(new Uri("http://example.com/Type1"))), 
-                    new ConstantTerm(new UriNode(new Uri("http://example.com/Type2"))), 
-                    new ConstantTerm(new UriNode(new Uri("http://example.com/Type3")))
-                })));
+        // given
+        var query = new SparqlQuery { QueryType = SparqlQueryType.SelectDistinct };
+        query.AddVariable(new SparqlVariable("s", true));
+        query.RootGraphPattern = new GraphPattern();
+        var subj = new VariablePattern("s");
+        var rdfType = new NodeMatchPattern(new UriNode(new Uri(RdfSpecsHelper.RdfType)));
+        var type = new VariablePattern("type");
+        var triplePattern = new TriplePattern(subj, rdfType, type);
+        query.RootGraphPattern.AddTriplePattern(triplePattern);
+        query.RootGraphPattern.AddFilter(new UnaryExpressionFilter(new InFunction(new VariableTerm("type"), new[]
+            {
+                new ConstantTerm(new UriNode(new Uri("http://example.com/Type1"))), 
+                new ConstantTerm(new UriNode(new Uri("http://example.com/Type2"))), 
+                new ConstantTerm(new UriNode(new Uri("http://example.com/Type3")))
+            })));
 
-            // when
-            var algebra = (Distinct)query.ToAlgebra();
+        // when
+        var algebra = (Distinct)query.ToAlgebra();
 
-            // then
-            Assert.True(algebra.InnerAlgebra is Select);
-            Assert.True(((Select)algebra.InnerAlgebra).InnerAlgebra is Filter);
-        }
+        // then
+        Assert.True(algebra.InnerAlgebra is Select);
+        Assert.True(((Select)algebra.InnerAlgebra).InnerAlgebra is Filter);
+    }
 
-        [Fact]
-        public void SparqlJoinExplosion()
-        {
-            IGraph g = new Graph();
-            g.LoadFromFile(Path.Combine("resources", "LearningStyles.rdf"));
-            SparqlQuery query = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "learning-problem.rq"));
+    [Fact]
+    public void SparqlJoinExplosion()
+    {
+        IGraph g = new Graph();
+        g.LoadFromFile(Path.Combine("resources", "LearningStyles.rdf"));
+        SparqlQuery query = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "learning-problem.rq"));
 
-            var processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
-            var results = processor.ProcessQuery(query) as SparqlResultSet;
-            Assert.NotNull(results);
-            Assert.False(results.IsEmpty);
-            Assert.Equal(176, results.Count);
-        }
+        var processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
+        var results = processor.ProcessQuery(query) as SparqlResultSet;
+        Assert.NotNull(results);
+        Assert.False(results.IsEmpty);
+        Assert.Equal(176, results.Count);
     }
 }

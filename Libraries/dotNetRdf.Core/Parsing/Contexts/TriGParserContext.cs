@@ -27,139 +27,138 @@
 using System;
 using VDS.RDF.Parsing.Tokens;
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing.Contexts;
+
+/// <summary>
+/// Parser Context class for TriG Parsers.
+/// </summary>
+public class TriGParserContext 
+    : TokenisingStoreParserContext
 {
+    private bool _defaultGraphExists = false;
+
     /// <summary>
-    /// Parser Context class for TriG Parsers.
+    /// Creates a new TriG Parser Context with default settings.
     /// </summary>
-    public class TriGParserContext 
-        : TokenisingStoreParserContext
+    /// <param name="store">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    public TriGParserContext(ITripleStore store, ITokeniser tokeniser)
+        : base(store,tokeniser) { }
+
+    /// <summary>
+    /// Creates a new TrigG Parser Context with custom settings.
+    /// </summary>
+    /// <param name="store">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    /// <param name="queueMode">Tokeniser Queue Mode.</param>
+    public TriGParserContext(ITripleStore store, ITokeniser tokeniser, TokenQueueMode queueMode)
+        : base(store, tokeniser, queueMode) { }
+
+    /// <summary>
+    /// Creates a new TriG Parser Context with custom settings.
+    /// </summary>
+    /// <param name="store">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+    public TriGParserContext(ITripleStore store, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
+        : this(store, tokeniser, TokenQueueMode.SynchronousBufferDuringParsing, traceParsing, traceTokeniser) { }
+
+    /// <summary>
+    /// Creates a new TriG Parser Context with custom settings.
+    /// </summary>
+    /// <param name="store">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    /// <param name="queueMode">Tokeniser Queue Mode.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+    public TriGParserContext(ITripleStore store, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
+        : base(store, tokeniser, queueMode, traceParsing, traceTokeniser) { }
+
+    /// <summary>
+    /// Creates a new TriG Parser Context with default settings.
+    /// </summary>
+    /// <param name="handler">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser)
+        : base(handler, tokeniser) { }
+
+    /// <summary>
+    /// Creates a new TrigG Parser Context with custom settings.
+    /// </summary>
+    /// <param name="handler">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    /// <param name="queueMode">Tokeniser Queue Mode.</param>
+    public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode)
+        : base(handler, tokeniser, queueMode) { }
+
+    /// <summary>
+    /// Creates a new TriG Parser Context with custom settings.
+    /// </summary>
+    /// <param name="handler">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+    public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
+        : this(handler, tokeniser, TokenQueueMode.SynchronousBufferDuringParsing, traceParsing, traceTokeniser) { }
+
+    /// <summary>
+    /// Creates a new TriG Parser Context with custom settings.
+    /// </summary>
+    /// <param name="handler">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    /// <param name="queueMode">Tokeniser Queue Mode.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+    public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
+        : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser) { }
+
+    /// <summary>
+    /// Creates a new TriG Parser Context with custom settings.
+    /// </summary>
+    /// <param name="handler">Store to parse into.</param>
+    /// <param name="tokeniser">Tokeniser to use.</param>
+    /// <param name="queueMode">Tokeniser Queue Mode.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+    /// <param name="uriFactory">URI factory to use.</param>
+    public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory)
+        : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser, uriFactory) { }
+
+    /// <summary>
+    /// Gets/Sets whether the Default Graph exists.
+    /// </summary>
+    public bool DefaultGraphExists
     {
-        private bool _defaultGraphExists = false;
-
-        /// <summary>
-        /// Creates a new TriG Parser Context with default settings.
-        /// </summary>
-        /// <param name="store">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        public TriGParserContext(ITripleStore store, ITokeniser tokeniser)
-            : base(store,tokeniser) { }
-
-        /// <summary>
-        /// Creates a new TrigG Parser Context with custom settings.
-        /// </summary>
-        /// <param name="store">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        /// <param name="queueMode">Tokeniser Queue Mode.</param>
-        public TriGParserContext(ITripleStore store, ITokeniser tokeniser, TokenQueueMode queueMode)
-            : base(store, tokeniser, queueMode) { }
-
-        /// <summary>
-        /// Creates a new TriG Parser Context with custom settings.
-        /// </summary>
-        /// <param name="store">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        public TriGParserContext(ITripleStore store, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
-            : this(store, tokeniser, TokenQueueMode.SynchronousBufferDuringParsing, traceParsing, traceTokeniser) { }
-
-        /// <summary>
-        /// Creates a new TriG Parser Context with custom settings.
-        /// </summary>
-        /// <param name="store">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        /// <param name="queueMode">Tokeniser Queue Mode.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        public TriGParserContext(ITripleStore store, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            : base(store, tokeniser, queueMode, traceParsing, traceTokeniser) { }
-
-        /// <summary>
-        /// Creates a new TriG Parser Context with default settings.
-        /// </summary>
-        /// <param name="handler">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser)
-            : base(handler, tokeniser) { }
-
-        /// <summary>
-        /// Creates a new TrigG Parser Context with custom settings.
-        /// </summary>
-        /// <param name="handler">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        /// <param name="queueMode">Tokeniser Queue Mode.</param>
-        public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode)
-            : base(handler, tokeniser, queueMode) { }
-
-        /// <summary>
-        /// Creates a new TriG Parser Context with custom settings.
-        /// </summary>
-        /// <param name="handler">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
-            : this(handler, tokeniser, TokenQueueMode.SynchronousBufferDuringParsing, traceParsing, traceTokeniser) { }
-
-        /// <summary>
-        /// Creates a new TriG Parser Context with custom settings.
-        /// </summary>
-        /// <param name="handler">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        /// <param name="queueMode">Tokeniser Queue Mode.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser) { }
-
-        /// <summary>
-        /// Creates a new TriG Parser Context with custom settings.
-        /// </summary>
-        /// <param name="handler">Store to parse into.</param>
-        /// <param name="tokeniser">Tokeniser to use.</param>
-        /// <param name="queueMode">Tokeniser Queue Mode.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        /// <param name="uriFactory">URI factory to use.</param>
-        public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory)
-            : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser, uriFactory) { }
-
-        /// <summary>
-        /// Gets/Sets whether the Default Graph exists.
-        /// </summary>
-        public bool DefaultGraphExists
+        get
         {
-            get
+            return _defaultGraphExists;
+        }
+        set
+        {
+            if (!_defaultGraphExists && value)
             {
-                return _defaultGraphExists;
-            }
-            set
-            {
-                if (!_defaultGraphExists && value)
-                {
-                    _defaultGraphExists = value;
-                }
+                _defaultGraphExists = value;
             }
         }
+    }
 
-        /// <summary>
-        /// Gets/Sets the Syntax to be used.
-        /// </summary>
-        public TriGSyntax Syntax { get; set; } = TriGSyntax.MemberSubmission;
+    /// <summary>
+    /// Gets/Sets the Syntax to be used.
+    /// </summary>
+    public TriGSyntax Syntax { get; set; } = TriGSyntax.MemberSubmission;
 
-        /// <summary>
-        /// Function for unescaping QNames.
-        /// </summary>
-        public Func<string, string> QNameUnescapeFunction
+    /// <summary>
+    /// Function for unescaping QNames.
+    /// </summary>
+    public Func<string, string> QNameUnescapeFunction
+    {
+        get
         {
-            get
+            switch (Syntax)
             {
-                switch (Syntax)
-                {
-                    default:
-                        return TurtleSpecsHelper.UnescapeQName;
-                }
+                default:
+                    return TurtleSpecsHelper.UnescapeQName;
             }
         }
     }

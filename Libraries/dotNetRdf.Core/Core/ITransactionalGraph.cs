@@ -24,22 +24,21 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface for RDF Graphs which provide Transactions i.e. changes to them can be Flushed (committed) or Discard (rolled back) as desired.
+/// </summary>
+public interface ITransactionalGraph
+    : IGraph
 {
     /// <summary>
-    /// Interface for RDF Graphs which provide Transactions i.e. changes to them can be Flushed (committed) or Discard (rolled back) as desired.
+    /// Flushes any changes to the Graph.
     /// </summary>
-    public interface ITransactionalGraph
-        : IGraph
-    {
-        /// <summary>
-        /// Flushes any changes to the Graph.
-        /// </summary>
-        void Flush();
+    void Flush();
 
-        /// <summary>
-        /// Discards any changes to the Graph.
-        /// </summary>
-        void Discard();
-    }
+    /// <summary>
+    /// Discards any changes to the Graph.
+    /// </summary>
+    void Discard();
 }
