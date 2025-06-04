@@ -29,25 +29,24 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal abstract class PropertyCompare : Compare
 {
-    internal abstract class PropertyCompare : Compare
+    [DebuggerStepThrough]
+    internal PropertyCompare(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal PropertyCompare(Shape shape, INode node)
-            : base(shape, node)
-        {
-        }
+    }
 
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            IEnumerable<INode> invalidValues =
-                from valueNode in valueNodes
-                from value in this.ObjectsOf(focusNode, dataGraph)
-                where !IsValid(valueNode, value)
-                select valueNode;
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        IEnumerable<INode> invalidValues =
+            from valueNode in valueNodes
+            from value in this.ObjectsOf(focusNode, dataGraph)
+            where !IsValid(valueNode, value)
+            select valueNode;
 
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
+        return ReportValueNodes(focusNode, invalidValues, report);
     }
 }

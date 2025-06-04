@@ -32,254 +32,253 @@ using System.Linq;
 using System.Linq.Expressions;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+/// <summary>
+/// Provides read/write dictionary and dynamic functionality for <see cref="SparqlResult">SPARQL results</see>.
+/// </summary>
+public class DynamicSparqlResult : IDictionary<string, object>, IDynamicMetaObjectProvider
 {
+    private readonly ISparqlResult original;
+
     /// <summary>
-    /// Provides read/write dictionary and dynamic functionality for <see cref="SparqlResult">SPARQL results</see>.
+    /// Initializes a new instance of the <see cref="DynamicSparqlResult"/> class.
     /// </summary>
-    public class DynamicSparqlResult : IDictionary<string, object>, IDynamicMetaObjectProvider
+    /// <param name="original">The SPARQL result to wrap.</param>
+    /// <exception cref="ArgumentNullException">When <paramref name="original"/> is null.</exception>
+    public DynamicSparqlResult(ISparqlResult original)
     {
-        private readonly ISparqlResult original;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DynamicSparqlResult"/> class.
-        /// </summary>
-        /// <param name="original">The SPARQL result to wrap.</param>
-        /// <exception cref="ArgumentNullException">When <paramref name="original"/> is null.</exception>
-        public DynamicSparqlResult(ISparqlResult original)
+        if (original is null)
         {
-            if (original is null)
-            {
-                throw new ArgumentNullException(nameof(original));
-            }
-
-            this.original = original;
+            throw new ArgumentNullException(nameof(original));
         }
 
-        /// <summary>
-        /// Gets or sets values equivalent to bindings in the result.
-        /// </summary>
-        /// <param name="variable"></param>
-        /// <returns>The binding converted to a native object.</returns>
-        /// <exception cref="ArgumentNullException">When <paramref name="variable"/> is null.</exception>
-        public object this[string variable]
-        {
-            get
-            {
-                if (variable is null)
-                {
-                    throw new ArgumentNullException(nameof(variable));
-                }
+        this.original = original;
+    }
 
-                return original[variable].AsObject();
-            }
-            
-            set
-            {
-                if (variable is null)
-                {
-                    throw new ArgumentNullException(nameof(variable));
-                }
-
-                original.SetValue(variable, value.AsNode());
-            }
-            
-        }
-
-        /// <summary>
-        /// Gets the variable names in the SPARQL result.
-        /// </summary>
-        public ICollection<string> Keys
-        {
-            get
-            {
-                return (ICollection<string>)original.Variables;
-            }
-        }
-
-        /// <summary>
-        /// Gets native values equivalent to bindings in the result.
-        /// </summary>
-        public ICollection<object> Values
-        {
-            get
-            {
-                return original.Select(result => result.Value.AsObject()).ToList();
-            }
-        }
-
-        /// <summary>
-        /// Gets the number of variables in the result.
-        /// </summary>
-        public int Count
-        {
-            get
-            {
-                return original.Count;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether this SPARQL result dictionary is read only (always false).
-        /// </summary>
-        public bool IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Binds a variable to a node equivalent to <paramref name="value"/>.
-        /// </summary>
-        /// <param name="variable">The name of the variable to bind.</param>
-        /// <param name="value">An object that is converted to an equivalent node and bound to the variable.</param>
-        /// <exception cref="ArgumentNullException">When <paramref name="variable"/> is null.</exception>
-        public void Add(string variable, object value)
+    /// <summary>
+    /// Gets or sets values equivalent to bindings in the result.
+    /// </summary>
+    /// <param name="variable"></param>
+    /// <returns>The binding converted to a native object.</returns>
+    /// <exception cref="ArgumentNullException">When <paramref name="variable"/> is null.</exception>
+    public object this[string variable]
+    {
+        get
         {
             if (variable is null)
             {
                 throw new ArgumentNullException(nameof(variable));
             }
 
-            this[variable] = value.AsNode();
+            return original[variable].AsObject();
         }
-
-        /// <inheritdoc/>
-        void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item)
-        {
-            Add(item.Key, item.Value.AsNode());
-        }
-
-        /// <summary>
-        /// Removes all variables in the result.
-        /// </summary>
-        public void Clear()
-        {
-            foreach (var variable in Keys)
-            {
-                Remove(variable);
-            }
-
-            original.Trim();
-        }
-
-        /// <inheritdoc/>
-        bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
-        {
-            if (!original.TryGetValue(item.Key, out INode value))
-            {
-                return false;
-            }
-
-            return value.Equals(item.Value.AsNode());
-        }
-
-        /// <summary>
-        /// Checks whether a variable exists in the result.
-        /// </summary>
-        /// <param name="variable">The name of the variable to check.</param>
-        /// <returns>Whether a variable exists in the result.</returns>
-        public bool ContainsKey(string variable)
+        
+        set
         {
             if (variable is null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(variable));
             }
 
-            return original.HasValue(variable);
+            original.SetValue(variable, value.AsNode());
         }
+        
+    }
 
-        /// <inheritdoc/>
-        void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
+    /// <summary>
+    /// Gets the variable names in the SPARQL result.
+    /// </summary>
+    public ICollection<string> Keys
+    {
+        get
         {
-            original.Select(pair => new KeyValuePair<string, object>(pair.Key, pair.Value.AsObject())).ToArray().CopyTo(array, arrayIndex);
+            return (ICollection<string>)original.Variables;
         }
+    }
 
-        /// <inheritdoc/>
-        IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
+    /// <summary>
+    /// Gets native values equivalent to bindings in the result.
+    /// </summary>
+    public ICollection<object> Values
+    {
+        get
         {
-            return original.Select(pair => new KeyValuePair<string, object>(pair.Key, pair.Value.AsObject())).GetEnumerator();
+            return original.Select(result => result.Value.AsObject()).ToList();
         }
+    }
 
-        /// <summary>
-        /// Unbinds a variable from the result.
-        /// </summary>
-        /// <param name="variable">The variable to unbind.</param>
-        /// <returns>Whether a variable was removed.</returns>
-        public bool Remove(string variable)
+    /// <summary>
+    /// Gets the number of variables in the result.
+    /// </summary>
+    public int Count
+    {
+        get
         {
-            if (variable is null)
-            {
-                return false;
-            }
-
-            if (!original.HasValue(variable))
-            {
-                return false;
-            }
-
-            this[variable] = null;
-            original.Trim();
-            return true;
+            return original.Count;
         }
+    }
 
-        /// <inheritdoc/>
-        bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
+    /// <summary>
+    /// Gets a value indicating whether this SPARQL result dictionary is read only (always false).
+    /// </summary>
+    public bool IsReadOnly
+    {
+        get
         {
-            if (!original.TryGetValue(item.Key, out INode value))
-            {
-                return false;
-            }
-
-            if (!value.Equals(item.Value.AsNode()))
-            {
-                return false;
-            }
-
-            this[item.Key] = null;
-            original.Trim();
-            return true;
+            return false;
         }
+    }
 
-        /// <summary>
-        /// Tries to get a native value equivalent to a binding from the result.
-        /// </summary>
-        /// <param name="variable">The name of the variable to try.</param>
-        /// <param name="value">A native value equivalent to the binding.</param>
-        /// <returns>Whether <paramref name="value"/> was set.</returns>
-        public bool TryGetValue(string variable, out object value)
+    /// <summary>
+    /// Binds a variable to a node equivalent to <paramref name="value"/>.
+    /// </summary>
+    /// <param name="variable">The name of the variable to bind.</param>
+    /// <param name="value">An object that is converted to an equivalent node and bound to the variable.</param>
+    /// <exception cref="ArgumentNullException">When <paramref name="variable"/> is null.</exception>
+    public void Add(string variable, object value)
+    {
+        if (variable is null)
         {
-            value = null;
-
-            if (variable is null)
-            {
-                return false;
-            }
-
-            if (!original.TryGetValue(variable, out INode originalValue))
-            {
-                return false;
-            }
-
-            value = originalValue.AsObject();
-            return true;
+            throw new ArgumentNullException(nameof(variable));
         }
 
-        /// <summary>
-        /// Returns an enumerator that iterates through pairs of variable names and native values equivalent to bindings in the result.
-        /// </summary>
-        /// <returns>An enumerator that iterates through pairs of variable names and native values equivalent to bindings in the result.</returns>
-        public IEnumerator GetEnumerator()
+        this[variable] = value.AsNode();
+    }
+
+    /// <inheritdoc/>
+    void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item)
+    {
+        Add(item.Key, item.Value.AsNode());
+    }
+
+    /// <summary>
+    /// Removes all variables in the result.
+    /// </summary>
+    public void Clear()
+    {
+        foreach (var variable in Keys)
         {
-            return ((IEnumerable<KeyValuePair<string, object>>)this).GetEnumerator();
+            Remove(variable);
         }
 
-        /// <inheritdoc/>
-        DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
+        original.Trim();
+    }
+
+    /// <inheritdoc/>
+    bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
+    {
+        if (!original.TryGetValue(item.Key, out INode value))
         {
-            return new DictionaryMetaObject(parameter, this);
+            return false;
         }
+
+        return value.Equals(item.Value.AsNode());
+    }
+
+    /// <summary>
+    /// Checks whether a variable exists in the result.
+    /// </summary>
+    /// <param name="variable">The name of the variable to check.</param>
+    /// <returns>Whether a variable exists in the result.</returns>
+    public bool ContainsKey(string variable)
+    {
+        if (variable is null)
+        {
+            return false;
+        }
+
+        return original.HasValue(variable);
+    }
+
+    /// <inheritdoc/>
+    void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
+    {
+        original.Select(pair => new KeyValuePair<string, object>(pair.Key, pair.Value.AsObject())).ToArray().CopyTo(array, arrayIndex);
+    }
+
+    /// <inheritdoc/>
+    IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
+    {
+        return original.Select(pair => new KeyValuePair<string, object>(pair.Key, pair.Value.AsObject())).GetEnumerator();
+    }
+
+    /// <summary>
+    /// Unbinds a variable from the result.
+    /// </summary>
+    /// <param name="variable">The variable to unbind.</param>
+    /// <returns>Whether a variable was removed.</returns>
+    public bool Remove(string variable)
+    {
+        if (variable is null)
+        {
+            return false;
+        }
+
+        if (!original.HasValue(variable))
+        {
+            return false;
+        }
+
+        this[variable] = null;
+        original.Trim();
+        return true;
+    }
+
+    /// <inheritdoc/>
+    bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
+    {
+        if (!original.TryGetValue(item.Key, out INode value))
+        {
+            return false;
+        }
+
+        if (!value.Equals(item.Value.AsNode()))
+        {
+            return false;
+        }
+
+        this[item.Key] = null;
+        original.Trim();
+        return true;
+    }
+
+    /// <summary>
+    /// Tries to get a native value equivalent to a binding from the result.
+    /// </summary>
+    /// <param name="variable">The name of the variable to try.</param>
+    /// <param name="value">A native value equivalent to the binding.</param>
+    /// <returns>Whether <paramref name="value"/> was set.</returns>
+    public bool TryGetValue(string variable, out object value)
+    {
+        value = null;
+
+        if (variable is null)
+        {
+            return false;
+        }
+
+        if (!original.TryGetValue(variable, out INode originalValue))
+        {
+            return false;
+        }
+
+        value = originalValue.AsObject();
+        return true;
+    }
+
+    /// <summary>
+    /// Returns an enumerator that iterates through pairs of variable names and native values equivalent to bindings in the result.
+    /// </summary>
+    /// <returns>An enumerator that iterates through pairs of variable names and native values equivalent to bindings in the result.</returns>
+    public IEnumerator GetEnumerator()
+    {
+        return ((IEnumerable<KeyValuePair<string, object>>)this).GetEnumerator();
+    }
+
+    /// <inheritdoc/>
+    DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
+    {
+        return new DictionaryMetaObject(parameter, this);
     }
 }

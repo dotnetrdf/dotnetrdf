@@ -31,126 +31,125 @@ using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Util;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class ValuesImpl : ElementImpl, IValues
 {
-    internal class ValuesImpl : ElementImpl, IValues
+
+    public ValuesImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
 
-        public ValuesImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
+    }
+
+
+    public List<Dictionary<String, IResource>> getBindings()
+    {
+        List<String> varNames = getVarNames();
+        var bindings = new List<Dictionary<String, IResource>>();
+        List<IResource> outerList = getResource(SP.PropertyBindings).AsList();
+        if (outerList != null)
         {
-
-        }
-
-
-        public List<Dictionary<String, IResource>> getBindings()
-        {
-            List<String> varNames = getVarNames();
-            var bindings = new List<Dictionary<String, IResource>>();
-            List<IResource> outerList = getResource(SP.PropertyBindings).AsList();
-            if (outerList != null)
+            foreach (IResource innerList in outerList)
             {
-                foreach (IResource innerList in outerList)
+                var binding = new Dictionary<String, IResource>();
+                bindings.Add(binding);
+                IEnumerator<String> vars = varNames.GetEnumerator();
+                IEnumerator<IResource> values = innerList.AsList().GetEnumerator();
+                while (vars.MoveNext())
                 {
-                    var binding = new Dictionary<String, IResource>();
-                    bindings.Add(binding);
-                    IEnumerator<String> vars = varNames.GetEnumerator();
-                    IEnumerator<IResource> values = innerList.AsList().GetEnumerator();
-                    while (vars.MoveNext())
+                    var varName = vars.Current;
+                    IResource value = values.Current;
+                    if (!RDFUtil.sameTerm(SP.ClassPropertyUndef, value))
                     {
-                        var varName = vars.Current;
-                        IResource value = values.Current;
-                        if (!RDFUtil.sameTerm(SP.ClassPropertyUndef, value))
-                        {
-                            binding.Add(varName, value);
-                        }
+                        binding.Add(varName, value);
                     }
                 }
             }
-            return bindings;
         }
+        return bindings;
+    }
 
 
-        public List<String> getVarNames()
+    public List<String> getVarNames()
+    {
+        var results = new List<String>();
+        List<IResource> list = getResource(SP.PropertyVarNames).AsList();
+        foreach (IResource member in list)
         {
-            var results = new List<String>();
-            List<IResource> list = getResource(SP.PropertyVarNames).AsList();
-            foreach (IResource member in list)
-            {
-                results.Add(((IValuedNode)member.getSource()).AsString());
-            }
-            return results;
+            results.Add(((IValuedNode)member.getSource()).AsString());
         }
+        return results;
+    }
 
 
-        override public void Print(ISparqlPrinter p)
+    override public void Print(ISparqlPrinter p)
+    {
+        p.printKeyword("VALUES");
+        p.print(" ");
+        List<String> varNames = getVarNames();
+        if (varNames.Count == 1)
         {
-            p.printKeyword("VALUES");
-            p.print(" ");
-            List<String> varNames = getVarNames();
-            if (varNames.Count == 1)
+            p.printVariable(varNames[0]);
+        }
+        else
+        {
+            p.print("(");
+            IEnumerator<String> vit = varNames.GetEnumerator();
+            while (vit.MoveNext())
             {
-                p.printVariable(varNames[0]);
+                p.printVariable(vit.Current);
+                if (vit.MoveNext())
+                {
+                    p.print(" ");
+                }
             }
-            else
+            p.print(")");
+        }
+        p.print(" {");
+        p.println();
+        foreach (Dictionary<String, IResource> binding in getBindings())
+        {
+            p.printIndentation(p.getIndentation() + 1);
+            if (varNames.Count != 1)
             {
                 p.print("(");
-                IEnumerator<String> vit = varNames.GetEnumerator();
-                while (vit.MoveNext())
+            }
+            IEnumerator<String> vit = varNames.GetEnumerator();
+            while (vit.MoveNext())
+            {
+                var varName = vit.Current;
+                IResource value = binding[varName];
+                if (value == null)
                 {
-                    p.printVariable(vit.Current);
-                    if (vit.MoveNext())
-                    {
-                        p.print(" ");
-                    }
+                    p.printKeyword("UNDEF");
                 }
+                else if (value.isUri())
+                {
+                    p.printURIResource(value);
+                }
+                else
+                {
+                    TupleImpl.print(getModel(), Resource.Get(value, Graph, getModel()), p);
+                }
+                if (vit.MoveNext())
+                {
+                    p.print(" ");
+                }
+            }
+            if (varNames.Count != 1)
+            {
                 p.print(")");
             }
-            p.print(" {");
             p.println();
-            foreach (Dictionary<String, IResource> binding in getBindings())
-            {
-                p.printIndentation(p.getIndentation() + 1);
-                if (varNames.Count != 1)
-                {
-                    p.print("(");
-                }
-                IEnumerator<String> vit = varNames.GetEnumerator();
-                while (vit.MoveNext())
-                {
-                    var varName = vit.Current;
-                    IResource value = binding[varName];
-                    if (value == null)
-                    {
-                        p.printKeyword("UNDEF");
-                    }
-                    else if (value.isUri())
-                    {
-                        p.printURIResource(value);
-                    }
-                    else
-                    {
-                        TupleImpl.print(getModel(), Resource.Get(value, Graph, getModel()), p);
-                    }
-                    if (vit.MoveNext())
-                    {
-                        p.print(" ");
-                    }
-                }
-                if (varNames.Count != 1)
-                {
-                    p.print(")");
-                }
-                p.println();
-            }
-            p.printIndentation(p.getIndentation());
-            p.print("}");
         }
-
-
-        //override public void visit(IElementVisitor visitor)
-        //{
-        //    visitor.visit(this);
-        //}
+        p.printIndentation(p.getIndentation());
+        p.print("}");
     }
+
+
+    //override public void visit(IElementVisitor visitor)
+    //{
+    //    visitor.visit(this);
+    //}
 }

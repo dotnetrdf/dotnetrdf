@@ -27,45 +27,44 @@
 using System;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.String;
+
+/// <summary>
+/// Represents the SPARQL UUID Function.
+/// </summary>
+public class UUIDFunction
+    : BaseUUIDFunction
 {
     /// <summary>
-    /// Represents the SPARQL UUID Function.
+    /// Evaluates the function by generating the URN UUID form based on the given UUID.
     /// </summary>
-    public class UUIDFunction
-        : BaseUUIDFunction
+    /// <param name="uuid">UUID.</param>
+    /// <returns></returns>
+    protected override IValuedNode EvaluateInternal(Guid uuid)
     {
-        /// <summary>
-        /// Evaluates the function by generating the URN UUID form based on the given UUID.
-        /// </summary>
-        /// <param name="uuid">UUID.</param>
-        /// <returns></returns>
-        protected override IValuedNode EvaluateInternal(Guid uuid)
-        {
-            return new UriNode(new Uri("urn:uuid:" + uuid));
-        }
+        return new UriNode(new Uri("urn:uuid:" + uuid));
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessUuidFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessUuidFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitUuidFunction(this);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitUuidFunction(this);
+    }
 
-        /// <summary>
-        /// Gets the functor for the expression.
-        /// </summary>
-        public override string Functor => SparqlSpecsHelper.SparqlKeywordUUID;
+    /// <summary>
+    /// Gets the functor for the expression.
+    /// </summary>
+    public override string Functor => SparqlSpecsHelper.SparqlKeywordUUID;
 
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordUUID + "()";
-        }
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return SparqlSpecsHelper.SparqlKeywordUUID + "()";
     }
 }

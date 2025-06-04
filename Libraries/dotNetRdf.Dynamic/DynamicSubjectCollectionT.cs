@@ -29,88 +29,87 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+/// <summary>
+/// Represents a strongly type read/write dynamic collection of subjects by predicate and object.
+/// </summary>
+/// <typeparam name="T">The type of subjects.</typeparam>
+public class DynamicSubjectCollection<T> : DynamicSubjectCollection, ICollection<T>
+    where T : INode
 {
+    private readonly IGraph _graph;
+
     /// <summary>
-    /// Represents a strongly type read/write dynamic collection of subjects by predicate and object.
+    /// Initializes a new instance of the <see cref="DynamicSubjectCollection{T}"/> class.
     /// </summary>
-    /// <typeparam name="T">The type of subjects.</typeparam>
-    public class DynamicSubjectCollection<T> : DynamicSubjectCollection, ICollection<T>
-        where T : INode
+    /// <param name="predicate">The predicate to use.</param>
+    /// <param name="object">The object to use.</param>
+    public DynamicSubjectCollection(string predicate, DynamicNode @object)
+        : base(
+            predicate.AsUriNode(@object.Graph, @object.BaseUri),
+            @object)
     {
-        private readonly IGraph _graph;
+        _graph = @object.Graph;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DynamicSubjectCollection{T}"/> class.
-        /// </summary>
-        /// <param name="predicate">The predicate to use.</param>
-        /// <param name="object">The object to use.</param>
-        public DynamicSubjectCollection(string predicate, DynamicNode @object)
-            : base(
-                predicate.AsUriNode(@object.Graph, @object.BaseUri),
-                @object)
+    /// <summary>
+    /// Asserts a statement with <paramref name="subject"/> and given predicate and object.
+    /// </summary>
+    /// <param name="subject">The subject to assert.</param>
+    public void Add(T subject)
+    {
+        base.Add(subject);
+    }
+
+    /// <summary>
+    /// Checks whether a statement exists with <paramref name="subject"/> and given predicate and object.
+    /// </summary>
+    /// <param name="subject">The subject to check.</param>
+    /// <returns>Whether a statement exists with <paramref name="subject"/> and given predicate and object.</returns>
+    public bool Contains(T subject)
+    {
+        return base.Contains(subject);
+    }
+
+    /// <summary>
+    /// Copies subjects of statements with given predicate and object to <paramref name="array"/> starting at <paramref name="index"/>.
+    /// </summary>
+    /// <param name="array">The destination of subjects copied.</param>
+    /// <param name="index">The index at which copying begins.</param>
+    /// <remarks>Nodes are wrapped in a <see cref="DynamicNode"/>.</remarks>
+    public void CopyTo(T[] array, int index)
+    {
+        Subjects.Select(Convert).ToArray().CopyTo(array, index);
+    }
+
+    /// <summary>
+    /// Retracts statements with <paramref name="subject"/> and given predicate and object.
+    /// </summary>
+    /// <param name="subject">The subject to retract.</param>
+    /// <returns>Whether any statements were retracted.</returns>
+    public bool Remove(T subject)
+    {
+        return base.Remove(subject);
+    }
+
+    /// <inheritdoc/>
+    IEnumerator<T> IEnumerable<T>.GetEnumerator()
+    {
+        return Subjects.Select(Convert).GetEnumerator();
+    }
+
+    private T Convert(INode value)
+    {
+        Type type = typeof(T);
+
+        if (type.IsSubclassOf(typeof(DynamicNode)))
         {
-            _graph = @object.Graph;
+            // TODO: Exception handling
+            ConstructorInfo ctor = type.GetConstructor(new[] { typeof(INode), typeof(IGraph) });
+            value = (DynamicNode)ctor.Invoke(new object[] { value, _graph });
         }
 
-        /// <summary>
-        /// Asserts a statement with <paramref name="subject"/> and given predicate and object.
-        /// </summary>
-        /// <param name="subject">The subject to assert.</param>
-        public void Add(T subject)
-        {
-            base.Add(subject);
-        }
-
-        /// <summary>
-        /// Checks whether a statement exists with <paramref name="subject"/> and given predicate and object.
-        /// </summary>
-        /// <param name="subject">The subject to check.</param>
-        /// <returns>Whether a statement exists with <paramref name="subject"/> and given predicate and object.</returns>
-        public bool Contains(T subject)
-        {
-            return base.Contains(subject);
-        }
-
-        /// <summary>
-        /// Copies subjects of statements with given predicate and object to <paramref name="array"/> starting at <paramref name="index"/>.
-        /// </summary>
-        /// <param name="array">The destination of subjects copied.</param>
-        /// <param name="index">The index at which copying begins.</param>
-        /// <remarks>Nodes are wrapped in a <see cref="DynamicNode"/>.</remarks>
-        public void CopyTo(T[] array, int index)
-        {
-            Subjects.Select(Convert).ToArray().CopyTo(array, index);
-        }
-
-        /// <summary>
-        /// Retracts statements with <paramref name="subject"/> and given predicate and object.
-        /// </summary>
-        /// <param name="subject">The subject to retract.</param>
-        /// <returns>Whether any statements were retracted.</returns>
-        public bool Remove(T subject)
-        {
-            return base.Remove(subject);
-        }
-
-        /// <inheritdoc/>
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
-            return Subjects.Select(Convert).GetEnumerator();
-        }
-
-        private T Convert(INode value)
-        {
-            Type type = typeof(T);
-
-            if (type.IsSubclassOf(typeof(DynamicNode)))
-            {
-                // TODO: Exception handling
-                ConstructorInfo ctor = type.GetConstructor(new[] { typeof(INode), typeof(IGraph) });
-                value = (DynamicNode)ctor.Invoke(new object[] { value, _graph });
-            }
-
-            return (T)value;
-        }
+        return (T)value;
     }
 }

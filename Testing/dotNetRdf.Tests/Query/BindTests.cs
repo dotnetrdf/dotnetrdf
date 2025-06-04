@@ -27,117 +27,116 @@ using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Query
-{
+namespace VDS.RDF.Query;
 
-    public class BindTests
+
+public class BindTests
+{
+    [Fact]
+    public void SparqlBindExistsAsChildExpression1()
     {
-        [Fact]
-        public void SparqlBindExistsAsChildExpression1()
-        {
-            var query = @"SELECT * WHERE
+        var query = @"SELECT * WHERE
 {
   ?s a ?type .
   BIND(IF(EXISTS { ?s rdfs:range ?range }, true, false) AS ?hasRange)
 }";
 
-            var queryStr = new SparqlParameterizedString(query);
-            queryStr.Namespaces.AddNamespace("rdfs", UriFactory.Root.Create(NamespaceMapper.RDFS));
+        var queryStr = new SparqlParameterizedString(query);
+        queryStr.Namespaces.AddNamespace("rdfs", UriFactory.Root.Create(NamespaceMapper.RDFS));
 
-            SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
+        SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
 
-            IGraph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        IGraph g = new Graph();
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            var results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.NotNull(results);
+        var results = g.ExecuteQuery(q) as SparqlResultSet;
+        Assert.NotNull(results);
 
-            TestTools.ShowResults(results);
+        TestTools.ShowResults(results);
 
-            Assert.True(results.All(r => r.HasBoundValue("hasRange")));
-        }
+        Assert.True(results.All(r => r.HasBoundValue("hasRange")));
+    }
 
-        [Fact]
-        public void SparqlBindExistsAsChildExpression2()
-        {
-            var query = @"SELECT * WHERE
+    [Fact]
+    public void SparqlBindExistsAsChildExpression2()
+    {
+        var query = @"SELECT * WHERE
 {
   ?s a ?type .
   BIND(IF(EXISTS { ?s rdfs:range ?range . FILTER EXISTS { ?s rdfs:domain ?domain } }, true, false) AS ?hasRangeAndDomain)
 }";
 
-            var queryStr = new SparqlParameterizedString(query);
-            queryStr.Namespaces.AddNamespace("rdfs", UriFactory.Root.Create(NamespaceMapper.RDFS));
+        var queryStr = new SparqlParameterizedString(query);
+        queryStr.Namespaces.AddNamespace("rdfs", UriFactory.Root.Create(NamespaceMapper.RDFS));
 
-            SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
+        SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
 
-            IGraph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        IGraph g = new Graph();
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            var results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.NotNull(results);
+        var results = g.ExecuteQuery(q) as SparqlResultSet;
+        Assert.NotNull(results);
 
-            TestTools.ShowResults(results);
+        TestTools.ShowResults(results);
 
-            Assert.True(results.All(r => r.HasBoundValue("hasRangeAndDomain")));
-        }
+        Assert.True(results.All(r => r.HasBoundValue("hasRangeAndDomain")));
+    }
 
-        [Fact]
-        public void SparqlBindOverEmptyFilter1()
-        {
-            var query = "SELECT * WHERE { FILTER(false). BIND('test' AS ?test) }";
-            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+    [Fact]
+    public void SparqlBindOverEmptyFilter1()
+    {
+        var query = "SELECT * WHERE { FILTER(false). BIND('test' AS ?test) }";
+        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
 
-            IGraph g = new Graph();
-            var results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.NotNull(results);
+        IGraph g = new Graph();
+        var results = g.ExecuteQuery(q) as SparqlResultSet;
+        Assert.NotNull(results);
 
-            TestTools.ShowResults(results);
-            Assert.True(results.IsEmpty);
-        }
+        TestTools.ShowResults(results);
+        Assert.True(results.IsEmpty);
+    }
 
-        [Fact]
-        public void SparqlBindOverEmptyFilter2()
-        {
-            var query = "SELECT * WHERE { FILTER(true). BIND('test' AS ?test) }";
-            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+    [Fact]
+    public void SparqlBindOverEmptyFilter2()
+    {
+        var query = "SELECT * WHERE { FILTER(true). BIND('test' AS ?test) }";
+        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
 
-            IGraph g = new Graph();
-            var results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.NotNull(results);
+        IGraph g = new Graph();
+        var results = g.ExecuteQuery(q) as SparqlResultSet;
+        Assert.NotNull(results);
 
-            TestTools.ShowResults(results);
-            Assert.False(results.IsEmpty);
-            Assert.Equal(1, results.Count);
-        }
+        TestTools.ShowResults(results);
+        Assert.False(results.IsEmpty);
+        Assert.Equal(1, results.Count);
+    }
 
-        [Fact]
-        public void SparqlBindEmpty1()
-        {
-            var query = "SELECT * WHERE { ?s ?p ?o . BIND('test' AS ?test) }";
-            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+    [Fact]
+    public void SparqlBindEmpty1()
+    {
+        var query = "SELECT * WHERE { ?s ?p ?o . BIND('test' AS ?test) }";
+        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
 
-            IGraph g = new Graph();
-            var results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.NotNull(results);
+        IGraph g = new Graph();
+        var results = g.ExecuteQuery(q) as SparqlResultSet;
+        Assert.NotNull(results);
 
-            TestTools.ShowResults(results);
-            Assert.True(results.IsEmpty);
-        }
+        TestTools.ShowResults(results);
+        Assert.True(results.IsEmpty);
+    }
 
-        [Fact]
-        public void SparqlBindEmpty2()
-        {
-            var query = "SELECT * WHERE { BIND('test' AS ?test) }";
-            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+    [Fact]
+    public void SparqlBindEmpty2()
+    {
+        var query = "SELECT * WHERE { BIND('test' AS ?test) }";
+        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
 
-            IGraph g = new Graph();
-            var results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.NotNull(results);
+        IGraph g = new Graph();
+        var results = g.ExecuteQuery(q) as SparqlResultSet;
+        Assert.NotNull(results);
 
-            TestTools.ShowResults(results);
-            Assert.False(results.IsEmpty);
-            Assert.Equal(1, results.Count);
-        }
+        TestTools.ShowResults(results);
+        Assert.False(results.IsEmpty);
+        Assert.Equal(1, results.Count);
     }
 }

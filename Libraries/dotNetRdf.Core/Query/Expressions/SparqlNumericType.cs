@@ -24,33 +24,32 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions
+namespace VDS.RDF.Query.Expressions;
+
+/// <summary>
+/// Numeric Types for Sparql Numeric Expressions.
+/// </summary>
+/// <remarks>All Numeric expressions in Sparql are typed as Integer/Decimal/Double.</remarks>
+public enum SparqlNumericType
 {
     /// <summary>
-    /// Numeric Types for Sparql Numeric Expressions.
+    /// Not a Number
     /// </summary>
-    /// <remarks>All Numeric expressions in Sparql are typed as Integer/Decimal/Double.</remarks>
-    public enum SparqlNumericType
-    {
-        /// <summary>
-        /// Not a Number
-        /// </summary>
-        NaN = -1,
-        /// <summary>
-        /// An Integer
-        /// </summary>
-        Integer = 0,
-        /// <summary>
-        /// A Decimal
-        /// </summary>
-        Decimal = 1,
-        /// <summary>
-        /// A Single precision Floating Point
-        /// </summary>
-        Float = 2,
-        /// <summary>
-        /// A Double precision Floating Point
-        /// </summary>
-        Double = 3,
-    }
+    NaN = -1,
+    /// <summary>
+    /// An Integer
+    /// </summary>
+    Integer = 0,
+    /// <summary>
+    /// A Decimal
+    /// </summary>
+    Decimal = 1,
+    /// <summary>
+    /// A Single precision Floating Point
+    /// </summary>
+    Float = 2,
+    /// <summary>
+    /// A Double precision Floating Point
+    /// </summary>
+    Double = 3,
 }

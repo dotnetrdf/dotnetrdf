@@ -24,72 +24,71 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Conditional
+namespace VDS.RDF.Query.Expressions.Conditional;
+
+/// <summary>
+/// Class representing logical Not Expressions.
+/// </summary>
+public class NotExpression
+    : BaseUnaryExpression
 {
     /// <summary>
-    /// Class representing logical Not Expressions.
+    /// Creates a new Negation Expression.
     /// </summary>
-    public class NotExpression
-        : BaseUnaryExpression
+    /// <param name="expr">Expression to Negate.</param>
+    public NotExpression(ISparqlExpression expr) 
+        : base(expr) { }
+
+    /// <summary>
+    /// Gets the String representation of this Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new Negation Expression.
-        /// </summary>
-        /// <param name="expr">Expression to Negate.</param>
-        public NotExpression(ISparqlExpression expr) 
-            : base(expr) { }
+        return "!" + InnerExpression;
+    }
 
-        /// <summary>
-        /// Gets the String representation of this Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "!" + InnerExpression;
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessNotExpression(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessNotExpression(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitNotExpression(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return visitor.VisitNotExpression(this);
+            return SparqlExpressionType.UnaryOperator;
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.UnaryOperator;
-            }
+            return "!";
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return "!";
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new NotExpression(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new NotExpression(transformer.Transform(InnerExpression));
     }
 }

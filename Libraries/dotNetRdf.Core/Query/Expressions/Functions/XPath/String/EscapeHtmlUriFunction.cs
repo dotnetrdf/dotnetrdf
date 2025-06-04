@@ -24,61 +24,60 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.String
+namespace VDS.RDF.Query.Expressions.Functions.XPath.String;
+
+/// <summary>
+/// Represents the XPath fn:escape-html-uri() function.
+/// </summary>
+public class EscapeHtmlUriFunction
+    : BaseUnaryStringFunction
 {
     /// <summary>
-    /// Represents the XPath fn:escape-html-uri() function.
+    /// Creates a new XPath Escape HTML for URI function.
     /// </summary>
-    public class EscapeHtmlUriFunction
-        : BaseUnaryStringFunction
+    /// <param name="stringExpr">Expression.</param>
+    public EscapeHtmlUriFunction(ISparqlExpression stringExpr)
+        : base(stringExpr) { }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
     {
-        /// <summary>
-        /// Creates a new XPath Escape HTML for URI function.
-        /// </summary>
-        /// <param name="stringExpr">Expression.</param>
-        public EscapeHtmlUriFunction(ISparqlExpression stringExpr)
-            : base(stringExpr) { }
+        return processor.ProcessEscapeHtmlUriFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessEscapeHtmlUriFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitEscapeHtmlUriFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitEscapeHtmlUriFunction(this);
-        }
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EscapeHtmlURI + ">(" + _expr + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EscapeHtmlURI + ">(" + _expr + ")";
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EscapeHtmlURI;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EscapeHtmlURI;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new EscapeHtmlUriFunction(transformer.Transform(_expr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new EscapeHtmlUriFunction(transformer.Transform(_expr));
     }
 }

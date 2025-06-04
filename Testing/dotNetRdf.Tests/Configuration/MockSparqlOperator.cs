@@ -26,27 +26,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Operators;
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+public class MockSparqlOperator
+    : ISparqlOperator
 {
-    public class MockSparqlOperator
-        : ISparqlOperator
+
+    #region ISparqlOperator Members
+
+    public SparqlOperatorType Operator => SparqlOperatorType.Add;
+
+    public bool IsExtension => true;
+
+    public bool IsApplicable(params IValuedNode[] ns)
     {
-
-        #region ISparqlOperator Members
-
-        public SparqlOperatorType Operator => SparqlOperatorType.Add;
-
-        public bool IsExtension => true;
-
-        public bool IsApplicable(params IValuedNode[] ns)
-        {
-            return true;
-        }
-
-        public IValuedNode Apply(params IValuedNode[] ns)
-        {
-            return null;
-        }
-        #endregion
+        return true;
     }
+
+    public IValuedNode Apply(params IValuedNode[] ns)
+    {
+        return null;
+    }
+    #endregion
 }

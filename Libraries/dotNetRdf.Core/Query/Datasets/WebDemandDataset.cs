@@ -26,41 +26,40 @@
 
 using System;
 
-namespace VDS.RDF.Query.Datasets
+namespace VDS.RDF.Query.Datasets;
+
+/// <summary>
+/// Implementation of a dataset wrapper which can load additional graphs from the web on demand.
+/// </summary>
+public class WebDemandDataset
+    : BaseDemandDataset
 {
     /// <summary>
-    /// Implementation of a dataset wrapper which can load additional graphs from the web on demand.
+    /// Creates a new Web Demand Dataset.
     /// </summary>
-    public class WebDemandDataset
-        : BaseDemandDataset
-    {
-        /// <summary>
-        /// Creates a new Web Demand Dataset.
-        /// </summary>
-        /// <param name="dataset">Underlying Dataset.</param>
-        public WebDemandDataset(ISparqlDataset dataset)
-            : base(dataset) { }
+    /// <param name="dataset">Underlying Dataset.</param>
+    public WebDemandDataset(ISparqlDataset dataset)
+        : base(dataset) { }
 
-        /// <summary>
-        /// Tries to load graphs from the web.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <param name="g">Graph.</param>
-        /// <returns></returns>
-        protected override bool TryLoadGraph(Uri graphUri, out IGraph g)
+    /// <summary>
+    /// Tries to load graphs from the web.
+    /// </summary>
+    /// <param name="graphUri">Graph URI.</param>
+    /// <param name="g">Graph.</param>
+    /// <returns></returns>
+    protected override bool TryLoadGraph(Uri graphUri, out IGraph g)
+    {
+        try
         {
-            try
-            {
-                g = new Graph(new UriNode(graphUri));
-                g.LoadFromUri(graphUri);
-                return true;
-            }
-            catch
-            {
-                // Any error means we couldn't load on demand
-                g = null;
-                return false;
-            }
+            g = new Graph(new UriNode(graphUri));
+            g.LoadFromUri(graphUri);
+            return true;
+        }
+        catch
+        {
+            // Any error means we couldn't load on demand
+            g = null;
+            return false;
         }
     }
 }

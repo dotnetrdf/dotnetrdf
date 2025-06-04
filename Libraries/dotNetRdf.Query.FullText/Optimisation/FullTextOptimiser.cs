@@ -34,84 +34,83 @@ using VDS.RDF.Update;
 using VDS.RDF.Query.FullText.Search;
 using VDS.RDF.Query.PropertyFunctions;
 
-namespace VDS.RDF.Query.Optimisation
+namespace VDS.RDF.Query.Optimisation;
+
+/// <summary>
+/// An Algebra Optimiser that ensures that Full Text Query support is available to query evaluation.
+/// </summary>
+public class FullTextOptimiser
+    : IAlgebraOptimiser, IConfigurationSerializable
 {
+    private readonly IFullTextSearchProvider _provider;
+    private readonly IEnumerable<IPropertyFunctionFactory> _factories = new IPropertyFunctionFactory[] { new FullTextPropertyFunctionFactory() };
+
+    /// <inheritdoc/>
+    public bool UnsafeOptimisation { get; set; }
+
     /// <summary>
-    /// An Algebra Optimiser that ensures that Full Text Query support is available to query evaluation.
+    /// Creates a Full Text Optimiser.
     /// </summary>
-    public class FullTextOptimiser
-        : IAlgebraOptimiser, IConfigurationSerializable
+    /// <param name="provider">Full Text Search Provider.</param>
+    public FullTextOptimiser(IFullTextSearchProvider provider)
     {
-        private readonly IFullTextSearchProvider _provider;
-        private readonly IEnumerable<IPropertyFunctionFactory> _factories = new IPropertyFunctionFactory[] { new FullTextPropertyFunctionFactory() };
+        _provider = provider ?? throw new ArgumentNullException(nameof(provider), "Full Text Search Provider cannot be null");
+    }
 
-        /// <inheritdoc/>
-        public bool UnsafeOptimisation { get; set; }
+    /// <summary>
+    /// Optimises the Algebra to apply the <see cref="FullTextQuery"/> operator which ensures Full Text Query support is available to the query evaluation.
+    /// </summary>
+    /// <param name="algebra">Algebra to optimise.</param>
+    /// <returns></returns>
+    public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
+    {
+        return new FullTextQuery(_provider, algebra);
+    }
 
-        /// <summary>
-        /// Creates a Full Text Optimiser.
-        /// </summary>
-        /// <param name="provider">Full Text Search Provider.</param>
-        public FullTextOptimiser(IFullTextSearchProvider provider)
+    /// <summary>
+    /// Returns that the optimiser is applicable to all queries.
+    /// </summary>
+    /// <param name="q">Query.</param>
+    /// <returns></returns>
+    public bool IsApplicable(SparqlQuery q)
+    {
+        q.PropertyFunctionFactories = q.PropertyFunctionFactories.Concat(_factories);
+        return true;
+    }
+
+    /// <summary>
+    /// Returns that the optimiser is applicable to all updates.
+    /// </summary>
+    /// <param name="cmds">Updates.</param>
+    /// <returns></returns>
+    public bool IsApplicable(SparqlUpdateCommandSet cmds)
+    {
+        return true;
+    }
+
+    /// <summary>
+    /// Serializes the Optimisers Configuration.
+    /// </summary>
+    /// <param name="context">Serialization Context.</param>
+    public void SerializeConfiguration(ConfigurationSerializationContext context)
+    {
+        context.EnsureObjectFactory(typeof(FullTextObjectFactory));
+
+        INode optObj = context.NextSubject;
+
+        context.Graph.Assert(optObj, context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType)), context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassAlgebraOptimiser)));
+        context.Graph.Assert(optObj, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType)), context.Graph.CreateLiteralNode(GetType().FullName + ", dotNetRDF.Query.FullText"));
+
+        if (_provider is IConfigurationSerializable serializable)
         {
-            _provider = provider ?? throw new ArgumentNullException(nameof(provider), "Full Text Search Provider cannot be null");
+            INode searcherObj = context.Graph.CreateBlankNode();
+            context.NextSubject = searcherObj;
+            serializable.SerializeConfiguration(context);
+            context.Graph.Assert(optObj, context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertySearcher)), searcherObj);
         }
-
-        /// <summary>
-        /// Optimises the Algebra to apply the <see cref="FullTextQuery"/> operator which ensures Full Text Query support is available to the query evaluation.
-        /// </summary>
-        /// <param name="algebra">Algebra to optimise.</param>
-        /// <returns></returns>
-        public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
+        else
         {
-            return new FullTextQuery(_provider, algebra);
-        }
-
-        /// <summary>
-        /// Returns that the optimiser is applicable to all queries.
-        /// </summary>
-        /// <param name="q">Query.</param>
-        /// <returns></returns>
-        public bool IsApplicable(SparqlQuery q)
-        {
-            q.PropertyFunctionFactories = q.PropertyFunctionFactories.Concat(_factories);
-            return true;
-        }
-
-        /// <summary>
-        /// Returns that the optimiser is applicable to all updates.
-        /// </summary>
-        /// <param name="cmds">Updates.</param>
-        /// <returns></returns>
-        public bool IsApplicable(SparqlUpdateCommandSet cmds)
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// Serializes the Optimisers Configuration.
-        /// </summary>
-        /// <param name="context">Serialization Context.</param>
-        public void SerializeConfiguration(ConfigurationSerializationContext context)
-        {
-            context.EnsureObjectFactory(typeof(FullTextObjectFactory));
-
-            INode optObj = context.NextSubject;
-
-            context.Graph.Assert(optObj, context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType)), context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassAlgebraOptimiser)));
-            context.Graph.Assert(optObj, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType)), context.Graph.CreateLiteralNode(GetType().FullName + ", dotNetRDF.Query.FullText"));
-
-            if (_provider is IConfigurationSerializable serializable)
-            {
-                INode searcherObj = context.Graph.CreateBlankNode();
-                context.NextSubject = searcherObj;
-                serializable.SerializeConfiguration(context);
-                context.Graph.Assert(optObj, context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertySearcher)), searcherObj);
-            }
-            else
-            {
-                throw new DotNetRdfConfigurationException("Unable to serialize configuration for this Full Text Optimiser as the Search Provider used does not implement the required IConfigurationSerializable interface");
-            }
+            throw new DotNetRdfConfigurationException("Unable to serialize configuration for this Full Text Optimiser as the Search Provider used does not implement the required IConfigurationSerializable interface");
         }
     }
 }

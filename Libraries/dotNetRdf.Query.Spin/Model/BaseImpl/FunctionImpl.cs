@@ -27,32 +27,31 @@
 using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.Util;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class FunctionImpl : ModuleImpl, IFunction
 {
-    internal class FunctionImpl : ModuleImpl, IFunction
+
+    public FunctionImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
-
-        public FunctionImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
-        }
+    }
 
 
-        public INode getReturnType()
-        {
-            return getObject(SPIN.PropertyReturnType);
-        }
+    public INode getReturnType()
+    {
+        return getObject(SPIN.PropertyReturnType);
+    }
 
 
-        public bool isMagicProperty()
-        {
-            return hasProperty(RDF.PropertyType, SPIN.ClassMagicProperty);
-        }
+    public bool isMagicProperty()
+    {
+        return hasProperty(RDF.PropertyType, SPIN.ClassMagicProperty);
+    }
 
 
-        public bool isPrivate()
-        {
-            return hasProperty(SPIN.PropertyPrivate, RDFUtil.TRUE);
-        }
+    public bool isPrivate()
+    {
+        return hasProperty(SPIN.PropertyPrivate, RDFUtil.TRUE);
     }
 }

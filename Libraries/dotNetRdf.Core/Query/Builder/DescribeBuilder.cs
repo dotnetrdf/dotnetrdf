@@ -28,48 +28,47 @@ using System;
 using System.Collections.Generic;
 using VDS.RDF.Parsing.Tokens;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+internal sealed class DescribeBuilder : QueryBuilder, IDescribeBuilder
 {
-    internal sealed class DescribeBuilder : QueryBuilder, IDescribeBuilder
+    readonly List<IToken> _describeVariables = new List<IToken>();
+
+    internal DescribeBuilder(SparqlQueryType sparqlQueryType) : base(sparqlQueryType)
     {
-        readonly List<IToken> _describeVariables = new List<IToken>();
+    }
 
-        internal DescribeBuilder(SparqlQueryType sparqlQueryType) : base(sparqlQueryType)
+    /// <summary>
+    /// Adds additional <paramref name="variables"/> to DESCRIBE.
+    /// </summary>
+    public IDescribeBuilder And(params string[] variables)
+    {
+        foreach (var variableName in variables)
         {
+            _describeVariables.Add(new VariableToken(variableName, 0, 0, 0));   
+        }
+        return this;
+    }
+
+    /// <summary>
+    /// Adds additional <paramref name="uris"/> to DESCRIBE.
+    /// </summary>
+    public IDescribeBuilder And(params Uri[] uris)
+    {
+        foreach (Uri uri in uris)
+        {
+            _describeVariables.Add(new UriToken(string.Format("<{0}>", uri), 0, 0, 0));
+        }
+        return this;
+    }
+
+    protected override SparqlQuery BuildQuery(SparqlQuery query)
+    {
+        foreach (IToken describeVariable in _describeVariables)
+        {
+            query.AddDescribeVariable(describeVariable);
         }
 
-        /// <summary>
-        /// Adds additional <paramref name="variables"/> to DESCRIBE.
-        /// </summary>
-        public IDescribeBuilder And(params string[] variables)
-        {
-            foreach (var variableName in variables)
-            {
-                _describeVariables.Add(new VariableToken(variableName, 0, 0, 0));   
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Adds additional <paramref name="uris"/> to DESCRIBE.
-        /// </summary>
-        public IDescribeBuilder And(params Uri[] uris)
-        {
-            foreach (Uri uri in uris)
-            {
-                _describeVariables.Add(new UriToken(string.Format("<{0}>", uri), 0, 0, 0));
-            }
-            return this;
-        }
-
-        protected override SparqlQuery BuildQuery(SparqlQuery query)
-        {
-            foreach (IToken describeVariable in _describeVariables)
-            {
-                query.AddDescribeVariable(describeVariable);
-            }
-
-            return base.BuildQuery(query);
-        }
+        return base.BuildQuery(query);
     }
 }

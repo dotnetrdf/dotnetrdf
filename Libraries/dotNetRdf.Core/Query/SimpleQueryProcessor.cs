@@ -28,77 +28,76 @@ using System;
 using System.Threading.Tasks;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+/// <summary>
+/// A SPARQL Query Processor where the query is processed by passing it to the <see cref="INativelyQueryableStore.ExecuteQuery(string)">ExecuteQuery()</see> method of an <see cref="INativelyQueryableStore">INativelyQueryableStore</see>.
+/// </summary>
+public class SimpleQueryProcessor 
+    : QueryProcessorBase, ISparqlQueryProcessor
 {
+    private readonly INativelyQueryableStore _store;
+    private readonly SparqlFormatter _formatter = new SparqlFormatter();
+
     /// <summary>
-    /// A SPARQL Query Processor where the query is processed by passing it to the <see cref="INativelyQueryableStore.ExecuteQuery(string)">ExecuteQuery()</see> method of an <see cref="INativelyQueryableStore">INativelyQueryableStore</see>.
+    /// Creates a new Simple Query Processor.
     /// </summary>
-    public class SimpleQueryProcessor 
-        : QueryProcessorBase, ISparqlQueryProcessor
+    /// <param name="store">Triple Store.</param>
+    public SimpleQueryProcessor(INativelyQueryableStore store)
     {
-        private readonly INativelyQueryableStore _store;
-        private readonly SparqlFormatter _formatter = new SparqlFormatter();
+        _store = store;
+    }
 
-        /// <summary>
-        /// Creates a new Simple Query Processor.
-        /// </summary>
-        /// <param name="store">Triple Store.</param>
-        public SimpleQueryProcessor(INativelyQueryableStore store)
+    /// <summary>
+    /// Processes a SPARQL Query.
+    /// </summary>
+    /// <param name="query">SPARQL Query.</param>
+    /// <returns></returns>
+    public object ProcessQuery(SparqlQuery query)
+    {
+        query.QueryExecutionTime = null;
+        DateTime start = DateTime.Now;
+        try
         {
-            _store = store;
+            return _store.ExecuteQuery(_formatter.Format(query));
         }
+        finally
+        {
+            TimeSpan elapsed = (DateTime.Now - start);
+            query.QueryExecutionTime = elapsed;
+        }
+    }
 
-        /// <summary>
-        /// Processes a SPARQL Query.
-        /// </summary>
-        /// <param name="query">SPARQL Query.</param>
-        /// <returns></returns>
-        public object ProcessQuery(SparqlQuery query)
+    /// <summary>
+    /// Processes a SPARQL Query passing the results to the RDF or Results handler as appropriate.
+    /// </summary>
+    /// <param name="rdfHandler">RDF Handler.</param>
+    /// <param name="resultsHandler">Results Handler.</param>
+    /// <param name="query">SPARQL Query.</param>
+    public override void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
+    {
+        query.QueryExecutionTime = null;
+        DateTime start = DateTime.Now;
+        try
         {
-            query.QueryExecutionTime = null;
-            DateTime start = DateTime.Now;
-            try
-            {
-                return _store.ExecuteQuery(_formatter.Format(query));
-            }
-            finally
-            {
-                TimeSpan elapsed = (DateTime.Now - start);
-                query.QueryExecutionTime = elapsed;
-            }
+            _store.ExecuteQuery(rdfHandler, resultsHandler, _formatter.Format(query));
         }
+        finally
+        {
+            TimeSpan elapsed = (DateTime.Now - start);
+            query.QueryExecutionTime = elapsed;
+        }
+    }
 
-        /// <summary>
-        /// Processes a SPARQL Query passing the results to the RDF or Results handler as appropriate.
-        /// </summary>
-        /// <param name="rdfHandler">RDF Handler.</param>
-        /// <param name="resultsHandler">Results Handler.</param>
-        /// <param name="query">SPARQL Query.</param>
-        public override void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
-        {
-            query.QueryExecutionTime = null;
-            DateTime start = DateTime.Now;
-            try
-            {
-                _store.ExecuteQuery(rdfHandler, resultsHandler, _formatter.Format(query));
-            }
-            finally
-            {
-                TimeSpan elapsed = (DateTime.Now - start);
-                query.QueryExecutionTime = elapsed;
-            }
-        }
+    /// <inheritdoc />
+    public Task<object> ProcessQueryAsync(SparqlQuery query)
+    {
+        return Task.Factory.StartNew(() => ProcessQuery(query));
+    }
 
-        /// <inheritdoc />
-        public Task<object> ProcessQueryAsync(SparqlQuery query)
-        {
-            return Task.Factory.StartNew(() => ProcessQuery(query));
-        }
-
-        /// <inheritdoc />
-        public Task ProcessQueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
-        {
-            return Task.Factory.StartNew(() => ProcessQuery(rdfHandler, resultsHandler, query));
-        }
+    /// <inheritdoc />
+    public Task ProcessQueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
+    {
+        return Task.Factory.StartNew(() => ProcessQuery(rdfHandler, resultsHandler, query));
     }
 }

@@ -24,24 +24,23 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing.Contexts;
+
+/// <summary>
+/// Possible Directions for Incomplete Triples.
+/// </summary>
+public enum IncompleteTripleDirection
 {
     /// <summary>
-    /// Possible Directions for Incomplete Triples.
+    /// Forward
     /// </summary>
-    public enum IncompleteTripleDirection
-    {
-        /// <summary>
-        /// Forward
-        /// </summary>
-        Forward,
-        /// <summary>
-        /// Reverse
-        /// </summary>
-        Reverse,
-        /// <summary>
-        /// None
-        /// </summary>
-        None,
-    }
+    Forward,
+    /// <summary>
+    /// Reverse
+    /// </summary>
+    Reverse,
+    /// <summary>
+    /// None
+    /// </summary>
+    None,
 }

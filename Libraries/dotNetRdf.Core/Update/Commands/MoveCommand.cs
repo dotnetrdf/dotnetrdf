@@ -26,48 +26,47 @@
 
 using System;
 
-namespace VDS.RDF.Update.Commands
+namespace VDS.RDF.Update.Commands;
+
+/// <summary>
+/// Represents a SPARQL Update MOVE Command.
+/// </summary>
+public class MoveCommand : BaseTransferCommand
 {
     /// <summary>
-    /// Represents a SPARQL Update MOVE Command.
+    /// Creates a command which moves data from one graph to another, overwriting the destination graph and deleting the source graph.
     /// </summary>
-    public class MoveCommand : BaseTransferCommand
+    /// <param name="sourceGraphName">Name of the source graph.</param>
+    /// <param name="destinationGraphName">Name of the destination graph.</param>
+    /// <param name="silent">Whether errors should be suppressed.</param>
+    public MoveCommand(IRefNode sourceGraphName, IRefNode destinationGraphName, bool silent = false):base(SparqlUpdateCommandType.Move, sourceGraphName, destinationGraphName, silent){}
+
+    /// <summary>
+    /// Creates a Command which Moves data from one Graph to another overwriting the destination Graph and deleting the source Graph.
+    /// </summary>
+    /// <param name="sourceUri">Source Graph URI.</param>
+    /// <param name="destUri">Destination Graph URI.</param>
+    /// <param name="silent">Whether errors should be suppressed.</param>
+    [Obsolete("Replaced by MoveCommand(IRefNode, IRefNode, bool)")]
+    public MoveCommand(Uri sourceUri, Uri destUri, bool silent)
+        : base(SparqlUpdateCommandType.Move, sourceUri, destUri, silent) { }
+
+    /// <summary>
+    /// Creates a Command which Moves data from one Graph to another overwriting the destination Graph and deleting the source Graph.
+    /// </summary>
+    /// <param name="sourceUri">Source Graph URI.</param>
+    /// <param name="destUri">Destination Graph URI.</param>
+    [Obsolete("Replaced by MoveCommand(IRefNode, IRefNode, bool)")]
+    public MoveCommand(Uri sourceUri, Uri destUri)
+        : base(SparqlUpdateCommandType.Move, sourceUri, destUri) { }
+
+
+    /// <summary>
+    /// Processes the Command using the given Update Processor.
+    /// </summary>
+    /// <param name="processor">SPARQL Update Processor.</param>
+    public override void Process(ISparqlUpdateProcessor processor)
     {
-        /// <summary>
-        /// Creates a command which moves data from one graph to another, overwriting the destination graph and deleting the source graph.
-        /// </summary>
-        /// <param name="sourceGraphName">Name of the source graph.</param>
-        /// <param name="destinationGraphName">Name of the destination graph.</param>
-        /// <param name="silent">Whether errors should be suppressed.</param>
-        public MoveCommand(IRefNode sourceGraphName, IRefNode destinationGraphName, bool silent = false):base(SparqlUpdateCommandType.Move, sourceGraphName, destinationGraphName, silent){}
-
-        /// <summary>
-        /// Creates a Command which Moves data from one Graph to another overwriting the destination Graph and deleting the source Graph.
-        /// </summary>
-        /// <param name="sourceUri">Source Graph URI.</param>
-        /// <param name="destUri">Destination Graph URI.</param>
-        /// <param name="silent">Whether errors should be suppressed.</param>
-        [Obsolete("Replaced by MoveCommand(IRefNode, IRefNode, bool)")]
-        public MoveCommand(Uri sourceUri, Uri destUri, bool silent)
-            : base(SparqlUpdateCommandType.Move, sourceUri, destUri, silent) { }
-
-        /// <summary>
-        /// Creates a Command which Moves data from one Graph to another overwriting the destination Graph and deleting the source Graph.
-        /// </summary>
-        /// <param name="sourceUri">Source Graph URI.</param>
-        /// <param name="destUri">Destination Graph URI.</param>
-        [Obsolete("Replaced by MoveCommand(IRefNode, IRefNode, bool)")]
-        public MoveCommand(Uri sourceUri, Uri destUri)
-            : base(SparqlUpdateCommandType.Move, sourceUri, destUri) { }
-
-
-        /// <summary>
-        /// Processes the Command using the given Update Processor.
-        /// </summary>
-        /// <param name="processor">SPARQL Update Processor.</param>
-        public override void Process(ISparqlUpdateProcessor processor)
-        {
-            processor.ProcessMoveCommand(this);
-        }
+        processor.ProcessMoveCommand(this);
     }
 }

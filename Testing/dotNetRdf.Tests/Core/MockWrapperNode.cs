@@ -25,14 +25,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+[Serializable]
+public class MockWrapperNode : WrapperNode
 {
-    [Serializable]
-    public class MockWrapperNode : WrapperNode
+    public MockWrapperNode(INode node)
+        : base(node)
     {
-        public MockWrapperNode(INode node)
-            : base(node)
-        {
-        }
     }
 }

@@ -28,55 +28,54 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+public partial class DynamicNode
 {
-    public partial class DynamicNode
+    /// <summary>
+    /// Gets a collection of <see cref="DynamicObjectCollection">dynamic object collections</see>, one per distinct outgoing predicate from this node.
+    /// </summary>
+    public ICollection<object> Values
     {
-        /// <summary>
-        /// Gets a collection of <see cref="DynamicObjectCollection">dynamic object collections</see>, one per distinct outgoing predicate from this node.
-        /// </summary>
-        public ICollection<object> Values
+        get
         {
-            get
-            {
-                return NodePairs.Values;
-            }
+            return NodePairs.Values;
         }
+    }
 
-        /// <summary>
-        /// Gets the number of distinct outgoing predicates from this node.
-        /// </summary>
-        public int Count
+    /// <summary>
+    /// Gets the number of distinct outgoing predicates from this node.
+    /// </summary>
+    public int Count
+    {
+        get
         {
-            get
-            {
-                return PredicateNodes.Count();
-            }
+            return PredicateNodes.Count();
         }
+    }
 
-        /// <summary>
-        /// Gets a value indicating whether this node is read only (always false).
-        /// </summary>
-        public bool IsReadOnly
+    /// <summary>
+    /// Gets a value indicating whether this node is read only (always false).
+    /// </summary>
+    public bool IsReadOnly
+    {
+        get
         {
-            get
-            {
-                return false;
-            }
+            return false;
         }
+    }
 
-        /// <summary>
-        /// Retracts statements with this subject.
-        /// </summary>
-        public void Clear()
-        {
-            new DynamicGraph(Graph).Remove(this);
-        }
+    /// <summary>
+    /// Retracts statements with this subject.
+    /// </summary>
+    public void Clear()
+    {
+        new DynamicGraph(Graph).Remove(this);
+    }
 
-        /// <inheritdoc/>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.Cast<KeyValuePair<INode, object>>().GetEnumerator();
-        }
+    /// <inheritdoc/>
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return this.Cast<KeyValuePair<INode, object>>().GetEnumerator();
     }
 }

@@ -26,38 +26,37 @@
 
 using VDS.RDF.Query.Inference;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface for Triple Stores which can have a <see cref="IInferenceEngine">IInferenceEngine</see> attached to them.
+/// </summary>
+public interface IInferencingTripleStore
+    : ITripleStore
 {
     /// <summary>
-    /// Interface for Triple Stores which can have a <see cref="IInferenceEngine">IInferenceEngine</see> attached to them.
+    /// Adds an Inference Engine to the Triple Store.
     /// </summary>
-    public interface IInferencingTripleStore
-        : ITripleStore
-    {
-        /// <summary>
-        /// Adds an Inference Engine to the Triple Store.
-        /// </summary>
-        /// <param name="reasoner">Reasoner to add.</param>
-        void AddInferenceEngine(IInferenceEngine reasoner);
+    /// <param name="reasoner">Reasoner to add.</param>
+    void AddInferenceEngine(IInferenceEngine reasoner);
 
-        /// <summary>
-        /// Removes an Inference Engine from the Triple Store.
-        /// </summary>
-        /// <param name="reasoner">Reasoner to remove.</param>
-        void RemoveInferenceEngine(IInferenceEngine reasoner);
+    /// <summary>
+    /// Removes an Inference Engine from the Triple Store.
+    /// </summary>
+    /// <param name="reasoner">Reasoner to remove.</param>
+    void RemoveInferenceEngine(IInferenceEngine reasoner);
 
-        /// <summary>
-        /// Clears all Inference Engines from the Triple Store.
-        /// </summary>
-        void ClearInferenceEngines();
+    /// <summary>
+    /// Clears all Inference Engines from the Triple Store.
+    /// </summary>
+    void ClearInferenceEngines();
 
-        /// <summary>
-        /// Applies Inference to the given Graph.
-        /// </summary>
-        /// <param name="g">Graph to apply inference to.</param>
-        /// <remarks>
-        /// Allows you to apply Inference to a Graph even if you're not putting that Graph into the Store.
-        /// </remarks>
-        void ApplyInference(IGraph g);
-    }
+    /// <summary>
+    /// Applies Inference to the given Graph.
+    /// </summary>
+    /// <param name="g">Graph to apply inference to.</param>
+    /// <remarks>
+    /// Allows you to apply Inference to a Graph even if you're not putting that Graph into the Store.
+    /// </remarks>
+    void ApplyInference(IGraph g);
 }

@@ -28,107 +28,106 @@ using System.IO;
 using System.Linq;
 using Xunit;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+
+public class NamespaceTests
 {
+    private const String TurtleExample = @"[] a <relative> .";
 
-    public class NamespaceTests
+    [Fact]
+    public void ParsingRelativeUriAppBaseRdfXml1()
     {
-        private const String TurtleExample = @"[] a <relative> .";
+        //This invocation succeeds because when invoking via the FileLoader
+        //the Base URI will be set to the file URI
 
-        [Fact]
-        public void ParsingRelativeUriAppBaseRdfXml1()
+        var g = new Graph();
+        var parser = new RdfXmlParser();
+        g.LoadFromFile(Path.Combine("resources", "rdfxml-relative-uri.rdf"), parser);
+
+        //Expect a non-empty grpah with a single triple
+        Assert.False(g.IsEmpty);
+        Assert.Equal(1, g.Triples.Count);
+        Triple t = g.Triples.First();
+
+        //Object should get it's relative URI resolved into
+        //a File URI
+        Uri obj = ((IUriNode)t.Object).Uri;
+        Assert.True(obj.IsFile);
+        Assert.Equal("relative", obj.Segments[obj.Segments.Length - 1]);
+    }
+
+    [Fact]
+    public void ParsingRelativeUriAppBaseRdfXml2()
+    {
+        //This invocation succeeds because when invoking because
+        //we manually set the Base URI prior to invoking the parser
+
+        var g = new Graph
         {
-            //This invocation succeeds because when invoking via the FileLoader
-            //the Base URI will be set to the file URI
+            BaseUri = new Uri("http://example.org")
+        };
+        var parser = new RdfXmlParser();
+        parser.Load(g, Path.Combine("resources", "rdfxml-relative-uri.rdf"));
 
-            var g = new Graph();
-            var parser = new RdfXmlParser();
-            g.LoadFromFile(Path.Combine("resources", "rdfxml-relative-uri.rdf"), parser);
+        //Expect a non-empty grpah with a single triple
+        Assert.False(g.IsEmpty);
+        Assert.Equal(1, g.Triples.Count);
+        Triple t = g.Triples.First();
 
-            //Expect a non-empty grpah with a single triple
-            Assert.False(g.IsEmpty);
-            Assert.Equal(1, g.Triples.Count);
-            Triple t = g.Triples.First();
+        //Object should get it's relative URI resolved into
+        //the correct HTTP URI
+        Uri obj = ((IUriNode)t.Object).Uri;
+        Assert.Equal("http", obj.Scheme);
+        Assert.Equal("example.org", obj.Host);
+        Assert.Equal("relative", obj.Segments[1]);
+    }
 
-            //Object should get it's relative URI resolved into
-            //a File URI
-            Uri obj = ((IUriNode)t.Object).Uri;
-            Assert.True(obj.IsFile);
-            Assert.Equal("relative", obj.Segments[obj.Segments.Length - 1]);
-        }
+    [Fact]
+    public void ParsingRelativeUriNoBaseRdfXml()
+    {
+        //This invocation fails because when invoking the parser directly
+        //the Base URI is not set to the file URI
 
-        [Fact]
-        public void ParsingRelativeUriAppBaseRdfXml2()
+        var g = new Graph();
+        var parser = new RdfXmlParser();
+
+        Assert.Throws<RdfParseException>(() => parser.Load(g, Path.Combine("resources", "rdfxml-relative-uri.rdf")));
+    }
+
+    [Fact]
+    public void ParsingRelativeUriNoBaseTurtle()
+    {
+        //This invocation fails because there is no Base URI to
+        //resolve against
+        var g = new Graph();
+        var parser = new TurtleParser();
+
+        Assert.Throws<RdfParseException>(() => parser.Load(g, new StringReader(TurtleExample)));
+    }
+
+    [Fact]
+    public void ParsingRelativeUriAppBaseTurtle()
+    {
+        //This invocation succeeds because we define a Base URI
+        //resolve against
+        var g = new Graph
         {
-            //This invocation succeeds because when invoking because
-            //we manually set the Base URI prior to invoking the parser
+            BaseUri = new Uri("http://example.org")
+        };
+        var parser = new TurtleParser();
+        parser.Load(g, new StringReader(TurtleExample));
 
-            var g = new Graph
-            {
-                BaseUri = new Uri("http://example.org")
-            };
-            var parser = new RdfXmlParser();
-            parser.Load(g, Path.Combine("resources", "rdfxml-relative-uri.rdf"));
+        //Expect a non-empty grpah with a single triple
+        Assert.False(g.IsEmpty);
+        Assert.Equal(1, g.Triples.Count);
+        Triple t = g.Triples.First();
 
-            //Expect a non-empty grpah with a single triple
-            Assert.False(g.IsEmpty);
-            Assert.Equal(1, g.Triples.Count);
-            Triple t = g.Triples.First();
-
-            //Object should get it's relative URI resolved into
-            //the correct HTTP URI
-            Uri obj = ((IUriNode)t.Object).Uri;
-            Assert.Equal("http", obj.Scheme);
-            Assert.Equal("example.org", obj.Host);
-            Assert.Equal("relative", obj.Segments[1]);
-        }
-
-        [Fact]
-        public void ParsingRelativeUriNoBaseRdfXml()
-        {
-            //This invocation fails because when invoking the parser directly
-            //the Base URI is not set to the file URI
-
-            var g = new Graph();
-            var parser = new RdfXmlParser();
-
-            Assert.Throws<RdfParseException>(() => parser.Load(g, Path.Combine("resources", "rdfxml-relative-uri.rdf")));
-        }
-
-        [Fact]
-        public void ParsingRelativeUriNoBaseTurtle()
-        {
-            //This invocation fails because there is no Base URI to
-            //resolve against
-            var g = new Graph();
-            var parser = new TurtleParser();
-
-            Assert.Throws<RdfParseException>(() => parser.Load(g, new StringReader(TurtleExample)));
-        }
-
-        [Fact]
-        public void ParsingRelativeUriAppBaseTurtle()
-        {
-            //This invocation succeeds because we define a Base URI
-            //resolve against
-            var g = new Graph
-            {
-                BaseUri = new Uri("http://example.org")
-            };
-            var parser = new TurtleParser();
-            parser.Load(g, new StringReader(TurtleExample));
-
-            //Expect a non-empty grpah with a single triple
-            Assert.False(g.IsEmpty);
-            Assert.Equal(1, g.Triples.Count);
-            Triple t = g.Triples.First();
-
-            //Predicate should get it's relative URI resolved into
-            //the correct HTTP URI
-            Uri obj = ((IUriNode)t.Object).Uri;
-            Assert.Equal("http", obj.Scheme);
-            Assert.Equal("example.org", obj.Host);
-            Assert.Equal("relative", obj.Segments[1]);
-        }
+        //Predicate should get it's relative URI resolved into
+        //the correct HTTP URI
+        Uri obj = ((IUriNode)t.Object).Uri;
+        Assert.Equal("http", obj.Scheme);
+        Assert.Equal("example.org", obj.Host);
+        Assert.Equal("relative", obj.Segments[1]);
     }
 }

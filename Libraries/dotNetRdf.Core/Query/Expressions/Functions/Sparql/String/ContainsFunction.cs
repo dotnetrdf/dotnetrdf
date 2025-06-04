@@ -24,62 +24,61 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.String;
+
+/// <summary>
+/// Represents the SPARQL CONTAINS function.
+/// </summary>
+public class ContainsFunction
+    : BaseBinaryStringFunction
 {
     /// <summary>
-    /// Represents the SPARQL CONTAINS function.
+    /// Creates a new SPARQL CONTAINS function.
     /// </summary>
-    public class ContainsFunction
-        : BaseBinaryStringFunction
+    /// <param name="stringExpr">String Expression.</param>
+    /// <param name="searchExpr">Search Expression.</param>
+    public ContainsFunction(ISparqlExpression stringExpr, ISparqlExpression searchExpr)
+        : base(stringExpr, searchExpr) { }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
     {
-        /// <summary>
-        /// Creates a new SPARQL CONTAINS function.
-        /// </summary>
-        /// <param name="stringExpr">String Expression.</param>
-        /// <param name="searchExpr">Search Expression.</param>
-        public ContainsFunction(ISparqlExpression stringExpr, ISparqlExpression searchExpr)
-            : base(stringExpr, searchExpr) { }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
+        get
         {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordContains;
-            }
+            return SparqlSpecsHelper.SparqlKeywordContains;
         }
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordContains + "(" + _leftExpr + ", " + _rightExpr + ")";
-        }
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return SparqlSpecsHelper.SparqlKeywordContains + "(" + _leftExpr + ", " + _rightExpr + ")";
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessContainsFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessContainsFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitContainsFunction(this);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitContainsFunction(this);
+    }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new ContainsFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new ContainsFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
     }
 }

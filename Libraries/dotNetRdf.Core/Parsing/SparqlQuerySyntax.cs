@@ -24,42 +24,41 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+/// <summary>
+/// Available Query Syntaxes.
+/// </summary>
+public enum SparqlQuerySyntax
 {
     /// <summary>
-    /// Available Query Syntaxes.
+    /// Use SPARQL 1.0
     /// </summary>
-    public enum SparqlQuerySyntax
-    {
-        /// <summary>
-        /// Use SPARQL 1.0
-        /// </summary>
-        Sparql_1_0,
+    Sparql_1_0,
 
-        /// <summary>
-        /// Use SPARQL 1.1
-        /// </summary>
-        Sparql_1_1,
+    /// <summary>
+    /// Use SPARQL 1.1
+    /// </summary>
+    Sparql_1_1,
 
-        /// <summary>
-        /// Use the latest SPARQL specification supported by the library (currently SPARQL 1.1) with some extensions
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Extensions include the following:
-        /// </para>
-        /// <ul>
-        /// <li><strong>LET</strong> assignments (we recommend using the SPARQL 1.1 standards BIND instead)</li>
-        /// <li>Additional aggregates - <strong>NMAX</strong>, <strong>NMIN</strong>, <strong>MEDIAN</strong> and <strong>MODE</strong> (we recommend using the Leviathan Function Library URIs for these instead to make them usable in SPARQL 1.1 mode)</li>
-        /// <li><strong>UNSAID</strong> alias for <strong>NOT EXISTS</strong> (we recommend using the SPARQL 1.1 standard NOT EXISTS instead</li>
-        /// <li><strong>EXISTS</strong> and <strong>NOT EXISTS</strong> are permitted as Graph Patterns (only allowed in FILTERs in SPARQL 1.1)</li>
-        /// </ul>
-        /// </remarks>
-        Extended,
+    /// <summary>
+    /// Use the latest SPARQL specification supported by the library (currently SPARQL 1.1) with some extensions
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Extensions include the following:
+    /// </para>
+    /// <ul>
+    /// <li><strong>LET</strong> assignments (we recommend using the SPARQL 1.1 standards BIND instead)</li>
+    /// <li>Additional aggregates - <strong>NMAX</strong>, <strong>NMIN</strong>, <strong>MEDIAN</strong> and <strong>MODE</strong> (we recommend using the Leviathan Function Library URIs for these instead to make them usable in SPARQL 1.1 mode)</li>
+    /// <li><strong>UNSAID</strong> alias for <strong>NOT EXISTS</strong> (we recommend using the SPARQL 1.1 standard NOT EXISTS instead</li>
+    /// <li><strong>EXISTS</strong> and <strong>NOT EXISTS</strong> are permitted as Graph Patterns (only allowed in FILTERs in SPARQL 1.1)</li>
+    /// </ul>
+    /// </remarks>
+    Extended,
 
-        /// <summary>
-        /// Use SPARQL 1.1 with the SPARQL-Star syntax extensions
-        /// </summary>
-        Sparql_Star_1_1,
-    }
+    /// <summary>
+    /// Use SPARQL 1.1 with the SPARQL-Star syntax extensions
+    /// </summary>
+    Sparql_Star_1_1,
 }

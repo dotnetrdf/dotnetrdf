@@ -31,61 +31,60 @@ using VDS.RDF;
 using VDS.RDF.Query;
 using Xunit;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+public class DynamicSparqlResultSetTests
 {
-    public class DynamicSparqlResultSetTests
+    [Fact]
+    public void Requires_original()
     {
-        [Fact]
-        public void Requires_original()
+        Assert.Throws<ArgumentNullException>(() =>
+            new DynamicSparqlResultSet(null));
+    }
+
+    [Fact]
+    public void Enumerates_dynamic_results()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"<urn:s> <urn:p> <urn:o> .");
+
+        var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
+        var d = new DynamicSparqlResultSet(results);
+
+        foreach (var x in d)
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                new DynamicSparqlResultSet(null));
+            Assert.NotNull(x);
         }
+    }
 
-        [Fact]
-        public void Enumerates_dynamic_results()
+    [Fact]
+    public void IEnumerable_Enumerates_dynamic_results()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"<urn:s> <urn:p> <urn:o> .");
+
+        var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
+        var d = (IEnumerable)new DynamicSparqlResultSet(results);
+
+        foreach (DynamicSparqlResult x in d)
         {
-            var g = new Graph();
-            g.LoadFromString(@"<urn:s> <urn:p> <urn:o> .");
-
-            var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-            var d = new DynamicSparqlResultSet(results);
-
-            foreach (var x in d)
-            {
-                Assert.NotNull(x);
-            }
+            Assert.NotNull(x);
         }
+    }
 
-        [Fact]
-        public void IEnumerable_Enumerates_dynamic_results()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"<urn:s> <urn:p> <urn:o> .");
+    [Fact]
+    public void Provides_enumerable_meta_object()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"<urn:s> <urn:p> <urn:o> .");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-            var d = (IEnumerable)new DynamicSparqlResultSet(results);
+        var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
+        var d = new DynamicSparqlResultSet(results);
 
-            foreach (DynamicSparqlResult x in d)
-            {
-                Assert.NotNull(x);
-            }
-        }
+        var p = (IDynamicMetaObjectProvider)d;
+        var mo = p.GetMetaObject(Expression.Empty());
 
-        [Fact]
-        public void Provides_enumerable_meta_object()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"<urn:s> <urn:p> <urn:o> .");
-
-            var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-            var d = new DynamicSparqlResultSet(results);
-
-            var p = (IDynamicMetaObjectProvider)d;
-            var mo = p.GetMetaObject(Expression.Empty());
-
-            Assert.NotNull(mo);
-            Assert.IsType<EnumerableMetaObject>(mo);
-        }
+        Assert.NotNull(mo);
+        Assert.IsType<EnumerableMetaObject>(mo);
     }
 }

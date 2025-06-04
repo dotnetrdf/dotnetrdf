@@ -24,24 +24,23 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+/// <summary>
+/// Represents the type of the SPARQL Results Set.
+/// </summary>
+public enum SparqlResultsType
 {
     /// <summary>
-    /// Represents the type of the SPARQL Results Set.
+    /// The Result Set represents a Boolean Result
     /// </summary>
-    public enum SparqlResultsType
-    {
-        /// <summary>
-        /// The Result Set represents a Boolean Result
-        /// </summary>
-        Boolean,
-        /// <summary>
-        /// The Result Set represents a set of Variable Bindings
-        /// </summary>
-        VariableBindings,
-        /// <summary>
-        /// The Result Set represents an unknown result i.e. it has yet to be filled with Results
-        /// </summary>
-        Unknown,
-    }
+    Boolean,
+    /// <summary>
+    /// The Result Set represents a set of Variable Bindings
+    /// </summary>
+    VariableBindings,
+    /// <summary>
+    /// The Result Set represents an unknown result i.e. it has yet to be filled with Results
+    /// </summary>
+    Unknown,
 }

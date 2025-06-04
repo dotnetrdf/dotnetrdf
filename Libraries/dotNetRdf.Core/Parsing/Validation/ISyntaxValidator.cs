@@ -27,64 +27,63 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Parsing.Validation
+namespace VDS.RDF.Parsing.Validation;
+
+/// <summary>
+/// Interface for classes which can validate Syntax.
+/// </summary>
+public interface ISyntaxValidator
 {
     /// <summary>
-    /// Interface for classes which can validate Syntax.
+    /// Validates the given Data.
     /// </summary>
-    public interface ISyntaxValidator
+    /// <param name="data">Data.</param>
+    /// <returns></returns>
+    ISyntaxValidationResults Validate(string data);
+}
+
+/// <summary>
+/// Interface for Validation Results.
+/// </summary>
+public interface ISyntaxValidationResults
+{
+    /// <summary>
+    /// Gets whether the Syntax was valid.
+    /// </summary>
+    bool IsValid
     {
-        /// <summary>
-        /// Validates the given Data.
-        /// </summary>
-        /// <param name="data">Data.</param>
-        /// <returns></returns>
-        ISyntaxValidationResults Validate(string data);
+        get;
     }
 
     /// <summary>
-    /// Interface for Validation Results.
+    /// Gets an informational message about the validity/invalidity of the Syntax.
     /// </summary>
-    public interface ISyntaxValidationResults
+    string Message
     {
-        /// <summary>
-        /// Gets whether the Syntax was valid.
-        /// </summary>
-        bool IsValid
-        {
-            get;
-        }
+        get;
+    }
 
-        /// <summary>
-        /// Gets an informational message about the validity/invalidity of the Syntax.
-        /// </summary>
-        string Message
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets an enumeration of any warning messages.
+    /// </summary>
+    IEnumerable<string> Warnings
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gets an enumeration of any warning messages.
-        /// </summary>
-        IEnumerable<string> Warnings
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets any validation error.
+    /// </summary>
+    Exception Error
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gets any validation error.
-        /// </summary>
-        Exception Error
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets any result object that was parsed from the syntax.
-        /// </summary>
-        object Result
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets any result object that was parsed from the syntax.
+    /// </summary>
+    object Result
+    {
+        get;
     }
 }

@@ -28,15 +28,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+public class DynamicGraphDictionaryTests
 {
-    public class DynamicGraphDictionaryTests
+    [Fact]
+    public void Values_are_dynamic_uri_nodes()
     {
-        [Fact]
-        public void Values_are_dynamic_uri_nodes()
-        {
-            var d = new DynamicGraph();
-            d.LoadFromString(@"
+        var d = new DynamicGraph();
+        d.LoadFromString(@"
 <urn:s1> <urn:p1> <urn:o01> .
 <urn:s1> <urn:p1> <urn:o02> .
 <urn:s1> <urn:p2> <urn:o03> .
@@ -51,19 +51,19 @@ _:s3 <urn:p6> <urn:o11> .
 _:s3 <urn:p6> <urn:o12> .
 ");
 
-            Assert.Equal(d.Nodes.UriNodes(), d.Values);
+        Assert.Equal(d.Nodes.UriNodes(), d.Values);
 
-            foreach (var value in d.Values)
-            {
-                Assert.IsType<DynamicNode>(value);
-            }
-        }
-
-        [Fact]
-        public void Counts_uri_nodes()
+        foreach (var value in d.Values)
         {
-            var d = new DynamicGraph();
-            d.LoadFromString(@"
+            Assert.IsType<DynamicNode>(value);
+        }
+    }
+
+    [Fact]
+    public void Counts_uri_nodes()
+    {
+        var d = new DynamicGraph();
+        d.LoadFromString(@"
 <urn:s1> <urn:p1> <urn:o01> .
 <urn:s1> <urn:p1> <urn:o02> .
 <urn:s1> <urn:p2> <urn:o03> .
@@ -78,22 +78,22 @@ _:s3 <urn:p6> <urn:o11> .
 _:s3 <urn:p6> <urn:o12> .
 ");
 
-            Assert.Equal(d.Nodes.UriNodes().Count(), d.Count);
-        }
+        Assert.Equal(d.Nodes.UriNodes().Count(), d.Count);
+    }
 
-        [Fact]
-        public void Is_writable()
-        {
-            var g = new DynamicGraph();
+    [Fact]
+    public void Is_writable()
+    {
+        var g = new DynamicGraph();
 
-            Assert.False(g.IsReadOnly);
-        }
+        Assert.False(g.IsReadOnly);
+    }
 
-        [Fact]
-        public void Enumerates_pairs_with_uri_key_and_dynamic_value()
-        {
-            var g = new DynamicGraph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Enumerates_pairs_with_uri_key_and_dynamic_value()
+    {
+        var g = new DynamicGraph();
+        g.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> . # 1
 <urn:s> <urn:s> <urn:p> .
 <urn:s> <urn:s> <urn:o> .
@@ -123,22 +123,21 @@ _:s3 <urn:p6> <urn:o12> .
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
-            var d = (IEnumerable)g;
-            var spo = new[] { s, p, o };
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
+        var d = (IEnumerable)g;
+        var spo = new[] { s, p, o };
 
-            var actual = d.GetEnumerator();
-            var expected = spo.GetEnumerator();
-            while (expected.MoveNext() | actual.MoveNext())
-            {
-                var current = (KeyValuePair<INode, object>)actual.Current;
+        var actual = d.GetEnumerator();
+        var expected = spo.GetEnumerator();
+        while (expected.MoveNext() | actual.MoveNext())
+        {
+            var current = (KeyValuePair<INode, object>)actual.Current;
 
-                Assert.Equal(expected.Current, current.Key);
-                Assert.IsType<DynamicNode>(current.Value);
-                Assert.Equal(expected.Current, current.Value);
-            }
+            Assert.Equal(expected.Current, current.Key);
+            Assert.IsType<DynamicNode>(current.Value);
+            Assert.Equal(expected.Current, current.Value);
         }
     }
 }

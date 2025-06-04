@@ -29,112 +29,111 @@ using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric;
+
+/// <summary>
+/// Represents the Leviathan lfn:rnd() function.
+/// </summary>
+public class RandomFunction
+    : BaseBinaryExpression
 {
+    private Random _rnd = new Random();
+    private int _args = 0;
+
     /// <summary>
-    /// Represents the Leviathan lfn:rnd() function.
+    /// Creates a new Leviathan Random Function.
     /// </summary>
-    public class RandomFunction
-        : BaseBinaryExpression
+    public RandomFunction()
+        : base(new ConstantTerm(new DoubleNode(0)), new ConstantTerm(new DoubleNode(1))) { }
+
+    /// <summary>
+    /// Creates a new Leviathan Random Function.
+    /// </summary>
+    /// <param name="max">Maximum.</param>
+    public RandomFunction(ISparqlExpression max)
+        : base(new ConstantTerm(new DoubleNode(0)), max)
     {
-        private Random _rnd = new Random();
-        private int _args = 0;
+        _args = 1;
+    }
 
-        /// <summary>
-        /// Creates a new Leviathan Random Function.
-        /// </summary>
-        public RandomFunction()
-            : base(new ConstantTerm(new DoubleNode(0)), new ConstantTerm(new DoubleNode(1))) { }
+    /// <summary>
+    /// Creates a new Leviathan Random Function.
+    /// </summary>
+    /// <param name="min">Minumum.</param>
+    /// <param name="max">Maximum.</param>
+    public RandomFunction(ISparqlExpression min, ISparqlExpression max)
+        : base(min, max)
+    {
+        _args = 2;
+    }
 
-        /// <summary>
-        /// Creates a new Leviathan Random Function.
-        /// </summary>
-        /// <param name="max">Maximum.</param>
-        public RandomFunction(ISparqlExpression max)
-            : base(new ConstantTerm(new DoubleNode(0)), max)
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append('<');
+        output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
+        output.Append(LeviathanFunctionFactory.Random);
+        output.Append(">(");
+        switch (_args)
         {
-            _args = 1;
+            case 1:
+                output.Append(_rightExpr);
+                break;
+            case 2:
+                output.Append(_leftExpr);
+                output.Append(',');
+                output.Append(_rightExpr);
+                break;
         }
+        output.Append(')');
+        return output.ToString();
+    }
 
-        /// <summary>
-        /// Creates a new Leviathan Random Function.
-        /// </summary>
-        /// <param name="min">Minumum.</param>
-        /// <param name="max">Maximum.</param>
-        public RandomFunction(ISparqlExpression min, ISparqlExpression max)
-            : base(min, max)
-        {
-            _args = 2;
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessRandomFunction(this, context, binding);
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append('<');
-            output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
-            output.Append(LeviathanFunctionFactory.Random);
-            output.Append(">(");
-            switch (_args)
-            {
-                case 1:
-                    output.Append(_rightExpr);
-                    break;
-                case 2:
-                    output.Append(_leftExpr);
-                    output.Append(',');
-                    output.Append(_rightExpr);
-                    break;
-            }
-            output.Append(')');
-            return output.ToString();
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitRandomFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return processor.ProcessRandomFunction(this, context, binding);
+            return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Random;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the type of the expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return visitor.VisitRandomFunction(this);
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Random;
-            }
-        }
-
-        /// <summary>
-        /// Gets the type of the expression.
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new RandomFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new RandomFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
     }
 }

@@ -27,115 +27,113 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
+
+/// <summary>
+/// Class representing the SPARQL BNODE() function.
+/// </summary>
+public class BNodeFunction 
+    : BaseUnaryExpression
 {
     /// <summary>
-    /// Class representing the SPARQL BNODE() function.
+    /// Creates a new BNode Function.
     /// </summary>
-    public class BNodeFunction 
-        : BaseUnaryExpression
+    public BNodeFunction()
+        : base(null) { }
+
+    /// <summary>
+    /// Creates a new BNode Function.
+    /// </summary>
+    /// <param name="expr">Argument Expression.</param>
+    public BNodeFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+    
+
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
     {
-        /// <summary>
-        /// Creates a new BNode Function.
-        /// </summary>
-        public BNodeFunction()
-            : base(null) { }
-
-        /// <summary>
-        /// Creates a new BNode Function.
-        /// </summary>
-        /// <param name="expr">Argument Expression.</param>
-        public BNodeFunction(ISparqlExpression expr)
-            : base(expr) { }
-
-        
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordBNode;
-            }
-        }
-
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitBNodeFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Variables used in the Expression.
-        /// </summary>
-        public override IEnumerable<string> Variables
-        {
-            get
-            {
-                return InnerExpression == null ? Enumerable.Empty<string>() : base.Variables;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression.
-        /// </summary>
-        public override IEnumerable<ISparqlExpression> Arguments
-        {
-            get
-            {
-                if (InnerExpression == null) return Enumerable.Empty<ISparqlExpression>();
-                return base.Arguments;
-            }
-        }
-
-        /// <summary>
-        /// Gets whether the expression can be parallelised.
-        /// </summary>
-        public override bool CanParallelise
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordBNode + "(" + InnerExpression.ToSafeString() + ")";
-        }
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessBNodeFunction(this, context, binding);
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new BNodeFunction(transformer.Transform(InnerExpression));
+            return SparqlExpressionType.Function;
         }
     }
 
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
+        {
+            return SparqlSpecsHelper.SparqlKeywordBNode;
+        }
+    }
+
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitBNodeFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Variables used in the Expression.
+    /// </summary>
+    public override IEnumerable<string> Variables
+    {
+        get
+        {
+            return InnerExpression == null ? Enumerable.Empty<string>() : base.Variables;
+        }
+    }
+
+    /// <summary>
+    /// Gets the Arguments of the Expression.
+    /// </summary>
+    public override IEnumerable<ISparqlExpression> Arguments
+    {
+        get
+        {
+            if (InnerExpression == null) return Enumerable.Empty<ISparqlExpression>();
+            return base.Arguments;
+        }
+    }
+
+    /// <summary>
+    /// Gets whether the expression can be parallelised.
+    /// </summary>
+    public override bool CanParallelise
+    {
+        get
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return SparqlSpecsHelper.SparqlKeywordBNode + "(" + InnerExpression.ToSafeString() + ")";
+    }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessBNodeFunction(this, context, binding);
+    }
+
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new BNodeFunction(transformer.Transform(InnerExpression));
+    }
 }

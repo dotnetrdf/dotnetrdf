@@ -27,29 +27,28 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Utils.Describe
+namespace VDS.RDF.Utils.Describe;
+
+/// <summary>
+/// Interface for a class of algorithms that emit a sub-graph of a dataset from a list of starting nodes.
+/// </summary>
+public interface IDescribeAlgorithm
 {
     /// <summary>
-    /// Interface for a class of algorithms that emit a sub-graph of a dataset from a list of starting nodes.
+    /// Generates a Graph which is the description of the resources represented by the provided nodes.
     /// </summary>
-    public interface IDescribeAlgorithm
-    {
-        /// <summary>
-        /// Generates a Graph which is the description of the resources represented by the provided nodes.
-        /// </summary>
-        /// <param name="dataset">The dataset to extract descriptions from.</param>
-        /// <param name="nodes">The nodes to be described.</param>
-        /// <returns></returns>
-        IGraph Describe(ITripleIndex dataset, IEnumerable<INode> nodes);
+    /// <param name="dataset">The dataset to extract descriptions from.</param>
+    /// <param name="nodes">The nodes to be described.</param>
+    /// <returns></returns>
+    IGraph Describe(ITripleIndex dataset, IEnumerable<INode> nodes);
 
-        /// <summary>
-        /// Generates a graph which is the description of the resources represented by the provided nodes.
-        /// </summary>
-        /// <param name="handler">The handler to receive the triples that provide the description.</param>
-        /// <param name="dataset">The dataset to extract descriptions from.</param>
-        /// <param name="nodes">The nodes to be described.</param>
-        /// <param name="baseUri">An optional base URI to pass through to the RDF handler.</param>
-        /// <param name="namespaceMap">An optional namespace map to pass through to the RDF handler.</param>
-        void Describe(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes, Uri baseUri = null, INamespaceMapper namespaceMap = null);
-    }
+    /// <summary>
+    /// Generates a graph which is the description of the resources represented by the provided nodes.
+    /// </summary>
+    /// <param name="handler">The handler to receive the triples that provide the description.</param>
+    /// <param name="dataset">The dataset to extract descriptions from.</param>
+    /// <param name="nodes">The nodes to be described.</param>
+    /// <param name="baseUri">An optional base URI to pass through to the RDF handler.</param>
+    /// <param name="namespaceMap">An optional namespace map to pass through to the RDF handler.</param>
+    void Describe(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes, Uri baseUri = null, INamespaceMapper namespaceMap = null);
 }

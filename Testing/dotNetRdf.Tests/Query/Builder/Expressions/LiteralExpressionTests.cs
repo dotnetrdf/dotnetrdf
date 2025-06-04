@@ -27,58 +27,57 @@ using Xunit;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions;
+
+
+public class LiteralExpressionTests : SparqlExpressionTestsBase
 {
+    private const string TestingStringValue = "text";
 
-    public class LiteralExpressionTests : SparqlExpressionTestsBase
+    
+    public LiteralExpressionTests()
     {
-        private const string TestingStringValue = "text";
+        Left = "text".ToConstantTerm();
+        Right = "text".ToConstantTerm();
+    }
 
-        
-        public LiteralExpressionTests()
-        {
-            Left = "text".ToConstantTerm();
-            Right = "text".ToConstantTerm();
-        }
+    [Fact]
+    public void ShouldAllowEuqlityComparisonBetweenLiteralExpressionAndString()
+    {
+        // given
+        var left = new LiteralExpression(Left);
 
-        [Fact]
-        public void ShouldAllowEuqlityComparisonBetweenLiteralExpressionAndString()
-        {
-            // given
-            var left = new LiteralExpression(Left);
+        // then
+        AssertExpressionTypeAndCorrectArguments<EqualsExpression>(left == TestingStringValue,
+            assertRightOperand: op => AssertCorrectConstantTerm(op, TestingStringValue));
+        AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(left != TestingStringValue,
+            assertRightOperand: op => AssertCorrectConstantTerm(op, TestingStringValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<EqualsExpression>(left == TestingStringValue,
-                assertRightOperand: op => AssertCorrectConstantTerm(op, TestingStringValue));
-            AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(left != TestingStringValue,
-                assertRightOperand: op => AssertCorrectConstantTerm(op, TestingStringValue));
-        }
+    [Fact]
+    public void ShouldAllowEuqlityComparisonBetweenStringAndLiteralExpression()
+    {
+        // given
+        var right = new LiteralExpression(Right);
 
-        [Fact]
-        public void ShouldAllowEuqlityComparisonBetweenStringAndLiteralExpression()
-        {
-            // given
-            var right = new LiteralExpression(Right);
+        // then
+        AssertExpressionTypeAndCorrectArguments<EqualsExpression>(TestingStringValue == right,
+            assertLeftOperand: op => AssertCorrectConstantTerm(op, TestingStringValue));
+        AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(TestingStringValue != right,
+            assertLeftOperand: op => AssertCorrectConstantTerm(op, TestingStringValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<EqualsExpression>(TestingStringValue == right,
-                assertLeftOperand: op => AssertCorrectConstantTerm(op, TestingStringValue));
-            AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(TestingStringValue != right,
-                assertLeftOperand: op => AssertCorrectConstantTerm(op, TestingStringValue));
-        }
+    [Fact]
+    public void ShouldAllowExtractingUntypedLiteral()
+    {
+        // given
+        var literal = new LiteralExpression(5.5.ToConstantTerm());
 
-        [Fact]
-        public void ShouldAllowExtractingUntypedLiteral()
-        {
-            // given
-            var literal = new LiteralExpression(5.5.ToConstantTerm());
+        // when
+        LiteralExpression simpleLiteral = literal.ToSimpleLiteral();
 
-            // when
-            LiteralExpression simpleLiteral = literal.ToSimpleLiteral();
-
-            // then
-            Assert.True(simpleLiteral.Expression is ConstantTerm);
-            Assert.Equal("\"5.5\"", simpleLiteral.Expression.ToString());
-        }
+        // then
+        Assert.True(simpleLiteral.Expression is ConstantTerm);
+        Assert.Equal("\"5.5\"", simpleLiteral.Expression.ToString());
     }
 }

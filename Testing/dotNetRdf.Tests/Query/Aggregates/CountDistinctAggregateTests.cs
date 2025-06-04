@@ -28,38 +28,37 @@ using Xunit;
 using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Aggregates
+namespace VDS.RDF.Query.Aggregates;
+
+
+public class CountDistinctAggregateTests
 {
-
-    public class CountDistinctAggregateTests
+    [Fact]
+    public void SparqlCountDistinctWhenToStringCalled()
     {
-        [Fact]
-        public void SparqlCountDistinctWhenToStringCalled()
-        {
-            // given
-            var aggregate = new CountDistinctAggregate(new VariableTerm("var"));
+        // given
+        var aggregate = new CountDistinctAggregate(new VariableTerm("var"));
 
-            // when
-            var aggregateString = aggregate.ToString();
+        // when
+        var aggregateString = aggregate.ToString();
 
-            // then
-            Assert.Equal("COUNT(DISTINCT ?var)", aggregateString);
-        }
+        // then
+        Assert.Equal("COUNT(DISTINCT ?var)", aggregateString);
+    }
 
-        [Fact]
-        public void SparqlCountDistinctHasDistinctModifier()
-        {
-            // given
-            var term = new VariableTerm("var");
-            var aggregate = new CountDistinctAggregate(term);
+    [Fact]
+    public void SparqlCountDistinctHasDistinctModifier()
+    {
+        // given
+        var term = new VariableTerm("var");
+        var aggregate = new CountDistinctAggregate(term);
 
-            // when
-            var arguments = aggregate.Arguments.ToArray();
+        // when
+        var arguments = aggregate.Arguments.ToArray();
 
-            // then
-            Assert.Equal(2, arguments.Length);
-            Assert.True(arguments[0] is DistinctModifier);
-            Assert.Same(term, arguments[1]);
-        }
+        // then
+        Assert.Equal(2, arguments.Length);
+        Assert.True(arguments[0] is DistinctModifier);
+        Assert.Same(term, arguments[1]);
     }
 }

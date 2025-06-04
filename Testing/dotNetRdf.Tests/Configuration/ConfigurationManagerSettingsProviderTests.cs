@@ -26,36 +26,35 @@
 
 using Xunit;
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+public class ConfigurationManagerSettingsProviderTests
 {
-    public class ConfigurationManagerSettingsProviderTests
+    private readonly ConfigurationManagerSettingsProvider _provider;
+
+    public ConfigurationManagerSettingsProviderTests()
     {
-        private readonly ConfigurationManagerSettingsProvider _provider;
+        System.Configuration.ConfigurationManager.AppSettings["key"] = "value";
+        _provider = new ConfigurationManagerSettingsProvider();
+    }
 
-        public ConfigurationManagerSettingsProviderTests()
-        {
-            System.Configuration.ConfigurationManager.AppSettings["key"] = "value";
-            _provider = new ConfigurationManagerSettingsProvider();
-        }
+    [Fact]
+    public void GettingSetting_ReturnsValueFromSource()
+    {
+        // when
+        var setting = _provider.GetSetting("key");
 
-        [Fact]
-        public void GettingSetting_ReturnsValueFromSource()
-        {
-            // when
-            var setting = _provider.GetSetting("key");
+        // then
+        Assert.Equal("value", setting);
+    }
 
-            // then
-            Assert.Equal("value", setting);
-        }
+    [Fact]
+    public void GettingSetting_ReturnsNull_WhenItIsNotPresentInSources()
+    {
+        // when
+        var setting = _provider.GetSetting("no-such-key");
 
-        [Fact]
-        public void GettingSetting_ReturnsNull_WhenItIsNotPresentInSources()
-        {
-            // when
-            var setting = _provider.GetSetting("no-such-key");
-
-            // then
-            Assert.Null(setting);
-        }
+        // then
+        Assert.Null(setting);
     }
 }

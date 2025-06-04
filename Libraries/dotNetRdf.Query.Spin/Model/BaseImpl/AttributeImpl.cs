@@ -26,54 +26,53 @@
 
 using VDS.RDF.Query.Spin.LibraryOntology;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class AttributeImpl : AbstractAttributeImpl, IAttribute
 {
-    internal class AttributeImpl : AbstractAttributeImpl, IAttribute
+
+    public AttributeImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
+    }
 
-        public AttributeImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
+
+    public new bool IsOptional()
+    {
+        return getMinCount() == 0;
+    }
+
+
+    public INode getDefaultValue()
+    {
+        return getObject(SPL.PropertyDefaultValue);
+    }
+
+
+    public int? getMaxCount()
+    {
+        var value = (int?)getLong(SPL.PropertyMaxCount);
+        if (value != null)
         {
+            return value;
         }
-
-
-        public new bool IsOptional()
+        else
         {
-            return getMinCount() == 0;
+            return null;
         }
+    }
 
 
-        public INode getDefaultValue()
+    public int getMinCount()
+    {
+        var value = (int?)getLong(SPL.PropertyMaxCount);
+        if (value != null)
         {
-            return getObject(SPL.PropertyDefaultValue);
+            return (int)value;
         }
-
-
-        public int? getMaxCount()
+        else
         {
-            var value = (int?)getLong(SPL.PropertyMaxCount);
-            if (value != null)
-            {
-                return value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-
-        public int getMinCount()
-        {
-            var value = (int?)getLong(SPL.PropertyMaxCount);
-            if (value != null)
-            {
-                return (int)value;
-            }
-            else
-            {
-                return 0;
-            }
+            return 0;
         }
     }
 }

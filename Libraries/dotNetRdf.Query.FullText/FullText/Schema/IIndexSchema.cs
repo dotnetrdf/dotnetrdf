@@ -26,65 +26,64 @@
 
 using System;
 
-namespace VDS.RDF.Query.FullText.Schema
+namespace VDS.RDF.Query.FullText.Schema;
+
+/// <summary>
+/// Interface for Index Schemas.
+/// </summary>
+/// <remarks>
+/// Index Schemas are used to provide the set of field names that is used to encode indexed data onto a document in the index.
+/// </remarks>
+public interface IFullTextIndexSchema
 {
     /// <summary>
-    /// Interface for Index Schemas.
+    /// Gets the field in which the full text is indexed.
+    /// </summary>
+    String IndexField
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the field in which the Graph URI is indexed.
+    /// </summary>
+    String GraphField
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the field in which the hash is stored.
     /// </summary>
     /// <remarks>
-    /// Index Schemas are used to provide the set of field names that is used to encode indexed data onto a document in the index.
+    /// Used for unindexing.
     /// </remarks>
-    public interface IFullTextIndexSchema
+    String HashField
     {
-        /// <summary>
-        /// Gets the field in which the full text is indexed.
-        /// </summary>
-        String IndexField
-        {
-            get;
-        }
+        get;
+    }
 
-        /// <summary>
-        /// Gets the field in which the Graph URI is indexed.
-        /// </summary>
-        String GraphField
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets the field in which the Node type is stored.
+    /// </summary>
+    String NodeTypeField
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gets the field in which the hash is stored.
-        /// </summary>
-        /// <remarks>
-        /// Used for unindexing.
-        /// </remarks>
-        String HashField
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets the field in which the Node value is stored.
+    /// </summary>
+    String NodeValueField
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gets the field in which the Node type is stored.
-        /// </summary>
-        String NodeTypeField
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the field in which the Node value is stored.
-        /// </summary>
-        String NodeValueField
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the field in which the Node meta is stored.
-        /// </summary>
-        String NodeMetaField
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets the field in which the Node meta is stored.
+    /// </summary>
+    String NodeMetaField
+    {
+        get;
     }
 }

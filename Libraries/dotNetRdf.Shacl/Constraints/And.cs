@@ -29,38 +29,37 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class And : Constraint
 {
-    internal class And : Constraint
+    [DebuggerStepThrough]
+    internal And(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal And(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage => "Value must conform to all of the specified shapes.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.AndConstraintComponent;
         }
+    }
 
-        protected override string DefaultMessage => "Value must conform to all of the specified shapes.";
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        IEnumerable<INode> invalidValues =
+            from valueNode in valueNodes
+            from member in Graph.GetListItems(this)
+            let shape = Shape.Parse(member, Shape.Graph)
+            let conforms = shape.Validate(dataGraph, valueNode)
+            group conforms by valueNode into conform
+            where !conform.All(valid => valid)
+            select conform.Key;
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.AndConstraintComponent;
-            }
-        }
-
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            IEnumerable<INode> invalidValues =
-                from valueNode in valueNodes
-                from member in Graph.GetListItems(this)
-                let shape = Shape.Parse(member, Shape.Graph)
-                let conforms = shape.Validate(dataGraph, valueNode)
-                group conforms by valueNode into conform
-                where !conform.All(valid => valid)
-                select conform.Key;
-
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
+        return ReportValueNodes(focusNode, invalidValues, report);
     }
 }

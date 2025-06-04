@@ -31,50 +31,49 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+
+public class GraphPatternBuilderTests
 {
+    private GraphPatternBuilder _builder;
+    private Mock<INamespaceMapper> _namespaceMapper;
 
-    public class GraphPatternBuilderTests
+    public GraphPatternBuilderTests()
     {
-        private GraphPatternBuilder _builder;
-        private Mock<INamespaceMapper> _namespaceMapper;
+        _namespaceMapper = new Mock<INamespaceMapper>(MockBehavior.Strict);
+        _builder = new GraphPatternBuilder();
+    }
 
-        public GraphPatternBuilderTests()
+    [Fact]
+    public void ShouldAllowUsingISparqlExpressionForFilter()
+    {
+        // given
+        ISparqlExpression expression = new IsIriFunction(new VariableTerm("x"));
+        _builder.Filter(expression);
+
+        // when
+        GraphPattern graphPattern = _builder.BuildGraphPattern(_namespaceMapper.Object);
+
+        // then
+        Assert.True(graphPattern.IsFiltered);
+        Assert.Same(expression, graphPattern.Filter.Expression);
+    }
+
+    [Fact]
+    public void ShouldAllowAddingSimpleChildGraphPatterns()
+    {
+        // given
+        _builder.Child(cp => cp.Child(cp2 => cp2.Child(cp3 => cp3.Child(cp4 => cp4.Child(last => { })))));
+
+        // when
+        var graphPattern = _builder.BuildGraphPattern(_namespaceMapper.Object);
+
+        // then
+        for (var i = 0; i < 4; i++)
         {
-            _namespaceMapper = new Mock<INamespaceMapper>(MockBehavior.Strict);
-            _builder = new GraphPatternBuilder();
-        }
-
-        [Fact]
-        public void ShouldAllowUsingISparqlExpressionForFilter()
-        {
-            // given
-            ISparqlExpression expression = new IsIriFunction(new VariableTerm("x"));
-            _builder.Filter(expression);
-
-            // when
-            GraphPattern graphPattern = _builder.BuildGraphPattern(_namespaceMapper.Object);
-
-            // then
-            Assert.True(graphPattern.IsFiltered);
-            Assert.Same(expression, graphPattern.Filter.Expression);
-        }
-
-        [Fact]
-        public void ShouldAllowAddingSimpleChildGraphPatterns()
-        {
-            // given
-            _builder.Child(cp => cp.Child(cp2 => cp2.Child(cp3 => cp3.Child(cp4 => cp4.Child(last => { })))));
-
-            // when
-            var graphPattern = _builder.BuildGraphPattern(_namespaceMapper.Object);
-
-            // then
-            for (var i = 0; i < 4; i++)
-            {
-                Assert.Single(graphPattern.ChildGraphPatterns);
-                graphPattern = graphPattern.ChildGraphPatterns.Single();
-            }
+            Assert.Single(graphPattern.ChildGraphPatterns);
+            graphPattern = graphPattern.ChildGraphPatterns.Single();
         }
     }
 }

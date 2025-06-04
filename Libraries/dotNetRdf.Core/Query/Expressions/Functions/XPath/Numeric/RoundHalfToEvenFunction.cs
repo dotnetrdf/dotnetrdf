@@ -24,88 +24,87 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
+namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric;
+
+/// <summary>
+/// Represents the XPath fn:round-half-to-even() function.
+/// </summary>
+public class RoundHalfToEvenFunction
+    : BaseUnaryExpression
 {
     /// <summary>
-    /// Represents the XPath fn:round-half-to-even() function.
+    /// Creates a new XPath RoundHalfToEven function.
     /// </summary>
-    public class RoundHalfToEvenFunction
-        : BaseUnaryExpression
+    /// <param name="expr">Expression.</param>
+    public RoundHalfToEvenFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+    /// <summary>
+    /// Creates a new XPath RoundHalfToEven function.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="precision">Precision.</param>
+    public RoundHalfToEvenFunction(ISparqlExpression expr, ISparqlExpression precision)
+        : this(expr)
     {
-        /// <summary>
-        /// Creates a new XPath RoundHalfToEven function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public RoundHalfToEvenFunction(ISparqlExpression expr)
-            : base(expr) { }
+        Precision = precision;
+    }
 
-        /// <summary>
-        /// Creates a new XPath RoundHalfToEven function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="precision">Precision.</param>
-        public RoundHalfToEvenFunction(ISparqlExpression expr, ISparqlExpression precision)
-            : this(expr)
+    /// <summary>
+    /// Get the expression that resolves to the precision of the rounding.
+    /// </summary>
+    public ISparqlExpression Precision { get; }
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.RoundHalfToEven + ">(" + InnerExpression + ")";
+    }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessRoundHalfToEvenFunction(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitRoundHalfToEvenFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            Precision = precision;
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <summary>
-        /// Get the expression that resolves to the precision of the rounding.
-        /// </summary>
-        public ISparqlExpression Precision { get; }
-
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.RoundHalfToEven + ">(" + InnerExpression + ")";
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.RoundHalfToEven;
         }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessRoundHalfToEvenFunction(this, context, binding);
-        }
-
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitRoundHalfToEvenFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.RoundHalfToEven;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new RoundHalfToEvenFunction(transformer.Transform(InnerExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new RoundHalfToEvenFunction(transformer.Transform(InnerExpression));
     }
 }

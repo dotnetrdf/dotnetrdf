@@ -28,27 +28,26 @@ using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Query.Operators.DateTime
-{
-    /// <summary>
-    /// Abstract base operator for time span operations.
-    /// </summary>
-    public abstract class BaseTimeSpanOperator
-        : BaseOperator
-    {
-        /// <inheritdoc />
-        public override bool IsExtension => true;
+namespace VDS.RDF.Query.Operators.DateTime;
 
-        /// <summary>
-        /// Gets whether the operator is applicable for the arguments.
-        /// </summary>
-        /// <param name="ns">Arguments.</param>
-        /// <returns></returns>
-        public override bool IsApplicable(params IValuedNode[] ns)
-        {
-            return ns != null
-                   && ns.Length > 0
-                   && ns.All(n => n != null && (n.EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration) || n.EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDuration)));
-        }
+/// <summary>
+/// Abstract base operator for time span operations.
+/// </summary>
+public abstract class BaseTimeSpanOperator
+    : BaseOperator
+{
+    /// <inheritdoc />
+    public override bool IsExtension => true;
+
+    /// <summary>
+    /// Gets whether the operator is applicable for the arguments.
+    /// </summary>
+    /// <param name="ns">Arguments.</param>
+    /// <returns></returns>
+    public override bool IsApplicable(params IValuedNode[] ns)
+    {
+        return ns != null
+               && ns.Length > 0
+               && ns.All(n => n != null && (n.EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration) || n.EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDuration)));
     }
 }

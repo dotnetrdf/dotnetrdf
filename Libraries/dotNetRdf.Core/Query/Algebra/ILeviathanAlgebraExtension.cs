@@ -24,18 +24,17 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Interface to be implemented by extension algebras that can be evaluated by the Leviathan query engine.
+/// </summary>
+public interface ILeviathanAlgebraExtension : ISparqlAlgebra
 {
     /// <summary>
-    /// Interface to be implemented by extension algebras that can be evaluated by the Leviathan query engine.
+    /// Evaluate the extension algebra.
     /// </summary>
-    public interface ILeviathanAlgebraExtension : ISparqlAlgebra
-    {
-        /// <summary>
-        /// Evaluate the extension algebra.
-        /// </summary>
-        /// <param name="context">The evaluation context.</param>
-        /// <returns>The evaluation result/.</returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context);
-    }
+    /// <param name="context">The evaluation context.</param>
+    /// <returns>The evaluation result/.</returns>
+    public BaseMultiset Evaluate(SparqlEvaluationContext context);
 }

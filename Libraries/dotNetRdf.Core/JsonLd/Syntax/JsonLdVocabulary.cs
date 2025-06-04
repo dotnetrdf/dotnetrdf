@@ -24,21 +24,20 @@
 // </copyright>
 */
 
-namespace VDS.RDF.JsonLd.Syntax
+namespace VDS.RDF.JsonLd.Syntax;
+
+/// <summary>
+/// Defines string constants for elements of the JSON-LD vocabulary that are required by the <see cref="JsonLdProcessor"/>.
+/// </summary>
+public static class JsonLdVocabulary
 {
     /// <summary>
-    /// Defines string constants for elements of the JSON-LD vocabulary that are required by the <see cref="JsonLdProcessor"/>.
+    /// The prefix part of each JSON-LD vocabulary IRI up to and including the fragment separator.
     /// </summary>
-    public static class JsonLdVocabulary
-    {
-        /// <summary>
-        /// The prefix part of each JSON-LD vocabulary IRI up to and including the fragment separator.
-        /// </summary>
-        public static string VocabularyBase = "http://www.w3.org/ns/json-ld#";
+    public static string VocabularyBase = "http://www.w3.org/ns/json-ld#";
 
-        /// <summary>
-        /// Identifier for the context term.
-        /// </summary>
-        public static string Context = VocabularyBase + "context";
-    }
+    /// <summary>
+    /// Identifier for the context term.
+    /// </summary>
+    public static string Context = VocabularyBase + "context";
 }

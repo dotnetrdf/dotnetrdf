@@ -28,69 +28,68 @@ using System;
 using System.Collections.Generic;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.PropertyFunctions
+namespace VDS.RDF.Query.PropertyFunctions;
+
+/// <summary>
+/// Represents information about a property function.
+/// </summary>
+public class PropertyFunctionInfo
 {
+    private Uri _funcUri;
+    private List<IMatchTriplePattern> _patterns = new List<IMatchTriplePattern>();
+    private List<PatternItem> _subjArgs = new List<PatternItem>();
+    private List<PatternItem> _objArgs = new List<PatternItem>();
+
     /// <summary>
-    /// Represents information about a property function.
+    /// Creates new function information.
     /// </summary>
-    public class PropertyFunctionInfo
+    /// <param name="u">Function URI.</param>
+    public PropertyFunctionInfo(Uri u)
     {
-        private Uri _funcUri;
-        private List<IMatchTriplePattern> _patterns = new List<IMatchTriplePattern>();
-        private List<PatternItem> _subjArgs = new List<PatternItem>();
-        private List<PatternItem> _objArgs = new List<PatternItem>();
+        _funcUri = u;
+    }
 
-        /// <summary>
-        /// Creates new function information.
-        /// </summary>
-        /// <param name="u">Function URI.</param>
-        public PropertyFunctionInfo(Uri u)
+    /// <summary>
+    /// Gets the function URI.
+    /// </summary>
+    public Uri FunctionUri
+    {
+        get
         {
-            _funcUri = u;
+            return _funcUri;
         }
+    }
 
-        /// <summary>
-        /// Gets the function URI.
-        /// </summary>
-        public Uri FunctionUri
+    /// <summary>
+    /// Gets the triple patterns that compose the property function.
+    /// </summary>
+    public List<IMatchTriplePattern> Patterns
+    {
+        get
         {
-            get
-            {
-                return _funcUri;
-            }
+            return _patterns;
         }
+    }
 
-        /// <summary>
-        /// Gets the triple patterns that compose the property function.
-        /// </summary>
-        public List<IMatchTriplePattern> Patterns
+    /// <summary>
+    /// Gets the subject arguments to the function.
+    /// </summary>
+    public List<PatternItem> SubjectArgs
+    {
+        get
         {
-            get
-            {
-                return _patterns;
-            }
+            return _subjArgs;
         }
+    }
 
-        /// <summary>
-        /// Gets the subject arguments to the function.
-        /// </summary>
-        public List<PatternItem> SubjectArgs
+    /// <summary>
+    /// Gets the object arguments to the function.
+    /// </summary>
+    public List<PatternItem> ObjectArgs
+    {
+        get
         {
-            get
-            {
-                return _subjArgs;
-            }
-        }
-
-        /// <summary>
-        /// Gets the object arguments to the function.
-        /// </summary>
-        public List<PatternItem> ObjectArgs
-        {
-            get
-            {
-                return _objArgs;
-            }
+            return _objArgs;
         }
     }
 }

@@ -29,56 +29,40 @@ using System.Linq;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Represents a Join.
+/// </summary>
+public class Join 
+    : IJoin
 {
+    private readonly ISparqlAlgebra _lhs, _rhs;
+
     /// <summary>
-    /// Represents a Join.
+    /// Creates a new Join.
     /// </summary>
-    public class Join 
-        : IJoin
+    /// <param name="lhs">Left Hand Side.</param>
+    /// <param name="rhs">Right Hand Side.</param>
+    public Join(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
     {
-        private readonly ISparqlAlgebra _lhs, _rhs;
+        _lhs = lhs;
+        _rhs = rhs;
+    }
 
-        /// <summary>
-        /// Creates a new Join.
-        /// </summary>
-        /// <param name="lhs">Left Hand Side.</param>
-        /// <param name="rhs">Right Hand Side.</param>
-        public Join(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
+    /// <summary>
+    /// Creates either a Join or returns just one of the sides of the Join if one side is the empty BGP.
+    /// </summary>
+    /// <param name="lhs">Left Hand Side.</param>
+    /// <param name="rhs">Right Hand Side.</param>
+    /// <returns></returns>
+    public static ISparqlAlgebra CreateJoin(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
+    {
+        if (lhs is Bgp)
         {
-            _lhs = lhs;
-            _rhs = rhs;
-        }
-
-        /// <summary>
-        /// Creates either a Join or returns just one of the sides of the Join if one side is the empty BGP.
-        /// </summary>
-        /// <param name="lhs">Left Hand Side.</param>
-        /// <param name="rhs">Right Hand Side.</param>
-        /// <returns></returns>
-        public static ISparqlAlgebra CreateJoin(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
-        {
-            if (lhs is Bgp)
+            if (((Bgp)lhs).IsEmpty)
             {
-                if (((Bgp)lhs).IsEmpty)
-                {
-                    return rhs;
-                }
-                else if (rhs is Bgp)
-                {
-                    if (((Bgp)rhs).IsEmpty)
-                    {
-                        return lhs;
-                    }
-                    else
-                    {
-                        return new Join(lhs, rhs);
-                    }
-                }
-                else
-                {
-                    return new Join(lhs, rhs);
-                }
+                return rhs;
             }
             else if (rhs is Bgp)
             {
@@ -96,139 +80,154 @@ namespace VDS.RDF.Query.Algebra
                 return new Join(lhs, rhs);
             }
         }
-
-
-        /// <summary>
-        /// Gets the Variables used in the Algebra.
-        /// </summary>
-        public IEnumerable<string> Variables
+        else if (rhs is Bgp)
         {
-            get
+            if (((Bgp)rhs).IsEmpty)
             {
-                return (_lhs.Variables.Concat(_rhs.Variables)).Distinct();
+                return lhs;
+            }
+            else
+            {
+                return new Join(lhs, rhs);
             }
         }
-
-        /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FloatingVariables
+        else
         {
-            get
-            {
-                // Floating variables are those floating on either side which are not fixed
-                IEnumerable<string> floating = _lhs.FloatingVariables.Concat(_rhs.FloatingVariables).Distinct();
-                var fixedVars = new HashSet<string>(FixedVariables);
-                return floating.Where(v => !fixedVars.Contains(v));
-            }
+            return new Join(lhs, rhs);
         }
+    }
 
-        /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FixedVariables
-        {
-            get
-            {
-                // Fixed variables are those fixed on either side
-                return _lhs.FixedVariables.Concat(_rhs.FixedVariables).Distinct();
-            }
-        }
 
-        /// <summary>
-        /// Gets the LHS of the Join.
-        /// </summary>
-        public ISparqlAlgebra Lhs
+    /// <summary>
+    /// Gets the Variables used in the Algebra.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
         {
-            get
-            {
-                return _lhs;
-            }
+            return (_lhs.Variables.Concat(_rhs.Variables)).Distinct();
         }
+    }
 
-        /// <summary>
-        /// Gets the RHS of the Join.
-        /// </summary>
-        public ISparqlAlgebra Rhs
+    /// <summary>
+    /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FloatingVariables
+    {
+        get
         {
-            get
-            {
-                return _rhs;
-            }
+            // Floating variables are those floating on either side which are not fixed
+            IEnumerable<string> floating = _lhs.FloatingVariables.Concat(_rhs.FloatingVariables).Distinct();
+            var fixedVars = new HashSet<string>(FixedVariables);
+            return floating.Where(v => !fixedVars.Contains(v));
         }
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Join.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FixedVariables
+    {
+        get
         {
-            return "Join(" + _lhs + ", " + _rhs + ")";
+            // Fixed variables are those fixed on either side
+            return _lhs.FixedVariables.Concat(_rhs.FixedVariables).Distinct();
         }
+    }
 
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    /// <summary>
+    /// Gets the LHS of the Join.
+    /// </summary>
+    public ISparqlAlgebra Lhs
+    {
+        get
         {
-            return processor.ProcessJoin(this, context);
+            return _lhs;
         }
+    }
 
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    /// <summary>
+    /// Gets the RHS of the Join.
+    /// </summary>
+    public ISparqlAlgebra Rhs
+    {
+        get
         {
-            return visitor.VisitJoin(this);
+            return _rhs;
         }
+    }
 
-        /// <summary>
-        /// Converts the Algebra back to a SPARQL Query.
-        /// </summary>
-        /// <returns></returns>
-        public SparqlQuery ToQuery()
-        {
-            var q = new SparqlQuery();
-            q.RootGraphPattern = ToGraphPattern();
-            q.Optimise();
-            return q;
-        }
+    /// <summary>
+    /// Gets the String representation of the Join.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "Join(" + _lhs + ", " + _rhs + ")";
+    }
 
-        /// <summary>
-        /// Converts the Algebra back to a SPARQL Query.
-        /// </summary>
-        /// <returns></returns>
-        public GraphPattern ToGraphPattern()
-        {
-            var p = _lhs.ToGraphPattern();
-            p.AddGraphPattern(_rhs.ToGraphPattern());
-            return p;
-        }
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    {
+        return processor.ProcessJoin(this, context);
+    }
 
-        /// <summary>
-        /// Transforms both sides of the Join using the given Optimiser.
-        /// </summary>
-        /// <param name="optimiser">Optimser.</param>
-        /// <returns></returns>
-        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
-        {
-            return new Join(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs));
-        }
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    {
+        return visitor.VisitJoin(this);
+    }
 
-        /// <summary>
-        /// Transforms the LHS of the Join using the given Optimiser.
-        /// </summary>
-        /// <param name="optimiser">Optimser.</param>
-        /// <returns></returns>
-        public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
-        {
-            return new Join(optimiser.Optimise(_lhs), _rhs);
-        }
+    /// <summary>
+    /// Converts the Algebra back to a SPARQL Query.
+    /// </summary>
+    /// <returns></returns>
+    public SparqlQuery ToQuery()
+    {
+        var q = new SparqlQuery();
+        q.RootGraphPattern = ToGraphPattern();
+        q.Optimise();
+        return q;
+    }
 
-        /// <summary>
-        /// Transforms the RHS of the Join using the given Optimiser.
-        /// </summary>
-        /// <param name="optimiser">Optimser.</param>
-        /// <returns></returns>
-        public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
-        {
-            return new Join(_lhs, optimiser.Optimise(_rhs));
-        }
+    /// <summary>
+    /// Converts the Algebra back to a SPARQL Query.
+    /// </summary>
+    /// <returns></returns>
+    public GraphPattern ToGraphPattern()
+    {
+        var p = _lhs.ToGraphPattern();
+        p.AddGraphPattern(_rhs.ToGraphPattern());
+        return p;
+    }
+
+    /// <summary>
+    /// Transforms both sides of the Join using the given Optimiser.
+    /// </summary>
+    /// <param name="optimiser">Optimser.</param>
+    /// <returns></returns>
+    public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+    {
+        return new Join(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs));
+    }
+
+    /// <summary>
+    /// Transforms the LHS of the Join using the given Optimiser.
+    /// </summary>
+    /// <param name="optimiser">Optimser.</param>
+    /// <returns></returns>
+    public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
+    {
+        return new Join(optimiser.Optimise(_lhs), _rhs);
+    }
+
+    /// <summary>
+    /// Transforms the RHS of the Join using the given Optimiser.
+    /// </summary>
+    /// <param name="optimiser">Optimser.</param>
+    /// <returns></returns>
+    public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
+    {
+        return new Join(_lhs, optimiser.Optimise(_rhs));
     }
 }

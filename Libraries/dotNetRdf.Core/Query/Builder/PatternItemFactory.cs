@@ -28,108 +28,107 @@ using System;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+/// <summary>
+/// Class responsible for creating <see cref="PatternItem"/>s.
+/// </summary>
+internal class PatternItemFactory : IPatternItemFactory
 {
-    /// <summary>
-    /// Class responsible for creating <see cref="PatternItem"/>s.
-    /// </summary>
-    internal class PatternItemFactory : IPatternItemFactory
+    private readonly NodeFactory _nodeFactory = new(new NodeFactoryOptions());
+
+    public PatternItem CreateVariablePattern(string variableName)
     {
-        private readonly NodeFactory _nodeFactory = new(new NodeFactoryOptions());
+        return new VariablePattern(variableName);
+    }
 
-        public PatternItem CreateVariablePattern(string variableName)
+    public PatternItem CreateNodeMatchPattern(string qName, INamespaceMapper namespaceMapper)
+    {
+        var qNameResolved = Tools.ResolveQName(qName, namespaceMapper, null);
+        return CreateNodeMatchPattern(new Uri(qNameResolved));
+    }
+
+    public PatternItem CreateNodeMatchPattern(Uri uri)
+    {
+        return CreateNodeMatchPattern(_nodeFactory.CreateUriNode(uri));
+    }
+
+    public PatternItem CreateNodeMatchPattern(INode node)
+    {
+        return new NodeMatchPattern(node);
+    }
+
+    public PatternItem CreateBlankNodeMatchPattern(string blankNodeIdentifier)
+    {
+        return new BlankNodePattern(blankNodeIdentifier);
+    }
+
+    public PatternItem CreatePatternItem(Type nodeType, string patternString, INamespaceMapper namespaceMapper)
+    {
+        if (nodeType == typeof(IUriNode))
         {
-            return new VariablePattern(variableName);
+            return CreateNodeMatchPattern(patternString, namespaceMapper);
+        }
+        if (nodeType == typeof(IBlankNode))
+        {
+            return CreateBlankNodeMatchPattern(patternString);
+        }
+        if (nodeType == typeof(ILiteralNode))
+        {
+            return CreateLiteralNodeMatchPattern(patternString);
+        }
+        if(nodeType == typeof(IVariableNode))
+        {
+            return CreateVariablePattern(patternString);
         }
 
-        public PatternItem CreateNodeMatchPattern(string qName, INamespaceMapper namespaceMapper)
+        throw new ArgumentException(string.Format("Invalid node type {0}", nodeType));
+    }
+
+    public PatternItem CreateLiteralNodeMatchPattern(object literal)
+    {
+        var literalString = GetLiteralString(literal);
+
+        return new NodeMatchPattern(_nodeFactory.CreateLiteralNode(literalString));
+    }
+
+    public PatternItem CreateLiteralNodeMatchPattern(object literal, Uri datatype)
+    {
+        var literalString = GetLiteralString(literal);
+
+        return new NodeMatchPattern(_nodeFactory.CreateLiteralNode(literalString, datatype));
+    }
+
+    public PatternItem CreateLiteralNodeMatchPattern(object literal, string langSpec)
+    {
+        var literalString = GetLiteralString(literal);
+
+        return new NodeMatchPattern(_nodeFactory.CreateLiteralNode(literalString, langSpec));
+    }
+
+    private static string GetLiteralString(object literal)
+    {
+        var literalString = literal.ToString();
+        if (literal is DateTimeOffset)
         {
-            var qNameResolved = Tools.ResolveQName(qName, namespaceMapper, null);
-            return CreateNodeMatchPattern(new Uri(qNameResolved));
+            literalString = GetDatetimeString((DateTimeOffset) literal);
         }
-
-        public PatternItem CreateNodeMatchPattern(Uri uri)
+        else if (literal is DateTime)
         {
-            return CreateNodeMatchPattern(_nodeFactory.CreateUriNode(uri));
+            literalString = GetDatetimeString((DateTime) literal);
         }
+        return literalString;
+    }
 
-        public PatternItem CreateNodeMatchPattern(INode node)
-        {
-            return new NodeMatchPattern(node);
-        }
+    private static string GetDatetimeString(DateTimeOffset literal)
+    {
+        var datetimeString = literal.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat);
+        return datetimeString;
+    }
 
-        public PatternItem CreateBlankNodeMatchPattern(string blankNodeIdentifier)
-        {
-            return new BlankNodePattern(blankNodeIdentifier);
-        }
-
-        public PatternItem CreatePatternItem(Type nodeType, string patternString, INamespaceMapper namespaceMapper)
-        {
-            if (nodeType == typeof(IUriNode))
-            {
-                return CreateNodeMatchPattern(patternString, namespaceMapper);
-            }
-            if (nodeType == typeof(IBlankNode))
-            {
-                return CreateBlankNodeMatchPattern(patternString);
-            }
-            if (nodeType == typeof(ILiteralNode))
-            {
-                return CreateLiteralNodeMatchPattern(patternString);
-            }
-            if(nodeType == typeof(IVariableNode))
-            {
-                return CreateVariablePattern(patternString);
-            }
-
-            throw new ArgumentException(string.Format("Invalid node type {0}", nodeType));
-        }
-
-        public PatternItem CreateLiteralNodeMatchPattern(object literal)
-        {
-            var literalString = GetLiteralString(literal);
-
-            return new NodeMatchPattern(_nodeFactory.CreateLiteralNode(literalString));
-        }
-
-        public PatternItem CreateLiteralNodeMatchPattern(object literal, Uri datatype)
-        {
-            var literalString = GetLiteralString(literal);
-
-            return new NodeMatchPattern(_nodeFactory.CreateLiteralNode(literalString, datatype));
-        }
-
-        public PatternItem CreateLiteralNodeMatchPattern(object literal, string langSpec)
-        {
-            var literalString = GetLiteralString(literal);
-
-            return new NodeMatchPattern(_nodeFactory.CreateLiteralNode(literalString, langSpec));
-        }
-
-        private static string GetLiteralString(object literal)
-        {
-            var literalString = literal.ToString();
-            if (literal is DateTimeOffset)
-            {
-                literalString = GetDatetimeString((DateTimeOffset) literal);
-            }
-            else if (literal is DateTime)
-            {
-                literalString = GetDatetimeString((DateTime) literal);
-            }
-            return literalString;
-        }
-
-        private static string GetDatetimeString(DateTimeOffset literal)
-        {
-            var datetimeString = literal.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat);
-            return datetimeString;
-        }
-
-        private static string GetDatetimeString(DateTime literal)
-        {
-            var datetimeString = literal.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat);
-            return datetimeString;
-        }
+    private static string GetDatetimeString(DateTime literal)
+    {
+        var datetimeString = literal.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat);
+        return datetimeString;
     }
 }

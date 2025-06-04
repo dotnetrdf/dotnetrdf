@@ -29,101 +29,100 @@ using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Aggregates.Sparql
+namespace VDS.RDF.Query.Aggregates.Sparql;
+
+/// <summary>
+/// Class representing MAX Aggregate Functions.
+/// </summary>
+public class MaxAggregate
+    : BaseAggregate
 {
     /// <summary>
-    /// Class representing MAX Aggregate Functions.
+    /// Creates a new MAX Aggregate.
     /// </summary>
-    public class MaxAggregate
-        : BaseAggregate
+    /// <param name="expr">Variable Expression.</param>
+    /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
+    public MaxAggregate(VariableTerm expr, bool distinct)
+        : base(expr, distinct)
     {
-        /// <summary>
-        /// Creates a new MAX Aggregate.
-        /// </summary>
-        /// <param name="expr">Variable Expression.</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
-        public MaxAggregate(VariableTerm expr, bool distinct)
-            : base(expr, distinct)
+        Variable = expr.ToString().Substring(1);
+    }
+
+    /// <summary>
+    /// Creates a new MAX Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
+    public MaxAggregate(ISparqlExpression expr, bool distinct)
+        : base(expr, distinct) { }
+
+    /// <summary>
+    /// Creates a new MAX Aggregate.
+    /// </summary>
+    /// <param name="expr">Variable Expression.</param>
+    public MaxAggregate(VariableTerm expr)
+        : this(expr, false) { }
+
+    /// <summary>
+    /// Creates a new MAX Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    public MaxAggregate(ISparqlExpression expr)
+        : this(expr, false) { }
+
+    /// <summary>
+    /// Get the name of the variable that is aggregated if the
+    /// aggregation operates on a simple variable term, otherwise
+    /// this property will return null.
+    /// </summary>
+    public string Variable { get; }
+
+    /// <summary>
+    /// Creates a new MAX Aggregate.
+    /// </summary>
+    /// <param name="distinct">Distinct Modifier.</param>
+    /// <param name="expr">Expression.</param>
+    public MaxAggregate(ISparqlExpression distinct, ISparqlExpression expr)
+        : base(expr)
+    {
+        if (distinct is DistinctModifier)
         {
-            Variable = expr.ToString().Substring(1);
+            _distinct = true;
         }
-
-        /// <summary>
-        /// Creates a new MAX Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
-        public MaxAggregate(ISparqlExpression expr, bool distinct)
-            : base(expr, distinct) { }
-
-        /// <summary>
-        /// Creates a new MAX Aggregate.
-        /// </summary>
-        /// <param name="expr">Variable Expression.</param>
-        public MaxAggregate(VariableTerm expr)
-            : this(expr, false) { }
-
-        /// <summary>
-        /// Creates a new MAX Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public MaxAggregate(ISparqlExpression expr)
-            : this(expr, false) { }
-
-        /// <summary>
-        /// Get the name of the variable that is aggregated if the
-        /// aggregation operates on a simple variable term, otherwise
-        /// this property will return null.
-        /// </summary>
-        public string Variable { get; }
-
-        /// <summary>
-        /// Creates a new MAX Aggregate.
-        /// </summary>
-        /// <param name="distinct">Distinct Modifier.</param>
-        /// <param name="expr">Expression.</param>
-        public MaxAggregate(ISparqlExpression distinct, ISparqlExpression expr)
-            : base(expr)
+        else
         {
-            if (distinct is DistinctModifier)
-            {
-                _distinct = true;
-            }
-            else
-            {
-                throw new RdfQueryException("The first argument to the MaxAggregate constructor must be of type DistinctModifierExpression");
-            }
+            throw new RdfQueryException("The first argument to the MaxAggregate constructor must be of type DistinctModifierExpression");
         }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
-            IEnumerable<TBinding> bindings)
-        {
-            return processor.ProcessMax(this, context, bindings);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+        IEnumerable<TBinding> bindings)
+    {
+        return processor.ProcessMax(this, context, bindings);
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Aggregate.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append("MAX(");
-            if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr + ")");
-            return output.ToString();
-        }
+    /// <summary>
+    /// Gets the String representation of the Aggregate.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append("MAX(");
+        if (_distinct) output.Append("DISTINCT ");
+        output.Append(_expr + ")");
+        return output.ToString();
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Aggregate.
-        /// </summary>
-        public override string Functor
+    /// <summary>
+    /// Gets the Functor of the Aggregate.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordMax;
-            }
+            return SparqlSpecsHelper.SparqlKeywordMax;
         }
     }
 }

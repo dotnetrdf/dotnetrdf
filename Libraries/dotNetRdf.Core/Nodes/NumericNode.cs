@@ -28,130 +28,129 @@ using System;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Nodes
+namespace VDS.RDF.Nodes;
+
+/// <summary>
+/// A Valued Node with a numeric value.
+/// </summary>
+public abstract class NumericNode
+    : LiteralNode, IValuedNode
 {
+    private SparqlNumericType _numType = SparqlNumericType.NaN;
+
     /// <summary>
-    /// A Valued Node with a numeric value.
+    /// Creates a new numeric valued node.
     /// </summary>
-    public abstract class NumericNode
-        : LiteralNode, IValuedNode
+    /// <param name="value">Lexical Value.</param>
+    /// <param name="datatype">Datatype URI.</param>
+    /// <param name="numType">SPARQL Numeric Type.</param>
+    /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="value"/>.</param>
+    protected NumericNode(string value, Uri datatype, SparqlNumericType numType, bool normalizeLiteralValue = false)
+        : base(value, datatype, normalizeLiteralValue) 
     {
-        private SparqlNumericType _numType = SparqlNumericType.NaN;
+        _numType = numType;
+    }
 
-        /// <summary>
-        /// Creates a new numeric valued node.
-        /// </summary>
-        /// <param name="value">Lexical Value.</param>
-        /// <param name="datatype">Datatype URI.</param>
-        /// <param name="numType">SPARQL Numeric Type.</param>
-        /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="value"/>.</param>
-        protected NumericNode(string value, Uri datatype, SparqlNumericType numType, bool normalizeLiteralValue = false)
-            : base(value, datatype, normalizeLiteralValue) 
+    /// <summary>
+    /// Gets the string value of the node.
+    /// </summary>
+    /// <returns></returns>
+    public string AsString()
+    {
+        return Value;
+    }
+
+    /// <summary>
+    /// Gets the integer value.
+    /// </summary>
+    /// <returns></returns>
+    public abstract long AsInteger();
+
+    /// <summary>
+    /// Gets the decimal value.
+    /// </summary>
+    /// <returns></returns>
+    public abstract decimal AsDecimal();
+
+    /// <summary>
+    /// Gets the float value.
+    /// </summary>
+    /// <returns></returns>
+    public abstract float AsFloat();
+
+    /// <summary>
+    /// Gets the double value.
+    /// </summary>
+    /// <returns></returns>
+    public abstract double AsDouble();
+
+    /// <summary>
+    /// Gets the boolean value.
+    /// </summary>
+    /// <returns></returns>
+    public bool AsBoolean()
+    {
+        switch (_numType)
         {
-            _numType = numType;
+            case SparqlNumericType.Integer:
+                return AsInteger() != 0;
+            case SparqlNumericType.Decimal:
+                return AsDecimal() != decimal.Zero;
+            case SparqlNumericType.Float:
+                return AsFloat() != 0.0f && !float.IsNaN(AsFloat());
+            case SparqlNumericType.Double:
+                return AsDouble() != 0.0d && !double.IsNaN(AsDouble());
+            default:
+                return this.EffectiveBooleanValue();
         }
+    }
 
-        /// <summary>
-        /// Gets the string value of the node.
-        /// </summary>
-        /// <returns></returns>
-        public string AsString()
+    /// <summary>
+    /// Throws an error as numerics cannot be converted to date times.
+    /// </summary>
+    /// <returns></returns>
+    public DateTime AsDateTime()
+    {
+        throw new RdfQueryException("Numeric Types cannot be converted into Date Times");
+    }
+
+    /// <summary>
+    /// Throws an error as numerics cannot be converted to date times.
+    /// </summary>
+    /// <returns></returns>
+    public DateTimeOffset AsDateTimeOffset()
+    {
+        throw new RdfQueryException("Numeric Types cannot be converted into Date Times");
+    }
+
+    /// <summary>
+    /// Throws an error as numerics cannot be cast to a time span.
+    /// </summary>
+    /// <returns></returns>
+    public TimeSpan AsTimeSpan()
+    {
+        throw new RdfQueryException("Numeric Types cannot be converted into Time spans");
+    }
+
+    /// <summary>
+    /// Gets the URI of the datatype this valued node represents as a String.
+    /// </summary>
+    public string EffectiveType
+    {
+        get
         {
-            return Value;
+            return DataType.AbsoluteUri;
         }
+    }
 
-        /// <summary>
-        /// Gets the integer value.
-        /// </summary>
-        /// <returns></returns>
-        public abstract long AsInteger();
-
-        /// <summary>
-        /// Gets the decimal value.
-        /// </summary>
-        /// <returns></returns>
-        public abstract decimal AsDecimal();
-
-        /// <summary>
-        /// Gets the float value.
-        /// </summary>
-        /// <returns></returns>
-        public abstract float AsFloat();
-
-        /// <summary>
-        /// Gets the double value.
-        /// </summary>
-        /// <returns></returns>
-        public abstract double AsDouble();
-
-        /// <summary>
-        /// Gets the boolean value.
-        /// </summary>
-        /// <returns></returns>
-        public bool AsBoolean()
+    /// <summary>
+    /// Gets the numeric type of the node.
+    /// </summary>
+    public SparqlNumericType NumericType
+    {
+        get
         {
-            switch (_numType)
-            {
-                case SparqlNumericType.Integer:
-                    return AsInteger() != 0;
-                case SparqlNumericType.Decimal:
-                    return AsDecimal() != decimal.Zero;
-                case SparqlNumericType.Float:
-                    return AsFloat() != 0.0f && !float.IsNaN(AsFloat());
-                case SparqlNumericType.Double:
-                    return AsDouble() != 0.0d && !double.IsNaN(AsDouble());
-                default:
-                    return this.EffectiveBooleanValue();
-            }
-        }
-
-        /// <summary>
-        /// Throws an error as numerics cannot be converted to date times.
-        /// </summary>
-        /// <returns></returns>
-        public DateTime AsDateTime()
-        {
-            throw new RdfQueryException("Numeric Types cannot be converted into Date Times");
-        }
-
-        /// <summary>
-        /// Throws an error as numerics cannot be converted to date times.
-        /// </summary>
-        /// <returns></returns>
-        public DateTimeOffset AsDateTimeOffset()
-        {
-            throw new RdfQueryException("Numeric Types cannot be converted into Date Times");
-        }
-
-        /// <summary>
-        /// Throws an error as numerics cannot be cast to a time span.
-        /// </summary>
-        /// <returns></returns>
-        public TimeSpan AsTimeSpan()
-        {
-            throw new RdfQueryException("Numeric Types cannot be converted into Time spans");
-        }
-
-        /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String.
-        /// </summary>
-        public string EffectiveType
-        {
-            get
-            {
-                return DataType.AbsoluteUri;
-            }
-        }
-
-        /// <summary>
-        /// Gets the numeric type of the node.
-        /// </summary>
-        public SparqlNumericType NumericType
-        {
-            get
-            {
-                return _numType;
-            }
+            return _numType;
         }
     }
 }

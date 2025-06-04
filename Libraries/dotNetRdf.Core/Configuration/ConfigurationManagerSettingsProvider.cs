@@ -26,19 +26,18 @@
 
 using System.Configuration;
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+/// <summary>
+/// Reads configuration using System.Configuration.ConfigurationManager.
+/// </summary>
+public class ConfigurationManagerSettingsProvider : ISettingsProvider
 {
     /// <summary>
-    /// Reads configuration using System.Configuration.ConfigurationManager.
+    /// Gets the setting from %lt;appSettings%gt; configuration section.
     /// </summary>
-    public class ConfigurationManagerSettingsProvider : ISettingsProvider
+    public string GetSetting(string key)
     {
-        /// <summary>
-        /// Gets the setting from %lt;appSettings%gt; configuration section.
-        /// </summary>
-        public string GetSetting(string key)
-        {
-            return ConfigurationManager.AppSettings[key];
-        }
+        return ConfigurationManager.AppSettings[key];
     }
 }

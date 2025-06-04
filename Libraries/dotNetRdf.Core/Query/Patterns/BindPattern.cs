@@ -30,166 +30,165 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Patterns
+namespace VDS.RDF.Query.Patterns;
+
+/// <summary>
+/// Class for representing BIND assignments in SPARQL Queries.
+/// </summary>
+public class BindPattern
+    : BaseTriplePattern, IComparable<BindPattern>, IAssignmentPattern
 {
     /// <summary>
-    /// Class for representing BIND assignments in SPARQL Queries.
+    /// Creates a new BIND Pattern.
     /// </summary>
-    public class BindPattern
-        : BaseTriplePattern, IComparable<BindPattern>, IAssignmentPattern
+    /// <param name="var">Variable to assign to.</param>
+    /// <param name="expr">Expression which generates a value which will be assigned to the variable.</param>
+    public BindPattern(string var, ISparqlExpression expr)
     {
-        /// <summary>
-        /// Creates a new BIND Pattern.
-        /// </summary>
-        /// <param name="var">Variable to assign to.</param>
-        /// <param name="expr">Expression which generates a value which will be assigned to the variable.</param>
-        public BindPattern(string var, ISparqlExpression expr)
+        Variable = var;
+        InnerExpression = expr;
+        _vars = Variable.AsEnumerable().Concat(InnerExpression.Variables).Distinct().ToList();
+        _vars.Sort();
+    }
+
+    /// <summary>
+    /// Get the variable to assign to.
+    /// </summary>
+    public string Variable { get; }
+
+    /// <summary>
+    /// Get the expressions which generates a value to be assigned to the variable.
+    /// </summary>
+    public ISparqlExpression InnerExpression { get; }
+
+
+    /// <summary>
+    /// Gets the Pattern Type.
+    /// </summary>
+    public override TriplePatternType PatternType
+    {
+        get
         {
-            Variable = var;
-            InnerExpression = expr;
-            _vars = Variable.AsEnumerable().Concat(InnerExpression.Variables).Distinct().ToList();
-            _vars.Sort();
+            return TriplePatternType.BindAssignment;
         }
+    }
 
-        /// <summary>
-        /// Get the variable to assign to.
-        /// </summary>
-        public string Variable { get; }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    {
+        return processor.ProcessBindPattern(this, context);
+    }
 
-        /// <summary>
-        /// Get the expressions which generates a value to be assigned to the variable.
-        /// </summary>
-        public ISparqlExpression InnerExpression { get; }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    {
+        return visitor.VisitBindPattern(this);
+    }
 
-
-        /// <summary>
-        /// Gets the Pattern Type.
-        /// </summary>
-        public override TriplePatternType PatternType
+    /// <summary>
+    /// Returns that this is not an accept all since it is a BIND assignment.
+    /// </summary>
+    public override bool IsAcceptAll
+    {
+        get 
         {
-            get
-            {
-                return TriplePatternType.BindAssignment;
-            }
+            return false; 
         }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    /// <summary>
+    /// Gets the Expression that is used to generate values to be assigned.
+    /// </summary>
+    public ISparqlExpression AssignExpression
+    {
+        get
         {
-            return processor.ProcessBindPattern(this, context);
+            return InnerExpression;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Name of the Variable to which values will be assigned.
+    /// </summary>
+    public string VariableName
+    {
+        get
         {
-            return visitor.VisitBindPattern(this);
+            return Variable;
         }
+    }
 
-        /// <summary>
-        /// Returns that this is not an accept all since it is a BIND assignment.
-        /// </summary>
-        public override bool IsAcceptAll
+    /// <summary>
+    /// Returns an empty enumeration as any evaluation error will result in an unbound value so we can't guarantee any variables are bound.
+    /// </summary>
+    public override IEnumerable<string> FixedVariables
+    {
+        get { return Enumerable.Empty<string>(); }
+    }
+
+    /// <summary>
+    /// Returns the variable being assigned to as any evaluation error will result in an unbound value so we can't guarantee it is bound.
+    /// </summary>
+    public override IEnumerable<string> FloatingVariables
+    {
+        get { return Variable.AsEnumerable(); }
+    }
+
+    /// <summary>
+    /// Gets whether the Pattern uses the Default Dataset.
+    /// </summary>
+    public override bool UsesDefaultDataset
+    {
+        get
         {
-            get 
-            {
-                return false; 
-            }
+            return InnerExpression.UsesDefaultDataset();
         }
+    }
 
-        /// <summary>
-        /// Gets the Expression that is used to generate values to be assigned.
-        /// </summary>
-        public ISparqlExpression AssignExpression
+    /// <summary>
+    /// Returns true as a BIND can never contain a Blank Variable.
+    /// </summary>
+    public override bool HasNoBlankVariables
+    {
+        get
         {
-            get
-            {
-                return InnerExpression;
-            }
+            return true;
         }
+    }
 
-        /// <summary>
-        /// Gets the Name of the Variable to which values will be assigned.
-        /// </summary>
-        public string VariableName
-        {
-            get
-            {
-                return Variable;
-            }
-        }
+    /// <summary>
+    /// Gets the string representation of the LET assignment.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append("BIND(");
+        output.Append(InnerExpression);
+        output.Append(" AS ?");
+        output.Append(Variable);
+        output.Append(")");
 
-        /// <summary>
-        /// Returns an empty enumeration as any evaluation error will result in an unbound value so we can't guarantee any variables are bound.
-        /// </summary>
-        public override IEnumerable<string> FixedVariables
-        {
-            get { return Enumerable.Empty<string>(); }
-        }
+        return output.ToString();
+    }
 
-        /// <summary>
-        /// Returns the variable being assigned to as any evaluation error will result in an unbound value so we can't guarantee it is bound.
-        /// </summary>
-        public override IEnumerable<string> FloatingVariables
-        {
-            get { return Variable.AsEnumerable(); }
-        }
+    /// <summary>
+    /// Compares this Bind to another Bind.
+    /// </summary>
+    /// <param name="other">Bind to compare to.</param>
+    /// <returns>Just calls the base compare method since that implements all the logic we need.</returns>
+    public int CompareTo(BindPattern other)
+    {
+        return base.CompareTo(other);
+    }
 
-        /// <summary>
-        /// Gets whether the Pattern uses the Default Dataset.
-        /// </summary>
-        public override bool UsesDefaultDataset
-        {
-            get
-            {
-                return InnerExpression.UsesDefaultDataset();
-            }
-        }
-
-        /// <summary>
-        /// Returns true as a BIND can never contain a Blank Variable.
-        /// </summary>
-        public override bool HasNoBlankVariables
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Gets the string representation of the LET assignment.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append("BIND(");
-            output.Append(InnerExpression);
-            output.Append(" AS ?");
-            output.Append(Variable);
-            output.Append(")");
-
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Compares this Bind to another Bind.
-        /// </summary>
-        /// <param name="other">Bind to compare to.</param>
-        /// <returns>Just calls the base compare method since that implements all the logic we need.</returns>
-        public int CompareTo(BindPattern other)
-        {
-            return base.CompareTo(other);
-        }
-
-        /// <summary>
-        /// Compares this Bind to another Bind.
-        /// </summary>
-        /// <param name="other">Bind to compare to.</param>
-        /// <returns>Just calls the base compare method since that implements all the logic we need.</returns>
-        public int CompareTo(IAssignmentPattern other)
-        {
-            return base.CompareTo(other);
-        }
+    /// <summary>
+    /// Compares this Bind to another Bind.
+    /// </summary>
+    /// <param name="other">Bind to compare to.</param>
+    /// <returns>Just calls the base compare method since that implements all the logic we need.</returns>
+    public int CompareTo(IAssignmentPattern other)
+    {
+        return base.CompareTo(other);
     }
 }

@@ -30,123 +30,122 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+
+public class StringEscapingTest
 {
-
-    public class StringEscapingTest
+    private readonly List<String> _values = new List<string>()
     {
-        private readonly List<String> _values = new List<string>()
-        {
-            "Not escapes - nrt" ,
-            @"An example with a \ in it should get escaped", 
-            @"An example with a trailing \", 
-            @"" ,
-            @"\",
-            @"\\",
-            "An example with an explicit \n newline escape", 
-            "An example with an explicit \t tab escape",
-            "An example ending in a unescaped quote \"",
-            "An example with explicit \\\"quote\\\" escapes",
-            "An example with partial \\\"quote\" escapes",
-            "An example where the \\\\\"quote is not escaped",
-            @"An example with a
+        "Not escapes - nrt" ,
+        @"An example with a \ in it should get escaped", 
+        @"An example with a trailing \", 
+        @"" ,
+        @"\",
+        @"\\",
+        "An example with an explicit \n newline escape", 
+        "An example with an explicit \t tab escape",
+        "An example ending in a unescaped quote \"",
+        "An example with explicit \\\"quote\\\" escapes",
+        "An example with partial \\\"quote\" escapes",
+        "An example where the \\\\\"quote is not escaped",
+        @"An example with a
 new line",
-            @"An example with an ' single quote",
-            @"An example with unicode escapes like \uABCD and \U0034ABCD",
-            @"An example with a \b backspace escape",
-            @"An example with a \f form feed escape"
-        };
+        @"An example with an ' single quote",
+        @"An example with unicode escapes like \uABCD and \U0034ABCD",
+        @"An example with a \b backspace escape",
+        @"An example with a \f form feed escape"
+    };
 
-        private void TestEscaping<T>(T formatter, IRdfReader parser) where T : INodeFormatter, ITripleFormatter
+    private void TestEscaping<T>(T formatter, IRdfReader parser) where T : INodeFormatter, ITripleFormatter
+    {
+        var g = new Graph();
+        IUriNode subj = g.CreateUriNode(new Uri("http://example.org/subject"));
+        IUriNode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
+        IUriNode pred2 = g.CreateUriNode(new Uri("http://example.org/predicate2"));
+
+        foreach (var value in _values)
         {
-            var g = new Graph();
-            IUriNode subj = g.CreateUriNode(new Uri("http://example.org/subject"));
-            IUriNode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
-            IUriNode pred2 = g.CreateUriNode(new Uri("http://example.org/predicate2"));
+            //Do Escaping and Checking
+            Console.WriteLine("Original Value - " + value);
+            INode obj = g.CreateLiteralNode(value);
+            Console.WriteLine("Formatted Value - " + formatter.Format(obj));
 
-            foreach (var value in _values)
+            //Can only do round-trip checking if an RDF format
+            if (parser != null)
             {
-                //Do Escaping and Checking
-                Console.WriteLine("Original Value - " + value);
-                INode obj = g.CreateLiteralNode(value);
-                Console.WriteLine("Formatted Value - " + formatter.Format(obj));
+                //Now generate a Triple, save in a String and then re-parse to check for round trip value equality
+                var tOrig = new Triple(subj, pred, obj);
+                var writer = new System.IO.StringWriter();
+                writer.WriteLine(formatter.Format(tOrig));
 
-                //Can only do round-trip checking if an RDF format
-                if (parser != null)
-                {
-                    //Now generate a Triple, save in a String and then re-parse to check for round trip value equality
-                    var tOrig = new Triple(subj, pred, obj);
-                    var writer = new System.IO.StringWriter();
-                    writer.WriteLine(formatter.Format(tOrig));
+                Console.WriteLine("Serialized Output");
+                Console.WriteLine(writer.ToString());
 
-                    Console.WriteLine("Serialized Output");
-                    Console.WriteLine(writer.ToString());
+                StringParser.Parse(g, writer.ToString(), parser);
+                Triple t = g.Triples.FirstOrDefault();
+                Assert.NotNull(t);
 
-                    StringParser.Parse(g, writer.ToString(), parser);
-                    Triple t = g.Triples.FirstOrDefault();
-                    Assert.NotNull(t);
-
-                    Assert.Equal(tOrig.Object, t.Object);
-                }
-
-                Console.WriteLine();
-
-                g.Clear();
+                Assert.Equal(tOrig.Object, t.Object);
             }
-        }
 
-        [Fact]
-        public void WritingStringBackslashEscapingNTriples1()
-        {
-            TestEscaping<NTriplesFormatter>(new NTriplesFormatter(NTriplesSyntax.Original), new NTriplesParser());
-        }
+            Console.WriteLine();
 
-        [Fact]
-        public void WritingStringBackslashEscapingNTriples2()
-        {
-            TestEscaping<NTriplesFormatter>(new NTriplesFormatter(NTriplesSyntax.Rdf11), new NTriplesParser());
+            g.Clear();
         }
+    }
 
-        [Fact]
-        public void WritingStringBackslashEscapingTurtle1()
-        {
-            TestEscaping<TurtleFormatter>(new TurtleFormatter(), new TurtleParser());
-        }
+    [Fact]
+    public void WritingStringBackslashEscapingNTriples1()
+    {
+        TestEscaping<NTriplesFormatter>(new NTriplesFormatter(NTriplesSyntax.Original), new NTriplesParser());
+    }
 
-        [Fact]
-        public void WritingStringBackslashEscapingTurtle2()
-        {
-            TestEscaping<UncompressedTurtleFormatter>(new UncompressedTurtleFormatter(), new TurtleParser());
-        }
+    [Fact]
+    public void WritingStringBackslashEscapingNTriples2()
+    {
+        TestEscaping<NTriplesFormatter>(new NTriplesFormatter(NTriplesSyntax.Rdf11), new NTriplesParser());
+    }
 
-        [Fact]
-        public void WritingStringBackslashEscapingTurtle3()
-        {
-            TestEscaping<TurtleW3CFormatter>(new TurtleW3CFormatter(), new TurtleParser());
-        }
+    [Fact]
+    public void WritingStringBackslashEscapingTurtle1()
+    {
+        TestEscaping<TurtleFormatter>(new TurtleFormatter(), new TurtleParser());
+    }
 
-        [Fact]
-        public void WritingStringBackslashEscapingNotation3_1()
-        {
-            TestEscaping<Notation3Formatter>(new Notation3Formatter(), new Notation3Parser());
-        }
+    [Fact]
+    public void WritingStringBackslashEscapingTurtle2()
+    {
+        TestEscaping<UncompressedTurtleFormatter>(new UncompressedTurtleFormatter(), new TurtleParser());
+    }
 
-        [Fact]
-        public void WritingStringBackslashEscapingNotation3_2()
-        {
-            TestEscaping<UncompressedNotation3Formatter>(new UncompressedNotation3Formatter(), new Notation3Parser());
-        }
+    [Fact]
+    public void WritingStringBackslashEscapingTurtle3()
+    {
+        TestEscaping<TurtleW3CFormatter>(new TurtleW3CFormatter(), new TurtleParser());
+    }
 
-        [Fact]
-        public void WritingStringBackslashEscapingSparql()
-        {
-            TestEscaping<SparqlFormatter>(new SparqlFormatter(), null);
-        }
+    [Fact]
+    public void WritingStringBackslashEscapingNotation3_1()
+    {
+        TestEscaping<Notation3Formatter>(new Notation3Formatter(), new Notation3Parser());
+    }
 
-        [Fact]
-        public void WritingStringBackslashEscapingTsv()
-        {
-            TestEscaping<TsvFormatter>(new TsvFormatter(), null);
-        }
+    [Fact]
+    public void WritingStringBackslashEscapingNotation3_2()
+    {
+        TestEscaping<UncompressedNotation3Formatter>(new UncompressedNotation3Formatter(), new Notation3Parser());
+    }
+
+    [Fact]
+    public void WritingStringBackslashEscapingSparql()
+    {
+        TestEscaping<SparqlFormatter>(new SparqlFormatter(), null);
+    }
+
+    [Fact]
+    public void WritingStringBackslashEscapingTsv()
+    {
+        TestEscaping<TsvFormatter>(new TsvFormatter(), null);
     }
 }

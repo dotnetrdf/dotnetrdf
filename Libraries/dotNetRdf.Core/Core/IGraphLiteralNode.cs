@@ -24,20 +24,19 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface for Graph Literal Nodes.
+/// </summary>
+public interface IGraphLiteralNode
+    : INode
 {
     /// <summary>
-    /// Interface for Graph Literal Nodes.
+    /// Gets the Sub-graph the Graph Literal represents.
     /// </summary>
-    public interface IGraphLiteralNode
-        : INode
+    IGraph SubGraph
     {
-        /// <summary>
-        /// Gets the Sub-graph the Graph Literal represents.
-        /// </summary>
-        IGraph SubGraph
-        {
-            get;
-        }
+        get;
     }
 }

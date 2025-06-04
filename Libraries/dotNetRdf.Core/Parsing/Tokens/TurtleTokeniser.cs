@@ -27,339 +27,427 @@
 using System;
 using System.IO;
 
-namespace VDS.RDF.Parsing.Tokens
+namespace VDS.RDF.Parsing.Tokens;
+
+/// <summary>
+/// A Class for Reading an Input Stream and generating Turtle Tokens from it.
+/// </summary>
+public class TurtleTokeniser 
+    : BaseTokeniser
 {
+    private readonly ParsingTextReader _in;
+    private readonly TurtleSyntax _syntax = TurtleSyntax.W3C;
+    private readonly bool _validateIris = false;
+    private readonly bool _withTrig = false;
+
     /// <summary>
-    /// A Class for Reading an Input Stream and generating Turtle Tokens from it.
+    /// Creates a new Turtle Tokeniser.
     /// </summary>
-    public class TurtleTokeniser 
-        : BaseTokeniser
+    /// <param name="input">The Input Stream to generate Tokens from.</param>
+    /// <param name="validateIris">Whether to validate IRI tokens.</param>
+    public TurtleTokeniser(StreamReader input, bool validateIris = false)
+        : this(ParsingTextReader.Create(input), validateIris) { }
+
+    /// <summary>
+    /// Creates a new Turtle Tokeniser.
+    /// </summary>
+    /// <param name="input">The Input Stream to generate Tokens from.</param>
+    /// <param name="validateIris">Whether to validate IRI tokens.</param>
+    public TurtleTokeniser(ParsingTextReader input, bool validateIris = false)
+        : this(input, TurtleSyntax.W3C, validateIris) { }
+
+    /// <summary>
+    /// Creates a new Turtle Tokeniser.
+    /// </summary>
+    /// <param name="input">Input to read from.</param>
+    /// <param name="validateIris">Whether to validate IRI tokens.</param>
+    /// <param name="withTrig">Whether to support emitting TRiG-specific tokens.</param>
+    public TurtleTokeniser(TextReader input, bool validateIris = false, bool withTrig = false)
+        : this(ParsingTextReader.Create(input), TurtleSyntax.W3C, validateIris, withTrig) { }
+
+    /// <summary>
+    /// Creates a new Turtle Tokeniser.
+    /// </summary>
+    /// <param name="input">The Input Stream to generate Tokens from.</param>
+    /// <param name="syntax">Turtle Syntax.</param>
+    /// <param name="validateIris">Whether to validate IRI tokens.</param>
+    /// <param name="withTrig">Whether to support emitting TRiG-specific tokens.</param>
+    /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is set to <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
+    public TurtleTokeniser(StreamReader input, TurtleSyntax syntax, bool validateIris = false, bool withTrig = false)
+        : this(ParsingTextReader.Create(input), syntax, validateIris, withTrig) { }
+
+    /// <summary>
+    /// Creates a new Turtle Tokeniser.
+    /// </summary>
+    /// <param name="input">The Input Stream to generate Tokens from.</param>
+    /// <param name="syntax">Turtle Syntax.</param>
+    /// <param name="validateIris">Whether to validate IRI tokens.</param>
+    /// <param name="withTrig">Whether to support emitting TRiG-specific tokens.</param>
+    /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is set to <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
+    public TurtleTokeniser(ParsingTextReader input, TurtleSyntax syntax, bool validateIris = false, bool withTrig = false)
+        : base(input)
     {
-        private readonly ParsingTextReader _in;
-        private readonly TurtleSyntax _syntax = TurtleSyntax.W3C;
-        private readonly bool _validateIris = false;
-        private readonly bool _withTrig = false;
+        _in = input;
+        Format = withTrig ? "TriG" : "Turtle";
+        _syntax = syntax;
+        _validateIris = validateIris;
+        _withTrig = withTrig;
+    }
 
-        /// <summary>
-        /// Creates a new Turtle Tokeniser.
-        /// </summary>
-        /// <param name="input">The Input Stream to generate Tokens from.</param>
-        /// <param name="validateIris">Whether to validate IRI tokens.</param>
-        public TurtleTokeniser(StreamReader input, bool validateIris = false)
-            : this(ParsingTextReader.Create(input), validateIris) { }
+    /// <summary>
+    /// Creates a new Turtle Tokeniser.
+    /// </summary>
+    /// <param name="input">Input to read from.</param>
+    /// <param name="syntax">Turtle Syntax.</param>
+    /// <param name="validateIris">Whether to validate IRI tokens.</param>
+    /// <param name="withTrig">Whether to support emitting TRiG-specific tokens.</param>
+    /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is set to <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
+    public TurtleTokeniser(TextReader input, TurtleSyntax syntax, bool validateIris = false, bool withTrig = false)
+        : this(ParsingTextReader.Create(input), syntax, validateIris, withTrig) { }
 
-        /// <summary>
-        /// Creates a new Turtle Tokeniser.
-        /// </summary>
-        /// <param name="input">The Input Stream to generate Tokens from.</param>
-        /// <param name="validateIris">Whether to validate IRI tokens.</param>
-        public TurtleTokeniser(ParsingTextReader input, bool validateIris = false)
-            : this(input, TurtleSyntax.W3C, validateIris) { }
-
-        /// <summary>
-        /// Creates a new Turtle Tokeniser.
-        /// </summary>
-        /// <param name="input">Input to read from.</param>
-        /// <param name="validateIris">Whether to validate IRI tokens.</param>
-        /// <param name="withTrig">Whether to support emitting TRiG-specific tokens.</param>
-        public TurtleTokeniser(TextReader input, bool validateIris = false, bool withTrig = false)
-            : this(ParsingTextReader.Create(input), TurtleSyntax.W3C, validateIris, withTrig) { }
-
-        /// <summary>
-        /// Creates a new Turtle Tokeniser.
-        /// </summary>
-        /// <param name="input">The Input Stream to generate Tokens from.</param>
-        /// <param name="syntax">Turtle Syntax.</param>
-        /// <param name="validateIris">Whether to validate IRI tokens.</param>
-        /// <param name="withTrig">Whether to support emitting TRiG-specific tokens.</param>
-        /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is set to <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
-        public TurtleTokeniser(StreamReader input, TurtleSyntax syntax, bool validateIris = false, bool withTrig = false)
-            : this(ParsingTextReader.Create(input), syntax, validateIris, withTrig) { }
-
-        /// <summary>
-        /// Creates a new Turtle Tokeniser.
-        /// </summary>
-        /// <param name="input">The Input Stream to generate Tokens from.</param>
-        /// <param name="syntax">Turtle Syntax.</param>
-        /// <param name="validateIris">Whether to validate IRI tokens.</param>
-        /// <param name="withTrig">Whether to support emitting TRiG-specific tokens.</param>
-        /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is set to <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
-        public TurtleTokeniser(ParsingTextReader input, TurtleSyntax syntax, bool validateIris = false, bool withTrig = false)
-            : base(input)
+    /// <summary>
+    /// Gets the next parseable Token from the Input or raises an Error.
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="RdfParseException">Occurs when a Token cannot be parsed.</exception>
+    public override IToken GetNextToken()
+    {
+        // Have we read anything yet?
+        if (LastTokenType == -1)
         {
-            _in = input;
-            Format = withTrig ? "TriG" : "Turtle";
-            _syntax = syntax;
-            _validateIris = validateIris;
-            _withTrig = withTrig;
+            // Nothing read yet so produce a BOF Token
+            LastTokenType = Token.BOF;
+            return new BOFToken();
         }
-
-        /// <summary>
-        /// Creates a new Turtle Tokeniser.
-        /// </summary>
-        /// <param name="input">Input to read from.</param>
-        /// <param name="syntax">Turtle Syntax.</param>
-        /// <param name="validateIris">Whether to validate IRI tokens.</param>
-        /// <param name="withTrig">Whether to support emitting TRiG-specific tokens.</param>
-        /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is set to <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
-        public TurtleTokeniser(TextReader input, TurtleSyntax syntax, bool validateIris = false, bool withTrig = false)
-            : this(ParsingTextReader.Create(input), syntax, validateIris, withTrig) { }
-
-        /// <summary>
-        /// Gets the next parseable Token from the Input or raises an Error.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="RdfParseException">Occurs when a Token cannot be parsed.</exception>
-        public override IToken GetNextToken()
+        else
         {
-            // Have we read anything yet?
-            if (LastTokenType == -1)
+            // Reading has started
+
+            // Reset Start and End Position Counters
+            StartNewToken();
+
+            #region Use Specific Tokenisers Section
+
+            // Decide whether to use a specific Tokeniser function base on last Token
+            // Need to use a Try Catch here as the specific functions will throw errors if the required Token can't be found
+            try
             {
-                // Nothing read yet so produce a BOF Token
-                LastTokenType = Token.BOF;
-                return new BOFToken();
+                switch (LastTokenType)
+                {
+                    case Token.AT:
+                        return TryGetDirectiveToken(true);
+                    case Token.BOF:
+                        if (_in.EndOfStream)
+                        {
+                            // Empty File
+                            return new EOFToken(0, 0);
+                        }
+                        break;
+
+                    case Token.PREFIXDIRECTIVE:
+                        return TryGetPrefixToken();
+
+                    default:
+                        break;
+                }
             }
-            else
+            catch (IOException ioEx)
             {
-                // Reading has started
+                // Error reading Input
+                throw new RdfParseException("Unable to Read Input successfully due to an IOException", ioEx);
+            }
 
-                // Reset Start and End Position Counters
-                StartNewToken();
+            #endregion
 
-                #region Use Specific Tokenisers Section
+            // Local Buffer and Tokenising options
+            var newlineallowed = false;
+            var anycharallowed = false;
+            var whitespaceallowed = false;
+            var whitespaceignored = true;
+            var rightangleallowed = true;
+            var quotemarksallowed = true;
+            var altquotemarksallowed = true;
+            var longliteral = false;
+            var altlongliteral = false;
 
-                // Decide whether to use a specific Tokeniser function base on last Token
-                // Need to use a Try Catch here as the specific functions will throw errors if the required Token can't be found
-                try
+            try
+            {
+                do
                 {
-                    switch (LastTokenType)
+                    // Check for EOF
+                    if (_in.EndOfStream && !HasBacktracked)
                     {
-                        case Token.AT:
-                            return TryGetDirectiveToken(true);
-                        case Token.BOF:
-                            if (_in.EndOfStream)
-                            {
-                                // Empty File
-                                return new EOFToken(0, 0);
-                            }
-                            break;
-
-                        case Token.PREFIXDIRECTIVE:
-                            return TryGetPrefixToken();
-
-                        default:
-                            break;
-                    }
-                }
-                catch (IOException ioEx)
-                {
-                    // Error reading Input
-                    throw new RdfParseException("Unable to Read Input successfully due to an IOException", ioEx);
-                }
-
-                #endregion
-
-                // Local Buffer and Tokenising options
-                var newlineallowed = false;
-                var anycharallowed = false;
-                var whitespaceallowed = false;
-                var whitespaceignored = true;
-                var rightangleallowed = true;
-                var quotemarksallowed = true;
-                var altquotemarksallowed = true;
-                var longliteral = false;
-                var altlongliteral = false;
-
-                try
-                {
-                    do
-                    {
-                        // Check for EOF
-                        if (_in.EndOfStream && !HasBacktracked)
+                        if (Length == 0)
                         {
-                            if (Length == 0)
-                            {
-                                // We're at the End of the Stream and not part-way through reading a Token
-                                return new EOFToken(CurrentLine, CurrentPosition);
-                            }
-                            else
-                            {
-                                // We're at the End of the Stream and part-way through reading a Token
-                                // Raise an error
-                                throw UnexpectedEndOfInput("Token");
-                            }
-                        }
-
-                        // Get the Next Character
-                        var next = Peek();
-
-                        // Always need to do a check for End of Stream after Peeking to handle empty files OK
-                        if (next == char.MaxValue && _in.EndOfStream)
-                        {
-                            if (Length == 0)
-                            {
-                                // We're at the End of the Stream and not part-way through reading a Token
-                                return new EOFToken(CurrentLine, CurrentPosition);
-                            }
-                            else
-                            {
-                                // We're at the End of the Stream and part-way through reading a Token
-                                // Raise an error
-                                throw UnexpectedEndOfInput("Token");
-                            }
-                        }
-
-                        if (char.IsLetter(next) || UnicodeSpecsHelper.IsLetter(next) || UnicodeSpecsHelper.IsLetterModifier(next) || TurtleSpecsHelper.IsPNCharsBase(next) || UnicodeSpecsHelper.IsHighSurrogate(next) || UnicodeSpecsHelper.IsLowSurrogate(next))
-                        {
-                            // Alphanumeric Character Handling
-                            if (anycharallowed || !quotemarksallowed)
-                            {
-                                // We're either reading part of a String Literal/Uri so proceed
-                            }
-                            else if (!UnicodeSpecsHelper.IsLetterModifier(next))
-                            {
-                                // Have to assume start of a QName or a directive
-                                //return TryGetDirectiveOrQNameToken();
-                                if (next is 'b' or 'B' or 'p' or 'P')
-                                {
-                                    return TryGetDirectiveOrQNameToken();
-                                }
-                                return TryGetQNameToken();                                
-                            }
-                        }
-                        else if (char.IsDigit(next) && !anycharallowed)
-                        {
-                            // Must be a plain literal
-                            return TryGetNumericLiteralToken();
+                            // We're at the End of the Stream and not part-way through reading a Token
+                            return new EOFToken(CurrentLine, CurrentPosition);
                         }
                         else
                         {
-                            // Non Alphanumeric Character Handling
-                            switch (next)
+                            // We're at the End of the Stream and part-way through reading a Token
+                            // Raise an error
+                            throw UnexpectedEndOfInput("Token");
+                        }
+                    }
+
+                    // Get the Next Character
+                    var next = Peek();
+
+                    // Always need to do a check for End of Stream after Peeking to handle empty files OK
+                    if (next == char.MaxValue && _in.EndOfStream)
+                    {
+                        if (Length == 0)
+                        {
+                            // We're at the End of the Stream and not part-way through reading a Token
+                            return new EOFToken(CurrentLine, CurrentPosition);
+                        }
+                        else
+                        {
+                            // We're at the End of the Stream and part-way through reading a Token
+                            // Raise an error
+                            throw UnexpectedEndOfInput("Token");
+                        }
+                    }
+
+                    if (char.IsLetter(next) || UnicodeSpecsHelper.IsLetter(next) || UnicodeSpecsHelper.IsLetterModifier(next) || TurtleSpecsHelper.IsPNCharsBase(next) || UnicodeSpecsHelper.IsHighSurrogate(next) || UnicodeSpecsHelper.IsLowSurrogate(next))
+                    {
+                        // Alphanumeric Character Handling
+                        if (anycharallowed || !quotemarksallowed)
+                        {
+                            // We're either reading part of a String Literal/Uri so proceed
+                        }
+                        else if (!UnicodeSpecsHelper.IsLetterModifier(next))
+                        {
+                            // Have to assume start of a QName or a directive
+                            //return TryGetDirectiveOrQNameToken();
+                            if (next is 'b' or 'B' or 'p' or 'P')
                             {
+                                return TryGetDirectiveOrQNameToken();
+                            }
+                            return TryGetQNameToken();                                
+                        }
+                    }
+                    else if (char.IsDigit(next) && !anycharallowed)
+                    {
+                        // Must be a plain literal
+                        return TryGetNumericLiteralToken();
+                    }
+                    else
+                    {
+                        // Non Alphanumeric Character Handling
+                        switch (next)
+                        {
 
-                                #region Punctuation Handling
+                            #region Punctuation Handling
 
-                                #region @ Handling
-                                case '@':
-                                    if (!anycharallowed)
+                            #region @ Handling
+                            case '@':
+                                if (!anycharallowed)
+                                {
+                                    if (LastTokenType == Token.LITERAL || LastTokenType == Token.LONGLITERAL)
                                     {
-                                        if (LastTokenType == Token.LITERAL || LastTokenType == Token.LONGLITERAL)
+                                        // Should be a Language Specifier
+                                        SkipCharacter();
+                                        StartNewToken();
+                                        return TryGetLanguageSpecToken();
+                                    }
+                                    else if (LastTokenType == Token.PLAINLITERAL)
+                                    {
+                                        // Can't specify Language on a Plain Literal
+                                        throw Error("Unexpected @ Character after a Plain Literal, Language cannot be specified for Plain Literals!");
+                                    }
+                                    else
+                                    {
+                                        // This should be the start of a directive
+                                        LastTokenType = Token.AT;
+                                        ConsumeCharacter();
+                                        return new ATToken(CurrentLine, StartPosition);
+                                    }
+                                }
+                                break;
+
+                            #endregion
+
+                            #region ^ Handling
+                            case '^':
+                                if (!anycharallowed)
+                                {
+                                    if (LastTokenType == Token.LITERAL || LastTokenType == Token.LONGLITERAL)
+                                    {
+                                        // Discard this and look at the next Character
+                                        SkipCharacter();
+                                        next = Peek();
+
+                                        // Next character must be a ^ or we'll error
+                                        if (next == '^')
                                         {
-                                            // Should be a Language Specifier
+                                            // Discard this as well
                                             SkipCharacter();
                                             StartNewToken();
-                                            return TryGetLanguageSpecToken();
-                                        }
-                                        else if (LastTokenType == Token.PLAINLITERAL)
-                                        {
-                                            // Can't specify Language on a Plain Literal
-                                            throw Error("Unexpected @ Character after a Plain Literal, Language cannot be specified for Plain Literals!");
+                                            return TryGetDataTypeToken();
                                         }
                                         else
                                         {
-                                            // This should be the start of a directive
-                                            LastTokenType = Token.AT;
+                                            throw UnexpectedCharacter(next, "Data Type");
+                                        }
+
+                                    }
+                                    else if (LastTokenType == Token.PLAINLITERAL)
+                                    {
+                                        // Can't specify datatype on a Plain Literal
+                                        throw Error("Unexpected ^ Character after a Plain Literal, Data Type cannot be specified for Plain Literals!");
+                                    }
+                                }
+                                break;
+
+                            #endregion
+
+                            #region # Handling
+
+                            case '#':
+                                if (!anycharallowed)
+                                {
+                                    // Start of a Comment
+                                    return TryGetCommentToken();
+                                }
+                                break;
+
+                            #endregion
+
+                            #region Line Terminators Handling
+
+                            case '.':
+                                if (!anycharallowed)
+                                {
+                                    ConsumeCharacter();
+
+                                    // Watch out for plain literals
+                                    if (!_in.EndOfStream && char.IsDigit(Peek()))
+                                    {
+                                        return TryGetNumericLiteralToken();
+                                    }
+                                    else
+                                    {
+                                        // This should be the end of a directive
+                                        LastTokenType = Token.DOT;
+                                        return new DotToken(CurrentLine, StartPosition);
+                                    }
+                                }
+                                break;
+
+                            case ';':
+                                if (!anycharallowed)
+                                {
+                                    // This should be the terminator of a Triple where a new Predicate and Object will be given on the subsequent line
+                                    LastTokenType = Token.SEMICOLON;
+                                    ConsumeCharacter();
+                                    return new SemicolonToken(CurrentLine, StartPosition);
+                                }
+                                break;
+
+                            case ',':
+                                if (!anycharallowed)
+                                {
+                                    // This should be the terminator of a Triple where a new Object will be given on the subsequent line
+                                    LastTokenType = Token.COMMA;
+                                    ConsumeCharacter();
+                                    return new CommaToken(CurrentLine, StartPosition);
+                                }
+                                break;
+
+                            #endregion
+
+                            #region Quotation Mark Handling (Literals)
+
+                            case '"':
+                                if (!anycharallowed)
+                                {
+                                    // Start of a String Literal
+                                    StartNewToken();
+                                    anycharallowed = true;
+                                    whitespaceignored = false;
+                                    whitespaceallowed = true;
+                                    quotemarksallowed = false;
+                                }
+                                else if (quotemarksallowed && longliteral)
+                                {
+                                    // Could be the end of a Long Literal
+
+                                    ConsumeCharacter();
+                                    next = Peek();
+
+                                    if (next != '"')
+                                    {
+                                        // Just a quote in a long literal
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        // Got Two Quote Marks in a row
+                                        ConsumeCharacter();
+                                        next = Peek();
+
+                                        // Did we get the Third?
+                                        if (next == '"')
+                                        {
+                                            // End of Long Literal
                                             ConsumeCharacter();
-                                            return new ATToken(CurrentLine, StartPosition);
-                                        }
-                                    }
-                                    break;
+                                            LastTokenType = Token.LONGLITERAL;
 
-                                #endregion
-
-                                #region ^ Handling
-                                case '^':
-                                    if (!anycharallowed)
-                                    {
-                                        if (LastTokenType == Token.LITERAL || LastTokenType == Token.LONGLITERAL)
-                                        {
-                                            // Discard this and look at the next Character
-                                            SkipCharacter();
+                                            // If there are any additional quotes immediatedly following this then
+                                            // we want to consume them also
                                             next = Peek();
-
-                                            // Next character must be a ^ or we'll error
-                                            if (next == '^')
+                                            if (next == '"')
                                             {
-                                                // Discard this as well
-                                                SkipCharacter();
-                                                StartNewToken();
-                                                return TryGetDataTypeToken();
-                                            }
-                                            else
-                                            {
-                                                throw UnexpectedCharacter(next, "Data Type");
+                                                throw Error("Too many \" characters encountered at the end of a long literal - ensure that you have escaped quotes in a long literal to avoid this error");
                                             }
 
-                                        }
-                                        else if (LastTokenType == Token.PLAINLITERAL)
-                                        {
-                                            // Can't specify datatype on a Plain Literal
-                                            throw Error("Unexpected ^ Character after a Plain Literal, Data Type cannot be specified for Plain Literals!");
-                                        }
-                                    }
-                                    break;
-
-                                #endregion
-
-                                #region # Handling
-
-                                case '#':
-                                    if (!anycharallowed)
-                                    {
-                                        // Start of a Comment
-                                        return TryGetCommentToken();
-                                    }
-                                    break;
-
-                                #endregion
-
-                                #region Line Terminators Handling
-
-                                case '.':
-                                    if (!anycharallowed)
-                                    {
-                                        ConsumeCharacter();
-
-                                        // Watch out for plain literals
-                                        if (!_in.EndOfStream && char.IsDigit(Peek()))
-                                        {
-                                            return TryGetNumericLiteralToken();
+                                            return new LongLiteralToken(Value, StartLine, EndLine, StartPosition, EndPosition);
                                         }
                                         else
                                         {
-                                            // This should be the end of a directive
-                                            LastTokenType = Token.DOT;
-                                            return new DotToken(CurrentLine, StartPosition);
+                                            // Just two quotes in a long literal
+                                            continue;
                                         }
                                     }
-                                    break;
-
-                                case ';':
-                                    if (!anycharallowed)
+                                }
+                                else if (!quotemarksallowed)
+                                {
+                                    // See if this is a Triple Quote for Long Literals
+                                    // OR if it's the Empty String
+                                    if (Length == 1 && Value.StartsWith("\""))
                                     {
-                                        // This should be the terminator of a Triple where a new Predicate and Object will be given on the subsequent line
-                                        LastTokenType = Token.SEMICOLON;
                                         ConsumeCharacter();
-                                        return new SemicolonToken(CurrentLine, StartPosition);
-                                    }
-                                    break;
+                                        next = Peek();
 
-                                case ',':
-                                    if (!anycharallowed)
+                                        if (next == '"')
+                                        {
+                                            // Turn on Support for Long Literal reading
+                                            newlineallowed = true;
+                                            quotemarksallowed = true;
+                                            longliteral = true;
+                                        }
+                                        else if (char.IsWhiteSpace(next) || next is '.' or ';' or ',' or '^' or '@' or ']' or ')')
+                                        {
+                                            // Empty String
+                                            LastTokenType = Token.LITERAL;
+                                            return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
+                                        }
+                                    }
+                                    else
                                     {
-                                        // This should be the terminator of a Triple where a new Object will be given on the subsequent line
-                                        LastTokenType = Token.COMMA;
+                                        // Assume End of String Literal
                                         ConsumeCharacter();
-                                        return new CommaToken(CurrentLine, StartPosition);
+                                        LastTokenType = Token.LITERAL;
+
+                                        return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
                                     }
-                                    break;
+                                }
+                                break;
 
-                                #endregion
-
-                                #region Quotation Mark Handling (Literals)
-
-                                case '"':
+                            case '\'':
+                                if (_syntax != TurtleSyntax.Original)
+                                {
                                     if (!anycharallowed)
                                     {
                                         // Start of a String Literal
@@ -367,16 +455,16 @@ namespace VDS.RDF.Parsing.Tokens
                                         anycharallowed = true;
                                         whitespaceignored = false;
                                         whitespaceallowed = true;
-                                        quotemarksallowed = false;
+                                        altquotemarksallowed = false;
                                     }
-                                    else if (quotemarksallowed && longliteral)
+                                    else if (altquotemarksallowed && altlongliteral)
                                     {
                                         // Could be the end of a Long Literal
 
                                         ConsumeCharacter();
                                         next = Peek();
 
-                                        if (next != '"')
+                                        if (next != '\'')
                                         {
                                             // Just a quote in a long literal
                                             continue;
@@ -388,7 +476,7 @@ namespace VDS.RDF.Parsing.Tokens
                                             next = Peek();
 
                                             // Did we get the Third?
-                                            if (next == '"')
+                                            if (next == '\'')
                                             {
                                                 // End of Long Literal
                                                 ConsumeCharacter();
@@ -397,9 +485,9 @@ namespace VDS.RDF.Parsing.Tokens
                                                 // If there are any additional quotes immediatedly following this then
                                                 // we want to consume them also
                                                 next = Peek();
-                                                if (next == '"')
+                                                if (next == '\'')
                                                 {
-                                                    throw Error("Too many \" characters encountered at the end of a long literal - ensure that you have escaped quotes in a long literal to avoid this error");
+                                                    throw Error("Too many \' characters encountered at the end of a long literal - ensure that you have escaped quotes in a long literal to avoid this error");
                                                 }
 
                                                 return new LongLiteralToken(Value, StartLine, EndLine, StartPosition, EndPosition);
@@ -411,21 +499,21 @@ namespace VDS.RDF.Parsing.Tokens
                                             }
                                         }
                                     }
-                                    else if (!quotemarksallowed)
+                                    else if (!altquotemarksallowed)
                                     {
                                         // See if this is a Triple Quote for Long Literals
                                         // OR if it's the Empty String
-                                        if (Length == 1 && Value.StartsWith("\""))
+                                        if (Length == 1 && Value.StartsWith("'"))
                                         {
                                             ConsumeCharacter();
                                             next = Peek();
 
-                                            if (next == '"')
+                                            if (next == '\'')
                                             {
                                                 // Turn on Support for Long Literal reading
                                                 newlineallowed = true;
-                                                quotemarksallowed = true;
-                                                longliteral = true;
+                                                altquotemarksallowed = true;
+                                                altlongliteral = true;
                                             }
                                             else if (char.IsWhiteSpace(next) || next is '.' or ';' or ',' or '^' or '@' or ']' or ')')
                                             {
@@ -444,1037 +532,948 @@ namespace VDS.RDF.Parsing.Tokens
                                         }
                                     }
                                     break;
+                                }
+                                else
+                                {
+                                    // Fallback to default behaviour if not W3C Turtle
+                                    goto default;
+                                }
 
-                                case '\'':
-                                    if (_syntax != TurtleSyntax.Original)
+                            #endregion
+
+                            #region Bracket Handling
+
+                            case '(':
+                                if (!anycharallowed)
+                                {
+                                    // This should be the start of a collection
+                                    LastTokenType = Token.LEFTBRACKET;
+                                    ConsumeCharacter();
+                                    return new LeftBracketToken(CurrentLine, StartPosition);
+                                }
+                                break;
+
+                            case ')':
+                                if (!anycharallowed)
+                                {
+                                    // This should be the end of a directive
+                                    LastTokenType = Token.RIGHTBRACKET;
+                                    ConsumeCharacter();
+                                    return new RightBracketToken(CurrentLine, StartPosition);
+                                }
+                                break;
+
+                            case '[':
+                                if (!anycharallowed)
+                                {
+                                    // This should be the start of a Blank Node
+                                    LastTokenType = Token.LEFTSQBRACKET;
+                                    ConsumeCharacter();
+                                    return new LeftSquareBracketToken(CurrentLine, StartPosition);
+                                }
+                                break;
+
+                            case ']':
+                                if (!anycharallowed)
+                                {
+                                    // This should be the start of a Blank Node
+                                    LastTokenType = Token.RIGHTSQBRACKET;
+                                    ConsumeCharacter();
+                                    return new RightSquareBracketToken(CurrentLine, StartPosition);
+                                }
+                                break;
+
+                            case '{':
+                                if (!anycharallowed)
+                                {
+                                    // May be the start of an annotation
+                                    ConsumeCharacter();
+                                    var following = Peek();
+                                    if (_syntax == TurtleSyntax.Rdf11Star && following == '|')
                                     {
-                                        if (!anycharallowed)
-                                        {
-                                            // Start of a String Literal
-                                            StartNewToken();
-                                            anycharallowed = true;
-                                            whitespaceignored = false;
-                                            whitespaceallowed = true;
-                                            altquotemarksallowed = false;
-                                        }
-                                        else if (altquotemarksallowed && altlongliteral)
-                                        {
-                                            // Could be the end of a Long Literal
-
-                                            ConsumeCharacter();
-                                            next = Peek();
-
-                                            if (next != '\'')
-                                            {
-                                                // Just a quote in a long literal
-                                                continue;
-                                            }
-                                            else
-                                            {
-                                                // Got Two Quote Marks in a row
-                                                ConsumeCharacter();
-                                                next = Peek();
-
-                                                // Did we get the Third?
-                                                if (next == '\'')
-                                                {
-                                                    // End of Long Literal
-                                                    ConsumeCharacter();
-                                                    LastTokenType = Token.LONGLITERAL;
-
-                                                    // If there are any additional quotes immediatedly following this then
-                                                    // we want to consume them also
-                                                    next = Peek();
-                                                    if (next == '\'')
-                                                    {
-                                                        throw Error("Too many \' characters encountered at the end of a long literal - ensure that you have escaped quotes in a long literal to avoid this error");
-                                                    }
-
-                                                    return new LongLiteralToken(Value, StartLine, EndLine, StartPosition, EndPosition);
-                                                }
-                                                else
-                                                {
-                                                    // Just two quotes in a long literal
-                                                    continue;
-                                                }
-                                            }
-                                        }
-                                        else if (!altquotemarksallowed)
-                                        {
-                                            // See if this is a Triple Quote for Long Literals
-                                            // OR if it's the Empty String
-                                            if (Length == 1 && Value.StartsWith("'"))
-                                            {
-                                                ConsumeCharacter();
-                                                next = Peek();
-
-                                                if (next == '\'')
-                                                {
-                                                    // Turn on Support for Long Literal reading
-                                                    newlineallowed = true;
-                                                    altquotemarksallowed = true;
-                                                    altlongliteral = true;
-                                                }
-                                                else if (char.IsWhiteSpace(next) || next is '.' or ';' or ',' or '^' or '@' or ']' or ')')
-                                                {
-                                                    // Empty String
-                                                    LastTokenType = Token.LITERAL;
-                                                    return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                // Assume End of String Literal
-                                                ConsumeCharacter();
-                                                LastTokenType = Token.LITERAL;
-
-                                                return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
-                                            }
-                                        }
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        // Fallback to default behaviour if not W3C Turtle
-                                        goto default;
-                                    }
-
-                                #endregion
-
-                                #region Bracket Handling
-
-                                case '(':
-                                    if (!anycharallowed)
-                                    {
-                                        // This should be the start of a collection
-                                        LastTokenType = Token.LEFTBRACKET;
                                         ConsumeCharacter();
-                                        return new LeftBracketToken(CurrentLine, StartPosition);
-                                    }
-                                    break;
-
-                                case ')':
-                                    if (!anycharallowed)
+                                        LastTokenType = Token.STARTANNOTATION;
+                                        return new StartAnnotationToken(CurrentLine, StartPosition);
+                                    } 
+                                    if (_withTrig)
                                     {
-                                        // This should be the end of a directive
-                                        LastTokenType = Token.RIGHTBRACKET;
-                                        ConsumeCharacter();
-                                        return new RightBracketToken(CurrentLine, StartPosition);
+                                        LastTokenType = Token.LEFTCURLYBRACKET;
+                                        return new LeftCurlyBracketToken(CurrentLine, StartPosition);
                                     }
-                                    break;
 
-                                case '[':
-                                    if (!anycharallowed)
+                                    // This is invalid syntax
+                                    throw Error("Unexpected Character (Code " + (int)next + "): " + next +
+                                                "\nThis appears to be an attempt to use a Graph Literal which is not valid in Turtle");
+                                }
+                                break;
+
+                            case '|':
+                                if (!anycharallowed)
+                                {
+                                    // May be the end of an annotation
+                                    ConsumeCharacter();
+                                    var following = Peek();
+                                    if (following != '}')
                                     {
-                                        // This should be the start of a Blank Node
-                                        LastTokenType = Token.LEFTSQBRACKET;
-                                        ConsumeCharacter();
-                                        return new LeftSquareBracketToken(CurrentLine, StartPosition);
-                                    }
-                                    break;
-
-                                case ']':
-                                    if (!anycharallowed)
-                                    {
-                                        // This should be the start of a Blank Node
-                                        LastTokenType = Token.RIGHTSQBRACKET;
-                                        ConsumeCharacter();
-                                        return new RightSquareBracketToken(CurrentLine, StartPosition);
-                                    }
-                                    break;
-
-                                case '{':
-                                    if (!anycharallowed)
-                                    {
-                                        // May be the start of an annotation
-                                        ConsumeCharacter();
-                                        var following = Peek();
-                                        if (_syntax == TurtleSyntax.Rdf11Star && following == '|')
-                                        {
-                                            ConsumeCharacter();
-                                            LastTokenType = Token.STARTANNOTATION;
-                                            return new StartAnnotationToken(CurrentLine, StartPosition);
-                                        } 
-                                        if (_withTrig)
-                                        {
-                                            LastTokenType = Token.LEFTCURLYBRACKET;
-                                            return new LeftCurlyBracketToken(CurrentLine, StartPosition);
-                                        }
-
-                                        // This is invalid syntax
-                                        throw Error("Unexpected Character (Code " + (int)next + "): " + next +
-                                                    "\nThis appears to be an attempt to use a Graph Literal which is not valid in Turtle");
-                                    }
-                                    break;
-
-                                case '|':
-                                    if (!anycharallowed)
-                                    {
-                                        // May be the end of an annotation
-                                        ConsumeCharacter();
-                                        var following = Peek();
-                                        if (following != '}')
-                                        {
-                                            // This is invalid syntax
-                                            throw Error("Unexpected Character (Code " + (int)next + "): " + next + "\nThis appears to be an attempt to use a Graph Literal which is not valid in Turtle");
-                                        }
-
-                                        ConsumeCharacter();
-                                        LastTokenType = Token.ENDANNOTATION;
-                                        return new EndAnnotationToken(CurrentLine, StartPosition);
-                                    }
-                                    break;
-                                    
-                                case '}':
-                                    if (!anycharallowed)
-                                    {
-                                        if (_withTrig)
-                                        {
-                                            ConsumeCharacter();
-                                            LastTokenType = Token.RIGHTCURLYBRACKET;
-                                            return new RightCurlyBracketToken(CurrentLine, StartPosition);
-                                        }
                                         // This is invalid syntax
                                         throw Error("Unexpected Character (Code " + (int)next + "): " + next + "\nThis appears to be an attempt to use a Graph Literal which is not valid in Turtle");
                                     }
-                                    break;
 
-                                #endregion
-
-                                #region Underscore Handling
-
-                                case '_':
-                                    if (!anycharallowed)
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.ENDANNOTATION;
+                                    return new EndAnnotationToken(CurrentLine, StartPosition);
+                                }
+                                break;
+                                
+                            case '}':
+                                if (!anycharallowed)
+                                {
+                                    if (_withTrig)
                                     {
-                                        // Start of a Blank Node QName
-                                        IToken temp = TryGetQNameToken();
-                                        if (temp is BlankNodeToken || temp is BlankNodeWithIDToken)
+                                        ConsumeCharacter();
+                                        LastTokenType = Token.RIGHTCURLYBRACKET;
+                                        return new RightCurlyBracketToken(CurrentLine, StartPosition);
+                                    }
+                                    // This is invalid syntax
+                                    throw Error("Unexpected Character (Code " + (int)next + "): " + next + "\nThis appears to be an attempt to use a Graph Literal which is not valid in Turtle");
+                                }
+                                break;
+
+                            #endregion
+
+                            #region Underscore Handling
+
+                            case '_':
+                                if (!anycharallowed)
+                                {
+                                    // Start of a Blank Node QName
+                                    IToken temp = TryGetQNameToken();
+                                    if (temp is BlankNodeToken || temp is BlankNodeWithIDToken)
+                                    {
+                                        return temp;
+                                    }
+                                    else
+                                    {
+                                        throw UnexpectedToken(" when a QName for a Blank Node was expected", temp);
+                                    }
+                                }
+                                break;
+
+                            #endregion
+
+                            #region Colon Handling
+                            case ':':
+                                if (!anycharallowed)
+                                {
+                                    // Start of a Default Namespace QName
+                                    IToken temp = TryGetQNameToken();
+                                    if (temp is QNameToken)
+                                    {
+                                        return temp;
+                                    }
+                                    else
+                                    {
+                                        throw UnexpectedToken(" when a QName in the Default Empty Namespace was expected", temp);
+                                    }
+                                }
+                                break;
+
+                            #endregion
+
+                            #region Equals Sign Handling
+
+                            case '=':
+                                if (!anycharallowed)
+                                {
+                                    // This is invalid syntax of some kind
+                                    // Want to work out what kind though
+
+                                    SkipCharacter();
+                                    next = Peek();
+
+                                    if (char.IsWhiteSpace(next))
+                                    {
+                                        // Equality
+                                        throw Error("Unexpected = Character, this appears to be an attempt to use Equality which is not valid in Turtle");
+                                    }
+                                    else if (next == '>')
+                                    {
+                                        // Implies
+                                        throw Error("Unexpected =>, this appears to be an attempt to use Implies which is not valid in Turtle");
+                                    }
+                                    else
+                                    {
+                                        // Unknown?
+                                        throw Error("Unexpected = Character, = can only occur in a URI or String Literal");
+                                    }
+                                }
+
+                                break;
+                            #endregion
+
+                            #region Minus and Plus Sign Handling
+
+                            case '-':
+                                if (!anycharallowed)
+                                {
+                                    ConsumeCharacter();
+                                    return TryGetNumericLiteralToken();
+                                }
+                                break;
+                            case '+':
+                                if (!anycharallowed)
+                                {
+                                    ConsumeCharacter();
+                                    return TryGetNumericLiteralToken();
+                                }
+                                break;
+
+                            #endregion
+
+                            #region Backslash Escape Handling
+
+                            case '\\':
+                                if (anycharallowed)
+                                {
+                                    // May be used as an Escape in this Context
+
+                                    if (rightangleallowed)
+                                    {
+                                        HandleEscapes(_syntax == TurtleSyntax.Original ? TokeniserEscapeMode.QuotedLiterals : TokeniserEscapeMode.QuotedLiteralsBoth);
+                                    }
+                                    else
+                                    {
+                                        switch (_syntax)
                                         {
-                                            return temp;
-                                        }
-                                        else
-                                        {
-                                            throw UnexpectedToken(" when a QName for a Blank Node was expected", temp);
+                                            case TurtleSyntax.Original:
+                                                HandleEscapes(TokeniserEscapeMode.PermissiveUri);
+                                                break;
+                                            default:
+                                                HandleEscapes(TokeniserEscapeMode.Uri);
+                                                break;
                                         }
                                     }
-                                    break;
+                                    continue;
+                                }
+                                else
+                                {
+                                    // Shouldn't occur outside a String Literal/Uri
+                                    throw Error("Unexpected Character \\, the \\ character can only occur inside String Literals and URIs");
+                                }
 
-                                #endregion
+                            #endregion
 
-                                #region Colon Handling
-                                case ':':
-                                    if (!anycharallowed)
+                            #endregion
+
+                            #region New Line Handling
+
+                            case '\n':
+                                // New Line
+                                if (newlineallowed)
+                                {
+                                    ConsumeNewLine(true);
+                                }
+                                else if (whitespaceignored)
+                                {
+                                    ConsumeNewLine(false);
+                                }
+                                else
+                                {
+                                    // Raise an Error
+                                    throw UnexpectedNewLine("Token");
+                                }
+                                continue;
+
+                            case '\r':
+                                // New Line
+                                if (newlineallowed)
+                                {
+                                    ConsumeNewLine(true);
+                                }
+                                else if (whitespaceignored)
+                                {
+                                    ConsumeNewLine(false);
+                                }
+                                else
+                                {
+                                    // Raise an Error
+                                    throw UnexpectedNewLine("Token");
+                                }
+                                continue;
+                            #endregion
+
+                            #region White Space Handling
+
+                            case ' ':
+                            case '\t':
+                                if (_syntax != TurtleSyntax.Original && next == ' ' && !rightangleallowed)
+                                {
+                                    throw Error("Illegal white space in URI");
+                                }
+                                if (anycharallowed || whitespaceallowed)
+                                {
+                                    // We're allowing anything/whitespace so continue
+                                }
+                                else if (whitespaceignored)
+                                {
+                                    // Discard the White Space
+                                    SkipCharacter();
+                                    continue;
+                                }
+                                else
+                                {
+                                    // Got some White Space when we didn't expect it so raise error
+                                    throw Error("Unexpected White Space");
+                                }
+                                break;
+
+                            #endregion
+
+                            #region Explicit Uri Handling
+
+                            case '<':
+                                // Start of a Uri Token
+                                if (!anycharallowed)
+                                {
+                                    StartNewToken();
+                                    anycharallowed = true;
+                                    rightangleallowed = false;
+
+                                    ConsumeCharacter();
+                                    next = Peek();
+
+                                    // Check if we get a = or a > next
+                                    // Want to ensure we don't get an invalid use of <= or an Empty Uri
+                                    if (next == '=')
                                     {
-                                        // Start of a Default Namespace QName
-                                        IToken temp = TryGetQNameToken();
-                                        if (temp is QNameToken)
-                                        {
-                                            return temp;
-                                        }
-                                        else
-                                        {
-                                            throw UnexpectedToken(" when a QName in the Default Empty Namespace was expected", temp);
-                                        }
-                                    }
-                                    break;
-
-                                #endregion
-
-                                #region Equals Sign Handling
-
-                                case '=':
-                                    if (!anycharallowed)
-                                    {
-                                        // This is invalid syntax of some kind
-                                        // Want to work out what kind though
-
-                                        SkipCharacter();
+                                        // This means we have an attempt to use <=
+                                        ConsumeCharacter();
                                         next = Peek();
 
+                                        // Need to confirm that white space follows the <= so it's a distinct token
                                         if (char.IsWhiteSpace(next))
                                         {
-                                            // Equality
-                                            throw Error("Unexpected = Character, this appears to be an attempt to use Equality which is not valid in Turtle");
-                                        }
-                                        else if (next == '>')
-                                        {
-                                            // Implies
-                                            throw Error("Unexpected =>, this appears to be an attempt to use Implies which is not valid in Turtle");
-                                        }
-                                        else
-                                        {
-                                            // Unknown?
-                                            throw Error("Unexpected = Character, = can only occur in a URI or String Literal");
+                                            // Definitely a use of <=
+                                            throw Error("Unexpected <=, this appears to be an attempt to use Implied By which is not valid in Turtle");
                                         }
                                     }
-
-                                    break;
-                                #endregion
-
-                                #region Minus and Plus Sign Handling
-
-                                case '-':
-                                    if (!anycharallowed)
+                                    else if (next == '<' && _syntax == TurtleSyntax.Rdf11Star)
                                     {
+                                        // We have a STARTQUOTE token rather than the start of a URI
                                         ConsumeCharacter();
-                                        return TryGetNumericLiteralToken();
+                                        return new StartQuoteToken(CurrentLine, StartPosition);
                                     }
-                                    break;
-                                case '+':
-                                    if (!anycharallowed)
+                                    else if (next == '>')
                                     {
+                                        // Have an Empty Uri
                                         ConsumeCharacter();
-                                        return TryGetNumericLiteralToken();
-                                    }
-                                    break;
-
-                                #endregion
-
-                                #region Backslash Escape Handling
-
-                                case '\\':
-                                    if (anycharallowed)
-                                    {
-                                        // May be used as an Escape in this Context
-
-                                        if (rightangleallowed)
-                                        {
-                                            HandleEscapes(_syntax == TurtleSyntax.Original ? TokeniserEscapeMode.QuotedLiterals : TokeniserEscapeMode.QuotedLiteralsBoth);
-                                        }
-                                        else
-                                        {
-                                            switch (_syntax)
-                                            {
-                                                case TurtleSyntax.Original:
-                                                    HandleEscapes(TokeniserEscapeMode.PermissiveUri);
-                                                    break;
-                                                default:
-                                                    HandleEscapes(TokeniserEscapeMode.Uri);
-                                                    break;
-                                            }
-                                        }
-                                        continue;
-                                    }
-                                    else
-                                    {
-                                        // Shouldn't occur outside a String Literal/Uri
-                                        throw Error("Unexpected Character \\, the \\ character can only occur inside String Literals and URIs");
-                                    }
-
-                                #endregion
-
-                                #endregion
-
-                                #region New Line Handling
-
-                                case '\n':
-                                    // New Line
-                                    if (newlineallowed)
-                                    {
-                                        ConsumeNewLine(true);
-                                    }
-                                    else if (whitespaceignored)
-                                    {
-                                        ConsumeNewLine(false);
-                                    }
-                                    else
-                                    {
-                                        // Raise an Error
-                                        throw UnexpectedNewLine("Token");
-                                    }
-                                    continue;
-
-                                case '\r':
-                                    // New Line
-                                    if (newlineallowed)
-                                    {
-                                        ConsumeNewLine(true);
-                                    }
-                                    else if (whitespaceignored)
-                                    {
-                                        ConsumeNewLine(false);
-                                    }
-                                    else
-                                    {
-                                        // Raise an Error
-                                        throw UnexpectedNewLine("Token");
-                                    }
-                                    continue;
-                                #endregion
-
-                                #region White Space Handling
-
-                                case ' ':
-                                case '\t':
-                                    if (_syntax != TurtleSyntax.Original && next == ' ' && !rightangleallowed)
-                                    {
-                                        throw Error("Illegal white space in URI");
-                                    }
-                                    if (anycharallowed || whitespaceallowed)
-                                    {
-                                        // We're allowing anything/whitespace so continue
-                                    }
-                                    else if (whitespaceignored)
-                                    {
-                                        // Discard the White Space
-                                        SkipCharacter();
-                                        continue;
-                                    }
-                                    else
-                                    {
-                                        // Got some White Space when we didn't expect it so raise error
-                                        throw Error("Unexpected White Space");
-                                    }
-                                    break;
-
-                                #endregion
-
-                                #region Explicit Uri Handling
-
-                                case '<':
-                                    // Start of a Uri Token
-                                    if (!anycharallowed)
-                                    {
-                                        StartNewToken();
-                                        anycharallowed = true;
-                                        rightangleallowed = false;
-
-                                        ConsumeCharacter();
-                                        next = Peek();
-
-                                        // Check if we get a = or a > next
-                                        // Want to ensure we don't get an invalid use of <= or an Empty Uri
-                                        if (next == '=')
-                                        {
-                                            // This means we have an attempt to use <=
-                                            ConsumeCharacter();
-                                            next = Peek();
-
-                                            // Need to confirm that white space follows the <= so it's a distinct token
-                                            if (char.IsWhiteSpace(next))
-                                            {
-                                                // Definitely a use of <=
-                                                throw Error("Unexpected <=, this appears to be an attempt to use Implied By which is not valid in Turtle");
-                                            }
-                                        }
-                                        else if (next == '<' && _syntax == TurtleSyntax.Rdf11Star)
-                                        {
-                                            // We have a STARTQUOTE token rather than the start of a URI
-                                            ConsumeCharacter();
-                                            return new StartQuoteToken(CurrentLine, StartPosition);
-                                        }
-                                        else if (next == '>')
-                                        {
-                                            // Have an Empty Uri
-                                            ConsumeCharacter();
-                                            return new UriToken(Value, CurrentLine, StartPosition, EndPosition);
-                                        }
-                                    }
-                                    break;
-
-                                case '>':
-                                    // End of a Uri Token
-                                    if (!rightangleallowed)
-                                    {
-                                        // Should be end of a Uri
-                                        LastTokenType = Token.URI;
-                                        ConsumeCharacter();
-
-                                        // Produce the Token
-                                        if (_validateIris && _syntax != TurtleSyntax.Original && !IriSpecsHelper.IsIri(Value.Substring(1, Length - 2))) throw Error("Illegal IRI " + Value + " encountered");
                                         return new UriToken(Value, CurrentLine, StartPosition, EndPosition);
                                     }
-                                    else if (!anycharallowed)
-                                    {
-                                        ConsumeCharacter(false);
-                                        next = Peek();
-                                        if (next == '>')
-                                        {
-                                            ConsumeCharacter();
-                                            return new EndQuoteToken(CurrentLine, StartPosition);
-                                        }
+                                }
+                                break;
 
-                                        // Raise an Error
-                                        throw UnexpectedCharacter(next, string.Empty);
+                            case '>':
+                                // End of a Uri Token
+                                if (!rightangleallowed)
+                                {
+                                    // Should be end of a Uri
+                                    LastTokenType = Token.URI;
+                                    ConsumeCharacter();
+
+                                    // Produce the Token
+                                    if (_validateIris && _syntax != TurtleSyntax.Original && !IriSpecsHelper.IsIri(Value.Substring(1, Length - 2))) throw Error("Illegal IRI " + Value + " encountered");
+                                    return new UriToken(Value, CurrentLine, StartPosition, EndPosition);
+                                }
+                                else if (!anycharallowed)
+                                {
+                                    ConsumeCharacter(false);
+                                    next = Peek();
+                                    if (next == '>')
+                                    {
+                                        ConsumeCharacter();
+                                        return new EndQuoteToken(CurrentLine, StartPosition);
                                     }
 
-                                    break;
+                                    // Raise an Error
+                                    throw UnexpectedCharacter(next, string.Empty);
+                                }
 
-                                #endregion
+                                break;
 
-                                #region SPARQL style BASE and PREFIX Handling
+                            #endregion
 
-                                case 'b':
-                                case 'B':
-                                    if (!anycharallowed)
-                                    {
-                                        return TryGetDirectiveToken(false);
-                                    }
-                                    break;
-                                case 'p':
-                                case 'P':
-                                    if (!anycharallowed)
-                                    {
-                                        return TryGetDirectiveToken(false);
-                                    }
-                                    break;
+                            #region SPARQL style BASE and PREFIX Handling
 
-                                #endregion
+                            case 'b':
+                            case 'B':
+                                if (!anycharallowed)
+                                {
+                                    return TryGetDirectiveToken(false);
+                                }
+                                break;
+                            case 'p':
+                            case 'P':
+                                if (!anycharallowed)
+                                {
+                                    return TryGetDirectiveToken(false);
+                                }
+                                break;
 
-                                #region Default
+                            #endregion
 
-                                default:
-                                    if (anycharallowed)
-                                    {
-                                        // We're allowing anything so continue
-                                    }
-                                    else
-                                    {
-                                        // Raise an Error
-                                        throw UnexpectedCharacter(next, string.Empty);
-                                    }
-                                    break;
+                            #region Default
 
-                                #endregion
-                            }
+                            default:
+                                if (anycharallowed)
+                                {
+                                    // We're allowing anything so continue
+                                }
+                                else
+                                {
+                                    // Raise an Error
+                                    throw UnexpectedCharacter(next, string.Empty);
+                                }
+                                break;
+
+                            #endregion
                         }
-
-                        // Read in the Character to the Buffer and Increment Position Counters
-                        ConsumeCharacter();
-
-                    } while (true);
-                }
-                catch (IOException)
-                {
-                    // End Of Stream Check
-                    if (_in.EndOfStream)
-                    {
-                        // At End of Stream so produce the EOFToken
-                        return new EOFToken(CurrentLine, CurrentPosition);
                     }
-                    else
-                    {
-                        // Some other Error so throw
-                        throw;
-                    }
-                }
+
+                    // Read in the Character to the Buffer and Increment Position Counters
+                    ConsumeCharacter();
+
+                } while (true);
             }
-        }
-
-        private IToken TryGetDirectiveOrQNameToken()
-        {
-            var next = Peek();
-            switch (next)
+            catch (IOException)
             {
-                case 'b' or 'B':
-                    while (Length < 4)
-                    {
-                        ConsumeCharacter();
-                        if (!Value.Equals("base".Substring(0, Length), StringComparison.OrdinalIgnoreCase)) break;
-                    }
-
-                    if (Value.Equals("base", StringComparison.OrdinalIgnoreCase))
-                    {
-                        LastTokenType = Token.BASEDIRECTIVE;
-                        return new BaseDirectiveToken(CurrentLine, StartPosition);
-                    }
-                    break;
-
-                case 'p' or 'P':
-                    while (Length < 6)
-                    {
-                        ConsumeCharacter();
-                        if (!Value.Equals("prefix".Substring(0, Length), StringComparison.OrdinalIgnoreCase)) break;
-                    }
-
-                    var afterPrefix = Peek();
-
-                    if (Value.Equals("prefix", StringComparison.OrdinalIgnoreCase) && char.IsWhiteSpace(afterPrefix))
-                    {
-                        LastTokenType = Token.PREFIXDIRECTIVE;
-                        return new PrefixDirectiveToken(CurrentLine, StartPosition);
-                    }
-                    break;
-            }
-            // Was neither a base nor a prefix directive
-            if (Value.EndsWith(" ")) Backtrack();
-            return TryGetQNameToken(false);
-        }
-
-        /// <summary>
-        /// Internal Helper method which attempts to get a Directive Token.
-        /// </summary>
-        /// <returns></returns>
-        private IToken TryGetDirectiveToken(bool caseSensitive)
-        {
-            // Buffers
-            var next = Peek();
-            var comparison = caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-
-            // Which directive do we expect?
-            // 1 = Prefix, 2 = Base
-            var directiveExpected = -1;
-
-            do {
-                switch (directiveExpected)
+                // End Of Stream Check
+                if (_in.EndOfStream)
                 {
-                    case -1:
-                        // Not sure which directive we might see yet
-                        if (next == 'b' || (!caseSensitive && next == 'B'))
-                        {
-                            directiveExpected = 2;
-                        }
-                        else if (next == 'p' ||(!caseSensitive && next == 'P'))
-                        {
-                            directiveExpected = 1;
-                        }
-                        else if (next == 'k' || next == 'K')
-                        {
-                            throw Error("Unexpected Character (Code " + (int)next + "): " + next + "\nThis appears to be the start of a Keywords Directive which is not valid in Turtle");
-                        }
-                        else if (next == 'f' || next == 'F')
-                        {
-                            throw Error("Unexpected Character (Code " + (int)next + "): " + next + "\nThis appears to be the start of a forAll or forSome Quantification which is not valid in Turtle");
-                        }
-                        else
-                        {
-                            throw Error("Unexpected Character (Code " + (int)next + "): " + next + "\nExpected the start of a Base/Prefix directive");
-                        }
-                        break;
-                    case 1:
-                        // Expecting a Prefix Directive
-                        while (Length < 6)
-                        {
-                            ConsumeCharacter();
-                            if (!Value.Equals("prefix".Substring(0, Length), comparison))
-                            {
-                                throw Error("Expected a Prefix Directive and got '" + Value + "'");
-                            }
-                        }
-                        if (Value.Equals("prefix", comparison))
-                        {
-                            // Got a Prefix Directive
-                            LastTokenType = Token.PREFIXDIRECTIVE;
-                            return new PrefixDirectiveToken(CurrentLine, StartPosition);
-                        }
-                        else
-                        {
-                            // Not what we expected so Error
-                            throw Error("Expected a Prefix Directive and got '" + Value + "'");
-                        }
-                    case 2:
-                        // Expecting a Base Directive
-                        while (Length < 4)
-                        {
-                            ConsumeCharacter();
-                            if (!Value.Equals("base".Substring(0, Length), comparison))
-                            {
-                                throw Error("Expected a Base Directive and got '" + Value + "'");
-                            }
-                        }
-                        if (Value.Equals("base", caseSensitive ? StringComparison.Ordinal: StringComparison.OrdinalIgnoreCase))
-                        {
-                            // Got a Base Directive
-                            LastTokenType = Token.BASEDIRECTIVE;
-                            return new BaseDirectiveToken(CurrentLine, StartPosition);
-                        }
-                        else
-                        {
-                            throw Error("Expected a Base Directive and got '" + Value + "'");
-                        }
-                    default:
-                        throw Error("Unknown Parsing Error in TurtleTokeniser.TryGetDirectiveToken()");
-                }
-
-                // Should only hit this once when we do the first case to decide which directive we'll get
-             } while (true);
-        }
-
-        /// <summary>
-        /// Internal Helper method which attempts to get a Prefix Token.
-        /// </summary>
-        /// <returns></returns>
-        private IToken TryGetPrefixToken()
-        {
-            var next = Peek();
-
-            // Drop leading white space
-            while (char.IsWhiteSpace(next))
-            {
-                if (_syntax == TurtleSyntax.Original)
-                {
-                    // If we hit a New Line then Error
-                    if (next is '\n' or '\r')
-                    {
-                        throw UnexpectedNewLine("Prefix");
-                    }
-                }
-
-                // Discard unecessary White Space
-                SkipCharacter();
-                next = Peek();
-            }
-
-            StartNewToken();
-
-            // Get the Prefix Characters
-            while (!char.IsWhiteSpace(next) && next != '<')
-            {
-                ConsumeCharacter();
-                if (next == ':') break;
-                next = Peek();
-            }
-            if (!Value.EndsWith(":"))
-            {
-                throw new RdfParseException("Didn't find expected : Character while attempting to parse Prefix at content:\n" + Value + "\nPrefixes must end in a Colon Character", StartLine, CurrentLine, StartPosition, CurrentPosition);
-            }
-            if (!TurtleSpecsHelper.IsValidPrefix(Value, _syntax))
-            {
-                throw new RdfParseException("The value '" + Value + "' is not a valid Prefix in Turtle", new PositionInfo(StartLine, CurrentLine, StartPosition, EndPosition));
-            }
-
-            // Produce a PrefixToken
-            LastTokenType = Token.PREFIX;
-            return new PrefixToken(Value, CurrentLine, StartPosition, EndPosition);
-        }
-
-        /// <summary>
-        /// Internal Helper method which attempts to get a QName Token.
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>In fact this function may return a number of Tokens depending on the characters it finds.  It may find a QName, Plain Literal, Blank Node QName (with ID) or Keyword.  QName &amp; Keyword Validation is carried out by this function.</remarks>
-        private IToken TryGetQNameToken(bool startNewToken = true)
-        {
-            var next = Peek();
-            var colonoccurred = false;
-            StringComparison comparison = (_syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
-
-            if (startNewToken)
-            {
-                StartNewToken();
-            }
-            else
-            {
-                // Continuing with existing token so check if we have already encountered a :
-                colonoccurred = Value.Contains(":");
-            }
-
-            // Grab all the Characters in the QName
-            while(!(char.IsWhiteSpace(next) || next is ';' or ',' or '(' or ')' or '[' or ']' or '#' or '{' or '}' or '"' || (next == '.' && _syntax == TurtleSyntax.Original) || (next == '>' && _syntax == TurtleSyntax.Rdf11Star)))
-            //while (!char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && next != '#' && (next != '.' || _syntax != TurtleSyntax.Original) && (!(next == '>' && _syntax == TurtleSyntax.Rdf11Star)))
-            {
-                // Can't have more than one Colon in a QName unless we're using the W3C syntax
-                if (next == ':' && !colonoccurred)
-                {
-                    colonoccurred = true;
-                }
-                else if (next == ':' && _syntax == TurtleSyntax.Original) 
-                {
-                    throw Error("Unexpected additional Colon Character while trying to parse a QName from content:\n" + Value + "\nQNames can only contain 1 Colon character");
-                }
-
-                // A Backslash allow for unicode escapes in QNames or reserved name escapes in local names
-                if (next == '\\')
-                {
-                    if (colonoccurred)
-                    {
-                        // If we are in local name portion complex escapes apply
-                        HandleComplexLocalNameEscapes();
-                    }
-                    else
-                    {
-                        // Prior to first colon only standard escapes apply
-                        HandleEscapes(TokeniserEscapeMode.QName);
-                    }
-                    // If escape is handled characters have already been consumed so must continue to avoid double consumption
-                    next = Peek();
-                    continue;
-                }
-
-                ConsumeCharacter();
-                next = Peek();
-                if (_in.EndOfStream) break;
-            }
-
-            // If it ends in a trailing . then we need to backtrack
-            if (Value.EndsWith(".")) Backtrack();
-
-            if (colonoccurred)
-            {
-                // A QName must contain a Colon at some point
-                var qname = Value;
-
-                // Was this a Blank Node
-                if (qname.StartsWith("_:"))
-                {
-                    // Blank Node with an ID
-                    if (qname.Length == 2)
-                    {
-                        // No ID
-                        return new BlankNodeToken(CurrentLine, StartPosition);
-                    }
-                    else
-                    {
-                        // User specified ID
-                        return new BlankNodeWithIDToken(qname, CurrentLine, StartPosition, EndPosition);
-                    }
-                }
-                else if (qname.StartsWith("-"))
-                {
-                    // Illegal use of - to start a QName
-                    throw Error("The - Character cannot be used at the start of a QName");
-                }
-                else if (qname.StartsWith("."))
-                {
-                    // Illegal use of . to start a QName
-                    throw Error("The . Character cannot be used at the start of a QName");
+                    // At End of Stream so produce the EOFToken
+                    return new EOFToken(CurrentLine, CurrentPosition);
                 }
                 else
                 {
-                    if (!TurtleSpecsHelper.IsValidQName(qname, _syntax))
-                    {
-                        throw Error("The QName " + qname + " is not valid in Turtle");
-                    }
-
-                    // Normal QName
-                    LastTokenType = Token.QNAME;
-                    return new QNameToken(qname, CurrentLine, StartPosition, EndPosition);
+                    // Some other Error so throw
+                    throw;
                 }
             }
-            else
-            {
-                // If we don't see a Colon then have to assume a Plain Literal
-                // BUT we also need to check it's not a keyword
-                var value = Value;
+        }
+    }
 
-                if (value.Equals("a"))
+    private IToken TryGetDirectiveOrQNameToken()
+    {
+        var next = Peek();
+        switch (next)
+        {
+            case 'b' or 'B':
+                while (Length < 4)
                 {
-                    // The 'a' Keyword
-                    LastTokenType = Token.KEYWORDA;
-                    return new KeywordAToken(CurrentLine, StartPosition);
+                    ConsumeCharacter();
+                    if (!Value.Equals("base".Substring(0, Length), StringComparison.OrdinalIgnoreCase)) break;
                 }
-                else if (value.Equals("is"))
-                {
-                    // This 'is' Keyword
-                    throw Error("The 'is' Keyword is not Valid in Turtle");
-                }
-                else if (value.Equals("of"))
-                {
-                    // The 'of' Keyword
-                    throw Error("The 'of' Keyword is not Valid in Turtle");
-                }
-                else if (value.Equals("base", StringComparison.OrdinalIgnoreCase))
+
+                if (Value.Equals("base", StringComparison.OrdinalIgnoreCase))
                 {
                     LastTokenType = Token.BASEDIRECTIVE;
                     return new BaseDirectiveToken(CurrentLine, StartPosition);
                 }
-                else if (value.Equals("prefix", StringComparison.OrdinalIgnoreCase))
+                break;
+
+            case 'p' or 'P':
+                while (Length < 6)
+                {
+                    ConsumeCharacter();
+                    if (!Value.Equals("prefix".Substring(0, Length), StringComparison.OrdinalIgnoreCase)) break;
+                }
+
+                var afterPrefix = Peek();
+
+                if (Value.Equals("prefix", StringComparison.OrdinalIgnoreCase) && char.IsWhiteSpace(afterPrefix))
                 {
                     LastTokenType = Token.PREFIXDIRECTIVE;
                     return new PrefixDirectiveToken(CurrentLine, StartPosition);
                 }
-                else if (_withTrig && value.Equals("graph", StringComparison.OrdinalIgnoreCase))
-                {
-                    LastTokenType = Token.GRAPH;
-                    return new GraphKeywordToken(CurrentLine, StartPosition);
-                }
-                else
-                {
-                    // Must be a Plain Literal
-                    if (!TurtleSpecsHelper.IsValidPlainLiteral(value, _syntax))
+                break;
+        }
+        // Was neither a base nor a prefix directive
+        if (Value.EndsWith(" ")) Backtrack();
+        return TryGetQNameToken(false);
+    }
+
+    /// <summary>
+    /// Internal Helper method which attempts to get a Directive Token.
+    /// </summary>
+    /// <returns></returns>
+    private IToken TryGetDirectiveToken(bool caseSensitive)
+    {
+        // Buffers
+        var next = Peek();
+        var comparison = caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+
+        // Which directive do we expect?
+        // 1 = Prefix, 2 = Base
+        var directiveExpected = -1;
+
+        do {
+            switch (directiveExpected)
+            {
+                case -1:
+                    // Not sure which directive we might see yet
+                    if (next == 'b' || (!caseSensitive && next == 'B'))
                     {
-                        throw Error("The value of the Plain Literal '" + value + "' is not valid in Turtle.  Turtle supports Boolean, Integer, Decimal and Double Plain Literals");
+                        directiveExpected = 2;
                     }
-                    LastTokenType = Token.PLAINLITERAL;
-                    return new PlainLiteralToken(value, CurrentLine, StartPosition, EndPosition);
+                    else if (next == 'p' ||(!caseSensitive && next == 'P'))
+                    {
+                        directiveExpected = 1;
+                    }
+                    else if (next == 'k' || next == 'K')
+                    {
+                        throw Error("Unexpected Character (Code " + (int)next + "): " + next + "\nThis appears to be the start of a Keywords Directive which is not valid in Turtle");
+                    }
+                    else if (next == 'f' || next == 'F')
+                    {
+                        throw Error("Unexpected Character (Code " + (int)next + "): " + next + "\nThis appears to be the start of a forAll or forSome Quantification which is not valid in Turtle");
+                    }
+                    else
+                    {
+                        throw Error("Unexpected Character (Code " + (int)next + "): " + next + "\nExpected the start of a Base/Prefix directive");
+                    }
+                    break;
+                case 1:
+                    // Expecting a Prefix Directive
+                    while (Length < 6)
+                    {
+                        ConsumeCharacter();
+                        if (!Value.Equals("prefix".Substring(0, Length), comparison))
+                        {
+                            throw Error("Expected a Prefix Directive and got '" + Value + "'");
+                        }
+                    }
+                    if (Value.Equals("prefix", comparison))
+                    {
+                        // Got a Prefix Directive
+                        LastTokenType = Token.PREFIXDIRECTIVE;
+                        return new PrefixDirectiveToken(CurrentLine, StartPosition);
+                    }
+                    else
+                    {
+                        // Not what we expected so Error
+                        throw Error("Expected a Prefix Directive and got '" + Value + "'");
+                    }
+                case 2:
+                    // Expecting a Base Directive
+                    while (Length < 4)
+                    {
+                        ConsumeCharacter();
+                        if (!Value.Equals("base".Substring(0, Length), comparison))
+                        {
+                            throw Error("Expected a Base Directive and got '" + Value + "'");
+                        }
+                    }
+                    if (Value.Equals("base", caseSensitive ? StringComparison.Ordinal: StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Got a Base Directive
+                        LastTokenType = Token.BASEDIRECTIVE;
+                        return new BaseDirectiveToken(CurrentLine, StartPosition);
+                    }
+                    else
+                    {
+                        throw Error("Expected a Base Directive and got '" + Value + "'");
+                    }
+                default:
+                    throw Error("Unknown Parsing Error in TurtleTokeniser.TryGetDirectiveToken()");
+            }
+
+            // Should only hit this once when we do the first case to decide which directive we'll get
+         } while (true);
+    }
+
+    /// <summary>
+    /// Internal Helper method which attempts to get a Prefix Token.
+    /// </summary>
+    /// <returns></returns>
+    private IToken TryGetPrefixToken()
+    {
+        var next = Peek();
+
+        // Drop leading white space
+        while (char.IsWhiteSpace(next))
+        {
+            if (_syntax == TurtleSyntax.Original)
+            {
+                // If we hit a New Line then Error
+                if (next is '\n' or '\r')
+                {
+                    throw UnexpectedNewLine("Prefix");
                 }
             }
+
+            // Discard unecessary White Space
+            SkipCharacter();
+            next = Peek();
         }
 
-        private IToken TryGetNumericLiteralToken()
-        {
-            var dotoccurred = false;
-            var signoccurred = false;
-            var expoccurred = false;
+        StartNewToken();
 
-            if (Length == 1)
+        // Get the Prefix Characters
+        while (!char.IsWhiteSpace(next) && next != '<')
+        {
+            ConsumeCharacter();
+            if (next == ':') break;
+            next = Peek();
+        }
+        if (!Value.EndsWith(":"))
+        {
+            throw new RdfParseException("Didn't find expected : Character while attempting to parse Prefix at content:\n" + Value + "\nPrefixes must end in a Colon Character", StartLine, CurrentLine, StartPosition, CurrentPosition);
+        }
+        if (!TurtleSpecsHelper.IsValidPrefix(Value, _syntax))
+        {
+            throw new RdfParseException("The value '" + Value + "' is not a valid Prefix in Turtle", new PositionInfo(StartLine, CurrentLine, StartPosition, EndPosition));
+        }
+
+        // Produce a PrefixToken
+        LastTokenType = Token.PREFIX;
+        return new PrefixToken(Value, CurrentLine, StartPosition, EndPosition);
+    }
+
+    /// <summary>
+    /// Internal Helper method which attempts to get a QName Token.
+    /// </summary>
+    /// <returns></returns>
+    /// <remarks>In fact this function may return a number of Tokens depending on the characters it finds.  It may find a QName, Plain Literal, Blank Node QName (with ID) or Keyword.  QName &amp; Keyword Validation is carried out by this function.</remarks>
+    private IToken TryGetQNameToken(bool startNewToken = true)
+    {
+        var next = Peek();
+        var colonoccurred = false;
+        StringComparison comparison = (_syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+
+        if (startNewToken)
+        {
+            StartNewToken();
+        }
+        else
+        {
+            // Continuing with existing token so check if we have already encountered a :
+            colonoccurred = Value.Contains(":");
+        }
+
+        // Grab all the Characters in the QName
+        while(!(char.IsWhiteSpace(next) || next is ';' or ',' or '(' or ')' or '[' or ']' or '#' or '{' or '}' or '"' || (next == '.' && _syntax == TurtleSyntax.Original) || (next == '>' && _syntax == TurtleSyntax.Rdf11Star)))
+        //while (!char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && next != '#' && (next != '.' || _syntax != TurtleSyntax.Original) && (!(next == '>' && _syntax == TurtleSyntax.Rdf11Star)))
+        {
+            // Can't have more than one Colon in a QName unless we're using the W3C syntax
+            if (next == ':' && !colonoccurred)
             {
-                switch (Value[0])
+                colonoccurred = true;
+            }
+            else if (next == ':' && _syntax == TurtleSyntax.Original) 
+            {
+                throw Error("Unexpected additional Colon Character while trying to parse a QName from content:\n" + Value + "\nQNames can only contain 1 Colon character");
+            }
+
+            // A Backslash allow for unicode escapes in QNames or reserved name escapes in local names
+            if (next == '\\')
+            {
+                if (colonoccurred)
                 {
-                    case '.':
-                        dotoccurred = true;
-                        break;
-                    case '+':
-                        signoccurred = true;
-                        break;
-                    case '-':
-                        signoccurred = true;
-                        break;
-                    default:
-                        throw Error("Unexpected state while trying to parse a plain literal");
+                    // If we are in local name portion complex escapes apply
+                    HandleComplexLocalNameEscapes();
                 }
+                else
+                {
+                    // Prior to first colon only standard escapes apply
+                    HandleEscapes(TokeniserEscapeMode.QName);
+                }
+                // If escape is handled characters have already been consumed so must continue to avoid double consumption
+                next = Peek();
+                continue;
+            }
+
+            ConsumeCharacter();
+            next = Peek();
+            if (_in.EndOfStream) break;
+        }
+
+        // If it ends in a trailing . then we need to backtrack
+        if (Value.EndsWith(".")) Backtrack();
+
+        if (colonoccurred)
+        {
+            // A QName must contain a Colon at some point
+            var qname = Value;
+
+            // Was this a Blank Node
+            if (qname.StartsWith("_:"))
+            {
+                // Blank Node with an ID
+                if (qname.Length == 2)
+                {
+                    // No ID
+                    return new BlankNodeToken(CurrentLine, StartPosition);
+                }
+                else
+                {
+                    // User specified ID
+                    return new BlankNodeWithIDToken(qname, CurrentLine, StartPosition, EndPosition);
+                }
+            }
+            else if (qname.StartsWith("-"))
+            {
+                // Illegal use of - to start a QName
+                throw Error("The - Character cannot be used at the start of a QName");
+            }
+            else if (qname.StartsWith("."))
+            {
+                // Illegal use of . to start a QName
+                throw Error("The . Character cannot be used at the start of a QName");
             }
             else
             {
-                StartNewToken();
-            }
-
-            // Find acceptable characters
-            var next = Peek();
-            var exit = false;
-            while (char.IsDigit(next) || next == '.' || next == '+' || next == '-' || next == 'e' || next == 'E')
-            {
-                switch (next)
+                if (!TurtleSpecsHelper.IsValidQName(qname, _syntax))
                 {
-                    case '.':
-                        // If we've already seen a dot and we see another assume that it is the subsequent triple terminator and not part of the literal
-                        if (dotoccurred) exit = true;
-                        dotoccurred = true;
-                        break;
-                    case '+':
-                    case '-':
-                        // Seeing another sign is illegal if one has already been seen
-                        if (signoccurred) throw Error("Unexpected additional sign (" + next + ") character while trying to parse a signed numeric literal");
-                        if (Length != 0 && !expoccurred) throw Error("Unexpected sign (" + next + ") character while trying to parse a numeric literal, sign may only occur at the start of the literal or immediately after an exponent");
-                        if (expoccurred && Value[Length - 1] != 'e' && Value[Length - 1] != 'E') throw Error("Unexpected sign (" + next + ") character, sign may only occur at the start of the literal or immediatedly after an exponent");
-                        signoccurred = true;
-                        break;
-                    case 'e':
-                    case 'E':
-                        // Seeing another sign is illegal if one has already been seen
-                        if (expoccurred) throw Error("Unexpected additional exponent character while trying to parse a numeric literal");
-                        expoccurred = true;
-                        signoccurred = false; //We need to allow sign characters after an exponent
-                        break;
+                    throw Error("The QName " + qname + " is not valid in Turtle");
                 }
 
-                if (exit) break;
-
-                ConsumeCharacter();
-                next = Peek();
-                if (_in.EndOfStream) break;
+                // Normal QName
+                LastTokenType = Token.QNAME;
+                return new QNameToken(qname, CurrentLine, StartPosition, EndPosition);
             }
+        }
+        else
+        {
+            // If we don't see a Colon then have to assume a Plain Literal
+            // BUT we also need to check it's not a keyword
+            var value = Value;
 
-            // Backtrack if we get a trailing .
-            if (Value.EndsWith(".")) Backtrack();
-            
-            if (TurtleSpecsHelper.IsValidPlainLiteral(Value, _syntax))
+            if (value.Equals("a"))
             {
+                // The 'a' Keyword
+                LastTokenType = Token.KEYWORDA;
+                return new KeywordAToken(CurrentLine, StartPosition);
+            }
+            else if (value.Equals("is"))
+            {
+                // This 'is' Keyword
+                throw Error("The 'is' Keyword is not Valid in Turtle");
+            }
+            else if (value.Equals("of"))
+            {
+                // The 'of' Keyword
+                throw Error("The 'of' Keyword is not Valid in Turtle");
+            }
+            else if (value.Equals("base", StringComparison.OrdinalIgnoreCase))
+            {
+                LastTokenType = Token.BASEDIRECTIVE;
+                return new BaseDirectiveToken(CurrentLine, StartPosition);
+            }
+            else if (value.Equals("prefix", StringComparison.OrdinalIgnoreCase))
+            {
+                LastTokenType = Token.PREFIXDIRECTIVE;
+                return new PrefixDirectiveToken(CurrentLine, StartPosition);
+            }
+            else if (_withTrig && value.Equals("graph", StringComparison.OrdinalIgnoreCase))
+            {
+                LastTokenType = Token.GRAPH;
+                return new GraphKeywordToken(CurrentLine, StartPosition);
+            }
+            else
+            {
+                // Must be a Plain Literal
+                if (!TurtleSpecsHelper.IsValidPlainLiteral(value, _syntax))
+                {
+                    throw Error("The value of the Plain Literal '" + value + "' is not valid in Turtle.  Turtle supports Boolean, Integer, Decimal and Double Plain Literals");
+                }
                 LastTokenType = Token.PLAINLITERAL;
-                return new PlainLiteralToken(Value, CurrentLine, StartPosition, EndPosition);
+                return new PlainLiteralToken(value, CurrentLine, StartPosition, EndPosition);
+            }
+        }
+    }
+
+    private IToken TryGetNumericLiteralToken()
+    {
+        var dotoccurred = false;
+        var signoccurred = false;
+        var expoccurred = false;
+
+        if (Length == 1)
+        {
+            switch (Value[0])
+            {
+                case '.':
+                    dotoccurred = true;
+                    break;
+                case '+':
+                    signoccurred = true;
+                    break;
+                case '-':
+                    signoccurred = true;
+                    break;
+                default:
+                    throw Error("Unexpected state while trying to parse a plain literal");
+            }
+        }
+        else
+        {
+            StartNewToken();
+        }
+
+        // Find acceptable characters
+        var next = Peek();
+        var exit = false;
+        while (char.IsDigit(next) || next == '.' || next == '+' || next == '-' || next == 'e' || next == 'E')
+        {
+            switch (next)
+            {
+                case '.':
+                    // If we've already seen a dot and we see another assume that it is the subsequent triple terminator and not part of the literal
+                    if (dotoccurred) exit = true;
+                    dotoccurred = true;
+                    break;
+                case '+':
+                case '-':
+                    // Seeing another sign is illegal if one has already been seen
+                    if (signoccurred) throw Error("Unexpected additional sign (" + next + ") character while trying to parse a signed numeric literal");
+                    if (Length != 0 && !expoccurred) throw Error("Unexpected sign (" + next + ") character while trying to parse a numeric literal, sign may only occur at the start of the literal or immediately after an exponent");
+                    if (expoccurred && Value[Length - 1] != 'e' && Value[Length - 1] != 'E') throw Error("Unexpected sign (" + next + ") character, sign may only occur at the start of the literal or immediatedly after an exponent");
+                    signoccurred = true;
+                    break;
+                case 'e':
+                case 'E':
+                    // Seeing another sign is illegal if one has already been seen
+                    if (expoccurred) throw Error("Unexpected additional exponent character while trying to parse a numeric literal");
+                    expoccurred = true;
+                    signoccurred = false; //We need to allow sign characters after an exponent
+                    break;
+            }
+
+            if (exit) break;
+
+            ConsumeCharacter();
+            next = Peek();
+            if (_in.EndOfStream) break;
+        }
+
+        // Backtrack if we get a trailing .
+        if (Value.EndsWith(".")) Backtrack();
+        
+        if (TurtleSpecsHelper.IsValidPlainLiteral(Value, _syntax))
+        {
+            LastTokenType = Token.PLAINLITERAL;
+            return new PlainLiteralToken(Value, CurrentLine, StartPosition, EndPosition);
+        }
+        else
+        {
+            throw Error("The numeric literal " + Value + " is not valid in Turtle");
+        }
+    }
+
+    /// <summary>
+    /// Internal Helper method which attempts to get a Language Specifier Token.
+    /// </summary>
+    /// <returns></returns>
+    private IToken TryGetLanguageSpecToken()
+    {
+        var next = Peek();
+
+        // Consume Letter Characters
+        while (char.IsLetterOrDigit(next) || next == '-')
+        {
+            ConsumeCharacter();
+            next = Peek();
+        }
+
+        if (Length == 0)
+        {
+            // Empty output so no Language Specifier
+            throw UnexpectedCharacter(next, "Language Specifier for preceding Literal Token");
+        }
+        else
+        {
+            if (RdfSpecsHelper.IsValidLangSpecifier(Value))
+            {
+                LastTokenType = Token.LANGSPEC;
+                return new LanguageSpecifierToken(Value, CurrentLine, StartPosition, EndPosition);
             }
             else
             {
-                throw Error("The numeric literal " + Value + " is not valid in Turtle");
+                throw Error("Unexpected Content '" + Value + "' encountered, expected a valid Language Specifier");
             }
         }
+    }
 
-        /// <summary>
-        /// Internal Helper method which attempts to get a Language Specifier Token.
-        /// </summary>
-        /// <returns></returns>
-        private IToken TryGetLanguageSpecToken()
+    /// <summary>
+    /// Internal Helper method which attempts to get a Date Type Token.
+    /// </summary>
+    /// <returns></returns>
+    private IToken TryGetDataTypeToken()
+    {
+        var next = Peek();
+
+        if (next == '<')
         {
-            var next = Peek();
+            // DataType is specified by a Uri
+            ConsumeCharacter();
+            next = Peek();
 
-            // Consume Letter Characters
-            while (char.IsLetterOrDigit(next) || next == '-')
+            // Get Characters while they're valid
+            while (next != '>' && next != '\n' && next != '\r')
             {
+                // Append to output
                 ConsumeCharacter();
                 next = Peek();
             }
 
-            if (Length == 0)
+            // Check we didn't hit an illegal character
+            if (next == '\n' || next == '\r')
             {
-                // Empty output so no Language Specifier
-                throw UnexpectedCharacter(next, "Language Specifier for preceding Literal Token");
+                throw UnexpectedNewLine("DataType URI");
             }
             else
             {
-                if (RdfSpecsHelper.IsValidLangSpecifier(Value))
-                {
-                    LastTokenType = Token.LANGSPEC;
-                    return new LanguageSpecifierToken(Value, CurrentLine, StartPosition, EndPosition);
-                }
-                else
-                {
-                    throw Error("Unexpected Content '" + Value + "' encountered, expected a valid Language Specifier");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Internal Helper method which attempts to get a Date Type Token.
-        /// </summary>
-        /// <returns></returns>
-        private IToken TryGetDataTypeToken()
-        {
-            var next = Peek();
-
-            if (next == '<')
-            {
-                // DataType is specified by a Uri
+                // Get the final >
                 ConsumeCharacter();
-                next = Peek();
+            }
 
-                // Get Characters while they're valid
-                while (next != '>' && next != '\n' && next != '\r')
-                {
-                    // Append to output
-                    ConsumeCharacter();
-                    next = Peek();
-                }
-
-                // Check we didn't hit an illegal character
-                if (next == '\n' || next == '\r')
-                {
-                    throw UnexpectedNewLine("DataType URI");
-                }
-                else
-                {
-                    // Get the final >
-                    ConsumeCharacter();
-                }
-
-                return new DataTypeToken(Value, CurrentLine, StartPosition, EndPosition);
+            return new DataTypeToken(Value, CurrentLine, StartPosition, EndPosition);
+        }
+        else
+        {
+            // DataType is specified by a QName
+            IToken temp = TryGetQNameToken();
+            if (temp is QNameToken)
+            {
+                // Turn into a DataTypeToken
+                return new DataTypeToken(temp.Value, temp.StartLine, temp.StartPosition, temp.EndPosition);
             }
             else
             {
-                // DataType is specified by a QName
-                IToken temp = TryGetQNameToken();
-                if (temp is QNameToken)
-                {
-                    // Turn into a DataTypeToken
-                    return new DataTypeToken(temp.Value, temp.StartLine, temp.StartPosition, temp.EndPosition);
-                }
-                else
-                {
-                    // If we got a PlainLiteralToken or anything else something went wrong
-                    throw Error("Parsed a '" + temp.GetType() + "' Token while attempting to get a QNameToken for a DataType");
-                }
+                // If we got a PlainLiteralToken or anything else something went wrong
+                throw Error("Parsed a '" + temp.GetType() + "' Token while attempting to get a QNameToken for a DataType");
             }
-
         }
 
-        /// <summary>
-        /// Internal Helper method which attempts to get a Comment Token.
-        /// </summary>
-        /// <returns></returns>
-        private IToken TryGetCommentToken()
+    }
+
+    /// <summary>
+    /// Internal Helper method which attempts to get a Comment Token.
+    /// </summary>
+    /// <returns></returns>
+    private IToken TryGetCommentToken()
+    {
+        var next = Peek();
+
+        // Grab characters until we hit the new line
+        while (next != '\n' && next != '\r')
         {
-            var next = Peek();
-
-            // Grab characters until we hit the new line
-            while (next != '\n' && next != '\r')
-            {
-                if (ConsumeCharacter(true)) break;
-                next = Peek();
-            }
-
-            // Discard New line and reset position
-            var comment = new CommentToken(Value, CurrentLine, StartPosition, EndPosition);
-            ConsumeNewLine(false, true);
-            return comment;
+            if (ConsumeCharacter(true)) break;
+            next = Peek();
         }
+
+        // Discard New line and reset position
+        var comment = new CommentToken(Value, CurrentLine, StartPosition, EndPosition);
+        ConsumeNewLine(false, true);
+        return comment;
     }
 }

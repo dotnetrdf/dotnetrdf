@@ -25,24 +25,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Xunit;
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+
+public class StardogAsync
+    : BaseAsyncTests, IClassFixture<StardogStoreFixture>
 {
+    private readonly StardogStoreFixture _fixture;
 
-    public class StardogAsync
-        : BaseAsyncTests, IClassFixture<StardogStoreFixture>
+    public StardogAsync(StardogStoreFixture fixture)
     {
-        private readonly StardogStoreFixture _fixture;
+        //Increase the wait delay for Stardog because we have extra overhead for transactions
+        WaitDelay = 45000;
+        _fixture = fixture;
+    }
 
-        public StardogAsync(StardogStoreFixture fixture)
-        {
-            //Increase the wait delay for Stardog because we have extra overhead for transactions
-            WaitDelay = 45000;
-            _fixture = fixture;
-        }
-
-        protected override IAsyncStorageProvider GetAsyncProvider()
-        {
-            return _fixture.Connector;
-        }
+    protected override IAsyncStorageProvider GetAsyncProvider()
+    {
+        return _fixture.Connector;
     }
 }

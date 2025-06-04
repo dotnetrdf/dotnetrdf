@@ -28,156 +28,155 @@ using System.Text;
 using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+/// <summary>
+/// Class of Sparql Variables.
+/// </summary>
+public class SparqlVariable
 {
+    private string _name;
+    private bool _isResultVar;
+    private ISparqlAggregate _aggregate = null;
+    private ISparqlExpression _expr = null;
+
     /// <summary>
-    /// Class of Sparql Variables.
+    /// Creates a new Sparql Variable.
     /// </summary>
-    public class SparqlVariable
+    /// <param name="name">Variable Name.</param>
+    /// <param name="isResultVar">Does this Variable appear in the Result Set?.</param>
+    public SparqlVariable(string name, bool isResultVar) {
+        _name = name;
+        _isResultVar = isResultVar;
+
+        // Strip leading ?/$ if present
+        if (_name.StartsWith("?") || _name.StartsWith("$"))
+        {
+            _name = _name.Substring(1);
+        }
+    }
+
+    /// <summary>
+    /// Creates a new Sparql Variable.
+    /// </summary>
+    /// <param name="name">Variable Name (with leading ?/$ removed).</param>
+    public SparqlVariable(string name) 
+        : this(name, false) { }
+
+    /// <summary>
+    /// Creates a new Sparql Variable which is an Aggregate.
+    /// </summary>
+    /// <param name="name">Variable Name (with leading ?/$ removed).</param>
+    /// <param name="aggregate">Aggregate Function.</param>
+    /// <remarks>All Aggregate Variables are automatically considered as Result Variables.</remarks>
+    public SparqlVariable(string name, ISparqlAggregate aggregate)
+        : this(name, true)
     {
-        private string _name;
-        private bool _isResultVar;
-        private ISparqlAggregate _aggregate = null;
-        private ISparqlExpression _expr = null;
+        _aggregate = aggregate;
+    }
 
-        /// <summary>
-        /// Creates a new Sparql Variable.
-        /// </summary>
-        /// <param name="name">Variable Name.</param>
-        /// <param name="isResultVar">Does this Variable appear in the Result Set?.</param>
-        public SparqlVariable(string name, bool isResultVar) {
-            _name = name;
-            _isResultVar = isResultVar;
+    /// <summary>
+    /// Creates a new Sparql Variable which is a Projection Expression.
+    /// </summary>
+    /// <param name="name">Variable Name (with leading ?/$ removed).</param>
+    /// <param name="expr">Projection Expression.</param>
+    public SparqlVariable(string name, ISparqlExpression expr)
+        : this(name, true)
+    {
+        _expr = expr;
+    }
 
-            // Strip leading ?/$ if present
-            if (_name.StartsWith("?") || _name.StartsWith("$"))
-            {
-                _name = _name.Substring(1);
-            }
-        }
-
-        /// <summary>
-        /// Creates a new Sparql Variable.
-        /// </summary>
-        /// <param name="name">Variable Name (with leading ?/$ removed).</param>
-        public SparqlVariable(string name) 
-            : this(name, false) { }
-
-        /// <summary>
-        /// Creates a new Sparql Variable which is an Aggregate.
-        /// </summary>
-        /// <param name="name">Variable Name (with leading ?/$ removed).</param>
-        /// <param name="aggregate">Aggregate Function.</param>
-        /// <remarks>All Aggregate Variables are automatically considered as Result Variables.</remarks>
-        public SparqlVariable(string name, ISparqlAggregate aggregate)
-            : this(name, true)
+    /// <summary>
+    /// Variable Name.
+    /// </summary>
+    public string Name
+    {
+        get
         {
-            _aggregate = aggregate;
+            return _name;
         }
+    }
 
-        /// <summary>
-        /// Creates a new Sparql Variable which is a Projection Expression.
-        /// </summary>
-        /// <param name="name">Variable Name (with leading ?/$ removed).</param>
-        /// <param name="expr">Projection Expression.</param>
-        public SparqlVariable(string name, ISparqlExpression expr)
-            : this(name, true)
+    /// <summary>
+    /// Gets whether the Variable appears in the Result Set.
+    /// </summary>
+    public bool IsResultVariable
+    {
+        get
         {
-            _expr = expr;
+            return _isResultVar;
         }
+    }
 
-        /// <summary>
-        /// Variable Name.
-        /// </summary>
-        public string Name
+    /// <summary>
+    /// Gets whether the Variable is an Aggregate. 
+    /// </summary>
+    public bool IsAggregate
+    {
+        get
         {
-            get
-            {
-                return _name;
-            }
+            return (_aggregate != null);
         }
+    }
 
-        /// <summary>
-        /// Gets whether the Variable appears in the Result Set.
-        /// </summary>
-        public bool IsResultVariable
+    /// <summary>
+    /// Gets whether the Variable is a Projection Expression.
+    /// </summary>
+    public bool IsProjection
+    {
+        get
         {
-            get
-            {
-                return _isResultVar;
-            }
+            return (_expr != null);
         }
+    }
 
-        /// <summary>
-        /// Gets whether the Variable is an Aggregate. 
-        /// </summary>
-        public bool IsAggregate
+    /// <summary>
+    /// Gets the Aggregate Function for this Variable.
+    /// </summary>
+    public ISparqlAggregate Aggregate
+    {
+        get
         {
-            get
-            {
-                return (_aggregate != null);
-            }
+            return _aggregate;
         }
+    }
 
-        /// <summary>
-        /// Gets whether the Variable is a Projection Expression.
-        /// </summary>
-        public bool IsProjection
+    /// <summary>
+    /// Gets the Projection Expression for this Variable.
+    /// </summary>
+    public ISparqlExpression Projection
+    {
+        get
         {
-            get
-            {
-                return (_expr != null);
-            }
+            return _expr;
         }
-
-        /// <summary>
-        /// Gets the Aggregate Function for this Variable.
-        /// </summary>
-        public ISparqlAggregate Aggregate
+    }
+    
+    /// <summary>
+    /// Get the String representation of the Variable.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        if (_aggregate != null)
         {
-            get
-            {
-                return _aggregate;
-            }
+            output.Append('(');
+            output.Append(_aggregate);
+            output.Append(" AS ?" + _name);
+            output.Append(')');
         }
-
-        /// <summary>
-        /// Gets the Projection Expression for this Variable.
-        /// </summary>
-        public ISparqlExpression Projection
+        else if (_expr != null)
         {
-            get
-            {
-                return _expr;
-            }
+            output.Append('(');
+            output.Append(_expr);
+            output.Append(" AS ?" + _name);
+            output.Append(')');
         }
-        
-        /// <summary>
-        /// Get the String representation of the Variable.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        else
         {
-            var output = new StringBuilder();
-            if (_aggregate != null)
-            {
-                output.Append('(');
-                output.Append(_aggregate);
-                output.Append(" AS ?" + _name);
-                output.Append(')');
-            }
-            else if (_expr != null)
-            {
-                output.Append('(');
-                output.Append(_expr);
-                output.Append(" AS ?" + _name);
-                output.Append(')');
-            }
-            else
-            {
-                output.Append("?" + _name);
-            }
-            return output.ToString();
+            output.Append("?" + _name);
         }
+        return output.ToString();
     }
 }

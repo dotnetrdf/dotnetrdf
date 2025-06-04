@@ -24,46 +24,45 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+/// <summary>
+/// Provides constants for use in processing RDFa documents.
+/// </summary>
+public static class RdfASpecsHelper
 {
     /// <summary>
-    /// Provides constants for use in processing RDFa documents.
+    /// Namespace URI for RDFa.
     /// </summary>
-    public static class RdfASpecsHelper
-    {
-        /// <summary>
-        /// Namespace URI for RDFa.
-        /// </summary>
-        public const string RdfANamespace = "http://www.w3.org/ns/rdfa#";
+    public const string RdfANamespace = "http://www.w3.org/ns/rdfa#";
 
-        /// <summary>
-        /// URI for the RDFa Pattern resource type.
-        /// </summary>
-        public const string RdfAPattern = RdfANamespace + "Pattern";
-        
-        /// <summary>
-        /// URI for the RDFa copy property type.
-        /// </summary>
-        public const string RdfACopy = RdfANamespace + "copy";
+    /// <summary>
+    /// URI for the RDFa Pattern resource type.
+    /// </summary>
+    public const string RdfAPattern = RdfANamespace + "Pattern";
+    
+    /// <summary>
+    /// URI for the RDFa copy property type.
+    /// </summary>
+    public const string RdfACopy = RdfANamespace + "copy";
 
-        /// <summary>
-        /// URI for the RDFa prefix property type.
-        /// </summary>
-        public const string RdfAPrefix = RdfANamespace + "prefix";
+    /// <summary>
+    /// URI for the RDFa prefix property type.
+    /// </summary>
+    public const string RdfAPrefix = RdfANamespace + "prefix";
 
-        /// <summary>
-        /// URI for the RDFa uri property type.
-        /// </summary>
-        public const string RdfAUri = RdfANamespace + "uri";
+    /// <summary>
+    /// URI for the RDFa uri property type.
+    /// </summary>
+    public const string RdfAUri = RdfANamespace + "uri";
 
-        /// <summary>
-        /// URI for the RDFa term property type.
-        /// </summary>
-        public const string RdfATerm = RdfANamespace + "term";
-        
-        /// <summary>
-        /// URI for the RDFa vocabulary property type.
-        /// </summary>
-        public const string RdfAVocabulary = RdfANamespace + "vocabulary";
-    }
+    /// <summary>
+    /// URI for the RDFa term property type.
+    /// </summary>
+    public const string RdfATerm = RdfANamespace + "term";
+    
+    /// <summary>
+    /// URI for the RDFa vocabulary property type.
+    /// </summary>
+    public const string RdfAVocabulary = RdfANamespace + "vocabulary";
 }

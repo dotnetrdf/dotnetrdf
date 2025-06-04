@@ -24,20 +24,19 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class TriplePatternImpl : TripleImpl, ITriplePattern
 {
-    internal class TriplePatternImpl : TripleImpl, ITriplePattern
+
+    public TriplePatternImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
 
-        public TriplePatternImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
-
-        }
-
-        //public void visit(IElementVisitor visitor)
-        //{
-        //    visitor.visit(this);
-        //}
     }
+
+    //public void visit(IElementVisitor visitor)
+    //{
+    //    visitor.visit(this);
+    //}
 }

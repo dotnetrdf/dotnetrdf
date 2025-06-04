@@ -24,28 +24,27 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+/// <summary>
+/// Types of Special SPARQL Query which may be optimised in special ways by the libraries SPARQL Engines.
+/// </summary>
+public enum SparqlSpecialQueryType
 {
     /// <summary>
-    /// Types of Special SPARQL Query which may be optimised in special ways by the libraries SPARQL Engines.
+    /// The Query is of the form SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}
     /// </summary>
-    public enum SparqlSpecialQueryType
-    {
-        /// <summary>
-        /// The Query is of the form SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}
-        /// </summary>
-        DistinctGraphs,
-        /// <summary>
-        /// The Query has no applicable special optimisation
-        /// </summary>
-        NotApplicable,
-        /// <summary>
-        /// The Query has not yet been tested to determine if special optimisations are applicable
-        /// </summary>
-        Unknown,
-        /// <summary>
-        /// The Query is of the form ASK WHERE {?s ?p ?o}
-        /// </summary>
-        AskAnyTriples,
-    }
+    DistinctGraphs,
+    /// <summary>
+    /// The Query has no applicable special optimisation
+    /// </summary>
+    NotApplicable,
+    /// <summary>
+    /// The Query has not yet been tested to determine if special optimisations are applicable
+    /// </summary>
+    Unknown,
+    /// <summary>
+    /// The Query is of the form ASK WHERE {?s ?p ?o}
+    /// </summary>
+    AskAnyTriples,
 }

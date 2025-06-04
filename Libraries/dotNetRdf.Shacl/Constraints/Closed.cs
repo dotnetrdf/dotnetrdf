@@ -29,50 +29,49 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class Closed : Boolean
 {
-    internal class Closed : Boolean
+    [DebuggerStepThrough]
+    internal Closed(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal Closed(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage => "Value node must not have properties other than those defined by this shape.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.ClosedConstraintComponent;
+        }
+    }
+
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        if (!BooleanValue)
+        {
+            return true;
         }
 
-        protected override string DefaultMessage => "Value node must not have properties other than those defined by this shape.";
+        IEnumerable<Triple> invalidValues =
+            from valueNode in valueNodes
+            from outgoing in dataGraph.GetTriplesWithSubject(valueNode)
+            let property = outgoing.Predicate
+            let ignoredProperties =
+                from ignoredProperty in Vocabulary.IgnoredProperties.ObjectsOf(Shape)
+                from ignoredMember in Graph.GetListItems(ignoredProperty)
+                select ignoredMember
+            let definedProperties =
+                from property in Vocabulary.Property.ObjectsOf(Shape)
+                from path in Vocabulary.Path.ObjectsOf(property, Shape.Graph)
+                select path
+            let allProperties = definedProperties.Concat(ignoredProperties)
+            where !allProperties.Contains(property)
+            select outgoing;
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.ClosedConstraintComponent;
-            }
-        }
-
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            if (!BooleanValue)
-            {
-                return true;
-            }
-
-            IEnumerable<Triple> invalidValues =
-                from valueNode in valueNodes
-                from outgoing in dataGraph.GetTriplesWithSubject(valueNode)
-                let property = outgoing.Predicate
-                let ignoredProperties =
-                    from ignoredProperty in Vocabulary.IgnoredProperties.ObjectsOf(Shape)
-                    from ignoredMember in Graph.GetListItems(ignoredProperty)
-                    select ignoredMember
-                let definedProperties =
-                    from property in Vocabulary.Property.ObjectsOf(Shape)
-                    from path in Vocabulary.Path.ObjectsOf(property, Shape.Graph)
-                    select path
-                let allProperties = definedProperties.Concat(ignoredProperties)
-                where !allProperties.Contains(property)
-                select outgoing;
-
-            return ReportValueNodes(invalidValues, report);
-        }
+        return ReportValueNodes(invalidValues, report);
     }
 }

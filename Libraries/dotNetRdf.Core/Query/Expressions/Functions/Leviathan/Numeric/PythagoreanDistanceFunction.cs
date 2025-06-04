@@ -24,73 +24,72 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric;
+
+/// <summary>
+/// Represents the Leviathan lfn:pythagoras() function.
+/// </summary>
+public class PythagoreanDistanceFunction
+    : BaseBinaryExpression
 {
     /// <summary>
-    /// Represents the Leviathan lfn:pythagoras() function.
+    /// Creates a new Leviathan Pythagorean Distance Function.
     /// </summary>
-    public class PythagoreanDistanceFunction
-        : BaseBinaryExpression
+    /// <param name="arg1">First Argument.</param>
+    /// <param name="arg2">Second Argument.</param>
+    public PythagoreanDistanceFunction(ISparqlExpression arg1, ISparqlExpression arg2)
+        : base(arg1, arg2) { }
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new Leviathan Pythagorean Distance Function.
-        /// </summary>
-        /// <param name="arg1">First Argument.</param>
-        /// <param name="arg2">Second Argument.</param>
-        public PythagoreanDistanceFunction(ISparqlExpression arg1, ISparqlExpression arg2)
-            : base(arg1, arg2) { }
+        return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Pythagoras + ">(" + _leftExpr + "," + _rightExpr + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Pythagoras + ">(" + _leftExpr + "," + _rightExpr + ")";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessPythagoreanDistanceFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessPythagoreanDistanceFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitPythagoreanDistanceFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return visitor.VisitPythagoreanDistanceFunction(this);
+            return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Pythagoras;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
+    /// <summary>
+    /// Gets the type of the expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            get
-            {
-                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Pythagoras;
-            }
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <summary>
-        /// Gets the type of the expression.
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new PythagoreanDistanceFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new PythagoreanDistanceFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
     }
 }

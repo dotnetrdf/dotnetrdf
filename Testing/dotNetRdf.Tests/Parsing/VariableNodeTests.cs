@@ -29,69 +29,68 @@ using System.Linq;
 using Xunit;
 using VDS.RDF.Writing;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+
+public class VariableNodeTests
 {
-
-    public class VariableNodeTests
+    [Fact]
+    public void ParsingN3Variables()
     {
-        [Fact]
-        public void ParsingN3Variables()
+        var TestFragment = "@prefix rdfs: <" + NamespaceMapper.RDFS + ">. { ?s a ?type } => { ?s rdfs:label \"This has a type\" } .";
+        var parser = new Notation3Parser();
+        var g = new Graph();
+        StringParser.Parse(g, TestFragment, parser);
+
+        foreach (Triple t in g.Triples)
         {
-            var TestFragment = "@prefix rdfs: <" + NamespaceMapper.RDFS + ">. { ?s a ?type } => { ?s rdfs:label \"This has a type\" } .";
-            var parser = new Notation3Parser();
-            var g = new Graph();
-            StringParser.Parse(g, TestFragment, parser);
-
-            foreach (Triple t in g.Triples)
-            {
-                Console.WriteLine(t.ToString());
-            }
-
-            StringWriter.Write(g, new Notation3Writer());
+            Console.WriteLine(t.ToString());
         }
 
-        [Fact]
-        public void ParsingN3GraphLiterals()
+        StringWriter.Write(g, new Notation3Writer());
+    }
+
+    [Fact]
+    public void ParsingN3GraphLiterals()
+    {
+        var TestFragment = "{ :a :b :c . :d :e :f } a \"Graph Literal\" .";
+        var g = new Graph
         {
-            var TestFragment = "{ :a :b :c . :d :e :f } a \"Graph Literal\" .";
+            BaseUri = new Uri("http://example.org/n3/graph-literals")
+        };
+        StringParser.Parse(g, TestFragment, new Notation3Parser());
+
+        Assert.True(g.Triples.Count == 1, "Should be 1 Triple");
+        Assert.True(((IGraphLiteralNode)g.Triples.First().Subject).SubGraph.Triples.Count == 2, "Should be 2 Triples in the Graph Literal");
+    }
+
+    [Fact]
+    public void ParsingN3VariableContexts()
+    {
+        var prefixes = "@prefix rdf: <" + NamespaceMapper.RDF + ">. @prefix rdfs: <" + NamespaceMapper.RDFS + ">.";
+        var tests = new List<string>()
+        {
+            prefixes + "@forAll :x :type . { :x a :type } => {:x rdfs:label \"This has a type\" } .",
+            prefixes + "@forSome :x :type . { :x a :type } => {:x rdfs:label \"This has a type\" } .",
+            prefixes + "@forAll :h . @forSome :g . :g :loves :h .",
+            prefixes + "@forSome :h . @forAll :g . :g :loves :h .",
+            prefixes + "{@forSome :a . :Joe :home :a } a :Formula . :Joe :phone \"555-1212\" ."
+        };
+
+        var parser = new Notation3Parser();
+        var writer = new Notation3Writer();
+        foreach (var test in tests)
+        {
             var g = new Graph
             {
-                BaseUri = new Uri("http://example.org/n3/graph-literals")
+                BaseUri = new Uri("http://example.org/n3rules")
             };
-            StringParser.Parse(g, TestFragment, new Notation3Parser());
+            StringParser.Parse(g, test, parser);
+            Console.WriteLine(StringWriter.Write(g, writer));
 
-            Assert.True(g.Triples.Count == 1, "Should be 1 Triple");
-            Assert.True(((IGraphLiteralNode)g.Triples.First().Subject).SubGraph.Triples.Count == 2, "Should be 2 Triples in the Graph Literal");
+            Console.WriteLine();
         }
-
-        [Fact]
-        public void ParsingN3VariableContexts()
-        {
-            var prefixes = "@prefix rdf: <" + NamespaceMapper.RDF + ">. @prefix rdfs: <" + NamespaceMapper.RDFS + ">.";
-            var tests = new List<string>()
-            {
-                prefixes + "@forAll :x :type . { :x a :type } => {:x rdfs:label \"This has a type\" } .",
-                prefixes + "@forSome :x :type . { :x a :type } => {:x rdfs:label \"This has a type\" } .",
-                prefixes + "@forAll :h . @forSome :g . :g :loves :h .",
-                prefixes + "@forSome :h . @forAll :g . :g :loves :h .",
-                prefixes + "{@forSome :a . :Joe :home :a } a :Formula . :Joe :phone \"555-1212\" ."
-            };
-
-            var parser = new Notation3Parser();
-            var writer = new Notation3Writer();
-            foreach (var test in tests)
-            {
-                var g = new Graph
-                {
-                    BaseUri = new Uri("http://example.org/n3rules")
-                };
-                StringParser.Parse(g, test, parser);
-                Console.WriteLine(StringWriter.Write(g, writer));
-
-                Console.WriteLine();
-            }
-        }
-
-
     }
+
+
 }

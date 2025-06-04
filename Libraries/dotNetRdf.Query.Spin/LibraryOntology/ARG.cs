@@ -27,27 +27,26 @@
 using System;
 using VDS.RDF.Query.Spin.Util;
 
-namespace VDS.RDF.Query.Spin.LibraryOntology
+namespace VDS.RDF.Query.Spin.LibraryOntology;
+
+/**
+ * Constants to access the arg: namespace.
+ * 
+ * @author Holger Knublauch
+ */
+internal class ARG
 {
-    /**
-     * Constants to access the arg: namespace.
-     * 
-     * @author Holger Knublauch
-     */
-    internal class ARG
-    {
 
-        public const String BASE_URI = "http://spinrdf.org/arg";
+    public const String BASE_URI = "http://spinrdf.org/arg";
 
-        public const String NS_URI = BASE_URI + "#";
+    public const String NS_URI = BASE_URI + "#";
 
-        public const String PREFIX = "arg";
+    public const String PREFIX = "arg";
 
 
-        public readonly static IUriNode PropertyProperty = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "property"));
+    public readonly static IUriNode PropertyProperty = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "property"));
 
-        public readonly static IUriNode PropertyMaxCount = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "maxCount"));
+    public readonly static IUriNode PropertyMaxCount = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "maxCount"));
 
-        public readonly static IUriNode PropertyMinCount = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "minCount"));
-    }
+    public readonly static IUriNode PropertyMinCount = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "minCount"));
 }

@@ -30,168 +30,167 @@ using System.Linq;
 using System.Net;
 using VDS.RDF.Configuration.Permissions;
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+/// <summary>
+/// Factory class for producing Permissions from Configuration Graphs.
+/// </summary>
+public class PermissionFactory : IObjectFactory
 {
+    private const string Permission = "VDS.RDF.Configuration.Permissions.Permission",
+                         PermissionSet = "VDS.RDF.Configuration.Permissions.PermissionSet";
+
     /// <summary>
-    /// Factory class for producing Permissions from Configuration Graphs.
+    /// Tries to load a Permission based on information from the Configuration Graph.
     /// </summary>
-    public class PermissionFactory : IObjectFactory
+    /// <param name="g">Configuration Graph.</param>
+    /// <param name="objNode">Object Node.</param>
+    /// <param name="targetType">Target Type.</param>
+    /// <param name="obj">Output Object.</param>
+    /// <returns></returns>
+    public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
     {
-        private const string Permission = "VDS.RDF.Configuration.Permissions.Permission",
-                             PermissionSet = "VDS.RDF.Configuration.Permissions.PermissionSet";
+        obj = null;
+        IPermission result = null;
 
-        /// <summary>
-        /// Tries to load a Permission based on information from the Configuration Graph.
-        /// </summary>
-        /// <param name="g">Configuration Graph.</param>
-        /// <param name="objNode">Object Node.</param>
-        /// <param name="targetType">Target Type.</param>
-        /// <param name="obj">Output Object.</param>
-        /// <returns></returns>
-        public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
+        switch (targetType.FullName)
         {
-            obj = null;
-            IPermission result = null;
+            case Permission:
+                var action = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAction)));
+                result = new Permission(action);
+                break;
 
-            switch (targetType.FullName)
-            {
-                case Permission:
-                    var action = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAction)));
-                    result = new Permission(action);
-                    break;
-
-                case PermissionSet:
-                    IEnumerable<string> actions = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAction)))
-                                                  where n.NodeType == NodeType.Literal
-                                                  select ((ILiteralNode)n).Value;
-                    result = new PermissionSet(actions);
-                    break;
-            }
-
-            obj = result;
-            return (result != null);
+            case PermissionSet:
+                IEnumerable<string> actions = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAction)))
+                                              where n.NodeType == NodeType.Literal
+                                              select ((ILiteralNode)n).Value;
+                result = new PermissionSet(actions);
+                break;
         }
 
-        /// <summary>
-        /// Gets whether this Factory can load objects of the given Type.
-        /// </summary>
-        /// <param name="t">Type.</param>
-        /// <returns></returns>
-        public bool CanLoadObject(Type t)
-        {
-            switch (t.FullName)
-            {
-                case Permission:
-                case PermissionSet:
-                    return true;
-                default:
-                    return false;
-            }
-        }
+        obj = result;
+        return (result != null);
     }
 
     /// <summary>
-    /// Factory class for producing User Groups from Configuration Graphs.
+    /// Gets whether this Factory can load objects of the given Type.
     /// </summary>
-    public class UserGroupFactory : IObjectFactory
+    /// <param name="t">Type.</param>
+    /// <returns></returns>
+    public bool CanLoadObject(Type t)
     {
-        private const string UserGroup = "VDS.RDF.Configuration.Permissions.UserGroup";
-
-        /// <summary>
-        /// Tries to load a User Group based on information from the Configuration Graph.
-        /// </summary>
-        /// <param name="g">Configuration Graph.</param>
-        /// <param name="objNode">Object Node.</param>
-        /// <param name="targetType">Target Type.</param>
-        /// <param name="obj">Output Object.</param>
-        /// <returns></returns>
-        public bool  TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
+        switch (t.FullName)
         {
-            obj = null;
-            UserGroup result = null;
+            case Permission:
+            case PermissionSet:
+                return true;
+            default:
+                return false;
+        }
+    }
+}
 
-            switch (targetType.FullName)
-            {
-                case UserGroup:
-                    result = new UserGroup();
+/// <summary>
+/// Factory class for producing User Groups from Configuration Graphs.
+/// </summary>
+public class UserGroupFactory : IObjectFactory
+{
+    private const string UserGroup = "VDS.RDF.Configuration.Permissions.UserGroup";
 
-                    // Get the members of the Group
-                    IEnumerable<INode> members = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyMember)));
-                    foreach (INode member in members)
+    /// <summary>
+    /// Tries to load a User Group based on information from the Configuration Graph.
+    /// </summary>
+    /// <param name="g">Configuration Graph.</param>
+    /// <param name="objNode">Object Node.</param>
+    /// <param name="targetType">Target Type.</param>
+    /// <param name="obj">Output Object.</param>
+    /// <returns></returns>
+    public bool  TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
+    {
+        obj = null;
+        UserGroup result = null;
+
+        switch (targetType.FullName)
+        {
+            case UserGroup:
+                result = new UserGroup();
+
+                // Get the members of the Group
+                IEnumerable<INode> members = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyMember)));
+                foreach (INode member in members)
+                {
+                    string username, password;
+                    ConfigurationLoader.GetUsernameAndPassword(g, member, true, out username, out password);
+                    if (username != null && password != null)
                     {
-                        string username, password;
-                        ConfigurationLoader.GetUsernameAndPassword(g, member, true, out username, out password);
-                        if (username != null && password != null)
-                        {
-                            result.AddUser(new NetworkCredential(username, password));
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to load the User identified by the Node '" + member.ToString() + "' as there does not appear to be a valid username and password specified for this User either via the dnr:user and dnr:password properties or via a dnr:credentials property");
-                        }
+                        result.AddUser(new NetworkCredential(username, password));
                     }
-
-                    // Get the allow list for the Group
-                    IEnumerable<INode> allowed = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAllow)));
-                    foreach (INode allow in allowed)
+                    else
                     {
-                        var temp = ConfigurationLoader.LoadObject(g, allow);
-                        if (temp is IPermission)
-                        {
-                            result.AddAllowedAction((IPermission)temp);
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to load the Permission identified by the Node '" + allow.ToString() + "' as the Object specified could not be loaded as an object which implements the IPermission interface");
-                        }
+                        throw new DotNetRdfConfigurationException("Unable to load the User identified by the Node '" + member.ToString() + "' as there does not appear to be a valid username and password specified for this User either via the dnr:user and dnr:password properties or via a dnr:credentials property");
                     }
+                }
 
-                    // Get the deny list for the Group
-                    IEnumerable<INode> denied = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDeny)));
-                    foreach (INode deny in denied)
+                // Get the allow list for the Group
+                IEnumerable<INode> allowed = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAllow)));
+                foreach (INode allow in allowed)
+                {
+                    var temp = ConfigurationLoader.LoadObject(g, allow);
+                    if (temp is IPermission)
                     {
-                        var temp = ConfigurationLoader.LoadObject(g, deny);
-                        if (temp is IPermission)
-                        {
-                            result.AddDeniedAction((IPermission)temp);
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to load the Permission identified by the Node '" + deny.ToString() + "' as the Object specified could not be loaded as an object which implements the IPermission interface");
-                        }
+                        result.AddAllowedAction((IPermission)temp);
                     }
-
-                    // Does the User Group require authentication?
-                    result.AllowGuests = !ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyRequiresAuthentication)), true);
-
-                    // Is there a permission model specified?
-                    var mode = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyPermissionModel)));
-                    if (mode != null)
+                    else
                     {
-                        result.PermissionModel = (PermissionModel)Enum.Parse(typeof(PermissionModel), mode);
+                        throw new DotNetRdfConfigurationException("Unable to load the Permission identified by the Node '" + allow.ToString() + "' as the Object specified could not be loaded as an object which implements the IPermission interface");
                     }
+                }
 
-                    break;
-            }
+                // Get the deny list for the Group
+                IEnumerable<INode> denied = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDeny)));
+                foreach (INode deny in denied)
+                {
+                    var temp = ConfigurationLoader.LoadObject(g, deny);
+                    if (temp is IPermission)
+                    {
+                        result.AddDeniedAction((IPermission)temp);
+                    }
+                    else
+                    {
+                        throw new DotNetRdfConfigurationException("Unable to load the Permission identified by the Node '" + deny.ToString() + "' as the Object specified could not be loaded as an object which implements the IPermission interface");
+                    }
+                }
 
-            obj = result;
-            return (result != null);
+                // Does the User Group require authentication?
+                result.AllowGuests = !ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyRequiresAuthentication)), true);
+
+                // Is there a permission model specified?
+                var mode = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyPermissionModel)));
+                if (mode != null)
+                {
+                    result.PermissionModel = (PermissionModel)Enum.Parse(typeof(PermissionModel), mode);
+                }
+
+                break;
         }
 
-        /// <summary>
-        /// Gets whether this Factory can load objects of the given Type.
-        /// </summary>
-        /// <param name="t">Type.</param>
-        /// <returns></returns>
-        public bool  CanLoadObject(Type t)
+        obj = result;
+        return (result != null);
+    }
+
+    /// <summary>
+    /// Gets whether this Factory can load objects of the given Type.
+    /// </summary>
+    /// <param name="t">Type.</param>
+    /// <returns></returns>
+    public bool  CanLoadObject(Type t)
+    {
+        switch (t.FullName)
         {
-            switch (t.FullName)
-            {
-                case UserGroup:
-                    return true;
-                default:
-                    return false;
-            }
+            case UserGroup:
+                return true;
+            default:
+                return false;
         }
     }
 }

@@ -29,43 +29,42 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class UniqueLang : Boolean
 {
-    internal class UniqueLang : Boolean
+    [DebuggerStepThrough]
+    internal UniqueLang(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal UniqueLang(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage => "Value nodes must not use the same language tag.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.UniqueLangConstraintComponent;
+        }
+    }
+
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        if (!BooleanValue)
+        {
+            return true;
         }
 
-        protected override string DefaultMessage => "Value nodes must not use the same language tag.";
+        IEnumerable<ILiteralNode> invalidValues =
+            from valueNode in valueNodes
+            where valueNode.NodeType == NodeType.Literal
+            let literal = (ILiteralNode)valueNode
+            where !string.IsNullOrEmpty(literal.Language)
+            group valueNode by literal.Language into langNodes
+            where langNodes.Skip(1).Any()
+            select Graph.CreateLiteralNode(langNodes.Key);
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.UniqueLangConstraintComponent;
-            }
-        }
-
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            if (!BooleanValue)
-            {
-                return true;
-            }
-
-            IEnumerable<ILiteralNode> invalidValues =
-                from valueNode in valueNodes
-                where valueNode.NodeType == NodeType.Literal
-                let literal = (ILiteralNode)valueNode
-                where !string.IsNullOrEmpty(literal.Language)
-                group valueNode by literal.Language into langNodes
-                where langNodes.Skip(1).Any()
-                select Graph.CreateLiteralNode(langNodes.Key);
-
-            return ReportFocusNodes(focusNode, invalidValues, report);
-        }
+        return ReportFocusNodes(focusNode, invalidValues, report);
     }
 }

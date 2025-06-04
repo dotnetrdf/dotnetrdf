@@ -33,44 +33,43 @@ using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class Ask : Sparql
 {
-    internal class Ask : Sparql
+    [DebuggerStepThrough]
+    internal Ask(Shape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
+        : base(shape, value, parameters)
     {
-        [DebuggerStepThrough]
-        internal Ask(Shape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
-            : base(shape, value, parameters)
+    }
+
+    protected override string DefaultMessage => "SPARQL ASK must return true for all value nodes.";
+
+    protected override string Query
+    {
+        get
         {
+            return Vocabulary.Ask.ObjectsOf(this).Single().AsValuedNode().AsString();
         }
+    }
 
-        protected override string DefaultMessage => "SPARQL ASK must return true for all value nodes.";
+    protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report, SparqlQuery query)
+    {
+        IEnumerable<INode> invalidValues =
+            from valueNode in valueNodes
+            let q = BindValue(query, valueNode)
+            let result = ((SparqlResultSet)dataGraph.ExecuteQuery(q)).Result
+            where !result
+            select valueNode;
 
-        protected override string Query
-        {
-            get
-            {
-                return Vocabulary.Ask.ObjectsOf(this).Single().AsValuedNode().AsString();
-            }
-        }
+        return ReportValueNodes(focusNode, invalidValues, report);
+    }
 
-        protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report, SparqlQuery query)
-        {
-            IEnumerable<INode> invalidValues =
-                from valueNode in valueNodes
-                let q = BindValue(query, valueNode)
-                let result = ((SparqlResultSet)dataGraph.ExecuteQuery(q)).Result
-                where !result
-                select valueNode;
+    private static SparqlQuery BindValue(SparqlQuery query, INode valueNode)
+    {
+        SparqlQuery q = query.Copy();
+        q.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("value", new ConstantTerm(valueNode)));
 
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
-
-        private static SparqlQuery BindValue(SparqlQuery query, INode valueNode)
-        {
-            SparqlQuery q = query.Copy();
-            q.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("value", new ConstantTerm(valueNode)));
-
-            return q;
-        }
+        return q;
     }
 }

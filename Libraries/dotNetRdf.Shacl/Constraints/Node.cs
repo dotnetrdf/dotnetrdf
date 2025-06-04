@@ -29,35 +29,34 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class Node : Constraint
 {
-    internal class Node : Constraint
+    [DebuggerStepThrough]
+    internal Node(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal Node(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage => "Value must conform to the specified node shape.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.NodeConstraintComponent;
         }
+    }
 
-        protected override string DefaultMessage => "Value must conform to the specified node shape.";
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        IEnumerable<INode> invalidValues =
+            from valueNode in valueNodes
+            let shape = new Shapes.Node(this, this.Graph)
+            where !shape.Validate(dataGraph, valueNode, valueNode.AsEnumerable())
+            select valueNode;
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.NodeConstraintComponent;
-            }
-        }
-
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            IEnumerable<INode> invalidValues =
-                from valueNode in valueNodes
-                let shape = new Shapes.Node(this, this.Graph)
-                where !shape.Validate(dataGraph, valueNode, valueNode.AsEnumerable())
-                select valueNode;
-
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
+        return ReportValueNodes(focusNode, invalidValues, report);
     }
 }

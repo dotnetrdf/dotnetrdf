@@ -35,486 +35,485 @@ using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage.Management;
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+/// <summary>
+/// Class for connecting to any SPARQL Endpoint as a read-only Store.
+/// </summary>
+/// <remarks>
+/// <para>
+/// This class is effectively a read-only wrapper around a <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> using it with it's default settings, if you only need to query an endpoint and require more control over the settings used to access the endpoint you should use that class directly or use the constructors which allow you to provide your own pre-configure <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> instance.
+/// </para>
+/// <para>
+/// Unlike other HTTP based connectors this connector does not derive from <see cref="BaseAsyncHttpConnector">BaseHttpConnector</see> - if you need to specify proxy information you should do so on the SPARQL Endpoint you are wrapping either by providing a <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> instance pre-configured with the proxy settings or by accessing the endpoint via the <see cref="SparqlConnector.Endpoint">Endpoint</see> property and programmatically adding the settings.
+/// </para>
+/// </remarks>
+public class ParsingSparqlConnector
+    : IQueryableStorage, IConfigurationSerializable
 {
     /// <summary>
-    /// Class for connecting to any SPARQL Endpoint as a read-only Store.
+    /// Method for loading graphs.
+    /// </summary>
+    private readonly SparqlConnectorLoadMethod _mode = SparqlConnectorLoadMethod.Construct;
+
+    /// <summary>
+    /// Creates a new SPARQL connector which uses the given SPARQL query client.
+    /// </summary>
+    /// <param name="client"></param>
+    public ParsingSparqlConnector(SparqlQueryClient client)
+    {
+        QueryClient = client ??
+                       throw new ArgumentNullException(nameof(client), "A valid query client must be specified");
+    }
+
+    /// <summary>
+    /// Creates a new SPARQL connector which uses the given SPARQL query client.
+    /// </summary>
+    /// <param name="client">Query client to use.</param>
+    /// <param name="mode">Load method to use.</param>
+    public ParsingSparqlConnector(SparqlQueryClient client, SparqlConnectorLoadMethod mode) : this(client)
+    {
+        _mode = mode;
+    }
+    
+
+    /// <summary>
+    /// Gets the parent server (if any).
+    /// </summary>
+    public IStorageServer ParentServer
+    {
+        get
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Controls whether the Query will be parsed locally to accurately determine its Query Type for processing the response.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// This class is effectively a read-only wrapper around a <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> using it with it's default settings, if you only need to query an endpoint and require more control over the settings used to access the endpoint you should use that class directly or use the constructors which allow you to provide your own pre-configure <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> instance.
-    /// </para>
-    /// <para>
-    /// Unlike other HTTP based connectors this connector does not derive from <see cref="BaseAsyncHttpConnector">BaseHttpConnector</see> - if you need to specify proxy information you should do so on the SPARQL Endpoint you are wrapping either by providing a <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> instance pre-configured with the proxy settings or by accessing the endpoint via the <see cref="SparqlConnector.Endpoint">Endpoint</see> property and programmatically adding the settings.
-    /// </para>
+    /// If the endpoint you are connecting to provides extensions to SPARQL syntax which are not permitted by the libraries parser then you may wish to enable this option as otherwise you will not be able to execute such queries.
     /// </remarks>
-    public class ParsingSparqlConnector
-        : IQueryableStorage, IConfigurationSerializable
+    [Description("Determines whether queries are parsed locally before being sent to the remote endpoint.  Should be disabled if the remote endpoint supports non-standard extensions that won't parse locally.")]
+    public bool SkipLocalParsing { get; set; }
+
+    
+    /// <summary>
+    /// Gets the underlying <see cref="SparqlQueryClient"/> which this class is a wrapper around.
+    /// </summary>
+    public SparqlQueryClient QueryClient { get; }
+
+    /// <summary>
+    /// Makes a Query against the SPARQL Endpoint.
+    /// </summary>
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    /// <returns></returns>
+    public object Query(string sparqlQuery)
     {
-        /// <summary>
-        /// Method for loading graphs.
-        /// </summary>
-        private readonly SparqlConnectorLoadMethod _mode = SparqlConnectorLoadMethod.Construct;
+        var g = new Graph();
+        var results = new SparqlResultSet();
+        Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
 
-        /// <summary>
-        /// Creates a new SPARQL connector which uses the given SPARQL query client.
-        /// </summary>
-        /// <param name="client"></param>
-        public ParsingSparqlConnector(SparqlQueryClient client)
+        if (results.ResultsType != SparqlResultsType.Unknown)
         {
-            QueryClient = client ??
-                           throw new ArgumentNullException(nameof(client), "A valid query client must be specified");
+            return results;
         }
-
-        /// <summary>
-        /// Creates a new SPARQL connector which uses the given SPARQL query client.
-        /// </summary>
-        /// <param name="client">Query client to use.</param>
-        /// <param name="mode">Load method to use.</param>
-        public ParsingSparqlConnector(SparqlQueryClient client, SparqlConnectorLoadMethod mode) : this(client)
+        else
         {
-            _mode = mode;
+            return g;
         }
-        
+    }
 
-        /// <summary>
-        /// Gets the parent server (if any).
-        /// </summary>
-        public IStorageServer ParentServer
+    /// <summary>
+    /// Makes a Query against the SPARQL Endpoint processing the results with an appropriate handler from those provided.
+    /// </summary>
+    /// <param name="rdfHandler">RDF Handler.</param>
+    /// <param name="resultsHandler">Results Handler.</param>
+    /// <param name="sparqlQuery">SPARQL Query.</param>
+    /// <returns></returns>
+    public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
+    {
+        if (!SkipLocalParsing)
         {
-            get
+            var queryParser = new SparqlQueryParser();
+            SparqlQuery q = queryParser.ParseFromString(sparqlQuery);
+            switch (q.QueryType)
             {
-                return null;
+                case SparqlQueryType.Ask:
+                case SparqlQueryType.Select:
+                case SparqlQueryType.SelectAll:
+                case SparqlQueryType.SelectAllDistinct:
+                case SparqlQueryType.SelectAllReduced:
+                case SparqlQueryType.SelectDistinct:
+                case SparqlQueryType.SelectReduced:
+                    // Some kind of Sparql Result Set
+                    QueryClient.QueryWithResultSetAsync(sparqlQuery, resultsHandler).Wait();
+                    break;
+                case SparqlQueryType.Construct:
+                case SparqlQueryType.Describe:
+                case SparqlQueryType.DescribeAll:
+                    // Some kind of Graph
+                    QueryClient.QueryWithResultGraphAsync(sparqlQuery, rdfHandler).Wait();
+                    break;
+
+                default:
+                    // Error
+                    throw new RdfQueryException(
+                        "Unknown Query Type was used, unable to determine how to process the response");
             }
         }
-
-        /// <summary>
-        /// Controls whether the Query will be parsed locally to accurately determine its Query Type for processing the response.
-        /// </summary>
-        /// <remarks>
-        /// If the endpoint you are connecting to provides extensions to SPARQL syntax which are not permitted by the libraries parser then you may wish to enable this option as otherwise you will not be able to execute such queries.
-        /// </remarks>
-        [Description("Determines whether queries are parsed locally before being sent to the remote endpoint.  Should be disabled if the remote endpoint supports non-standard extensions that won't parse locally.")]
-        public bool SkipLocalParsing { get; set; }
-
-        
-        /// <summary>
-        /// Gets the underlying <see cref="SparqlQueryClient"/> which this class is a wrapper around.
-        /// </summary>
-        public SparqlQueryClient QueryClient { get; }
-
-        /// <summary>
-        /// Makes a Query against the SPARQL Endpoint.
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <returns></returns>
-        public object Query(string sparqlQuery)
+        else
         {
-            var g = new Graph();
-            var results = new SparqlResultSet();
-            Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
-
-            if (results.ResultsType != SparqlResultsType.Unknown)
-            {
-                return results;
-            }
-            else
-            {
-                return g;
-            }
+            QueryClient.QueryAsync(sparqlQuery, rdfHandler, resultsHandler, CancellationToken.None).Wait();
         }
+    }
 
-        /// <summary>
-        /// Makes a Query against the SPARQL Endpoint processing the results with an appropriate handler from those provided.
-        /// </summary>
-        /// <param name="rdfHandler">RDF Handler.</param>
-        /// <param name="resultsHandler">Results Handler.</param>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <returns></returns>
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
+    /// <summary>
+    /// Loads a Graph from the SPARQL Endpoint.
+    /// </summary>
+    /// <param name="g">Graph to load into.</param>
+    /// <param name="graphUri">URI of the Graph to load.</param>
+    public virtual void LoadGraph(IGraph g, Uri graphUri)
+    {
+        LoadGraph(g, graphUri.ToSafeString());
+    }
+
+    /// <summary>
+    /// Loads a Graph from the SPARQL Endpoint.
+    /// </summary>
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="graphUri">URI of the Graph to load.</param>
+    public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
+    {
+        LoadGraph(handler, graphUri.ToSafeString());
+    }
+
+    /// <summary>
+    /// Loads a Graph from the SPARQL Endpoint.
+    /// </summary>
+    /// <param name="g">Graph to load into.</param>
+    /// <param name="graphUri">URI of the Graph to load.</param>
+    public virtual void LoadGraph(IGraph g, string graphUri)
+    {
+        if (g.IsEmpty && graphUri != null && !graphUri.Equals(string.Empty))
         {
-            if (!SkipLocalParsing)
-            {
-                var queryParser = new SparqlQueryParser();
-                SparqlQuery q = queryParser.ParseFromString(sparqlQuery);
-                switch (q.QueryType)
-                {
-                    case SparqlQueryType.Ask:
-                    case SparqlQueryType.Select:
-                    case SparqlQueryType.SelectAll:
-                    case SparqlQueryType.SelectAllDistinct:
-                    case SparqlQueryType.SelectAllReduced:
-                    case SparqlQueryType.SelectDistinct:
-                    case SparqlQueryType.SelectReduced:
-                        // Some kind of Sparql Result Set
-                        QueryClient.QueryWithResultSetAsync(sparqlQuery, resultsHandler).Wait();
-                        break;
-                    case SparqlQueryType.Construct:
-                    case SparqlQueryType.Describe:
-                    case SparqlQueryType.DescribeAll:
-                        // Some kind of Graph
-                        QueryClient.QueryWithResultGraphAsync(sparqlQuery, rdfHandler).Wait();
-                        break;
+            g.BaseUri = g.UriFactory.Create(graphUri);
+        }
+        LoadGraph(new GraphHandler(g), graphUri.ToSafeString());
+    }
 
-                    default:
-                        // Error
-                        throw new RdfQueryException(
-                            "Unknown Query Type was used, unable to determine how to process the response");
-                }
+    /// <summary>
+    /// Loads a Graph from the SPARQL Endpoint.
+    /// </summary>
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="graphUri">URI of the Graph to load.</param>
+    public virtual void LoadGraph(IRdfHandler handler, string graphUri)
+    {
+        string query;
+
+        if (graphUri.Equals(string.Empty))
+        {
+            if (_mode == SparqlConnectorLoadMethod.Describe)
+            {
+                throw new RdfStorageException("Cannot retrieve the Default Graph when the Load Method is Describe");
             }
             else
             {
-                QueryClient.QueryAsync(sparqlQuery, rdfHandler, resultsHandler, CancellationToken.None).Wait();
+                query = "CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
+            }
+        }
+        else
+        {
+            switch (_mode)
+            {
+                case SparqlConnectorLoadMethod.Describe:
+                    query = "DESCRIBE <" + graphUri.Replace(">", "\\>") + ">";
+                    break;
+                default:
+                    query = "CONSTRUCT {?s ?p ?o} FROM <" + graphUri.Replace(">", "\\>") + "> WHERE {?s ?p ?o}";
+                    break;
             }
         }
 
-        /// <summary>
-        /// Loads a Graph from the SPARQL Endpoint.
-        /// </summary>
-        /// <param name="g">Graph to load into.</param>
-        /// <param name="graphUri">URI of the Graph to load.</param>
-        public virtual void LoadGraph(IGraph g, Uri graphUri)
-        {
-            LoadGraph(g, graphUri.ToSafeString());
-        }
+        Query(handler, null, query);
+    }
 
-        /// <summary>
-        /// Loads a Graph from the SPARQL Endpoint.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="graphUri">URI of the Graph to load.</param>
-        public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
-        {
-            LoadGraph(handler, graphUri.ToSafeString());
-        }
+    /// <summary>
+    /// Throws an error since this Manager is read-only.
+    /// </summary>
+    /// <param name="g">Graph to save.</param>
+    /// <exception cref="RdfStorageException">Always thrown since this Manager provides a read-only connection.</exception>
+    public virtual void SaveGraph(IGraph g)
+    {
+        throw new RdfStorageException("The SparqlConnector provides a read-only connection");
 
-        /// <summary>
-        /// Loads a Graph from the SPARQL Endpoint.
-        /// </summary>
-        /// <param name="g">Graph to load into.</param>
-        /// <param name="graphUri">URI of the Graph to load.</param>
-        public virtual void LoadGraph(IGraph g, string graphUri)
+    }
+
+    /// <summary>
+    /// Gets the IO Behaviour of SPARQL Connections.
+    /// </summary>
+    public virtual IOBehaviour IOBehaviour
+    {
+        get
         {
-            if (g.IsEmpty && graphUri != null && !graphUri.Equals(string.Empty))
+            return IOBehaviour.ReadOnlyGraphStore;
+        }
+    }
+
+    /// <summary>
+    /// Throws an error since this Manager is read-only.
+    /// </summary>
+    /// <param name="graphUri">Graph URI.</param>
+    /// <param name="additions">Triples to be added.</param>
+    /// <param name="removals">Triples to be removed.</param>
+    public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+    {
+        throw new RdfStorageException("The SparqlConnector provides a read-only connection");
+    }
+
+    /// <summary>
+    /// Throws an error since this Manager is read-only.
+    /// </summary>
+    /// <param name="graphUri">Graph URI.</param>
+    /// <param name="additions">Triples to be added.</param>
+    /// <param name="removals">Triples to be removed.</param>
+    public virtual void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+    {
+        throw new RdfStorageException("The SparqlConnector provides a read-only connection");
+    }
+
+    /// <summary>
+    /// Throws an error since this Manager is read-only.
+    /// </summary>
+    /// <param name="graphName">Graph name.</param>
+    /// <param name="additions">Triples to be added.</param>
+    /// <param name="removals">Triples to be removed.</param>
+    public virtual void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+    {
+        throw new RdfStorageException("The SparqlConnector provides a read-only connection");
+    }
+
+    /// <summary>
+    /// Returns that Updates are not supported since this connection is read-only.
+    /// </summary>
+    public virtual bool UpdateSupported
+    {
+        get 
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Throws an exception as this connector provides a read-only connection.
+    /// </summary>
+    /// <param name="graphUri">URI of this Graph to delete.</param>
+    /// <exception cref="RdfStorageException">Thrown since this connection is read-only so you cannot delete graphs using it.</exception>
+    public virtual void DeleteGraph(Uri graphUri)
+    {
+        throw new RdfStorageException("The SparqlConnector provides a read-only connection");
+    }
+
+    /// <summary>
+    /// Throws an exception as this connector provides a read-only connection.
+    /// </summary>
+    /// <param name="graphUri">URI of this Graph to delete.</param>
+    /// <exception cref="RdfStorageException">Thrown since this connection is read-only so you cannot delete graphs using it.</exception>
+    public virtual void DeleteGraph(string graphUri)
+    {
+        throw new RdfStorageException("The SparqlConnector provides a read-only connection");
+    }
+
+    /// <summary>
+    /// Returns that deleting graphs is not supported.
+    /// </summary>
+    public virtual bool DeleteSupported
+    {
+        get
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Lists the Graphs in the Store.
+    /// </summary>
+    /// <returns></returns>
+    [Obsolete("Replaced by ListGraphNames()")]
+    public virtual IEnumerable<Uri> ListGraphs()
+    {
+        try
+        {
+            // Technically the ?s ?p ?o is unnecessary here but we may not get the right results if we don't include this because some stores
+            // won't interpret GRAPH ?g { } correctly
+            var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+            if (results is SparqlResultSet resultSet)
             {
-                g.BaseUri = g.UriFactory.Create(graphUri);
-            }
-            LoadGraph(new GraphHandler(g), graphUri.ToSafeString());
-        }
-
-        /// <summary>
-        /// Loads a Graph from the SPARQL Endpoint.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="graphUri">URI of the Graph to load.</param>
-        public virtual void LoadGraph(IRdfHandler handler, string graphUri)
-        {
-            string query;
-
-            if (graphUri.Equals(string.Empty))
-            {
-                if (_mode == SparqlConnectorLoadMethod.Describe)
+                var graphs = new List<Uri>();
+                foreach (ISparqlResult r in resultSet)
                 {
-                    throw new RdfStorageException("Cannot retrieve the Default Graph when the Load Method is Describe");
-                }
-                else
-                {
-                    query = "CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
-                }
-            }
-            else
-            {
-                switch (_mode)
-                {
-                    case SparqlConnectorLoadMethod.Describe:
-                        query = "DESCRIBE <" + graphUri.Replace(">", "\\>") + ">";
-                        break;
-                    default:
-                        query = "CONSTRUCT {?s ?p ?o} FROM <" + graphUri.Replace(">", "\\>") + "> WHERE {?s ?p ?o}";
-                        break;
-                }
-            }
-
-            Query(handler, null, query);
-        }
-
-        /// <summary>
-        /// Throws an error since this Manager is read-only.
-        /// </summary>
-        /// <param name="g">Graph to save.</param>
-        /// <exception cref="RdfStorageException">Always thrown since this Manager provides a read-only connection.</exception>
-        public virtual void SaveGraph(IGraph g)
-        {
-            throw new RdfStorageException("The SparqlConnector provides a read-only connection");
-
-        }
-
-        /// <summary>
-        /// Gets the IO Behaviour of SPARQL Connections.
-        /// </summary>
-        public virtual IOBehaviour IOBehaviour
-        {
-            get
-            {
-                return IOBehaviour.ReadOnlyGraphStore;
-            }
-        }
-
-        /// <summary>
-        /// Throws an error since this Manager is read-only.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <param name="additions">Triples to be added.</param>
-        /// <param name="removals">Triples to be removed.</param>
-        public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
-        {
-            throw new RdfStorageException("The SparqlConnector provides a read-only connection");
-        }
-
-        /// <summary>
-        /// Throws an error since this Manager is read-only.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <param name="additions">Triples to be added.</param>
-        /// <param name="removals">Triples to be removed.</param>
-        public virtual void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
-        {
-            throw new RdfStorageException("The SparqlConnector provides a read-only connection");
-        }
-
-        /// <summary>
-        /// Throws an error since this Manager is read-only.
-        /// </summary>
-        /// <param name="graphName">Graph name.</param>
-        /// <param name="additions">Triples to be added.</param>
-        /// <param name="removals">Triples to be removed.</param>
-        public virtual void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
-        {
-            throw new RdfStorageException("The SparqlConnector provides a read-only connection");
-        }
-
-        /// <summary>
-        /// Returns that Updates are not supported since this connection is read-only.
-        /// </summary>
-        public virtual bool UpdateSupported
-        {
-            get 
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Throws an exception as this connector provides a read-only connection.
-        /// </summary>
-        /// <param name="graphUri">URI of this Graph to delete.</param>
-        /// <exception cref="RdfStorageException">Thrown since this connection is read-only so you cannot delete graphs using it.</exception>
-        public virtual void DeleteGraph(Uri graphUri)
-        {
-            throw new RdfStorageException("The SparqlConnector provides a read-only connection");
-        }
-
-        /// <summary>
-        /// Throws an exception as this connector provides a read-only connection.
-        /// </summary>
-        /// <param name="graphUri">URI of this Graph to delete.</param>
-        /// <exception cref="RdfStorageException">Thrown since this connection is read-only so you cannot delete graphs using it.</exception>
-        public virtual void DeleteGraph(string graphUri)
-        {
-            throw new RdfStorageException("The SparqlConnector provides a read-only connection");
-        }
-
-        /// <summary>
-        /// Returns that deleting graphs is not supported.
-        /// </summary>
-        public virtual bool DeleteSupported
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Lists the Graphs in the Store.
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("Replaced by ListGraphNames()")]
-        public virtual IEnumerable<Uri> ListGraphs()
-        {
-            try
-            {
-                // Technically the ?s ?p ?o is unnecessary here but we may not get the right results if we don't include this because some stores
-                // won't interpret GRAPH ?g { } correctly
-                var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
-                if (results is SparqlResultSet resultSet)
-                {
-                    var graphs = new List<Uri>();
-                    foreach (ISparqlResult r in resultSet)
+                    if (r.HasValue("g"))
                     {
-                        if (r.HasValue("g"))
+                        INode temp = r["g"];
+                        if (temp.NodeType == NodeType.Uri)
                         {
-                            INode temp = r["g"];
-                            if (temp.NodeType == NodeType.Uri)
-                            {
-                                graphs.Add(((IUriNode)temp).Uri);
-                            }
+                            graphs.Add(((IUriNode)temp).Uri);
                         }
                     }
-                    return graphs;
                 }
-                else
-                {
-                    return Enumerable.Empty<Uri>();
-                }
+                return graphs;
             }
-            catch (Exception ex)
+            else
             {
-                throw StorageHelper.HandleError(ex, "listing Graphs from");
+                return Enumerable.Empty<Uri>();
             }
         }
-
-        /// <inheritdoc/>
-        public virtual IEnumerable<string> ListGraphNames()
+        catch (Exception ex)
         {
-            try
+            throw StorageHelper.HandleError(ex, "listing Graphs from");
+        }
+    }
+
+    /// <inheritdoc/>
+    public virtual IEnumerable<string> ListGraphNames()
+    {
+        try
+        {
+            // Technically the ?s ?p ?o is unnecessary here but we may not get the right results if we don't include this because some stores
+            // won't interpret GRAPH ?g { } correctly
+            var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+            if (results is SparqlResultSet resultSet)
             {
-                // Technically the ?s ?p ?o is unnecessary here but we may not get the right results if we don't include this because some stores
-                // won't interpret GRAPH ?g { } correctly
-                var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
-                if (results is SparqlResultSet resultSet)
+                var graphs = new List<string>();
+                foreach (ISparqlResult r in resultSet)
                 {
-                    var graphs = new List<string>();
-                    foreach (ISparqlResult r in resultSet)
+                    if (r.HasValue("g"))
                     {
-                        if (r.HasValue("g"))
+                        INode temp = r["g"];
+                        if (temp.NodeType == NodeType.Uri)
                         {
-                            INode temp = r["g"];
-                            if (temp.NodeType == NodeType.Uri)
-                            {
-                                graphs.Add(((IUriNode)temp).Uri.AbsoluteUri);
-                            }
-                            else if (temp.NodeType == NodeType.Blank)
-                            {
-                                graphs.Add("_:" + ((IBlankNode)temp).InternalID);
-                            }
+                            graphs.Add(((IUriNode)temp).Uri.AbsoluteUri);
+                        }
+                        else if (temp.NodeType == NodeType.Blank)
+                        {
+                            graphs.Add("_:" + ((IBlankNode)temp).InternalID);
                         }
                     }
-                    return graphs;
                 }
-
-                return Enumerable.Empty<string>();
+                return graphs;
             }
-            catch (Exception ex)
-            {
-                throw StorageHelper.HandleError(ex, "listing Graphs from");
-            }
+
+            return Enumerable.Empty<string>();
         }
-        /// <summary>
-        /// Returns that listing graphs is supported.
-        /// </summary>
-        public virtual bool ListGraphsSupported
+        catch (Exception ex)
         {
-            get
-            {
-                return true;
-            }
+            throw StorageHelper.HandleError(ex, "listing Graphs from");
         }
-
-        /// <summary>
-        /// Returns that the Connection is ready.
-        /// </summary>
-        public virtual bool IsReady
+    }
+    /// <summary>
+    /// Returns that listing graphs is supported.
+    /// </summary>
+    public virtual bool ListGraphsSupported
+    {
+        get
         {
-            get 
-            {
-                return true; 
-            }
+            return true;
         }
+    }
 
-        /// <summary>
-        /// Returns that the Connection is read-only.
-        /// </summary>
-        public virtual bool IsReadOnly
+    /// <summary>
+    /// Returns that the Connection is ready.
+    /// </summary>
+    public virtual bool IsReady
+    {
+        get 
         {
-            get 
-            {
-                return true; 
-            }
+            return true; 
         }
+    }
 
-        /// <summary>
-        /// Disposes of the Connection.
-        /// </summary>
-        public void Dispose()
+    /// <summary>
+    /// Returns that the Connection is read-only.
+    /// </summary>
+    public virtual bool IsReadOnly
+    {
+        get 
         {
-            // Nothing to do
+            return true; 
         }
+    }
 
-        /// <summary>
-        /// Gets a String which gives details of the Connection.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Disposes of the Connection.
+    /// </summary>
+    public void Dispose()
+    {
+        // Nothing to do
+    }
+
+    /// <summary>
+    /// Gets a String which gives details of the Connection.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "[SPARQL Query] " + QueryClient.EndpointUri.AbsoluteUri;
+    }
+
+    /// <summary>
+    /// Serializes the connection's configuration.
+    /// </summary>
+    /// <param name="context">Configuration Serialization Context.</param>
+    public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
+    {
+        INode manager = context.NextSubject;
+        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        INode genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+        INode loadMode = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyLoadMode));
+        INode skipParsing = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertySkipParsing));
+
+        // Basic information
+        context.Graph.Assert(new Triple(manager, rdfType, genericManager));
+        context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
+        context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
+
+        // Serialize Load Mode
+        context.Graph.Assert(new Triple(manager, loadMode, context.Graph.CreateLiteralNode(_mode.ToString())));
+        context.Graph.Assert(new Triple(manager, skipParsing, SkipLocalParsing.ToLiteral(context.Graph)));
+
+        // Query Endpoint
+        if (QueryClient != null)
         {
-            return "[SPARQL Query] " + QueryClient.EndpointUri.AbsoluteUri;
+            // Use the indirect serialization method
+
+            // Serialize the Endpoints Configuration
+            INode endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
+            INode endpointObj = context.Graph.CreateBlankNode();
+            context.NextSubject = endpointObj;
+            ((IConfigurationSerializable)QueryClient).SerializeConfiguration(context);
+
+            // Link that serialization to our serialization
+            context.Graph.Assert(new Triple(manager, endpoint, endpointObj));
         }
-
-        /// <summary>
-        /// Serializes the connection's configuration.
-        /// </summary>
-        /// <param name="context">Configuration Serialization Context.</param>
-        public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
+        else
         {
-            INode manager = context.NextSubject;
-            INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-            INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-            INode genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
-            INode loadMode = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyLoadMode));
-            INode skipParsing = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertySkipParsing));
+            // Use the direct serialization method
+            INode endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
+            INode defGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
+            INode namedGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
 
-            // Basic information
-            context.Graph.Assert(new Triple(manager, rdfType, genericManager));
-            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
-            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
-
-            // Serialize Load Mode
-            context.Graph.Assert(new Triple(manager, loadMode, context.Graph.CreateLiteralNode(_mode.ToString())));
-            context.Graph.Assert(new Triple(manager, skipParsing, SkipLocalParsing.ToLiteral(context.Graph)));
-
-            // Query Endpoint
             if (QueryClient != null)
             {
-                // Use the indirect serialization method
-
-                // Serialize the Endpoints Configuration
-                INode endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
-                INode endpointObj = context.Graph.CreateBlankNode();
-                context.NextSubject = endpointObj;
-                ((IConfigurationSerializable)QueryClient).SerializeConfiguration(context);
-
-                // Link that serialization to our serialization
-                context.Graph.Assert(new Triple(manager, endpoint, endpointObj));
-            }
-            else
-            {
-                // Use the direct serialization method
-                INode endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
-                INode defGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
-                INode namedGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
-
-                if (QueryClient != null)
+                context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(QueryClient.EndpointUri.AbsoluteUri)));
+                foreach (var u in QueryClient.DefaultGraphs)
                 {
-                    context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(QueryClient.EndpointUri.AbsoluteUri)));
-                    foreach (var u in QueryClient.DefaultGraphs)
-                    {
-                        context.Graph.Assert(new Triple(manager, defGraphUri, context.Graph.CreateUriNode(context.UriFactory.Create(u))));
-                    }
-                    foreach (var u in QueryClient.NamedGraphs)
-                    {
-                        context.Graph.Assert(new Triple(manager, namedGraphUri, context.Graph.CreateUriNode(context.UriFactory.Create(u))));
-                    }
+                    context.Graph.Assert(new Triple(manager, defGraphUri, context.Graph.CreateUriNode(context.UriFactory.Create(u))));
+                }
+                foreach (var u in QueryClient.NamedGraphs)
+                {
+                    context.Graph.Assert(new Triple(manager, namedGraphUri, context.Graph.CreateUriNode(context.UriFactory.Create(u))));
                 }
             }
         }

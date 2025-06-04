@@ -33,60 +33,59 @@ using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Shacl.Paths;
 
-namespace VDS.RDF.Shacl
+namespace VDS.RDF.Shacl;
+
+/// <summary>
+/// Represents a SHACL property path.
+/// </summary>
+public abstract class Path : GraphWrapperNode
 {
     /// <summary>
-    /// Represents a SHACL property path.
+    /// Initializes a new instance of the <see cref="Path"/> class.
     /// </summary>
-    public abstract class Path : GraphWrapperNode
+    /// <param name="node"></param>
+    /// <param name="shapesGraph">The graph containing the SHACL path.</param>
+    [DebuggerStepThrough]
+    protected Path(INode node, IGraph shapesGraph)
+        : base(node, shapesGraph)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Path"/> class.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="shapesGraph">The graph containing the SHACL path.</param>
-        [DebuggerStepThrough]
-        protected Path(INode node, IGraph shapesGraph)
-            : base(node, shapesGraph)
+    }
+
+    internal abstract Query.Paths.ISparqlPath SparqlPath { get; }
+
+    internal abstract IEnumerable<Triple> AsTriples { get; }
+
+    internal static Path Parse(INode value, IGraph graph)
+    {
+        if (value.NodeType == NodeType.Uri)
         {
+            return new Predicate(value, graph);
         }
 
-        internal abstract Query.Paths.ISparqlPath SparqlPath { get; }
-
-        internal abstract IEnumerable<Triple> AsTriples { get; }
-
-        internal static Path Parse(INode value, IGraph graph)
+        if (value.IsListRoot(graph))
         {
-            if (value.NodeType == NodeType.Uri)
-            {
-                return new Predicate(value, graph);
-            }
-
-            if (value.IsListRoot(graph))
-            {
-                return new Sequence(value, graph);
-            }
-
-            INode predicate = graph.GetTriplesWithSubject(value).Single().Predicate;
-
-            switch (predicate)
-            {
-                case INode t when t.Equals(Vocabulary.ZeroOrMorePath): return new ZeroOrMore(value, graph);
-                case INode t when t.Equals(Vocabulary.OneOrMorePath): return new OneOrMore(value, graph);
-                case INode t when t.Equals(Vocabulary.AlternativePath): return new Alternative(value, graph);
-                case INode t when t.Equals(Vocabulary.InversePath): return new Inverse(value, graph);
-                case INode t when t.Equals(Vocabulary.ZeroOrOnePath): return new ZeroOrOne(value, graph);
-
-                default: throw new Exception();
-            }
+            return new Sequence(value, graph);
         }
 
-        internal IEnumerable<INode> SelectValueNodes(IGraph dataGraph, INode focusNode)
+        INode predicate = graph.GetTriplesWithSubject(value).Single().Predicate;
+
+        switch (predicate)
         {
-            const string value = "value";
-            SparqlQuery query = QueryBuilder.Select(value).Distinct().Where(new PropertyPathPattern(new NodeMatchPattern(focusNode), SparqlPath, new VariablePattern(value))).BuildQuery();
-            var results = dataGraph.ExecuteQuery(query) as SparqlResultSet;
-            return results?.Select(result => result[value]);
+            case INode t when t.Equals(Vocabulary.ZeroOrMorePath): return new ZeroOrMore(value, graph);
+            case INode t when t.Equals(Vocabulary.OneOrMorePath): return new OneOrMore(value, graph);
+            case INode t when t.Equals(Vocabulary.AlternativePath): return new Alternative(value, graph);
+            case INode t when t.Equals(Vocabulary.InversePath): return new Inverse(value, graph);
+            case INode t when t.Equals(Vocabulary.ZeroOrOnePath): return new ZeroOrOne(value, graph);
+
+            default: throw new Exception();
         }
+    }
+
+    internal IEnumerable<INode> SelectValueNodes(IGraph dataGraph, INode focusNode)
+    {
+        const string value = "value";
+        SparqlQuery query = QueryBuilder.Select(value).Distinct().Where(new PropertyPathPattern(new NodeMatchPattern(focusNode), SparqlPath, new VariablePattern(value))).BuildQuery();
+        var results = dataGraph.ExecuteQuery(query) as SparqlResultSet;
+        return results?.Select(result => result[value]);
     }
 }

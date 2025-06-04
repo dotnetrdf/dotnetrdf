@@ -30,356 +30,355 @@ using System.Linq;
 using VDS.RDF.Storage;
 using VDS.RDF.Query.Spin.LibraryOntology;
 
-namespace VDS.RDF.Query.Spin.Util
+namespace VDS.RDF.Query.Spin.Util;
+
+// TODO override the BaseUri to reflect the source dataset + add a "current Uri" property for modified datasets
+/// <summary>
+/// 
+/// </summary>
+internal class SpinDatasetDescription : ThreadSafeGraph
 {
-    // TODO override the BaseUri to reflect the source dataset + add a "current Uri" property for modified datasets
-    /// <summary>
-    /// 
-    /// </summary>
-    internal class SpinDatasetDescription : ThreadSafeGraph
+
+    internal static Dictionary<Uri, IGraph> datasets = new Dictionary<Uri, IGraph>(RDFUtil.uriComparer);
+
+    private Uri _sourceUri;
+
+    private readonly Dictionary<IRefNode, SpinWrappedGraph> _modificableGraphs = new Dictionary<IRefNode, SpinWrappedGraph>();
+
+    #region Static methods
+
+    internal static SpinDatasetDescription Load(IUpdateableStorage storage, Uri datasetUri = null, IEnumerable<Uri> graphsUri = null, IUriFactory uriFactory = null)
     {
+        if (uriFactory == null) uriFactory = VDS.RDF.UriFactory.Root;
 
-        internal static Dictionary<Uri, IGraph> datasets = new Dictionary<Uri, IGraph>(RDFUtil.uriComparer);
-
-        private Uri _sourceUri;
-
-        private readonly Dictionary<IRefNode, SpinWrappedGraph> _modificableGraphs = new Dictionary<IRefNode, SpinWrappedGraph>();
-
-        #region Static methods
-
-        internal static SpinDatasetDescription Load(IUpdateableStorage storage, Uri datasetUri = null, IEnumerable<Uri> graphsUri = null, IUriFactory uriFactory = null)
+        SpinDatasetDescription dataset;
+        if (datasetUri == null)
         {
-            if (uriFactory == null) uriFactory = VDS.RDF.UriFactory.Root;
-
-            SpinDatasetDescription dataset;
-            if (datasetUri == null)
+            var datasetDiscovery = (SparqlResultSet)storage.Query("SELECT ?dataset WHERE {?dataset a <" + SD.ClassDataset.Uri.ToString() + ">}");
+            var datasetCount = datasetDiscovery.Results.Count;
+            if (datasetCount > 1)
             {
-                var datasetDiscovery = (SparqlResultSet)storage.Query("SELECT ?dataset WHERE {?dataset a <" + SD.ClassDataset.Uri.ToString() + ">}");
-                var datasetCount = datasetDiscovery.Results.Count;
-                if (datasetCount > 1)
-                {
-                    throw new Exception("More than one dataset has been found in the current storage provider. Please specify which to use through the datasetUri parameter.");
-                }
-                else if (datasetCount == 1)
-                {
-                    datasetUri = ((IUriNode)datasetDiscovery.Results.FirstOrDefault().Value("dataset")).Uri;
-                }
-                else
-                {
-                    datasetUri = uriFactory.Create(RDFRuntime.DATASET_NS_URI + Guid.NewGuid().ToString());
-                }
+                throw new Exception("More than one dataset has been found in the current storage provider. Please specify which to use through the datasetUri parameter.");
             }
-            dataset = new SpinDatasetDescription(datasetUri);
-            storage.LoadGraph(dataset, datasetUri);
-            dataset.BaseUri = datasetUri;
-            Triple isUpdateControlledDataset = dataset.GetTriplesWithPredicate(RDFRuntime.PropertyUpdatesDataset).FirstOrDefault();
-            if (isUpdateControlledDataset!=null)
+            else if (datasetCount == 1)
             {
-                dataset._sourceUri = ((IUriNode)isUpdateControlledDataset.Object).Uri;
+                datasetUri = ((IUriNode)datasetDiscovery.Results.FirstOrDefault().Value("dataset")).Uri;
             }
             else
             {
-                dataset.Assert(RDFUtil.CreateUriNode(datasetUri), RDF.PropertyType, SD.ClassDataset);
+                datasetUri = uriFactory.Create(RDFRuntime.DATASET_NS_URI + Guid.NewGuid().ToString());
             }
-            return dataset;
         }
-
-        #endregion
-
-        internal SpinDatasetDescription(Uri datasetUri) : base(datasetUri == null ? null : new UriNode(datasetUri))
+        dataset = new SpinDatasetDescription(datasetUri);
+        storage.LoadGraph(dataset, datasetUri);
+        dataset.BaseUri = datasetUri;
+        Triple isUpdateControlledDataset = dataset.GetTriplesWithPredicate(RDFRuntime.PropertyUpdatesDataset).FirstOrDefault();
+        if (isUpdateControlledDataset!=null)
         {
-            BaseUri = datasetUri;
-            _sourceUri = datasetUri;
+            dataset._sourceUri = ((IUriNode)isUpdateControlledDataset.Object).Uri;
         }
-
-        #region Public methods
-
-        public bool RemoveGraph(Uri graphUri)
+        else
         {
-            if (HasGraph(graphUri))
-            {
-                IUriNode sourceGraph = RDFUtil.CreateUriNode(graphUri);
-                this.Retract(sourceGraph, RDF.PropertyType, SD.ClassGraph);
-                this.Assert(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyRemovesGraph, sourceGraph);
-                return true;
-            }
-            Retract(Triples.Where(t => t.Involves(graphUri)).ToList());
+            dataset.Assert(RDFUtil.CreateUriNode(datasetUri), RDF.PropertyType, SD.ClassDataset);
+        }
+        return dataset;
+    }
+
+    #endregion
+
+    internal SpinDatasetDescription(Uri datasetUri) : base(datasetUri == null ? null : new UriNode(datasetUri))
+    {
+        BaseUri = datasetUri;
+        _sourceUri = datasetUri;
+    }
+
+    #region Public methods
+
+    public bool RemoveGraph(Uri graphUri)
+    {
+        if (HasGraph(graphUri))
+        {
+            IUriNode sourceGraph = RDFUtil.CreateUriNode(graphUri);
+            this.Retract(sourceGraph, RDF.PropertyType, SD.ClassGraph);
+            this.Assert(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyRemovesGraph, sourceGraph);
             return true;
         }
+        Retract(Triples.Where(t => t.Involves(graphUri)).ToList());
+        return true;
+    }
 
-        public bool RemoveGraph(IRefNode graphName)
+    public bool RemoveGraph(IRefNode graphName)
+    {
+        if (HasGraph(graphName))
         {
-            if (HasGraph(graphName))
-            {
-                this.Retract(graphName, RDF.PropertyType, SD.ClassGraph);
-                this.Assert(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyRemovesGraph, graphName);
-                return true;
-            }
-            Retract(Triples.Where(t => t.Involves(graphName)).ToList());
+            this.Retract(graphName, RDF.PropertyType, SD.ClassGraph);
+            this.Assert(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyRemovesGraph, graphName);
             return true;
         }
+        Retract(Triples.Where(t => t.Involves(graphName)).ToList());
+        return true;
+    }
 
-        public bool ImportGraph(Uri graphUri)
+    public bool ImportGraph(Uri graphUri)
+    {
+        INode graph = RDFUtil.CreateUriNode(graphUri);
+        this.Assert(graph, RDF.PropertyType, SPIN.ClassLibraryOntology);
+        return true;
+    }
+
+    public bool HasGraph(Uri graphUri)
+    {
+        return ContainsTriple(new Triple(RDFUtil.CreateUriNode(graphUri), RDF.PropertyType, SD.ClassGraph));
+    }
+
+    public bool HasGraph(IRefNode graphName)
+    {
+        return ContainsTriple(new Triple(graphName, RDF.PropertyType, SD.ClassGraph));
+    }
+
+    public IEnumerable<SpinWrappedGraph> ModificableGraphs
+    {
+        get
         {
-            INode graph = RDFUtil.CreateUriNode(graphUri);
-            this.Assert(graph, RDF.PropertyType, SPIN.ClassLibraryOntology);
-            return true;
+            return _modificableGraphs.Values.ToList();
         }
+    }
 
-        public bool HasGraph(Uri graphUri)
+    public IGraph this[Uri graphUri]
+    {
+        get
         {
-            return ContainsTriple(new Triple(RDFUtil.CreateUriNode(graphUri), RDF.PropertyType, SD.ClassGraph));
-        }
-
-        public bool HasGraph(IRefNode graphName)
-        {
-            return ContainsTriple(new Triple(graphName, RDF.PropertyType, SD.ClassGraph));
-        }
-
-        public IEnumerable<SpinWrappedGraph> ModificableGraphs
-        {
-            get
-            {
-                return _modificableGraphs.Values.ToList();
-            }
-        }
-
-        public IGraph this[Uri graphUri]
-        {
-            get
-            {
-                IGraph graph = new SpinWrappedGraph(RDFUtil.CreateUriNode(graphUri));
-                graph.BaseUri = graphUri;
-                return graph;
-            }
-        }
-
-        public IGraph this[IRefNode graphName]
-        {
-            get
-            {
-                IGraph graph = new SpinWrappedGraph(graphName);
-                return graph;
-            }
-        }
-
-        public IGraph GetModifiableGraph(Uri graphUri)
-        {
-            return GetModifiableGraph(graphUri, RDFRuntime.PropertyUpdatesGraph);
-        }
-
-        public IGraph GetModifiableGraph(IRefNode graphName)
-        {
-            return GetModifiableGraph(graphName, RDFRuntime.PropertyUpdatesGraph);
-        }
-
-        public bool IsChanged
-        {
-            get
-            {
-                return !RDFUtil.sameTerm(BaseUri, SourceUri);
-            }
-        }
-
-        public Uri SourceUri
-        {
-            get
-            {
-                return _sourceUri;
-            }
-        }
-
-        #endregion
-
-        #region Internal implementation
-
-        // TODO change the name into something sensible
-        internal void EnableUpdateControl()
-        {
-            if (!IsChanged)
-            {
-                IUriNode sourceDataset = RDFUtil.CreateUriNode(_sourceUri);
-                BaseUri = RDFRuntime.NewTempDatasetUri();
-                this.Retract(sourceDataset, RDF.PropertyType, SD.ClassDataset);
-                this.Assert(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyUpdatesDataset, sourceDataset);
-            }
-        }
-
-        internal void DisableUpdateControl() {
-            BaseUri = _sourceUri;
-            _additionGraphs.Clear();
-            _removalGraphs.Clear();
-            foreach (SpinWrappedGraph g in _modificableGraphs.Values) {
-                g.Changed -= OnModificableGraphChange;
-                g.Cleared -= OnModificableGraphCleared;
-            }
-            _modificableGraphs.Clear();
-        }
-
-        private IGraph GetModifiableGraph(Uri graphUri, INode modificationNode)
-        {
-            return GetModifiableGraph(RDFUtil.CreateUriNode(graphUri), modificationNode);
-        }
-
-        private IGraph GetModifiableGraph(IRefNode graphName, INode modificationMode)
-        {
-            if (_modificableGraphs.ContainsKey(graphName))
-            {
-                return _modificableGraphs[graphName];
-            }
-            if (ContainsTriple(new Triple(graphName, RDF.PropertyType, RDFRuntime.ClassReadOnlyGraph)))
-            {
-                throw new SpinException("The graph " + graphName.ToString() + " is marked as Readonly for the current dataset");
-            }
-
-            IRefNode updateControlGraph = GetUpdateControlNode(graphName, true);
-            this.Retract(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyRemovesGraph, graphName
-            );
-            this.Assert(graphName, RDF.PropertyType, SD.ClassGraph);
-            this.Assert(updateControlGraph, RDF.PropertyType, RDFRuntime.ClassUpdateControlGraph);
-
-            if (!RDFUtil.sameTerm(graphName, updateControlGraph))
-            {
-                this.Assert(updateControlGraph, modificationMode, graphName);
-                this.Assert(updateControlGraph, RDFRuntime.PropertyUpdatesGraph, updateControlGraph);
-            }
-            else
-            {
-                this.Assert(updateControlGraph, RDFRuntime.PropertyUpdatesGraph, graphName);
-            }
-
-            var graph = (SpinWrappedGraph)this[graphName];
-            //graph.BaseUri = graphName;
-            graph.Readonly = false;
-            graph.Changed += OnModificableGraphChange;
-            graph.Cleared += OnModificableGraphCleared;
-            _modificableGraphs[graphName] = graph;
+            IGraph graph = new SpinWrappedGraph(RDFUtil.CreateUriNode(graphUri));
+            graph.BaseUri = graphUri;
             return graph;
         }
-
-        internal IEnumerable<Uri> GetTriplesAdditionsGraphs()
-        {
-            return GetTriplesWithPredicate(RDFRuntime.PropertyAddTriplesTo)
-                .Select(t => ((IUriNode)t.Subject).Uri);
-        }
-
-        internal IEnumerable<Uri> GetTriplesRemovalsGraphs()
-        {
-            return GetTriplesWithPredicate(RDFRuntime.PropertyDeleteTriplesFrom)
-                .Select(t => ((IUriNode)t.Subject).Uri);
-        }
-
-        private void OnModificableGraphChange(object sender, GraphEventArgs e)
-        {
-            if (e.TripleEvent != null)
-            {
-                Uri graphUri = e.TripleEvent.GraphUri;
-                IUriNode graphNode = RDFUtil.CreateUriNode(GetUpdateControlUri(graphUri));
-                if (e.TripleEvent.WasAsserted) {
-                    this.Assert(RDFUtil.CreateUriNode(GetTripleAdditionsMonitorUri(graphUri)), RDFRuntime.PropertyAddTriplesTo, graphNode);
-                } else {
-                    this.Assert(RDFUtil.CreateUriNode(GetTripleRemovalsMonitorUri(graphUri)), RDFRuntime.PropertyDeleteTriplesFrom, graphNode);
-                }
-            }
-        }
-
-        private void OnModificableGraphCleared(object sender, GraphEventArgs e)
-        {
-            var graph = (SpinWrappedGraph)e.Graph;
-            graph.Reset();
-
-            IUriNode sourceGraph = RDFUtil.CreateUriNode(graph.BaseUri);
-            IUriNode graphNode = RDFUtil.CreateUriNode(GetUpdateControlUri(graph.BaseUri));
-            this.Retract(graphNode, RDFRuntime.PropertyUpdatesGraph, sourceGraph);
-            this.Assert(graphNode, RDFRuntime.PropertyReplacesGraph, sourceGraph);
-        }
-
-        internal Uri GetUpdateControlUri(Uri graphUri, bool create=true)
-        {
-
-            Uri uri = GetTriplesWithPredicateObject(RDFRuntime.PropertyReplacesGraph, RDFUtil.CreateUriNode(graphUri))
-                .Union(GetTriplesWithPredicateObject(RDFRuntime.PropertyUpdatesGraph, RDFUtil.CreateUriNode(graphUri)))
-                .Select(t => ((IUriNode)t.Subject).Uri)
-                .FirstOrDefault();
-            if (uri == null && create)
-            {
-                uri = RDFRuntime.NewUpdateControlGraphUri();
-            }
-            return uri;
-        }
-
-        internal IRefNode GetUpdateControlNode(IRefNode graphName, bool create = true)
-        {
-            IRefNode node = GetTriplesWithPredicateObject(RDFRuntime.PropertyReplacesGraph, graphName)
-                .Union(GetTriplesWithPredicateObject(RDFRuntime.PropertyUpdatesGraph, graphName))
-                .Select(t => t.Subject)
-                .OfType<IRefNode>()
-                .FirstOrDefault();
-            if (node == null && create)
-            {
-                node = RDFUtil.CreateUriNode(RDFRuntime.NewUpdateControlGraphUri());
-            }
-            return node;
-        }
-
-        internal Uri GetTripleAdditionsMonitorUri(SpinWrappedGraph graph)
-        {
-            return GetTripleAdditionsMonitorUri(GetUpdateControlUri(graph.BaseUri));
-        }
-
-        private Dictionary<Uri, Uri> _additionGraphs = new Dictionary<Uri, Uri>(RDFUtil.uriComparer);
-        internal Uri GetTripleAdditionsMonitorUri(Uri graphUri)
-        {
-            if (_additionGraphs.ContainsKey(graphUri))
-            {
-                return _additionGraphs[graphUri];
-            }
-            IUriNode monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(GetModifiableGraph(graphUri).BaseUri));
-            Uri uri = RDFRuntime.NewTempGraphUri();
-            _additionGraphs[graphUri] = uri;
-            _additionGraphs[monitoredGraph.Uri] = uri;
-            this.Assert(RDFUtil.CreateUriNode(uri), RDFRuntime.PropertyAddTriplesTo, monitoredGraph);
-            return uri;
-        }
-
-        internal Uri GetTripleRemovalsMonitorUri(SpinWrappedGraph graph)
-        {
-            return GetTripleRemovalsMonitorUri(GetUpdateControlUri(graph.BaseUri));
-        }
-
-        private Dictionary<Uri, Uri> _removalGraphs = new Dictionary<Uri, Uri>(RDFUtil.uriComparer);
-        internal Uri GetTripleRemovalsMonitorUri(Uri graphUri)
-        {
-            EnableUpdateControl();
-            if (_removalGraphs.ContainsKey(graphUri))
-            {
-                return _removalGraphs[graphUri];
-            }
-            IUriNode monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(GetModifiableGraph(graphUri).BaseUri));
-            Uri uri = RDFRuntime.NewTempGraphUri();
-            _removalGraphs[graphUri] = uri;
-            _removalGraphs[monitoredGraph.Uri] = uri;
-            this.Assert(RDFUtil.CreateUriNode(uri), RDFRuntime.PropertyDeleteTriplesFrom, monitoredGraph);
-            return uri;
-        }
-
-        internal bool IsGraphReplaced(Uri sourceGraph)
-        {
-            return GetTriplesWithPredicateObject(RDFRuntime.PropertyReplacesGraph, RDFUtil.CreateUriNode(sourceGraph)).Any();
-        }
-
-        internal bool IsGraphUpdated(Uri sourceGraph)
-        {
-            return GetTriplesWithPredicateObject(RDFRuntime.PropertyUpdatesGraph, RDFUtil.CreateUriNode(sourceGraph)).Any();
-        }
-
-        internal bool IsGraphModified(Uri sourceGraph)
-        {
-            return IsGraphUpdated(sourceGraph) || IsGraphReplaced(sourceGraph);
-        }
-
-        #endregion
-
     }
+
+    public IGraph this[IRefNode graphName]
+    {
+        get
+        {
+            IGraph graph = new SpinWrappedGraph(graphName);
+            return graph;
+        }
+    }
+
+    public IGraph GetModifiableGraph(Uri graphUri)
+    {
+        return GetModifiableGraph(graphUri, RDFRuntime.PropertyUpdatesGraph);
+    }
+
+    public IGraph GetModifiableGraph(IRefNode graphName)
+    {
+        return GetModifiableGraph(graphName, RDFRuntime.PropertyUpdatesGraph);
+    }
+
+    public bool IsChanged
+    {
+        get
+        {
+            return !RDFUtil.sameTerm(BaseUri, SourceUri);
+        }
+    }
+
+    public Uri SourceUri
+    {
+        get
+        {
+            return _sourceUri;
+        }
+    }
+
+    #endregion
+
+    #region Internal implementation
+
+    // TODO change the name into something sensible
+    internal void EnableUpdateControl()
+    {
+        if (!IsChanged)
+        {
+            IUriNode sourceDataset = RDFUtil.CreateUriNode(_sourceUri);
+            BaseUri = RDFRuntime.NewTempDatasetUri();
+            this.Retract(sourceDataset, RDF.PropertyType, SD.ClassDataset);
+            this.Assert(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyUpdatesDataset, sourceDataset);
+        }
+    }
+
+    internal void DisableUpdateControl() {
+        BaseUri = _sourceUri;
+        _additionGraphs.Clear();
+        _removalGraphs.Clear();
+        foreach (SpinWrappedGraph g in _modificableGraphs.Values) {
+            g.Changed -= OnModificableGraphChange;
+            g.Cleared -= OnModificableGraphCleared;
+        }
+        _modificableGraphs.Clear();
+    }
+
+    private IGraph GetModifiableGraph(Uri graphUri, INode modificationNode)
+    {
+        return GetModifiableGraph(RDFUtil.CreateUriNode(graphUri), modificationNode);
+    }
+
+    private IGraph GetModifiableGraph(IRefNode graphName, INode modificationMode)
+    {
+        if (_modificableGraphs.ContainsKey(graphName))
+        {
+            return _modificableGraphs[graphName];
+        }
+        if (ContainsTriple(new Triple(graphName, RDF.PropertyType, RDFRuntime.ClassReadOnlyGraph)))
+        {
+            throw new SpinException("The graph " + graphName.ToString() + " is marked as Readonly for the current dataset");
+        }
+
+        IRefNode updateControlGraph = GetUpdateControlNode(graphName, true);
+        this.Retract(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyRemovesGraph, graphName
+        );
+        this.Assert(graphName, RDF.PropertyType, SD.ClassGraph);
+        this.Assert(updateControlGraph, RDF.PropertyType, RDFRuntime.ClassUpdateControlGraph);
+
+        if (!RDFUtil.sameTerm(graphName, updateControlGraph))
+        {
+            this.Assert(updateControlGraph, modificationMode, graphName);
+            this.Assert(updateControlGraph, RDFRuntime.PropertyUpdatesGraph, updateControlGraph);
+        }
+        else
+        {
+            this.Assert(updateControlGraph, RDFRuntime.PropertyUpdatesGraph, graphName);
+        }
+
+        var graph = (SpinWrappedGraph)this[graphName];
+        //graph.BaseUri = graphName;
+        graph.Readonly = false;
+        graph.Changed += OnModificableGraphChange;
+        graph.Cleared += OnModificableGraphCleared;
+        _modificableGraphs[graphName] = graph;
+        return graph;
+    }
+
+    internal IEnumerable<Uri> GetTriplesAdditionsGraphs()
+    {
+        return GetTriplesWithPredicate(RDFRuntime.PropertyAddTriplesTo)
+            .Select(t => ((IUriNode)t.Subject).Uri);
+    }
+
+    internal IEnumerable<Uri> GetTriplesRemovalsGraphs()
+    {
+        return GetTriplesWithPredicate(RDFRuntime.PropertyDeleteTriplesFrom)
+            .Select(t => ((IUriNode)t.Subject).Uri);
+    }
+
+    private void OnModificableGraphChange(object sender, GraphEventArgs e)
+    {
+        if (e.TripleEvent != null)
+        {
+            Uri graphUri = e.TripleEvent.GraphUri;
+            IUriNode graphNode = RDFUtil.CreateUriNode(GetUpdateControlUri(graphUri));
+            if (e.TripleEvent.WasAsserted) {
+                this.Assert(RDFUtil.CreateUriNode(GetTripleAdditionsMonitorUri(graphUri)), RDFRuntime.PropertyAddTriplesTo, graphNode);
+            } else {
+                this.Assert(RDFUtil.CreateUriNode(GetTripleRemovalsMonitorUri(graphUri)), RDFRuntime.PropertyDeleteTriplesFrom, graphNode);
+            }
+        }
+    }
+
+    private void OnModificableGraphCleared(object sender, GraphEventArgs e)
+    {
+        var graph = (SpinWrappedGraph)e.Graph;
+        graph.Reset();
+
+        IUriNode sourceGraph = RDFUtil.CreateUriNode(graph.BaseUri);
+        IUriNode graphNode = RDFUtil.CreateUriNode(GetUpdateControlUri(graph.BaseUri));
+        this.Retract(graphNode, RDFRuntime.PropertyUpdatesGraph, sourceGraph);
+        this.Assert(graphNode, RDFRuntime.PropertyReplacesGraph, sourceGraph);
+    }
+
+    internal Uri GetUpdateControlUri(Uri graphUri, bool create=true)
+    {
+
+        Uri uri = GetTriplesWithPredicateObject(RDFRuntime.PropertyReplacesGraph, RDFUtil.CreateUriNode(graphUri))
+            .Union(GetTriplesWithPredicateObject(RDFRuntime.PropertyUpdatesGraph, RDFUtil.CreateUriNode(graphUri)))
+            .Select(t => ((IUriNode)t.Subject).Uri)
+            .FirstOrDefault();
+        if (uri == null && create)
+        {
+            uri = RDFRuntime.NewUpdateControlGraphUri();
+        }
+        return uri;
+    }
+
+    internal IRefNode GetUpdateControlNode(IRefNode graphName, bool create = true)
+    {
+        IRefNode node = GetTriplesWithPredicateObject(RDFRuntime.PropertyReplacesGraph, graphName)
+            .Union(GetTriplesWithPredicateObject(RDFRuntime.PropertyUpdatesGraph, graphName))
+            .Select(t => t.Subject)
+            .OfType<IRefNode>()
+            .FirstOrDefault();
+        if (node == null && create)
+        {
+            node = RDFUtil.CreateUriNode(RDFRuntime.NewUpdateControlGraphUri());
+        }
+        return node;
+    }
+
+    internal Uri GetTripleAdditionsMonitorUri(SpinWrappedGraph graph)
+    {
+        return GetTripleAdditionsMonitorUri(GetUpdateControlUri(graph.BaseUri));
+    }
+
+    private Dictionary<Uri, Uri> _additionGraphs = new Dictionary<Uri, Uri>(RDFUtil.uriComparer);
+    internal Uri GetTripleAdditionsMonitorUri(Uri graphUri)
+    {
+        if (_additionGraphs.ContainsKey(graphUri))
+        {
+            return _additionGraphs[graphUri];
+        }
+        IUriNode monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(GetModifiableGraph(graphUri).BaseUri));
+        Uri uri = RDFRuntime.NewTempGraphUri();
+        _additionGraphs[graphUri] = uri;
+        _additionGraphs[monitoredGraph.Uri] = uri;
+        this.Assert(RDFUtil.CreateUriNode(uri), RDFRuntime.PropertyAddTriplesTo, monitoredGraph);
+        return uri;
+    }
+
+    internal Uri GetTripleRemovalsMonitorUri(SpinWrappedGraph graph)
+    {
+        return GetTripleRemovalsMonitorUri(GetUpdateControlUri(graph.BaseUri));
+    }
+
+    private Dictionary<Uri, Uri> _removalGraphs = new Dictionary<Uri, Uri>(RDFUtil.uriComparer);
+    internal Uri GetTripleRemovalsMonitorUri(Uri graphUri)
+    {
+        EnableUpdateControl();
+        if (_removalGraphs.ContainsKey(graphUri))
+        {
+            return _removalGraphs[graphUri];
+        }
+        IUriNode monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(GetModifiableGraph(graphUri).BaseUri));
+        Uri uri = RDFRuntime.NewTempGraphUri();
+        _removalGraphs[graphUri] = uri;
+        _removalGraphs[monitoredGraph.Uri] = uri;
+        this.Assert(RDFUtil.CreateUriNode(uri), RDFRuntime.PropertyDeleteTriplesFrom, monitoredGraph);
+        return uri;
+    }
+
+    internal bool IsGraphReplaced(Uri sourceGraph)
+    {
+        return GetTriplesWithPredicateObject(RDFRuntime.PropertyReplacesGraph, RDFUtil.CreateUriNode(sourceGraph)).Any();
+    }
+
+    internal bool IsGraphUpdated(Uri sourceGraph)
+    {
+        return GetTriplesWithPredicateObject(RDFRuntime.PropertyUpdatesGraph, RDFUtil.CreateUriNode(sourceGraph)).Any();
+    }
+
+    internal bool IsGraphModified(Uri sourceGraph)
+    {
+        return IsGraphUpdated(sourceGraph) || IsGraphReplaced(sourceGraph);
+    }
+
+    #endregion
+
 }
 

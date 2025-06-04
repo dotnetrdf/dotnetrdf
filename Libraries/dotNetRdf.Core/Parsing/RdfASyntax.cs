@@ -24,28 +24,27 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+/// <summary>
+/// Possible RDFa Syntaxes.
+/// </summary>
+public enum RdfASyntax
 {
     /// <summary>
-    /// Possible RDFa Syntaxes.
+    /// RDFa 1.0
     /// </summary>
-    public enum RdfASyntax
-    {
-        /// <summary>
-        /// RDFa 1.0
-        /// </summary>
-        RDFa_1_0,
-        /// <summary>
-        /// RDFa 1.1
-        /// </summary>
-        RDFa_1_1,
-        /// <summary>
-        /// Auto-detect - assumes RDFa 1.1
-        /// </summary>
-        AutoDetect,
-        /// <summary>
-        /// Auto-detect - assumes RDFa 1.0
-        /// </summary>
-        AutoDetectLegacy,
-    }
+    RDFa_1_0,
+    /// <summary>
+    /// RDFa 1.1
+    /// </summary>
+    RDFa_1_1,
+    /// <summary>
+    /// Auto-detect - assumes RDFa 1.1
+    /// </summary>
+    AutoDetect,
+    /// <summary>
+    /// Auto-detect - assumes RDFa 1.0
+    /// </summary>
+    AutoDetectLegacy,
 }

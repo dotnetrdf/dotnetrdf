@@ -29,58 +29,57 @@ using System.Collections.Generic;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+internal class BindingTupleBuilder : IBindingTupleBuilder
 {
-    internal class BindingTupleBuilder : IBindingTupleBuilder
+    private readonly List<string> _variables;
+    private readonly List<PatternItem> _patternItems = new List<PatternItem>();
+    private readonly PatternItemFactory _patternItemFactory = new PatternItemFactory();
+
+    public BindingTupleBuilder(List<string> variables)
     {
-        private readonly List<string> _variables;
-        private readonly List<PatternItem> _patternItems = new List<PatternItem>();
-        private readonly PatternItemFactory _patternItemFactory = new PatternItemFactory();
+        _variables = variables;
+    }
 
-        public BindingTupleBuilder(List<string> variables)
+    public IBindingTupleBuilder Value(object literal)
+    {
+        ILiteralNode node = LiteralExpressionExtensions.ToLiteral(literal);
+        _patternItems.Add(_patternItemFactory.CreateNodeMatchPattern(node));
+        return this;
+    }
+
+    public IBindingTupleBuilder Value(string literal, Uri dataType)
+    {
+        _patternItems.Add(_patternItemFactory.CreateLiteralNodeMatchPattern(literal, dataType));
+        return this;
+    }
+
+    public IBindingTupleBuilder Value(string literal, string languageTag)
+    {
+        _patternItems.Add(_patternItemFactory.CreateLiteralNodeMatchPattern(literal, languageTag));
+        return this;
+    }
+
+    public IBindingTupleBuilder Value(Uri uri)
+    {
+        _patternItems.Add(_patternItemFactory.CreateNodeMatchPattern(uri));
+        return this;
+    }
+
+    public IBindingTupleBuilder Undef()
+    {
+        _patternItems.Add(null);
+        return this;
+    }
+
+    public BindingTuple GetTuple()
+    {
+        if (_variables.Count != _patternItems.Count)
         {
-            _variables = variables;
+            throw new InvalidOperationException("The number of values does not match the number of variables");
         }
 
-        public IBindingTupleBuilder Value(object literal)
-        {
-            ILiteralNode node = LiteralExpressionExtensions.ToLiteral(literal);
-            _patternItems.Add(_patternItemFactory.CreateNodeMatchPattern(node));
-            return this;
-        }
-
-        public IBindingTupleBuilder Value(string literal, Uri dataType)
-        {
-            _patternItems.Add(_patternItemFactory.CreateLiteralNodeMatchPattern(literal, dataType));
-            return this;
-        }
-
-        public IBindingTupleBuilder Value(string literal, string languageTag)
-        {
-            _patternItems.Add(_patternItemFactory.CreateLiteralNodeMatchPattern(literal, languageTag));
-            return this;
-        }
-
-        public IBindingTupleBuilder Value(Uri uri)
-        {
-            _patternItems.Add(_patternItemFactory.CreateNodeMatchPattern(uri));
-            return this;
-        }
-
-        public IBindingTupleBuilder Undef()
-        {
-            _patternItems.Add(null);
-            return this;
-        }
-
-        public BindingTuple GetTuple()
-        {
-            if (_variables.Count != _patternItems.Count)
-            {
-                throw new InvalidOperationException("The number of values does not match the number of variables");
-            }
-
-            return new BindingTuple(_variables, _patternItems);
-        }
+        return new BindingTuple(_variables, _patternItems);
     }
 }

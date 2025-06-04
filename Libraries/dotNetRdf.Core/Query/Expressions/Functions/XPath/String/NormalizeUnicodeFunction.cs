@@ -24,83 +24,82 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.String
+namespace VDS.RDF.Query.Expressions.Functions.XPath.String;
+
+/// <summary>
+/// Represents the XPath fn:normalize-unicode() function.
+/// </summary>
+public class NormalizeUnicodeFunction
+    : BaseBinaryStringFunction
 {
     /// <summary>
-    /// Represents the XPath fn:normalize-unicode() function.
+    /// Creates a new XPath Normalize Unicode function.
     /// </summary>
-    public class NormalizeUnicodeFunction
-        : BaseBinaryStringFunction
+    /// <param name="stringExpr">Expression.</param>
+    public NormalizeUnicodeFunction(ISparqlExpression stringExpr)
+        : base(stringExpr, null, true, XPathFunctionFactory.AcceptStringArguments) { }
+
+    /// <summary>
+    /// Creates a new XPath Normalize Unicode function.
+    /// </summary>
+    /// <param name="stringExpr">Expression.</param>
+    /// <param name="normalizationFormExpr">Normalization Form.</param>
+    public NormalizeUnicodeFunction(ISparqlExpression stringExpr, ISparqlExpression normalizationFormExpr)
+        : base(stringExpr, normalizationFormExpr, true, XPathFunctionFactory.AcceptStringArguments) { }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
     {
-        /// <summary>
-        /// Creates a new XPath Normalize Unicode function.
-        /// </summary>
-        /// <param name="stringExpr">Expression.</param>
-        public NormalizeUnicodeFunction(ISparqlExpression stringExpr)
-            : base(stringExpr, null, true, XPathFunctionFactory.AcceptStringArguments) { }
+        return processor.ProcessNormalizeUnicodeFunction(this, context, binding);
+    }
 
-        /// <summary>
-        /// Creates a new XPath Normalize Unicode function.
-        /// </summary>
-        /// <param name="stringExpr">Expression.</param>
-        /// <param name="normalizationFormExpr">Normalization Form.</param>
-        public NormalizeUnicodeFunction(ISparqlExpression stringExpr, ISparqlExpression normalizationFormExpr)
-            : base(stringExpr, normalizationFormExpr, true, XPathFunctionFactory.AcceptStringArguments) { }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitNormalizeUnicodeFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        if (_arg != null)
         {
-            return processor.ProcessNormalizeUnicodeFunction(this, context, binding);
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + _expr + "," + _arg + ")";
         }
-
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        else
         {
-            return visitor.VisitNormalizeUnicodeFunction(this);
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + _expr + ")";
         }
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            if (_arg != null)
-            {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + _expr + "," + _arg + ")";
-            }
-            else
-            {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + _expr + ")";
-            }
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        if (_arg != null)
         {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode;
-            }
+            return new NormalizeUnicodeFunction(transformer.Transform(_expr), transformer.Transform(_arg));
         }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        else
         {
-            if (_arg != null)
-            {
-                return new NormalizeUnicodeFunction(transformer.Transform(_expr), transformer.Transform(_arg));
-            }
-            else
-            {
-                return new NormalizeUnicodeFunction(transformer.Transform(_expr));
-            }
+            return new NormalizeUnicodeFunction(transformer.Transform(_expr));
         }
     }
 }

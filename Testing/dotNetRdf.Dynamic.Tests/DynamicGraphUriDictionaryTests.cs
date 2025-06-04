@@ -28,54 +28,54 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+public class DynamicGraphUriDictionaryTests
 {
-    public class DynamicGraphUriDictionaryTests
+    [Fact]
+    public void Get_index_requires_key()
     {
-        [Fact]
-        public void Get_index_requires_key()
-        {
-            var d = new DynamicGraph();
+        var d = new DynamicGraph();
 
-            Assert.Throws<ArgumentNullException>(() =>
-                d[null as Uri]);
-        }
+        Assert.Throws<ArgumentNullException>(() =>
+            d[null as Uri]);
+    }
 
-        [Fact]
-        public void Get_index_returns_dynamic_subject()
-        {
-            var d = new DynamicGraph();
-            d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+    [Fact]
+    public void Get_index_returns_dynamic_subject()
+    {
+        var d = new DynamicGraph();
+        d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
 
-            var s = UriFactory.Root.Create("urn:s");
+        var s = UriFactory.Root.Create("urn:s");
 
-            var expected = d.CreateUriNode(s);
-            var actual = d[s];
+        var expected = d.CreateUriNode(s);
+        var actual = d[s];
 
-            Assert.Equal(expected, actual);
-            Assert.IsType<DynamicNode>(actual);
-        }
+        Assert.Equal(expected, actual);
+        Assert.IsType<DynamicNode>(actual);
+    }
 
-        [Fact]
-        public void Set_index_requires_key()
-        {
-            var d = new DynamicGraph();
+    [Fact]
+    public void Set_index_requires_key()
+    {
+        var d = new DynamicGraph();
 
-            Assert.Throws<ArgumentNullException>(() =>
-                d[null as Uri] = null);
-        }
+        Assert.Throws<ArgumentNullException>(() =>
+            d[null as Uri] = null);
+    }
 
-        [Fact]
-        public void Set_index_with_null_value_retracts_by_subject()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
+    [Fact]
+    public void Set_index_with_null_value_retracts_by_subject()
+    {
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s2> <urn:s1> ""o6"" .
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var actual = new DynamicGraph();
-            actual.LoadFromString(@"
+        var actual = new DynamicGraph();
+        actual.LoadFromString(@"
 <urn:s1> <urn:p1> ""o1"" .
 <urn:s1> <urn:p1> ""o2"" .
 <urn:s1> <urn:p2> ""o3"" .
@@ -85,25 +85,25 @@ namespace VDS.RDF.Dynamic
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var s1 = UriFactory.Root.Create("urn:s1");
+        var s1 = UriFactory.Root.Create("urn:s1");
 
-            actual[s1] = null;
+        actual[s1] = null;
 
-            Assert.Equal<IGraph>(expected, actual);
-        }
+        Assert.Equal<IGraph>(expected, actual);
+    }
 
-        [Fact]
-        public void Set_index_overwrites_by_subject()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
+    [Fact]
+    public void Set_index_overwrites_by_subject()
+    {
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s1> <urn:p1> ""o"" .
 <urn:s2> <urn:s1> ""o6"" .
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var actual = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
-            actual.LoadFromString(@"
+        var actual = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
+        actual.LoadFromString(@"
 <urn:s1> <urn:p1> ""o1"" .
 <urn:s1> <urn:p1> ""o2"" .
 <urn:s1> <urn:p2> ""o3"" .
@@ -113,18 +113,18 @@ namespace VDS.RDF.Dynamic
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var s1 = UriFactory.Root.Create("urn:s1");
+        var s1 = UriFactory.Root.Create("urn:s1");
 
-            actual[s1] = new { p1 = "o" };
+        actual[s1] = new { p1 = "o" };
 
-            Assert.Equal<IGraph>(expected, actual);
-        }
+        Assert.Equal<IGraph>(expected, actual);
+    }
 
-        [Fact]
-        public void Keys_are_uri_nodes()
-        {
-            var g = new DynamicGraph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Keys_are_uri_nodes()
+    {
+        var g = new DynamicGraph();
+        g.LoadFromString(@"
 <urn:s1> <urn:p1> <urn:o1> .
 <urn:s1> <urn:p1> <urn:o2> .
 <urn:s1> <urn:p2> <urn:o3> .
@@ -135,176 +135,176 @@ namespace VDS.RDF.Dynamic
 <urn:s2> <urn:p4> <urn:o8> .
 ");
 
-            var actual = ((IDictionary<Uri, object>)g).Keys;
-            var expected = g.Nodes.UriNodes().Select(n => n.Uri);
+        var actual = ((IDictionary<Uri, object>)g).Keys;
+        var expected = g.Nodes.UriNodes().Select(n => n.Uri);
 
-            Assert.Equal(expected, actual);
-        }
+        Assert.Equal(expected, actual);
+    }
 
-        [Fact]
-        public void Add_requires_key()
-        {
-            var d = new DynamicGraph();
+    [Fact]
+    public void Add_requires_key()
+    {
+        var d = new DynamicGraph();
 
-            Assert.Throws<ArgumentNullException>(() =>
-                d.Add(null as Uri, null));
-        }
+        Assert.Throws<ArgumentNullException>(() =>
+            d.Add(null as Uri, null));
+    }
 
-        [Fact]
-        public void Add_requires_value()
-        {
-            var d = new DynamicGraph();
-            var s = UriFactory.Root.Create("urn:s");
+    [Fact]
+    public void Add_requires_value()
+    {
+        var d = new DynamicGraph();
+        var s = UriFactory.Root.Create("urn:s");
 
-            Assert.Throws<ArgumentNullException>(() =>
-                d.Add(s, null));
-        }
+        Assert.Throws<ArgumentNullException>(() =>
+            d.Add(s, null));
+    }
 
-        [Fact]
-        public void Add_handles_public_properties()
-        {
-            var actual = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
-            var s = UriFactory.Root.Create("urn:s");
+    [Fact]
+    public void Add_handles_public_properties()
+    {
+        var actual = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
+        var s = UriFactory.Root.Create("urn:s");
 
-            var expected = new Graph();
-            expected.LoadFromString(@"
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s> <urn:p1> ""o1"" .
 <urn:s> <urn:p2> ""o2"" .
 ");
 
-            var predicateAndObjects = new
-            {
-                p1 = "o1",
-                p2 = "o2"
-            };
-
-            actual.Add(s, predicateAndObjects);
-
-            Assert.Equal<IGraph>(expected, actual);
-        }
-
-        [Fact]
-        public void Add_handles_dictionaries()
+        var predicateAndObjects = new
         {
-            var actual = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
-            var s = UriFactory.Root.Create("urn:s");
+            p1 = "o1",
+            p2 = "o2"
+        };
 
-            var expected = new Graph();
-            expected.LoadFromString(@"
+        actual.Add(s, predicateAndObjects);
+
+        Assert.Equal<IGraph>(expected, actual);
+    }
+
+    [Fact]
+    public void Add_handles_dictionaries()
+    {
+        var actual = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
+        var s = UriFactory.Root.Create("urn:s");
+
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s> <urn:p1> ""o1"" .
 <urn:s> <urn:p2> ""o2"" .
 ");
 
-            var predicateAndObjects = new Dictionary<object, object>
-            {
-                { "p1", "o1" },
-                { "p2", "o2" }
-            };
-
-            actual.Add(s, predicateAndObjects);
-
-            Assert.Equal<IGraph>(expected, actual);
-        }
-
-        [Fact]
-        public void Add_handles_key_value_pairs()
+        var predicateAndObjects = new Dictionary<object, object>
         {
-            var actual = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
-            var s = UriFactory.Root.Create("urn:s");
+            { "p1", "o1" },
+            { "p2", "o2" }
+        };
 
-            var expected = new Graph();
-            expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
+        actual.Add(s, predicateAndObjects);
 
-            var value = new
-            {
-                p = "o"
-            };
+        Assert.Equal<IGraph>(expected, actual);
+    }
 
-            ((IDictionary<Uri, object>)actual).Add(new KeyValuePair<Uri, object>(s, value));
+    [Fact]
+    public void Add_handles_key_value_pairs()
+    {
+        var actual = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
+        var s = UriFactory.Root.Create("urn:s");
 
-            Assert.Equal<IGraph>(expected, actual);
-        }
+        var expected = new Graph();
+        expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
 
-        [Fact]
-        public void Contains_rejects_null_key()
+        var value = new
         {
-            var d = new DynamicGraph() as IDictionary<Uri, object>;
+            p = "o"
+        };
 
-            Assert.False(d.Contains(new KeyValuePair<Uri, object>(null, null)));
-        }
+        ((IDictionary<Uri, object>)actual).Add(new KeyValuePair<Uri, object>(s, value));
 
-        [Fact]
-        public void Contains_rejects_null_value()
-        {
-            var d = new DynamicGraph() as IDictionary<Uri, object>;
-            var s = UriFactory.Root.Create("urn:s");
+        Assert.Equal<IGraph>(expected, actual);
+    }
 
-            Assert.False(d.Contains(new KeyValuePair<Uri, object>(s, null)));
-        }
+    [Fact]
+    public void Contains_rejects_null_key()
+    {
+        var d = new DynamicGraph() as IDictionary<Uri, object>;
 
-        [Fact]
-        public void Contains_rejects_missing_key()
-        {
-            var d = new DynamicGraph() as IDictionary<Uri, object>;
-            var s = UriFactory.Root.Create("urn:s");
+        Assert.False(d.Contains(new KeyValuePair<Uri, object>(null, null)));
+    }
 
-            var condition = d.Contains(new KeyValuePair<Uri, object>(s, 0));
+    [Fact]
+    public void Contains_rejects_null_value()
+    {
+        var d = new DynamicGraph() as IDictionary<Uri, object>;
+        var s = UriFactory.Root.Create("urn:s");
 
-            Assert.False(condition);
-        }
+        Assert.False(d.Contains(new KeyValuePair<Uri, object>(s, null)));
+    }
 
-        [Fact]
-        public void Contains_rejects_missing_statement()
-        {
-            var d = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
-            d.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var dict = (IDictionary<Uri, object>)d;
-            var s = UriFactory.Root.Create("urn:s");
+    [Fact]
+    public void Contains_rejects_missing_key()
+    {
+        var d = new DynamicGraph() as IDictionary<Uri, object>;
+        var s = UriFactory.Root.Create("urn:s");
 
-            var condition = dict.Contains(new KeyValuePair<Uri, object>(s, new { p = "o1" }));
+        var condition = d.Contains(new KeyValuePair<Uri, object>(s, 0));
 
-            Assert.False(condition);
-        }
+        Assert.False(condition);
+    }
 
-        [Fact]
-        public void Contains_searches_exisiting_statements()
-        {
-            var d = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
-            d.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var dict = (IDictionary<Uri, object>)d;
-            var s = UriFactory.Root.Create("urn:s");
+    [Fact]
+    public void Contains_rejects_missing_statement()
+    {
+        var d = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
+        d.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
+        var dict = (IDictionary<Uri, object>)d;
+        var s = UriFactory.Root.Create("urn:s");
 
-            Assert.True(dict.Contains(new KeyValuePair<Uri, object>(s, new { p = "o" })));
-        }
+        var condition = dict.Contains(new KeyValuePair<Uri, object>(s, new { p = "o1" }));
 
-        [Fact]
-        public void ContainsKey_rejects_null_key()
-        {
-            var d = new DynamicGraph();
+        Assert.False(condition);
+    }
 
-            Assert.False(d.ContainsKey(null as Uri));
-        }
+    [Fact]
+    public void Contains_searches_exisiting_statements()
+    {
+        var d = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
+        d.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
+        var dict = (IDictionary<Uri, object>)d;
+        var s = UriFactory.Root.Create("urn:s");
 
-        [Fact]
-        public void ContainsKey_searches_uri_nodes()
-        {
-            var d = new DynamicGraph();
-            d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+        Assert.True(dict.Contains(new KeyValuePair<Uri, object>(s, new { p = "o" })));
+    }
 
-            var s = UriFactory.Root.Create("urn:s");
-            var p = UriFactory.Root.Create("urn:p");
-            var o = UriFactory.Root.Create("urn:o");
+    [Fact]
+    public void ContainsKey_rejects_null_key()
+    {
+        var d = new DynamicGraph();
 
-            Assert.True(d.ContainsKey(s));
-            Assert.False(d.ContainsKey(p));
-            Assert.True(d.ContainsKey(o));
-        }
+        Assert.False(d.ContainsKey(null as Uri));
+    }
 
-        [Fact]
-        public void Copies_pairs_with_subject_key_and_dynamic_subject_value()
-        {
-            var g = new DynamicGraph();
-            g.LoadFromString(@"
+    [Fact]
+    public void ContainsKey_searches_uri_nodes()
+    {
+        var d = new DynamicGraph();
+        d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+        var s = UriFactory.Root.Create("urn:s");
+        var p = UriFactory.Root.Create("urn:p");
+        var o = UriFactory.Root.Create("urn:o");
+
+        Assert.True(d.ContainsKey(s));
+        Assert.False(d.ContainsKey(p));
+        Assert.True(d.ContainsKey(o));
+    }
+
+    [Fact]
+    public void Copies_pairs_with_subject_key_and_dynamic_subject_value()
+    {
+        var g = new DynamicGraph();
+        g.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> . # 1 (subject)
 <urn:s> <urn:s> <urn:p> .
 <urn:s> <urn:s> <urn:o> .
@@ -334,44 +334,44 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = UriFactory.Root.Create("urn:s");
-            var p = UriFactory.Root.Create("urn:p");
-            var o = UriFactory.Root.Create("urn:o");
+        var s = UriFactory.Root.Create("urn:s");
+        var p = UriFactory.Root.Create("urn:p");
+        var o = UriFactory.Root.Create("urn:o");
 
-            var array = new KeyValuePair<Uri, object>[5];
+        var array = new KeyValuePair<Uri, object>[5];
 
-            void isEmpty(KeyValuePair<Uri, object> expected)
-            {
-                Assert.Equal(default(KeyValuePair<Uri, object>), expected);
-            }
-
-            Action<KeyValuePair<Uri, object>> isKVWith(Uri expectedKey)
-            {
-                return actual =>
-                {
-                    var expectedNode = g.CreateUriNode(expectedKey);
-
-                    Assert.Equal(new KeyValuePair<Uri, object>(expectedKey, expectedNode), actual);
-                    Assert.IsType<DynamicNode>(actual.Value);
-                };
-            }
-
-            (g as IDictionary<Uri, object>).CopyTo(array, 1);
-
-            Assert.Collection(
-                array,
-                isEmpty,
-                isKVWith(s),
-                isKVWith(p),
-                isKVWith(o),
-                isEmpty);
+        void isEmpty(KeyValuePair<Uri, object> expected)
+        {
+            Assert.Equal(default(KeyValuePair<Uri, object>), expected);
         }
 
-        [Fact]
-        public void Enumerates_pairs_with_subject_key_and_dynamic_subject_value()
+        Action<KeyValuePair<Uri, object>> isKVWith(Uri expectedKey)
         {
-            var g = new DynamicGraph();
-            g.LoadFromString(@"
+            return actual =>
+            {
+                var expectedNode = g.CreateUriNode(expectedKey);
+
+                Assert.Equal(new KeyValuePair<Uri, object>(expectedKey, expectedNode), actual);
+                Assert.IsType<DynamicNode>(actual.Value);
+            };
+        }
+
+        (g as IDictionary<Uri, object>).CopyTo(array, 1);
+
+        Assert.Collection(
+            array,
+            isEmpty,
+            isKVWith(s),
+            isKVWith(p),
+            isKVWith(o),
+            isEmpty);
+    }
+
+    [Fact]
+    public void Enumerates_pairs_with_subject_key_and_dynamic_subject_value()
+    {
+        var g = new DynamicGraph();
+        g.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> . # 1 (subject)
 <urn:s> <urn:s> <urn:p> .
 <urn:s> <urn:s> <urn:o> .
@@ -401,45 +401,45 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = UriFactory.Root.Create("urn:s");
-            var p = UriFactory.Root.Create("urn:p");
-            var o = UriFactory.Root.Create("urn:o");
+        var s = UriFactory.Root.Create("urn:s");
+        var p = UriFactory.Root.Create("urn:p");
+        var o = UriFactory.Root.Create("urn:o");
 
-            using (var actual = g.Cast<KeyValuePair<Uri, object>>().GetEnumerator())
+        using (var actual = g.Cast<KeyValuePair<Uri, object>>().GetEnumerator())
+        {
+            using (var expected = new[] { s, p, o }.Cast<Uri>().GetEnumerator())
             {
-                using (var expected = new[] { s, p, o }.Cast<Uri>().GetEnumerator())
+                while (expected.MoveNext() | actual.MoveNext())
                 {
-                    while (expected.MoveNext() | actual.MoveNext())
-                    {
-                        var keyNode = g.CreateUriNode(expected.Current);
+                    var keyNode = g.CreateUriNode(expected.Current);
 
-                        Assert.Equal(new KeyValuePair<Uri, object>(expected.Current, keyNode), actual.Current);
-                        Assert.IsType<DynamicNode>(actual.Current.Value);
-                    }
+                    Assert.Equal(new KeyValuePair<Uri, object>(expected.Current, keyNode), actual.Current);
+                    Assert.IsType<DynamicNode>(actual.Current.Value);
                 }
             }
         }
+    }
 
-        [Fact]
-        public void Remove_requires_key()
-        {
-            var d = new DynamicGraph();
+    [Fact]
+    public void Remove_requires_key()
+    {
+        var d = new DynamicGraph();
 
-            Assert.Throws<ArgumentNullException>(() =>
-                d.Remove(null as Uri));
-        }
+        Assert.Throws<ArgumentNullException>(() =>
+            d.Remove(null as Uri));
+    }
 
-        [Fact]
-        public void Remove_retracts_by_subject()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
+    [Fact]
+    public void Remove_retracts_by_subject()
+    {
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s2> <urn:s1> ""o5"" .
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var actual = new DynamicGraph();
-            actual.LoadFromString(@"
+        var actual = new DynamicGraph();
+        actual.LoadFromString(@"
 <urn:s1> <urn:p1> ""o1"" .
 <urn:s1> <urn:p1> ""o2"" .
 <urn:s1> <urn:p2> ""o3"" .
@@ -448,136 +448,135 @@ namespace VDS.RDF.Dynamic
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var s1 = UriFactory.Root.Create("urn:s1");
+        var s1 = UriFactory.Root.Create("urn:s1");
 
-            actual.Remove(s1);
+        actual.Remove(s1);
 
-            Assert.Equal<IGraph>(expected, actual);
-        }
+        Assert.Equal<IGraph>(expected, actual);
+    }
 
-        [Fact]
-        public void Remove_reports_retraction_success()
-        {
-            var d = new DynamicGraph();
-            d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+    [Fact]
+    public void Remove_reports_retraction_success()
+    {
+        var d = new DynamicGraph();
+        d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
 
-            var s = UriFactory.Root.Create("urn:s");
+        var s = UriFactory.Root.Create("urn:s");
 
-            Assert.True(d.Remove(s));
-            Assert.False(d.Remove(s));
-        }
+        Assert.True(d.Remove(s));
+        Assert.False(d.Remove(s));
+    }
 
-        [Fact]
-        public void Remove_pair_requires_key()
-        {
-            var d = new DynamicGraph() as IDictionary<Uri, object>;
+    [Fact]
+    public void Remove_pair_requires_key()
+    {
+        var d = new DynamicGraph() as IDictionary<Uri, object>;
 
-            var condition = d.Remove(new KeyValuePair<Uri, object>(null, null));
+        var condition = d.Remove(new KeyValuePair<Uri, object>(null, null));
 
-            Assert.False(condition);
-        }
+        Assert.False(condition);
+    }
 
-        [Fact]
-        public void Remove_pair_ignores_missing_statements()
-        {
-            var d = new DynamicGraph() as IDictionary<Uri, object>;
-            var s = UriFactory.Root.Create("urn:s");
+    [Fact]
+    public void Remove_pair_ignores_missing_statements()
+    {
+        var d = new DynamicGraph() as IDictionary<Uri, object>;
+        var s = UriFactory.Root.Create("urn:s");
 
-            var condition = d.Remove(new KeyValuePair<Uri, object>(s, null));
+        var condition = d.Remove(new KeyValuePair<Uri, object>(s, null));
 
-            Assert.False(condition);
-        }
+        Assert.False(condition);
+    }
 
-        [Fact]
-        public void Remove_pair_handles_public_properties()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
+    [Fact]
+    public void Remove_pair_handles_public_properties()
+    {
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s2> <urn:s1> ""o3"" .
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var actual = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
-            actual.LoadFromString(@"
+        var actual = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
+        actual.LoadFromString(@"
 <urn:s1> <urn:p1> ""o1"" .
 <urn:s1> <urn:p2> ""o2"" .
 <urn:s2> <urn:s1> ""o3"" .
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var s1 = UriFactory.Root.Create("urn:s1");
+        var s1 = UriFactory.Root.Create("urn:s1");
 
-            var value = new
-            {
-                p1 = "o1",
-                p2 = "o2"
-            };
-
-            ((IDictionary<Uri, object>)actual).Remove(new KeyValuePair<Uri, object>(s1, value));
-
-            Assert.Equal<IGraph>(expected, actual);
-        }
-
-        [Fact]
-        public void Remove_pair_handles_public_dictionaries()
+        var value = new
         {
-            var expected = new Graph();
-            expected.LoadFromString(@"
+            p1 = "o1",
+            p2 = "o2"
+        };
+
+        ((IDictionary<Uri, object>)actual).Remove(new KeyValuePair<Uri, object>(s1, value));
+
+        Assert.Equal<IGraph>(expected, actual);
+    }
+
+    [Fact]
+    public void Remove_pair_handles_public_dictionaries()
+    {
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s2> <urn:s1> ""o3"" .
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var actual = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
-            actual.LoadFromString(@"
+        var actual = new DynamicGraph(predicateBaseUri: UriFactory.Root.Create("urn:"));
+        actual.LoadFromString(@"
 <urn:s1> <urn:p1> ""o1"" .
 <urn:s1> <urn:p2> ""o2"" .
 <urn:s2> <urn:s1> ""o3"" .
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var s1 = UriFactory.Root.Create("urn:s1");
+        var s1 = UriFactory.Root.Create("urn:s1");
 
-            var value = new Dictionary<object, object>
-            {
-                { "p1", "o1" },
-                { "p2", "o2" }
-            };
-
-            ((IDictionary<Uri, object>)actual).Remove(new KeyValuePair<Uri, object>(s1, value));
-
-            Assert.Equal<IGraph>(expected, actual);
-        }
-
-        [Fact]
-        public void TryGetValue_rejects_null_key()
+        var value = new Dictionary<object, object>
         {
-            var d = new DynamicGraph();
+            { "p1", "o1" },
+            { "p2", "o2" }
+        };
 
-            Assert.False(d.TryGetValue(null as Uri, out var value));
-        }
+        ((IDictionary<Uri, object>)actual).Remove(new KeyValuePair<Uri, object>(s1, value));
 
-        [Fact]
-        public void TryGetValue_rejects_missing_key()
-        {
-            var d = new DynamicGraph();
-            var s = UriFactory.Root.Create("urn:s");
+        Assert.Equal<IGraph>(expected, actual);
+    }
 
-            var condition = d.TryGetValue(s, out var value);
+    [Fact]
+    public void TryGetValue_rejects_null_key()
+    {
+        var d = new DynamicGraph();
 
-            Assert.False(condition);
-        }
+        Assert.False(d.TryGetValue(null as Uri, out var value));
+    }
 
-        [Fact]
-        public void TryGetValue_returns_dynamic_subject()
-        {
-            var d = new DynamicGraph();
-            d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+    [Fact]
+    public void TryGetValue_rejects_missing_key()
+    {
+        var d = new DynamicGraph();
+        var s = UriFactory.Root.Create("urn:s");
 
-            var s = UriFactory.Root.Create("urn:s");
+        var condition = d.TryGetValue(s, out var value);
 
-            Assert.True(d.TryGetValue(s, out var value));
-            Assert.Equal(value, d.CreateUriNode(s));
-            Assert.IsType<DynamicNode>(value);
-        }
+        Assert.False(condition);
+    }
+
+    [Fact]
+    public void TryGetValue_returns_dynamic_subject()
+    {
+        var d = new DynamicGraph();
+        d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+        var s = UriFactory.Root.Create("urn:s");
+
+        Assert.True(d.TryGetValue(s, out var value));
+        Assert.Equal(value, d.CreateUriNode(s));
+        Assert.IsType<DynamicNode>(value);
     }
 }

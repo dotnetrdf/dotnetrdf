@@ -26,18 +26,17 @@
 
 using System;
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd;
+
+/// <summary>
+/// Interface to be implemented by classes responsible for retrieving remote JSON-LD context documents.
+/// </summary>
+public interface IRemoteContextProvider
 {
     /// <summary>
-    /// Interface to be implemented by classes responsible for retrieving remote JSON-LD context documents.
+    /// Retrieve a JSON-LD context document from the specified URL.
     /// </summary>
-    public interface IRemoteContextProvider
-    {
-        /// <summary>
-        /// Retrieve a JSON-LD context document from the specified URL.
-        /// </summary>
-        /// <param name="reference">The location of the remote context to be retrieved.</param>
-        /// <returns></returns>
-        JsonLdRemoteContext GetRemoteContext(Uri reference);
-    }
+    /// <param name="reference">The location of the remote context to be retrieved.</param>
+    /// <returns></returns>
+    JsonLdRemoteContext GetRemoteContext(Uri reference);
 }

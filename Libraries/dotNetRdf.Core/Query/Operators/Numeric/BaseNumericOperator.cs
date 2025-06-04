@@ -28,22 +28,21 @@ using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Operators.Numeric
+namespace VDS.RDF.Query.Operators.Numeric;
+
+/// <summary>
+/// Abstract base class for numeric operators.
+/// </summary>
+public abstract class BaseNumericOperator
+    : BaseOperator
 {
     /// <summary>
-    /// Abstract base class for numeric operators.
+    /// Operator is applicable if at least one input and all inputs are numeric.
     /// </summary>
-    public abstract class BaseNumericOperator
-        : BaseOperator
+    /// <param name="ns">Inputs.</param>
+    /// <returns></returns>
+    public override bool IsApplicable(params IValuedNode[] ns)
     {
-        /// <summary>
-        /// Operator is applicable if at least one input and all inputs are numeric.
-        /// </summary>
-        /// <param name="ns">Inputs.</param>
-        /// <returns></returns>
-        public override bool IsApplicable(params IValuedNode[] ns)
-        {
-            return ns != null && ns.Length > 0 && ns.All(n => n != null && n.NumericType != SparqlNumericType.NaN);
-        }
+        return ns != null && ns.Length > 0 && ns.All(n => n != null && n.NumericType != SparqlNumericType.NaN);
     }
 }

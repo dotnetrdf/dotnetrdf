@@ -27,53 +27,52 @@
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Represents an arbitrary property path in the algebra (only used when strict algebra is generated).
+/// </summary>
+public class PropertyPath
+    : BasePathOperator, ITerminalOperator
 {
     /// <summary>
-    /// Represents an arbitrary property path in the algebra (only used when strict algebra is generated).
+    /// Creates a new Property Path operator.
     /// </summary>
-    public class PropertyPath
-        : BasePathOperator, ITerminalOperator
+    /// <param name="start">Path Start.</param>
+    /// <param name="path">Path Expression.</param>
+    /// <param name="end">Path End.</param>
+    public PropertyPath(PatternItem start, ISparqlPath path, PatternItem end)
+        : base(start, path, end) { }
+
+    /// <summary>
+    /// Converts the algebra back into a Graph Pattern.
+    /// </summary>
+    /// <returns></returns>
+    public override GraphPattern ToGraphPattern()
     {
-        /// <summary>
-        /// Creates a new Property Path operator.
-        /// </summary>
-        /// <param name="start">Path Start.</param>
-        /// <param name="path">Path Expression.</param>
-        /// <param name="end">Path End.</param>
-        public PropertyPath(PatternItem start, ISparqlPath path, PatternItem end)
-            : base(start, path, end) { }
+        var gp = new GraphPattern();
+        gp.AddTriplePattern(new PropertyPathPattern(PathStart, Path, PathEnd));
+        return gp;
+    }
 
-        /// <summary>
-        /// Converts the algebra back into a Graph Pattern.
-        /// </summary>
-        /// <returns></returns>
-        public override GraphPattern ToGraphPattern()
-        {
-            var gp = new GraphPattern();
-            gp.AddTriplePattern(new PropertyPathPattern(PathStart, Path, PathEnd));
-            return gp;
-        }
+    /// <summary>
+    /// Gets the string representation of the algebra.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "PropertyPath()";
+    }
 
-        /// <summary>
-        /// Gets the string representation of the algebra.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "PropertyPath()";
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    {
+        return visitor.VisitPropertyPath(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
-        {
-            return visitor.VisitPropertyPath(this);
-        }
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
-        {
-            return processor.ProcessPropertyPath(this, context);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    {
+        return processor.ProcessPropertyPath(this, context);
     }
 }

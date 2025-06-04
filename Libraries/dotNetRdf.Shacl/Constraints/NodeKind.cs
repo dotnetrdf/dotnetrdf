@@ -30,53 +30,52 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class NodeKind : Constraint
 {
-    internal class NodeKind : Constraint
+    [DebuggerStepThrough]
+    internal NodeKind(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal NodeKind(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage => $"Value must be a node of the SHACL node kind {this}.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.NodeKindConstraintComponent;
         }
+    }
 
-        protected override string DefaultMessage => $"Value must be a node of the SHACL node kind {this}.";
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        IEnumerable<INode> invalidValues =
+            from valueNode in valueNodes
+            let kinds = Convert(valueNode.NodeType)
+            where !kinds.Contains(this)
+            select valueNode;
 
-        internal override INode ConstraintComponent
+        return ReportValueNodes(focusNode, invalidValues, report);
+    }
+
+    private static IEnumerable<INode> Convert(NodeType type)
+    {
+        switch (type)
         {
-            get
-            {
-                return Vocabulary.NodeKindConstraintComponent;
-            }
-        }
+            case NodeType.Blank:
+                return Vocabulary.BlankNodeKinds;
 
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            IEnumerable<INode> invalidValues =
-                from valueNode in valueNodes
-                let kinds = Convert(valueNode.NodeType)
-                where !kinds.Contains(this)
-                select valueNode;
+            case NodeType.Uri:
+                return Vocabulary.IriNodeKinds;
 
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
+            case NodeType.Literal:
+                return Vocabulary.LiteralNodeKinds;
 
-        private static IEnumerable<INode> Convert(NodeType type)
-        {
-            switch (type)
-            {
-                case NodeType.Blank:
-                    return Vocabulary.BlankNodeKinds;
-
-                case NodeType.Uri:
-                    return Vocabulary.IriNodeKinds;
-
-                case NodeType.Literal:
-                    return Vocabulary.LiteralNodeKinds;
-
-                default:
-                    throw new Exception();
-            }
+            default:
+                throw new Exception();
         }
     }
 }

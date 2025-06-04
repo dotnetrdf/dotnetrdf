@@ -29,242 +29,241 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+public partial class DynamicNode : IDictionary<INode, object>
 {
-    public partial class DynamicNode : IDictionary<INode, object>
+    /// <inheritdoc/>
+    ICollection<INode> IDictionary<INode, object>.Keys
     {
-        /// <inheritdoc/>
-        ICollection<INode> IDictionary<INode, object>.Keys
+        get
         {
-            get
-            {
-                return PredicateNodes.Cast<INode>().ToList();
-            }
+            return PredicateNodes.Cast<INode>().ToList();
         }
+    }
 
-        private IEnumerable<IUriNode> PredicateNodes
+    private IEnumerable<IUriNode> PredicateNodes
+    {
+        get
         {
-            get
-            {
-                IEnumerable<IUriNode> predicates =
-                    from t in Graph.GetTriplesWithSubject(this)
-                    select (IUriNode)t.Predicate;
+            IEnumerable<IUriNode> predicates =
+                from t in Graph.GetTriplesWithSubject(this)
+                select (IUriNode)t.Predicate;
 
-                return predicates.Distinct();
-            }
+            return predicates.Distinct();
         }
+    }
 
-        private IDictionary<INode, object> NodePairs
+    private IDictionary<INode, object> NodePairs
+    {
+        get
         {
-            get
-            {
-                return PredicateNodes
-                    .ToDictionary(
-                        predicate => (INode)predicate,
-                        predicate => this[predicate]);
-            }
+            return PredicateNodes
+                .ToDictionary(
+                    predicate => (INode)predicate,
+                    predicate => this[predicate]);
         }
+    }
 
-        /// <summary>
-        /// Gets statement objects with this subject and <paramref name="predicate"/> or sets staements with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="value"/>.
-        /// </summary>
-        /// <param name="predicate">The predicate to use.</param>
-        /// <returns>A <see cref="DynamicObjectCollection"/> with this subject and <paramref name="predicate"/>.</returns>
-        /// <exception cref="ArgumentNullException">When <paramref name="predicate"/> is null.</exception>
-        public object this[INode predicate]
-        {
-            get
-            {
-                if (predicate is null)
-                {
-                    throw new ArgumentNullException(nameof(predicate));
-                }
-
-                return new DynamicObjectCollection(this, predicate);
-            }
-
-            set
-            {
-                if (predicate is null)
-                {
-                    throw new ArgumentNullException(nameof(predicate));
-                }
-
-                Remove(predicate);
-
-                if (value != null)
-                {
-                    Add(predicate, value);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Asserts statements with this subject, <paramref name="predicate"/> and equivalent to <paramref name="objects"/>.
-        /// </summary>
-        /// <param name="predicate">The predicate to assert.</param>
-        /// <param name="objects">An object or enumerable representing objects to assert.</param>
-        /// <exception cref="ArgumentNullException">When <paramref name="predicate"/> or <paramref name="objects"/> is null.</exception>
-        public void Add(INode predicate, object objects)
+    /// <summary>
+    /// Gets statement objects with this subject and <paramref name="predicate"/> or sets staements with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="value"/>.
+    /// </summary>
+    /// <param name="predicate">The predicate to use.</param>
+    /// <returns>A <see cref="DynamicObjectCollection"/> with this subject and <paramref name="predicate"/>.</returns>
+    /// <exception cref="ArgumentNullException">When <paramref name="predicate"/> is null.</exception>
+    public object this[INode predicate]
+    {
+        get
         {
             if (predicate is null)
             {
                 throw new ArgumentNullException(nameof(predicate));
             }
 
-            if (objects is null)
-            {
-                throw new ArgumentNullException(nameof(objects));
-            }
-
-            Graph.Assert(ConvertToTriples(predicate, objects));
+            return new DynamicObjectCollection(this, predicate);
         }
 
-        /// <inheritdoc/>
-        void ICollection<KeyValuePair<INode, object>>.Add(KeyValuePair<INode, object> item)
-        {
-            Add(item.Key, item.Value);
-        }
-
-        /// <summary>
-        /// Checks whether statements exist with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.
-        /// </summary>
-        /// <param name="predicate">The predicate to assert.</param>
-        /// <param name="objects">An object or enumerable representing objects to assert.</param>
-        /// <returns>Whether statements exist with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.</returns>
-        public bool Contains(INode predicate, object objects)
+        set
         {
             if (predicate is null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(predicate));
             }
 
-            if (objects is null)
+            Remove(predicate);
+
+            if (value != null)
             {
-                return false;
+                Add(predicate, value);
             }
+        }
+    }
 
-            var g = new Graph();
-            g.Assert(ConvertToTriples(predicate, objects));
-            return Graph.HasSubGraph(g);
+    /// <summary>
+    /// Asserts statements with this subject, <paramref name="predicate"/> and equivalent to <paramref name="objects"/>.
+    /// </summary>
+    /// <param name="predicate">The predicate to assert.</param>
+    /// <param name="objects">An object or enumerable representing objects to assert.</param>
+    /// <exception cref="ArgumentNullException">When <paramref name="predicate"/> or <paramref name="objects"/> is null.</exception>
+    public void Add(INode predicate, object objects)
+    {
+        if (predicate is null)
+        {
+            throw new ArgumentNullException(nameof(predicate));
         }
 
-        /// <inheritdoc/>
-        bool ICollection<KeyValuePair<INode, object>>.Contains(KeyValuePair<INode, object> item)
+        if (objects is null)
         {
-            return Contains(item.Key, item.Value);
+            throw new ArgumentNullException(nameof(objects));
         }
 
-        /// <summary>
-        /// Checks whether this node has an outgoing predicate equal to <paramref name="key"/>.
-        /// </summary>
-        /// <param name="key">The node to check.</param>
-        /// <returns>Whether this node has an outgoing predicate equal to <paramref name="key"/>.</returns>
-        public bool ContainsKey(INode key)
+        Graph.Assert(ConvertToTriples(predicate, objects));
+    }
+
+    /// <inheritdoc/>
+    void ICollection<KeyValuePair<INode, object>>.Add(KeyValuePair<INode, object> item)
+    {
+        Add(item.Key, item.Value);
+    }
+
+    /// <summary>
+    /// Checks whether statements exist with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.
+    /// </summary>
+    /// <param name="predicate">The predicate to assert.</param>
+    /// <param name="objects">An object or enumerable representing objects to assert.</param>
+    /// <returns>Whether statements exist with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.</returns>
+    public bool Contains(INode predicate, object objects)
+    {
+        if (predicate is null)
         {
-            if (key is null)
+            return false;
+        }
+
+        if (objects is null)
+        {
+            return false;
+        }
+
+        var g = new Graph();
+        g.Assert(ConvertToTriples(predicate, objects));
+        return Graph.HasSubGraph(g);
+    }
+
+    /// <inheritdoc/>
+    bool ICollection<KeyValuePair<INode, object>>.Contains(KeyValuePair<INode, object> item)
+    {
+        return Contains(item.Key, item.Value);
+    }
+
+    /// <summary>
+    /// Checks whether this node has an outgoing predicate equal to <paramref name="key"/>.
+    /// </summary>
+    /// <param name="key">The node to check.</param>
+    /// <returns>Whether this node has an outgoing predicate equal to <paramref name="key"/>.</returns>
+    public bool ContainsKey(INode key)
+    {
+        if (key is null)
+        {
+            return false;
+        }
+
+        return PredicateNodes.Contains(key);
+    }
+
+    void ICollection<KeyValuePair<INode, object>>.CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex)
+    {
+        NodePairs.CopyTo(array, arrayIndex);
+    }
+
+    /// <inheritdoc/>
+    IEnumerator<KeyValuePair<INode, object>> IEnumerable<KeyValuePair<INode, object>>.GetEnumerator()
+    {
+        return NodePairs.GetEnumerator();
+    }
+
+    /// <summary>
+    /// Retracts statements with this subject and <paramref name="predicate"/>.
+    /// </summary>
+    /// <param name="predicate">The predicate to retract.</param>
+    /// <returns>Whether any statements were retracted.</returns>
+    public bool Remove(INode predicate)
+    {
+        if (predicate is null)
+        {
+            return false;
+        }
+
+        return Graph.Retract(Graph.GetTriplesWithSubjectPredicate(this, predicate).ToList());
+    }
+
+    /// <summary>
+    /// Retracts statements with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.
+    /// </summary>
+    /// <param name="predicate">The predicate to retract.</param>
+    /// <param name="objects">An object with public properties or a dictionary representing predicates and objects to retract.</param>
+    /// <returns>Whether any statements were retracted.</returns>
+    public bool Remove(INode predicate, object objects)
+    {
+        if (predicate is null)
+        {
+            return false;
+        }
+
+        if (objects is null)
+        {
+            return false;
+        }
+
+        return Graph.Retract(ConvertToTriples(predicate, objects));
+    }
+
+    /// <inheritdoc/>
+    bool ICollection<KeyValuePair<INode, object>>.Remove(KeyValuePair<INode, object> item)
+    {
+        return Remove(item.Key, item.Value);
+    }
+
+    /// <summary>
+    /// Tries to get an object collection.
+    /// </summary>
+    /// <param name="predicate">The predicate to try.</param>
+    /// <param name="value">A <see cref="DynamicObjectCollection"/>.</param>
+    /// <returns>A value representing whether a <paramref name="value"/> was set or not.</returns>
+    public bool TryGetValue(INode predicate, out object value)
+    {
+        value = null;
+
+        if (predicate is null)
+        {
+            return false;
+        }
+
+        if (!ContainsKey(predicate))
+        {
+            return false;
+        }
+
+        value = this[predicate];
+        return true;
+    }
+
+    private IEnumerable<Triple> ConvertToTriples(INode predicate, object value)
+    {
+        // Strings are enumerable but not for our case
+        if (value is string || value is DynamicNode || !(value is IEnumerable enumerable))
+        {
+            enumerable = value.AsEnumerable(); // When they're not enumerable, wrap them in an enumerable of one
+        }
+
+        foreach (var @object in enumerable)
+        {
+            // TODO: Maybe this should throw on null
+            if (@object != null)
             {
-                return false;
-            }
-
-            return PredicateNodes.Contains(key);
-        }
-
-        void ICollection<KeyValuePair<INode, object>>.CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex)
-        {
-            NodePairs.CopyTo(array, arrayIndex);
-        }
-
-        /// <inheritdoc/>
-        IEnumerator<KeyValuePair<INode, object>> IEnumerable<KeyValuePair<INode, object>>.GetEnumerator()
-        {
-            return NodePairs.GetEnumerator();
-        }
-
-        /// <summary>
-        /// Retracts statements with this subject and <paramref name="predicate"/>.
-        /// </summary>
-        /// <param name="predicate">The predicate to retract.</param>
-        /// <returns>Whether any statements were retracted.</returns>
-        public bool Remove(INode predicate)
-        {
-            if (predicate is null)
-            {
-                return false;
-            }
-
-            return Graph.Retract(Graph.GetTriplesWithSubjectPredicate(this, predicate).ToList());
-        }
-
-        /// <summary>
-        /// Retracts statements with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.
-        /// </summary>
-        /// <param name="predicate">The predicate to retract.</param>
-        /// <param name="objects">An object with public properties or a dictionary representing predicates and objects to retract.</param>
-        /// <returns>Whether any statements were retracted.</returns>
-        public bool Remove(INode predicate, object objects)
-        {
-            if (predicate is null)
-            {
-                return false;
-            }
-
-            if (objects is null)
-            {
-                return false;
-            }
-
-            return Graph.Retract(ConvertToTriples(predicate, objects));
-        }
-
-        /// <inheritdoc/>
-        bool ICollection<KeyValuePair<INode, object>>.Remove(KeyValuePair<INode, object> item)
-        {
-            return Remove(item.Key, item.Value);
-        }
-
-        /// <summary>
-        /// Tries to get an object collection.
-        /// </summary>
-        /// <param name="predicate">The predicate to try.</param>
-        /// <param name="value">A <see cref="DynamicObjectCollection"/>.</param>
-        /// <returns>A value representing whether a <paramref name="value"/> was set or not.</returns>
-        public bool TryGetValue(INode predicate, out object value)
-        {
-            value = null;
-
-            if (predicate is null)
-            {
-                return false;
-            }
-
-            if (!ContainsKey(predicate))
-            {
-                return false;
-            }
-
-            value = this[predicate];
-            return true;
-        }
-
-        private IEnumerable<Triple> ConvertToTriples(INode predicate, object value)
-        {
-            // Strings are enumerable but not for our case
-            if (value is string || value is DynamicNode || !(value is IEnumerable enumerable))
-            {
-                enumerable = value.AsEnumerable(); // When they're not enumerable, wrap them in an enumerable of one
-            }
-
-            foreach (var @object in enumerable)
-            {
-                // TODO: Maybe this should throw on null
-                if (@object != null)
-                {
-                    yield return new Triple(
-                        this,
-                        predicate,
-                        @object.AsNode(Graph));
-                }
+                yield return new Triple(
+                    this,
+                    predicate,
+                    @object.AsNode(Graph));
             }
         }
     }

@@ -24,49 +24,48 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+
+/// <summary>
+/// Class representing the SPARQL-Star IsTriple() function.
+/// </summary>
+public class IsTripleFunction : BaseUnaryExpression
 {
     /// <summary>
-    /// Class representing the SPARQL-Star IsTriple() function.
+    /// Create a new IsTriple function expression.
     /// </summary>
-    public class IsTripleFunction : BaseUnaryExpression
+    /// <param name="expr">The expression to apply the function to.</param>
+    public IsTripleFunction(ISparqlExpression expr) : base(expr)
     {
-        /// <summary>
-        /// Create a new IsTriple function expression.
-        /// </summary>
-        /// <param name="expr">The expression to apply the function to.</param>
-        public IsTripleFunction(ISparqlExpression expr) : base(expr)
-        {
-        }
+    }
 
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return $"ISTRIPLE({InnerExpression})";
-        }
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"ISTRIPLE({InnerExpression})";
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessIsTripleFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessIsTripleFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitIsTripleFunction(this);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitIsTripleFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override SparqlExpressionType Type => SparqlExpressionType.Function;
+    /// <inheritdoc />
+    public override SparqlExpressionType Type => SparqlExpressionType.Function;
 
-        /// <inheritdoc />
-        public override string Functor => SparqlSpecsHelper.SparqlStarKeywordIsTriple;
+    /// <inheritdoc />
+    public override string Functor => SparqlSpecsHelper.SparqlStarKeywordIsTriple;
 
-        /// <inheritdoc />
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new IsTripleFunction(transformer.Transform(InnerExpression));
-        }
+    /// <inheritdoc />
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new IsTripleFunction(transformer.Transform(InnerExpression));
     }
 }

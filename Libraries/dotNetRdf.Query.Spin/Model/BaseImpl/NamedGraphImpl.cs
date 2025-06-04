@@ -31,55 +31,54 @@ using VDS.RDF.Query.Spin.LibraryOntology;
  *******************************************************************************/
 using VDS.RDF.Query.Spin.SparqlUtil;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class NamedGraphImpl : ElementImpl, INamedGraph
 {
-    internal class NamedGraphImpl : ElementImpl, INamedGraph
+
+    public NamedGraphImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
+    }
 
-        public NamedGraphImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
+
+    public IResource getNameNode()
+    {
+        IResource r = getObject(SP.PropertyGraphNameNode);
+        if (r != null)
         {
-        }
-
-
-        public IResource getNameNode()
-        {
-            IResource r = getObject(SP.PropertyGraphNameNode);
-            if (r != null)
+            IVariable variable = SPINFactory.asVariable(r);
+            if (variable != null)
             {
-                IVariable variable = SPINFactory.asVariable(r);
-                if (variable != null)
-                {
-                    return variable;
-                }
-                else
-                {
-                    return r;
-                }
+                return variable;
             }
             else
             {
-                return null;
+                return r;
             }
         }
-
-
-        override public void Print(ISparqlPrinter p)
+        else
         {
-            p.printKeyword("GRAPH");
-            p.print(" ");
-            printVarOrResource(p, getNameNode());
-            printNestedElementList(p);
+            return null;
         }
-
-        override public void PrintEnhancedSPARQL(ISparqlPrinter p)
-        {
-            p.PrintEnhancedSPARQL(this);
-        }
-
-        //override public void visit(IElementVisitor visitor)
-        //{
-        //    visitor.visit(this);
-        //}
     }
+
+
+    override public void Print(ISparqlPrinter p)
+    {
+        p.printKeyword("GRAPH");
+        p.print(" ");
+        printVarOrResource(p, getNameNode());
+        printNestedElementList(p);
+    }
+
+    override public void PrintEnhancedSPARQL(ISparqlPrinter p)
+    {
+        p.PrintEnhancedSPARQL(this);
+    }
+
+    //override public void visit(IElementVisitor visitor)
+    //{
+    //    visitor.visit(this);
+    //}
 }

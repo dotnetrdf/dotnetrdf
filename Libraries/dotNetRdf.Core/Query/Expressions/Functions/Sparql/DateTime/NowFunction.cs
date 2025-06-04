@@ -24,45 +24,44 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime;
+
+/// <summary>
+/// Represents the SPARQL NOW() Function.
+/// </summary>
+public class NowFunction
+    : Arq.NowFunction
 {
+
     /// <summary>
-    /// Represents the SPARQL NOW() Function.
+    /// Gets the Functor of this Expression.
     /// </summary>
-    public class NowFunction
-        : Arq.NowFunction
+    public override string Functor
     {
-
-        /// <summary>
-        /// Gets the Functor of this Expression.
-        /// </summary>
-        public override string Functor
+        get
         {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordNow;
-            }
+            return SparqlSpecsHelper.SparqlKeywordNow;
         }
+    }
 
-        /// <summary>
-        /// Gets the String representation of this Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordNow + "()";
-        }
+    /// <summary>
+    /// Gets the String representation of this Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return SparqlSpecsHelper.SparqlKeywordNow + "()";
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessNowFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessNowFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitNowFunction(this);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitNowFunction(this);
     }
 }

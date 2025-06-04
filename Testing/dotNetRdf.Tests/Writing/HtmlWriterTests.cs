@@ -21,25 +21,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using HtmlAgilityPack;
 using Xunit;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+public class HtmlWriterTests
 {
-    public class HtmlWriterTests
+    [Fact]
+    public void ItDoesNotOutputRowsForRetractedTriples()
     {
-        [Fact]
-        public void ItDoesNotOutputRowsForRetractedTriples()
-        {
-            var graph = new Graph();
-            graph.LoadFromString("_:s <urn:p> _:o.");
+        var graph = new Graph();
+        graph.LoadFromString("_:s <urn:p> _:o.");
 
-            graph.Clear();
+        graph.Clear();
 
-            var html = StringWriter.Write(graph, new HtmlWriter());
+        var html = StringWriter.Write(graph, new HtmlWriter());
 
-            var document = new HtmlDocument();
-            document.LoadHtml(html);
+        var document = new HtmlDocument();
+        document.LoadHtml(html);
 
-            var rows = document.DocumentNode.SelectNodes("//tbody/tr");
-            Assert.Null(rows);
-        }
+        var rows = document.DocumentNode.SelectNodes("//tbody/tr");
+        Assert.Null(rows);
     }
 }

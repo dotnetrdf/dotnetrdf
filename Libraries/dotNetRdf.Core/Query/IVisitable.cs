@@ -24,19 +24,18 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+/// <summary>
+/// Interface to be implemented by classes that can be visited by an <see cref="ISparqlAlgebraVisitor{T}"/>.
+/// </summary>
+public interface IVisitable
 {
     /// <summary>
-    /// Interface to be implemented by classes that can be visited by an <see cref="ISparqlAlgebraVisitor{T}"/>.
+    /// Accept a simple algebra visitor.
     /// </summary>
-    public interface IVisitable
-    {
-        /// <summary>
-        /// Accept a simple algebra visitor.
-        /// </summary>
-        /// <typeparam name="T">The type returned by the Visit methods of the visitor.</typeparam>
-        /// <param name="visitor">The visitor implementation.</param>
-        /// <returns></returns>
-        T Accept<T>(ISparqlAlgebraVisitor<T> visitor);
-    }
+    /// <typeparam name="T">The type returned by the Visit methods of the visitor.</typeparam>
+    /// <param name="visitor">The visitor implementation.</param>
+    /// <returns></returns>
+    T Accept<T>(ISparqlAlgebraVisitor<T> visitor);
 }

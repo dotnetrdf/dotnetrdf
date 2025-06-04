@@ -27,44 +27,43 @@
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.LibraryOntology;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal abstract class AbstractAttributeImpl : AbstractSPINResource, IAbstractAttribute
 {
-    internal abstract class AbstractAttributeImpl : AbstractSPINResource, IAbstractAttribute
+
+    public AbstractAttributeImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
+    }
 
-        public AbstractAttributeImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
+
+    public IResource getPredicate()
+    {
+        IResource r = getResource(SPL.PropertyPredicate);
+        if (r!=null && r.isUri())
         {
+            return r;
         }
-
-
-        public IResource getPredicate()
+        else
         {
-            IResource r = getResource(SPL.PropertyPredicate);
-            if (r!=null && r.isUri())
-            {
-                return r;
-            }
-            else
-            {
-                return null;
-            }
+            return null;
         }
+    }
 
 
-        public IResource getValueType()
-        {
-            return getObject(SPL.PropertyValueType);
-        }
+    public IResource getValueType()
+    {
+        return getObject(SPL.PropertyValueType);
+    }
 
-        public bool IsOptional()
-        {
-            return (bool)getBoolean(SPL.PropertyOptional);
-        }
+    public bool IsOptional()
+    {
+        return (bool)getBoolean(SPL.PropertyOptional);
+    }
 
-        public override void Print(ISparqlPrinter p)
-        {
-            // TODO Auto-generated method stub
-        }
+    public override void Print(ISparqlPrinter p)
+    {
+        // TODO Auto-generated method stub
     }
 }

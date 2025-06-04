@@ -23,10 +23,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-namespace VDS.RDF.Configuration
-{
-    public static class MockConfigurationTarget
-        {
-            public static int StaticIntOption { get; set; }
-        }
-}
+namespace VDS.RDF.Configuration;
+
+public static class MockConfigurationTarget
+    {
+        public static int StaticIntOption { get; set; }
+    }

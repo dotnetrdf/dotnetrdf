@@ -29,31 +29,30 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class MaxCount : Numeric
 {
-    internal class MaxCount : Numeric
+    [DebuggerStepThrough]
+    internal MaxCount(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal MaxCount(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage => $"There must be no more than {NumericValue} values.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.MaxCountConstraintComponent;
         }
+    }
 
-        protected override string DefaultMessage => $"There must be no more than {NumericValue} values.";
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        IEnumerable<INode> invalidValues = valueNodes.Skip(NumericValue);
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.MaxCountConstraintComponent;
-            }
-        }
-
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            IEnumerable<INode> invalidValues = valueNodes.Skip(NumericValue);
-
-            return ReportFocusNode(focusNode, invalidValues, report);
-        }
+        return ReportFocusNode(focusNode, invalidValues, report);
     }
 }

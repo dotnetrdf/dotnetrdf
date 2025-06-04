@@ -26,25 +26,24 @@
 
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Interface for Formatters which Format SPARQL Results.
+/// </summary>
+public interface IResultFormatter
 {
     /// <summary>
-    /// Interface for Formatters which Format SPARQL Results.
+    /// Formats a SPARQL Result as a String.
     /// </summary>
-    public interface IResultFormatter
-    {
-        /// <summary>
-        /// Formats a SPARQL Result as a String.
-        /// </summary>
-        /// <param name="result">SPARQL Result.</param>
-        /// <returns></returns>
-        string Format(ISparqlResult result);
+    /// <param name="result">SPARQL Result.</param>
+    /// <returns></returns>
+    string Format(ISparqlResult result);
 
-        /// <summary>
-        /// Formats a Boolean Result as a String.
-        /// </summary>
-        /// <param name="result">Boolean Result.</param>
-        /// <returns></returns>
-        string FormatBooleanResult(bool result);
-    }
+    /// <summary>
+    /// Formats a Boolean Result as a String.
+    /// </summary>
+    /// <param name="result">Boolean Result.</param>
+    /// <returns></returns>
+    string FormatBooleanResult(bool result);
 }

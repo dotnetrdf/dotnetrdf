@@ -28,149 +28,148 @@ using System.Linq;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Query.Optimisation
+namespace VDS.RDF.Query.Optimisation;
+
+/// <summary>
+/// An optimizer that handles a special case for ORDER BY + DISTINCT combinations which can significantly improve performance by eliminating duplicates prior to sorting when the default SPARQL behaviour is to do a potentially costly sort over many duplicates and then eliminate distincts.
+/// </summary>
+/// <remarks>
+/// Only applies to queries which meet the following criteria:.
+/// <ul>
+/// <li>Has an ORDER BY and a DISTNCT on the same level of the query</li>
+/// <li>Selects a fixed list of variables i.e. not a SELECT DISTINCT *</li>
+/// <li>All variables used in the ORDER BY expressions also occur in the project list</li>
+/// </ul>
+/// </remarks>
+public class OrderByDistinctOptimiser
+    : IAlgebraOptimiser
 {
+    /// <inheritdoc/>
+    public bool UnsafeOptimisation { get; set; }
+
     /// <summary>
-    /// An optimizer that handles a special case for ORDER BY + DISTINCT combinations which can significantly improve performance by eliminating duplicates prior to sorting when the default SPARQL behaviour is to do a potentially costly sort over many duplicates and then eliminate distincts.
+    /// Optimizes the given algebra.
     /// </summary>
-    /// <remarks>
-    /// Only applies to queries which meet the following criteria:.
-    /// <ul>
-    /// <li>Has an ORDER BY and a DISTNCT on the same level of the query</li>
-    /// <li>Selects a fixed list of variables i.e. not a SELECT DISTINCT *</li>
-    /// <li>All variables used in the ORDER BY expressions also occur in the project list</li>
-    /// </ul>
-    /// </remarks>
-    public class OrderByDistinctOptimiser
-        : IAlgebraOptimiser
+    /// <param name="algebra">Algebra.</param>
+    /// <returns>Optimized algebra.</returns>
+    public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
     {
-        /// <inheritdoc/>
-        public bool UnsafeOptimisation { get; set; }
-
-        /// <summary>
-        /// Optimizes the given algebra.
-        /// </summary>
-        /// <param name="algebra">Algebra.</param>
-        /// <returns>Optimized algebra.</returns>
-        public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
+        if (algebra is Distinct)
         {
-            if (algebra is Distinct)
+            var distinct = (Distinct)algebra;
+            if (distinct.InnerAlgebra is Select)
             {
-                var distinct = (Distinct)algebra;
-                if (distinct.InnerAlgebra is Select)
+                var select = (Select)distinct.InnerAlgebra;
+                if (!select.IsSelectAll)
                 {
-                    var select = (Select)distinct.InnerAlgebra;
-                    if (!select.IsSelectAll)
+                    if (select.InnerAlgebra is OrderBy)
                     {
-                        if (select.InnerAlgebra is OrderBy)
+                        var ok = true;
+                        var orderBy = (OrderBy)select.InnerAlgebra;
+                        var projectVars = select.SparqlVariables.Select(v => v.Name).ToList();
+                        foreach (var var in orderBy.Ordering.Variables)
                         {
-                            var ok = true;
-                            var orderBy = (OrderBy)select.InnerAlgebra;
-                            var projectVars = select.SparqlVariables.Select(v => v.Name).ToList();
-                            foreach (var var in orderBy.Ordering.Variables)
+                            if (!projectVars.Contains(var))
                             {
-                                if (!projectVars.Contains(var))
-                                {
-                                    ok = false;
-                                    break;
-                                }
+                                ok = false;
+                                break;
                             }
-
-                            if (ok)
-                            {
-                                // Safe to apply the optimization
-                                var newSelect = new Select(orderBy.InnerAlgebra, false, select.SparqlVariables);
-                                var newDistinct = new Distinct(newSelect);
-                                return new OrderBy(newDistinct, orderBy.Ordering);
-                            }
-
                         }
+
+                        if (ok)
+                        {
+                            // Safe to apply the optimization
+                            var newSelect = new Select(orderBy.InnerAlgebra, false, select.SparqlVariables);
+                            var newDistinct = new Distinct(newSelect);
+                            return new OrderBy(newDistinct, orderBy.Ordering);
+                        }
+
                     }
                 }
-
-                // If we reach here than optimization is not applicable
-                return ((Distinct)algebra).Transform(this);
             }
-            else if (algebra is Reduced)
+
+            // If we reach here than optimization is not applicable
+            return ((Distinct)algebra).Transform(this);
+        }
+        else if (algebra is Reduced)
+        {
+            var reduced = (Reduced)algebra;
+            if (reduced.InnerAlgebra is Select)
             {
-                var reduced = (Reduced)algebra;
-                if (reduced.InnerAlgebra is Select)
+                var select = (Select)reduced.InnerAlgebra;
+                if (!select.IsSelectAll)
                 {
-                    var select = (Select)reduced.InnerAlgebra;
-                    if (!select.IsSelectAll)
+                    if (select.InnerAlgebra is OrderBy)
                     {
-                        if (select.InnerAlgebra is OrderBy)
+                        var ok = true;
+                        var orderBy = (OrderBy)select.InnerAlgebra;
+                        var projectVars = select.SparqlVariables.Select(v => v.Name).ToList();
+                        foreach (var var in orderBy.Ordering.Variables)
                         {
-                            var ok = true;
-                            var orderBy = (OrderBy)select.InnerAlgebra;
-                            var projectVars = select.SparqlVariables.Select(v => v.Name).ToList();
-                            foreach (var var in orderBy.Ordering.Variables)
+                            if (!projectVars.Contains(var))
                             {
-                                if (!projectVars.Contains(var))
-                                {
-                                    ok = false;
-                                    break;
-                                }
+                                ok = false;
+                                break;
                             }
-
-                            if (ok)
-                            {
-                                // Safe to apply the optimization
-                                var newSelect = new Select(orderBy.InnerAlgebra, false, select.SparqlVariables);
-                                var newReduced = new Reduced(newSelect);
-                                return new OrderBy(newReduced, orderBy.Ordering);
-                            }
-
                         }
+
+                        if (ok)
+                        {
+                            // Safe to apply the optimization
+                            var newSelect = new Select(orderBy.InnerAlgebra, false, select.SparqlVariables);
+                            var newReduced = new Reduced(newSelect);
+                            return new OrderBy(newReduced, orderBy.Ordering);
+                        }
+
                     }
                 }
+            }
 
-                // If we reach here than optimization is not applicable
-                return ((Reduced)algebra).Transform(this);
-            }
-            else if (algebra is ITerminalOperator)
-            {
-                return algebra;
-            }
-            else if (algebra is IUnaryOperator)
-            {
-                return ((IUnaryOperator)algebra).Transform(this);
-            }
-            else if (algebra is IAbstractJoin)
-            {
-                return ((IAbstractJoin)algebra).Transform(this);
-            }
-            else
-            {
-                return algebra;
-            }
+            // If we reach here than optimization is not applicable
+            return ((Reduced)algebra).Transform(this);
         }
-
-        /// <summary>
-        /// Returns true if the query is a SELECT DISTINCT or SELECT REDUCED and has an ORDER BY.
-        /// </summary>
-        /// <param name="q">Query.</param>
-        /// <returns></returns>
-        public bool IsApplicable(SparqlQuery q)
+        else if (algebra is ITerminalOperator)
         {
-            switch (q.QueryType)
-            {
-                case SparqlQueryType.SelectDistinct:
-                case SparqlQueryType.SelectReduced:
-                    return q.OrderBy != null;
-                default:
-                    return false;
-            }
+            return algebra;
         }
-
-        /// <summary>
-        /// Returns that this is not applicable to updates.
-        /// </summary>
-        /// <param name="cmds">Update commands.</param>
-        /// <returns></returns>
-        public bool IsApplicable(SparqlUpdateCommandSet cmds)
+        else if (algebra is IUnaryOperator)
         {
-            return false;
+            return ((IUnaryOperator)algebra).Transform(this);
         }
+        else if (algebra is IAbstractJoin)
+        {
+            return ((IAbstractJoin)algebra).Transform(this);
+        }
+        else
+        {
+            return algebra;
+        }
+    }
+
+    /// <summary>
+    /// Returns true if the query is a SELECT DISTINCT or SELECT REDUCED and has an ORDER BY.
+    /// </summary>
+    /// <param name="q">Query.</param>
+    /// <returns></returns>
+    public bool IsApplicable(SparqlQuery q)
+    {
+        switch (q.QueryType)
+        {
+            case SparqlQueryType.SelectDistinct:
+            case SparqlQueryType.SelectReduced:
+                return q.OrderBy != null;
+            default:
+                return false;
+        }
+    }
+
+    /// <summary>
+    /// Returns that this is not applicable to updates.
+    /// </summary>
+    /// <param name="cmds">Update commands.</param>
+    /// <returns></returns>
+    public bool IsApplicable(SparqlUpdateCommandSet cmds)
+    {
+        return false;
     }
 }

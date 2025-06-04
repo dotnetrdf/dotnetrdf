@@ -23,15 +23,14 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-namespace VDS.RDF.Storage.Async
-{
+namespace VDS.RDF.Storage.Async;
 
-    public class SparqlGraphStoreAsync
-        : BaseAsyncTests
+
+public class SparqlGraphStoreAsync
+    : BaseAsyncTests
+{
+    protected override IAsyncStorageProvider GetAsyncProvider()
     {
-        protected override IAsyncStorageProvider GetAsyncProvider()
-        {
-            return SparqlGraphStoreProtocolTest.GetConnection();
-        }
+        return SparqlGraphStoreProtocolTest.GetConnection();
     }
 }

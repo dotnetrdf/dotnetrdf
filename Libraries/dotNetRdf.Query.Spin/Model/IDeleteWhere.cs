@@ -24,15 +24,14 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
-{
+namespace VDS.RDF.Query.Spin.Model;
 
-    /**
-     * A SPARQL Update DELETE WHERE operation.
-     * 
-     * @author Holger Knublauch
-     */
-    internal interface IDeleteWhere : IUpdate, ICommandWithWhere
-    {
-    }
+
+/**
+ * A SPARQL Update DELETE WHERE operation.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IDeleteWhere : IUpdate, ICommandWithWhere
+{
 }

@@ -24,74 +24,73 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric;
+
+/// <summary>
+/// Represents the Leviathan lfn:root() function.
+/// </summary>
+public class RootFunction
+    : BaseBinaryExpression
 {
     /// <summary>
-    /// Represents the Leviathan lfn:root() function.
+    /// Creates a new Leviathan Root Function.
     /// </summary>
-    public class RootFunction
-        : BaseBinaryExpression
+    /// <param name="arg1">First Argument.</param>
+    /// <param name="arg2">Second Argument.</param>
+    public RootFunction(ISparqlExpression arg1, ISparqlExpression arg2)
+        : base(arg1, arg2) { }
+
+    
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new Leviathan Root Function.
-        /// </summary>
-        /// <param name="arg1">First Argument.</param>
-        /// <param name="arg2">Second Argument.</param>
-        public RootFunction(ISparqlExpression arg1, ISparqlExpression arg2)
-            : base(arg1, arg2) { }
+        return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Power + ">(" + _leftExpr + "," + _rightExpr + ")";
+    }
 
-        
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Power + ">(" + _leftExpr + "," + _rightExpr + ")";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessRootFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessRootFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitRootFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Type of this expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return visitor.VisitRootFunction(this);
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of this expression.
-        /// </summary>
-        public override SparqlExpressionType Type
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Root;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Root;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new RootFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new RootFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
     }
 }

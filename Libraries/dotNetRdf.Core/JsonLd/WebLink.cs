@@ -27,42 +27,41 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.JsonLd
-{
-    internal class WebLink
-    {
-        public string LinkValue { get; set; }
-        public List<string> RelationTypes { get; set; }
-        public List<string> MediaTypes { get; set; }
+namespace VDS.RDF.JsonLd;
 
-        public static bool TryParse(string linkHeaderValue, out WebLink result)
+internal class WebLink
+{
+    public string LinkValue { get; set; }
+    public List<string> RelationTypes { get; set; }
+    public List<string> MediaTypes { get; set; }
+
+    public static bool TryParse(string linkHeaderValue, out WebLink result)
+    {
+        var fields = linkHeaderValue.Split(';').Select(x => x.Trim()).ToList();
+        var linkValue = fields.First().TrimStart('<').TrimEnd('>');
+        var relTypes = new List<string>();
+        var mediaTypes = new List<string>();
+        foreach (var field in fields)
         {
-            var fields = linkHeaderValue.Split(';').Select(x => x.Trim()).ToList();
-            var linkValue = fields.First().TrimStart('<').TrimEnd('>');
-            var relTypes = new List<string>();
-            var mediaTypes = new List<string>();
-            foreach (var field in fields)
+            var split = field.Split(new char[] { '=' }, 2);
+            if (split.Length == 2)
             {
-                var split = field.Split(new char[] { '=' }, 2);
-                if (split.Length == 2)
+                var key = split[0].Trim();
+                var value = split[1].Trim();
+                if (key.Equals("rel"))
                 {
-                    var key = split[0].Trim();
-                    var value = split[1].Trim();
-                    if (key.Equals("rel"))
-                    {
-                        value = value.Trim('"');
-                        relTypes.AddRange(value.Split(' '));
-                    }
-                    else if (key.Equals("type"))
-                    {
-                        value = value.Trim('"');
-                        mediaTypes.Add(value);
-                    }
+                    value = value.Trim('"');
+                    relTypes.AddRange(value.Split(' '));
+                }
+                else if (key.Equals("type"))
+                {
+                    value = value.Trim('"');
+                    mediaTypes.Add(value);
                 }
             }
-
-            result = new WebLink { LinkValue = linkValue, RelationTypes = relTypes, MediaTypes = mediaTypes };
-            return true;
         }
+
+        result = new WebLink { LinkValue = linkValue, RelationTypes = relTypes, MediaTypes = mediaTypes };
+        return true;
     }
 }

@@ -29,79 +29,78 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+/// <summary>
+/// Provides methods for building triple patterns.
+/// </summary>
+public class TriplePatternBuilder : ITriplePatternBuilderInternal
 {
+    private readonly IList<ITriplePattern> _patterns = new List<ITriplePattern>();
+    private readonly PatternItemFactory _patternItemFactory;
+
     /// <summary>
-    /// Provides methods for building triple patterns.
+    /// Gets the triple patterns.
     /// </summary>
-    public class TriplePatternBuilder : ITriplePatternBuilderInternal
+    public ITriplePattern[] Patterns => _patterns.ToArray();
+
+    /// <summary>
+    /// Gets the pattern item factory.
+    /// </summary>
+    public IPatternItemFactory PatternItemFactory => _patternItemFactory;
+
+    /// <inheritdoc/>
+    public INamespaceMapper Prefixes { get; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="prefixes"></param>
+    public TriplePatternBuilder(INamespaceMapper prefixes)
     {
-        private readonly IList<ITriplePattern> _patterns = new List<ITriplePattern>();
-        private readonly PatternItemFactory _patternItemFactory;
+        Prefixes = prefixes;
+        _patternItemFactory = new PatternItemFactory();
+    }
 
-        /// <summary>
-        /// Gets the triple patterns.
-        /// </summary>
-        public ITriplePattern[] Patterns => _patterns.ToArray();
+    /// <inheritdoc />
+    public TriplePatternPredicatePart Subject(SparqlVariable subjectVariable)
+    {
+        return Subject(PatternItemFactory.CreateVariablePattern(subjectVariable.Name));
+    }
 
-        /// <summary>
-        /// Gets the pattern item factory.
-        /// </summary>
-        public IPatternItemFactory PatternItemFactory => _patternItemFactory;
+    /// <inheritdoc />
+    public TriplePatternPredicatePart Subject(string subjectVariableName)
+    {
+        return Subject(PatternItemFactory.CreateVariablePattern(subjectVariableName));
+    }
 
-        /// <inheritdoc/>
-        public INamespaceMapper Prefixes { get; }
+    /// <inheritdoc/>
+    public TriplePatternPredicatePart Subject<TNode>(string subject) where TNode : INode
+    {
+        return Subject(_patternItemFactory.CreatePatternItem(typeof(TNode), subject, Prefixes));
+    }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="prefixes"></param>
-        public TriplePatternBuilder(INamespaceMapper prefixes)
-        {
-            Prefixes = prefixes;
-            _patternItemFactory = new PatternItemFactory();
-        }
+    /// <inheritdoc/>
+    public TriplePatternPredicatePart Subject(INode subjectNode)
+    {
+        return Subject(PatternItemFactory.CreateNodeMatchPattern(subjectNode));
+    }
 
-        /// <inheritdoc />
-        public TriplePatternPredicatePart Subject(SparqlVariable subjectVariable)
-        {
-            return Subject(PatternItemFactory.CreateVariablePattern(subjectVariable.Name));
-        }
+    /// <inheritdoc/>
+    public TriplePatternPredicatePart Subject(Uri subject)
+    {
+        return Subject(PatternItemFactory.CreateNodeMatchPattern(subject));
+    }
 
-        /// <inheritdoc />
-        public TriplePatternPredicatePart Subject(string subjectVariableName)
-        {
-            return Subject(PatternItemFactory.CreateVariablePattern(subjectVariableName));
-        }
+    /// <inheritdoc/>
+    public TriplePatternPredicatePart Subject(PatternItem subject)
+    {
+        return new TriplePatternPredicatePart(this, subject, Prefixes);
+    }
 
-        /// <inheritdoc/>
-        public TriplePatternPredicatePart Subject<TNode>(string subject) where TNode : INode
-        {
-            return Subject(_patternItemFactory.CreatePatternItem(typeof(TNode), subject, Prefixes));
-        }
-
-        /// <inheritdoc/>
-        public TriplePatternPredicatePart Subject(INode subjectNode)
-        {
-            return Subject(PatternItemFactory.CreateNodeMatchPattern(subjectNode));
-        }
-
-        /// <inheritdoc/>
-        public TriplePatternPredicatePart Subject(Uri subject)
-        {
-            return Subject(PatternItemFactory.CreateNodeMatchPattern(subject));
-        }
-
-        /// <inheritdoc/>
-        public TriplePatternPredicatePart Subject(PatternItem subject)
-        {
-            return new TriplePatternPredicatePart(this, subject, Prefixes);
-        }
-
-        /// <inheritdoc />
-        public void AddPattern(TriplePattern triplePattern)
-        {
-            _patterns.Add(triplePattern);
-        }
+    /// <inheritdoc />
+    public void AddPattern(TriplePattern triplePattern)
+    {
+        _patterns.Add(triplePattern);
     }
 }

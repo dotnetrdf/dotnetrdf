@@ -24,31 +24,30 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+/// <summary>
+/// Interface for storage providers which have controllable transactions.
+/// </summary>
+/// <remarks>
+/// <para>
+/// It is up to the implementation whether transactions are per-thread or global and how transactions interact with operations performed on the storage provider.  Please see individual implementations for notes on how transactions are implemented.
+/// </para>
+/// </remarks>
+public interface ITransactionalStorage
 {
     /// <summary>
-    /// Interface for storage providers which have controllable transactions.
+    /// Begins a transaction.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// It is up to the implementation whether transactions are per-thread or global and how transactions interact with operations performed on the storage provider.  Please see individual implementations for notes on how transactions are implemented.
-    /// </para>
-    /// </remarks>
-    public interface ITransactionalStorage
-    {
-        /// <summary>
-        /// Begins a transaction.
-        /// </summary>
-        void Begin();
+    void Begin();
 
-        /// <summary>
-        /// Commits a transaction.
-        /// </summary>
-        void Commit();
+    /// <summary>
+    /// Commits a transaction.
+    /// </summary>
+    void Commit();
 
-        /// <summary>
-        /// Rolls back a transaction.
-        /// </summary>
-        void Rollback();
-    }
+    /// <summary>
+    /// Rolls back a transaction.
+    /// </summary>
+    void Rollback();
 }

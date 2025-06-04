@@ -24,21 +24,20 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Class for representing RDF Graphs when you don't want Indexing.
+/// </summary>
+/// <remarks>
+/// Gives better load performance but poorer lookup performance.
+/// </remarks>
+public class NonIndexedGraph : Graph
 {
     /// <summary>
-    /// Class for representing RDF Graphs when you don't want Indexing.
+    /// Creates a new Graph which is not indexed.
     /// </summary>
-    /// <remarks>
-    /// Gives better load performance but poorer lookup performance.
-    /// </remarks>
-    public class NonIndexedGraph : Graph
-    {
-        /// <summary>
-        /// Creates a new Graph which is not indexed.
-        /// </summary>
-        /// <param name="graphName">The name to assign to the new graph.</param>
-        public NonIndexedGraph(IRefNode graphName = null)
-            : base(graphName, new TripleCollection()) { }
-    }
+    /// <param name="graphName">The name to assign to the new graph.</param>
+    public NonIndexedGraph(IRefNode graphName = null)
+        : base(graphName, new TripleCollection()) { }
 }

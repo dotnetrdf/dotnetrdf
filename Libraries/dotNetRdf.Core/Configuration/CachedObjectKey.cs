@@ -26,61 +26,60 @@
 
 using System;
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+/// <summary>
+/// Key for Objects that are cached by the Configuration Loader.
+/// </summary>
+class CachedObjectKey : IEquatable<CachedObjectKey>
 {
+    private INode _n;
+    private IGraph _g;
+
     /// <summary>
-    /// Key for Objects that are cached by the Configuration Loader.
+    /// Creates a new Cached Object Key.
     /// </summary>
-    class CachedObjectKey : IEquatable<CachedObjectKey>
+    /// <param name="objNode">Object Node.</param>
+    /// <param name="g">Configuration Graph.</param>
+    public CachedObjectKey(INode objNode, IGraph g)
     {
-        private INode _n;
-        private IGraph _g;
+        _n = objNode;
+        _g = g;
+    }
 
-        /// <summary>
-        /// Creates a new Cached Object Key.
-        /// </summary>
-        /// <param name="objNode">Object Node.</param>
-        /// <param name="g">Configuration Graph.</param>
-        public CachedObjectKey(INode objNode, IGraph g)
-        {
-            _n = objNode;
-            _g = g;
-        }
+    /// <summary>
+    /// Gets the Hash Code for the Key.
+    /// </summary>
+    /// <returns></returns>
+    public override int GetHashCode()
+    {
+        return Tools.CombineHashCodes(_g, _n);
+    }
 
-        /// <summary>
-        /// Gets the Hash Code for the Key.
-        /// </summary>
-        /// <returns></returns>
-        public override int GetHashCode()
+    /// <summary>
+    /// Gets whether this Key is equal to the given Object.
+    /// </summary>
+    /// <param name="obj">Object.</param>
+    /// <returns></returns>
+    public override bool Equals(object obj)
+    {
+        if (obj is CachedObjectKey)
         {
-            return Tools.CombineHashCodes(_g, _n);
+            return Equals((CachedObjectKey)obj);
         }
+        else
+        {
+            return false;
+        }
+    }
 
-        /// <summary>
-        /// Gets whether this Key is equal to the given Object.
-        /// </summary>
-        /// <param name="obj">Object.</param>
-        /// <returns></returns>
-        public override bool Equals(object obj)
-        {
-            if (obj is CachedObjectKey)
-            {
-                return Equals((CachedObjectKey)obj);
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Gets whether this Key is equal to the given Key.
-        /// </summary>
-        /// <param name="other">Key.</param>
-        /// <returns></returns>
-        public bool Equals(CachedObjectKey other)
-        {
-            return ReferenceEquals(_g, other._g) && _n.Equals(other._n);
-        }
+    /// <summary>
+    /// Gets whether this Key is equal to the given Key.
+    /// </summary>
+    /// <param name="other">Key.</param>
+    /// <returns></returns>
+    public bool Equals(CachedObjectKey other)
+    {
+        return ReferenceEquals(_g, other._g) && _n.Equals(other._n);
     }
 }

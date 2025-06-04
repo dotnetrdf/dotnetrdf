@@ -24,31 +24,30 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface for Triple Stores which support SPARQL Update as per the SPARQL 1.1 specifications.
+/// </summary>
+/// <remarks>
+/// <para>
+/// A Store which supports this may implement various access control mechanisms which limit what operations are actually permitted.
+/// </para>
+/// <para>
+/// It is the responsibility of the Store class to ensure that commands are permissible before invoking them.
+/// </para>
+/// </remarks>
+public interface IUpdateableTripleStore
+    : ITripleStore
 {
     /// <summary>
-    /// Interface for Triple Stores which support SPARQL Update as per the SPARQL 1.1 specifications.
+    /// Executes an Update against the Triple Store.
     /// </summary>
+    /// <param name="update">SPARQL Update Command(s).</param>
     /// <remarks>
-    /// <para>
-    /// A Store which supports this may implement various access control mechanisms which limit what operations are actually permitted.
-    /// </para>
-    /// <para>
-    /// It is the responsibility of the Store class to ensure that commands are permissible before invoking them.
-    /// </para>
+    /// As per the SPARQL 1.1 Update specification the command string may be a sequence of commands.
     /// </remarks>
-    public interface IUpdateableTripleStore
-        : ITripleStore
-    {
-        /// <summary>
-        /// Executes an Update against the Triple Store.
-        /// </summary>
-        /// <param name="update">SPARQL Update Command(s).</param>
-        /// <remarks>
-        /// As per the SPARQL 1.1 Update specification the command string may be a sequence of commands.
-        /// </remarks>
-        void ExecuteUpdate(string update);
+    void ExecuteUpdate(string update);
 
-        
-    }
+    
 }
