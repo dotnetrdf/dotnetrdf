@@ -159,5 +159,53 @@ foaf:firstName ""Carol"" .");
 
             Assert.False(shaclGraph.Validate(dataGraph).Conforms);
         }
+
+        // https://github.com/dotnetrdf/dotnetrdf/issues/693
+        [Fact]
+        public void Issue693()
+        {
+            var dataGraph = new Graph();
+            dataGraph.LoadFromString("""
+                @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+                [ a foaf:Person ] .
+
+                """);
+
+            var shapesGraph = new Graph();
+            shapesGraph.LoadFromString(""""
+                @prefix ex: <http://example.org/> .
+                @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+                @prefix sh: <http://www.w3.org/ns/shacl#> .
+
+                ex:knowsSomeoneShape
+                    sh:targetClass foaf:Person ;
+                    ex:someone ex:Bob ; 
+                .
+
+                ex:knowsSomeoneComponent
+                    a sh:ConstraintComponent ;
+                    sh:parameter [
+                        sh:path ex:someone ;
+                    ] ;
+                    sh:validator [
+                        sh:ask """
+                            PREFIX ex: <http://example.org/>
+                            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+                            ASK
+                            WHERE {
+                                $this
+                                    a foaf:Person ;
+                                    foaf:knows $someone .
+                            }
+                        """ ;
+                    ] .
+                """");
+
+
+            var shaclGraph = new ShapesGraph(shapesGraph);
+
+            Assert.True(shaclGraph.Validate(dataGraph).Conforms);
+        }
     }
 }
