@@ -28,72 +28,71 @@ using System;
 using System.Dynamic;
 using System.Linq.Expressions;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+/// <summary>
+/// A <see cref="WrapperNode">wrapper</see> that provides read/write dictionary and dynamic functionality.
+/// </summary>
+public partial class DynamicNode : WrapperNode, IUriNode, IBlankNode, IDynamicMetaObjectProvider
 {
+    private readonly Uri baseUri;
+
     /// <summary>
-    /// A <see cref="WrapperNode">wrapper</see> that provides read/write dictionary and dynamic functionality.
+    /// Initializes a new instance of the <see cref="DynamicNode"/> class.
     /// </summary>
-    public partial class DynamicNode : WrapperNode, IUriNode, IBlankNode, IDynamicMetaObjectProvider
+    /// <param name="node">The node to wrap.</param>
+    /// <param name="graph">The graph context of the dynamic node.</param>
+    /// <param name="baseUri">The URI used to resolve relative predicate references.</param>
+    /// <exception cref="InvalidOperationException">When <paramref name="node"/> has no graph.</exception>
+    // TODO: Make sure all instantiations copy original node to appropriate host graph
+    public DynamicNode(INode node, IGraph graph, Uri baseUri = null)
+        : base(node)
     {
-        private readonly Uri baseUri;
+        this.baseUri = baseUri;
+        Graph = graph;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DynamicNode"/> class.
-        /// </summary>
-        /// <param name="node">The node to wrap.</param>
-        /// <param name="graph">The graph context of the dynamic node.</param>
-        /// <param name="baseUri">The URI used to resolve relative predicate references.</param>
-        /// <exception cref="InvalidOperationException">When <paramref name="node"/> has no graph.</exception>
-        // TODO: Make sure all instantiations copy original node to appropriate host graph
-        public DynamicNode(INode node, IGraph graph, Uri baseUri = null)
-            : base(node)
+    /// <summary>
+    /// Get the graph context for this dynamic node.
+    /// </summary>
+    public IGraph Graph { get; }
+
+    /// <summary>
+    /// Gets the URI used to resolve relative predicate references.
+    /// </summary>
+    public Uri BaseUri
+    {
+        get
         {
-            this.baseUri = baseUri;
-            Graph = graph;
+            return baseUri ?? Graph.BaseUri;
         }
+    }
 
-        /// <summary>
-        /// Get the graph context for this dynamic node.
-        /// </summary>
-        public IGraph Graph { get; }
-
-        /// <summary>
-        /// Gets the URI used to resolve relative predicate references.
-        /// </summary>
-        public Uri BaseUri
+    /// <inheritdoc/>
+    Uri IUriNode.Uri
+    {
+        get
         {
-            get
-            {
-                return baseUri ?? Graph.BaseUri;
-            }
+            return Node is IUriNode uriNode ?
+                uriNode.Uri :
+                throw new InvalidOperationException("is not a uri node");
         }
+    }
 
-        /// <inheritdoc/>
-        Uri IUriNode.Uri
+    /// <inheritdoc/>
+    string IBlankNode.InternalID
+    {
+        get
         {
-            get
-            {
-                return Node is IUriNode uriNode ?
-                    uriNode.Uri :
-                    throw new InvalidOperationException("is not a uri node");
-            }
+            return Node is IBlankNode blankNode ?
+                blankNode.InternalID :
+                throw new InvalidOperationException("is not a blank node");
         }
+    }
 
-        /// <inheritdoc/>
-        string IBlankNode.InternalID
-        {
-            get
-            {
-                return Node is IBlankNode blankNode ?
-                    blankNode.InternalID :
-                    throw new InvalidOperationException("is not a blank node");
-            }
-        }
-
-        /// <inheritdoc/>
-        DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
-        {
-            return new DictionaryMetaObject(parameter, this);
-        }
+    /// <inheritdoc/>
+    DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
+    {
+        return new DictionaryMetaObject(parameter, this);
     }
 }

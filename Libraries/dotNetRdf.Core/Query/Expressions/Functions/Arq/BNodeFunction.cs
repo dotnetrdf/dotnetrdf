@@ -26,105 +26,104 @@
 
 using System.Collections.Generic;
 
-namespace VDS.RDF.Query.Expressions.Functions.Arq
+namespace VDS.RDF.Query.Expressions.Functions.Arq;
+
+/// <summary>
+/// Represents the ARQ afn:bnode() function.
+/// </summary>
+public class BNodeFunction
+    : BaseUnaryExpression
 {
     /// <summary>
-    /// Represents the ARQ afn:bnode() function.
+    /// Creates a new ARQ afn:bnode() function.
     /// </summary>
-    public class BNodeFunction
-        : BaseUnaryExpression
+    /// <param name="expr">Expression.</param>
+    public BNodeFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new ARQ afn:bnode() function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public BNodeFunction(ISparqlExpression expr)
-            : base(expr) { }
+        return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.BNode + ">(" + InnerExpression + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessArqBNodeFunction(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitArqBNodeFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.BNode + ">(" + InnerExpression + ")";
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return processor.ProcessArqBNodeFunction(this, context, binding);
+            return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.BNode;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new BNodeFunction(transformer.Transform(InnerExpression));
+    }
+
+    /// <summary>
+    /// Gets whether the expression can be parallelized.
+    /// </summary>
+    public override bool CanParallelise
+    {
+        get
         {
-            return visitor.VisitArqBNodeFunction(this);
+            return false;
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
+    /// <summary>
+    /// Gets the arguments of the expression.
+    /// </summary>
+    public override IEnumerable<ISparqlExpression> Arguments
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return InnerExpression.AsEnumerable();
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
+    /// <summary>
+    /// Gets the variables in the expression.
+    /// </summary>
+    public override IEnumerable<string> Variables
+    {
+        get
         {
-            get
-            {
-                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.BNode;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new BNodeFunction(transformer.Transform(InnerExpression));
-        }
-
-        /// <summary>
-        /// Gets whether the expression can be parallelized.
-        /// </summary>
-        public override bool CanParallelise
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Gets the arguments of the expression.
-        /// </summary>
-        public override IEnumerable<ISparqlExpression> Arguments
-        {
-            get
-            {
-                return InnerExpression.AsEnumerable();
-            }
-        }
-
-        /// <summary>
-        /// Gets the variables in the expression.
-        /// </summary>
-        public override IEnumerable<string> Variables
-        {
-            get
-            {
-                return InnerExpression.Variables;
-            }
+            return InnerExpression.Variables;
         }
     }
 }

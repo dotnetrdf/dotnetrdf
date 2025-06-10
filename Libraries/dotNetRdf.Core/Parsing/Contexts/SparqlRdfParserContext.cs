@@ -28,37 +28,36 @@ using System;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing.Contexts;
+
+/// <summary>
+/// Parser Context for SPARQL RDF Parser.
+/// </summary>
+public class SparqlRdfParserContext : BaseResultsParserContext
 {
     /// <summary>
-    /// Parser Context for SPARQL RDF Parser.
+    /// Creates a new Parser Context.
     /// </summary>
-    public class SparqlRdfParserContext : BaseResultsParserContext
+    /// <param name="g">Graph to parse from.</param>
+    /// <param name="handler">Results Handler.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public SparqlRdfParserContext(IGraph g, ISparqlResultsHandler handler, IUriFactory uriFactory = null)
+        : base(handler, uriFactory)
     {
-        /// <summary>
-        /// Creates a new Parser Context.
-        /// </summary>
-        /// <param name="g">Graph to parse from.</param>
-        /// <param name="handler">Results Handler.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public SparqlRdfParserContext(IGraph g, ISparqlResultsHandler handler, IUriFactory uriFactory = null)
-            : base(handler, uriFactory)
-        {
-            Graph = g ?? throw new ArgumentNullException(nameof(g));
-        }
-
-        /// <summary>
-        /// Creates a new Parser Context.
-        /// </summary>
-        /// <param name="g">Graph to parse from.</param>
-        /// <param name="results">Results Handler.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public SparqlRdfParserContext(IGraph g, SparqlResultSet results, IUriFactory uriFactory = null)
-            : this(g, new ResultSetHandler(results), uriFactory) { }
-
-        /// <summary>
-        /// Gets the Graph being parsed from.
-        /// </summary>
-        public IGraph Graph { get; }
+        Graph = g ?? throw new ArgumentNullException(nameof(g));
     }
+
+    /// <summary>
+    /// Creates a new Parser Context.
+    /// </summary>
+    /// <param name="g">Graph to parse from.</param>
+    /// <param name="results">Results Handler.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public SparqlRdfParserContext(IGraph g, SparqlResultSet results, IUriFactory uriFactory = null)
+        : this(g, new ResultSetHandler(results), uriFactory) { }
+
+    /// <summary>
+    /// Gets the Graph being parsed from.
+    /// </summary>
+    public IGraph Graph { get; }
 }

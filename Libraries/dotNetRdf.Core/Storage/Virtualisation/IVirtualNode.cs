@@ -26,81 +26,80 @@
 
 using System;
 
-namespace VDS.RDF.Storage.Virtualisation
+namespace VDS.RDF.Storage.Virtualisation;
+
+/// <summary>
+/// Interface for Virtual Nodes.
+/// </summary>
+/// <typeparam name="TNodeID">Node ID Type.</typeparam>
+/// <typeparam name="TGraphID">Graph ID Type.</typeparam>
+public interface IVirtualNode<TNodeID, TGraphID> 
+    : INode, IEquatable<IVirtualNode<TNodeID, TGraphID>>, IComparable<IVirtualNode<TNodeID, TGraphID>>,
+    IVirtualIdComparable
 {
     /// <summary>
-    /// Interface for Virtual Nodes.
+    /// Gets the Node ID.
     /// </summary>
-    /// <typeparam name="TNodeID">Node ID Type.</typeparam>
-    /// <typeparam name="TGraphID">Graph ID Type.</typeparam>
-    public interface IVirtualNode<TNodeID, TGraphID> 
-        : INode, IEquatable<IVirtualNode<TNodeID, TGraphID>>, IComparable<IVirtualNode<TNodeID, TGraphID>>,
-        IVirtualIdComparable
+    TNodeID VirtualID
     {
-        /// <summary>
-        /// Gets the Node ID.
-        /// </summary>
-        TNodeID VirtualID
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Virtual Node provider.
-        /// </summary>
-        IVirtualRdfProvider<TNodeID, TGraphID> Provider
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets whether the Nodes value has been materialised.
-        /// </summary>
-        bool IsMaterialised
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the materialised value forcing it to be materialised if necessary.
-        /// </summary>
-        INode MaterialisedValue
-        {
-            get;
-        }
+        get;
     }
 
     /// <summary>
-    /// Interface for comparing nodes on their VirtualID property.
+    /// Gets the Virtual Node provider.
     /// </summary>
-    public interface IVirtualIdComparable
+    IVirtualRdfProvider<TNodeID, TGraphID> Provider
     {
-        /// <summary>
-        /// Attempt to compare the VirtualID of this node with the VirtualID of the other node.
-        /// </summary>
-        /// <param name="other">The other node to try to compare against.</param>
-        /// <param name="comparisonResult">The result of the comparison if it could be performed.</param>
-        /// <returns>True if a comparison could be performed, false otherwise.</returns>
-        bool TryCompareVirtualId(INode other, out int comparisonResult);
+        get;
     }
 
     /// <summary>
-    /// Interface for nodes that know for themseves how to create a copy of themselves to a different graph.
+    /// Gets whether the Nodes value has been materialised.
     /// </summary>
-    /// <remarks>
-    /// Especially virtual nodes need to copy themselves during query algebra processing,
-    /// because the standard copy tools might destroy their virtual state by duplicating it's virtualized
-    /// values. In consequence all indices in the various triple stores fail to match such value-copied nodes.
-    /// </remarks> 
-    public interface ICanCopy 
+    bool IsMaterialised
     {
-        // Note: could someone please check, if every node should know how to copy itself.
-
-        /// <summary>
-        /// Copies the Node into another Graph, currently only used by virtual nodes.
-        /// </summary>
-        /// <param name="target">Target Graph.</param>
-        /// <returns></returns>
-        INode CopyNode(IGraph target);
+        get;
     }
+
+    /// <summary>
+    /// Gets the materialised value forcing it to be materialised if necessary.
+    /// </summary>
+    INode MaterialisedValue
+    {
+        get;
+    }
+}
+
+/// <summary>
+/// Interface for comparing nodes on their VirtualID property.
+/// </summary>
+public interface IVirtualIdComparable
+{
+    /// <summary>
+    /// Attempt to compare the VirtualID of this node with the VirtualID of the other node.
+    /// </summary>
+    /// <param name="other">The other node to try to compare against.</param>
+    /// <param name="comparisonResult">The result of the comparison if it could be performed.</param>
+    /// <returns>True if a comparison could be performed, false otherwise.</returns>
+    bool TryCompareVirtualId(INode other, out int comparisonResult);
+}
+
+/// <summary>
+/// Interface for nodes that know for themseves how to create a copy of themselves to a different graph.
+/// </summary>
+/// <remarks>
+/// Especially virtual nodes need to copy themselves during query algebra processing,
+/// because the standard copy tools might destroy their virtual state by duplicating it's virtualized
+/// values. In consequence all indices in the various triple stores fail to match such value-copied nodes.
+/// </remarks> 
+public interface ICanCopy 
+{
+    // Note: could someone please check, if every node should know how to copy itself.
+
+    /// <summary>
+    /// Copies the Node into another Graph, currently only used by virtual nodes.
+    /// </summary>
+    /// <param name="target">Target Graph.</param>
+    /// <returns></returns>
+    INode CopyNode(IGraph target);
 }

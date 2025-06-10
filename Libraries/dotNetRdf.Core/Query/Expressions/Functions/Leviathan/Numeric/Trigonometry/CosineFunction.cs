@@ -26,99 +26,98 @@
 
 using System;
 
-namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry;
+
+/// <summary>
+/// Represents the Leviathan lfn:cos() or lfn:cos-1 function.
+/// </summary>
+public class CosineFunction
+    : BaseTrigonometricFunction
 {
     /// <summary>
-    /// Represents the Leviathan lfn:cos() or lfn:cos-1 function.
+    /// Creates a new Leviathan Cosine Function.
     /// </summary>
-    public class CosineFunction
-        : BaseTrigonometricFunction
+    /// <param name="expr">Expression.</param>
+    public CosineFunction(ISparqlExpression expr)
+        : base(expr, Math.Cos) { }
+
+    /// <summary>
+    /// Creates a new Leviathan Cosine Function.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="inverse">Whether this should be the inverse function.</param>
+    public CosineFunction(ISparqlExpression expr, bool inverse)
+        : base(expr)
     {
-        /// <summary>
-        /// Creates a new Leviathan Cosine Function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public CosineFunction(ISparqlExpression expr)
-            : base(expr, Math.Cos) { }
-
-        /// <summary>
-        /// Creates a new Leviathan Cosine Function.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="inverse">Whether this should be the inverse function.</param>
-        public CosineFunction(ISparqlExpression expr, bool inverse)
-            : base(expr)
+        Inverse = inverse;
+        if (Inverse)
         {
-            Inverse = inverse;
+            _func = Math.Acos;
+        }
+        else
+        {
+            _func = Math.Cos;
+        }
+    }
+
+    /// <summary>
+    /// Gets whether this is the inverse function.
+    /// </summary>
+    public bool Inverse { get; }
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        if (Inverse)
+        {
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosInv + ">(" + InnerExpression + ")";
+        }
+        else
+        {
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCos + ">(" + InnerExpression + ")";
+        }
+    }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessCosineFunction(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitCosineFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
+        {
             if (Inverse)
             {
-                _func = Math.Acos;
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosInv;
             }
             else
             {
-                _func = Math.Cos;
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCos;
             }
         }
+    }
 
-        /// <summary>
-        /// Gets whether this is the inverse function.
-        /// </summary>
-        public bool Inverse { get; }
-
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            if (Inverse)
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosInv + ">(" + InnerExpression + ")";
-            }
-            else
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCos + ">(" + InnerExpression + ")";
-            }
-        }
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessCosineFunction(this, context, binding);
-        }
-
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitCosineFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                if (Inverse)
-                {
-                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosInv;
-                }
-                else
-                {
-                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCos;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new CosineFunction(transformer.Transform(InnerExpression), Inverse);
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new CosineFunction(transformer.Transform(InnerExpression), Inverse);
     }
 }

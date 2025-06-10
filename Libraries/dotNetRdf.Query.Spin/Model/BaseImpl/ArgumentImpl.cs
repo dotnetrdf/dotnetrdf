@@ -27,49 +27,48 @@
 using System;
 using VDS.RDF.Query.Spin.LibraryOntology;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class ArgumentImpl : AbstractAttributeImpl, IArgument
 {
-    internal class ArgumentImpl : AbstractAttributeImpl, IArgument
+
+    public ArgumentImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
-
-        public ArgumentImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
-        }
-
-
-        public int? getArgIndex()
-        {
-            var varName = getVarName();
-            if (varName != null)
-            {
-                return SP.getArgPropertyIndex(varName);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-
-        public INode getDefaultValue()
-        {
-            return getObject(SPL.PropertyDefaultValue);
-        }
-
-
-        public String getVarName()
-        {
-            IResource argProperty = getPredicate();
-            if (argProperty != null)
-            {
-                return argProperty.Uri.ToString().Replace(SP.BASE_URI, "");
-            }
-            else
-            {
-                return null;
-            }
-        }
-
     }
+
+
+    public int? getArgIndex()
+    {
+        var varName = getVarName();
+        if (varName != null)
+        {
+            return SP.getArgPropertyIndex(varName);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    public INode getDefaultValue()
+    {
+        return getObject(SPL.PropertyDefaultValue);
+    }
+
+
+    public String getVarName()
+    {
+        IResource argProperty = getPredicate();
+        if (argProperty != null)
+        {
+            return argProperty.Uri.ToString().Replace(SP.BASE_URI, "");
+        }
+        else
+        {
+            return null;
+        }
+    }
+
 }

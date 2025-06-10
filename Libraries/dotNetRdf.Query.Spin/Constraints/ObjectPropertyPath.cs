@@ -24,21 +24,20 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Constraints
+namespace VDS.RDF.Query.Spin.Constraints;
+
+
+
+/**
+ * A SimplePropertyPath of the form SP->O.
+ * 
+ * @author Holger Knublauch
+ */
+internal class ObjectPropertyPath : SimplePropertyPath
 {
 
-
-    /**
-     * A SimplePropertyPath of the form SP->O.
-     * 
-     * @author Holger Knublauch
-     */
-    internal class ObjectPropertyPath : SimplePropertyPath
+    public ObjectPropertyPath(INode subject, INode predicate)
+        : base(subject, predicate)
     {
-
-        public ObjectPropertyPath(INode subject, INode predicate)
-            : base(subject, predicate)
-        {
-        }
     }
 }

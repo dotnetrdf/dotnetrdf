@@ -31,36 +31,35 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Query;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal abstract class Length : Numeric
 {
-    internal abstract class Length : Numeric
+    [DebuggerStepThrough]
+    internal Length(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal Length(Shape shape, INode node)
-            : base(shape, node)
-        {
-        }
+    }
 
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            IEnumerable<INode> invalidValues =
-                from valueNode in valueNodes
-                where valueNode.NodeType == NodeType.Blank || !ValidateInternal(SparqlLength(dataGraph, valueNode).CompareTo(NumericValue))
-                select valueNode;
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        IEnumerable<INode> invalidValues =
+            from valueNode in valueNodes
+            where valueNode.NodeType == NodeType.Blank || !ValidateInternal(SparqlLength(dataGraph, valueNode).CompareTo(NumericValue))
+            select valueNode;
 
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
+        return ReportValueNodes(focusNode, invalidValues, report);
+    }
 
-        protected abstract bool ValidateInternal(int comparison);
+    protected abstract bool ValidateInternal(int comparison);
 
-        private static int SparqlLength(IGraph dataGraph, INode node)
-        {
-            var query = new SparqlParameterizedString(@"
+    private static int SparqlLength(IGraph dataGraph, INode node)
+    {
+        var query = new SparqlParameterizedString(@"
 SELECT (STRLEN(STR($value)) AS ?length) {}
 ");
-            query.SetVariable("value", node);
+        query.SetVariable("value", node);
 
-            return (int)((SparqlResultSet)dataGraph.ExecuteQuery(query)).Single()["length"].AsValuedNode().AsInteger();
-        }
+        return (int)((SparqlResultSet)dataGraph.ExecuteQuery(query)).Single()["length"].AsValuedNode().AsInteger();
     }
 }

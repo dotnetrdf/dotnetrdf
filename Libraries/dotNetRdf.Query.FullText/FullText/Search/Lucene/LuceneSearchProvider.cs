@@ -30,107 +30,106 @@ using Lucene.Net.Store;
 using VDS.RDF.Query.FullText.Schema;
 using Lucene.Net.Util;
 
-namespace VDS.RDF.Query.FullText.Search.Lucene
+namespace VDS.RDF.Query.FullText.Search.Lucene;
+
+/// <summary>
+/// A Full Text Search provider using Lucene.Net.
+/// </summary>
+public class LuceneSearchProvider
+    : BaseLuceneSearchProvider
 {
     /// <summary>
-    /// A Full Text Search provider using Lucene.Net.
+    /// Creates a new Lucene Search Provider.
     /// </summary>
-    public class LuceneSearchProvider
-        : BaseLuceneSearchProvider
-    {
-        /// <summary>
-        /// Creates a new Lucene Search Provider.
-        /// </summary>
-        /// <param name="ver">Version.</param>
-        /// <param name="indexDir">Directory.</param>
-        /// <param name="analyzer">Analyzer.</param>
-        /// <param name="schema">Index Schema.</param>
-        /// <param name="autoSync">Whether to keep the search provider in sync with the index.</param>
-        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema, bool autoSync)
-            : base(ver, indexDir, analyzer, schema, autoSync) { }
+    /// <param name="ver">Version.</param>
+    /// <param name="indexDir">Directory.</param>
+    /// <param name="analyzer">Analyzer.</param>
+    /// <param name="schema">Index Schema.</param>
+    /// <param name="autoSync">Whether to keep the search provider in sync with the index.</param>
+    public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema, bool autoSync)
+        : base(ver, indexDir, analyzer, schema, autoSync) { }
 
-        /// <summary>
-        /// Creates a new Lucene Search Provider.
-        /// </summary>
-        /// <param name="ver">Version.</param>
-        /// <param name="indexDir">Directory.</param>
-        /// <param name="analyzer">Analyzer.</param>
-        /// <param name="schema">Index Schema.</param>
-        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
-            : this(ver, indexDir, analyzer, schema, true) { }
+    /// <summary>
+    /// Creates a new Lucene Search Provider.
+    /// </summary>
+    /// <param name="ver">Version.</param>
+    /// <param name="indexDir">Directory.</param>
+    /// <param name="analyzer">Analyzer.</param>
+    /// <param name="schema">Index Schema.</param>
+    public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
+        : this(ver, indexDir, analyzer, schema, true) { }
 
-        /// <summary>
-        /// Creates a new Lucene Search Provider.
-        /// </summary>
-        /// <param name="ver">Version.</param>
-        /// <param name="indexDir">Directory.</param>
-        /// <param name="analyzer">Analyzer.</param>
-        /// <param name="autoSync">Whether to keep the search provider in sync with the index.</param>
-        /// <remarks>
-        /// Uses the <see cref="DefaultIndexSchema">DefaultIndexSchema</see> as the schema.
-        /// </remarks>
-        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer, bool autoSync)
-            : this(ver, indexDir, analyzer, new DefaultIndexSchema(), autoSync) { }
+    /// <summary>
+    /// Creates a new Lucene Search Provider.
+    /// </summary>
+    /// <param name="ver">Version.</param>
+    /// <param name="indexDir">Directory.</param>
+    /// <param name="analyzer">Analyzer.</param>
+    /// <param name="autoSync">Whether to keep the search provider in sync with the index.</param>
+    /// <remarks>
+    /// Uses the <see cref="DefaultIndexSchema">DefaultIndexSchema</see> as the schema.
+    /// </remarks>
+    public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer, bool autoSync)
+        : this(ver, indexDir, analyzer, new DefaultIndexSchema(), autoSync) { }
 
-        /// <summary>
-        /// Creates a new Lucene Search Provider.
-        /// </summary>
-        /// <param name="ver">Version.</param>
-        /// <param name="indexDir">Directory.</param>
-        /// <param name="analyzer">Analyzer.</param>
-        /// <remarks>
-        /// Uses the <see cref="DefaultIndexSchema">DefaultIndexSchema</see> as the schema.
-        /// </remarks>
-        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer)
-            : this(ver, indexDir, analyzer, true) { }
+    /// <summary>
+    /// Creates a new Lucene Search Provider.
+    /// </summary>
+    /// <param name="ver">Version.</param>
+    /// <param name="indexDir">Directory.</param>
+    /// <param name="analyzer">Analyzer.</param>
+    /// <remarks>
+    /// Uses the <see cref="DefaultIndexSchema">DefaultIndexSchema</see> as the schema.
+    /// </remarks>
+    public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer)
+        : this(ver, indexDir, analyzer, true) { }
 
-        /// <summary>
-        /// Creates a new Lucene Search Provider.
-        /// </summary>
-        /// <param name="ver">Version.</param>
-        /// <param name="indexDir">Directory.</param>
-        /// <param name="schema">Index Schema.</param>
-        /// <param name="autoSync">Whether to keep the search provider in sync with the index.</param>
-        /// <remarks>
-        /// Uses the <see cref="StandardAnalyzer">StandardAnalyzer</see> as the analyzer.
-        /// </remarks>
-        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, IFullTextIndexSchema schema, bool autoSync)
-            : this(ver, indexDir, new StandardAnalyzer(ver), schema, autoSync) { }
+    /// <summary>
+    /// Creates a new Lucene Search Provider.
+    /// </summary>
+    /// <param name="ver">Version.</param>
+    /// <param name="indexDir">Directory.</param>
+    /// <param name="schema">Index Schema.</param>
+    /// <param name="autoSync">Whether to keep the search provider in sync with the index.</param>
+    /// <remarks>
+    /// Uses the <see cref="StandardAnalyzer">StandardAnalyzer</see> as the analyzer.
+    /// </remarks>
+    public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, IFullTextIndexSchema schema, bool autoSync)
+        : this(ver, indexDir, new StandardAnalyzer(ver), schema, autoSync) { }
 
-        
-        /// <summary>
-        /// Creates a new Lucene Search Provider.
-        /// </summary>
-        /// <param name="ver">Version.</param>
-        /// <param name="indexDir">Directory.</param>
-        /// <param name="schema">Index Schema.</param>
-        /// <remarks>
-        /// Uses the <see cref="StandardAnalyzer">StandardAnalyzer</see> as the analyzer.
-        /// </remarks>
-        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, IFullTextIndexSchema schema)
-            : this(ver, indexDir, schema, true) { }
+    
+    /// <summary>
+    /// Creates a new Lucene Search Provider.
+    /// </summary>
+    /// <param name="ver">Version.</param>
+    /// <param name="indexDir">Directory.</param>
+    /// <param name="schema">Index Schema.</param>
+    /// <remarks>
+    /// Uses the <see cref="StandardAnalyzer">StandardAnalyzer</see> as the analyzer.
+    /// </remarks>
+    public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, IFullTextIndexSchema schema)
+        : this(ver, indexDir, schema, true) { }
 
-        /// <summary>
-        /// Creates a new Lucene Search Provider.
-        /// </summary>
-        /// <param name="ver">Version.</param>
-        /// <param name="indexDir">Directory.</param>
-        /// <param name="autoSync">Whether to jeep the search provider in sync with the index.</param>
-        /// <remarks>
-        /// Uses the <see cref="DefaultIndexSchema">DefaultIndexSchema</see> as the schema and the <see cref="StandardAnalyzer">StandardAnalyzer</see> as the analyzer.
-        /// </remarks>
-        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, bool autoSync)
-            : this(ver, indexDir, new StandardAnalyzer(ver), new DefaultIndexSchema(), autoSync) { }
+    /// <summary>
+    /// Creates a new Lucene Search Provider.
+    /// </summary>
+    /// <param name="ver">Version.</param>
+    /// <param name="indexDir">Directory.</param>
+    /// <param name="autoSync">Whether to jeep the search provider in sync with the index.</param>
+    /// <remarks>
+    /// Uses the <see cref="DefaultIndexSchema">DefaultIndexSchema</see> as the schema and the <see cref="StandardAnalyzer">StandardAnalyzer</see> as the analyzer.
+    /// </remarks>
+    public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, bool autoSync)
+        : this(ver, indexDir, new StandardAnalyzer(ver), new DefaultIndexSchema(), autoSync) { }
 
-        /// <summary>
-        /// Creates a new Lucene Search Provider.
-        /// </summary>
-        /// <param name="ver">Version.</param>
-        /// <param name="indexDir">Directory.</param>
-        /// <remarks>
-        /// Uses the <see cref="DefaultIndexSchema">DefaultIndexSchema</see> as the schema and the <see cref="StandardAnalyzer">StandardAnalyzer</see> as the analyzer.
-        /// </remarks>
-        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir)
-            : this(ver, indexDir, true) { }
-    }
+    /// <summary>
+    /// Creates a new Lucene Search Provider.
+    /// </summary>
+    /// <param name="ver">Version.</param>
+    /// <param name="indexDir">Directory.</param>
+    /// <remarks>
+    /// Uses the <see cref="DefaultIndexSchema">DefaultIndexSchema</see> as the schema and the <see cref="StandardAnalyzer">StandardAnalyzer</see> as the analyzer.
+    /// </remarks>
+    public LuceneSearchProvider(LuceneVersion ver, Directory indexDir)
+        : this(ver, indexDir, true) { }
 }

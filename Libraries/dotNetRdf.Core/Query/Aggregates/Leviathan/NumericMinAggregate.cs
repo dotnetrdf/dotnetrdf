@@ -29,89 +29,88 @@ using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Aggregates.Leviathan
+namespace VDS.RDF.Query.Aggregates.Leviathan;
+
+/// <summary>
+/// Class representing NMIN Aggregate Functions.
+/// </summary>
+/// <remarks>
+/// Only operates over numeric data which is typed to one of the supported SPARQL Numeric types (integers, decimals and doubles).
+/// </remarks>
+public class NumericMinAggregate
+    : BaseAggregate
 {
     /// <summary>
-    /// Class representing NMIN Aggregate Functions.
+    /// Creates a new NMIN Aggregate.
     /// </summary>
-    /// <remarks>
-    /// Only operates over numeric data which is typed to one of the supported SPARQL Numeric types (integers, decimals and doubles).
-    /// </remarks>
-    public class NumericMinAggregate
-        : BaseAggregate
+    /// <param name="expr">Variable Expression.</param>
+    public NumericMinAggregate(VariableTerm expr)
+        : this(expr, false) { }
+
+    /// <summary>
+    /// Creates a new NMIN Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    public NumericMinAggregate(ISparqlExpression expr)
+        : this(expr, false) { }
+
+    /// <summary>
+    /// Creates a new NMIN Aggregate.
+    /// </summary>
+    /// <param name="expr">Variable Expression.</param>
+    /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
+    public NumericMinAggregate(VariableTerm expr, bool distinct)
+        : base(expr, distinct)
     {
-        /// <summary>
-        /// Creates a new NMIN Aggregate.
-        /// </summary>
-        /// <param name="expr">Variable Expression.</param>
-        public NumericMinAggregate(VariableTerm expr)
-            : this(expr, false) { }
+        Variable = expr.ToString().Substring(1);
+    }
 
-        /// <summary>
-        /// Creates a new NMIN Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public NumericMinAggregate(ISparqlExpression expr)
-            : this(expr, false) { }
+    /// <summary>
+    /// The variable to aggregate.
+    /// </summary>
+    public string Variable { get; }
 
-        /// <summary>
-        /// Creates a new NMIN Aggregate.
-        /// </summary>
-        /// <param name="expr">Variable Expression.</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
-        public NumericMinAggregate(VariableTerm expr, bool distinct)
-            : base(expr, distinct)
+    /// <summary>
+    /// Creates a new NMIN Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
+    public NumericMinAggregate(ISparqlExpression expr, bool distinct)
+        : base(expr, distinct) { }
+
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+        IEnumerable<TBinding> bindings)
+    {
+        return processor.ProcessNumericMin(this, context, bindings);
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Aggregate.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append('<');
+        output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
+        output.Append(LeviathanFunctionFactory.NumericMin);
+        output.Append(">(");
+        if (_distinct) output.Append("DISTINCT ");
+        output.Append(_expr);
+        output.Append(')');
+        return output.ToString();
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Aggregate.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            Variable = expr.ToString().Substring(1);
-        }
-
-        /// <summary>
-        /// The variable to aggregate.
-        /// </summary>
-        public string Variable { get; }
-
-        /// <summary>
-        /// Creates a new NMIN Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
-        public NumericMinAggregate(ISparqlExpression expr, bool distinct)
-            : base(expr, distinct) { }
-
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
-            IEnumerable<TBinding> bindings)
-        {
-            return processor.ProcessNumericMin(this, context, bindings);
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Aggregate.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append('<');
-            output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
-            output.Append(LeviathanFunctionFactory.NumericMin);
-            output.Append(">(");
-            if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr);
-            output.Append(')');
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Aggregate.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.NumericMin;
-            }
+            return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.NumericMin;
         }
     }
 }

@@ -26,19 +26,18 @@
 
 using System.Runtime.CompilerServices;
 
-namespace VDS.RDF.Ontology
-{
-    /// <summary>
-    /// <para>
-    /// The Ontology Namespace is based upon <a href="http://jena.sourceforge.net/ontology/">Jena's Ontology API</a>.  It allows for a more ontology-centric way of manipulating RDF graphs within the dotNetRDF API.
-    /// </para>
-    /// <para>
-    /// The <see cref="OntologyResource">OntologyResource</see> is the base class of resources and allows for the retrieval and manipulation of various common properties of a resource.  More specialised classes like <see cref="OntologyClass">OntologyClass</see> and <see cref="OntologyProperty">OntologyProperty</see> are used to work with classes and properties etc.
-    /// </para>
-    /// </summary>
-    [CompilerGenerated]
-    class NamespaceDoc
-    {
+namespace VDS.RDF.Ontology;
 
-    }
+/// <summary>
+/// <para>
+/// The Ontology Namespace is based upon <a href="http://jena.sourceforge.net/ontology/">Jena's Ontology API</a>.  It allows for a more ontology-centric way of manipulating RDF graphs within the dotNetRDF API.
+/// </para>
+/// <para>
+/// The <see cref="OntologyResource">OntologyResource</see> is the base class of resources and allows for the retrieval and manipulation of various common properties of a resource.  More specialised classes like <see cref="OntologyClass">OntologyClass</see> and <see cref="OntologyProperty">OntologyProperty</see> are used to work with classes and properties etc.
+/// </para>
+/// </summary>
+[CompilerGenerated]
+class NamespaceDoc
+{
+
 }

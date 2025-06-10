@@ -33,433 +33,432 @@ using VDS.RDF.Query.FullText.Search;
 using VDS.RDF.Query.FullText.Search.Lucene;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Query.FullText
+namespace VDS.RDF.Query.FullText;
+
+[Collection("FullText")]
+public class IndexSearchTests
 {
-    [Collection("FullText")]
-    public class IndexSearchTests
+    private LuceneTestHarness _testHarness;
+    public IndexSearchTests()
     {
-        private LuceneTestHarness _testHarness;
-        public IndexSearchTests()
+        _testHarness = new LuceneTestHarness();
+    }
+
+    private IGraph GetTestData()
+    {
+        var g = new Graph();
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        return g;
+    }
+
+    [Fact]
+    public void FullTextIndexSearchLuceneObjects()
+    {
+        IFullTextIndexer indexer = null;
+        IFullTextSearchProvider provider = null;
+        try
         {
-            _testHarness = new LuceneTestHarness();
+            indexer = new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
+            indexer.Index(GetTestData());
+        }
+        finally
+        {
+            if (indexer != null) indexer.Dispose();
         }
 
-        private IGraph GetTestData()
+        try
         {
-            var g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            return g;
+            provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
+            var formatter = new NTriplesFormatter();
+
+            foreach (IFullTextSearchResult result in provider.Match("http"))
+            {
+                Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
+            }
         }
-
-        [Fact]
-        public void FullTextIndexSearchLuceneObjects()
+        finally
         {
-            IFullTextIndexer indexer = null;
-            IFullTextSearchProvider provider = null;
-            try
-            {
-                indexer = new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
-                indexer.Index(GetTestData());
-            }
-            finally
-            {
-                if (indexer != null) indexer.Dispose();
-            }
-
-            try
-            {
-                provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
-                var formatter = new NTriplesFormatter();
-
-                foreach (IFullTextSearchResult result in provider.Match("http"))
-                {
-                    Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                }
-            }
-            finally
-            {
-                if (provider != null) provider.Dispose();
-            }
-
-        }
-
-        [Fact]
-        public void FullTextIndexSearchLuceneObjectsWithLimit()
-        {
-            IFullTextIndexer indexer = null;
-            IFullTextSearchProvider provider = null;
-            try
-            {
-                indexer = new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
-                indexer.Index(GetTestData());
-            }
-            finally
-            {
-                if (indexer != null) indexer.Dispose();
-            }
-
-            try
-            {
-                provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
-                var formatter = new NTriplesFormatter();
-
-                var i = 0;
-                foreach (IFullTextSearchResult result in provider.Match("http", 5))
-                {
-                    i++;
-                    Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                }
-                Assert.True(i <= 5, "Should be a max of 5 results");
-            }
-            finally
-            {
-                if (provider != null) provider.Dispose();
-            }
-
-        }
-
-        [Fact]
-        public void FullTextIndexSearchLuceneObjectsWithThreshold()
-        {
-            IFullTextIndexer indexer = null;
-            IFullTextSearchProvider provider = null;
-            try
-            {
-                indexer = new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
-                indexer.Index(GetTestData());
-            }
-            finally
-            {
-                if (indexer != null) indexer.Dispose();
-            }
-
-            try
-            {
-                provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
-                var formatter = new NTriplesFormatter();
-
-                foreach (IFullTextSearchResult result in provider.Match("http", 0.75d))
-                {
-                    Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                    Assert.True(result.Score >= 0.75d, "Score should be higher than desired threshold");
-                }
-            }
-            finally
-            {
-                if (provider != null) provider.Dispose();
-            }
-
-        }
-
-        [Fact]
-        public void FullTextIndexSearchLuceneObjectsWithLimitAndThreshold()
-        {
-            IFullTextIndexer indexer = null;
-            IFullTextSearchProvider provider = null;
-            try
-            {
-                indexer = new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
-                indexer.Index(GetTestData());
-            }
-            finally
-            {
-                if (indexer != null) indexer.Dispose();
-            }
-
-            try
-            {
-                provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
-                var formatter = new NTriplesFormatter();
-
-                var i = 0;
-                foreach (IFullTextSearchResult result in provider.Match("http", 1.0d, 5))
-                {
-                    i++;
-                    Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                    Assert.True(result.Score >= 1.0d, "Score should be higher than desired threshold");
-                }
-                Assert.True(i <= 5, "Should be a max of 5 results");
-            }
-            finally
-            {
-                if (provider != null) provider.Dispose();
-            }
-
-        }
-
-        [Fact]
-        public void FullTextIndexSearchLuceneSubjects()
-        {
-            IFullTextIndexer indexer = null;
-            IFullTextSearchProvider provider = null;
-            try
-            {
-                indexer = new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
-                indexer.Index(GetTestData());
-            }
-            finally
-            {
-                if (indexer != null) indexer.Dispose();
-            }
-
-            try
-            {
-                provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
-                var formatter = new NTriplesFormatter();
-
-                foreach (IFullTextSearchResult result in provider.Match("http"))
-                {
-                    Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                }
-            }
-            finally
-            {
-                if (provider != null) provider.Dispose();
-            }
-
-        }
-
-        [Fact]
-        public void FullTextIndexSearchLuceneSubjectsWithLimit()
-        {
-            IFullTextIndexer indexer = null;
-            IFullTextSearchProvider provider = null;
-            try
-            {
-                indexer = new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
-                indexer.Index(GetTestData());
-            }
-            finally
-            {
-                if (indexer != null) indexer.Dispose();
-            }
-
-            try
-            {
-                provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
-                var formatter = new NTriplesFormatter();
-
-                var i = 0;
-                foreach (IFullTextSearchResult result in provider.Match("http", 5))
-                {
-                    i++;
-                    Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                }
-                Assert.True(i <= 5, "Should be a max of 5 results");
-            }
-            finally
-            {
-                if (provider != null) provider.Dispose();
-            }
-
-        }
-
-        [Fact]
-        public void FullTextIndexSearchLuceneSubjectsWithThreshold()
-        {
-            IFullTextIndexer indexer = null;
-            IFullTextSearchProvider provider = null;
-            try
-            {
-                indexer = new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
-                indexer.Index(GetTestData());
-            }
-            finally
-            {
-                if (indexer != null) indexer.Dispose();
-            }
-
-            try
-            {
-                provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
-                var formatter = new NTriplesFormatter();
-
-                foreach (IFullTextSearchResult result in provider.Match("http", 0.75d))
-                {
-                    Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                    Assert.True(result.Score >= 0.75d, "Score should be higher than desired threshold");
-                }
-            }
-            finally
-            {
-                if (provider != null) provider.Dispose();
-            }
-
-        }
-
-        [Fact]
-        public void FullTextIndexSearchLuceneSubjectsWithLimitAndThreshold()
-        {
-            IFullTextIndexer indexer = null;
-            IFullTextSearchProvider provider = null;
-            try
-            {
-                indexer = new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
-                indexer.Index(GetTestData());
-            }
-            finally
-            {
-                if (indexer != null) indexer.Dispose();
-            }
-
-            try
-            {
-                provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
-                var formatter = new NTriplesFormatter();
-
-                var i = 0;
-                foreach (IFullTextSearchResult result in provider.Match("http", 1.0d, 5))
-                {
-                    i++;
-                    Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                    Assert.True(result.Score >= 1.0d, "Score should be higher than desired threshold");
-                }
-                Assert.True(i <= 5, "Should be a max of 5 results");
-            }
-            finally
-            {
-                if (provider != null) provider.Dispose();
-            }
-
-        }
-
-        [Fact]
-        public void FullTextIndexSearchLucenePredicates()
-        {
-            IFullTextIndexer indexer = null;
-            IFullTextSearchProvider provider = null;
-            try
-            {
-                indexer = new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
-                indexer.Index(GetTestData());
-            }
-            finally
-            {
-                if (indexer != null) indexer.Dispose();
-            }
-
-            try
-            {
-                provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
-                var formatter = new NTriplesFormatter();
-
-                foreach (IFullTextSearchResult result in provider.Match("http"))
-                {
-                    Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                }
-            }
-            finally
-            {
-                if (provider != null) provider.Dispose();
-            }
-
-        }
-
-        [Fact]
-        public void FullTextIndexSearchLucenePredicatesWithLimit()
-        {
-            IFullTextIndexer indexer = null;
-            IFullTextSearchProvider provider = null;
-            try
-            {
-                indexer = new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
-                indexer.Index(GetTestData());
-            }
-            finally
-            {
-                if (indexer != null) indexer.Dispose();
-            }
-
-            try
-            {
-                provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
-                var formatter = new NTriplesFormatter();
-
-                var i = 0;
-                foreach (IFullTextSearchResult result in provider.Match("http", 5))
-                {
-                    i++;
-                    Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                }
-                Assert.True(i <= 5, "Should be a max of 5 results");
-            }
-            finally
-            {
-                if (provider != null) provider.Dispose();
-            }
-
-        }
-
-        [Fact]
-        public void FullTextIndexSearchLucenePredicatesWithThreshold()
-        {
-            IFullTextIndexer indexer = null;
-            IFullTextSearchProvider provider = null;
-            try
-            {
-                indexer = new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
-                indexer.Index(GetTestData());
-            }
-            finally
-            {
-                if (indexer != null) indexer.Dispose();
-            }
-
-            try
-            {
-                provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
-                var formatter = new NTriplesFormatter();
-
-                foreach (IFullTextSearchResult result in provider.Match("http", 0.75d))
-                {
-                    Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                    Assert.True(result.Score >= 0.75d, "Score should be higher than desired threshold");
-                }
-            }
-            finally
-            {
-                if (provider != null) provider.Dispose();
-            }
-
-        }
-
-        [Fact]
-        public void FullTextIndexSearchLucenePredicatesWithLimitAndThreshold()
-        {
-            IFullTextIndexer indexer = null;
-            IFullTextSearchProvider provider = null;
-            try
-            {
-                indexer = new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
-                indexer.Index(GetTestData());
-            }
-            finally
-            {
-                if (indexer != null) indexer.Dispose();
-            }
-
-            try
-            {
-                provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
-                var formatter = new NTriplesFormatter();
-
-                var i = 0;
-                foreach (IFullTextSearchResult result in provider.Match("http", 1.0d, 5))
-                {
-                    i++;
-                    Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                    Assert.True(result.Score >= 1.0d, "Score should be higher than desired threshold");
-                }
-                Assert.True(i <= 5, "Should be a max of 5 results");
-            }
-            finally
-            {
-                if (provider != null) provider.Dispose();
-            }
-
+            if (provider != null) provider.Dispose();
         }
 
     }
+
+    [Fact]
+    public void FullTextIndexSearchLuceneObjectsWithLimit()
+    {
+        IFullTextIndexer indexer = null;
+        IFullTextSearchProvider provider = null;
+        try
+        {
+            indexer = new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
+            indexer.Index(GetTestData());
+        }
+        finally
+        {
+            if (indexer != null) indexer.Dispose();
+        }
+
+        try
+        {
+            provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
+            var formatter = new NTriplesFormatter();
+
+            var i = 0;
+            foreach (IFullTextSearchResult result in provider.Match("http", 5))
+            {
+                i++;
+                Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
+            }
+            Assert.True(i <= 5, "Should be a max of 5 results");
+        }
+        finally
+        {
+            if (provider != null) provider.Dispose();
+        }
+
+    }
+
+    [Fact]
+    public void FullTextIndexSearchLuceneObjectsWithThreshold()
+    {
+        IFullTextIndexer indexer = null;
+        IFullTextSearchProvider provider = null;
+        try
+        {
+            indexer = new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
+            indexer.Index(GetTestData());
+        }
+        finally
+        {
+            if (indexer != null) indexer.Dispose();
+        }
+
+        try
+        {
+            provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
+            var formatter = new NTriplesFormatter();
+
+            foreach (IFullTextSearchResult result in provider.Match("http", 0.75d))
+            {
+                Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
+                Assert.True(result.Score >= 0.75d, "Score should be higher than desired threshold");
+            }
+        }
+        finally
+        {
+            if (provider != null) provider.Dispose();
+        }
+
+    }
+
+    [Fact]
+    public void FullTextIndexSearchLuceneObjectsWithLimitAndThreshold()
+    {
+        IFullTextIndexer indexer = null;
+        IFullTextSearchProvider provider = null;
+        try
+        {
+            indexer = new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
+            indexer.Index(GetTestData());
+        }
+        finally
+        {
+            if (indexer != null) indexer.Dispose();
+        }
+
+        try
+        {
+            provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
+            var formatter = new NTriplesFormatter();
+
+            var i = 0;
+            foreach (IFullTextSearchResult result in provider.Match("http", 1.0d, 5))
+            {
+                i++;
+                Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
+                Assert.True(result.Score >= 1.0d, "Score should be higher than desired threshold");
+            }
+            Assert.True(i <= 5, "Should be a max of 5 results");
+        }
+        finally
+        {
+            if (provider != null) provider.Dispose();
+        }
+
+    }
+
+    [Fact]
+    public void FullTextIndexSearchLuceneSubjects()
+    {
+        IFullTextIndexer indexer = null;
+        IFullTextSearchProvider provider = null;
+        try
+        {
+            indexer = new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
+            indexer.Index(GetTestData());
+        }
+        finally
+        {
+            if (indexer != null) indexer.Dispose();
+        }
+
+        try
+        {
+            provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
+            var formatter = new NTriplesFormatter();
+
+            foreach (IFullTextSearchResult result in provider.Match("http"))
+            {
+                Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
+            }
+        }
+        finally
+        {
+            if (provider != null) provider.Dispose();
+        }
+
+    }
+
+    [Fact]
+    public void FullTextIndexSearchLuceneSubjectsWithLimit()
+    {
+        IFullTextIndexer indexer = null;
+        IFullTextSearchProvider provider = null;
+        try
+        {
+            indexer = new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
+            indexer.Index(GetTestData());
+        }
+        finally
+        {
+            if (indexer != null) indexer.Dispose();
+        }
+
+        try
+        {
+            provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
+            var formatter = new NTriplesFormatter();
+
+            var i = 0;
+            foreach (IFullTextSearchResult result in provider.Match("http", 5))
+            {
+                i++;
+                Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
+            }
+            Assert.True(i <= 5, "Should be a max of 5 results");
+        }
+        finally
+        {
+            if (provider != null) provider.Dispose();
+        }
+
+    }
+
+    [Fact]
+    public void FullTextIndexSearchLuceneSubjectsWithThreshold()
+    {
+        IFullTextIndexer indexer = null;
+        IFullTextSearchProvider provider = null;
+        try
+        {
+            indexer = new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
+            indexer.Index(GetTestData());
+        }
+        finally
+        {
+            if (indexer != null) indexer.Dispose();
+        }
+
+        try
+        {
+            provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
+            var formatter = new NTriplesFormatter();
+
+            foreach (IFullTextSearchResult result in provider.Match("http", 0.75d))
+            {
+                Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
+                Assert.True(result.Score >= 0.75d, "Score should be higher than desired threshold");
+            }
+        }
+        finally
+        {
+            if (provider != null) provider.Dispose();
+        }
+
+    }
+
+    [Fact]
+    public void FullTextIndexSearchLuceneSubjectsWithLimitAndThreshold()
+    {
+        IFullTextIndexer indexer = null;
+        IFullTextSearchProvider provider = null;
+        try
+        {
+            indexer = new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
+            indexer.Index(GetTestData());
+        }
+        finally
+        {
+            if (indexer != null) indexer.Dispose();
+        }
+
+        try
+        {
+            provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
+            var formatter = new NTriplesFormatter();
+
+            var i = 0;
+            foreach (IFullTextSearchResult result in provider.Match("http", 1.0d, 5))
+            {
+                i++;
+                Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
+                Assert.True(result.Score >= 1.0d, "Score should be higher than desired threshold");
+            }
+            Assert.True(i <= 5, "Should be a max of 5 results");
+        }
+        finally
+        {
+            if (provider != null) provider.Dispose();
+        }
+
+    }
+
+    [Fact]
+    public void FullTextIndexSearchLucenePredicates()
+    {
+        IFullTextIndexer indexer = null;
+        IFullTextSearchProvider provider = null;
+        try
+        {
+            indexer = new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
+            indexer.Index(GetTestData());
+        }
+        finally
+        {
+            if (indexer != null) indexer.Dispose();
+        }
+
+        try
+        {
+            provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
+            var formatter = new NTriplesFormatter();
+
+            foreach (IFullTextSearchResult result in provider.Match("http"))
+            {
+                Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
+            }
+        }
+        finally
+        {
+            if (provider != null) provider.Dispose();
+        }
+
+    }
+
+    [Fact]
+    public void FullTextIndexSearchLucenePredicatesWithLimit()
+    {
+        IFullTextIndexer indexer = null;
+        IFullTextSearchProvider provider = null;
+        try
+        {
+            indexer = new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
+            indexer.Index(GetTestData());
+        }
+        finally
+        {
+            if (indexer != null) indexer.Dispose();
+        }
+
+        try
+        {
+            provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
+            var formatter = new NTriplesFormatter();
+
+            var i = 0;
+            foreach (IFullTextSearchResult result in provider.Match("http", 5))
+            {
+                i++;
+                Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
+            }
+            Assert.True(i <= 5, "Should be a max of 5 results");
+        }
+        finally
+        {
+            if (provider != null) provider.Dispose();
+        }
+
+    }
+
+    [Fact]
+    public void FullTextIndexSearchLucenePredicatesWithThreshold()
+    {
+        IFullTextIndexer indexer = null;
+        IFullTextSearchProvider provider = null;
+        try
+        {
+            indexer = new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
+            indexer.Index(GetTestData());
+        }
+        finally
+        {
+            if (indexer != null) indexer.Dispose();
+        }
+
+        try
+        {
+            provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
+            var formatter = new NTriplesFormatter();
+
+            foreach (IFullTextSearchResult result in provider.Match("http", 0.75d))
+            {
+                Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
+                Assert.True(result.Score >= 0.75d, "Score should be higher than desired threshold");
+            }
+        }
+        finally
+        {
+            if (provider != null) provider.Dispose();
+        }
+
+    }
+
+    [Fact]
+    public void FullTextIndexSearchLucenePredicatesWithLimitAndThreshold()
+    {
+        IFullTextIndexer indexer = null;
+        IFullTextSearchProvider provider = null;
+        try
+        {
+            indexer = new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
+            indexer.Index(GetTestData());
+        }
+        finally
+        {
+            if (indexer != null) indexer.Dispose();
+        }
+
+        try
+        {
+            provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
+            var formatter = new NTriplesFormatter();
+
+            var i = 0;
+            foreach (IFullTextSearchResult result in provider.Match("http", 1.0d, 5))
+            {
+                i++;
+                Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
+                Assert.True(result.Score >= 1.0d, "Score should be higher than desired threshold");
+            }
+            Assert.True(i <= 5, "Should be a max of 5 results");
+        }
+        finally
+        {
+            if (provider != null) provider.Dispose();
+        }
+
+    }
+
 }
 
 #endif

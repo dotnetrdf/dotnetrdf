@@ -24,12 +24,11 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions
+namespace VDS.RDF.Query.Expressions.Functions;
+
+/// <summary>
+/// Represents a Full Text Match function, not currently used - reserved as a future extension point.
+/// </summary>
+public class FullTextMatchFunction
 {
-    /// <summary>
-    /// Represents a Full Text Match function, not currently used - reserved as a future extension point.
-    /// </summary>
-    public class FullTextMatchFunction
-    {
-    }
 }

@@ -28,127 +28,126 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql
+namespace VDS.RDF.Query.Expressions.Functions.Sparql;
+
+/// <summary>
+/// Class representing the SPARQL COALESCE() function.
+/// </summary>
+public class CoalesceFunction 
+    : ISparqlExpression
 {
+    private readonly List<ISparqlExpression> _expressions = new();
+
     /// <summary>
-    /// Class representing the SPARQL COALESCE() function.
+    /// Creates a new COALESCE function with the given expressions as its arguments.
     /// </summary>
-    public class CoalesceFunction 
-        : ISparqlExpression
+    /// <param name="expressions">Argument expressions.</param>
+    public CoalesceFunction(IEnumerable<ISparqlExpression> expressions)
     {
-        private readonly List<ISparqlExpression> _expressions = new();
+        _expressions.AddRange(expressions);
+    }
 
-        /// <summary>
-        /// Creates a new COALESCE function with the given expressions as its arguments.
-        /// </summary>
-        /// <param name="expressions">Argument expressions.</param>
-        public CoalesceFunction(IEnumerable<ISparqlExpression> expressions)
+    /// <summary>
+    /// Get the list of expressions to coalesce over.
+    /// </summary>
+    public IEnumerable<ISparqlExpression> InnerExpressions { get => _expressions; }
+
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessCoalesceFunction(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitCoalesceFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Variables used in all the argument expressions of this function.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get 
         {
-            _expressions.AddRange(expressions);
+            return (from e in _expressions
+                    from v in e.Variables
+                    select v);
         }
+    }
 
-        /// <summary>
-        /// Get the list of expressions to coalesce over.
-        /// </summary>
-        public IEnumerable<ISparqlExpression> InnerExpressions { get => _expressions; }
-
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append("COALESCE(");
+        for (var i = 0; i < _expressions.Count; i++)
         {
-            return processor.ProcessCoalesceFunction(this, context, binding);
-        }
-
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitCoalesceFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Variables used in all the argument expressions of this function.
-        /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get 
+            output.Append(_expressions[i]);
+            if (i < _expressions.Count - 1)
             {
-                return (from e in _expressions
-                        from v in e.Variables
-                        select v);
+                output.Append(", ");
             }
         }
+        output.Append(")");
+        return output.ToString();
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public SparqlExpressionType Type
+    {
+        get
         {
-            var output = new StringBuilder();
-            output.Append("COALESCE(");
-            for (var i = 0; i < _expressions.Count; i++)
-            {
-                output.Append(_expressions[i]);
-                if (i < _expressions.Count - 1)
-                {
-                    output.Append(", ");
-                }
-            }
-            output.Append(")");
-            return output.ToString();
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public SparqlExpressionType Type
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public string Functor
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return SparqlSpecsHelper.SparqlKeywordCoalesce;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public string Functor
+    /// <summary>
+    /// Gets the Arguments of the Expression.
+    /// </summary>
+    public IEnumerable<ISparqlExpression> Arguments
+    {
+        get
         {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordCoalesce;
-            }
+            return _expressions;
         }
+    }
 
-        /// <summary>
-        /// Gets the Arguments of the Expression.
-        /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+    /// <summary>
+    /// Gets whether an expression can safely be evaluated in parallel.
+    /// </summary>
+    public virtual bool CanParallelise
+    {
+        get
         {
-            get
-            {
-                return _expressions;
-            }
+            return _expressions.All(e => e.CanParallelise);
         }
+    }
 
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel.
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return _expressions.All(e => e.CanParallelise);
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new CoalesceFunction(_expressions.Select(e => transformer.Transform(e)));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new CoalesceFunction(_expressions.Select(e => transformer.Transform(e)));
     }
 }

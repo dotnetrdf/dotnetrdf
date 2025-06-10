@@ -27,389 +27,388 @@ using Xunit;
 using VDS.RDF.Query.Expressions.Arithmetic;
 using VDS.RDF.Query.Expressions.Comparison;
 
-namespace VDS.RDF.Query.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions;
+
+
+public class NumericExpressionTests : SparqlExpressionTestsBase
 {
-
-    public class NumericExpressionTests : SparqlExpressionTestsBase
+    public NumericExpressionTests()
     {
-        public NumericExpressionTests()
-        {
-            Left = 10.ToConstantTerm();
-            Right = 15.ToConstantTerm();
-        }
+        Left = 10.ToConstantTerm();
+        Right = 15.ToConstantTerm();
+    }
 
-        [Fact]
-        public void ShouldAllowComparingGenericAndNongenericNumericExpressions()
-        {
-            var left = new NumericExpression(Left);
-            var right = new NumericExpression<int>(15);
-            Right = right.Expression;
+    [Fact]
+    public void ShouldAllowComparingGenericAndNongenericNumericExpressions()
+    {
+        var left = new NumericExpression(Left);
+        var right = new NumericExpression<int>(15);
+        Right = right.Expression;
 
-            AssertExpressionTypeAndCorrectArguments<EqualsExpression>(left == right);
-            AssertExpressionTypeAndCorrectArguments<GreaterThanExpression>(left > right);
-            AssertExpressionTypeAndCorrectArguments<GreaterThanOrEqualToExpression>(left >= right);
-            AssertExpressionTypeAndCorrectArguments<LessThanExpression>(left < right);
-            AssertExpressionTypeAndCorrectArguments<LessThanOrEqualToExpression>(left <= right);
-            AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(left != right);
-        }
+        AssertExpressionTypeAndCorrectArguments<EqualsExpression>(left == right);
+        AssertExpressionTypeAndCorrectArguments<GreaterThanExpression>(left > right);
+        AssertExpressionTypeAndCorrectArguments<GreaterThanOrEqualToExpression>(left >= right);
+        AssertExpressionTypeAndCorrectArguments<LessThanExpression>(left < right);
+        AssertExpressionTypeAndCorrectArguments<LessThanOrEqualToExpression>(left <= right);
+        AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(left != right);
+    }
 
-        [Fact]
-        public void ShouldAllowComparingGenericAndNongenericNumericExpressionsReversed()
-        {
-            var right = new NumericExpression(Right);
-            var left = new NumericExpression<int>(15);
-            Left = left.Expression;
+    [Fact]
+    public void ShouldAllowComparingGenericAndNongenericNumericExpressionsReversed()
+    {
+        var right = new NumericExpression(Right);
+        var left = new NumericExpression<int>(15);
+        Left = left.Expression;
 
-            AssertExpressionTypeAndCorrectArguments<EqualsExpression>(left == right);
-            AssertExpressionTypeAndCorrectArguments<GreaterThanExpression>(left > right);
-            AssertExpressionTypeAndCorrectArguments<GreaterThanOrEqualToExpression>(left >= right);
-            AssertExpressionTypeAndCorrectArguments<LessThanExpression>(left < right);
-            AssertExpressionTypeAndCorrectArguments<LessThanOrEqualToExpression>(left <= right);
-            AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(left != right);
-        }
+        AssertExpressionTypeAndCorrectArguments<EqualsExpression>(left == right);
+        AssertExpressionTypeAndCorrectArguments<GreaterThanExpression>(left > right);
+        AssertExpressionTypeAndCorrectArguments<GreaterThanOrEqualToExpression>(left >= right);
+        AssertExpressionTypeAndCorrectArguments<LessThanExpression>(left < right);
+        AssertExpressionTypeAndCorrectArguments<LessThanOrEqualToExpression>(left <= right);
+        AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(left != right);
+    }
 
-        [Fact]
-        public void ShouldAllowArithmeticOperatorsWithGenericAndNongenericNumericExpressions()
-        {
-            var left = new NumericExpression(Left);
-            NumericExpression right = new NumericExpression<int>(15);
-            Right = right.Expression;
+    [Fact]
+    public void ShouldAllowArithmeticOperatorsWithGenericAndNongenericNumericExpressions()
+    {
+        var left = new NumericExpression(Left);
+        NumericExpression right = new NumericExpression<int>(15);
+        Right = right.Expression;
 
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / right);
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + right);
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - right);
-        }
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / right);
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + right);
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - right);
+    }
 
-        [Fact]
-        public void ShouldAllowArithmeticOperatorsWithGenericAndNongenericNumericExpressionsReversed()
-        {
-            var left = new NumericExpression(Left);
-            NumericExpression right = new NumericExpression<int>(15);
-            Right = right.Expression;
+    [Fact]
+    public void ShouldAllowArithmeticOperatorsWithGenericAndNongenericNumericExpressionsReversed()
+    {
+        var left = new NumericExpression(Left);
+        NumericExpression right = new NumericExpression<int>(15);
+        Right = right.Expression;
 
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / right);
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + right);
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - right);
-        }
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / right);
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + right);
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - right);
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndVariableExpression()
-        {
-            // given
-            var left = new NumericExpression(Left);
-            var right = new VariableExpression("number");
-            Right = right.Expression;
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndVariableExpression()
+    {
+        // given
+        var left = new NumericExpression(Left);
+        var right = new VariableExpression("number");
+        Right = right.Expression;
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / right);
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + right);
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - right);
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / right);
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + right);
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - right);
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndNumericExpression()
-        {
-            // given
-            var right = new NumericExpression(Right);
-            var left = new VariableExpression("number");
-            Left = left.Expression;
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndNumericExpression()
+    {
+        // given
+        var right = new NumericExpression(Right);
+        var left = new VariableExpression("number");
+        Left = left.Expression;
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / right);
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + right);
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - right);
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / right);
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + right);
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - right);
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndInteger()
-        {
-            // given
-            const int operandValue = 10;
-            var right = new NumericExpression(Right);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndInteger()
+    {
+        // given
+        const int operandValue = 10;
+        var right = new NumericExpression(Right);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithIntegerAndNumericExpression()
-        {
-            // given
-            const int operandValue = 10;
-            var left = new NumericExpression(Left);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithIntegerAndNumericExpression()
+    {
+        // given
+        const int operandValue = 10;
+        var left = new NumericExpression(Left);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndLongInteger()
-        {
-            // given
-            const long operandValue = 10;
-            var right = new NumericExpression(Right);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndLongInteger()
+    {
+        // given
+        const long operandValue = 10;
+        var right = new NumericExpression(Right);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithLongIntegerAndNumericExpression()
-        {
-            // given
-            const long operandValue = 10;
-            var left = new NumericExpression(Left);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithLongIntegerAndNumericExpression()
+    {
+        // given
+        const long operandValue = 10;
+        var left = new NumericExpression(Left);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndShortInteger()
-        {
-            // given
-            const short operandValue = 10;
-            var right = new NumericExpression(Right);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndShortInteger()
+    {
+        // given
+        const short operandValue = 10;
+        var right = new NumericExpression(Right);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithShortIntegerAndNumericExpression()
-        {
-            // given
-            const short operandValue = 10;
-            var left = new NumericExpression(Left);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithShortIntegerAndNumericExpression()
+    {
+        // given
+        const short operandValue = 10;
+        var left = new NumericExpression(Left);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndDecimal()
-        {
-            // given
-            const decimal operandValue = 10.5m;
-            var right = new NumericExpression(Right);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndDecimal()
+    {
+        // given
+        const decimal operandValue = 10.5m;
+        var right = new NumericExpression(Right);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithDecimalAndNumericExpression()
-        {
-            // given
-            const decimal operandValue = 10.5m;
-            var left = new NumericExpression(Left);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithDecimalAndNumericExpression()
+    {
+        // given
+        const decimal operandValue = 10.5m;
+        var left = new NumericExpression(Left);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndDouble()
-        {
-            // given
-            const double operandValue = 10.5d;
-            var right = new NumericExpression(Right);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndDouble()
+    {
+        // given
+        const double operandValue = 10.5d;
+        var right = new NumericExpression(Right);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithDoubleAndNumericExpression()
-        {
-            // given
-            const double operandValue = 10.5d;
-            var left = new NumericExpression(Left);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithDoubleAndNumericExpression()
+    {
+        // given
+        const double operandValue = 10.5d;
+        var left = new NumericExpression(Left);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndFloat()
-        {
-            // given
-            const float operandValue = 10.5f;
-            var right = new NumericExpression(Right);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndFloat()
+    {
+        // given
+        const float operandValue = 10.5f;
+        var right = new NumericExpression(Right);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithFloatAndNumericExpression()
-        {
-            // given
-            const float operandValue = 10.5f;
-            var left = new NumericExpression(Left);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithFloatAndNumericExpression()
+    {
+        // given
+        const float operandValue = 10.5f;
+        var left = new NumericExpression(Left);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndByte()
-        {
-            // given
-            const byte operandValue = 10;
-            var right = new NumericExpression(Right);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndByte()
+    {
+        // given
+        const byte operandValue = 10;
+        var right = new NumericExpression(Right);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithByteAndNumericExpression()
-        {
-            // given
-            const byte operandValue = 10;
-            var left = new NumericExpression(Left);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithByteAndNumericExpression()
+    {
+        // given
+        const byte operandValue = 10;
+        var left = new NumericExpression(Left);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndSignedByte()
-        {
-            // given
-            const sbyte operandValue = 10;
-            var right = new NumericExpression(Right);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndSignedByte()
+    {
+        // given
+        const sbyte operandValue = 10;
+        var right = new NumericExpression(Right);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithSignedByteAndNumericExpression()
-        {
-            // given
-            const sbyte operandValue = 10;
-            var left = new NumericExpression(Left);
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithSignedByteAndNumericExpression()
+    {
+        // given
+        const sbyte operandValue = 10;
+        var left = new NumericExpression(Left);
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
     }
 }

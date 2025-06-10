@@ -29,57 +29,56 @@ using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Utils.Describe;
 
-namespace VDS.RDF.Shacl.Validation
+namespace VDS.RDF.Shacl.Validation;
+
+internal class ReportDescribeAlgorithm : BaseDescribeAlgorithm
 {
-    internal class ReportDescribeAlgorithm : BaseDescribeAlgorithm
+    protected override void DescribeInternal(IRdfHandler handler, ITripleIndex index, IEnumerable<INode> nodes)
     {
-        protected override void DescribeInternal(IRdfHandler handler, ITripleIndex index, IEnumerable<INode> nodes)
+        var bnodeMapping = new Dictionary<string, INode>();
+        var map = new Dictionary<INode, INode>();
+        var outstanding = new Queue<INode>();
+        var done = new HashSet<INode>();
+
+        void process(INode originalSubject, INode mappedSubject = null)
         {
-            var bnodeMapping = new Dictionary<string, INode>();
-            var map = new Dictionary<INode, INode>();
-            var outstanding = new Queue<INode>();
-            var done = new HashSet<INode>();
-
-            void process(INode originalSubject, INode mappedSubject = null)
+            foreach (Triple t in index.GetTriplesWithSubject(originalSubject))
             {
-                foreach (Triple t in index.GetTriplesWithSubject(originalSubject))
+                INode @object = t.Object;
+                if (@object.NodeType == NodeType.Blank && !done.Contains(@object))
                 {
-                    INode @object = t.Object;
-                    if (@object.NodeType == NodeType.Blank && !done.Contains(@object))
+                    if (Vocabulary.PredicatesToExpandInReport.Contains(t.Predicate))
                     {
-                        if (Vocabulary.PredicatesToExpandInReport.Contains(t.Predicate))
-                        {
-                            @object = handler.CreateBlankNode();
-                            map.Add(@object, t.Object);
-                            outstanding.Enqueue(@object);
-                        }
-                    }
-
-                    if (!handler.HandleTriple(RewriteDescribeBNodes(new Triple(mappedSubject ?? originalSubject, t.Predicate, @object), bnodeMapping, handler)))
-                    {
-                        ParserHelper.Stop();
+                        @object = handler.CreateBlankNode();
+                        map.Add(@object, t.Object);
+                        outstanding.Enqueue(@object);
                     }
                 }
-            }
 
-            foreach (INode node in nodes)
-            {
-                process(node);
-
-                while (outstanding.Any())
+                if (!handler.HandleTriple(RewriteDescribeBNodes(new Triple(mappedSubject ?? originalSubject, t.Predicate, @object), bnodeMapping, handler)))
                 {
-                    INode mappedSubject = outstanding.Dequeue();
+                    ParserHelper.Stop();
+                }
+            }
+        }
 
-                    if (done.Add(mappedSubject))
+        foreach (INode node in nodes)
+        {
+            process(node);
+
+            while (outstanding.Any())
+            {
+                INode mappedSubject = outstanding.Dequeue();
+
+                if (done.Add(mappedSubject))
+                {
+                    if (map.TryGetValue(mappedSubject, out INode originalSubject))
                     {
-                        if (map.TryGetValue(mappedSubject, out INode originalSubject))
-                        {
-                            process(originalSubject, mappedSubject);
-                        }
-                        else
-                        {
-                            process(mappedSubject);
-                        }
+                        process(originalSubject, mappedSubject);
+                    }
+                    else
+                    {
+                        process(mappedSubject);
                     }
                 }
             }

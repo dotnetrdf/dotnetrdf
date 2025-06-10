@@ -26,48 +26,47 @@
 
 using System;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Class for representing Literal Nodes where the Literal values are not normalized.
+/// </summary>
+internal class NonNormalizedLiteralNode 
+    : LiteralNode, IComparable<NonNormalizedLiteralNode>
 {
     /// <summary>
-    /// Class for representing Literal Nodes where the Literal values are not normalized.
+    /// Internal Only Constructor for Literal Nodes.
     /// </summary>
-    internal class NonNormalizedLiteralNode 
-        : LiteralNode, IComparable<NonNormalizedLiteralNode>
+    /// <param name="literal">String value of the Literal.</param>
+    protected internal NonNormalizedLiteralNode(string literal)
+        : base(literal, false) { }
+
+    /// <summary>
+    /// Internal Only Constructor for Literal Nodes.
+    /// </summary>
+    /// <param name="literal">String value of the Literal.</param>
+    /// <param name="langspec">Language Specifier for the Literal.</param>
+    protected internal NonNormalizedLiteralNode(string literal, string langspec)
+        : base(literal, langspec, false) { }
+
+    /// <summary>
+    /// Internal Only Constructor for Literal Nodes.
+    /// </summary>
+    /// <param name="literal">String value of the Literal.</param>
+    /// <param name="datatype">Uri for the Literals Data Type.</param>
+    protected internal NonNormalizedLiteralNode(string literal, Uri datatype)
+        : base(literal, datatype, false) { }
+
+    /// <summary>
+    /// Implementation of Compare To for Literal Nodes.
+    /// </summary>
+    /// <param name="other">Literal Node to Compare To.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Simply invokes the more general implementation of this method.
+    /// </remarks>
+    public int CompareTo(NonNormalizedLiteralNode other)
     {
-        /// <summary>
-        /// Internal Only Constructor for Literal Nodes.
-        /// </summary>
-        /// <param name="literal">String value of the Literal.</param>
-        protected internal NonNormalizedLiteralNode(string literal)
-            : base(literal, false) { }
-
-        /// <summary>
-        /// Internal Only Constructor for Literal Nodes.
-        /// </summary>
-        /// <param name="literal">String value of the Literal.</param>
-        /// <param name="langspec">Language Specifier for the Literal.</param>
-        protected internal NonNormalizedLiteralNode(string literal, string langspec)
-            : base(literal, langspec, false) { }
-
-        /// <summary>
-        /// Internal Only Constructor for Literal Nodes.
-        /// </summary>
-        /// <param name="literal">String value of the Literal.</param>
-        /// <param name="datatype">Uri for the Literals Data Type.</param>
-        protected internal NonNormalizedLiteralNode(string literal, Uri datatype)
-            : base(literal, datatype, false) { }
-
-        /// <summary>
-        /// Implementation of Compare To for Literal Nodes.
-        /// </summary>
-        /// <param name="other">Literal Node to Compare To.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Simply invokes the more general implementation of this method.
-        /// </remarks>
-        public int CompareTo(NonNormalizedLiteralNode other)
-        {
-            return CompareTo((ILiteralNode)other);
-        }
+        return CompareTo((ILiteralNode)other);
     }
 }

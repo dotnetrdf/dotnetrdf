@@ -28,64 +28,63 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Query.Expressions.Primary
+namespace VDS.RDF.Query.Expressions.Primary;
+
+/// <summary>
+/// Class for representing a triple node term.
+/// </summary>
+public class TripleNodeTerm : ISparqlExpression
 {
     /// <summary>
-    /// Class for representing a triple node term.
+    /// The triple node this term represents.
     /// </summary>
-    public class TripleNodeTerm : ISparqlExpression
+    public ITripleNode Node { get; }
+
+    /// <summary>
+    /// Create a new term.
+    /// </summary>
+    /// <param name="n">The triple node this term represents.</param>
+    public TripleNodeTerm(ITripleNode n)
     {
-        /// <summary>
-        /// The triple node this term represents.
-        /// </summary>
-        public ITripleNode Node { get; }
-
-        /// <summary>
-        /// Create a new term.
-        /// </summary>
-        /// <param name="n">The triple node this term represents.</param>
-        public TripleNodeTerm(ITripleNode n)
-        {
-            Node = n;
-        }
-
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessTripleNodeTerm(this, context, binding);
-        }
-
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public IEnumerable<string> Variables {
-            get
-            {
-                return Node.Triple.Nodes.OfType<IVariableNode>().Select(vn => vn.VariableName).Distinct();
-            }
-
-        }
-
-        /// <inheritdoc />
-        public SparqlExpressionType Type => SparqlExpressionType.Primary;
-
-        /// <inheritdoc />
-        public string Functor => string.Empty;
-
-        /// <inheritdoc />
-        public IEnumerable<ISparqlExpression> Arguments => Enumerable.Empty<ISparqlExpression>();
-
-        /// <inheritdoc />
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return transformer.Transform(this);
-        }
-
-        /// <inheritdoc />
-        public bool CanParallelise => true;
+        Node = n;
     }
+
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessTripleNodeTerm(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<string> Variables {
+        get
+        {
+            return Node.Triple.Nodes.OfType<IVariableNode>().Select(vn => vn.VariableName).Distinct();
+        }
+
+    }
+
+    /// <inheritdoc />
+    public SparqlExpressionType Type => SparqlExpressionType.Primary;
+
+    /// <inheritdoc />
+    public string Functor => string.Empty;
+
+    /// <inheritdoc />
+    public IEnumerable<ISparqlExpression> Arguments => Enumerable.Empty<ISparqlExpression>();
+
+    /// <inheritdoc />
+    public ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return transformer.Transform(this);
+    }
+
+    /// <inheritdoc />
+    public bool CanParallelise => true;
 }

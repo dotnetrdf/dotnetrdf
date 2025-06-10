@@ -27,121 +27,120 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers;
+
+/// <summary>
+/// A RDF Handler that rewrites the Graph URIs of Triples before passing them to an inner handler.
+/// </summary>
+public class GraphUriRewriteHandler
+    : BaseRdfHandler, IWrappingRdfHandler
 {
+    private readonly IRdfHandler _handler;
+    private readonly IRefNode _graphName;
+
     /// <summary>
-    /// A RDF Handler that rewrites the Graph URIs of Triples before passing them to an inner handler.
+    /// Creates a new Graph URI rewriting handler.
     /// </summary>
-    public class GraphUriRewriteHandler
-        : BaseRdfHandler, IWrappingRdfHandler
+    /// <param name="handler">Handler to wrap.</param>
+    /// <param name="graphUri">Graph URI to rewrite to.</param>
+    public GraphUriRewriteHandler(IRdfHandler handler, Uri graphUri)
+        : base()
     {
-        private readonly IRdfHandler _handler;
-        private readonly IRefNode _graphName;
+        _handler = handler;
+        _graphName = new UriNode(graphUri);
+    }
 
-        /// <summary>
-        /// Creates a new Graph URI rewriting handler.
-        /// </summary>
-        /// <param name="handler">Handler to wrap.</param>
-        /// <param name="graphUri">Graph URI to rewrite to.</param>
-        public GraphUriRewriteHandler(IRdfHandler handler, Uri graphUri)
-            : base()
+    /// <summary>
+    /// Creates a new Graph URI rewriting handler.
+    /// </summary>
+    /// <param name="handler">Handler to wrap.</param>
+    /// <param name="graphName">Graph name to rewrite to.</param>
+    public GraphUriRewriteHandler(IRdfHandler handler, IRefNode graphName)
+    {
+        _handler = handler;
+        _graphName = graphName;
+    }
+
+    /// <summary>
+    /// Gets the Inner Handler.
+    /// </summary>
+    public IEnumerable<IRdfHandler> InnerHandlers
+    {
+        get
         {
-            _handler = handler;
-            _graphName = new UriNode(graphUri);
+            return _handler.AsEnumerable();
         }
+    }
 
-        /// <summary>
-        /// Creates a new Graph URI rewriting handler.
-        /// </summary>
-        /// <param name="handler">Handler to wrap.</param>
-        /// <param name="graphName">Graph name to rewrite to.</param>
-        public GraphUriRewriteHandler(IRdfHandler handler, IRefNode graphName)
-        {
-            _handler = handler;
-            _graphName = graphName;
-        }
+    /// <summary>
+    /// Starts handling of RDF.
+    /// </summary>
+    protected override void StartRdfInternal()
+    {
+        base.StartRdfInternal();
+        _handler.StartRdf();
+    }
 
-        /// <summary>
-        /// Gets the Inner Handler.
-        /// </summary>
-        public IEnumerable<IRdfHandler> InnerHandlers
-        {
-            get
-            {
-                return _handler.AsEnumerable();
-            }
-        }
+    /// <summary>
+    /// Ends handling of RDF.
+    /// </summary>
+    /// <param name="ok">Whether parsing completed OK.</param>
+    protected override void EndRdfInternal(bool ok)
+    {
+        _handler.EndRdf(ok);
+        base.EndRdfInternal(ok);
+    }
 
-        /// <summary>
-        /// Starts handling of RDF.
-        /// </summary>
-        protected override void StartRdfInternal()
-        {
-            base.StartRdfInternal();
-            _handler.StartRdf();
-        }
+    /// <summary>
+    /// Handles a Base URI declaration.
+    /// </summary>
+    /// <param name="baseUri">Base URI.</param>
+    /// <returns></returns>
+    protected override bool HandleBaseUriInternal(Uri baseUri)
+    {
+        return _handler.HandleBaseUri(baseUri);
+    }
 
-        /// <summary>
-        /// Ends handling of RDF.
-        /// </summary>
-        /// <param name="ok">Whether parsing completed OK.</param>
-        protected override void EndRdfInternal(bool ok)
-        {
-            _handler.EndRdf(ok);
-            base.EndRdfInternal(ok);
-        }
+    /// <summary>
+    /// Handles a Namespace declaration.
+    /// </summary>
+    /// <param name="prefix">Namespace Prefix.</param>
+    /// <param name="namespaceUri">Namespace URI.</param>
+    /// <returns></returns>
+    protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
+    {
+        return _handler.HandleNamespace(prefix, namespaceUri);
+    }
 
-        /// <summary>
-        /// Handles a Base URI declaration.
-        /// </summary>
-        /// <param name="baseUri">Base URI.</param>
-        /// <returns></returns>
-        protected override bool HandleBaseUriInternal(Uri baseUri)
-        {
-            return _handler.HandleBaseUri(baseUri);
-        }
+    /// <summary>
+    /// Handles a Triple by rewriting the Graph URI and passing it to the inner handler.
+    /// </summary>
+    /// <param name="t">Triple.</param>
+    /// <returns></returns>
+    protected override bool HandleTripleInternal(Triple t)
+    {
+        return _handler.HandleQuad(t, _graphName);
+    }
 
-        /// <summary>
-        /// Handles a Namespace declaration.
-        /// </summary>
-        /// <param name="prefix">Namespace Prefix.</param>
-        /// <param name="namespaceUri">Namespace URI.</param>
-        /// <returns></returns>
-        protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
-        {
-            return _handler.HandleNamespace(prefix, namespaceUri);
-        }
+    /// <summary>
+    /// Handles a quad by rewriting the graph name and passing it to the inner handler.
+    /// </summary>
+    /// <param name="t">Triple.</param>
+    /// <param name="graph">The name of the graph containing the triple.</param>
+    /// <returns></returns>
+    protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+    {
+        return _handler.HandleQuad(t, _graphName);
+    }
 
-        /// <summary>
-        /// Handles a Triple by rewriting the Graph URI and passing it to the inner handler.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        protected override bool HandleTripleInternal(Triple t)
+    /// <summary>
+    /// Returns true since this handler accepts all triples.
+    /// </summary>
+    public override bool AcceptsAll
+    {
+        get 
         {
-            return _handler.HandleQuad(t, _graphName);
-        }
-
-        /// <summary>
-        /// Handles a quad by rewriting the graph name and passing it to the inner handler.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <param name="graph">The name of the graph containing the triple.</param>
-        /// <returns></returns>
-        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
-        {
-            return _handler.HandleQuad(t, _graphName);
-        }
-
-        /// <summary>
-        /// Returns true since this handler accepts all triples.
-        /// </summary>
-        public override bool AcceptsAll
-        {
-            get 
-            {
-                return true; 
-            }
+            return true; 
         }
     }
 }

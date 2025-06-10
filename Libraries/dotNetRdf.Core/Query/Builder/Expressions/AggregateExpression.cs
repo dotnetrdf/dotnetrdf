@@ -26,18 +26,17 @@
 
 using VDS.RDF.Query.Aggregates;
 
-namespace VDS.RDF.Query.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions;
+
+/// <summary>
+/// Represents a SPARQL aggregate.
+/// </summary>
+public class AggregateExpression : PrimaryExpression<ISparqlAggregate>
 {
     /// <summary>
-    /// Represents a SPARQL aggregate.
+    /// Initializes a new instance of the <see cref="AggregateExpression"/> class.
     /// </summary>
-    public class AggregateExpression : PrimaryExpression<ISparqlAggregate>
+    public AggregateExpression(ISparqlAggregate expression) : base(expression)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateExpression"/> class.
-        /// </summary>
-        public AggregateExpression(ISparqlAggregate expression) : base(expression)
-        {
-        }
     }
 }

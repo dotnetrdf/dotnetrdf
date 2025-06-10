@@ -26,33 +26,32 @@
 
 using System;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Configuration options that can be passed to the <see cref="NodeFactory"/> constructor.
+/// </summary>
+public class NodeFactoryOptions
 {
     /// <summary>
-    /// Configuration options that can be passed to the <see cref="NodeFactory"/> constructor.
+    /// The initial base URI to use for the resolution of relative URI references. Defaults to null.
     /// </summary>
-    public class NodeFactoryOptions
-    {
-        /// <summary>
-        /// The initial base URI to use for the resolution of relative URI references. Defaults to null.
-        /// </summary>
-        public Uri BaseUri { get; set; }
+    public Uri BaseUri { get; set; }
 
-        /// <summary>
-        /// Whether or not to normalize the value strings of literal nodes.
-        /// </summary>
-        public bool NormalizeLiteralValues { get; set; }
+    /// <summary>
+    /// Whether or not to normalize the value strings of literal nodes.
+    /// </summary>
+    public bool NormalizeLiteralValues { get; set; }
 
-        /// <summary>
-        /// Whether or not to validate the language specifier of language-tagged literal nodes.
-        /// </summary>
-        [Obsolete("Replaced by NodeFactoryOptions.LanguageTagValidation")]
-        public bool ValidateLanguageSpecifiers { get; set; } = true;
+    /// <summary>
+    /// Whether or not to validate the language specifier of language-tagged literal nodes.
+    /// </summary>
+    [Obsolete("Replaced by NodeFactoryOptions.LanguageTagValidation")]
+    public bool ValidateLanguageSpecifiers { get; set; } = true;
 
-        /// <summary>
-        /// Set the type of validation applied to the language specified of language tagged literal nodes.
-        /// </summary>
-        public LanguageTagValidationMode LanguageTagValidation { get; set; } = LanguageTagValidationMode.Turtle;
+    /// <summary>
+    /// Set the type of validation applied to the language specified of language tagged literal nodes.
+    /// </summary>
+    public LanguageTagValidationMode LanguageTagValidation { get; set; } = LanguageTagValidationMode.Turtle;
 
-    }
 }

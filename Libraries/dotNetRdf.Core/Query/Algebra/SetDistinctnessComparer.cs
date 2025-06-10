@@ -28,81 +28,80 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+
+/// <summary>
+/// Comparer for checking whether sets are distinct, check may either be using the entire set or by using only a subset of variables.
+/// </summary>
+public class SetDistinctnessComparer
+    : IEqualityComparer<ISet>
 {
+    private List<string> _vars = new List<string>();
 
     /// <summary>
-    /// Comparer for checking whether sets are distinct, check may either be using the entire set or by using only a subset of variables.
+    /// Creates a new comparer that compares across all variables.
     /// </summary>
-    public class SetDistinctnessComparer
-        : IEqualityComparer<ISet>
+    public SetDistinctnessComparer() { }
+
+    /// <summary>
+    /// Creates a new comparer that compare only on the specific variables.
+    /// </summary>
+    /// <param name="variables">Variables.</param>
+    public SetDistinctnessComparer(IEnumerable<string> variables)
     {
-        private List<string> _vars = new List<string>();
+        _vars.AddRange(variables);
+    }
 
-        /// <summary>
-        /// Creates a new comparer that compares across all variables.
-        /// </summary>
-        public SetDistinctnessComparer() { }
+    /// <summary>
+    /// Determines whether the given sets are equal.
+    /// </summary>
+    /// <param name="x">First Set.</param>
+    /// <param name="y">Second Set.</param>
+    /// <returns>True if sets are equal, false otherwise.</returns>
+    public bool Equals(ISet x, ISet y)
+    {
+        // Both null considered equal
+        if (x == null && y == null) return true;
+        // Only one null considered non-equal
+        if (x == null || y == null) return false;
 
-        /// <summary>
-        /// Creates a new comparer that compare only on the specific variables.
-        /// </summary>
-        /// <param name="variables">Variables.</param>
-        public SetDistinctnessComparer(IEnumerable<string> variables)
+        if (_vars.Count == 0)
         {
-            _vars.AddRange(variables);
+            // If no specific variables then use standard ISet implementation of equality
+            // i.e. compare for equality across all variables in the sets
+            return x.Equals(y);
         }
-
-        /// <summary>
-        /// Determines whether the given sets are equal.
-        /// </summary>
-        /// <param name="x">First Set.</param>
-        /// <param name="y">Second Set.</param>
-        /// <returns>True if sets are equal, false otherwise.</returns>
-        public bool Equals(ISet x, ISet y)
+        else
         {
-            // Both null considered equal
-            if (x == null && y == null) return true;
-            // Only one null considered non-equal
-            if (x == null || y == null) return false;
-
-            if (_vars.Count == 0)
-            {
-                // If no specific variables then use standard ISet implementation of equality
-                // i.e. compare for equality across all variables in the sets
-                return x.Equals(y);
-            }
-            else
-            {
-                // Otherwise compare for equality on specified variables
-                return _vars.All(v => (x[v] == null && y[v] == null) || (x[v] != null && x[v].Equals(y[v])));
-            }
+            // Otherwise compare for equality on specified variables
+            return _vars.All(v => (x[v] == null && y[v] == null) || (x[v] != null && x[v].Equals(y[v])));
         }
+    }
 
-        /// <summary>
-        /// Gets the hash code for a set.
-        /// </summary>
-        /// <param name="obj">Set.</param>
-        /// <returns>Hash Code.</returns>
-        public int GetHashCode(ISet obj)
+    /// <summary>
+    /// Gets the hash code for a set.
+    /// </summary>
+    /// <param name="obj">Set.</param>
+    /// <returns>Hash Code.</returns>
+    public int GetHashCode(ISet obj)
+    {
+        if (obj == null) return 0;
+
+        if (_vars.Count == 0)
         {
-            if (obj == null) return 0;
-
-            if (_vars.Count == 0)
+            return obj.GetHashCode();
+        }
+        else
+        {
+            var output = new StringBuilder();
+            foreach (var var in _vars)
             {
-                return obj.GetHashCode();
+                output.Append("?" + var + " = " + obj[var].ToSafeString());
+                output.Append(" , ");
             }
-            else
-            {
-                var output = new StringBuilder();
-                foreach (var var in _vars)
-                {
-                    output.Append("?" + var + " = " + obj[var].ToSafeString());
-                    output.Append(" , ");
-                }
-                output.Remove(output.Length - 3, 3);
-                return output.ToString().GetHashCode();
-            }
+            output.Remove(output.Length - 3, 3);
+            return output.ToString().GetHashCode();
         }
     }
 }

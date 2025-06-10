@@ -28,63 +28,62 @@ using System.Collections.Generic;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Utils.Describe;
 
-namespace VDS.RDF.Query.Describe
+namespace VDS.RDF.Query.Describe;
+
+/// <summary>
+/// Wrapper class that implements the <see cref="ISparqlDescribe"/> interface for describing SPARQL query results by
+/// delegating to a <see cref="IDescribeAlgorithm"/> implementation to do the extraction from the query dataset.
+/// </summary>
+public class SparqlDescriber
+    : ISparqlDescribe
 {
+    private readonly IDescribeAlgorithm _describeAlgorithm;
+
     /// <summary>
-    /// Wrapper class that implements the <see cref="ISparqlDescribe"/> interface for describing SPARQL query results by
-    /// delegating to a <see cref="IDescribeAlgorithm"/> implementation to do the extraction from the query dataset.
+    /// Create a new describer instance that uses the specified algorithm.
     /// </summary>
-    public class SparqlDescriber
-        : ISparqlDescribe
+    /// <param name="describeAlgorithm">Describe algorithm.</param>
+    public SparqlDescriber(IDescribeAlgorithm describeAlgorithm)
     {
-        private readonly IDescribeAlgorithm _describeAlgorithm;
-
-        /// <summary>
-        /// Create a new describer instance that uses the specified algorithm.
-        /// </summary>
-        /// <param name="describeAlgorithm">Describe algorithm.</param>
-        public SparqlDescriber(IDescribeAlgorithm describeAlgorithm)
-        {
-            _describeAlgorithm = describeAlgorithm;
-        }
-
-        /// <summary>
-        /// Gets the Description Graph based on the Query Results from the given Evaluation Context.
-        /// </summary>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        /// <returns></returns>
-        public IGraph Describe(SparqlEvaluationContext context)
-        {
-            var g = new Graph();
-            Describe(new GraphHandler(g), (ISparqlDescribeContext)context);
-            return g;
-        }
-
-        /// <summary>
-        /// Gets the Description Graph based on the Query Results from the given Evaluation Context passing the resulting Triples to the given RDF Handler.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        public void Describe(IRdfHandler handler, SparqlEvaluationContext context)
-        {
-            Describe(handler, (ISparqlDescribeContext)context);
-        }
-
-        /// <inheritdoc />
-        public IGraph Describe(ISparqlDescribeContext context)
-        {
-            var g = new Graph();
-            Describe(new GraphHandler(g), context);
-            return g;
-        }
-
-        /// <inheritdoc />
-        public void Describe(IRdfHandler handler, ISparqlDescribeContext context)
-        {
-            IEnumerable<INode> nodes = context.GetNodes(handler);
-            _describeAlgorithm.Describe(handler, context.TripleIndex, nodes, context.Query?.BaseUri,
-                context.Query?.NamespaceMap);
-        }
-
+        _describeAlgorithm = describeAlgorithm;
     }
+
+    /// <summary>
+    /// Gets the Description Graph based on the Query Results from the given Evaluation Context.
+    /// </summary>
+    /// <param name="context">SPARQL Evaluation Context.</param>
+    /// <returns></returns>
+    public IGraph Describe(SparqlEvaluationContext context)
+    {
+        var g = new Graph();
+        Describe(new GraphHandler(g), (ISparqlDescribeContext)context);
+        return g;
+    }
+
+    /// <summary>
+    /// Gets the Description Graph based on the Query Results from the given Evaluation Context passing the resulting Triples to the given RDF Handler.
+    /// </summary>
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="context">SPARQL Evaluation Context.</param>
+    public void Describe(IRdfHandler handler, SparqlEvaluationContext context)
+    {
+        Describe(handler, (ISparqlDescribeContext)context);
+    }
+
+    /// <inheritdoc />
+    public IGraph Describe(ISparqlDescribeContext context)
+    {
+        var g = new Graph();
+        Describe(new GraphHandler(g), context);
+        return g;
+    }
+
+    /// <inheritdoc />
+    public void Describe(IRdfHandler handler, ISparqlDescribeContext context)
+    {
+        IEnumerable<INode> nodes = context.GetNodes(handler);
+        _describeAlgorithm.Describe(handler, context.TripleIndex, nodes, context.Query?.BaseUri,
+            context.Query?.NamespaceMap);
+    }
+
 }

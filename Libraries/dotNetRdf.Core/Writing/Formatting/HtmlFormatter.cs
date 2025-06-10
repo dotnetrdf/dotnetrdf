@@ -28,47 +28,46 @@ using System;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Formatter for formatting as HTML.
+/// </summary>
+public class HtmlFormatter : IUriFormatter, ICommentFormatter
 {
     /// <summary>
-    /// Formatter for formatting as HTML.
+    /// Formats URIs using HTML encoding.
     /// </summary>
-    public class HtmlFormatter : IUriFormatter, ICommentFormatter
+    /// <param name="u">URI.</param>
+    /// <returns></returns>
+    public string FormatUri(Uri u)
     {
-        /// <summary>
-        /// Formats URIs using HTML encoding.
-        /// </summary>
-        /// <param name="u">URI.</param>
-        /// <returns></returns>
-        public string FormatUri(Uri u)
-        {
-            return FormatUri(u.AbsoluteUri);
-        }
+        return FormatUri(u.AbsoluteUri);
+    }
 
-        /// <summary>
-        /// Formats URIs using HTML encoding.
-        /// </summary>
-        /// <param name="u">URI.</param>
-        /// <returns></returns>
-        public string FormatUri(string u)
-        {
-            return HttpUtility.HtmlEncode(u);
-        }
+    /// <summary>
+    /// Formats URIs using HTML encoding.
+    /// </summary>
+    /// <param name="u">URI.</param>
+    /// <returns></returns>
+    public string FormatUri(string u)
+    {
+        return HttpUtility.HtmlEncode(u);
+    }
 
-        /// <summary>
-        /// Matches ">" or "->" at the beginning of string, and any hyphen that is followed by another hyphen or the end of the string.
-        /// </summary>
-        static readonly Regex commentHyphenRegex = new Regex(@"^(>|->)|(-)(?=-|$)", RegexOptions.Compiled);
+    /// <summary>
+    /// Matches ">" or "->" at the beginning of string, and any hyphen that is followed by another hyphen or the end of the string.
+    /// </summary>
+    static readonly Regex commentHyphenRegex = new Regex(@"^(>|->)|(-)(?=-|$)", RegexOptions.Compiled);
 
-        /// <summary>
-        /// Formats comments in HTML.
-        /// </summary>
-        /// <param name="text">Comment text.</param>
-        /// <returns></returns>
-        public string FormatComment(string text)
-        {
-            text = WriterHelper.RemoveInvalidXmlChars(text);
-            return "<!--" + commentHyphenRegex.Replace(text, "$2\u200B$1") + "-->";
-        }
+    /// <summary>
+    /// Formats comments in HTML.
+    /// </summary>
+    /// <param name="text">Comment text.</param>
+    /// <returns></returns>
+    public string FormatComment(string text)
+    {
+        text = WriterHelper.RemoveInvalidXmlChars(text);
+        return "<!--" + commentHyphenRegex.Replace(text, "$2\u200B$1") + "-->";
     }
 }

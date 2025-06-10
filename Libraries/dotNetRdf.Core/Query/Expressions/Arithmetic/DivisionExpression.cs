@@ -26,91 +26,90 @@
 
 using System.Text;
 
-namespace VDS.RDF.Query.Expressions.Arithmetic
+namespace VDS.RDF.Query.Expressions.Arithmetic;
+
+/// <summary>
+/// Class representing Arithmetic Division expressions.
+/// </summary>
+public class DivisionExpression
+    : BaseBinaryExpression
 {
     /// <summary>
-    /// Class representing Arithmetic Division expressions.
+    /// Creates a new Division Expression.
     /// </summary>
-    public class DivisionExpression
-        : BaseBinaryExpression
+    /// <param name="leftExpr">Left Hand Expression.</param>
+    /// <param name="rightExpr">Right Hand Expression.</param>
+    public DivisionExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr) 
+        : base(leftExpr, rightExpr) { }
+
+    /// <summary>
+    /// Gets the String representation of this Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new Division Expression.
-        /// </summary>
-        /// <param name="leftExpr">Left Hand Expression.</param>
-        /// <param name="rightExpr">Right Hand Expression.</param>
-        public DivisionExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr) 
-            : base(leftExpr, rightExpr) { }
-
-        /// <summary>
-        /// Gets the String representation of this Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        var output = new StringBuilder();
+        if (_leftExpr.Type == SparqlExpressionType.BinaryOperator)
         {
-            var output = new StringBuilder();
-            if (_leftExpr.Type == SparqlExpressionType.BinaryOperator)
-            {
-                output.Append("(" + _leftExpr + ")");
-            }
-            else
-            {
-                output.Append(_leftExpr);
-            }
-            output.Append(" / ");
-            if (_rightExpr.Type == SparqlExpressionType.BinaryOperator)
-            {
-                output.Append("(" + _rightExpr + ")");
-            }
-            else
-            {
-                output.Append(_rightExpr);
-            }
-            return output.ToString();
+            output.Append("(" + _leftExpr + ")");
         }
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        else
         {
-            return processor.ProcessDivisionExpression(this, context, binding);
+            output.Append(_leftExpr);
         }
-
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        output.Append(" / ");
+        if (_rightExpr.Type == SparqlExpressionType.BinaryOperator)
         {
-            return visitor.VisitDivisionExpression(this);
+            output.Append("(" + _rightExpr + ")");
         }
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
+        else
         {
-            get
-            {
-                return SparqlExpressionType.BinaryOperator;
-            }
+            output.Append(_rightExpr);
         }
+        return output.ToString();
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return "/";
-            }
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessDivisionExpression(this, context, binding);
+    }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitDivisionExpression(this);
+    }
+
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return new DivisionExpression(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
+            return SparqlExpressionType.BinaryOperator;
         }
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
+        {
+            return "/";
+        }
+    }
+
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new DivisionExpression(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
     }
 }

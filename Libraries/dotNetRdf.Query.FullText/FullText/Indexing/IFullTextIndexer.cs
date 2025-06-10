@@ -27,118 +27,117 @@
 using System;
 using VDS.RDF.Query.Datasets;
 
-namespace VDS.RDF.Query.FullText.Indexing
+namespace VDS.RDF.Query.FullText.Indexing;
+
+/// <summary>
+/// Indicates the Indexing Mode used by an Indexer to index literals.
+/// </summary>
+public enum IndexingMode
 {
     /// <summary>
-    /// Indicates the Indexing Mode used by an Indexer to index literals.
+    /// Indicates that the Indexer stores the original Object Literal whose text is indexed
     /// </summary>
-    public enum IndexingMode
+    Objects,
+    /// <summary>
+    /// Indicates that the Indexer stores the Subject (Blank Node/URI) associated with the Literal whose text is indexed
+    /// </summary>
+    Subjects,
+    /// <summary>
+    /// Indicates that the Indexer stores the Predicate (URI) associated with the Literal whose text is indexed
+    /// </summary>
+    Predicates,
+    /// <summary>
+    /// Indicates that the Indexer uses some other custom indexing strategy
+    /// </summary>
+    Custom,
+}
+
+/// <summary>
+/// Interface for classes that provide full text indexing functionality.
+/// </summary>
+public interface IFullTextIndexer
+    : IDisposable
+{
+    /// <summary>
+    /// Gets the Indexing Mode used.
+    /// </summary>
+    IndexingMode IndexingMode
     {
-        /// <summary>
-        /// Indicates that the Indexer stores the original Object Literal whose text is indexed
-        /// </summary>
-        Objects,
-        /// <summary>
-        /// Indicates that the Indexer stores the Subject (Blank Node/URI) associated with the Literal whose text is indexed
-        /// </summary>
-        Subjects,
-        /// <summary>
-        /// Indicates that the Indexer stores the Predicate (URI) associated with the Literal whose text is indexed
-        /// </summary>
-        Predicates,
-        /// <summary>
-        /// Indicates that the Indexer uses some other custom indexing strategy
-        /// </summary>
-        Custom,
+        get;
     }
 
     /// <summary>
-    /// Interface for classes that provide full text indexing functionality.
+    /// Indexes a Triple.
     /// </summary>
-    public interface IFullTextIndexer
-        : IDisposable
-    {
-        /// <summary>
-        /// Gets the Indexing Mode used.
-        /// </summary>
-        IndexingMode IndexingMode
-        {
-            get;
-        }
+    /// <param name="t">Triple.</param>
+    /// <remarks>
+    /// Implementations <emph>SHOULD NOT</emph> automatically Flush changes to the indexes at the end of this operation.
+    /// </remarks>
+    [Obsolete("This method is replaced by Index(IGraph, Triple). As triple no longer carry a reference to a parent graph, this method should no longer be used.", true)]
+    void Index(Triple t);
 
-        /// <summary>
-        /// Indexes a Triple.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <remarks>
-        /// Implementations <emph>SHOULD NOT</emph> automatically Flush changes to the indexes at the end of this operation.
-        /// </remarks>
-        [Obsolete("This method is replaced by Index(IGraph, Triple). As triple no longer carry a reference to a parent graph, this method should no longer be used.", true)]
-        void Index(Triple t);
+    /// <summary>
+    /// Indexes a triple in the context of a graph.
+    /// </summary>
+    /// <param name="g">The graph context of the triple.</param>
+    /// <param name="t">The triple to index.</param>
+    void Index(IGraph g, Triple t);
 
-        /// <summary>
-        /// Indexes a triple in the context of a graph.
-        /// </summary>
-        /// <param name="g">The graph context of the triple.</param>
-        /// <param name="t">The triple to index.</param>
-        void Index(IGraph g, Triple t);
+    /// <summary>
+    /// Indexes a Graph.
+    /// </summary>
+    /// <param name="g">Graph.</param>
+    /// <remarks>
+    /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation.
+    /// </remarks>
+    void Index(IGraph g);
 
-        /// <summary>
-        /// Indexes a Graph.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <remarks>
-        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation.
-        /// </remarks>
-        void Index(IGraph g);
+    /// <summary>
+    /// Indexes a Dataset.
+    /// </summary>
+    /// <param name="dataset">Dataset.</param>
+    /// <remarks>
+    /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation.
+    /// </remarks>
+    void Index(ISparqlDataset dataset);
 
-        /// <summary>
-        /// Indexes a Dataset.
-        /// </summary>
-        /// <param name="dataset">Dataset.</param>
-        /// <remarks>
-        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation.
-        /// </remarks>
-        void Index(ISparqlDataset dataset);
+    /// <summary>
+    /// Unindexes a Triple.
+    /// </summary>
+    /// <param name="t">Triple.</param>
+    /// <remarks>
+    /// Implementations <emph>SHOULD NOT</emph> automatically Flush changes to the indexes at the end of this operation.
+    /// </remarks>
+    [Obsolete("Replaced by Unindex(IGraph, Triple). As triples no longer have a reference to a parent graph, this method should no longer be used.", true)]
+    void Unindex(Triple t);
 
-        /// <summary>
-        /// Unindexes a Triple.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <remarks>
-        /// Implementations <emph>SHOULD NOT</emph> automatically Flush changes to the indexes at the end of this operation.
-        /// </remarks>
-        [Obsolete("Replaced by Unindex(IGraph, Triple). As triples no longer have a reference to a parent graph, this method should no longer be used.", true)]
-        void Unindex(Triple t);
+    /// <summary>
+    /// Unindexes a triple in the context of a graph.
+    /// </summary>
+    /// <param name="g">The graph context of the triple.</param>
+    /// <param name="t">The triple to be unindexed.</param>
+    void Unindex(IGraph g, Triple t);
 
-        /// <summary>
-        /// Unindexes a triple in the context of a graph.
-        /// </summary>
-        /// <param name="g">The graph context of the triple.</param>
-        /// <param name="t">The triple to be unindexed.</param>
-        void Unindex(IGraph g, Triple t);
+    /// <summary>
+    /// Unindexes a Graph.
+    /// </summary>
+    /// <param name="g">Graph.</param>
+    /// <remarks>
+    /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation.
+    /// </remarks>
+    void Unindex(IGraph g);
 
-        /// <summary>
-        /// Unindexes a Graph.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <remarks>
-        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation.
-        /// </remarks>
-        void Unindex(IGraph g);
+    /// <summary>
+    /// Unindexes a Dataset.
+    /// </summary>
+    /// <param name="dataset">Dataset.</param>
+    /// <remarks>
+    /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation.
+    /// </remarks>
+    void Unindex(ISparqlDataset dataset);
 
-        /// <summary>
-        /// Unindexes a Dataset.
-        /// </summary>
-        /// <param name="dataset">Dataset.</param>
-        /// <remarks>
-        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation.
-        /// </remarks>
-        void Unindex(ISparqlDataset dataset);
-
-        /// <summary>
-        /// Flushes any outstanding changes to the Index.
-        /// </summary>
-        void Flush();
-    }
+    /// <summary>
+    /// Flushes any outstanding changes to the Index.
+    /// </summary>
+    void Flush();
 }

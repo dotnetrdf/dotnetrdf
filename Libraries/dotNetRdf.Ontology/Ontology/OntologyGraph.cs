@@ -29,291 +29,290 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Ontology
+namespace VDS.RDF.Ontology;
+
+/// <summary>
+/// Represents a Graph with additional methods for extracting ontology based information from it.
+/// </summary>
+/// <remarks>
+/// <para>
+/// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace.
+/// </para>
+/// </remarks>
+public class OntologyGraph : Graph
 {
     /// <summary>
-    /// Represents a Graph with additional methods for extracting ontology based information from it.
+    /// Creates a new Ontology Graph.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace.
-    /// </para>
-    /// </remarks>
-    public class OntologyGraph : Graph
+    /// <param name="graphName">The name to assign to the graph.</param>
+    /// <param name="nodeFactory">The factory to use when constructing nodes in this graph. If null, defaults to a new <see cref="NodeFactory"/> instance using the same UriFactory instance as this graph.</param>
+    /// <param name="uriFactory">The factory to use when constructing URIs in this graph. If null, default to the <see cref="UriFactory.Root">root UriFactory</see>.</param>
+    /// <param name="tripleCollection">The initial content of the graph. If null, the graph will initially be empty.</param>
+    public OntologyGraph(IRefNode graphName = null, INodeFactory nodeFactory = null, IUriFactory uriFactory=null, BaseTripleCollection tripleCollection = null) : base(graphName, nodeFactory, uriFactory, tripleCollection) 
     {
-        /// <summary>
-        /// Creates a new Ontology Graph.
-        /// </summary>
-        /// <param name="graphName">The name to assign to the graph.</param>
-        /// <param name="nodeFactory">The factory to use when constructing nodes in this graph. If null, defaults to a new <see cref="NodeFactory"/> instance using the same UriFactory instance as this graph.</param>
-        /// <param name="uriFactory">The factory to use when constructing URIs in this graph. If null, default to the <see cref="UriFactory.Root">root UriFactory</see>.</param>
-        /// <param name="tripleCollection">The initial content of the graph. If null, the graph will initially be empty.</param>
-        public OntologyGraph(IRefNode graphName = null, INodeFactory nodeFactory = null, IUriFactory uriFactory=null, BaseTripleCollection tripleCollection = null) : base(graphName, nodeFactory, uriFactory, tripleCollection) 
+        NamespaceMap.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
+    }
+
+    /// <summary>
+    /// Creates a new Ontology Graph with the specified URI as the graph name.
+    /// </summary>
+    /// <param name="name">The graph name as a URI.</param>
+    public OntologyGraph(Uri name) : this(new UriNode(name)) {}
+
+    /// <summary>
+    /// Creates a new Ontology Graph with the specified name and initial content
+    /// </summary>
+    /// <param name="name">The name to assign to the graph.</param>
+    /// <param name="tripleCollection">The initial content of the graph.</param>
+    public OntologyGraph(IRefNode name, BaseTripleCollection tripleCollection): this(name, null, null, tripleCollection){}
+
+    /// <summary>
+    /// Creates a new Ontology Graph with the specified name and initial content
+    /// </summary>
+    /// <param name="name">The name to assign to the graph.</param>
+    /// <param name="tripleCollection">The initial content of the graph.</param>
+    public OntologyGraph(Uri name, BaseTripleCollection tripleCollection) : this(new UriNode(name), null, null, tripleCollection) { }
+
+    /// <summary>
+    /// Gets/Creates an ontology resource in the Graph.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public virtual OntologyResource CreateOntologyResource(INode resource)
+    {
+        return new OntologyResource(resource, this);
+    }
+
+    /// <summary>
+    /// Gets/Creates an ontology resource in the Graph.
+    /// </summary>
+    /// <param name="resource">Resource.</param>
+    /// <returns></returns>
+    public virtual OntologyResource CreateOntologyResource(Uri resource)
+    {
+        return CreateOntologyResource(CreateUriNode(resource));
+    }
+
+    /// <summary>
+    /// Gets/Creates an anonymous ontology resource in the Graph.
+    /// </summary>
+    /// <returns></returns>
+    public virtual OntologyResource CreateOntologyResource()
+    {
+        return new OntologyResource(CreateBlankNode(), this);
+    }
+
+    /// <summary>
+    /// Gets/Creates an ontology class in the Graph.
+    /// </summary>
+    /// <param name="resource">Class Resource.</param>
+    /// <returns></returns>
+    public virtual OntologyClass CreateOntologyClass(INode resource)
+    {
+        return new OntologyClass(resource, this);
+    }
+
+    /// <summary>
+    /// Gets/Creates an ontology class in the Graph.
+    /// </summary>
+    /// <param name="resource">Class Resource.</param>
+    /// <returns></returns>
+    public virtual OntologyClass CreateOntologyClass(Uri resource)
+    {
+        return CreateOntologyClass(CreateUriNode(resource));
+    }
+
+    /// <summary>
+    /// Gets/Creates an anonymous ontology class in the Graph.
+    /// </summary>
+    /// <returns></returns>
+    public virtual OntologyClass CreateOntologyClass()
+    {
+        return new OntologyClass(CreateBlankNode(), this);
+    }
+
+    /// <summary>
+    /// Gets/Creates an ontology property in the Graph.
+    /// </summary>
+    /// <param name="resource">Property Resource.</param>
+    /// <returns></returns>
+    public virtual OntologyProperty CreateOntologyProperty(INode resource)
+    {
+        return new OntologyProperty(resource, this);
+    }
+
+    /// <summary>
+    /// Gets/Creates an ontology property in the Graph.
+    /// </summary>
+    /// <param name="resource">Property Resource.</param>
+    /// <returns></returns>
+    public virtual OntologyProperty CreateOntologyProperty(Uri resource)
+    {
+        return CreateOntologyProperty(CreateUriNode(resource));
+    }
+
+    /// <summary>
+    /// Gets an existing individual in the Graph.
+    /// </summary>
+    /// <param name="resource">Individual Resource.</param>
+    /// <returns></returns>
+    public virtual Individual CreateIndividual(INode resource)
+    {
+        return new Individual(resource, this);
+    }
+
+    /// <summary>
+    /// Gets/Creates an individual in the Graph of the given class.
+    /// </summary>
+    /// <param name="resource">Individual Resource.</param>
+    /// <param name="class">Class.</param>
+    /// <returns></returns>
+    public virtual Individual CreateIndividual(INode resource, INode @class)
+    {
+        return new Individual(resource, @class, this);
+    }
+
+    /// <summary>
+    /// Gets an existing individual in the Graph.
+    /// </summary>
+    /// <param name="resource">Individual Resource.</param>
+    /// <returns></returns>
+    public virtual Individual CreateIndividual(Uri resource)
+    {
+        return CreateIndividual(CreateUriNode(resource));
+    }
+
+    /// <summary>
+    /// Gets/Creates an individual in the Graph of the given class.
+    /// </summary>
+    /// <param name="resource">Individual Resource.</param>
+    /// <param name="class">Class.</param>
+    /// <returns></returns>
+    public virtual Individual CreateIndividual(Uri resource, Uri @class)
+    {
+        return CreateIndividual(CreateUriNode(resource), CreateUriNode(@class));
+    }
+
+    /// <summary>
+    /// Get all OWL classes defined in the graph.
+    /// </summary>
+    public IEnumerable<OntologyClass> OwlClasses
+    {
+        get
         {
-            NamespaceMap.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
+            return GetClasses(CreateUriNode(UriFactory.Create(OntologyHelper.OwlClass)));
         }
+    }
 
-        /// <summary>
-        /// Creates a new Ontology Graph with the specified URI as the graph name.
-        /// </summary>
-        /// <param name="name">The graph name as a URI.</param>
-        public OntologyGraph(Uri name) : this(new UriNode(name)) {}
-
-        /// <summary>
-        /// Creates a new Ontology Graph with the specified name and initial content
-        /// </summary>
-        /// <param name="name">The name to assign to the graph.</param>
-        /// <param name="tripleCollection">The initial content of the graph.</param>
-        public OntologyGraph(IRefNode name, BaseTripleCollection tripleCollection): this(name, null, null, tripleCollection){}
-
-        /// <summary>
-        /// Creates a new Ontology Graph with the specified name and initial content
-        /// </summary>
-        /// <param name="name">The name to assign to the graph.</param>
-        /// <param name="tripleCollection">The initial content of the graph.</param>
-        public OntologyGraph(Uri name, BaseTripleCollection tripleCollection) : this(new UriNode(name), null, null, tripleCollection) { }
-
-        /// <summary>
-        /// Gets/Creates an ontology resource in the Graph.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public virtual OntologyResource CreateOntologyResource(INode resource)
+    /// <summary>
+    /// Get all the RDFS classes defined in the graph.
+    /// </summary>
+    public IEnumerable<OntologyClass> RdfClasses
+    {
+        get
         {
-            return new OntologyResource(resource, this);
+            return GetClasses(CreateUriNode(UriFactory.Create(OntologyHelper.RdfsClass)));
         }
+    }
 
-        /// <summary>
-        /// Gets/Creates an ontology resource in the Graph.
-        /// </summary>
-        /// <param name="resource">Resource.</param>
-        /// <returns></returns>
-        public virtual OntologyResource CreateOntologyResource(Uri resource)
+    /// <summary>
+    /// Gets all classes defined in the graph using the standard rdfs:Class and owl:Class types.
+    /// </summary>
+    public IEnumerable<OntologyClass> AllClasses
+    {
+        get
         {
-            return CreateOntologyResource(CreateUriNode(resource));
+            return RdfClasses.Concat(OwlClasses);
         }
+    }
 
-        /// <summary>
-        /// Gets/Creates an anonymous ontology resource in the Graph.
-        /// </summary>
-        /// <returns></returns>
-        public virtual OntologyResource CreateOntologyResource()
-        {
-            return new OntologyResource(CreateBlankNode(), this);
-        }
+    /// <summary>
+    /// Get all classes defined in the graph where anything of a specific type is considered a class.
+    /// </summary>
+    /// <param name="classType">Type which represents classes.</param>
+    /// <returns>Enumeration of classes.</returns>
+    public IEnumerable<OntologyClass> GetClasses(INode classType)
+    {
+        INode rdfType = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+        return (from t in GetTriplesWithPredicateObject(rdfType, classType)
+                select CreateOntologyClass(t.Subject));
+    }
 
-        /// <summary>
-        /// Gets/Creates an ontology class in the Graph.
-        /// </summary>
-        /// <param name="resource">Class Resource.</param>
-        /// <returns></returns>
-        public virtual OntologyClass CreateOntologyClass(INode resource)
+    /// <summary>
+    /// Gets all RDF properties defined in the graph.
+    /// </summary>
+    public IEnumerable<OntologyProperty> RdfProperties
+    {
+        get
         {
-            return new OntologyClass(resource, this);
+            return GetProperties(CreateUriNode(UriFactory.Create(OntologyHelper.RdfProperty)));
         }
+    }
 
-        /// <summary>
-        /// Gets/Creates an ontology class in the Graph.
-        /// </summary>
-        /// <param name="resource">Class Resource.</param>
-        /// <returns></returns>
-        public virtual OntologyClass CreateOntologyClass(Uri resource)
+    /// <summary>
+    /// Gets all OWL Object properties defined in the graph.
+    /// </summary>
+    public IEnumerable<OntologyProperty> OwlObjectProperties
+    {
+        get
         {
-            return CreateOntologyClass(CreateUriNode(resource));
+            return GetProperties(CreateUriNode(UriFactory.Create(OntologyHelper.OwlObjectProperty)));
         }
+    }
 
-        /// <summary>
-        /// Gets/Creates an anonymous ontology class in the Graph.
-        /// </summary>
-        /// <returns></returns>
-        public virtual OntologyClass CreateOntologyClass()
+    /// <summary>
+    /// Gets all OWL Data properties defined in the graph.
+    /// </summary>
+    public IEnumerable<OntologyProperty> OwlDatatypeProperties
+    {
+        get
         {
-            return new OntologyClass(CreateBlankNode(), this);
+            return GetProperties(CreateUriNode(UriFactory.Create(OntologyHelper.OwlDatatypeProperty)));
         }
+    }
 
-        /// <summary>
-        /// Gets/Creates an ontology property in the Graph.
-        /// </summary>
-        /// <param name="resource">Property Resource.</param>
-        /// <returns></returns>
-        public virtual OntologyProperty CreateOntologyProperty(INode resource)
+    /// <summary>
+    /// Gets all OWL Annotation properties defined in the graph.
+    /// </summary>
+    public IEnumerable<OntologyProperty> OwlAnnotationProperties
+    {
+        get
         {
-            return new OntologyProperty(resource, this);
+            return GetProperties(CreateUriNode(UriFactory.Create(OntologyHelper.OwlAnnotationProperty)));
         }
+    }
 
-        /// <summary>
-        /// Gets/Creates an ontology property in the Graph.
-        /// </summary>
-        /// <param name="resource">Property Resource.</param>
-        /// <returns></returns>
-        public virtual OntologyProperty CreateOntologyProperty(Uri resource)
+    /// <summary>
+    /// Gets all properties defined in the graph using any of the standard OWL property types (owl:AnnotationProperty, owl:DataProperty, owl:ObjectProperty).
+    /// </summary>
+    public IEnumerable<OntologyProperty> OwlProperties
+    {
+        get
         {
-            return CreateOntologyProperty(CreateUriNode(resource));
+            return OwlAnnotationProperties.Concat(OwlDatatypeProperties).Concat(OwlObjectProperties);
         }
+    }
 
-        /// <summary>
-        /// Gets an existing individual in the Graph.
-        /// </summary>
-        /// <param name="resource">Individual Resource.</param>
-        /// <returns></returns>
-        public virtual Individual CreateIndividual(INode resource)
+    /// <summary>
+    /// Gets all properties defined in the graph using any of the standard property types (rdf:Property, owl:AnnotationProperty, owl:DataProperty, owl:ObjectProperty).
+    /// </summary>
+    public IEnumerable<OntologyProperty> AllProperties
+    {
+        get
         {
-            return new Individual(resource, this);
+            return RdfProperties.Concat(OwlAnnotationProperties).Concat(OwlDatatypeProperties).Concat(OwlObjectProperties);
         }
+    }
 
-        /// <summary>
-        /// Gets/Creates an individual in the Graph of the given class.
-        /// </summary>
-        /// <param name="resource">Individual Resource.</param>
-        /// <param name="class">Class.</param>
-        /// <returns></returns>
-        public virtual Individual CreateIndividual(INode resource, INode @class)
-        {
-            return new Individual(resource, @class, this);
-        }
-
-        /// <summary>
-        /// Gets an existing individual in the Graph.
-        /// </summary>
-        /// <param name="resource">Individual Resource.</param>
-        /// <returns></returns>
-        public virtual Individual CreateIndividual(Uri resource)
-        {
-            return CreateIndividual(CreateUriNode(resource));
-        }
-
-        /// <summary>
-        /// Gets/Creates an individual in the Graph of the given class.
-        /// </summary>
-        /// <param name="resource">Individual Resource.</param>
-        /// <param name="class">Class.</param>
-        /// <returns></returns>
-        public virtual Individual CreateIndividual(Uri resource, Uri @class)
-        {
-            return CreateIndividual(CreateUriNode(resource), CreateUriNode(@class));
-        }
-
-        /// <summary>
-        /// Get all OWL classes defined in the graph.
-        /// </summary>
-        public IEnumerable<OntologyClass> OwlClasses
-        {
-            get
-            {
-                return GetClasses(CreateUriNode(UriFactory.Create(OntologyHelper.OwlClass)));
-            }
-        }
-
-        /// <summary>
-        /// Get all the RDFS classes defined in the graph.
-        /// </summary>
-        public IEnumerable<OntologyClass> RdfClasses
-        {
-            get
-            {
-                return GetClasses(CreateUriNode(UriFactory.Create(OntologyHelper.RdfsClass)));
-            }
-        }
-
-        /// <summary>
-        /// Gets all classes defined in the graph using the standard rdfs:Class and owl:Class types.
-        /// </summary>
-        public IEnumerable<OntologyClass> AllClasses
-        {
-            get
-            {
-                return RdfClasses.Concat(OwlClasses);
-            }
-        }
-
-        /// <summary>
-        /// Get all classes defined in the graph where anything of a specific type is considered a class.
-        /// </summary>
-        /// <param name="classType">Type which represents classes.</param>
-        /// <returns>Enumeration of classes.</returns>
-        public IEnumerable<OntologyClass> GetClasses(INode classType)
-        {
-            INode rdfType = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            return (from t in GetTriplesWithPredicateObject(rdfType, classType)
-                    select CreateOntologyClass(t.Subject));
-        }
-
-        /// <summary>
-        /// Gets all RDF properties defined in the graph.
-        /// </summary>
-        public IEnumerable<OntologyProperty> RdfProperties
-        {
-            get
-            {
-                return GetProperties(CreateUriNode(UriFactory.Create(OntologyHelper.RdfProperty)));
-            }
-        }
-
-        /// <summary>
-        /// Gets all OWL Object properties defined in the graph.
-        /// </summary>
-        public IEnumerable<OntologyProperty> OwlObjectProperties
-        {
-            get
-            {
-                return GetProperties(CreateUriNode(UriFactory.Create(OntologyHelper.OwlObjectProperty)));
-            }
-        }
-
-        /// <summary>
-        /// Gets all OWL Data properties defined in the graph.
-        /// </summary>
-        public IEnumerable<OntologyProperty> OwlDatatypeProperties
-        {
-            get
-            {
-                return GetProperties(CreateUriNode(UriFactory.Create(OntologyHelper.OwlDatatypeProperty)));
-            }
-        }
-
-        /// <summary>
-        /// Gets all OWL Annotation properties defined in the graph.
-        /// </summary>
-        public IEnumerable<OntologyProperty> OwlAnnotationProperties
-        {
-            get
-            {
-                return GetProperties(CreateUriNode(UriFactory.Create(OntologyHelper.OwlAnnotationProperty)));
-            }
-        }
-
-        /// <summary>
-        /// Gets all properties defined in the graph using any of the standard OWL property types (owl:AnnotationProperty, owl:DataProperty, owl:ObjectProperty).
-        /// </summary>
-        public IEnumerable<OntologyProperty> OwlProperties
-        {
-            get
-            {
-                return OwlAnnotationProperties.Concat(OwlDatatypeProperties).Concat(OwlObjectProperties);
-            }
-        }
-
-        /// <summary>
-        /// Gets all properties defined in the graph using any of the standard property types (rdf:Property, owl:AnnotationProperty, owl:DataProperty, owl:ObjectProperty).
-        /// </summary>
-        public IEnumerable<OntologyProperty> AllProperties
-        {
-            get
-            {
-                return RdfProperties.Concat(OwlAnnotationProperties).Concat(OwlDatatypeProperties).Concat(OwlObjectProperties);
-            }
-        }
-
-        /// <summary>
-        /// Get all properties defined in the graph where anything of a specific type is considered a property.
-        /// </summary>
-        /// <param name="propertyType">Type which represents properties.</param>
-        /// <returns>Enumeration of properties.</returns>
-        public IEnumerable<OntologyProperty> GetProperties(INode propertyType)
-        {
-            INode rdfType = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            return (from t in GetTriplesWithPredicateObject(rdfType, propertyType)
-                    select CreateOntologyProperty(t.Subject));
-        }
+    /// <summary>
+    /// Get all properties defined in the graph where anything of a specific type is considered a property.
+    /// </summary>
+    /// <param name="propertyType">Type which represents properties.</param>
+    /// <returns>Enumeration of properties.</returns>
+    public IEnumerable<OntologyProperty> GetProperties(INode propertyType)
+    {
+        INode rdfType = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+        return (from t in GetTriplesWithPredicateObject(rdfType, propertyType)
+                select CreateOntologyProperty(t.Subject));
     }
 }

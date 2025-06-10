@@ -28,125 +28,124 @@ using System.Collections.Generic;
 using VDS.RDF;
 using Xunit;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+public class DynamicObjectCollectionTTests
 {
-    public class DynamicObjectCollectionTTests
+    [Fact]
+    public void Add_asserts_with_subject_predicate_and_argument_object()
     {
-        [Fact]
-        public void Add_asserts_with_subject_predicate_and_argument_object()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s> <urn:primitive> ""o"" .
 ");
 
-            var g = new Graph();
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var test = new Test(s, g);
+        var g = new Graph();
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var test = new Test(s, g);
 
-            test.PrimitiveProperty.Add("o");
+        test.PrimitiveProperty.Add("o");
 
-            Assert.Equal(expected, g);
-        }
+        Assert.Equal(expected, g);
+    }
 
-        [Fact]
-        public void Contains_reports_by_subject_predicate_and_argument_object()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Contains_reports_by_subject_predicate_and_argument_object()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:primitive> ""s"" .
 <urn:s> <urn:primitive> ""p"" .
 <urn:s> <urn:primitive> ""o"" .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var test = new Test(s, g);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var test = new Test(s, g);
 
-            Assert.Contains("s", test.PrimitiveProperty);
-            Assert.Contains("p", test.PrimitiveProperty);
-            Assert.Contains("o", test.PrimitiveProperty);
-        }
+        Assert.Contains("s", test.PrimitiveProperty);
+        Assert.Contains("p", test.PrimitiveProperty);
+        Assert.Contains("o", test.PrimitiveProperty);
+    }
 
-        [Fact]
-        public void Copies_objects_by_subject_and_predicate()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Copies_objects_by_subject_and_predicate()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:primitive> ""s"" .
 <urn:s> <urn:primitive> ""p"" .
 <urn:s> <urn:primitive> ""o"" .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var test = new Test(s, g);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var test = new Test(s, g);
 
-            var objects = new string[5]; // +2 for padding on each side
-            test.PrimitiveProperty.CopyTo(objects, 1); // start at the second item at destination
+        var objects = new string[5]; // +2 for padding on each side
+        test.PrimitiveProperty.CopyTo(objects, 1); // start at the second item at destination
 
-            Assert.Equal(
-                new[] { null, "s", "p", "o", null },
-                objects);
-        }
+        Assert.Equal(
+            new[] { null, "s", "p", "o", null },
+            objects);
+    }
 
-        [Fact]
-        public void Enumerates_objects_by_subject_and_predicate()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Enumerates_objects_by_subject_and_predicate()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:complex> <urn:s> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var test = new Test(s, g);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var test = new Test(s, g);
 
-            var expected = new[] { s }.GetEnumerator();
-            using (var actual = test.ComplexProperty.GetEnumerator())
+        var expected = new[] { s }.GetEnumerator();
+        using (var actual = test.ComplexProperty.GetEnumerator())
+        {
+            while (expected.MoveNext() | actual.MoveNext())
             {
-                while (expected.MoveNext() | actual.MoveNext())
-                {
-                    Assert.Equal(
-                        expected.Current,
-                        actual.Current);
-                }
+                Assert.Equal(
+                    expected.Current,
+                    actual.Current);
             }
         }
+    }
 
-        [Fact]
-        public void Remove_retracts_by_subject_predicate_and_argument_object()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
+    [Fact]
+    public void Remove_retracts_by_subject_predicate_and_argument_object()
+    {
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s> <urn:primitive> ""s"" .
 <urn:s> <urn:primitive> ""p"" .
 ");
 
-            var g = new Graph();
-            g.LoadFromString(@"
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:primitive> ""s"" .
 <urn:s> <urn:primitive> ""p"" .
 <urn:s> <urn:primitive> ""o"" .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var test = new Test(s, g);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var test = new Test(s, g);
 
-            test.PrimitiveProperty.Remove("o");
+        test.PrimitiveProperty.Remove("o");
 
-            Assert.Equal(
-                expected,
-                g);
-        }
+        Assert.Equal(
+            expected,
+            g);
+    }
 
-        internal class Test : DynamicNode
+    internal class Test : DynamicNode
+    {
+        public Test(INode node, IGraph graph)
+            : base(node, graph, new Uri("urn:"))
         {
-            public Test(INode node, IGraph graph)
-                : base(node, graph, new Uri("urn:"))
-            {
-            }
-
-            public ICollection<Test> ComplexProperty => new DynamicObjectCollection<Test>(this, "complex");
-
-            public ICollection<string> PrimitiveProperty => new DynamicObjectCollection<string>(this, "primitive");
         }
+
+        public ICollection<Test> ComplexProperty => new DynamicObjectCollection<Test>(this, "complex");
+
+        public ICollection<string> PrimitiveProperty => new DynamicObjectCollection<string>(this, "primitive");
     }
 }

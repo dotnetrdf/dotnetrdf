@@ -24,31 +24,30 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.String;
+
+/// <summary>
+/// Abstract Base Class for SPARQL String Testing functions which take two arguments.
+/// </summary>
+public abstract class BaseBinaryStringFunction
+    : BaseBinaryExpression
 {
     /// <summary>
-    /// Abstract Base Class for SPARQL String Testing functions which take two arguments.
+    /// Creates a new Base Binary SPARQL String Function.
     /// </summary>
-    public abstract class BaseBinaryStringFunction
-        : BaseBinaryExpression
-    {
-        /// <summary>
-        /// Creates a new Base Binary SPARQL String Function.
-        /// </summary>
-        /// <param name="stringExpr">String Expression.</param>
-        /// <param name="argExpr">Argument Expression.</param>
-        public BaseBinaryStringFunction(ISparqlExpression stringExpr, ISparqlExpression argExpr)
-            : base(stringExpr, argExpr) { }
+    /// <param name="stringExpr">String Expression.</param>
+    /// <param name="argExpr">Argument Expression.</param>
+    public BaseBinaryStringFunction(ISparqlExpression stringExpr, ISparqlExpression argExpr)
+        : base(stringExpr, argExpr) { }
 
-        /// <summary>
-        /// Gets the Expression Type.
-        /// </summary>
-        public override SparqlExpressionType Type
+    /// <summary>
+    /// Gets the Expression Type.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return SparqlExpressionType.Function;
         }
     }
 }

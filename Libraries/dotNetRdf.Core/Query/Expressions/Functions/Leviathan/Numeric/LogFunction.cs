@@ -27,97 +27,96 @@
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric;
+
+/// <summary>
+/// Represents the Leviathan lfn:log() function.
+/// </summary>
+public class LogFunction
+    : BaseBinaryExpression
 {
     /// <summary>
-    /// Represents the Leviathan lfn:log() function.
+    /// Creates a new Leviathan Log Function.
     /// </summary>
-    public class LogFunction
-        : BaseBinaryExpression
+    /// <param name="arg">Expression.</param>
+    public LogFunction(ISparqlExpression arg)
+        : base(arg, new ConstantTerm(new DoubleNode(10)))
     {
-        /// <summary>
-        /// Creates a new Leviathan Log Function.
-        /// </summary>
-        /// <param name="arg">Expression.</param>
-        public LogFunction(ISparqlExpression arg)
-            : base(arg, new ConstantTerm(new DoubleNode(10)))
-        {
-            Log10 = true;
-        }
+        Log10 = true;
+    }
 
-        /// <summary>
-        /// Creates a new Leviathan Log Function.
-        /// </summary>
-        /// <param name="arg">Expression.</param>
-        /// <param name="logBase">Log Base Expression.</param>
-        public LogFunction(ISparqlExpression arg, ISparqlExpression logBase)
-            : base(arg, logBase) { }
+    /// <summary>
+    /// Creates a new Leviathan Log Function.
+    /// </summary>
+    /// <param name="arg">Expression.</param>
+    /// <param name="logBase">Log Base Expression.</param>
+    public LogFunction(ISparqlExpression arg, ISparqlExpression logBase)
+        : base(arg, logBase) { }
 
-        /// <summary>
-        /// Get whether the function was created as a default base-10 log function.
-        /// </summary>
-        public bool Log10 { get; }
+    /// <summary>
+    /// Get whether the function was created as a default base-10 log function.
+    /// </summary>
+    public bool Log10 { get; }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        if (Log10)
         {
-            if (Log10)
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log + ">(" + _leftExpr + ")";
-            }
-            else
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log + ">(" + _leftExpr + "," + _rightExpr + ")";
-            }
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log + ">(" + _leftExpr + ")";
         }
+        else
+        {
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log + ">(" + _leftExpr + "," + _rightExpr + ")";
+        }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessLogFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessLogFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitLogFunction(this);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitLogFunction(this);
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            get
-            {
-                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log;
-            }
+            return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log;
         }
-        
-        /// <summary>
-        /// Gets the type of the expression.
-        /// </summary>
-        public override SparqlExpressionType Type
+    }
+    
+    /// <summary>
+    /// Gets the type of the expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return Log10
-                ? new LogFunction(transformer.Transform(_leftExpr))
-                : new LogFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return Log10
+            ? new LogFunction(transformer.Transform(_leftExpr))
+            : new LogFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
     }
 }

@@ -28,33 +28,32 @@ using FluentAssertions;
 using Xunit;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Update
+namespace VDS.RDF.Update;
+
+[Collection("RdfServer")]
+public class UpdateTimeouts
 {
-    [Collection("RdfServer")]
-    public class UpdateTimeouts
+    private readonly SparqlUpdateParser _parser = new();
+    private readonly RdfServerFixture _serverFixture;
+
+    public UpdateTimeouts(RdfServerFixture serverFixture)
     {
-        private readonly SparqlUpdateParser _parser = new();
-        private readonly RdfServerFixture _serverFixture;
+        _serverFixture = serverFixture;
+    }
 
-        public UpdateTimeouts(RdfServerFixture serverFixture)
-        {
-            _serverFixture = serverFixture;
-        }
+    [Fact]
+    public void SparqlUpdateTimeout()
+    {
+        var update = $"CREATE GRAPH <http://example.org/1>; LOAD <{_serverFixture.UriFor("/slow/doap")}>; CREATE GRAPH <http://example.org/2>";
+        SparqlUpdateCommandSet commandSet = _parser.ParseFromString(update);
+        commandSet.Timeout = 1;
 
-        [Fact]
-        public void SparqlUpdateTimeout()
-        {
-            var update = $"CREATE GRAPH <http://example.org/1>; LOAD <{_serverFixture.UriFor("/slow/doap")}>; CREATE GRAPH <http://example.org/2>";
-            SparqlUpdateCommandSet commandSet = _parser.ParseFromString(update);
-            commandSet.Timeout = 1;
+        var store = new TripleStore();
+        var processor = new LeviathanUpdateProcessor(store);
+        Assert.Throws<SparqlUpdateTimeoutException>(() => processor.ProcessCommandSet(commandSet));
 
-            var store = new TripleStore();
-            var processor = new LeviathanUpdateProcessor(store);
-            Assert.Throws<SparqlUpdateTimeoutException>(() => processor.ProcessCommandSet(commandSet));
-
-            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
-            store.HasGraph(nodeFactory.CreateUriNode(new Uri("http://example.org/1"))).Should().BeFalse("Graph 1 should not exist");
-            store.HasGraph(nodeFactory.CreateUriNode(new Uri("http://example.org/2"))).Should().BeFalse("Graph 2 should not exist");
-        }
+        var nodeFactory = new NodeFactory(new NodeFactoryOptions());
+        store.HasGraph(nodeFactory.CreateUriNode(new Uri("http://example.org/1"))).Should().BeFalse("Graph 1 should not exist");
+        store.HasGraph(nodeFactory.CreateUriNode(new Uri("http://example.org/2"))).Should().BeFalse("Graph 2 should not exist");
     }
 }

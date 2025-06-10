@@ -27,104 +27,103 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Configuration.Permissions
+namespace VDS.RDF.Configuration.Permissions;
+
+/// <summary>
+/// Possible permission models.
+/// </summary>
+public enum PermissionModel
 {
     /// <summary>
-    /// Possible permission models.
+    /// If the action appears in the deny list it is denied unless it is in the allow list, otherwise it is allowed
     /// </summary>
-    public enum PermissionModel
+    DenyAllow,
+    /// <summary>
+    /// If the action appears in the allow list it is allowed unless it is in the deny list, otherwise it is denied
+    /// </summary>
+    AllowDeny,
+    /// <summary>
+    /// All actions are allowed
+    /// </summary>
+    AllowAny,
+    /// <summary>
+    /// All actions are denied
+    /// </summary>
+    DenyAny,
+}
+
+/// <summary>
+/// Interface for Permission.
+/// </summary>
+public interface IPermission
+{
+    /// <summary>
+    /// Gets whether the Permission is for a specific action.
+    /// </summary>
+    /// <param name="action">Action.</param>
+    /// <returns></returns>
+    bool IsPermissionFor(string action);
+}
+
+/// <summary>
+/// Represents a action that can be allowed/denied.
+/// </summary>
+public class Permission : IPermission
+{
+    private string _action;
+
+    /// <summary>
+    /// Creates a new Permission for the given Action.
+    /// </summary>
+    /// <param name="action">Action.</param>
+    public Permission(string action)
     {
-        /// <summary>
-        /// If the action appears in the deny list it is denied unless it is in the allow list, otherwise it is allowed
-        /// </summary>
-        DenyAllow,
-        /// <summary>
-        /// If the action appears in the allow list it is allowed unless it is in the deny list, otherwise it is denied
-        /// </summary>
-        AllowDeny,
-        /// <summary>
-        /// All actions are allowed
-        /// </summary>
-        AllowAny,
-        /// <summary>
-        /// All actions are denied
-        /// </summary>
-        DenyAny,
+        _action = action;
     }
 
     /// <summary>
-    /// Interface for Permission.
+    /// Gets whether the Permission is for the given action.
     /// </summary>
-    public interface IPermission
+    /// <param name="action">Action.</param>
+    /// <returns></returns>
+    public bool IsPermissionFor(string action)
     {
-        /// <summary>
-        /// Gets whether the Permission is for a specific action.
-        /// </summary>
-        /// <param name="action">Action.</param>
-        /// <returns></returns>
-        bool IsPermissionFor(string action);
+        return _action.Equals(action);
+    }
+}
+
+/// <summary>
+/// Represents a set of Permissions that can be allowed/denied.
+/// </summary>
+public class PermissionSet : IPermission
+{
+    private List<string> _actions = new List<string>();
+
+    /// <summary>
+    /// Creates a new Permissions Set.
+    /// </summary>
+    /// <param name="action">Action.</param>
+    public PermissionSet(string action)
+    {
+        _actions.Add(action);
     }
 
     /// <summary>
-    /// Represents a action that can be allowed/denied.
+    /// Creates a new Permissions Set.
     /// </summary>
-    public class Permission : IPermission
+    /// <param name="actions">Actions.</param>
+    public PermissionSet(IEnumerable<string> actions)
     {
-        private string _action;
-
-        /// <summary>
-        /// Creates a new Permission for the given Action.
-        /// </summary>
-        /// <param name="action">Action.</param>
-        public Permission(string action)
-        {
-            _action = action;
-        }
-
-        /// <summary>
-        /// Gets whether the Permission is for the given action.
-        /// </summary>
-        /// <param name="action">Action.</param>
-        /// <returns></returns>
-        public bool IsPermissionFor(string action)
-        {
-            return _action.Equals(action);
-        }
+        _actions.AddRange(actions);
     }
 
     /// <summary>
-    /// Represents a set of Permissions that can be allowed/denied.
+    /// Gets whether the Permission is for the given action.
     /// </summary>
-    public class PermissionSet : IPermission
+    /// <param name="action">Action.</param>
+    /// <returns></returns>
+    public bool IsPermissionFor(string action)
     {
-        private List<string> _actions = new List<string>();
-
-        /// <summary>
-        /// Creates a new Permissions Set.
-        /// </summary>
-        /// <param name="action">Action.</param>
-        public PermissionSet(string action)
-        {
-            _actions.Add(action);
-        }
-
-        /// <summary>
-        /// Creates a new Permissions Set.
-        /// </summary>
-        /// <param name="actions">Actions.</param>
-        public PermissionSet(IEnumerable<string> actions)
-        {
-            _actions.AddRange(actions);
-        }
-
-        /// <summary>
-        /// Gets whether the Permission is for the given action.
-        /// </summary>
-        /// <param name="action">Action.</param>
-        /// <returns></returns>
-        public bool IsPermissionFor(string action)
-        {
-            return _actions.Any(a => a.Equals(action));
-        }
+        return _actions.Any(a => a.Equals(action));
     }
 }

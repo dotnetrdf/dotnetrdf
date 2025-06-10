@@ -24,20 +24,19 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Parsing.Events
+namespace VDS.RDF.Parsing.Events;
+
+/// <summary>
+/// Interface for RDF/XML events as defined by the RDF/XML Specification.
+/// </summary>
+/// <remarks>Used to provide polymorphism for the XML/RDF Parser.</remarks>
+public interface IRdfXmlEvent : IEvent
 {
     /// <summary>
-    /// Interface for RDF/XML events as defined by the RDF/XML Specification.
+    /// Gets the XML that produced the given event (if any).
     /// </summary>
-    /// <remarks>Used to provide polymorphism for the XML/RDF Parser.</remarks>
-    public interface IRdfXmlEvent : IEvent
+    string SourceXml
     {
-        /// <summary>
-        /// Gets the XML that produced the given event (if any).
-        /// </summary>
-        string SourceXml
-        {
-            get;
-        }
+        get;
     }
 }

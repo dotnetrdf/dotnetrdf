@@ -28,198 +28,197 @@ using System.Linq;
 using Xunit;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers;
+
+public class PagingHandlerTests
 {
-    public class PagingHandlerTests
+    private static void ParsingUsingPagingHandler(String tempFile, IRdfReader parser)
     {
-        private static void ParsingUsingPagingHandler(String tempFile, IRdfReader parser)
+        var g = new Graph();
+        EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+        g.SaveToFile(tempFile);
+
+        var h = new Graph();
+        var handler = new PagingHandler(new GraphHandler(h), 25);
+        parser.Load(handler, tempFile);
+        h.Retract(h.Triples.Where(t => !t.IsGroundTriple).ToList());
+
+        var formatter = new NTriplesFormatter();
+        foreach (Triple t in h.Triples)
         {
-            var g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-            g.SaveToFile(tempFile);
-
-            var h = new Graph();
-            var handler = new PagingHandler(new GraphHandler(h), 25);
-            parser.Load(handler, tempFile);
-            h.Retract(h.Triples.Where(t => !t.IsGroundTriple).ToList());
-
-            var formatter = new NTriplesFormatter();
-            foreach (Triple t in h.Triples)
-            {
-                Console.WriteLine(t.ToString(formatter));
-            }
-            Console.WriteLine();
-
-            Assert.False(h.IsEmpty, "Graph should not be empty");
-            Assert.True(h.Triples.Count <= 25, "Graphs should have <= 25 Triples");
-
-            var i = new Graph();
-            handler = new PagingHandler(new GraphHandler(i), 25, 25);
-            parser.Load(handler, tempFile);
-            i.Retract(i.Triples.Where(t => !t.IsGroundTriple));
-
-            foreach (Triple t in i.Triples)
-            {
-                Console.WriteLine(t.ToString(formatter));
-            }
-            Console.WriteLine();
-
-            Assert.False(i.IsEmpty, "Graph should not be empty");
-            Assert.True(i.Triples.Count <= 25, "Graphs should have <= 25 Triples");
-
-            GraphDiffReport report = h.Difference(i);
-            Assert.False(report.AreEqual, "Graphs should not be equal");
-            Assert.Equal(i.Triples.Count, report.AddedTriples.Count());
-            Assert.Equal(h.Triples.Count, report.RemovedTriples.Count());
+            Console.WriteLine(t.ToString(formatter));
         }
+        Console.WriteLine();
 
-        private static void ParsingUsingPagingHandler2(String tempFile, IRdfReader parser)
+        Assert.False(h.IsEmpty, "Graph should not be empty");
+        Assert.True(h.Triples.Count <= 25, "Graphs should have <= 25 Triples");
+
+        var i = new Graph();
+        handler = new PagingHandler(new GraphHandler(i), 25, 25);
+        parser.Load(handler, tempFile);
+        i.Retract(i.Triples.Where(t => !t.IsGroundTriple));
+
+        foreach (Triple t in i.Triples)
         {
-            var g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-            g.SaveToFile(tempFile);
-
-            var h = new Graph();
-            var handler = new PagingHandler(new GraphHandler(h), 0);
-
-            parser.Load(handler, tempFile);
-
-            Assert.True(h.IsEmpty, "Graph should be empty");
+            Console.WriteLine(t.ToString(formatter));
         }
+        Console.WriteLine();
 
-        private static void ParsingUsingPagingHandler3(String tempFile, IRdfReader parser)
-        {
-            var g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-            g.SaveToFile(tempFile);
+        Assert.False(i.IsEmpty, "Graph should not be empty");
+        Assert.True(i.Triples.Count <= 25, "Graphs should have <= 25 Triples");
 
-            var h = new Graph();
-            var handler = new PagingHandler(new GraphHandler(h), -1, 100);
+        GraphDiffReport report = h.Difference(i);
+        Assert.False(report.AreEqual, "Graphs should not be equal");
+        Assert.Equal(i.Triples.Count, report.AddedTriples.Count());
+        Assert.Equal(h.Triples.Count, report.RemovedTriples.Count());
+    }
 
-            parser.Load(handler, tempFile);
+    private static void ParsingUsingPagingHandler2(String tempFile, IRdfReader parser)
+    {
+        var g = new Graph();
+        EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+        g.SaveToFile(tempFile);
 
-            Assert.False(h.IsEmpty, "Graph should not be empty");
-            Assert.Equal(g.Triples.Count - 100, h.Triples.Count);
-        }
+        var h = new Graph();
+        var handler = new PagingHandler(new GraphHandler(h), 0);
 
-        #region These tests take two slices from the graph (0-25) and (26-50) and ensure they are different
+        parser.Load(handler, tempFile);
 
-        [Fact]
-        public void ParsingPagingHandlerNTriples()
-        {
-            ParsingUsingPagingHandler("paging_handler_tests_temp.nt", new NTriplesParser());
-        }
+        Assert.True(h.IsEmpty, "Graph should be empty");
+    }
 
-        [Fact]
-        public void ParsingPagingHandlerTurtle()
-        {
-            ParsingUsingPagingHandler("paging_handler_tests_temp.ttl", new TurtleParser());
-        }
+    private static void ParsingUsingPagingHandler3(String tempFile, IRdfReader parser)
+    {
+        var g = new Graph();
+        EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+        g.SaveToFile(tempFile);
 
-        [Fact]
-        public void ParsingPagingHandlerNotation3()
-        {
-            ParsingUsingPagingHandler("paging_handler_tests_temp.n3", new Notation3Parser());
-        }
+        var h = new Graph();
+        var handler = new PagingHandler(new GraphHandler(h), -1, 100);
 
-        [Fact]
-        public void ParsingPagingHandlerRdfA()
-        {
-            ParsingUsingPagingHandler("paging_handler_tests_temp.html", new RdfAParser());
-        }
+        parser.Load(handler, tempFile);
 
-        [Fact]
-        public void ParsingPagingHandlerRdfJson()
-        {
-            ParsingUsingPagingHandler("paging_handler_tests_temp.json", new RdfJsonParser());
-        }
+        Assert.False(h.IsEmpty, "Graph should not be empty");
+        Assert.Equal(g.Triples.Count - 100, h.Triples.Count);
+    }
 
-        #endregion
+    #region These tests take two slices from the graph (0-25) and (26-50) and ensure they are different
 
-        #region These tests take 0 triples from the graph and ensure it is empty
+    [Fact]
+    public void ParsingPagingHandlerNTriples()
+    {
+        ParsingUsingPagingHandler("paging_handler_tests_temp.nt", new NTriplesParser());
+    }
 
-        [Fact]
-        public void ParsingPagingHandlerNTriples2()
-        {
-            ParsingUsingPagingHandler2("paging_handler_tests_temp.nt", new NTriplesParser());
-        }
+    [Fact]
+    public void ParsingPagingHandlerTurtle()
+    {
+        ParsingUsingPagingHandler("paging_handler_tests_temp.ttl", new TurtleParser());
+    }
 
-        [Fact]
-        public void ParsingPagingHandlerTurtle2()
-        {
-            ParsingUsingPagingHandler2("paging_handler_tests_temp.ttl", new TurtleParser());
-        }
+    [Fact]
+    public void ParsingPagingHandlerNotation3()
+    {
+        ParsingUsingPagingHandler("paging_handler_tests_temp.n3", new Notation3Parser());
+    }
 
-        [Fact]
-        public void ParsingPagingHandlerNotation3_2()
-        {
-            ParsingUsingPagingHandler2("paging_handler_tests_temp.n3", new Notation3Parser());
-        }
+    [Fact]
+    public void ParsingPagingHandlerRdfA()
+    {
+        ParsingUsingPagingHandler("paging_handler_tests_temp.html", new RdfAParser());
+    }
 
-        [Fact]
-        public void ParsingPagingHandlerRdfA2()
-        {
-            ParsingUsingPagingHandler2("paging_handler_tests_temp.html", new RdfAParser());
-        }
+    [Fact]
+    public void ParsingPagingHandlerRdfJson()
+    {
+        ParsingUsingPagingHandler("paging_handler_tests_temp.json", new RdfJsonParser());
+    }
 
-        [Fact]
-        public void ParsingPagingHandlerRdfJson2()
-        {
-            ParsingUsingPagingHandler2("paging_handler_tests_temp.json", new RdfJsonParser());
-        }
+    #endregion
 
-        #endregion
+    #region These tests take 0 triples from the graph and ensure it is empty
 
-        #region These tests discard the first 100 triples and take the rest
+    [Fact]
+    public void ParsingPagingHandlerNTriples2()
+    {
+        ParsingUsingPagingHandler2("paging_handler_tests_temp.nt", new NTriplesParser());
+    }
 
-        [Fact]
-        public void ParsingPagingHandlerNTriples3()
-        {
-            ParsingUsingPagingHandler3("paging_handler_tests_temp.nt", new NTriplesParser());
-        }
+    [Fact]
+    public void ParsingPagingHandlerTurtle2()
+    {
+        ParsingUsingPagingHandler2("paging_handler_tests_temp.ttl", new TurtleParser());
+    }
 
-        [Fact]
-        public void ParsingPagingHandlerTurtle3()
-        {
-            ParsingUsingPagingHandler3("paging_handler_tests_temp.ttl", new TurtleParser());
-        }
+    [Fact]
+    public void ParsingPagingHandlerNotation3_2()
+    {
+        ParsingUsingPagingHandler2("paging_handler_tests_temp.n3", new Notation3Parser());
+    }
 
-        [Fact]
-        public void ParsingPagingHandlerNotation3_3()
-        {
-            ParsingUsingPagingHandler3("paging_handler_tests_temp.n3", new Notation3Parser());
-        }
+    [Fact]
+    public void ParsingPagingHandlerRdfA2()
+    {
+        ParsingUsingPagingHandler2("paging_handler_tests_temp.html", new RdfAParser());
+    }
 
-        [Fact]
-        public void ParsingPagingHandlerRdfA3()
-        {
-            ParsingUsingPagingHandler3("paging_handler_tests_temp.html", new RdfAParser());
-        }
+    [Fact]
+    public void ParsingPagingHandlerRdfJson2()
+    {
+        ParsingUsingPagingHandler2("paging_handler_tests_temp.json", new RdfJsonParser());
+    }
 
-        [Fact]
-        public void ParsingPagingHandlerRdfJson3()
-        {
-            ParsingUsingPagingHandler3("paging_handler_tests_temp.json", new RdfJsonParser());
-        }
+    #endregion
 
-        #endregion
+    #region These tests discard the first 100 triples and take the rest
 
-        [Fact]
-        public void ParsingPagingHandlerRdfXml()
-        {
-            ParsingUsingPagingHandler("paging_handler_tests_temp.rdf", new RdfXmlParser());
-        }
+    [Fact]
+    public void ParsingPagingHandlerNTriples3()
+    {
+        ParsingUsingPagingHandler3("paging_handler_tests_temp.nt", new NTriplesParser());
+    }
 
-        [Fact]
-        public void ParsingPagingHandlerRdfXml2()
-        {
-            ParsingUsingPagingHandler2("paging_handler_tests_temp.rdf", new RdfXmlParser());
-        }
+    [Fact]
+    public void ParsingPagingHandlerTurtle3()
+    {
+        ParsingUsingPagingHandler3("paging_handler_tests_temp.ttl", new TurtleParser());
+    }
 
-        [Fact]
-        public void ParsingPagingHandlerRdfXml3()
-        {
-            ParsingUsingPagingHandler3("paging_handler_tests_temp.rdf", new RdfXmlParser());
-        }
+    [Fact]
+    public void ParsingPagingHandlerNotation3_3()
+    {
+        ParsingUsingPagingHandler3("paging_handler_tests_temp.n3", new Notation3Parser());
+    }
+
+    [Fact]
+    public void ParsingPagingHandlerRdfA3()
+    {
+        ParsingUsingPagingHandler3("paging_handler_tests_temp.html", new RdfAParser());
+    }
+
+    [Fact]
+    public void ParsingPagingHandlerRdfJson3()
+    {
+        ParsingUsingPagingHandler3("paging_handler_tests_temp.json", new RdfJsonParser());
+    }
+
+    #endregion
+
+    [Fact]
+    public void ParsingPagingHandlerRdfXml()
+    {
+        ParsingUsingPagingHandler("paging_handler_tests_temp.rdf", new RdfXmlParser());
+    }
+
+    [Fact]
+    public void ParsingPagingHandlerRdfXml2()
+    {
+        ParsingUsingPagingHandler2("paging_handler_tests_temp.rdf", new RdfXmlParser());
+    }
+
+    [Fact]
+    public void ParsingPagingHandlerRdfXml3()
+    {
+        ParsingUsingPagingHandler3("paging_handler_tests_temp.rdf", new RdfXmlParser());
     }
 }

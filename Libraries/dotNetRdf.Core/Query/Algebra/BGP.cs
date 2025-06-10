@@ -29,172 +29,171 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Represents a BGP which is a set of Triple Patterns.
+/// </summary>
+public class Bgp
+    : IBgp
 {
     /// <summary>
-    /// Represents a BGP which is a set of Triple Patterns.
+    /// The ordered list of triple patterns that are contained in this BGP.
     /// </summary>
-    public class Bgp
-        : IBgp
+    protected readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
+
+    /// <summary>
+    /// Creates a new empty BGP.
+    /// </summary>
+    public Bgp() {}
+
+    /// <summary>
+    /// Creates a BGP containing a single Triple Pattern.
+    /// </summary>
+    /// <param name="p">Triple Pattern.</param>
+    public Bgp(ITriplePattern p)
     {
-        /// <summary>
-        /// The ordered list of triple patterns that are contained in this BGP.
-        /// </summary>
-        protected readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
+        _triplePatterns.Add(p);
+    }
 
-        /// <summary>
-        /// Creates a new empty BGP.
-        /// </summary>
-        public Bgp() {}
+    /// <summary>
+    /// Creates a BGP containing a set of Triple Patterns.
+    /// </summary>
+    /// <param name="ps">Triple Patterns.</param>
+    public Bgp(IEnumerable<ITriplePattern> ps)
+    {
+        _triplePatterns.AddRange(ps);
+    }
 
-        /// <summary>
-        /// Creates a BGP containing a single Triple Pattern.
-        /// </summary>
-        /// <param name="p">Triple Pattern.</param>
-        public Bgp(ITriplePattern p)
+    /// <summary>
+    /// Gets the number of Triple Patterns in the BGP.
+    /// </summary>
+    public int PatternCount
+    {
+        get { return _triplePatterns.Count; }
+    }
+
+    /// <summary>
+    /// Gets the Triple Patterns in the BGP.
+    /// </summary>
+    public IReadOnlyList<ITriplePattern> TriplePatterns
+    {
+        get { return _triplePatterns.AsReadOnly(); }
+    }
+
+
+    /// <summary>
+    /// Gets the Variables used in the Algebra.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
         {
-            _triplePatterns.Add(p);
+            return (from tp in _triplePatterns
+                from v in tp.Variables
+                select v).Distinct();
         }
+    }
 
-        /// <summary>
-        /// Creates a BGP containing a set of Triple Patterns.
-        /// </summary>
-        /// <param name="ps">Triple Patterns.</param>
-        public Bgp(IEnumerable<ITriplePattern> ps)
+    /// <summary>
+    /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FixedVariables
+    {
+        get
         {
-            _triplePatterns.AddRange(ps);
+            return (from tp in _triplePatterns
+                from v in tp.FixedVariables
+                select v).Distinct();
         }
+    }
 
-        /// <summary>
-        /// Gets the number of Triple Patterns in the BGP.
-        /// </summary>
-        public int PatternCount
+    /// <summary>
+    /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FloatingVariables
+    {
+        get
         {
-            get { return _triplePatterns.Count; }
+            // Floating variables are those declared as floating by triple patterns minus those that are declared as fixed by the triple patterns
+            IEnumerable<string> floating = from tp in _triplePatterns
+                from v in tp.FloatingVariables
+                select v;
+            var fixedVars = new HashSet<string>(FixedVariables);
+            return floating.Where(v => !fixedVars.Contains(v)).Distinct();
         }
+    }
 
-        /// <summary>
-        /// Gets the Triple Patterns in the BGP.
-        /// </summary>
-        public IReadOnlyList<ITriplePattern> TriplePatterns
+    /// <summary>
+    /// Gets whether the BGP is the empty BGP.
+    /// </summary>
+    public bool IsEmpty
+    {
+        get { return (_triplePatterns.Count == 0); }
+    }
+
+    /// <summary>
+    /// Returns the String representation of the BGP.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        switch (_triplePatterns.Count)
         {
-            get { return _triplePatterns.AsReadOnly(); }
+            case 0:
+                return "BGP()";
+            case 1:
+                return "BGP(" + _triplePatterns[0] + ")";
+            default:
+                var builder = new StringBuilder();
+                builder.Append("BGP(");
+                for (var i = 0; i < _triplePatterns.Count; i++)
+                {
+                    builder.Append(_triplePatterns[i]);
+                    if (i < _triplePatterns.Count - 1) builder.Append(", ");
+                }
+                builder.Append(")");
+                return builder.ToString();
         }
+    }
 
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    {
+        return processor.ProcessBgp(this, context);
+    }
 
-        /// <summary>
-        /// Gets the Variables used in the Algebra.
-        /// </summary>
-        public IEnumerable<string> Variables
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    {
+        return visitor.VisitBgp(this);
+    }
+
+    /// <summary>
+    /// Converts the Algebra back to a SPARQL Query.
+    /// </summary>
+    /// <returns></returns>
+    public virtual SparqlQuery ToQuery()
+    {
+        var q = new SparqlQuery
         {
-            get
-            {
-                return (from tp in _triplePatterns
-                    from v in tp.Variables
-                    select v).Distinct();
-            }
-        }
+            RootGraphPattern = ToGraphPattern(),
+        };
+        q.Optimise();
+        return q;
+    }
 
-        /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FixedVariables
+    /// <summary>
+    /// Converts the BGP to a Graph Pattern.
+    /// </summary>
+    /// <returns></returns>
+    public virtual GraphPattern ToGraphPattern()
+    {
+        var p = new GraphPattern();
+        foreach (ITriplePattern tp in _triplePatterns)
         {
-            get
-            {
-                return (from tp in _triplePatterns
-                    from v in tp.FixedVariables
-                    select v).Distinct();
-            }
+            p.AddTriplePattern(tp);
         }
-
-        /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FloatingVariables
-        {
-            get
-            {
-                // Floating variables are those declared as floating by triple patterns minus those that are declared as fixed by the triple patterns
-                IEnumerable<string> floating = from tp in _triplePatterns
-                    from v in tp.FloatingVariables
-                    select v;
-                var fixedVars = new HashSet<string>(FixedVariables);
-                return floating.Where(v => !fixedVars.Contains(v)).Distinct();
-            }
-        }
-
-        /// <summary>
-        /// Gets whether the BGP is the empty BGP.
-        /// </summary>
-        public bool IsEmpty
-        {
-            get { return (_triplePatterns.Count == 0); }
-        }
-
-        /// <summary>
-        /// Returns the String representation of the BGP.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            switch (_triplePatterns.Count)
-            {
-                case 0:
-                    return "BGP()";
-                case 1:
-                    return "BGP(" + _triplePatterns[0] + ")";
-                default:
-                    var builder = new StringBuilder();
-                    builder.Append("BGP(");
-                    for (var i = 0; i < _triplePatterns.Count; i++)
-                    {
-                        builder.Append(_triplePatterns[i]);
-                        if (i < _triplePatterns.Count - 1) builder.Append(", ");
-                    }
-                    builder.Append(")");
-                    return builder.ToString();
-            }
-        }
-
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
-        {
-            return processor.ProcessBgp(this, context);
-        }
-
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
-        {
-            return visitor.VisitBgp(this);
-        }
-
-        /// <summary>
-        /// Converts the Algebra back to a SPARQL Query.
-        /// </summary>
-        /// <returns></returns>
-        public virtual SparqlQuery ToQuery()
-        {
-            var q = new SparqlQuery
-            {
-                RootGraphPattern = ToGraphPattern(),
-            };
-            q.Optimise();
-            return q;
-        }
-
-        /// <summary>
-        /// Converts the BGP to a Graph Pattern.
-        /// </summary>
-        /// <returns></returns>
-        public virtual GraphPattern ToGraphPattern()
-        {
-            var p = new GraphPattern();
-            foreach (ITriplePattern tp in _triplePatterns)
-            {
-                p.AddTriplePattern(tp);
-            }
-            return p;
-        }
+        return p;
     }
 }

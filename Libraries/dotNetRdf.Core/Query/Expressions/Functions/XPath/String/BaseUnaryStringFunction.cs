@@ -26,102 +26,101 @@
 
 using System.Collections.Generic;
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.String
+namespace VDS.RDF.Query.Expressions.Functions.XPath.String;
+
+/// <summary>
+/// Abstract Base Class for XPath Unary String functions.
+/// </summary>
+public abstract class BaseUnaryStringFunction
+    : ISparqlExpression
 {
     /// <summary>
-    /// Abstract Base Class for XPath Unary String functions.
+    /// Expression the function applies over.
     /// </summary>
-    public abstract class BaseUnaryStringFunction
-        : ISparqlExpression
+    protected ISparqlExpression _expr;
+
+    /// <summary>
+    /// Creates a new XPath Unary String function.
+    /// </summary>
+    /// <param name="stringExpr">Expression.</param>
+    protected BaseUnaryStringFunction(ISparqlExpression stringExpr)
     {
-        /// <summary>
-        /// Expression the function applies over.
-        /// </summary>
-        protected ISparqlExpression _expr;
-
-        /// <summary>
-        /// Creates a new XPath Unary String function.
-        /// </summary>
-        /// <param name="stringExpr">Expression.</param>
-        protected BaseUnaryStringFunction(ISparqlExpression stringExpr)
-        {
-            _expr = stringExpr;
-        }
-
-        /// <summary>
-        /// Get the expression that the function applies over.
-        /// </summary>
-        public ISparqlExpression InnerExpression { get => _expr; }
-
-        /// <inheritdoc />
-        public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
-
-        /// <inheritdoc />
-        public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
-
-        /// <summary>
-        /// Gets the Variables used in the function.
-        /// </summary>
-        public virtual IEnumerable<string> Variables
-        {
-            get
-            {
-                return _expr.Variables;
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public abstract string Functor
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression.
-        /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
-        {
-            get
-            {
-                return _expr.AsEnumerable();
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel.
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return _expr.CanParallelise;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
+        _expr = stringExpr;
     }
+
+    /// <summary>
+    /// Get the expression that the function applies over.
+    /// </summary>
+    public ISparqlExpression InnerExpression { get => _expr; }
+
+    /// <inheritdoc />
+    public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
+
+    /// <inheritdoc />
+    public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
+
+    /// <summary>
+    /// Gets the Variables used in the function.
+    /// </summary>
+    public virtual IEnumerable<string> Variables
+    {
+        get
+        {
+            return _expr.Variables;
+        }
+    }
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public abstract override string ToString();
+
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public SparqlExpressionType Type
+    {
+        get
+        {
+            return SparqlExpressionType.Function;
+        }
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public abstract string Functor
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the Arguments of the Expression.
+    /// </summary>
+    public IEnumerable<ISparqlExpression> Arguments
+    {
+        get
+        {
+            return _expr.AsEnumerable();
+        }
+    }
+
+    /// <summary>
+    /// Gets whether an expression can safely be evaluated in parallel.
+    /// </summary>
+    public virtual bool CanParallelise
+    {
+        get
+        {
+            return _expr.CanParallelise;
+        }
+    }
+
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
 }

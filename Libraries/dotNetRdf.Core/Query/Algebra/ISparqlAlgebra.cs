@@ -28,43 +28,42 @@ using System;
 using System.Collections.Generic;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Interface for classes that represent the SPARQL Algebra and are used to evaluate queries.
+/// </summary>
+public interface ISparqlAlgebra : IVisitable, IProcessable
 {
     /// <summary>
-    /// Interface for classes that represent the SPARQL Algebra and are used to evaluate queries.
+    /// Gets the enumeration of Variables used in the Algebra.
     /// </summary>
-    public interface ISparqlAlgebra : IVisitable, IProcessable
+    IEnumerable<string> Variables
     {
-        /// <summary>
-        /// Gets the enumeration of Variables used in the Algebra.
-        /// </summary>
-        IEnumerable<string> Variables
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
-        /// </summary>
-        IEnumerable<string> FloatingVariables { get; }
-
-        /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
-        /// </summary>
-        IEnumerable<string> FixedVariables { get; }
-        
-        /// <summary>
-        /// Converts the Algebra back to a SPARQL Query.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown if the given Algebra cannot be converted to a SPARQL Query.</exception>
-        SparqlQuery ToQuery();
-
-        /// <summary>
-        /// Converts the Algebra back to a Graph Pattern.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown if the given Algebra cannot be converted to a Graph Pattern.</exception>
-        GraphPattern ToGraphPattern();
+        get;
     }
+
+    /// <summary>
+    /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
+    /// </summary>
+    IEnumerable<string> FloatingVariables { get; }
+
+    /// <summary>
+    /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
+    /// </summary>
+    IEnumerable<string> FixedVariables { get; }
+    
+    /// <summary>
+    /// Converts the Algebra back to a SPARQL Query.
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException">Thrown if the given Algebra cannot be converted to a SPARQL Query.</exception>
+    SparqlQuery ToQuery();
+
+    /// <summary>
+    /// Converts the Algebra back to a Graph Pattern.
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException">Thrown if the given Algebra cannot be converted to a Graph Pattern.</exception>
+    GraphPattern ToGraphPattern();
 }

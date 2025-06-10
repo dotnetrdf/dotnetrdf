@@ -27,142 +27,141 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Parsing.Validation
+namespace VDS.RDF.Parsing.Validation;
+
+/// <summary>
+/// Represents Syntax Validation Results.
+/// </summary>
+public class SyntaxValidationResults : ISyntaxValidationResults
 {
+    private bool _valid;
+    private string _message;
+    private List<string> _warnings = new List<string>();
+    private Exception _error;
+    private object _result;
+
     /// <summary>
-    /// Represents Syntax Validation Results.
+    /// Creates new Syntax Validation Results.
     /// </summary>
-    public class SyntaxValidationResults : ISyntaxValidationResults
+    /// <param name="valid">Whether the Syntax was valid.</param>
+    /// <param name="message">Validation Message.</param>
+    public SyntaxValidationResults(bool valid, string message)
     {
-        private bool _valid;
-        private string _message;
-        private List<string> _warnings = new List<string>();
-        private Exception _error;
-        private object _result;
+        _valid = valid;
+        _message = message;
+    }
 
-        /// <summary>
-        /// Creates new Syntax Validation Results.
-        /// </summary>
-        /// <param name="valid">Whether the Syntax was valid.</param>
-        /// <param name="message">Validation Message.</param>
-        public SyntaxValidationResults(bool valid, string message)
+    /// <summary>
+    /// Creates new Syntax Validation Results.
+    /// </summary>
+    /// <param name="valid">Whether the Syntax was valid.</param>
+    /// <param name="message">Validation Message.</param>
+    /// <param name="result">Results Object.</param>
+    public SyntaxValidationResults(bool valid, string message, object result)
+        : this(valid, message)
+    {
+        _result = result;
+    }
+
+    /// <summary>
+    /// Creates new Syntax Validation Results.
+    /// </summary>
+    /// <param name="valid">Whether the Syntax was valid.</param>
+    /// <param name="message">Validation Message.</param>
+    /// <param name="result">Results Object.</param>
+    /// <param name="warnings">Enumeration of Warnings.</param>
+    public SyntaxValidationResults(bool valid, string message, object result, IEnumerable<string> warnings)
+        : this(valid, message, result)
+    {
+        _warnings.AddRange(warnings);
+    }
+
+    /// <summary>
+    /// Creates new Syntax Validation Results.
+    /// </summary>
+    /// <param name="valid">Whether the Syntax was valid.</param>
+    /// <param name="message">Validation Message.</param>
+    /// <param name="result">Results Object.</param>
+    /// <param name="warnings">Enumeration of Warnings.</param>
+    /// <param name="error">Error that occurred.</param>
+    public SyntaxValidationResults(bool valid, string message, object result, IEnumerable<string> warnings, Exception error)
+        : this(valid, message, result, warnings)
+    {
+        _error = error;
+    }
+
+    /// <summary>
+    /// Creates new Syntax Validation Results.
+    /// </summary>
+    /// <param name="valid">Whether the Syntax was valid.</param>
+    /// <param name="message">Validation Message.</param>
+    /// <param name="error">Error that occurred.</param>
+    public SyntaxValidationResults(bool valid, string message, Exception error)
+        : this(valid, message)
+    {
+        _error = error;
+    }
+
+    /// <summary>
+    /// Creates new Syntax Validation Results.
+    /// </summary>
+    /// <param name="message">Validation Message.</param>
+    /// <param name="error">Error that occurred.</param>
+    public SyntaxValidationResults(string message, Exception error)
+        : this(error == null, message, error) { }
+
+    /// <summary>
+    /// Whether the Syntax was valid.
+    /// </summary>
+    public bool IsValid
+    {
+        get 
         {
-            _valid = valid;
-            _message = message;
+            return _valid; 
         }
+    }
 
-        /// <summary>
-        /// Creates new Syntax Validation Results.
-        /// </summary>
-        /// <param name="valid">Whether the Syntax was valid.</param>
-        /// <param name="message">Validation Message.</param>
-        /// <param name="result">Results Object.</param>
-        public SyntaxValidationResults(bool valid, string message, object result)
-            : this(valid, message)
+    /// <summary>
+    /// Gets the Validation Message.
+    /// </summary>
+    public string Message
+    {
+        get 
         {
-            _result = result;
+            return _message;
         }
+    }
 
-        /// <summary>
-        /// Creates new Syntax Validation Results.
-        /// </summary>
-        /// <param name="valid">Whether the Syntax was valid.</param>
-        /// <param name="message">Validation Message.</param>
-        /// <param name="result">Results Object.</param>
-        /// <param name="warnings">Enumeration of Warnings.</param>
-        public SyntaxValidationResults(bool valid, string message, object result, IEnumerable<string> warnings)
-            : this(valid, message, result)
+    /// <summary>
+    /// Gets the Warnings that were produced.
+    /// </summary>
+    public IEnumerable<string> Warnings
+    {
+        get 
         {
-            _warnings.AddRange(warnings);
+            return _warnings;
         }
+    }
 
-        /// <summary>
-        /// Creates new Syntax Validation Results.
-        /// </summary>
-        /// <param name="valid">Whether the Syntax was valid.</param>
-        /// <param name="message">Validation Message.</param>
-        /// <param name="result">Results Object.</param>
-        /// <param name="warnings">Enumeration of Warnings.</param>
-        /// <param name="error">Error that occurred.</param>
-        public SyntaxValidationResults(bool valid, string message, object result, IEnumerable<string> warnings, Exception error)
-            : this(valid, message, result, warnings)
+    /// <summary>
+    /// Gets the Error that occurred.
+    /// </summary>
+    public Exception Error
+    {
+        get 
         {
-            _error = error;
+            return _error; 
         }
+    }
 
-        /// <summary>
-        /// Creates new Syntax Validation Results.
-        /// </summary>
-        /// <param name="valid">Whether the Syntax was valid.</param>
-        /// <param name="message">Validation Message.</param>
-        /// <param name="error">Error that occurred.</param>
-        public SyntaxValidationResults(bool valid, string message, Exception error)
-            : this(valid, message)
+    /// <summary>
+    /// Gets the Result Object that was produced.
+    /// </summary>
+    public object Result
+    {
+        get
         {
-            _error = error;
-        }
-
-        /// <summary>
-        /// Creates new Syntax Validation Results.
-        /// </summary>
-        /// <param name="message">Validation Message.</param>
-        /// <param name="error">Error that occurred.</param>
-        public SyntaxValidationResults(string message, Exception error)
-            : this(error == null, message, error) { }
-
-        /// <summary>
-        /// Whether the Syntax was valid.
-        /// </summary>
-        public bool IsValid
-        {
-            get 
-            {
-                return _valid; 
-            }
-        }
-
-        /// <summary>
-        /// Gets the Validation Message.
-        /// </summary>
-        public string Message
-        {
-            get 
-            {
-                return _message;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Warnings that were produced.
-        /// </summary>
-        public IEnumerable<string> Warnings
-        {
-            get 
-            {
-                return _warnings;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Error that occurred.
-        /// </summary>
-        public Exception Error
-        {
-            get 
-            {
-                return _error; 
-            }
-        }
-
-        /// <summary>
-        /// Gets the Result Object that was produced.
-        /// </summary>
-        public object Result
-        {
-            get
-            {
-                return _result;
-            }
+            return _result;
         }
     }
 }

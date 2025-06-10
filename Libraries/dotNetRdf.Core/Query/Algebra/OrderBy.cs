@@ -31,127 +31,126 @@ using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Represents an Order By clause.
+/// </summary>
+public class OrderBy
+    : IUnaryOperator
 {
+    private readonly ISparqlAlgebra _pattern;
+    private readonly ISparqlOrderBy _ordering;
+
     /// <summary>
-    /// Represents an Order By clause.
+    /// Creates a new Order By clause.
     /// </summary>
-    public class OrderBy
-        : IUnaryOperator
+    /// <param name="pattern">Pattern.</param>
+    /// <param name="ordering">Ordering.</param>
+    public OrderBy(ISparqlAlgebra pattern, ISparqlOrderBy ordering)
     {
-        private readonly ISparqlAlgebra _pattern;
-        private readonly ISparqlOrderBy _ordering;
+        _pattern = pattern;
+        _ordering = ordering;
+    }
 
-        /// <summary>
-        /// Creates a new Order By clause.
-        /// </summary>
-        /// <param name="pattern">Pattern.</param>
-        /// <param name="ordering">Ordering.</param>
-        public OrderBy(ISparqlAlgebra pattern, ISparqlOrderBy ordering)
+    /// <summary>
+    /// Gets the Variables used in the Algebra.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
         {
-            _pattern = pattern;
-            _ordering = ordering;
+            return _pattern.Variables.Distinct();
         }
+    }
 
-        /// <summary>
-        /// Gets the Variables used in the Algebra.
-        /// </summary>
-        public IEnumerable<string> Variables
+    /// <summary>
+    /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FloatingVariables { get { return _pattern.FloatingVariables; } }
+
+    /// <summary>
+    /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FixedVariables { get { return _pattern.FixedVariables; } }
+
+    /// <summary>
+    /// Gets the Inner Algebra.
+    /// </summary>
+    public ISparqlAlgebra InnerAlgebra
+    {
+        get
         {
-            get
-            {
-                return _pattern.Variables.Distinct();
-            }
+            return _pattern;
         }
+    }
 
-        /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FloatingVariables { get { return _pattern.FloatingVariables; } }
-
-        /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FixedVariables { get { return _pattern.FixedVariables; } }
-
-        /// <summary>
-        /// Gets the Inner Algebra.
-        /// </summary>
-        public ISparqlAlgebra InnerAlgebra
+    /// <summary>
+    /// Gets the Ordering that is used.
+    /// </summary>
+    /// <remarks>
+    /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null and has an ORDER BY clause then that is applied rather than the ordering with which the OrderBy algebra is instantiated.
+    /// </remarks>
+    public ISparqlOrderBy Ordering
+    {
+        get
         {
-            get
-            {
-                return _pattern;
-            }
+            return _ordering;
         }
+    }
 
-        /// <summary>
-        /// Gets the Ordering that is used.
-        /// </summary>
-        /// <remarks>
-        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null and has an ORDER BY clause then that is applied rather than the ordering with which the OrderBy algebra is instantiated.
-        /// </remarks>
-        public ISparqlOrderBy Ordering
-        {
-            get
-            {
-                return _ordering;
-            }
-        }
+    /// <summary>
+    /// Gets the String representation of the Algebra.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "OrderBy(" + _pattern + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Algebra.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "OrderBy(" + _pattern + ")";
-        }
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    {
+        return processor.ProcessOrderBy(this, context);
+    }
 
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
-        {
-            return processor.ProcessOrderBy(this, context);
-        }
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    {
+        return visitor.VisitOrderBy(this);
+    }
 
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    /// <summary>
+    /// Converts the Algebra back to a SPARQL Query.
+    /// </summary>
+    /// <returns></returns>
+    public SparqlQuery ToQuery()
+    {
+        SparqlQuery q = _pattern.ToQuery();
+        if (_ordering != null)
         {
-            return visitor.VisitOrderBy(this);
+            q.OrderBy = _ordering;
         }
+        return q;
+    }
 
-        /// <summary>
-        /// Converts the Algebra back to a SPARQL Query.
-        /// </summary>
-        /// <returns></returns>
-        public SparqlQuery ToQuery()
-        {
-            SparqlQuery q = _pattern.ToQuery();
-            if (_ordering != null)
-            {
-                q.OrderBy = _ordering;
-            }
-            return q;
-        }
+    /// <summary>
+    /// Throws an error since an OrderBy() cannot be converted back to a Graph Pattern.
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException">Thrown since an OrderBy() cannot be converted back to a Graph Pattern.</exception>
+    public GraphPattern ToGraphPattern()
+    {
+        throw new NotSupportedException("An OrderBy() cannot be converted to a Graph Pattern");
+    }
 
-        /// <summary>
-        /// Throws an error since an OrderBy() cannot be converted back to a Graph Pattern.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown since an OrderBy() cannot be converted back to a Graph Pattern.</exception>
-        public GraphPattern ToGraphPattern()
-        {
-            throw new NotSupportedException("An OrderBy() cannot be converted to a Graph Pattern");
-        }
-
-        /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser.
-        /// </summary>
-        /// <param name="optimiser">Optimiser.</param>
-        /// <returns></returns>
-        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
-        {
-            return new OrderBy(optimiser.Optimise(_pattern), _ordering);
-        }
+    /// <summary>
+    /// Transforms the Inner Algebra using the given Optimiser.
+    /// </summary>
+    /// <param name="optimiser">Optimiser.</param>
+    /// <returns></returns>
+    public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+    {
+        return new OrderBy(optimiser.Optimise(_pattern), _ordering);
     }
 }

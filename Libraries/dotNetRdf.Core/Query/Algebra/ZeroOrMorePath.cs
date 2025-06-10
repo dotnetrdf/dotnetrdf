@@ -27,54 +27,53 @@
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Represents a Zero or More Path in the SPARQL Algebra.
+/// </summary>
+public class ZeroOrMorePath : BaseArbitraryLengthPathOperator
 {
     /// <summary>
-    /// Represents a Zero or More Path in the SPARQL Algebra.
+    /// Creates a new Zero or More Path.
     /// </summary>
-    public class ZeroOrMorePath : BaseArbitraryLengthPathOperator
+    /// <param name="start">Path Start.</param>
+    /// <param name="end">Path End.</param>
+    /// <param name="path">Property Path.</param>
+    public ZeroOrMorePath(PatternItem start, PatternItem end, ISparqlPath path)
+        : base(start, end, path) { }
+
+
+    /// <summary>
+    /// Gets the String representation of the Algebra.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new Zero or More Path.
-        /// </summary>
-        /// <param name="start">Path Start.</param>
-        /// <param name="end">Path End.</param>
-        /// <param name="path">Property Path.</param>
-        public ZeroOrMorePath(PatternItem start, PatternItem end, ISparqlPath path)
-            : base(start, end, path) { }
+        return "ZeroOrMorePath(" + PathStart + ", " + Path.ToString() + ", " + PathEnd + ")";
+    }
 
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    {
+        return visitor.VisitZeroOrMorePath(this);
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Algebra.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "ZeroOrMorePath(" + PathStart + ", " + Path.ToString() + ", " + PathEnd + ")";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    {
+        return processor.ProcessZeroOrMorePath(this, context);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
-        {
-            return visitor.VisitZeroOrMorePath(this);
-        }
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
-        {
-            return processor.ProcessZeroOrMorePath(this, context);
-        }
-
-        /// <summary>
-        /// Transforms the Algebra into a Graph Pattern.
-        /// </summary>
-        /// <returns></returns>
-        public override GraphPattern ToGraphPattern()
-        {
-            var gp = new GraphPattern();
-            var pp = new PropertyPathPattern(PathStart, new ZeroOrMore(Path), PathEnd);
-            gp.AddTriplePattern(pp);
-            return gp;
-        }
+    /// <summary>
+    /// Transforms the Algebra into a Graph Pattern.
+    /// </summary>
+    /// <returns></returns>
+    public override GraphPattern ToGraphPattern()
+    {
+        var gp = new GraphPattern();
+        var pp = new PropertyPathPattern(PathStart, new ZeroOrMore(Path), PathEnd);
+        gp.AddTriplePattern(pp);
+        return gp;
     }
 }

@@ -29,171 +29,170 @@ using System.Linq;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Represents a LeftJoin predicated on the existence/non-existence of joinable sets on the RHS for each item on the LHS.
+/// </summary>
+public class ExistsJoin 
+    : IExistsJoin
 {
+    private readonly ISparqlAlgebra _lhs, _rhs;
+    private readonly bool _mustExist;
+
     /// <summary>
-    /// Represents a LeftJoin predicated on the existence/non-existence of joinable sets on the RHS for each item on the LHS.
+    /// Creates a new Exists Join.
     /// </summary>
-    public class ExistsJoin 
-        : IExistsJoin
+    /// <param name="lhs">LHS Pattern.</param>
+    /// <param name="rhs">RHS Pattern.</param>
+    /// <param name="mustExist">Whether a joinable set must exist on the RHS for the LHS set to be preserved.</param>
+    public ExistsJoin(ISparqlAlgebra lhs, ISparqlAlgebra rhs, bool mustExist)
     {
-        private readonly ISparqlAlgebra _lhs, _rhs;
-        private readonly bool _mustExist;
+        _lhs = lhs;
+        _rhs = rhs;
+        _mustExist = mustExist;
+    }
 
-        /// <summary>
-        /// Creates a new Exists Join.
-        /// </summary>
-        /// <param name="lhs">LHS Pattern.</param>
-        /// <param name="rhs">RHS Pattern.</param>
-        /// <param name="mustExist">Whether a joinable set must exist on the RHS for the LHS set to be preserved.</param>
-        public ExistsJoin(ISparqlAlgebra lhs, ISparqlAlgebra rhs, bool mustExist)
+
+    /// <summary>
+    /// Gets the Variables used in the Algebra.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
         {
-            _lhs = lhs;
-            _rhs = rhs;
-            _mustExist = mustExist;
+            return (_lhs.Variables.Concat(_rhs.Variables)).Distinct();
         }
+    }
 
+    /// <summary>
+    /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FloatingVariables
+    {
+        get { return _lhs.FloatingVariables; }
+    }
 
-        /// <summary>
-        /// Gets the Variables used in the Algebra.
-        /// </summary>
-        public IEnumerable<string> Variables
+    /// <summary>
+    /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FixedVariables
+    {
+        get { return _lhs.FixedVariables; }
+    }
+
+    /// <summary>
+    /// Gets the LHS of the Join.
+    /// </summary>
+    public ISparqlAlgebra Lhs
+    {
+        get
         {
-            get
-            {
-                return (_lhs.Variables.Concat(_rhs.Variables)).Distinct();
-            }
+            return _lhs;
         }
+    }
 
-        /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FloatingVariables
+    /// <summary>
+    /// Gets the RHS of the Join.
+    /// </summary>
+    public ISparqlAlgebra Rhs
+    {
+        get
         {
-            get { return _lhs.FloatingVariables; }
+            return _rhs;
         }
+    }
 
-        /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FixedVariables
+    /// <summary>
+    /// Gets whether this is an EXISTS join.
+    /// </summary>
+    public bool MustExist
+    {
+        get
         {
-            get { return _lhs.FixedVariables; }
+            return _mustExist;
         }
+    }
 
-        /// <summary>
-        /// Gets the LHS of the Join.
-        /// </summary>
-        public ISparqlAlgebra Lhs
+    /// <summary>
+    /// Gets the String representation of the Algebra.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "ExistsJoin(" + _lhs + ", " + _rhs + ", " + _mustExist + ")";
+    }
+
+    TResult IProcessable.Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    {
+        return processor.ProcessExistsJoin(this, context);
+    }
+
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    {
+        return visitor.VisitExistsJoin(this);
+    }
+
+
+    /// <summary>
+    /// Converts the Algebra back to a SPARQL Query.
+    /// </summary>
+    /// <returns></returns>
+    public SparqlQuery ToQuery()
+    {
+        var q = new SparqlQuery { RootGraphPattern = ToGraphPattern() };
+        q.Optimise();
+        return q;
+    }
+
+    /// <summary>
+    /// Converts the Algebra back to a Graph Pattern.
+    /// </summary>
+    /// <returns></returns>
+    public GraphPattern ToGraphPattern()
+    {
+        var p = _lhs.ToGraphPattern();
+        var opt = _rhs.ToGraphPattern();
+        if (_mustExist)
         {
-            get
-            {
-                return _lhs;
-            }
+            opt.IsExists = true;
         }
-
-        /// <summary>
-        /// Gets the RHS of the Join.
-        /// </summary>
-        public ISparqlAlgebra Rhs
+        else
         {
-            get
-            {
-                return _rhs;
-            }
+            opt.IsNotExists = true;
         }
+        p.AddGraphPattern(opt);
+        return p;
+    }
 
-        /// <summary>
-        /// Gets whether this is an EXISTS join.
-        /// </summary>
-        public bool MustExist
-        {
-            get
-            {
-                return _mustExist;
-            }
-        }
+    /// <summary>
+    /// Transforms both sides of the Join using the given Optimiser.
+    /// </summary>
+    /// <param name="optimiser">Optimser.</param>
+    /// <returns></returns>
+    public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+    {
+        return new ExistsJoin(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs), _mustExist);
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Algebra.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "ExistsJoin(" + _lhs + ", " + _rhs + ", " + _mustExist + ")";
-        }
+    /// <summary>
+    /// Transforms the LHS of the Join using the given Optimiser.
+    /// </summary>
+    /// <param name="optimiser">Optimser.</param>
+    /// <returns></returns>
+    public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
+    {
+        return new ExistsJoin(optimiser.Optimise(_lhs), _rhs, _mustExist);
+    }
 
-        TResult IProcessable.Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
-        {
-            return processor.ProcessExistsJoin(this, context);
-        }
-
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
-        {
-            return visitor.VisitExistsJoin(this);
-        }
-
-
-        /// <summary>
-        /// Converts the Algebra back to a SPARQL Query.
-        /// </summary>
-        /// <returns></returns>
-        public SparqlQuery ToQuery()
-        {
-            var q = new SparqlQuery { RootGraphPattern = ToGraphPattern() };
-            q.Optimise();
-            return q;
-        }
-
-        /// <summary>
-        /// Converts the Algebra back to a Graph Pattern.
-        /// </summary>
-        /// <returns></returns>
-        public GraphPattern ToGraphPattern()
-        {
-            var p = _lhs.ToGraphPattern();
-            var opt = _rhs.ToGraphPattern();
-            if (_mustExist)
-            {
-                opt.IsExists = true;
-            }
-            else
-            {
-                opt.IsNotExists = true;
-            }
-            p.AddGraphPattern(opt);
-            return p;
-        }
-
-        /// <summary>
-        /// Transforms both sides of the Join using the given Optimiser.
-        /// </summary>
-        /// <param name="optimiser">Optimser.</param>
-        /// <returns></returns>
-        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
-        {
-            return new ExistsJoin(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs), _mustExist);
-        }
-
-        /// <summary>
-        /// Transforms the LHS of the Join using the given Optimiser.
-        /// </summary>
-        /// <param name="optimiser">Optimser.</param>
-        /// <returns></returns>
-        public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
-        {
-            return new ExistsJoin(optimiser.Optimise(_lhs), _rhs, _mustExist);
-        }
-
-        /// <summary>
-        /// Transforms the RHS of the Join using the given Optimiser.
-        /// </summary>
-        /// <param name="optimiser">Optimser.</param>
-        /// <returns></returns>
-        public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
-        {
-            return new ExistsJoin(_lhs, optimiser.Optimise(_rhs), _mustExist);
-        }
+    /// <summary>
+    /// Transforms the RHS of the Join using the given Optimiser.
+    /// </summary>
+    /// <param name="optimiser">Optimser.</param>
+    /// <returns></returns>
+    public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
+    {
+        return new ExistsJoin(_lhs, optimiser.Optimise(_rhs), _mustExist);
     }
 }

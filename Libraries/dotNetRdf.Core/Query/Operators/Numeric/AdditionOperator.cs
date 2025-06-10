@@ -28,47 +28,46 @@ using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Operators.Numeric
+namespace VDS.RDF.Query.Operators.Numeric;
+
+/// <summary>
+/// Represents the numeric addition operator.
+/// </summary>
+public class AdditionOperator
+    : BaseNumericOperator
 {
     /// <summary>
-    /// Represents the numeric addition operator.
+    /// Gets the operator type.
     /// </summary>
-    public class AdditionOperator
-        : BaseNumericOperator
+    public override SparqlOperatorType Operator => SparqlOperatorType.Add;
+
+    /// <inheritdoc />
+    public override bool IsExtension => false;
+
+    /// <summary>
+    /// Applies the operator.
+    /// </summary>
+    /// <param name="ns">Arguments.</param>
+    /// <returns></returns>
+    public override IValuedNode Apply(params IValuedNode[] ns)
     {
-        /// <summary>
-        /// Gets the operator type.
-        /// </summary>
-        public override SparqlOperatorType Operator => SparqlOperatorType.Add;
+        if (ns == null) throw new RdfQueryException("Cannot apply to null arguments");
+        if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply addition when any arguments are null");
 
-        /// <inheritdoc />
-        public override bool IsExtension => false;
+        var type = (SparqlNumericType)ns.Max(n => (int)n.NumericType);
 
-        /// <summary>
-        /// Applies the operator.
-        /// </summary>
-        /// <param name="ns">Arguments.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(params IValuedNode[] ns)
+        switch (type)
         {
-            if (ns == null) throw new RdfQueryException("Cannot apply to null arguments");
-            if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply addition when any arguments are null");
-
-            var type = (SparqlNumericType)ns.Max(n => (int)n.NumericType);
-
-            switch (type)
-            {
-                case SparqlNumericType.Integer:
-                    return new LongNode(ns.Select(n => n.AsInteger()).Sum());
-                case SparqlNumericType.Decimal:
-                    return new DecimalNode(ns.Select(n => n.AsDecimal()).Sum());
-                case SparqlNumericType.Float:
-                    return new FloatNode(ns.Select(n => n.AsFloat()).Sum());
-                case SparqlNumericType.Double:
-                    return new DoubleNode(ns.Select(n => n.AsDouble()).Sum());
-                default:
-                    throw new RdfQueryException("Cannot evaluate an Arithmetic Expression when the Numeric Type of the operation cannot be determined");
-            }
+            case SparqlNumericType.Integer:
+                return new LongNode(ns.Select(n => n.AsInteger()).Sum());
+            case SparqlNumericType.Decimal:
+                return new DecimalNode(ns.Select(n => n.AsDecimal()).Sum());
+            case SparqlNumericType.Float:
+                return new FloatNode(ns.Select(n => n.AsFloat()).Sum());
+            case SparqlNumericType.Double:
+                return new DoubleNode(ns.Select(n => n.AsDouble()).Sum());
+            default:
+                throw new RdfQueryException("Cannot evaluate an Arithmetic Expression when the Numeric Type of the operation cannot be determined");
         }
     }
 }

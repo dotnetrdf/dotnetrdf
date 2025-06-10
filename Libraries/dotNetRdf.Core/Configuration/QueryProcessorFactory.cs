@@ -29,138 +29,137 @@ using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+/// <summary>
+/// Factory class for producing SPARQL Query Processors from Configuration Graphs.
+/// </summary>
+public class QueryProcessorFactory : IObjectFactory
 {
+    private const string SimpleQueryProcessor = "VDS.RDF.Query.SimpleQueryProcessor",
+                         GenericQueryProcessor = "VDS.RDF.Query.GenericQueryProcessor",
+                         RemoteQueryProcessor = "VDS.RDF.Query.RemoteQueryProcessor",
+                         LeviathanQueryProcessor = "VDS.RDF.Query.LeviathanQueryProcessor";
+
     /// <summary>
-    /// Factory class for producing SPARQL Query Processors from Configuration Graphs.
+    /// Tries to load a SPARQL Query Processor based on information from the Configuration Graph.
     /// </summary>
-    public class QueryProcessorFactory : IObjectFactory
+    /// <param name="g">Configuration Graph.</param>
+    /// <param name="objNode">Object Node.</param>
+    /// <param name="targetType">Target Type.</param>
+    /// <param name="obj">Output Object.</param>
+    /// <returns></returns>
+    public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
     {
-        private const string SimpleQueryProcessor = "VDS.RDF.Query.SimpleQueryProcessor",
-                             GenericQueryProcessor = "VDS.RDF.Query.GenericQueryProcessor",
-                             RemoteQueryProcessor = "VDS.RDF.Query.RemoteQueryProcessor",
-                             LeviathanQueryProcessor = "VDS.RDF.Query.LeviathanQueryProcessor";
+        obj = null;
+        ISparqlQueryProcessor processor = null;
+        INode storeObj;
+        object temp;
 
-        /// <summary>
-        /// Tries to load a SPARQL Query Processor based on information from the Configuration Graph.
-        /// </summary>
-        /// <param name="g">Configuration Graph.</param>
-        /// <param name="objNode">Object Node.</param>
-        /// <param name="targetType">Target Type.</param>
-        /// <param name="obj">Output Object.</param>
-        /// <returns></returns>
-        public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
+        INode propStorageProvider = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
+
+        switch (targetType.FullName)
         {
-            obj = null;
-            ISparqlQueryProcessor processor = null;
-            INode storeObj;
-            object temp;
+            case SimpleQueryProcessor:
+                storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
+                if (storeObj == null) return false;
+                temp = ConfigurationLoader.LoadObject(g, storeObj);
+                if (temp is INativelyQueryableStore)
+                {
+                    processor = new SimpleQueryProcessor((INativelyQueryableStore)temp);
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to load the Simple Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the INativelyQueryableStore interface");
+                }
+                break;
 
-            INode propStorageProvider = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
+            case GenericQueryProcessor:
+                INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
+                if (managerObj == null) return false;
+                temp = ConfigurationLoader.LoadObject(g, managerObj);
+                if (temp is IQueryableStorage)
+                {
+                    processor = new GenericQueryProcessor((IQueryableStorage)temp);
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to load the Generic Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object that cannot be loaded as an object which implements the IQueryableStorage interface");
+                }
+                break;
 
-            switch (targetType.FullName)
-            {
-                case SimpleQueryProcessor:
+            case RemoteQueryProcessor:
+                INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint)));
+                if (endpointObj == null) return false;
+                temp = ConfigurationLoader.LoadObject(g, endpointObj);
+#pragma warning disable 618
+                if (temp is SparqlRemoteEndpoint queryEndpoint)
+                {
+                    processor = new RemoteQueryProcessor(queryEndpoint);
+#pragma warning restore 618
+                }
+                else if (temp is SparqlQueryClient queryClient)
+                {
+                    processor = new RemoteQueryProcessor(queryClient);
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to load the Remote Query Processor identified by the Node '" + objNode.ToSafeString() + "' as the value given for the dnr:endpoint property points to an Object that cannot be loaded as an object which is a SparqlRemoteEndpoint");
+                }
+                break;
+
+            case LeviathanQueryProcessor:
+                INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
+                if (datasetObj != null)
+                {
+                    temp = ConfigurationLoader.LoadObject(g, datasetObj);
+                    if (temp is ISparqlDataset dataset)
+                    {
+                        processor = new LeviathanQueryProcessor(dataset);
+                    }
+                    else
+                    {
+                        throw new DotNetRdfConfigurationException("Unable to load the Leviathan Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingDataset property points to an Object that cannot be loaded as an object which implements the ISparqlDataset interface");
+                    }
+                }
+                else
+                {
+                    // If no dnr:usingDataset try dnr:usingStore instead
                     storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
                     if (storeObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
-                    if (temp is INativelyQueryableStore)
+                    if (temp is IInMemoryQueryableStore store)
                     {
-                        processor = new SimpleQueryProcessor((INativelyQueryableStore)temp);
+                        processor = new LeviathanQueryProcessor(store);
                     }
                     else
                     {
-                        throw new DotNetRdfConfigurationException("Unable to load the Simple Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the INativelyQueryableStore interface");
+                        throw new DotNetRdfConfigurationException("Unable to load the Leviathan Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IInMemoryQueryableStore interface");
                     }
-                    break;
-
-                case GenericQueryProcessor:
-                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
-                    if (managerObj == null) return false;
-                    temp = ConfigurationLoader.LoadObject(g, managerObj);
-                    if (temp is IQueryableStorage)
-                    {
-                        processor = new GenericQueryProcessor((IQueryableStorage)temp);
-                    }
-                    else
-                    {
-                        throw new DotNetRdfConfigurationException("Unable to load the Generic Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object that cannot be loaded as an object which implements the IQueryableStorage interface");
-                    }
-                    break;
-
-                case RemoteQueryProcessor:
-                    INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint)));
-                    if (endpointObj == null) return false;
-                    temp = ConfigurationLoader.LoadObject(g, endpointObj);
-#pragma warning disable 618
-                    if (temp is SparqlRemoteEndpoint queryEndpoint)
-                    {
-                        processor = new RemoteQueryProcessor(queryEndpoint);
-#pragma warning restore 618
-                    }
-                    else if (temp is SparqlQueryClient queryClient)
-                    {
-                        processor = new RemoteQueryProcessor(queryClient);
-                    }
-                    else
-                    {
-                        throw new DotNetRdfConfigurationException("Unable to load the Remote Query Processor identified by the Node '" + objNode.ToSafeString() + "' as the value given for the dnr:endpoint property points to an Object that cannot be loaded as an object which is a SparqlRemoteEndpoint");
-                    }
-                    break;
-
-                case LeviathanQueryProcessor:
-                    INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
-                    if (datasetObj != null)
-                    {
-                        temp = ConfigurationLoader.LoadObject(g, datasetObj);
-                        if (temp is ISparqlDataset dataset)
-                        {
-                            processor = new LeviathanQueryProcessor(dataset);
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to load the Leviathan Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingDataset property points to an Object that cannot be loaded as an object which implements the ISparqlDataset interface");
-                        }
-                    }
-                    else
-                    {
-                        // If no dnr:usingDataset try dnr:usingStore instead
-                        storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
-                        if (storeObj == null) return false;
-                        temp = ConfigurationLoader.LoadObject(g, storeObj);
-                        if (temp is IInMemoryQueryableStore store)
-                        {
-                            processor = new LeviathanQueryProcessor(store);
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to load the Leviathan Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IInMemoryQueryableStore interface");
-                        }
-                    }
-                    break;
-            }
-
-            obj = processor;
-            return (processor != null);
+                }
+                break;
         }
 
-        /// <summary>
-        /// Gets whether this Factory can load objects of the given Type.
-        /// </summary>
-        /// <param name="t">Type.</param>
-        /// <returns></returns>
-        public bool CanLoadObject(Type t)
+        obj = processor;
+        return (processor != null);
+    }
+
+    /// <summary>
+    /// Gets whether this Factory can load objects of the given Type.
+    /// </summary>
+    /// <param name="t">Type.</param>
+    /// <returns></returns>
+    public bool CanLoadObject(Type t)
+    {
+        switch (t.FullName)
         {
-            switch (t.FullName)
-            {
-                case SimpleQueryProcessor:
-                case GenericQueryProcessor:
-                case RemoteQueryProcessor:
-                case LeviathanQueryProcessor:
-                    return true;
-                default:
-                    return false;
-            }
+            case SimpleQueryProcessor:
+            case GenericQueryProcessor:
+            case RemoteQueryProcessor:
+            case LeviathanQueryProcessor:
+                return true;
+            default:
+                return false;
         }
     }
 }

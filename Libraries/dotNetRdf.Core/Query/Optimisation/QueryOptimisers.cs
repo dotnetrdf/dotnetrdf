@@ -27,70 +27,68 @@
 using System.Collections.Generic;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Optimisation
+namespace VDS.RDF.Query.Optimisation;
+
+/// <summary>
+/// Default SPARQL Query Optimiser.
+/// </summary>
+public class DefaultOptimiser
+    : BaseQueryOptimiser
 {
     /// <summary>
-    /// Default SPARQL Query Optimiser.
+    /// Gets the Default Comparer for Triple Patterns to rank them.
     /// </summary>
-    public class DefaultOptimiser
-        : BaseQueryOptimiser
+    /// <returns></returns>
+    protected override IComparer<ITriplePattern> GetRankingComparer()
     {
-        /// <summary>
-        /// Gets the Default Comparer for Triple Patterns to rank them.
-        /// </summary>
-        /// <returns></returns>
-        protected override IComparer<ITriplePattern> GetRankingComparer()
+        // Triple Patterns have a CompareTo defined that orders them based on what is considered to be 
+        // an optimal order
+        // This order is only an approximation and may not be effective depending on the underlying dataset
+        return Comparer<ITriplePattern>.Default;
+    }
+}
+
+/// <summary>
+/// SPARQL Query Optimiser which does no reordering.
+/// </summary>
+public class NoReorderOptimiser
+    : BaseQueryOptimiser
+{
+    /// <summary>
+    /// Gets that Triple Patterns should not be reordered.
+    /// </summary>
+    protected override bool ShouldReorder
+    {
+        get
         {
-            // Triple Patterns have a CompareTo defined that orders them based on what is considered to be 
-            // an optimal order
-            // This order is only an approximation and may not be effective depending on the underlying dataset
-            return Comparer<ITriplePattern>.Default;
+            return false;
         }
     }
 
     /// <summary>
-    /// SPARQL Query Optimiser which does no reordering.
+    /// Gets a comparer which does not change the order of Triple Patterns.
     /// </summary>
-    public class NoReorderOptimiser
-        : BaseQueryOptimiser
+    /// <returns></returns>
+    protected override IComparer<ITriplePattern> GetRankingComparer()
     {
-        /// <summary>
-        /// Gets that Triple Patterns should not be reordered.
-        /// </summary>
-        protected override bool ShouldReorder
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Gets a comparer which does not change the order of Triple Patterns.
-        /// </summary>
-        /// <returns></returns>
-        protected override IComparer<ITriplePattern> GetRankingComparer()
-        {
-            return new NoReorderComparer();
-        }
+        return new NoReorderComparer();
     }
+}
 
+/// <summary>
+/// A Comparer which ranks all Triple Patterns as equal.
+/// </summary>
+public class NoReorderComparer 
+    : IComparer<ITriplePattern>
+{
     /// <summary>
-    /// A Comparer which ranks all Triple Patterns as equal.
+    /// Compares two Triple Patterns are always returns that they are ranking equal.
     /// </summary>
-    public class NoReorderComparer 
-        : IComparer<ITriplePattern>
+    /// <param name="x">First Triple Pattern.</param>
+    /// <param name="y">Second Triple Pattern.</param>
+    /// <returns></returns>
+    public int Compare(ITriplePattern x, ITriplePattern y)
     {
-        /// <summary>
-        /// Compares two Triple Patterns are always returns that they are ranking equal.
-        /// </summary>
-        /// <param name="x">First Triple Pattern.</param>
-        /// <param name="y">Second Triple Pattern.</param>
-        /// <returns></returns>
-        public int Compare(ITriplePattern x, ITriplePattern y)
-        {
-            return 0;
-        }
+        return 0;
     }
-
 }

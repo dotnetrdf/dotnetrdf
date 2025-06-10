@@ -29,35 +29,34 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class Not : Constraint
 {
-    internal class Not : Constraint
+    [DebuggerStepThrough]
+    internal Not(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal Not(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage => "Value must not conform to the prohibited node shape.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.NotConstraintComponent;
         }
+    }
 
-        protected override string DefaultMessage => "Value must not conform to the prohibited node shape.";
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        IEnumerable<INode> invalidValues =
+            from valueNode in valueNodes
+            let shape = Shape.Parse(this)
+            where shape.Validate(dataGraph, valueNode)
+            select valueNode;
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.NotConstraintComponent;
-            }
-        }
-
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            IEnumerable<INode> invalidValues =
-                from valueNode in valueNodes
-                let shape = Shape.Parse(this)
-                where shape.Validate(dataGraph, valueNode)
-                select valueNode;
-
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
+        return ReportValueNodes(focusNode, invalidValues, report);
     }
 }

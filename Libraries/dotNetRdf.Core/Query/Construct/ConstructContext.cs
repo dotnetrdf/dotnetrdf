@@ -29,190 +29,189 @@ using VDS.Common.Collections;
 using VDS.Common.References;
 using VDS.RDF.Query.Algebra;
 
-namespace VDS.RDF.Query.Construct
+namespace VDS.RDF.Query.Construct;
+
+/// <summary>
+/// Context used for Constructing Triples in SPARQL Query/Update.
+/// </summary>
+public class ConstructContext
 {
+    private static readonly ThreadIsolatedReference<NodeFactory> GlobalFactory = new(() => new NodeFactory(new NodeFactoryOptions()));
+    private Dictionary<string, INode> _bnodeMap;
+    private MultiDictionary<INode, INode> _nodeMap;
+    private ISet _set;
+
     /// <summary>
-    /// Context used for Constructing Triples in SPARQL Query/Update.
+    /// Creates a new Construct Context.
     /// </summary>
-    public class ConstructContext
+    /// <param name="g">Graph to construct Triples in. May be null.</param>
+    /// <param name="preserveBNodes">Whether Blank Nodes bound to variables should be preserved as-is.</param>
+    public ConstructContext(IGraph g, bool preserveBNodes)
     {
-        private static readonly ThreadIsolatedReference<NodeFactory> GlobalFactory = new(() => new NodeFactory(new NodeFactoryOptions()));
-        private Dictionary<string, INode> _bnodeMap;
-        private MultiDictionary<INode, INode> _nodeMap;
-        private ISet _set;
+        Graph = g;
+        NodeFactory = Graph as INodeFactory ?? GlobalFactory.Value;
+        PreserveBlankNodes = preserveBNodes;
+    }
 
-        /// <summary>
-        /// Creates a new Construct Context.
-        /// </summary>
-        /// <param name="g">Graph to construct Triples in. May be null.</param>
-        /// <param name="preserveBNodes">Whether Blank Nodes bound to variables should be preserved as-is.</param>
-        public ConstructContext(IGraph g, bool preserveBNodes)
+    /// <summary>
+    /// Creates a new Construct Context.
+    /// </summary>
+    /// <param name="factory">Factory to create nodes with. May be null.</param>
+    /// <param name="preserveBNodes">Whether Blank Nodes bound to variables should be preserved as-is.</param>
+    public ConstructContext(INodeFactory factory, bool preserveBNodes)
+    {
+        NodeFactory = factory ?? GlobalFactory.Value;
+        PreserveBlankNodes = preserveBNodes;
+    }
+
+    internal ConstructContext(ISet s, bool preserveBNodes)
+    {
+        NodeFactory = GlobalFactory.Value;
+        Set = s;
+        PreserveBlankNodes = preserveBNodes;
+    }
+
+    internal ConstructContext(bool preserveBNodes)
+    {
+        NodeFactory = GlobalFactory.Value;
+        PreserveBlankNodes = preserveBNodes;
+    }
+
+    /// <summary>
+    /// Gets the Set that this Context pertains to.
+    /// </summary>
+    public ISet Set
+    {
+        get => _set;
+        internal set
         {
-            Graph = g;
-            NodeFactory = Graph as INodeFactory ?? GlobalFactory.Value;
-            PreserveBlankNodes = preserveBNodes;
+            _set = value;
+            // Reset the blank node map for each solution
+            _bnodeMap?.Clear();
         }
+    }
 
-        /// <summary>
-        /// Creates a new Construct Context.
-        /// </summary>
-        /// <param name="factory">Factory to create nodes with. May be null.</param>
-        /// <param name="preserveBNodes">Whether Blank Nodes bound to variables should be preserved as-is.</param>
-        public ConstructContext(INodeFactory factory, bool preserveBNodes)
+    /// <summary>
+    /// Gets the Graph that Triples should be constructed in.
+    /// </summary>
+    public IGraph Graph { get; }
+
+    private INodeFactory NodeFactory { get; }
+
+    /// <summary>
+    /// Gets whether Blank Nodes bound to variables should be preserved.
+    /// </summary>
+    public bool PreserveBlankNodes { get; }
+
+    /// <summary>
+    /// Creates a new Blank Node for this Context.
+    /// </summary>
+    /// <param name="id">ID.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <para>
+    /// If the same Blank Node ID is used multiple times in this Context you will always get the same Blank Node for that ID.
+    /// </para>
+    /// </remarks>
+    public INode GetBlankNode(string id)
+    {
+        _bnodeMap ??= new Dictionary<string, INode>();
+
+        if (_bnodeMap.TryGetValue(id, out INode node)) return node;
+
+        INode temp;
+        if (Graph != null)
         {
-            NodeFactory = factory ?? GlobalFactory.Value;
-            PreserveBlankNodes = preserveBNodes;
+            temp = Graph.CreateBlankNode();
         }
-
-        internal ConstructContext(ISet s, bool preserveBNodes)
+        else if (NodeFactory != null)
         {
-            NodeFactory = GlobalFactory.Value;
-            Set = s;
-            PreserveBlankNodes = preserveBNodes;
+            temp = NodeFactory.CreateBlankNode();
         }
-
-        internal ConstructContext(bool preserveBNodes)
+        else if (Set != null)
         {
-            NodeFactory = GlobalFactory.Value;
-            PreserveBlankNodes = preserveBNodes;
+            temp = new BlankNode(id.Substring(2) + Set.ID);
         }
-
-        /// <summary>
-        /// Gets the Set that this Context pertains to.
-        /// </summary>
-        public ISet Set
+        else
         {
-            get => _set;
-            internal set
-            {
-                _set = value;
-                // Reset the blank node map for each solution
-                _bnodeMap?.Clear();
-            }
+            temp = new BlankNode(id.Substring(2));
         }
+        _bnodeMap.Add(id, temp);
+        return temp;
+    }
 
-        /// <summary>
-        /// Gets the Graph that Triples should be constructed in.
-        /// </summary>
-        public IGraph Graph { get; }
+    /// <summary>
+    /// Creates a Node for the Context.
+    /// </summary>
+    /// <param name="n">Node.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <para>
+    /// In effect all this does is ensure that all Nodes end up in the same Graph which may occasionally not happen otherwise when Graph wrappers are involved.
+    /// </para>
+    /// </remarks>
+    public INode GetNode(INode n)
+    {
+        return GetNode(n, false);
+    }
 
-        private INodeFactory NodeFactory { get; }
+    private INode GetNode(INode n, bool preserveBlankNodes)
+    {
+        _nodeMap ??= new MultiDictionary<INode, INode>(new FastVirtualNodeComparer());
 
-        /// <summary>
-        /// Gets whether Blank Nodes bound to variables should be preserved.
-        /// </summary>
-        public bool PreserveBlankNodes { get; }
+        if (_nodeMap.TryGetValue(n, out INode node)) return node;
 
-        /// <summary>
-        /// Creates a new Blank Node for this Context.
-        /// </summary>
-        /// <param name="id">ID.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// If the same Blank Node ID is used multiple times in this Context you will always get the same Blank Node for that ID.
-        /// </para>
-        /// </remarks>
-        public INode GetBlankNode(string id)
+        INode temp;
+        switch (n.NodeType)
         {
-            _bnodeMap ??= new Dictionary<string, INode>();
+            case NodeType.Blank:
+                temp = preserveBlankNodes ? NodeFactory.CreateBlankNode(((IBlankNode)n).InternalID) :  GetBlankNode(((IBlankNode)n).InternalID);
+                break;
 
-            if (_bnodeMap.TryGetValue(id, out INode node)) return node;
+            case NodeType.Variable:
+                var v = (IVariableNode)n;
+                temp = NodeFactory.CreateVariableNode(v.VariableName);
+                break;
 
-            INode temp;
-            if (Graph != null)
-            {
-                temp = Graph.CreateBlankNode();
-            }
-            else if (NodeFactory != null)
-            {
-                temp = NodeFactory.CreateBlankNode();
-            }
-            else if (Set != null)
-            {
-                temp = new BlankNode(id.Substring(2) + Set.ID);
-            }
-            else
-            {
-                temp = new BlankNode(id.Substring(2));
-            }
-            _bnodeMap.Add(id, temp);
-            return temp;
+            case NodeType.GraphLiteral:
+                var g = (IGraphLiteralNode)n;
+                temp = NodeFactory.CreateGraphLiteralNode(g.SubGraph);
+                break;
+
+            case NodeType.Uri:
+                var u = (IUriNode)n;
+                temp = NodeFactory.CreateUriNode(u.Uri);
+                break;
+
+            case NodeType.Literal:
+                var l = (ILiteralNode)n;
+                if (!l.Language.Equals(string.Empty))
+                {
+                    temp = NodeFactory.CreateLiteralNode(l.Value, l.Language);
+                }
+                else if (l.DataType != null)
+                {
+                    temp = NodeFactory.CreateLiteralNode(l.Value, l.DataType);
+                }
+                else
+                {
+                    temp = NodeFactory.CreateLiteralNode(l.Value);
+                }
+                break;
+
+            case NodeType.Triple:
+                var t = (ITripleNode)n;
+                INode s = GetNode(t.Triple.Subject, true);
+                INode p = GetNode(t.Triple.Predicate, true);
+                INode o = GetNode(t.Triple.Object, true);
+                var triple = new Triple(s, p, o);
+                temp = NodeFactory.CreateTripleNode(triple);
+                break;
+
+            default:
+                throw new RdfQueryException("Cannot construct unknown Node Types");
         }
-
-        /// <summary>
-        /// Creates a Node for the Context.
-        /// </summary>
-        /// <param name="n">Node.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// In effect all this does is ensure that all Nodes end up in the same Graph which may occasionally not happen otherwise when Graph wrappers are involved.
-        /// </para>
-        /// </remarks>
-        public INode GetNode(INode n)
-        {
-            return GetNode(n, false);
-        }
-
-        private INode GetNode(INode n, bool preserveBlankNodes)
-        {
-            _nodeMap ??= new MultiDictionary<INode, INode>(new FastVirtualNodeComparer());
-
-            if (_nodeMap.TryGetValue(n, out INode node)) return node;
-
-            INode temp;
-            switch (n.NodeType)
-            {
-                case NodeType.Blank:
-                    temp = preserveBlankNodes ? NodeFactory.CreateBlankNode(((IBlankNode)n).InternalID) :  GetBlankNode(((IBlankNode)n).InternalID);
-                    break;
-
-                case NodeType.Variable:
-                    var v = (IVariableNode)n;
-                    temp = NodeFactory.CreateVariableNode(v.VariableName);
-                    break;
-
-                case NodeType.GraphLiteral:
-                    var g = (IGraphLiteralNode)n;
-                    temp = NodeFactory.CreateGraphLiteralNode(g.SubGraph);
-                    break;
-
-                case NodeType.Uri:
-                    var u = (IUriNode)n;
-                    temp = NodeFactory.CreateUriNode(u.Uri);
-                    break;
-
-                case NodeType.Literal:
-                    var l = (ILiteralNode)n;
-                    if (!l.Language.Equals(string.Empty))
-                    {
-                        temp = NodeFactory.CreateLiteralNode(l.Value, l.Language);
-                    }
-                    else if (l.DataType != null)
-                    {
-                        temp = NodeFactory.CreateLiteralNode(l.Value, l.DataType);
-                    }
-                    else
-                    {
-                        temp = NodeFactory.CreateLiteralNode(l.Value);
-                    }
-                    break;
-
-                case NodeType.Triple:
-                    var t = (ITripleNode)n;
-                    INode s = GetNode(t.Triple.Subject, true);
-                    INode p = GetNode(t.Triple.Predicate, true);
-                    INode o = GetNode(t.Triple.Object, true);
-                    var triple = new Triple(s, p, o);
-                    temp = NodeFactory.CreateTripleNode(triple);
-                    break;
-
-                default:
-                    throw new RdfQueryException("Cannot construct unknown Node Types");
-            }
-            _nodeMap.Add(n, temp);
-            return temp;
-        }
+        _nodeMap.Add(n, temp);
+        return temp;
     }
 }

@@ -27,50 +27,49 @@
 using System.IO;
 using Newtonsoft.Json;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+/// <summary>
+/// A subclass of <see cref="JsonTextReader">JsonTextReader</see> which automatically ignores all comments.
+/// </summary>
+internal class CommentIgnoringJsonTextReader 
+    : JsonTextReader
 {
-    /// <summary>
-    /// A subclass of <see cref="JsonTextReader">JsonTextReader</see> which automatically ignores all comments.
-    /// </summary>
-    internal class CommentIgnoringJsonTextReader 
-        : JsonTextReader
+    private CommentIgnoringJsonTextReader(ParsingTextReader reader)
+        : base(reader)
     {
-        private CommentIgnoringJsonTextReader(ParsingTextReader reader)
-            : base(reader)
-        {
-            DateParseHandling = DateParseHandling.None;
-        }
+        DateParseHandling = DateParseHandling.None;
+    }
 
-        public CommentIgnoringJsonTextReader(TextReader reader)
-            : this(ParsingTextReader.Create(reader))
-        {
-        }
+    public CommentIgnoringJsonTextReader(TextReader reader)
+        : this(ParsingTextReader.Create(reader))
+    {
+    }
 
-        /// <summary>
-        /// Reads the next non-comment Token if one is available.
-        /// </summary>
-        /// <returns>True if a Token was read, False otherwise.</returns>
-        public override bool Read()
-        {
-            // Read next token
-            var result = base.Read();
+    /// <summary>
+    /// Reads the next non-comment Token if one is available.
+    /// </summary>
+    /// <returns>True if a Token was read, False otherwise.</returns>
+    public override bool Read()
+    {
+        // Read next token
+        var result = base.Read();
 
-            if (result)
+        if (result)
+        {
+            // Keep reading next Token while Token is a Comment
+            while (TokenType == JsonToken.Comment)
             {
-                // Keep reading next Token while Token is a Comment
-                while (TokenType == JsonToken.Comment)
-                {
-                    result = base.Read();
+                result = base.Read();
 
-                    // If we hit end of stream return false
-                    if (!result) return false;
-                }
-
-                // If we get here we've read a Token which isn't a comment
-                return true;
+                // If we hit end of stream return false
+                if (!result) return false;
             }
-            // Couldn't read to start with as already at end of stream
-            return false;
+
+            // If we get here we've read a Token which isn't a comment
+            return true;
         }
+        // Couldn't read to start with as already at end of stream
+        return false;
     }
 }

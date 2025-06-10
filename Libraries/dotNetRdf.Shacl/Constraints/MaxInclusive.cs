@@ -26,29 +26,28 @@
 
 using System.Diagnostics;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class MaxInclusive : ValueCompare
 {
-    internal class MaxInclusive : ValueCompare
+    [DebuggerStepThrough]
+    internal MaxInclusive(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal MaxInclusive(Shape shape, INode node)
-            : base(shape, node)
-        {
-        }
+    }
 
-        protected override string DefaultMessage => $"Value must be less than or equal to {this}.";
+    protected override string DefaultMessage => $"Value must be less than or equal to {this}.";
 
-        internal override INode ConstraintComponent
+    internal override INode ConstraintComponent
+    {
+        get
         {
-            get
-            {
-                return Vocabulary.MaxInclusiveConstraintComponent;
-            }
+            return Vocabulary.MaxInclusiveConstraintComponent;
         }
+    }
 
-        protected override bool IsValidInternal(int v)
-        {
-            return v < 1;
-        }
+    protected override bool IsValidInternal(int v)
+    {
+        return v < 1;
     }
 }

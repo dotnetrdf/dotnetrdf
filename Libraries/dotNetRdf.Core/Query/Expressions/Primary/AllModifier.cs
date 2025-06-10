@@ -27,98 +27,97 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Query.Expressions.Primary
+namespace VDS.RDF.Query.Expressions.Primary;
+
+/// <summary>
+/// Class for representing the All Modifier.
+/// </summary>
+public class AllModifier 
+    : ISparqlExpression
 {
-    /// <summary>
-    /// Class for representing the All Modifier.
-    /// </summary>
-    public class AllModifier 
-        : ISparqlExpression
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
     {
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessAllModifier(this, context, binding);
-        }
+        return processor.ProcessAllModifier(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitAllModifier(this);
-        }
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitAllModifier(this);
+    }
 
-        /// <summary>
-        /// Returns an empty enumerable.
-        /// </summary>
-        public IEnumerable<string> Variables
+    /// <summary>
+    /// Returns an empty enumerable.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
         {
-            get
-            {
-                return Enumerable.Empty<string>();
-            }
+            return Enumerable.Empty<string>();
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public SparqlExpressionType Type
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public SparqlExpressionType Type
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Primary;
-            }
+            return SparqlExpressionType.Primary;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public string Functor
-        {
-            get
-            {
-                return "*";
-            }
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression.
-        /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
-        {
-            get
-            {
-                return Enumerable.Empty<ISparqlExpression>();
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public string Functor
+    {
+        get
         {
             return "*";
         }
+    }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+    /// <summary>
+    /// Gets the Arguments of the Expression.
+    /// </summary>
+    public IEnumerable<ISparqlExpression> Arguments
+    {
+        get
         {
-            return this;
+            return Enumerable.Empty<ISparqlExpression>();
         }
+    }
 
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel.
-        /// </summary>
-        public bool CanParallelise
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "*";
+    }
+
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return this;
+    }
+
+    /// <summary>
+    /// Gets whether an expression can safely be evaluated in parallel.
+    /// </summary>
+    public bool CanParallelise
+    {
+        get
         {
-            get
-            {
-                return true;
-            }
+            return true;
         }
     }
 }

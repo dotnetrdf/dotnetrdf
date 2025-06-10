@@ -27,307 +27,306 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Skos
+namespace VDS.RDF.Skos;
+
+/// <summary>
+/// Represents a SKOS concept.
+/// </summary>
+public class SkosConcept : SkosMember
 {
     /// <summary>
-    /// Represents a SKOS concept.
+    /// Creates a new concept for the given resource.
     /// </summary>
-    public class SkosConcept : SkosMember
+    /// <param name="resource">Resource representing the concept.</param>
+    /// <param name="graph">The graph containing the concept.</param>
+    public SkosConcept(INode resource, IGraph graph) : base(resource, graph) { }
+
+    /// <summary>
+    /// Gets the concept schemes the concept is contained in.
+    /// </summary>
+    public IEnumerable<SkosConceptScheme> InScheme
     {
-        /// <summary>
-        /// Creates a new concept for the given resource.
-        /// </summary>
-        /// <param name="resource">Resource representing the concept.</param>
-        /// <param name="graph">The graph containing the concept.</param>
-        public SkosConcept(INode resource, IGraph graph) : base(resource, graph) { }
-
-        /// <summary>
-        /// Gets the concept schemes the concept is contained in.
-        /// </summary>
-        public IEnumerable<SkosConceptScheme> InScheme
+        get
         {
-            get
-            {
-                return GetConceptSchemes(SkosHelper.InScheme);
-            }
+            return GetConceptSchemes(SkosHelper.InScheme);
         }
+    }
 
-        /// <summary>
-        /// Get the concept schemes the concept is the top concept of.
-        /// </summary>
-        public IEnumerable<SkosConceptScheme> TopConceptOf
+    /// <summary>
+    /// Get the concept schemes the concept is the top concept of.
+    /// </summary>
+    public IEnumerable<SkosConceptScheme> TopConceptOf
+    {
+        get
         {
-            get
-            {
-                return GetConceptSchemes(SkosHelper.TopConceptOf);
-            }
+            return GetConceptSchemes(SkosHelper.TopConceptOf);
         }
+    }
 
-        /// <summary>
-        /// Gets the preferred labels of the concept.
-        /// </summary>
-        public IEnumerable<ILiteralNode> PrefLabel
+    /// <summary>
+    /// Gets the preferred labels of the concept.
+    /// </summary>
+    public IEnumerable<ILiteralNode> PrefLabel
+    {
+        get
         {
-            get
-            {
-                return GetLiterals(SkosHelper.PrefLabel);
-            }
+            return GetLiterals(SkosHelper.PrefLabel);
         }
+    }
 
-        /// <summary>
-        /// Gets the alternative labels of the concept.
-        /// </summary>
-        public IEnumerable<ILiteralNode> AltLabel
+    /// <summary>
+    /// Gets the alternative labels of the concept.
+    /// </summary>
+    public IEnumerable<ILiteralNode> AltLabel
+    {
+        get
         {
-            get
-            {
-                return GetLiterals(SkosHelper.AltLabel);
-            }
+            return GetLiterals(SkosHelper.AltLabel);
         }
+    }
 
-        /// <summary>
-        /// Gets the hidden labels of the concept.
-        /// </summary>
-        public IEnumerable<ILiteralNode> HiddenLabel
+    /// <summary>
+    /// Gets the hidden labels of the concept.
+    /// </summary>
+    public IEnumerable<ILiteralNode> HiddenLabel
+    {
+        get
         {
-            get
-            {
-                return GetLiterals(SkosHelper.HiddenLabel);
-            }
+            return GetLiterals(SkosHelper.HiddenLabel);
         }
+    }
 
-        /// <summary>
-        /// Gets a unique identifiers of the concept in a given concept scheme.
-        /// </summary>
-        public IEnumerable<ILiteralNode> Notation
+    /// <summary>
+    /// Gets a unique identifiers of the concept in a given concept scheme.
+    /// </summary>
+    public IEnumerable<ILiteralNode> Notation
+    {
+        get
         {
-            get
-            {
-                return GetLiterals(SkosHelper.Notation);
-            }
+            return GetLiterals(SkosHelper.Notation);
         }
+    }
 
-        /// <summary>
-        /// Gets the general notes of the concept.
-        /// </summary>
-        public IEnumerable<INode> Note
+    /// <summary>
+    /// Gets the general notes of the concept.
+    /// </summary>
+    public IEnumerable<INode> Note
+    {
+        get
         {
-            get
-            {
-                return GetObjects(SkosHelper.Note);
-            }
+            return GetObjects(SkosHelper.Note);
         }
+    }
 
-        /// <summary>
-        /// Gets the modification notes of the concept.
-        /// </summary>
-        public IEnumerable<INode> ChangeNote
+    /// <summary>
+    /// Gets the modification notes of the concept.
+    /// </summary>
+    public IEnumerable<INode> ChangeNote
+    {
+        get
         {
-            get
-            {
-                return GetObjects(SkosHelper.ChangeNote);
-            }
+            return GetObjects(SkosHelper.ChangeNote);
         }
+    }
 
-        /// <summary>
-        /// Gets the formal explanation of the concept.
-        /// </summary>
-        public IEnumerable<INode> Definition
+    /// <summary>
+    /// Gets the formal explanation of the concept.
+    /// </summary>
+    public IEnumerable<INode> Definition
+    {
+        get
         {
-            get
-            {
-                return GetObjects(SkosHelper.Definition);
-            }
+            return GetObjects(SkosHelper.Definition);
         }
+    }
 
-        /// <summary>
-        /// Gets the editorial notes the concept.
-        /// </summary>
-        public IEnumerable<INode> EditorialNote
+    /// <summary>
+    /// Gets the editorial notes the concept.
+    /// </summary>
+    public IEnumerable<INode> EditorialNote
+    {
+        get
         {
-            get
-            {
-                return GetObjects(SkosHelper.EditorialNote);
-            }
+            return GetObjects(SkosHelper.EditorialNote);
         }
+    }
 
-        /// <summary>
-        /// Gets examples of the use of the concept.
-        /// </summary>
-        public IEnumerable<INode> Example
+    /// <summary>
+    /// Gets examples of the use of the concept.
+    /// </summary>
+    public IEnumerable<INode> Example
+    {
+        get
         {
-            get
-            {
-                return GetObjects(SkosHelper.Example);
-            }
+            return GetObjects(SkosHelper.Example);
         }
+    }
 
-        /// <summary>
-        /// Gets notes about the past of the concept.
-        /// </summary>
-        public IEnumerable<INode> HistoryNote
+    /// <summary>
+    /// Gets notes about the past of the concept.
+    /// </summary>
+    public IEnumerable<INode> HistoryNote
+    {
+        get
         {
-            get
-            {
-                return GetObjects(SkosHelper.HistoryNote);
-            }
+            return GetObjects(SkosHelper.HistoryNote);
         }
+    }
 
-        /// <summary>
-        /// Gets notes that help to clarify the meaning and/or the use of the concept.
-        /// </summary>
-        public IEnumerable<INode> ScopeNote
+    /// <summary>
+    /// Gets notes that help to clarify the meaning and/or the use of the concept.
+    /// </summary>
+    public IEnumerable<INode> ScopeNote
+    {
+        get
         {
-            get
-            {
-                return GetObjects(SkosHelper.ScopeNote);
-            }
+            return GetObjects(SkosHelper.ScopeNote);
         }
+    }
 
-        /// <summary>
-        /// Gets concepts related by meaning.
-        /// </summary>
-        public IEnumerable<SkosConcept> SemanticRelation
+    /// <summary>
+    /// Gets concepts related by meaning.
+    /// </summary>
+    public IEnumerable<SkosConcept> SemanticRelation
+    {
+        get
         {
-            get
-            {
-                return GetConcepts(SkosHelper.SemanticRelation);
-            }
+            return GetConcepts(SkosHelper.SemanticRelation);
         }
+    }
 
-        /// <summary>
-        /// Gets more general concepts. 
-        /// </summary>
-        public IEnumerable<SkosConcept> Broader
+    /// <summary>
+    /// Gets more general concepts. 
+    /// </summary>
+    public IEnumerable<SkosConcept> Broader
+    {
+        get
         {
-            get
-            {
-                return GetConcepts(SkosHelper.Broader);
-            }
+            return GetConcepts(SkosHelper.Broader);
         }
+    }
 
-        /// <summary>
-        /// Gets more specific concepts.
-        /// </summary>
-        public IEnumerable<SkosConcept> Narrower
+    /// <summary>
+    /// Gets more specific concepts.
+    /// </summary>
+    public IEnumerable<SkosConcept> Narrower
+    {
+        get
         {
-            get
-            {
-                return GetConcepts(SkosHelper.Narrower);
-            }
+            return GetConcepts(SkosHelper.Narrower);
         }
+    }
 
-        /// <summary>
-        /// Gets associated concepts.
-        /// </summary>
-        public IEnumerable<SkosConcept> Related
+    /// <summary>
+    /// Gets associated concepts.
+    /// </summary>
+    public IEnumerable<SkosConcept> Related
+    {
+        get
         {
-            get
-            {
-                return GetConcepts(SkosHelper.Related);
-            }
+            return GetConcepts(SkosHelper.Related);
         }
+    }
 
-        /// <summary>
-        /// Gets more general concepts (transitive).
-        /// </summary>
-        public IEnumerable<SkosConcept> BroaderTransitive
+    /// <summary>
+    /// Gets more general concepts (transitive).
+    /// </summary>
+    public IEnumerable<SkosConcept> BroaderTransitive
+    {
+        get
         {
-            get
-            {
-                return GetConcepts(SkosHelper.BroaderTransitive);
-            }
+            return GetConcepts(SkosHelper.BroaderTransitive);
         }
+    }
 
-        /// <summary>
-        /// Gets more specific concepts (transitive).
-        /// </summary>
-        public IEnumerable<SkosConcept> NarrowerTransitive
+    /// <summary>
+    /// Gets more specific concepts (transitive).
+    /// </summary>
+    public IEnumerable<SkosConcept> NarrowerTransitive
+    {
+        get
         {
-            get
-            {
-                return GetConcepts(SkosHelper.NarrowerTransitive);
-            }
+            return GetConcepts(SkosHelper.NarrowerTransitive);
         }
+    }
 
-        /// <summary>
-        /// Gets concepts with comparable meaning from other concept schemes.
-        /// </summary>
-        public IEnumerable<SkosConcept> MappingRelation
+    /// <summary>
+    /// Gets concepts with comparable meaning from other concept schemes.
+    /// </summary>
+    public IEnumerable<SkosConcept> MappingRelation
+    {
+        get
         {
-            get
-            {
-                return GetConcepts(SkosHelper.MappingRelation);
-            }
+            return GetConcepts(SkosHelper.MappingRelation);
         }
+    }
 
-        /// <summary>
-        /// Gets confidently interchangeable concepts from other concept schemes.
-        /// </summary>
-        public IEnumerable<SkosConcept> CloseMatch
+    /// <summary>
+    /// Gets confidently interchangeable concepts from other concept schemes.
+    /// </summary>
+    public IEnumerable<SkosConcept> CloseMatch
+    {
+        get
         {
-            get
-            {
-                return GetConcepts(SkosHelper.CloseMatch);
-            }
+            return GetConcepts(SkosHelper.CloseMatch);
         }
+    }
 
-        /// <summary>
-        /// Gets interchangeably similar concepts from other concept schemes.
-        /// </summary>
-        public IEnumerable<SkosConcept> ExactMatch
+    /// <summary>
+    /// Gets interchangeably similar concepts from other concept schemes.
+    /// </summary>
+    public IEnumerable<SkosConcept> ExactMatch
+    {
+        get
         {
-            get
-            {
-                return GetConcepts(SkosHelper.ExactMatch);
-            }
+            return GetConcepts(SkosHelper.ExactMatch);
         }
+    }
 
-        /// <summary>
-        /// Gets more general concepts from other concept schemes.
-        /// </summary>
-        public IEnumerable<SkosConcept> BroadMatch
+    /// <summary>
+    /// Gets more general concepts from other concept schemes.
+    /// </summary>
+    public IEnumerable<SkosConcept> BroadMatch
+    {
+        get
         {
-            get
-            {
-                return GetConcepts(SkosHelper.BroadMatch);
-            }
+            return GetConcepts(SkosHelper.BroadMatch);
         }
+    }
 
-        /// <summary>
-        /// Gets more specific concepts from other concept schemes.
-        /// </summary>
-        public IEnumerable<SkosConcept> NarrowMatch
+    /// <summary>
+    /// Gets more specific concepts from other concept schemes.
+    /// </summary>
+    public IEnumerable<SkosConcept> NarrowMatch
+    {
+        get
         {
-            get
-            {
-                return GetConcepts(SkosHelper.NarrowMatch);
-            }
+            return GetConcepts(SkosHelper.NarrowMatch);
         }
+    }
 
-        /// <summary>
-        /// Gets associated concepts from other concept schemes.
-        /// </summary>
-        public IEnumerable<SkosConcept> RelatedMatch
+    /// <summary>
+    /// Gets associated concepts from other concept schemes.
+    /// </summary>
+    public IEnumerable<SkosConcept> RelatedMatch
+    {
+        get
         {
-            get
-            {
-                return GetConcepts(SkosHelper.RelatedMatch);
-            }
+            return GetConcepts(SkosHelper.RelatedMatch);
         }
+    }
 
-        private IEnumerable<SkosConceptScheme> GetConceptSchemes(string predicateUri)
-        {
-            return 
-                GetObjects(predicateUri)
-                .Select(o => new SkosConceptScheme(o, Graph));
-        }
+    private IEnumerable<SkosConceptScheme> GetConceptSchemes(string predicateUri)
+    {
+        return 
+            GetObjects(predicateUri)
+            .Select(o => new SkosConceptScheme(o, Graph));
+    }
 
-        private IEnumerable<ILiteralNode> GetLiterals(string predicateUri)
-        {
-            return 
-                GetObjects(predicateUri)
-                .Cast<ILiteralNode>();
-        }
+    private IEnumerable<ILiteralNode> GetLiterals(string predicateUri)
+    {
+        return 
+            GetObjects(predicateUri)
+            .Cast<ILiteralNode>();
     }
 }

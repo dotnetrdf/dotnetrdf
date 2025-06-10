@@ -28,33 +28,32 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Skos
+namespace VDS.RDF.Skos;
+
+/// <summary>
+/// Represents SKOS resources that can be members of collections (concepts and collections).
+/// </summary>
+public abstract class SkosMember : SkosResource
 {
-    /// <summary>
-    /// Represents SKOS resources that can be members of collections (concepts and collections).
-    /// </summary>
-    public abstract class SkosMember : SkosResource
+    internal SkosMember(INode resource, IGraph graph) : base(resource, graph) { }
+
+    internal static SkosMember Create(INode node, IGraph graph)
     {
-        internal SkosMember(INode resource, IGraph graph) : base(resource, graph) { }
+        IUriNode a = graph.CreateUriNode(graph.UriFactory.Create(RdfSpecsHelper.RdfType));
+        IEnumerable<Triple> typeStatements = graph.GetTriplesWithSubjectPredicate(node, a);
 
-        internal static SkosMember Create(INode node, IGraph graph)
+        IUriNode skosOrderedCollection = graph.CreateUriNode(graph.UriFactory.Create(SkosHelper.OrderedCollection));
+        if (typeStatements.WithObject(skosOrderedCollection).Any())
         {
-            IUriNode a = graph.CreateUriNode(graph.UriFactory.Create(RdfSpecsHelper.RdfType));
-            IEnumerable<Triple> typeStatements = graph.GetTriplesWithSubjectPredicate(node, a);
-
-            IUriNode skosOrderedCollection = graph.CreateUriNode(graph.UriFactory.Create(SkosHelper.OrderedCollection));
-            if (typeStatements.WithObject(skosOrderedCollection).Any())
-            {
-                return new SkosOrderedCollection(node, graph);
-            }
-
-            IUriNode skosCollection = graph.CreateUriNode(graph.UriFactory.Create(SkosHelper.Collection));
-            if (typeStatements.WithObject(skosCollection).Any())
-            {
-                return new SkosCollection(node, graph);
-            }
-
-            return new SkosConcept(node, graph);
+            return new SkosOrderedCollection(node, graph);
         }
+
+        IUriNode skosCollection = graph.CreateUriNode(graph.UriFactory.Create(SkosHelper.Collection));
+        if (typeStatements.WithObject(skosCollection).Any())
+        {
+            return new SkosCollection(node, graph);
+        }
+
+        return new SkosConcept(node, graph);
     }
 }

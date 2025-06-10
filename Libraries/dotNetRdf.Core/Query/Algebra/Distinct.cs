@@ -29,138 +29,137 @@ using System.Collections.Generic;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Represents a Distinct modifier on a SPARQL Query.
+/// </summary>
+public class Distinct
+    : IUnaryOperator
 {
     /// <summary>
-    /// Represents a Distinct modifier on a SPARQL Query.
+    /// Creates a new Distinct Modifier.
     /// </summary>
-    public class Distinct
-        : IUnaryOperator
+    /// <param name="pattern">Pattern.</param>
+    public Distinct(ISparqlAlgebra pattern)
     {
-        /// <summary>
-        /// Creates a new Distinct Modifier.
-        /// </summary>
-        /// <param name="pattern">Pattern.</param>
-        public Distinct(ISparqlAlgebra pattern)
+        InnerAlgebra = pattern;
+    }
+
+    /// <summary>
+    /// Creates a new Distinct Modifier.
+    /// </summary>
+    /// <param name="algebra">Inner Algebra.</param>
+    /// <param name="ignoreTemporaryVariables">Whether to ignore temporary variables.</param>
+    public Distinct(ISparqlAlgebra algebra, bool ignoreTemporaryVariables)
+        : this(algebra)
+    {
+        TrimTemporaryVariables = !ignoreTemporaryVariables;
+    }
+
+    /// <summary>
+    /// Gets the Variables used in the Algebra.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
         {
-            InnerAlgebra = pattern;
+            return InnerAlgebra.Variables;
         }
+    }
 
-        /// <summary>
-        /// Creates a new Distinct Modifier.
-        /// </summary>
-        /// <param name="algebra">Inner Algebra.</param>
-        /// <param name="ignoreTemporaryVariables">Whether to ignore temporary variables.</param>
-        public Distinct(ISparqlAlgebra algebra, bool ignoreTemporaryVariables)
-            : this(algebra)
+    /// <summary>
+    /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FloatingVariables { get { return InnerAlgebra.FloatingVariables; } }
+
+    /// <summary>
+    /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FixedVariables { get { return InnerAlgebra.FixedVariables; } }
+
+    /// <summary>
+    /// Gets the Inner Algebra.
+    /// </summary>
+    public ISparqlAlgebra InnerAlgebra { get; }
+
+    /// <summary>
+    /// Gets the flag that indicates whether temporary variable should be trimmed before determining if a particular binding is distinct.
+    /// </summary>
+    public bool TrimTemporaryVariables { get; } = true;
+
+    /// <summary>
+    /// Gets the String representation of the Algebra.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "Distinct(" + InnerAlgebra + ")";
+    }
+
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    {
+        return processor.ProcessDistinct(this, context);
+    }
+
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    {
+        return visitor.VisitDistinct(this);
+    }
+
+    /// <summary>
+    /// Converts the Algebra back to a SPARQL Query.
+    /// </summary>
+    /// <returns></returns>
+    public SparqlQuery ToQuery()
+    {
+        SparqlQuery q = InnerAlgebra.ToQuery();
+        switch (q.QueryType)
         {
-            TrimTemporaryVariables = !ignoreTemporaryVariables;
+            case SparqlQueryType.Select:
+                q.QueryType = SparqlQueryType.SelectDistinct;
+                break;
+            case SparqlQueryType.SelectAll:
+                q.QueryType = SparqlQueryType.SelectAllDistinct;
+                break;
+            case SparqlQueryType.SelectAllDistinct:
+            case SparqlQueryType.SelectAllReduced:
+            case SparqlQueryType.SelectDistinct:
+            case SparqlQueryType.SelectReduced:
+                throw new NotSupportedException("Cannot convert a Distinct() to a SPARQL Query when the Inner Algebra converts to a Query that already has a DISTINCT/REDUCED modifier applied");
+            case SparqlQueryType.Ask:
+            case SparqlQueryType.Construct:
+            case SparqlQueryType.Describe:
+            case SparqlQueryType.DescribeAll:
+                throw new NotSupportedException("Cannot convert a Distinct() to a SPARQL Query when the Inner Algebra converts to a Query that is not a SELECT query");
+            case SparqlQueryType.Unknown:
+                q.QueryType = SparqlQueryType.SelectDistinct;
+                break;
+            default:
+                throw new NotSupportedException("Cannot convert a Distinct() to a SPARQL Query when the Inner Algebra converts to a Query with an unexpected Query Type");
         }
+        return q;
+    }
 
-        /// <summary>
-        /// Gets the Variables used in the Algebra.
-        /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get
-            {
-                return InnerAlgebra.Variables;
-            }
-        }
+    /// <summary>
+    /// Throws an exception since a Distinct() cannot be converted back to a Graph Pattern.
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException">Thrown since a Distinct() cannot be converted to a Graph Pattern.</exception>
+    public GraphPattern ToGraphPattern()
+    {
+        throw new NotSupportedException("A Distinct() cannot be converted to a GraphPattern");
+    }
 
-        /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FloatingVariables { get { return InnerAlgebra.FloatingVariables; } }
-
-        /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FixedVariables { get { return InnerAlgebra.FixedVariables; } }
-
-        /// <summary>
-        /// Gets the Inner Algebra.
-        /// </summary>
-        public ISparqlAlgebra InnerAlgebra { get; }
-
-        /// <summary>
-        /// Gets the flag that indicates whether temporary variable should be trimmed before determining if a particular binding is distinct.
-        /// </summary>
-        public bool TrimTemporaryVariables { get; } = true;
-
-        /// <summary>
-        /// Gets the String representation of the Algebra.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "Distinct(" + InnerAlgebra + ")";
-        }
-
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
-        {
-            return processor.ProcessDistinct(this, context);
-        }
-
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
-        {
-            return visitor.VisitDistinct(this);
-        }
-
-        /// <summary>
-        /// Converts the Algebra back to a SPARQL Query.
-        /// </summary>
-        /// <returns></returns>
-        public SparqlQuery ToQuery()
-        {
-            SparqlQuery q = InnerAlgebra.ToQuery();
-            switch (q.QueryType)
-            {
-                case SparqlQueryType.Select:
-                    q.QueryType = SparqlQueryType.SelectDistinct;
-                    break;
-                case SparqlQueryType.SelectAll:
-                    q.QueryType = SparqlQueryType.SelectAllDistinct;
-                    break;
-                case SparqlQueryType.SelectAllDistinct:
-                case SparqlQueryType.SelectAllReduced:
-                case SparqlQueryType.SelectDistinct:
-                case SparqlQueryType.SelectReduced:
-                    throw new NotSupportedException("Cannot convert a Distinct() to a SPARQL Query when the Inner Algebra converts to a Query that already has a DISTINCT/REDUCED modifier applied");
-                case SparqlQueryType.Ask:
-                case SparqlQueryType.Construct:
-                case SparqlQueryType.Describe:
-                case SparqlQueryType.DescribeAll:
-                    throw new NotSupportedException("Cannot convert a Distinct() to a SPARQL Query when the Inner Algebra converts to a Query that is not a SELECT query");
-                case SparqlQueryType.Unknown:
-                    q.QueryType = SparqlQueryType.SelectDistinct;
-                    break;
-                default:
-                    throw new NotSupportedException("Cannot convert a Distinct() to a SPARQL Query when the Inner Algebra converts to a Query with an unexpected Query Type");
-            }
-            return q;
-        }
-
-        /// <summary>
-        /// Throws an exception since a Distinct() cannot be converted back to a Graph Pattern.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown since a Distinct() cannot be converted to a Graph Pattern.</exception>
-        public GraphPattern ToGraphPattern()
-        {
-            throw new NotSupportedException("A Distinct() cannot be converted to a GraphPattern");
-        }
-
-        /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser.
-        /// </summary>
-        /// <param name="optimiser">Optimiser.</param>
-        /// <returns></returns>
-        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
-        {
-            return new Distinct(optimiser.Optimise(InnerAlgebra));
-        }
+    /// <summary>
+    /// Transforms the Inner Algebra using the given Optimiser.
+    /// </summary>
+    /// <param name="optimiser">Optimiser.</param>
+    /// <returns></returns>
+    public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+    {
+        return new Distinct(optimiser.Optimise(InnerAlgebra));
     }
 }

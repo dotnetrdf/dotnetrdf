@@ -27,31 +27,30 @@ using System.IO;
 using Xunit;
 using VDS.RDF.Data.DataTables;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+public class GraphToDataTableTests
 {
-    public class GraphToDataTableTests
+    [Fact]
+    public void GraphToDataTable()
     {
-        [Fact]
-        public void GraphToDataTable()
-        {
-            var g = new Graph();
-            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+        var g = new Graph();
+        g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
-            var table = g.ToDataTable();
+        var table = g.ToDataTable();
 
-            Assert.Equal(g.Triples.Count, table.Rows.Count);
-            Assert.Equal(3, table.Columns.Count);
-        }
+        Assert.Equal(g.Triples.Count, table.Rows.Count);
+        Assert.Equal(3, table.Columns.Count);
+    }
 
-        [Fact]
-        public void GraphToDataTable2()
-        {
-            var g = new Graph();
+    [Fact]
+    public void GraphToDataTable2()
+    {
+        var g = new Graph();
 
-            var table = g.ToDataTable();
+        var table = g.ToDataTable();
 
-            Assert.Equal(g.Triples.Count, table.Rows.Count);
-            Assert.Equal(3, table.Columns.Count);
-        }
+        Assert.Equal(g.Triples.Count, table.Rows.Count);
+        Assert.Equal(3, table.Columns.Count);
     }
 }

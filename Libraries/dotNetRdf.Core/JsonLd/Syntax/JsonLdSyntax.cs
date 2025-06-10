@@ -24,21 +24,20 @@
 // </copyright>
 */
 
-namespace VDS.RDF.JsonLd.Syntax
+namespace VDS.RDF.JsonLd.Syntax;
+
+/// <summary>
+/// Enumeration of the supported JSON-LD syntax versions.
+/// </summary>
+public enum JsonLdSyntax
 {
     /// <summary>
-    /// Enumeration of the supported JSON-LD syntax versions.
+    /// The original 1.0 version of the JSON-LD syntax.
     /// </summary>
-    public enum JsonLdSyntax
-    {
-        /// <summary>
-        /// The original 1.0 version of the JSON-LD syntax.
-        /// </summary>
-        JsonLd10,
+    JsonLd10,
 
-        /// <summary>
-        /// The current 1.1 version of the JSON-LD syntax.
-        /// </summary>
-        JsonLd11,
-    }
+    /// <summary>
+    /// The current 1.1 version of the JSON-LD syntax.
+    /// </summary>
+    JsonLd11,
 }

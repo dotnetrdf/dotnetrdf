@@ -29,87 +29,80 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Abstract Base Class for Formatters that can compress URIs to QNames.
+/// </summary>
+public abstract class QNameFormatter 
+    : BaseFormatter, INamespaceFormatter
 {
     /// <summary>
-    /// Abstract Base Class for Formatters that can compress URIs to QNames.
+    /// QName Map used for compressing URIs to QNames.
     /// </summary>
-    public abstract class QNameFormatter 
-        : BaseFormatter, INamespaceFormatter
+    protected QNameOutputMapper _qnameMapper;
+    private bool _allowAKeyword = true;
+
+    /// <summary>
+    /// Creates a new QName Formatter.
+    /// </summary>
+    /// <param name="formatName">Format Name.</param>
+    /// <param name="qnameMapper">QName Map.</param>
+    public QNameFormatter(string formatName, QNameOutputMapper qnameMapper)
+        : base(formatName)
     {
-        /// <summary>
-        /// QName Map used for compressing URIs to QNames.
-        /// </summary>
-        protected QNameOutputMapper _qnameMapper;
-        private bool _allowAKeyword = true;
-
-        /// <summary>
-        /// Creates a new QName Formatter.
-        /// </summary>
-        /// <param name="formatName">Format Name.</param>
-        /// <param name="qnameMapper">QName Map.</param>
-        public QNameFormatter(string formatName, QNameOutputMapper qnameMapper)
-            : base(formatName)
+        _qnameMapper = qnameMapper;
+        foreach (var prefix in _qnameMapper.Prefixes.ToList())
         {
-            _qnameMapper = qnameMapper;
-            foreach (var prefix in _qnameMapper.Prefixes.ToList())
+            if (!IsValidQName(prefix + ":"))
             {
-                if (!IsValidQName(prefix + ":"))
-                {
-                    _qnameMapper.RemoveNamespace(prefix);
-                }
+                _qnameMapper.RemoveNamespace(prefix);
             }
         }
+    }
 
-        /// <summary>
-        /// Creates a new QName Formatter.
-        /// </summary>
-        /// <param name="formatName">Format Name.</param>
-        /// <param name="qnameMapper">QName Map.</param>
-        /// <param name="allowAKeyword">Whether the 'a' keyword can be used for the RDF type predicate.</param>
-        public QNameFormatter(string formatName, QNameOutputMapper qnameMapper, bool allowAKeyword)
-            : this(formatName, qnameMapper)
+    /// <summary>
+    /// Creates a new QName Formatter.
+    /// </summary>
+    /// <param name="formatName">Format Name.</param>
+    /// <param name="qnameMapper">QName Map.</param>
+    /// <param name="allowAKeyword">Whether the 'a' keyword can be used for the RDF type predicate.</param>
+    public QNameFormatter(string formatName, QNameOutputMapper qnameMapper, bool allowAKeyword)
+        : this(formatName, qnameMapper)
+    {
+        _allowAKeyword = allowAKeyword;
+    }
+
+    /// <summary>
+    /// Determines whether a QName is valid.
+    /// </summary>
+    /// <param name="value">Value.</param>
+    /// <returns></returns>
+    protected virtual bool IsValidQName(string value)
+    {
+        return TurtleSpecsHelper.IsValidQName(value);
+    }
+
+    /// <summary>
+    /// Formats a URI Node using QName compression if possible.
+    /// </summary>
+    /// <param name="u">URI.</param>
+    /// <param name="segment">Triple Segment.</param>
+    /// <returns></returns>
+    protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
+    {
+        var output = new StringBuilder();
+        string qname;
+
+        if (_allowAKeyword && segment == TripleSegment.Predicate && u.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfType))
         {
-            _allowAKeyword = allowAKeyword;
+            output.Append('a');
         }
-
-        /// <summary>
-        /// Determines whether a QName is valid.
-        /// </summary>
-        /// <param name="value">Value.</param>
-        /// <returns></returns>
-        protected virtual bool IsValidQName(string value)
+        else if (_qnameMapper.ReduceToQName(u.Uri.AbsoluteUri, out qname))
         {
-            return TurtleSpecsHelper.IsValidQName(value);
-        }
-
-        /// <summary>
-        /// Formats a URI Node using QName compression if possible.
-        /// </summary>
-        /// <param name="u">URI.</param>
-        /// <param name="segment">Triple Segment.</param>
-        /// <returns></returns>
-        protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
-        {
-            var output = new StringBuilder();
-            string qname;
-
-            if (_allowAKeyword && segment == TripleSegment.Predicate && u.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfType))
+            if (IsValidQName(qname))
             {
-                output.Append('a');
-            }
-            else if (_qnameMapper.ReduceToQName(u.Uri.AbsoluteUri, out qname))
-            {
-                if (IsValidQName(qname))
-                {
-                    output.Append(qname);
-                }
-                else
-                {
-                    output.Append('<');
-                    output.Append(FormatUri(u.Uri));
-                    output.Append('>');
-                }
+                output.Append(qname);
             }
             else
             {
@@ -117,23 +110,29 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append(FormatUri(u.Uri));
                 output.Append('>');
             }
-            return output.ToString();
         }
-
-        /// <summary>
-        /// Formats a Literal Node using QName compression for the datatype if possible.
-        /// </summary>
-        /// <param name="l">Literal Node.</param>
-        /// <param name="segment">Triple Segment.</param>
-        /// <returns></returns>
-        protected abstract override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment);
-
-        /// <summary>
-        /// Formats a Namespace as a String.
-        /// </summary>
-        /// <param name="prefix">Namespace Prefix.</param>
-        /// <param name="namespaceUri">Namespace URI.</param>
-        /// <returns></returns>
-        public abstract string FormatNamespace(string prefix, Uri namespaceUri);
+        else
+        {
+            output.Append('<');
+            output.Append(FormatUri(u.Uri));
+            output.Append('>');
+        }
+        return output.ToString();
     }
+
+    /// <summary>
+    /// Formats a Literal Node using QName compression for the datatype if possible.
+    /// </summary>
+    /// <param name="l">Literal Node.</param>
+    /// <param name="segment">Triple Segment.</param>
+    /// <returns></returns>
+    protected abstract override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment);
+
+    /// <summary>
+    /// Formats a Namespace as a String.
+    /// </summary>
+    /// <param name="prefix">Namespace Prefix.</param>
+    /// <param name="namespaceUri">Namespace URI.</param>
+    /// <returns></returns>
+    public abstract string FormatNamespace(string prefix, Uri namespaceUri);
 }

@@ -28,71 +28,70 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+/// <summary>
+/// Base implementation of <see cref="IRdfWriter"/> that simply handles the logic of optionally closing a text writer stream.
+/// </summary>
+public abstract class BaseRdfWriter : IRdfWriter
 {
-    /// <summary>
-    /// Base implementation of <see cref="IRdfWriter"/> that simply handles the logic of optionally closing a text writer stream.
-    /// </summary>
-    public abstract class BaseRdfWriter : IRdfWriter
+    /// <inheritdoc/>
+    public abstract event RdfWriterWarning Warning;
+
+
+    /// <inheritdoc/>
+    public virtual void Save(IGraph g, string filename)
     {
-        /// <inheritdoc/>
-        public abstract event RdfWriterWarning Warning;
-
-
-        /// <inheritdoc/>
-        public virtual void Save(IGraph g, string filename)
-        {
 #pragma warning disable CS0618 // Type or member is obsolete
-            Save(g, filename, new UTF8Encoding(Options.UseBomForUtf8 /* false */));
+        Save(g, filename, new UTF8Encoding(Options.UseBomForUtf8 /* false */));
 #pragma warning restore CS0618 // Type or member is obsolete
-        }
-
-        /// <inheritdoc/>
-        public virtual void Save(IGraph g, string filename, Encoding fileEncoding)
-        {
-            using (FileStream stream = File.Open(filename, FileMode.Create))
-            {
-                Save(g, new StreamWriter(stream, fileEncoding));
-            }
-        }
-
-        /// <inheritdoc/>
-        public void Save(IGraph g, TextWriter output)
-        {
-            Save(g, output, false);
-        }
-
-        /// <inheritdoc/>
-        public void Save(IGraph g, TextWriter output, bool leaveOpen) {
-            try
-            {
-                SaveInternal(g, output);
-                if (!leaveOpen) output.Close();
-            }
-            catch (Exception)
-            {
-                if (!leaveOpen)
-                {
-                    try
-                    {
-                        output.Close();
-                    }
-                    catch (Exception)
-                    {
-                        // No handling, just clean up
-                    }
-                }
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Method to be implemented in derived classes to perform the actual writing to a TextWriter.
-        /// </summary>
-        /// <param name="graph">The graph to be saved.</param>
-        /// <param name="output">The <see cref="TextWriter"/> to save the graph to.</param>
-        protected abstract void SaveInternal(IGraph graph, TextWriter output);
-
-        
     }
+
+    /// <inheritdoc/>
+    public virtual void Save(IGraph g, string filename, Encoding fileEncoding)
+    {
+        using (FileStream stream = File.Open(filename, FileMode.Create))
+        {
+            Save(g, new StreamWriter(stream, fileEncoding));
+        }
+    }
+
+    /// <inheritdoc/>
+    public void Save(IGraph g, TextWriter output)
+    {
+        Save(g, output, false);
+    }
+
+    /// <inheritdoc/>
+    public void Save(IGraph g, TextWriter output, bool leaveOpen) {
+        try
+        {
+            SaveInternal(g, output);
+            if (!leaveOpen) output.Close();
+        }
+        catch (Exception)
+        {
+            if (!leaveOpen)
+            {
+                try
+                {
+                    output.Close();
+                }
+                catch (Exception)
+                {
+                    // No handling, just clean up
+                }
+            }
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Method to be implemented in derived classes to perform the actual writing to a TextWriter.
+    /// </summary>
+    /// <param name="graph">The graph to be saved.</param>
+    /// <param name="output">The <see cref="TextWriter"/> to save the graph to.</param>
+    protected abstract void SaveInternal(IGraph graph, TextWriter output);
+
+    
 }

@@ -24,63 +24,62 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.String
+namespace VDS.RDF.Query.Expressions.Functions.XPath.String;
+
+/// <summary>
+/// Represents the XPath fn:contains() function.
+/// </summary>
+public class ContainsFunction
+    : BaseBinaryStringFunction
 {
     /// <summary>
-    /// Represents the XPath fn:contains() function.
+    /// Creates a new XPath Contains function.
     /// </summary>
-    public class ContainsFunction
-        : BaseBinaryStringFunction
+    /// <param name="stringExpr">Expression.</param>
+    /// <param name="searchExpr">Search Expression.</param>
+    public ContainsFunction(ISparqlExpression stringExpr, ISparqlExpression searchExpr)
+        : base(stringExpr, searchExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
+
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
     {
-        /// <summary>
-        /// Creates a new XPath Contains function.
-        /// </summary>
-        /// <param name="stringExpr">Expression.</param>
-        /// <param name="searchExpr">Search Expression.</param>
-        public ContainsFunction(ISparqlExpression stringExpr, ISparqlExpression searchExpr)
-            : base(stringExpr, searchExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
+        return processor.ProcessContainsFunction(this, context, binding);
+    }
 
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitContainsFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Contains + ">(" + _expr + "," + _arg + ")";
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return processor.ProcessContainsFunction(this, context, binding);
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Contains;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitContainsFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Contains + ">(" + _expr + "," + _arg + ")";
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Contains;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new ContainsFunction(transformer.Transform(_expr), transformer.Transform(_arg));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new ContainsFunction(transformer.Transform(_expr), transformer.Transform(_arg));
     }
 }

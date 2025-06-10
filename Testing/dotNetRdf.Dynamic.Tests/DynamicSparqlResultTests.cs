@@ -32,450 +32,417 @@ using System.Linq.Expressions;
 using VDS.RDF.Query;
 using Xunit;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+public class DynamicSparqlResultTests
 {
-    public class DynamicSparqlResultTests
+    [Fact]
+    public void Constructor_requires_original()
     {
-        [Fact]
-        public void Constructor_requires_original()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                new DynamicSparqlResult(null));
-        }
+        Assert.Throws<ArgumentNullException>(() =>
+            new DynamicSparqlResult(null));
+    }
 
-        [Fact]
-        public void Get_index_requires_variable()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Get_index_requires_variable()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.Throws<ArgumentNullException>(() =>
-                d[null]);
-        }
+        Assert.Throws<ArgumentNullException>(() =>
+            d[null]);
+    }
 
-        [Fact]
-        public void Get_index_returns_native_binding()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Get_index_returns_native_binding()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.Equal(UriFactory.Root.Create("urn:s"), d["s"]);
-        }
+        Assert.Equal(UriFactory.Root.Create("urn:s"), d["s"]);
+    }
 
-        [Fact]
-        public void Set_index_requires_variable()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Set_index_requires_variable()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.Throws<ArgumentNullException>(() =>
-                d[null] = null);
-        }
+        Assert.Throws<ArgumentNullException>(() =>
+            d[null] = null);
+    }
 
-        [Fact]
-        public void Set_index_binds_variable()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Set_index_binds_variable()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
-            Uri s2 = UriFactory.Root.Create("urn:s2");
-            IUriNode expected = new NodeFactory(new NodeFactoryOptions()).CreateUriNode(s2);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
+        Uri s2 = UriFactory.Root.Create("urn:s2");
+        IUriNode expected = new NodeFactory(new NodeFactoryOptions()).CreateUriNode(s2);
 
-            d["s"] = s2;
+        d["s"] = s2;
 
-            Assert.Equal(expected, result["s"]);
-        }
+        Assert.Equal(expected, result["s"]);
+    }
 
-        [Fact]
-        public void Keys_are_variables()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Keys_are_variables()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.Equal(results.Variables, d.Keys);
-        }
+        Assert.Equal(results.Variables, d.Keys);
+    }
 
-        [Fact]
-        public void Values_are_native_bindings()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Values_are_native_bindings()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.Equal(result.Select(pair => ((IUriNode)pair.Value).Uri), d.Values.Cast<Uri>());
-        }
+        Assert.Equal(result.Select(pair => ((IUriNode)pair.Value).Uri), d.Values.Cast<Uri>());
+    }
 
-        [Fact]
-        public void Counts_bound_variables()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Counts_bound_variables()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
-SELECT *
-WHERE {
-    ?s ?p ?o .
-}
-");
-
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
-
-            Assert.Equal(result.Count, d.Count);
-        }
-
-        [Fact]
-        public void Is_writable()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
-<urn:s> <urn:p> <urn:o> .
-");
-
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.False(d.IsReadOnly);
-        }
+        Assert.Equal(result.Count, d.Count);
+    }
 
-        [Fact]
-        public void Add_requires_variable()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Is_writable()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.Throws<ArgumentNullException>(() =>
-                d.Add(null, null));
-        }
+        Assert.False(d.IsReadOnly);
+    }
 
-        [Fact]
-        public void Add_binds_variable()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Add_requires_variable()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
-SELECT *
-WHERE {
-    ?s ?p ?o .
-}
-");
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
-
-            d.Add("x", "y");
-
-            Assert.Equal("y", ((ILiteralNode)result["x"]).Value);
-        }
-
-        [Fact]
-        public void Add_handles_pairs()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
-<urn:s> <urn:p> <urn:o> .
-");
-
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            d.Add(new KeyValuePair<string, object>("x", "y"));
+        Assert.Throws<ArgumentNullException>(() =>
+            d.Add(null, null));
+    }
 
-            Assert.Equal("y", ((ILiteralNode)result["x"]).Value);
-        }
-
-        [Fact]
-        public void Clear_unbinds_all_variables()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Add_binds_variable()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
+SELECT *
+WHERE {
+    ?s ?p ?o .
+}
+");
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
+
+        d.Add("x", "y");
+
+        Assert.Equal("y", ((ILiteralNode)result["x"]).Value);
+    }
+
+    [Fact]
+    public void Add_handles_pairs()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
+
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
 
-            d.Clear();
+        d.Add(new KeyValuePair<string, object>("x", "y"));
 
-            Assert.Empty(result);
-        }
+        Assert.Equal("y", ((ILiteralNode)result["x"]).Value);
+    }
 
-        [Fact]
-        public void Contains_rejects_missing_variable()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Clear_unbinds_all_variables()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.DoesNotContain(new KeyValuePair<string, object>("x", null), d);
-        }
+        d.Clear();
 
-        [Fact]
-        public void Contains_matches_native_binding()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+        Assert.Empty(result);
+    }
+
+    [Fact]
+    public void Contains_rejects_missing_variable()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.Contains(new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:s")), d);
-        }
+        Assert.DoesNotContain(new KeyValuePair<string, object>("x", null), d);
+    }
 
-        [Fact]
-        public void ContainsKey_rejects_null_variable()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Contains_matches_native_binding()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.False(d.ContainsKey(null));
-        }
+        Assert.Contains(new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:s")), d);
+    }
 
-        [Fact]
-        public void ContainsKey_matches_variable()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void ContainsKey_rejects_null_variable()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.True(d.ContainsKey("s"));
-        }
+        Assert.False(d.ContainsKey(null));
+    }
 
-        [Fact]
-        public void Copies_pairs_with_variable_key_and_native_binding()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void ContainsKey_matches_variable()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            var objects = new KeyValuePair<string, object>[5]; // +2 for padding on each side
-            d.CopyTo(objects, 1); // start at the second item at destination
+        Assert.True(d.ContainsKey("s"));
+    }
 
-            Assert.Equal(
-                new[]
-                {
-                    default,
-                    new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:s")),
-                    new KeyValuePair<string, object>("p", UriFactory.Root.Create("urn:p")),
-                    new KeyValuePair<string, object>("o", UriFactory.Root.Create("urn:o")),
-                    default
-                },
-                objects);
-        }
-
-        [Fact]
-        public void Enumerates_pairs_with_variable_key_and_native_binding()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Copies_pairs_with_variable_key_and_native_binding()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
 
-            using (IEnumerator<KeyValuePair<string, object>> actual = d.GetEnumerator())
+        var objects = new KeyValuePair<string, object>[5]; // +2 for padding on each side
+        d.CopyTo(objects, 1); // start at the second item at destination
+
+        Assert.Equal(
+            new[]
             {
-                using (IEnumerator<KeyValuePair<string, INode>> expected = result.GetEnumerator())
-                {
-                    while (expected.MoveNext() | actual.MoveNext())
-                    {
-                        Assert.Equal(
-                            new KeyValuePair<string, object>(
-                                expected.Current.Key,
-                                ((IUriNode)expected.Current.Value).Uri),
-                            actual.Current);
-                    }
-                }
-            }
-        }
+                default,
+                new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:s")),
+                new KeyValuePair<string, object>("p", UriFactory.Root.Create("urn:p")),
+                new KeyValuePair<string, object>("o", UriFactory.Root.Create("urn:o")),
+                default
+            },
+            objects);
+    }
 
-        [Fact]
-        public void IEnumerable_enumerates_pairs_with_variable_key_and_native_binding()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Enumerates_pairs_with_variable_key_and_native_binding()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
 
-            IEnumerator actual = d.GetEnumerator();
+        using (IEnumerator<KeyValuePair<string, object>> actual = d.GetEnumerator())
+        {
             using (IEnumerator<KeyValuePair<string, INode>> expected = result.GetEnumerator())
             {
                 while (expected.MoveNext() | actual.MoveNext())
@@ -488,224 +455,256 @@ WHERE {
                 }
             }
         }
+    }
 
-        [Fact]
-        public void Remove_rejects_null_variable()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void IEnumerable_enumerates_pairs_with_variable_key_and_native_binding()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.False(d.Remove(null));
-        }
-
-        [Fact]
-        public void Remove_rejects_missing_variable()
+        IEnumerator actual = d.GetEnumerator();
+        using (IEnumerator<KeyValuePair<string, INode>> expected = result.GetEnumerator())
         {
-            var g = new Graph();
-            g.LoadFromString(@"
+            while (expected.MoveNext() | actual.MoveNext())
+            {
+                Assert.Equal(
+                    new KeyValuePair<string, object>(
+                        expected.Current.Key,
+                        ((IUriNode)expected.Current.Value).Uri),
+                    actual.Current);
+            }
+        }
+    }
+
+    [Fact]
+    public void Remove_rejects_null_variable()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.False(d.Remove("x"));
-        }
+        Assert.False(d.Remove(null));
+    }
 
-        [Fact]
-        public void Remove_unbinds_variable()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Remove_rejects_missing_variable()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.True(d.Remove("s"));
-            Assert.False(result.HasValue("s"));
-        }
+        Assert.False(d.Remove("x"));
+    }
 
-        [Fact]
-        public void Remove_pair_rejects_missing_variable()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Remove_unbinds_variable()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.False(d.Remove(new KeyValuePair<string, object>("x", null)));
-        }
+        Assert.True(d.Remove("s"));
+        Assert.False(result.HasValue("s"));
+    }
 
-        [Fact]
-        public void Remove_pair_rejects_missing_binding()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Remove_pair_rejects_missing_variable()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
 
-            Assert.False(d.Remove(new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:x"))));
-            Assert.True(result.HasValue("s"));
-        }
+        Assert.False(d.Remove(new KeyValuePair<string, object>("x", null)));
+    }
 
-        [Fact]
-        public void Remove_pair_unbinds_variable_with_existing_binding()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Remove_pair_rejects_missing_binding()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
 
-            Assert.True(d.Remove(new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:s"))));
-            Assert.False(result.HasValue("s"));
-        }
+        Assert.False(d.Remove(new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:x"))));
+        Assert.True(result.HasValue("s"));
+    }
 
-        [Fact]
-        public void TryGetVaue_rejects_null_variable()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Remove_pair_unbinds_variable_with_existing_binding()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
 
-            Assert.False(d.TryGetValue(null, out var value));
-            Assert.Null(value);
-        }
+        Assert.True(d.Remove(new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:s"))));
+        Assert.False(result.HasValue("s"));
+    }
 
-        [Fact]
-        public void TryGetVaue_rejects_missing_variable()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void TryGetVaue_rejects_null_variable()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.False(d.TryGetValue("x", out var value));
-            Assert.Null(value);
-        }
+        Assert.False(d.TryGetValue(null, out var value));
+        Assert.Null(value);
+    }
 
-        [Fact]
-        public void TryGetVaue_outputs_native_binding()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void TryGetVaue_rejects_missing_variable()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.True(d.TryGetValue("s", out var value));
-            Assert.Equal(UriFactory.Root.Create("urn:s"), value);
-        }
+        Assert.False(d.TryGetValue("x", out var value));
+        Assert.Null(value);
+    }
 
-        [Fact]
-        public void Provides_dictionary_meta_object()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void TryGetVaue_outputs_native_binding()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     ?s ?p ?o .
 }
 ");
 
-            ISparqlResult result = results.Single();
-            var d = new DynamicSparqlResult(result);
-            var p = (IDynamicMetaObjectProvider)d;
-            DynamicMetaObject mo = p.GetMetaObject(Expression.Empty());
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
 
-            Assert.NotNull(mo);
-            Assert.IsType<DictionaryMetaObject>(mo);
-        }
+        Assert.True(d.TryGetValue("s", out var value));
+        Assert.Equal(UriFactory.Root.Create("urn:s"), value);
+    }
+
+    [Fact]
+    public void Provides_dictionary_meta_object()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
+
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
+SELECT *
+WHERE {
+    ?s ?p ?o .
+}
+");
+
+        ISparqlResult result = results.Single();
+        var d = new DynamicSparqlResult(result);
+        var p = (IDynamicMetaObjectProvider)d;
+        DynamicMetaObject mo = p.GetMetaObject(Expression.Empty());
+
+        Assert.NotNull(mo);
+        Assert.IsType<DictionaryMetaObject>(mo);
     }
 }

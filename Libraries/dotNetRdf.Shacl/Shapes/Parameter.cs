@@ -28,27 +28,26 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Shacl.Shapes
+namespace VDS.RDF.Shacl.Shapes;
+
+internal class Parameter : Property
 {
-    internal class Parameter : Property
+    [DebuggerStepThrough]
+    internal Parameter(INode node, IGraph graph)
+        : base(node, graph)
     {
-        [DebuggerStepThrough]
-        internal Parameter(INode node, IGraph graph)
-            : base(node, graph)
-        {
-        }
+    }
 
-        internal bool Optional
+    internal bool Optional
+    {
+        get
         {
-            get
-            {
-                return Vocabulary.Optional.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsBoolean() ?? false;
-            }
+            return Vocabulary.Optional.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsBoolean() ?? false;
         }
+    }
 
-        internal bool Matches(Shape shape)
-        {
-            return !Equals((INode)shape) && ValidateInternal(Graph, shape, shape.AsEnumerable(), null);
-        }
+    internal bool Matches(Shape shape)
+    {
+        return !Equals((INode)shape) && ValidateInternal(Graph, shape, shape.AsEnumerable(), null);
     }
 }

@@ -24,16 +24,15 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+
+/**
+ * A triple pattern element.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface ITriplePattern : IElement, ITriple
 {
-
-
-    /**
-     * A triple pattern element.
-     * 
-     * @author Holger Knublauch
-     */
-    internal interface ITriplePattern : IElement, ITriple
-    {
-    }
 }

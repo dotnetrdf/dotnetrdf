@@ -26,61 +26,60 @@
 
 using System.IO;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface to be implemented by Triple Store Readers.
+/// </summary>
+public interface IStoreReader
 {
+
     /// <summary>
-    /// Interface to be implemented by Triple Store Readers.
+    /// Loads a RDF dataset into a Triple Store.
     /// </summary>
-    public interface IStoreReader
-    {
+    /// <param name="store">Triple Store.</param>
+    /// <param name="filename">File to load from.</param>
+    void Load(ITripleStore store, string filename);
 
-        /// <summary>
-        /// Loads a RDF dataset into a Triple Store.
-        /// </summary>
-        /// <param name="store">Triple Store.</param>
-        /// <param name="filename">File to load from.</param>
-        void Load(ITripleStore store, string filename);
+    /// <summary>
+    /// Loads a RDF dataset into a Triple Store.
+    /// </summary>
+    /// <param name="store">Triple Store.</param>
+    /// <param name="input">Input to load from.</param>
+    void Load(ITripleStore store, TextReader input);
 
-        /// <summary>
-        /// Loads a RDF dataset into a Triple Store.
-        /// </summary>
-        /// <param name="store">Triple Store.</param>
-        /// <param name="input">Input to load from.</param>
-        void Load(ITripleStore store, TextReader input);
+    /// <summary>
+    /// Loads a RDF dataset using a RDF Handler.
+    /// </summary>
+    /// <param name="handler">RDF Handler to use.</param>
+    /// <param name="filename">File to load from.</param>
+    void Load(IRdfHandler handler, string filename);
 
-        /// <summary>
-        /// Loads a RDF dataset using a RDF Handler.
-        /// </summary>
-        /// <param name="handler">RDF Handler to use.</param>
-        /// <param name="filename">File to load from.</param>
-        void Load(IRdfHandler handler, string filename);
+    /// <summary>
+    /// Loads a RDF dataset using a RDF Handler.
+    /// </summary>
+    /// <param name="handler">RDF Handler to use.</param>
+    /// <param name="input">Input to load from.</param>
+    void Load(IRdfHandler handler, TextReader input);
 
-        /// <summary>
-        /// Loads a RDF dataset using a RDF Handler.
-        /// </summary>
-        /// <param name="handler">RDF Handler to use.</param>
-        /// <param name="input">Input to load from.</param>
-        void Load(IRdfHandler handler, TextReader input);
+    /// <summary>
+    /// Loads an RDF dataset using an RDF handler.
+    /// </summary>
+    /// <param name="handler">RDF handler to use.</param>
+    /// <param name="filename">File to load from.</param>
+    /// <param name="uriFactory">URI factory to use.</param>
+    void Load(IRdfHandler handler, string filename, IUriFactory uriFactory);
 
-        /// <summary>
-        /// Loads an RDF dataset using an RDF handler.
-        /// </summary>
-        /// <param name="handler">RDF handler to use.</param>
-        /// <param name="filename">File to load from.</param>
-        /// <param name="uriFactory">URI factory to use.</param>
-        void Load(IRdfHandler handler, string filename, IUriFactory uriFactory);
+    /// <summary>
+    /// Loads an RDF dataset using and RDF handler.
+    /// </summary>
+    /// <param name="handler">RDF handler to use.</param>
+    /// <param name="input">File to load from.</param>
+    /// <param name="uriFactory">URI factory to use.</param>
+    void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory);
 
-        /// <summary>
-        /// Loads an RDF dataset using and RDF handler.
-        /// </summary>
-        /// <param name="handler">RDF handler to use.</param>
-        /// <param name="input">File to load from.</param>
-        /// <param name="uriFactory">URI factory to use.</param>
-        void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory);
-
-        /// <summary>
-        /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed
-        /// </summary>
-        event StoreReaderWarning Warning;
-    }
+    /// <summary>
+    /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed
+    /// </summary>
+    event StoreReaderWarning Warning;
 }

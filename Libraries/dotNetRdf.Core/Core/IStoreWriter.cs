@@ -27,47 +27,46 @@
 using System.IO;
 using System.Text;
 
-namespace VDS.RDF
-{    
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface to be implemented by Triple Store Writers.
+/// </summary>
+public interface IStoreWriter
+{
     /// <summary>
-    /// Interface to be implemented by Triple Store Writers.
+    /// Writes the RDF content of the triple store to the specified file.
     /// </summary>
-    public interface IStoreWriter
-    {
-        /// <summary>
-        /// Writes the RDF content of the triple store to the specified file.
-        /// </summary>
-        /// <param name="store">Triple Store.</param>
-        /// <param name="filename">File to save to.</param>
-        /// <remarks>The output file will use the UTF-8 text encoding with no byte-order mark.</remarks>
-        void Save(ITripleStore store, string filename);
+    /// <param name="store">Triple Store.</param>
+    /// <param name="filename">File to save to.</param>
+    /// <remarks>The output file will use the UTF-8 text encoding with no byte-order mark.</remarks>
+    void Save(ITripleStore store, string filename);
 
-        /// <summary>
-        /// Writes the content of the triple store to the specified file using the specified text encoding.
-        /// </summary>
-        /// <param name="store">The store whose content is to be written.</param>
-        /// <param name="filename">The path to the file to write the store content to.</param>
-        /// <param name="fileEncoding">The text encoding to use for the output file.</param>
-        void Save(ITripleStore store, string filename, Encoding fileEncoding);
+    /// <summary>
+    /// Writes the content of the triple store to the specified file using the specified text encoding.
+    /// </summary>
+    /// <param name="store">The store whose content is to be written.</param>
+    /// <param name="filename">The path to the file to write the store content to.</param>
+    /// <param name="fileEncoding">The text encoding to use for the output file.</param>
+    void Save(ITripleStore store, string filename, Encoding fileEncoding);
 
-        /// <summary>
-        /// Method for saving data to a Triple Store.
-        /// </summary>
-        /// <param name="store">Triple Store.</param>
-        /// <param name="output">Write to save to.</param>
-        void Save(ITripleStore store, TextWriter output);
+    /// <summary>
+    /// Method for saving data to a Triple Store.
+    /// </summary>
+    /// <param name="store">Triple Store.</param>
+    /// <param name="output">Write to save to.</param>
+    void Save(ITripleStore store, TextWriter output);
 
-        /// <summary>
-        /// Method for saving data to a Triple Store.
-        /// </summary>
-        /// <param name="store">Triple Store.</param>
-        /// <param name="output">Write to save to.</param>
-        /// <param name="leaveOpen">Boolean flag indicating if the output writer should be left open by the writer when it completes.</param>
-        void Save(ITripleStore store, TextWriter output, bool leaveOpen);
+    /// <summary>
+    /// Method for saving data to a Triple Store.
+    /// </summary>
+    /// <param name="store">Triple Store.</param>
+    /// <param name="output">Write to save to.</param>
+    /// <param name="leaveOpen">Boolean flag indicating if the output writer should be left open by the writer when it completes.</param>
+    void Save(ITripleStore store, TextWriter output, bool leaveOpen);
 
-        /// <summary>
-        /// Event which writers can raise to indicate possible ambiguities or issues in the syntax they are producing
-        /// </summary>
-        event StoreWriterWarning Warning;
-    }
+    /// <summary>
+    /// Event which writers can raise to indicate possible ambiguities or issues in the syntax they are producing
+    /// </summary>
+    event StoreWriterWarning Warning;
 }

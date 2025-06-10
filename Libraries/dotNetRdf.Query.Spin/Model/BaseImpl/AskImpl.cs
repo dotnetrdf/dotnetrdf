@@ -26,32 +26,31 @@
 
 using VDS.RDF.Query.Spin.SparqlUtil;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class AskImpl : QueryImpl, IAsk
 {
-    internal class AskImpl : QueryImpl, IAsk
+
+    public AskImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
+    }
 
-        public AskImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
+
+    override public void printSPINRDF(ISparqlPrinter context)
+    {
+        printComment(context);
+        printPrefixes(context);
+        context.printIndentation(context.getIndentation());
+        context.printKeyword("ASK");
+        printStringFrom(context);
+        context.print(" ");
+        if (context.getIndentation() > 0)
         {
+            // Avoid unnecessary whitespace after ASK -> put on extra row
+            context.println();
         }
-
-
-        override public void printSPINRDF(ISparqlPrinter context)
-        {
-            printComment(context);
-            printPrefixes(context);
-            context.printIndentation(context.getIndentation());
-            context.printKeyword("ASK");
-            printStringFrom(context);
-            context.print(" ");
-            if (context.getIndentation() > 0)
-            {
-                // Avoid unnecessary whitespace after ASK -> put on extra row
-                context.println();
-            }
-            printWhere(context);
-            printValues(context);
-        }
+        printWhere(context);
+        printValues(context);
     }
 }

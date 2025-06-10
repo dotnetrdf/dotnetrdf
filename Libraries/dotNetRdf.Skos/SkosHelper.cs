@@ -24,55 +24,54 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Skos
+namespace VDS.RDF.Skos;
+
+/// <summary>
+/// Static Helper class for the SKOS API.
+/// </summary>
+public static class SkosHelper
 {
     /// <summary>
-    /// Static Helper class for the SKOS API.
+    /// SKOS namespace and prefix.
     /// </summary>
-    public static class SkosHelper
-    {
-        /// <summary>
-        /// SKOS namespace and prefix.
-        /// </summary>
-        public const string
-            Prefix = "skos",
-            Namespace = "http://www.w3.org/2004/02/skos/core#";
+    public const string
+        Prefix = "skos",
+        Namespace = "http://www.w3.org/2004/02/skos/core#";
 
-        /// <summary>
-        /// Constant URIs for classes and properties exposed by the SKOS API and its derived classes.
-        /// </summary>
-        public const string
-            Concept = Namespace + "Concept",
-            ConceptScheme = Namespace + "ConceptScheme",
-            InScheme = Namespace + "inScheme",
-            HasTopConcept = Namespace + "hasTopConcept",
-            TopConceptOf = Namespace + "topConceptOf",
-            PrefLabel = Namespace + "prefLabel",
-            AltLabel = Namespace + "altLabel",
-            HiddenLabel = Namespace + "hiddenLabel",
-            Notation = Namespace + "notation",
-            Note = Namespace + "note",
-            ChangeNote = Namespace + "changeNote",
-            Definition = Namespace + "definition",
-            EditorialNote = Namespace + "editorialNote",
-            Example = Namespace + "example",
-            HistoryNote = Namespace + "historyNote",
-            ScopeNote = Namespace + "scopeNote",
-            SemanticRelation = Namespace + "semanticRelation",
-            Broader = Namespace + "broader",
-            Narrower = Namespace + "narrower",
-            Related = Namespace + "related",
-            BroaderTransitive = Namespace + "broaderTransitive",
-            NarrowerTransitive = Namespace + "narrowerTransitive",
-            Collection = Namespace + "Collection",
-            OrderedCollection = Namespace + "OrderedCollection",
-            Member = Namespace + "member",
-            MemberList = Namespace + "memberList",
-            MappingRelation = Namespace + "mappingRelation",
-            CloseMatch = Namespace + "closeMatch",
-            ExactMatch = Namespace + "exactMatch",
-            BroadMatch = Namespace + "broadMatch",
-            NarrowMatch = Namespace + "narrowMatch",
-            RelatedMatch = Namespace + "relatedMatch";
-    }
+    /// <summary>
+    /// Constant URIs for classes and properties exposed by the SKOS API and its derived classes.
+    /// </summary>
+    public const string
+        Concept = Namespace + "Concept",
+        ConceptScheme = Namespace + "ConceptScheme",
+        InScheme = Namespace + "inScheme",
+        HasTopConcept = Namespace + "hasTopConcept",
+        TopConceptOf = Namespace + "topConceptOf",
+        PrefLabel = Namespace + "prefLabel",
+        AltLabel = Namespace + "altLabel",
+        HiddenLabel = Namespace + "hiddenLabel",
+        Notation = Namespace + "notation",
+        Note = Namespace + "note",
+        ChangeNote = Namespace + "changeNote",
+        Definition = Namespace + "definition",
+        EditorialNote = Namespace + "editorialNote",
+        Example = Namespace + "example",
+        HistoryNote = Namespace + "historyNote",
+        ScopeNote = Namespace + "scopeNote",
+        SemanticRelation = Namespace + "semanticRelation",
+        Broader = Namespace + "broader",
+        Narrower = Namespace + "narrower",
+        Related = Namespace + "related",
+        BroaderTransitive = Namespace + "broaderTransitive",
+        NarrowerTransitive = Namespace + "narrowerTransitive",
+        Collection = Namespace + "Collection",
+        OrderedCollection = Namespace + "OrderedCollection",
+        Member = Namespace + "member",
+        MemberList = Namespace + "memberList",
+        MappingRelation = Namespace + "mappingRelation",
+        CloseMatch = Namespace + "closeMatch",
+        ExactMatch = Namespace + "exactMatch",
+        BroadMatch = Namespace + "broadMatch",
+        NarrowMatch = Namespace + "narrowMatch",
+        RelatedMatch = Namespace + "relatedMatch";
 }

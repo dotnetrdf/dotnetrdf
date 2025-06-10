@@ -24,15 +24,14 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
-{
+namespace VDS.RDF.Query.Spin.Model;
 
-    /**
-     * A SPARQL Update operation representing a DELETE/INSERT.
-     *
-     * @author Holger Knublauch
-     */
-    internal interface IModify : IUpdate, ICommandWithWhere
-    {
-    }
+
+/**
+ * A SPARQL Update operation representing a DELETE/INSERT.
+ *
+ * @author Holger Knublauch
+ */
+internal interface IModify : IUpdate, ICommandWithWhere
+{
 }

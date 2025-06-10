@@ -34,235 +34,234 @@ using System.Text;
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Util;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class ElementListImpl : ElementImpl, IElementList
 {
-    internal class ElementListImpl : ElementImpl, IElementList
+
+    public ElementListImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
+    }
 
-        public ElementListImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
+
+    private int addListMembers(List<IElement> elements, int i, List<IResource> members)
+    {
+        var first = true;
+        while (i < elements.Count - 1 &&
+                elements[i] is ITriplePattern &&
+                elements[i + 1] is ITriplePattern)
         {
-        }
-
-
-        private int addListMembers(List<IElement> elements, int i, List<IResource> members)
-        {
-            var first = true;
-            while (i < elements.Count - 1 &&
-                    elements[i] is ITriplePattern &&
-                    elements[i + 1] is ITriplePattern)
+            var firstPattern = (ITriplePattern)elements[i];
+            var secondPattern = (ITriplePattern)elements[i + 1];
+            if (RDFUtil.sameTerm(RDF.PropertyFirst,firstPattern.getPredicate()) && RDFUtil.sameTerm(RDF.PropertyRest,secondPattern.getPredicate()))
             {
-                var firstPattern = (ITriplePattern)elements[i];
-                var secondPattern = (ITriplePattern)elements[i + 1];
-                if (RDFUtil.sameTerm(RDF.PropertyFirst,firstPattern.getPredicate()) && RDFUtil.sameTerm(RDF.PropertyRest,secondPattern.getPredicate()))
+                IResource firstSubject = firstPattern.getSubject();
+                IResource secondSubject = secondPattern.getSubject();
+                if (firstSubject is IVariable && secondSubject is IVariable)
                 {
-                    IResource firstSubject = firstPattern.getSubject();
-                    IResource secondSubject = secondPattern.getSubject();
-                    if (firstSubject is IVariable && secondSubject is IVariable)
+                    var firstVar = (IVariable)firstSubject;
+                    var secondVar = (IVariable)secondSubject;
+                    if (firstVar.isBlankNodeVar() && firstVar.getName().Equals(secondVar.getName()))
                     {
-                        var firstVar = (IVariable)firstSubject;
-                        var secondVar = (IVariable)secondSubject;
-                        if (firstVar.isBlankNodeVar() && firstVar.getName().Equals(secondVar.getName()))
+                        members.Add(firstPattern.getObject());
+                        IResource secondObject = secondPattern.getObject();
+                        i++;
+                        if (RDFUtil.sameTerm(RDF.Nil, secondObject))
                         {
-                            members.Add(firstPattern.getObject());
-                            IResource secondObject = secondPattern.getObject();
-                            i++;
-                            if (RDFUtil.sameTerm(RDF.Nil, secondObject))
-                            {
-                                return i + 1;
-                            }
-                        }
-                    }
-                }
-
-                // We are not in a valid list
-                if (first && members.Count == 0)
-                {
-                    break;
-                }
-                first = false;
-                i++;
-            }
-            return i;
-        }
-
-
-        public new List<IElement> getElements()
-        {
-            var results = new List<IElement>();
-            IEnumerator<IResource> it = AsList().GetEnumerator();
-            while (it.MoveNext())
-            {
-                IResource node = it.Current;
-                if (!(node.isLiteral()))
-                {
-                    IElement element = SPINFactory.asElement(node);
-                    if (element != null)
-                    {
-                        results.Add(element);
-                    }
-                }
-            }
-            return results;
-        }
-
-
-        private bool nextIsMatchingVarPattern(ITriplePattern main, List<IElement> elements, int i)
-        {
-            if (main.getObject() is IVariable &&
-                    i < elements.Count - 2 &&
-                    elements[i + 1] is ITriplePattern &&
-                    elements[i + 2] is ITriplePattern)
-            {
-                var mainVar = (IVariable)main.getObject();
-                if (mainVar.isBlankNodeVar())
-                {
-                    var nextPattern = (ITriplePattern)elements[i + 1];
-                    var lastPattern = (ITriplePattern)elements[i + 2];
-                    IResource nextSubject = nextPattern.getSubject();
-                    IResource lastSubject = lastPattern.getSubject();
-                    if (nextSubject is IVariable &&
-                       lastSubject is IVariable &&
-                            RDFUtil.sameTerm(RDF.PropertyFirst, nextPattern.getPredicate()) &&
-                            RDFUtil.sameTerm(RDF.PropertyRest, lastPattern.getPredicate()))
-                    {
-                        var nextVar = (IVariable)nextSubject;
-                        if (mainVar.getName().Equals(nextVar.getName()))
-                        {
-                            var lastVar = (IVariable)lastSubject;
-                            return mainVar.getName().Equals(lastVar.getName());
+                            return i + 1;
                         }
                     }
                 }
             }
-            return false;
-        }
 
-
-        override public void Print(ISparqlPrinter p)
-        {
-            List<IElement> elements = getElements();
-
-            var oldI = -1;
-            for (var i = 0; i < elements.Count; i++)
+            // We are not in a valid list
+            if (first && members.Count == 0)
             {
-                if (i == oldI)
+                break;
+            }
+            first = false;
+            i++;
+        }
+        return i;
+    }
+
+
+    public new List<IElement> getElements()
+    {
+        var results = new List<IElement>();
+        IEnumerator<IResource> it = AsList().GetEnumerator();
+        while (it.MoveNext())
+        {
+            IResource node = it.Current;
+            if (!(node.isLiteral()))
+            {
+                IElement element = SPINFactory.asElement(node);
+                if (element != null)
                 {
-                    break; // Prevent unknown endless loop conditions
+                    results.Add(element);
                 }
-                oldI = i;
-                IElement element = elements[i];
-                p.printIndentation(p.getIndentation());
-                if (element is IElementList && ((IElementList)element).getElements().Count > 1)
+            }
+        }
+        return results;
+    }
+
+
+    private bool nextIsMatchingVarPattern(ITriplePattern main, List<IElement> elements, int i)
+    {
+        if (main.getObject() is IVariable &&
+                i < elements.Count - 2 &&
+                elements[i + 1] is ITriplePattern &&
+                elements[i + 2] is ITriplePattern)
+        {
+            var mainVar = (IVariable)main.getObject();
+            if (mainVar.isBlankNodeVar())
+            {
+                var nextPattern = (ITriplePattern)elements[i + 1];
+                var lastPattern = (ITriplePattern)elements[i + 2];
+                IResource nextSubject = nextPattern.getSubject();
+                IResource lastSubject = lastPattern.getSubject();
+                if (nextSubject is IVariable &&
+                   lastSubject is IVariable &&
+                        RDFUtil.sameTerm(RDF.PropertyFirst, nextPattern.getPredicate()) &&
+                        RDFUtil.sameTerm(RDF.PropertyRest, lastPattern.getPredicate()))
                 {
-                    p.print("{");
-                    p.println();
-                    p.setIndentation(p.getIndentation() + 1);
-                    element.Print(p);
-                    p.setIndentation(p.getIndentation() - 1);
-                    p.printIndentation(p.getIndentation());
-                    p.print("} ");
-                }
-                else
-                {
-                    if (element is ITriplePattern)
+                    var nextVar = (IVariable)nextSubject;
+                    if (mainVar.getName().Equals(nextVar.getName()))
                     {
-                        i = printTriplePattern(elements, i, p);
-                    }
-                    else
-                    {
-                        element.Print(p);
+                        var lastVar = (IVariable)lastSubject;
+                        return mainVar.getName().Equals(lastVar.getName());
                     }
                 }
-                if (!(element is IElementList) || ((IElementList)element).getElements().Count > 1)
-                {
-                    p.print(" .");
-                }
+            }
+        }
+        return false;
+    }
+
+
+    override public void Print(ISparqlPrinter p)
+    {
+        List<IElement> elements = getElements();
+
+        var oldI = -1;
+        for (var i = 0; i < elements.Count; i++)
+        {
+            if (i == oldI)
+            {
+                break; // Prevent unknown endless loop conditions
+            }
+            oldI = i;
+            IElement element = elements[i];
+            p.printIndentation(p.getIndentation());
+            if (element is IElementList && ((IElementList)element).getElements().Count > 1)
+            {
+                p.print("{");
                 p.println();
-            }
-        }
-
-
-        // Special treatment of nested rdf:Lists
-        private int printTriplePattern(List<IElement> elements, int i, ISparqlPrinter p)
-        {
-            var main = (ITriplePattern)elements[i];
-
-            // Print subject
-            var leftList = new List<IResource>();
-            i = addListMembers(elements, i, leftList);
-            if (leftList.Count == 0)
-            {
-                TupleImpl.print(getModel(), main.getSubject(), p);
+                p.setIndentation(p.getIndentation() + 1);
+                element.Print(p);
+                p.setIndentation(p.getIndentation() - 1);
+                p.printIndentation(p.getIndentation());
+                p.print("} ");
             }
             else
             {
-                printRDFList(p, leftList);
-                main = (ITriplePattern)elements[i];
-            }
-            p.print(" ");
-
-            // Print predicate
-            if (RDFUtil.sameTerm(RDF.PropertyType, main.getPredicate()))
-            {
-                p.print("a");
-            }
-            else
-            {
-                TupleImpl.print(getModel(), main.getPredicate(), p);
-            }
-            p.print(" ");
-
-            // Print object
-            if (nextIsMatchingVarPattern(main, elements, i))
-            {
-                var rightList = new List<IResource>();
-                i = addListMembers(elements, i + 1, rightList);
-                if (rightList.Count == 0)
+                if (element is ITriplePattern)
                 {
-                    TupleImpl.print(getModel(), main.getObject(), p);
-                    if (leftList.Count != 0)
-                    {
-                        i--;
-                    }
+                    i = printTriplePattern(elements, i, p);
                 }
                 else
                 {
-                    printRDFList(p, rightList);
+                    element.Print(p);
+                }
+            }
+            if (!(element is IElementList) || ((IElementList)element).getElements().Count > 1)
+            {
+                p.print(" .");
+            }
+            p.println();
+        }
+    }
+
+
+    // Special treatment of nested rdf:Lists
+    private int printTriplePattern(List<IElement> elements, int i, ISparqlPrinter p)
+    {
+        var main = (ITriplePattern)elements[i];
+
+        // Print subject
+        var leftList = new List<IResource>();
+        i = addListMembers(elements, i, leftList);
+        if (leftList.Count == 0)
+        {
+            TupleImpl.print(getModel(), main.getSubject(), p);
+        }
+        else
+        {
+            printRDFList(p, leftList);
+            main = (ITriplePattern)elements[i];
+        }
+        p.print(" ");
+
+        // Print predicate
+        if (RDFUtil.sameTerm(RDF.PropertyType, main.getPredicate()))
+        {
+            p.print("a");
+        }
+        else
+        {
+            TupleImpl.print(getModel(), main.getPredicate(), p);
+        }
+        p.print(" ");
+
+        // Print object
+        if (nextIsMatchingVarPattern(main, elements, i))
+        {
+            var rightList = new List<IResource>();
+            i = addListMembers(elements, i + 1, rightList);
+            if (rightList.Count == 0)
+            {
+                TupleImpl.print(getModel(), main.getObject(), p);
+                if (leftList.Count != 0)
+                {
                     i--;
                 }
             }
             else
             {
-                TupleImpl.print(getModel(), main.getObject(), p);
+                printRDFList(p, rightList);
+                i--;
             }
-            return i;
         }
-
-
-        private void printRDFList(ISparqlPrinter p, List<IResource> members)
+        else
         {
-            p.print("(");
-            foreach (IResource node in members)
-            {
-                p.print(" ");
-                TupleImpl.print(getModel(), node, p);
-            }
-            p.print(" )");
+            TupleImpl.print(getModel(), main.getObject(), p);
         }
-
-
-        public new String toString()
-        {
-            var sb = new StringBuilder();
-            //ISparqlPrinter context = new StringSparqlPrinter(sb);
-            //print(context);
-            return sb.ToString();
-        }
-
-        //override public void visit(IElementVisitor visitor)
-        //{
-        //    visitor.visit(this);
-        //}
+        return i;
     }
+
+
+    private void printRDFList(ISparqlPrinter p, List<IResource> members)
+    {
+        p.print("(");
+        foreach (IResource node in members)
+        {
+            p.print(" ");
+            TupleImpl.print(getModel(), node, p);
+        }
+        p.print(" )");
+    }
+
+
+    public new String toString()
+    {
+        var sb = new StringBuilder();
+        //ISparqlPrinter context = new StringSparqlPrinter(sb);
+        //print(context);
+        return sb.ToString();
+    }
+
+    //override public void visit(IElementVisitor visitor)
+    //{
+    //    visitor.visit(this);
+    //}
 }

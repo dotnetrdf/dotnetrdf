@@ -27,46 +27,45 @@
 using System;
 using System.Net;
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+/// <summary>
+/// Factory class for producing Network Credentials.
+/// </summary>
+public class CredentialsFactory : IObjectFactory
 {
     /// <summary>
-    /// Factory class for producing Network Credentials.
+    /// Tries to load a Network Credential based on information from the Configuration Graph.
     /// </summary>
-    public class CredentialsFactory : IObjectFactory
+    /// <param name="g">Configuration Graph.</param>
+    /// <param name="objNode">Object Node.</param>
+    /// <param name="targetType">Target Type.</param>
+    /// <param name="obj">Output Object.</param>
+    /// <returns></returns>
+    public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
     {
-        /// <summary>
-        /// Tries to load a Network Credential based on information from the Configuration Graph.
-        /// </summary>
-        /// <param name="g">Configuration Graph.</param>
-        /// <param name="objNode">Object Node.</param>
-        /// <param name="targetType">Target Type.</param>
-        /// <param name="obj">Output Object.</param>
-        /// <returns></returns>
-        public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
-        {
-            string user, pwd;
-            ConfigurationLoader.GetUsernameAndPassword(g, objNode, false, out user, out pwd);
+        string user, pwd;
+        ConfigurationLoader.GetUsernameAndPassword(g, objNode, false, out user, out pwd);
 
-            if (user != null && pwd != null)
-            {
-                obj = new NetworkCredential(user, pwd);
-                return true;
-            }
-            else
-            {
-                obj = null;
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Gets whether this Factory can load objects of the given Type.
-        /// </summary>
-        /// <param name="t">Type.</param>
-        /// <returns></returns>
-        public bool CanLoadObject(Type t)
+        if (user != null && pwd != null)
         {
-            return t.Equals(typeof(NetworkCredential));
+            obj = new NetworkCredential(user, pwd);
+            return true;
         }
+        else
+        {
+            obj = null;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Gets whether this Factory can load objects of the given Type.
+    /// </summary>
+    /// <param name="t">Type.</param>
+    /// <returns></returns>
+    public bool CanLoadObject(Type t)
+    {
+        return t.Equals(typeof(NetworkCredential));
     }
 }

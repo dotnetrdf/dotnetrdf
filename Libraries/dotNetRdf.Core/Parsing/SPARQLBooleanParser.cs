@@ -30,164 +30,163 @@ using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+/// <summary>
+/// Parser for SPARQL Boolean results as Plain Text.
+/// </summary>
+public class SparqlBooleanParser : BaseSparqlResultsReader
 {
     /// <summary>
-    /// Parser for SPARQL Boolean results as Plain Text.
+    /// Loads a Result Set from an Input Stream.
     /// </summary>
-    public class SparqlBooleanParser : BaseSparqlResultsReader
+    /// <param name="results">Result Set to load into.</param>
+    /// <param name="input">Input Stream to read from.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public override void Load(SparqlResultSet results, StreamReader input, IUriFactory uriFactory)
     {
-        /// <summary>
-        /// Loads a Result Set from an Input Stream.
-        /// </summary>
-        /// <param name="results">Result Set to load into.</param>
-        /// <param name="input">Input Stream to read from.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public override void Load(SparqlResultSet results, StreamReader input, IUriFactory uriFactory)
+        if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
+        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+        Load(new ResultSetHandler(results), input, uriFactory);
+    }
+
+    /// <summary>
+    /// Loads a Result Set from an Input Stream.
+    /// </summary>
+    /// <param name="results">Result Set to load into.</param>
+    /// <param name="filename">File to read from.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public override void Load(SparqlResultSet results, string filename, IUriFactory uriFactory)
+    {
+        if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
+        if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
+        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+        Load(results, new StreamReader(File.OpenRead(filename)), uriFactory);
+    }
+
+    /// <summary>
+    /// Loads a Result Set from an Input. 
+    /// </summary>
+    /// <param name="results">Result Set to load into.</param>
+    /// <param name="input">Input to read from.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public override void Load(SparqlResultSet results, TextReader input, IUriFactory uriFactory)
+    {
+        if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
+        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+        Load(new ResultSetHandler(results), input, uriFactory);
+    }
+
+    /// <summary>
+    /// Loads a Result Set from an Input using a Results Handler.
+    /// </summary>
+    /// <param name="handler">Results Handler to use.</param>
+    /// <param name="input">Input to read from.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public override void Load(ISparqlResultsHandler handler, TextReader input, IUriFactory uriFactory)
+    {
+        if (handler == null) throw new RdfParseException("Cannot read SPARQL Results using a null Results Handler");
+        if (input == null) throw new RdfParseException("Cannot read SPARQL Results from a null Input");
+        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+
+        try
         {
-            if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
-            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-            Load(new ResultSetHandler(results), input, uriFactory);
+            Parse(new BaseResultsParserContext(handler, uriFactory), input);
         }
-
-        /// <summary>
-        /// Loads a Result Set from an Input Stream.
-        /// </summary>
-        /// <param name="results">Result Set to load into.</param>
-        /// <param name="filename">File to read from.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public override void Load(SparqlResultSet results, string filename, IUriFactory uriFactory)
-        {
-            if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
-            if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
-            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-            Load(results, new StreamReader(File.OpenRead(filename)), uriFactory);
-        }
-
-        /// <summary>
-        /// Loads a Result Set from an Input. 
-        /// </summary>
-        /// <param name="results">Result Set to load into.</param>
-        /// <param name="input">Input to read from.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public override void Load(SparqlResultSet results, TextReader input, IUriFactory uriFactory)
-        {
-            if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
-            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-            Load(new ResultSetHandler(results), input, uriFactory);
-        }
-
-        /// <summary>
-        /// Loads a Result Set from an Input using a Results Handler.
-        /// </summary>
-        /// <param name="handler">Results Handler to use.</param>
-        /// <param name="input">Input to read from.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public override void Load(ISparqlResultsHandler handler, TextReader input, IUriFactory uriFactory)
-        {
-            if (handler == null) throw new RdfParseException("Cannot read SPARQL Results using a null Results Handler");
-            if (input == null) throw new RdfParseException("Cannot read SPARQL Results from a null Input");
-            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-
-            try
-            {
-                Parse(new BaseResultsParserContext(handler, uriFactory), input);
-            }
-            finally
-            {
-                try
-                {
-                    input.Close();
-                }
-                catch
-                {
-                    // No Catch just cleaning up
-                }
-            }
-        }
-
-        /// <summary>
-        /// Loads a Result Set from an Input Stream using a Results Handler.
-        /// </summary>
-        /// <param name="handler">Results Handler to use.</param>
-        /// <param name="input">Input Stream to read from.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public override void Load(ISparqlResultsHandler handler, StreamReader input, IUriFactory uriFactory)
-        {
-            Load(handler, (TextReader)input, uriFactory);
-        }
-
-        /// <summary>
-        /// Loads a Result Set from a file using a Results Handler.
-        /// </summary>
-        /// <param name="handler">Results Handler to use.</param>
-        /// <param name="filename">File to read from.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public override void Load(ISparqlResultsHandler handler, string filename, IUriFactory uriFactory)
-        {
-            if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
-            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-            Load(handler, new StreamReader(File.OpenRead(filename)), uriFactory);
-        }
-
-        private void Parse(IResultsParserContext context, TextReader input)
-        {
-            Parse(context, input.ReadToEnd());
-        }
-
-        private void Parse(IResultsParserContext context, string data)
+        finally
         {
             try
             {
-                context.Handler.StartResults();
-
-                if (bool.TryParse(data.Trim(), out var result))
-                {
-                    context.Handler.HandleBooleanResult(result);
-                }
-                else
-                {
-                    throw new RdfParseException("The input was not a single boolean value as a String");
-                }
-
-                context.Handler.EndResults(true);
-            }
-            catch (RdfParsingTerminatedException)
-            {
-                context.Handler.EndResults(true);
+                input.Close();
             }
             catch
             {
-                context.Handler.EndResults(false);
-                throw;
+                // No Catch just cleaning up
             }
         }
+    }
 
-        /// <summary>
-        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being parsed is detected.
-        /// </summary>
-        /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(string message)
+    /// <summary>
+    /// Loads a Result Set from an Input Stream using a Results Handler.
+    /// </summary>
+    /// <param name="handler">Results Handler to use.</param>
+    /// <param name="input">Input Stream to read from.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public override void Load(ISparqlResultsHandler handler, StreamReader input, IUriFactory uriFactory)
+    {
+        Load(handler, (TextReader)input, uriFactory);
+    }
+
+    /// <summary>
+    /// Loads a Result Set from a file using a Results Handler.
+    /// </summary>
+    /// <param name="handler">Results Handler to use.</param>
+    /// <param name="filename">File to read from.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public override void Load(ISparqlResultsHandler handler, string filename, IUriFactory uriFactory)
+    {
+        if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
+        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+        Load(handler, new StreamReader(File.OpenRead(filename)), uriFactory);
+    }
+
+    private void Parse(IResultsParserContext context, TextReader input)
+    {
+        Parse(context, input.ReadToEnd());
+    }
+
+    private void Parse(IResultsParserContext context, string data)
+    {
+        try
         {
-            SparqlWarning d = Warning;
-            if (d != null)
+            context.Handler.StartResults();
+
+            if (bool.TryParse(data.Trim(), out var result))
             {
-                d(message);
+                context.Handler.HandleBooleanResult(result);
             }
+            else
+            {
+                throw new RdfParseException("The input was not a single boolean value as a String");
+            }
+
+            context.Handler.EndResults(true);
         }
-
-        /// <summary>
-        /// Event raised when a non-fatal issue with the SPARQL Results being parsed is detected
-        /// </summary>
-        public override event SparqlWarning Warning;
-
-        /// <summary>
-        /// Gets the String representation of the Parser which is a description of the syntax it parses.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        catch (RdfParsingTerminatedException)
         {
-            return "SPARQL Boolean Result";
+            context.Handler.EndResults(true);
         }
+        catch
+        {
+            context.Handler.EndResults(false);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being parsed is detected.
+    /// </summary>
+    /// <param name="message">Warning Message.</param>
+    private void RaiseWarning(string message)
+    {
+        SparqlWarning d = Warning;
+        if (d != null)
+        {
+            d(message);
+        }
+    }
+
+    /// <summary>
+    /// Event raised when a non-fatal issue with the SPARQL Results being parsed is detected
+    /// </summary>
+    public override event SparqlWarning Warning;
+
+    /// <summary>
+    /// Gets the String representation of the Parser which is a description of the syntax it parses.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "SPARQL Boolean Result";
     }
 }

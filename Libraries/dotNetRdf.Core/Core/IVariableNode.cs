@@ -24,20 +24,19 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface for Variable Nodes.
+/// </summary>
+public interface IVariableNode
+    : INode
 {
     /// <summary>
-    /// Interface for Variable Nodes.
+    /// Gets the Variable Name.
     /// </summary>
-    public interface IVariableNode
-        : INode
+    string VariableName
     {
-        /// <summary>
-        /// Gets the Variable Name.
-        /// </summary>
-        string VariableName
-        {
-            get;
-        }
+        get;
     }
 }

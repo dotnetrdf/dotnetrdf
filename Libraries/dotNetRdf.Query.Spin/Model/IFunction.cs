@@ -24,36 +24,35 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+/**
+ * A SPIN Function module (not: FunctionCall).
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IFunction : IModule
 {
 
     /**
-     * A SPIN Function module (not: FunctionCall).
-     * 
-     * @author Holger Knublauch
+     * Gets the value of the spin:returnType property, if any.
+     * @return the return type or null
      */
-    internal interface IFunction : IModule
-    {
-
-        /**
-         * Gets the value of the spin:returnType property, if any.
-         * @return the return type or null
-         */
-        INode getReturnType();
+    INode getReturnType();
 
 
-        /**
-         * Checks if this function is a magic property, marked by having
-         * rdf:type spin:MagicProperty.
-         * @return true  if this is a magic property
-         */
-        bool isMagicProperty();
+    /**
+     * Checks if this function is a magic property, marked by having
+     * rdf:type spin:MagicProperty.
+     * @return true  if this is a magic property
+     */
+    bool isMagicProperty();
 
 
-        /**
-         * Indicates if spin:private is set to true for this function.
-         * @return true  if marked private
-         */
-        bool isPrivate();
-    }
+    /**
+     * Indicates if spin:private is set to true for this function.
+     * @return true  if marked private
+     */
+    bool isPrivate();
 }

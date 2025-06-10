@@ -24,73 +24,72 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
+
+/// <summary>
+/// Class representing the Sparql StrDt() function.
+/// </summary>
+public class StrLangFunction
+    : BaseBinaryExpression
 {
     /// <summary>
-    /// Class representing the Sparql StrDt() function.
+    /// Creates a new STRLANG() function expression.
     /// </summary>
-    public class StrLangFunction
-        : BaseBinaryExpression
+    /// <param name="stringExpr">String Expression.</param>
+    /// <param name="langExpr">Language Expression.</param>
+    public StrLangFunction(ISparqlExpression stringExpr, ISparqlExpression langExpr)
+        : base(stringExpr, langExpr) { }
+
+    /// <summary>
+    /// Gets the String representation of this Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new STRLANG() function expression.
-        /// </summary>
-        /// <param name="stringExpr">String Expression.</param>
-        /// <param name="langExpr">Language Expression.</param>
-        public StrLangFunction(ISparqlExpression stringExpr, ISparqlExpression langExpr)
-            : base(stringExpr, langExpr) { }
+        return "STRLANG(" + _leftExpr + ", " + _rightExpr + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of this Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "STRLANG(" + _leftExpr + ", " + _rightExpr + ")";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessStrLangFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessStrLangFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitStrLangFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return visitor.VisitStrLangFunction(this);
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return SparqlSpecsHelper.SparqlKeywordStrLang;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordStrLang;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new StrLangFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new StrLangFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
     }
 }

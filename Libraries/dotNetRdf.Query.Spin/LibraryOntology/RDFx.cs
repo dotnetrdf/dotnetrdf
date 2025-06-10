@@ -24,16 +24,15 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.LibraryOntology
+namespace VDS.RDF.Query.Spin.LibraryOntology;
+
+
+/**
+ * Defines RDF resources that are not yet in the corresponding Jena class.
+ * 
+ * @author Holger Knublauch
+ */
+public class RDFx
 {
 
-    /**
-     * Defines RDF resources that are not yet in the corresponding Jena class.
-     * 
-     * @author Holger Knublauch
-     */
-    public class RDFx
-    {
-
-    }
 }

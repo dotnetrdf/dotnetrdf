@@ -27,30 +27,29 @@
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.LibraryOntology;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class InsertDataImpl : UpdateImpl, IInsertData
 {
-    internal class InsertDataImpl : UpdateImpl, IInsertData
+
+    public InsertDataImpl(INode node, IGraph graph, SpinProcessor processor)
+        : base(node, graph, processor)
     {
 
-        public InsertDataImpl(INode node, IGraph graph, SpinProcessor processor)
-            : base(node, graph, processor)
-        {
-
-        }
-
-
-        override public void printSPINRDF(ISparqlPrinter p)
-        {
-            p.printKeyword("INSERT");
-            p.print(" ");
-            p.printKeyword("DATA");
-            printTemplates(p, SP.PropertyData, null, true, null);
-        }
-
-        override public void PrintEnhancedSPARQL(ISparqlPrinter p)
-        {
-            p.PrintEnhancedSPARQL(this);
-        }
-
     }
+
+
+    override public void printSPINRDF(ISparqlPrinter p)
+    {
+        p.printKeyword("INSERT");
+        p.print(" ");
+        p.printKeyword("DATA");
+        printTemplates(p, SP.PropertyData, null, true, null);
+    }
+
+    override public void PrintEnhancedSPARQL(ISparqlPrinter p)
+    {
+        p.PrintEnhancedSPARQL(this);
+    }
+
 }

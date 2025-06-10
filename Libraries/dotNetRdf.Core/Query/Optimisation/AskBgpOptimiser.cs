@@ -27,105 +27,104 @@
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Query.Optimisation
+namespace VDS.RDF.Query.Optimisation;
+
+/// <summary>
+/// An Algebra Optimiser that optimises Algebra to use <see cref="AskBgp">AskBgp</see>'s wherever possible.
+/// </summary>
+public class AskBgpOptimiser
+    : BaseAlgebraOptimiser
 {
     /// <summary>
-    /// An Algebra Optimiser that optimises Algebra to use <see cref="AskBgp">AskBgp</see>'s wherever possible.
+    /// Optimises an Algebra to a form that uses <see cref="AskBgp">AskBgp</see> where possible.
     /// </summary>
-    public class AskBgpOptimiser
-        : BaseAlgebraOptimiser
+    /// <param name="algebra">Algebra.</param>
+    /// <param name="depth">Depth.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <para>
+    /// By transforming a query to use <see cref="AskBgp">AskBgp</see> we can achieve much more efficient processing of some forms of queries.
+    /// </para>
+    /// </remarks>
+    protected override ISparqlAlgebra OptimiseInternal(ISparqlAlgebra algebra, int depth)
     {
-        /// <summary>
-        /// Optimises an Algebra to a form that uses <see cref="AskBgp">AskBgp</see> where possible.
-        /// </summary>
-        /// <param name="algebra">Algebra.</param>
-        /// <param name="depth">Depth.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// By transforming a query to use <see cref="AskBgp">AskBgp</see> we can achieve much more efficient processing of some forms of queries.
-        /// </para>
-        /// </remarks>
-        protected override ISparqlAlgebra OptimiseInternal(ISparqlAlgebra algebra, int depth)
+        try
         {
-            try
+            ISparqlAlgebra temp;
+            if (algebra is Bgp)
             {
-                ISparqlAlgebra temp;
-                if (algebra is Bgp)
-                {
-                    // Bgp is transformed into AskBgp
-                    // This tries to find 1 possible solution
-                    temp = new AskBgp(((Bgp)algebra).TriplePatterns);
-                }
-                else if (algebra is ILeftJoin)
-                {
-                    // LeftJoin is transformed to just be the LHS as the RHS is irrelevant for ASK queries
-                    // UNLESS the LeftJoin occurs inside a Filter/Minus BUT we should never get called to transform a 
-                    // LeftJoin() for those branches of the algebra as the Optimiseer does not transform 
-                    // Filter()/Minus() operators
-                    temp = OptimiseInternal(((ILeftJoin)algebra).Lhs, depth + 1);
-                }
-                else if (algebra is IUnion)
-                {
-                    var join = (IUnion)algebra;
-                    temp = new AskUnion(OptimiseInternal(join.Lhs, depth + 1), OptimiseInternal(join.Rhs, depth + 1));
-                }
-                else if (algebra is IJoin)
-                {
-                    var join = (IJoin)algebra;
-                    if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
-                    {
-                        // If the sides of the Join are disjoint then can fully transform the join since we only need to find at least
-                        // one solution on either side in order for the query to match
-                        // temp = new Join(this.OptimiseInternal(join.Lhs, depth + 1), this.OptimiseInternal(join.Rhs, depth + 1));
-                        temp = join.Transform(this);
-                    } 
-                    else 
-                    {
-                        // If the sides are not disjoint then the LHS must be fully evaluated but the RHS need only produce at least
-                        // one solution based on the full input from the LHS for the query to match
-                        // temp = new Join(join.Lhs, this.OptimiseInternal(join.Rhs, depth + 1));
-                        temp = join.TransformRhs(this);
-                    }
-                }
-                else if (algebra is Algebra.Graph)
-                {
-                    // Algebra.Graph g = (Algebra.Graph)algebra;
-                    // temp = new Algebra.Graph(this.OptimiseInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
-                    var op = (IUnaryOperator)algebra;
-                    temp = op.Transform(this);
-                }
-                else
-                {
-                    temp = algebra;
-                }
-                return temp;
+                // Bgp is transformed into AskBgp
+                // This tries to find 1 possible solution
+                temp = new AskBgp(((Bgp)algebra).TriplePatterns);
             }
-            catch
+            else if (algebra is ILeftJoin)
             {
-                // If the Optimise fails return the current algebra
-                return algebra;
+                // LeftJoin is transformed to just be the LHS as the RHS is irrelevant for ASK queries
+                // UNLESS the LeftJoin occurs inside a Filter/Minus BUT we should never get called to transform a 
+                // LeftJoin() for those branches of the algebra as the Optimiseer does not transform 
+                // Filter()/Minus() operators
+                temp = OptimiseInternal(((ILeftJoin)algebra).Lhs, depth + 1);
             }
+            else if (algebra is IUnion)
+            {
+                var join = (IUnion)algebra;
+                temp = new AskUnion(OptimiseInternal(join.Lhs, depth + 1), OptimiseInternal(join.Rhs, depth + 1));
+            }
+            else if (algebra is IJoin)
+            {
+                var join = (IJoin)algebra;
+                if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
+                {
+                    // If the sides of the Join are disjoint then can fully transform the join since we only need to find at least
+                    // one solution on either side in order for the query to match
+                    // temp = new Join(this.OptimiseInternal(join.Lhs, depth + 1), this.OptimiseInternal(join.Rhs, depth + 1));
+                    temp = join.Transform(this);
+                } 
+                else 
+                {
+                    // If the sides are not disjoint then the LHS must be fully evaluated but the RHS need only produce at least
+                    // one solution based on the full input from the LHS for the query to match
+                    // temp = new Join(join.Lhs, this.OptimiseInternal(join.Rhs, depth + 1));
+                    temp = join.TransformRhs(this);
+                }
+            }
+            else if (algebra is Algebra.Graph)
+            {
+                // Algebra.Graph g = (Algebra.Graph)algebra;
+                // temp = new Algebra.Graph(this.OptimiseInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
+                var op = (IUnaryOperator)algebra;
+                temp = op.Transform(this);
+            }
+            else
+            {
+                temp = algebra;
+            }
+            return temp;
         }
-
-        /// <summary>
-        /// Determines whether the query can be optimised for ASK evaluation.
-        /// </summary>
-        /// <param name="q">Query.</param>
-        /// <returns></returns>
-        public override bool IsApplicable(SparqlQuery q)
+        catch
         {
-            return q.QueryType == SparqlQueryType.Ask && !q.HasSolutionModifier;
+            // If the Optimise fails return the current algebra
+            return algebra;
         }
+    }
 
-        /// <summary>
-        /// Returns that the optimiser does not apply to SPARQL Updates.
-        /// </summary>
-        /// <param name="cmds">Updates.</param>
-        /// <returns></returns>
-        public override bool IsApplicable(SparqlUpdateCommandSet cmds)
-        {
-            return false;
-        }
+    /// <summary>
+    /// Determines whether the query can be optimised for ASK evaluation.
+    /// </summary>
+    /// <param name="q">Query.</param>
+    /// <returns></returns>
+    public override bool IsApplicable(SparqlQuery q)
+    {
+        return q.QueryType == SparqlQueryType.Ask && !q.HasSolutionModifier;
+    }
+
+    /// <summary>
+    /// Returns that the optimiser does not apply to SPARQL Updates.
+    /// </summary>
+    /// <param name="cmds">Updates.</param>
+    /// <returns></returns>
+    public override bool IsApplicable(SparqlUpdateCommandSet cmds)
+    {
+        return false;
     }
 }

@@ -28,51 +28,50 @@ using System.IO;
 using Xunit;
 using VDS.RDF.Writing;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+
+[Collection("RdfServer")]
+public class BaseUriAssignmentTests
 {
-
-    [Collection("RdfServer")]
-    public class BaseUriAssignmentTests
+    private readonly RdfServerFixture _serverFixture;
+    public BaseUriAssignmentTests(RdfServerFixture serverFixture)
     {
-        private readonly RdfServerFixture _serverFixture;
-        public BaseUriAssignmentTests(RdfServerFixture serverFixture)
+        _serverFixture = serverFixture;
+    }
+
+    [Fact]
+    public void ParsingBaseUriAssignmentFileLoader()
+    {
+        var g = new Graph();
+        FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
+        Assert.NotNull(g.BaseUri);
+    }
+
+    [Fact]
+    public void ParsingBaseUriAssignmentUriLoader()
+    {
+        var loader = new Loader(_serverFixture.Client);
+        var g = new Graph();
+        loader.LoadGraph(g, _serverFixture.UriFor("/resource/Southampton"));
+        Assert.NotNull(g.BaseUri);
+    }
+
+    [Fact]
+    public void ParsingBaseUriAssignmentRdfXml()
+    {
+        var g = new Graph
         {
-            _serverFixture = serverFixture;
-        }
+            BaseUri = new Uri("http://example.org/RdfXml")
+        };
 
-        [Fact]
-        public void ParsingBaseUriAssignmentFileLoader()
-        {
-            var g = new Graph();
-            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
-            Assert.NotNull(g.BaseUri);
-        }
+        var strWriter = new System.IO.StringWriter();
+        var writer = new RdfXmlWriter();
+        writer.Save(g, strWriter);
 
-        [Fact]
-        public void ParsingBaseUriAssignmentUriLoader()
-        {
-            var loader = new Loader(_serverFixture.Client);
-            var g = new Graph();
-            loader.LoadGraph(g, _serverFixture.UriFor("/resource/Southampton"));
-            Assert.NotNull(g.BaseUri);
-        }
-
-        [Fact]
-        public void ParsingBaseUriAssignmentRdfXml()
-        {
-            var g = new Graph
-            {
-                BaseUri = new Uri("http://example.org/RdfXml")
-            };
-
-            var strWriter = new System.IO.StringWriter();
-            var writer = new RdfXmlWriter();
-            writer.Save(g, strWriter);
-
-            var h = new Graph();
-            var parser = new RdfXmlParser();
-            parser.Load(h, new System.IO.StringReader(strWriter.ToString()));
-            Assert.NotNull(h.BaseUri);
-        }
+        var h = new Graph();
+        var parser = new RdfXmlParser();
+        parser.Load(h, new System.IO.StringReader(strWriter.ToString()));
+        Assert.NotNull(h.BaseUri);
     }
 }

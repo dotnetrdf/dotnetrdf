@@ -29,235 +29,234 @@ using System.Diagnostics;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Abstract decorator for Nodes to make it easier to layer functionality on top of existing implementations.
+/// </summary>
+public abstract class WrapperNode : IBlankNode, IUriNode, ILiteralNode
 {
     /// <summary>
-    /// Abstract decorator for Nodes to make it easier to layer functionality on top of existing implementations.
+    /// Initializes a new instance of the <see cref="WrapperNode"/> class.
     /// </summary>
-    public abstract class WrapperNode : IBlankNode, IUriNode, ILiteralNode
+    /// <param name="node">The node this is a wrapper around.</param>
+    /// <exception cref="ArgumentNullException">When <paramref name="node"/> is null.</exception>
+    [DebuggerStepThrough]
+    protected WrapperNode(INode node)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WrapperNode"/> class.
-        /// </summary>
-        /// <param name="node">The node this is a wrapper around.</param>
-        /// <exception cref="ArgumentNullException">When <paramref name="node"/> is null.</exception>
-        [DebuggerStepThrough]
-        protected WrapperNode(INode node)
-        {
-            Node = node ?? throw new ArgumentNullException(nameof(node));
-        }
+        Node = node ?? throw new ArgumentNullException(nameof(node));
+    }
 
-        /// <inheritdoc/>
-        public NodeType NodeType
+    /// <inheritdoc/>
+    public NodeType NodeType
+    {
+        get
         {
-            get
+            return Node.NodeType;
+        }
+    }
+
+    /// <inheritdoc/>
+    string IBlankNode.InternalID
+    {
+        get
+        {
+            if (Node.NodeType != NodeType.Blank)
             {
-                return Node.NodeType;
+                throw new InvalidCastException();
             }
-        }
 
-        /// <inheritdoc/>
-        string IBlankNode.InternalID
+            return ((IBlankNode)Node).InternalID;
+        }
+    }
+
+    /// <inheritdoc/>
+    Uri IUriNode.Uri
+    {
+        get
         {
-            get
+            if (Node.NodeType != NodeType.Uri)
             {
-                if (Node.NodeType != NodeType.Blank)
-                {
-                    throw new InvalidCastException();
-                }
-
-                return ((IBlankNode)Node).InternalID;
+                throw new InvalidCastException();
             }
-        }
 
-        /// <inheritdoc/>
-        Uri IUriNode.Uri
+            return ((IUriNode)Node).Uri;
+        }
+    }
+
+    /// <inheritdoc/>
+    string ILiteralNode.Value
+    {
+        get
         {
-            get
+            if (Node.NodeType != NodeType.Literal)
             {
-                if (Node.NodeType != NodeType.Uri)
-                {
-                    throw new InvalidCastException();
-                }
-
-                return ((IUriNode)Node).Uri;
+                throw new InvalidCastException();
             }
-        }
 
-        /// <inheritdoc/>
-        string ILiteralNode.Value
+            return ((ILiteralNode)Node).Value;
+        }
+    }
+
+    /// <inheritdoc/>
+    string ILiteralNode.Language
+    {
+        get
         {
-            get
+            if (Node.NodeType != NodeType.Literal)
             {
-                if (Node.NodeType != NodeType.Literal)
-                {
-                    throw new InvalidCastException();
-                }
-
-                return ((ILiteralNode)Node).Value;
+                throw new InvalidCastException();
             }
-        }
 
-        /// <inheritdoc/>
-        string ILiteralNode.Language
+            return ((ILiteralNode)Node).Language;
+        }
+    }
+
+    /// <inheritdoc/>
+    Uri ILiteralNode.DataType
+    {
+        get
         {
-            get
+            if (Node.NodeType != NodeType.Literal)
             {
-                if (Node.NodeType != NodeType.Literal)
-                {
-                    throw new InvalidCastException();
-                }
-
-                return ((ILiteralNode)Node).Language;
+                throw new InvalidCastException();
             }
-        }
 
-        /// <inheritdoc/>
-        Uri ILiteralNode.DataType
-        {
-            get
-            {
-                if (Node.NodeType != NodeType.Literal)
-                {
-                    throw new InvalidCastException();
-                }
-
-                return ((ILiteralNode)Node).DataType;
-            }
+            return ((ILiteralNode)Node).DataType;
         }
+    }
 
-        /// <summary>
-        /// Gets the underlying node this is a wrapper around.
-        /// </summary>
-        protected INode Node { get; }
+    /// <summary>
+    /// Gets the underlying node this is a wrapper around.
+    /// </summary>
+    protected INode Node { get; }
 
-        /// <inheritdoc/>
-        public override bool Equals(object obj)
-        {
-            return Node.Equals(obj);
-        }
+    /// <inheritdoc/>
+    public override bool Equals(object obj)
+    {
+        return Node.Equals(obj);
+    }
 
-        /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            return Node.GetHashCode();
-        }
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        return Node.GetHashCode();
+    }
 
-        /// <summary>
-        /// Provides a string representation of this node.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return Node.ToString();
-        }
+    /// <summary>
+    /// Provides a string representation of this node.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return Node.ToString();
+    }
 
-        /// <inheritdoc/>
-        public int CompareTo(INode other)
-        {
-            return Node.CompareTo(other);
-        }
+    /// <inheritdoc/>
+    public int CompareTo(INode other)
+    {
+        return Node.CompareTo(other);
+    }
 
-        /// <inheritdoc />
-        public int CompareTo(IRefNode other)
-        {
-            return Node.CompareTo(other);
-        }
+    /// <inheritdoc />
+    public int CompareTo(IRefNode other)
+    {
+        return Node.CompareTo(other);
+    }
 
-        /// <inheritdoc/>
-        public int CompareTo(IBlankNode other)
-        {
-            return Node.CompareTo(other);
-        }
+    /// <inheritdoc/>
+    public int CompareTo(IBlankNode other)
+    {
+        return Node.CompareTo(other);
+    }
 
-        /// <inheritdoc/>
-        public int CompareTo(IGraphLiteralNode other)
-        {
-            return Node.CompareTo(other);
-        }
+    /// <inheritdoc/>
+    public int CompareTo(IGraphLiteralNode other)
+    {
+        return Node.CompareTo(other);
+    }
 
-        /// <inheritdoc/>
-        public int CompareTo(ILiteralNode other)
-        {
-            return Node.CompareTo(other);
-        }
+    /// <inheritdoc/>
+    public int CompareTo(ILiteralNode other)
+    {
+        return Node.CompareTo(other);
+    }
 
-        /// <inheritdoc/>
-        public int CompareTo(IUriNode other)
-        {
-            return Node.CompareTo(other);
-        }
+    /// <inheritdoc/>
+    public int CompareTo(IUriNode other)
+    {
+        return Node.CompareTo(other);
+    }
 
-        /// <inheritdoc/>
-        public int CompareTo(IVariableNode other)
-        {
-            return Node.CompareTo(other);
-        }
+    /// <inheritdoc/>
+    public int CompareTo(IVariableNode other)
+    {
+        return Node.CompareTo(other);
+    }
 
-        /// <inheritdoc/>
-        public int CompareTo(ITripleNode other)
-        {
-            return Node.CompareTo(other);
-        }
-        
-        /// <inheritdoc/>
-        public bool Equals(INode other)
-        {
-            return Node.Equals(other);
-        }
+    /// <inheritdoc/>
+    public int CompareTo(ITripleNode other)
+    {
+        return Node.CompareTo(other);
+    }
+    
+    /// <inheritdoc/>
+    public bool Equals(INode other)
+    {
+        return Node.Equals(other);
+    }
 
-        /// <inheritdoc />
-        public bool Equals(IRefNode other)
-        {
-            return Node.Equals(other);
-        }
+    /// <inheritdoc />
+    public bool Equals(IRefNode other)
+    {
+        return Node.Equals(other);
+    }
 
-        /// <inheritdoc/>
-        public bool Equals(IBlankNode other)
-        {
-            return Node.Equals(other);
-        }
+    /// <inheritdoc/>
+    public bool Equals(IBlankNode other)
+    {
+        return Node.Equals(other);
+    }
 
-        /// <inheritdoc/>
-        public bool Equals(IGraphLiteralNode other)
-        {
-            return Node.Equals(other);
-        }
+    /// <inheritdoc/>
+    public bool Equals(IGraphLiteralNode other)
+    {
+        return Node.Equals(other);
+    }
 
-        /// <inheritdoc/>
-        public bool Equals(ILiteralNode other)
-        {
-            return Node.Equals(other);
-        }
+    /// <inheritdoc/>
+    public bool Equals(ILiteralNode other)
+    {
+        return Node.Equals(other);
+    }
 
-        /// <inheritdoc/>
-        public bool Equals(IUriNode other)
-        {
-            return Node.Equals(other);
-        }
+    /// <inheritdoc/>
+    public bool Equals(IUriNode other)
+    {
+        return Node.Equals(other);
+    }
 
-        /// <inheritdoc/>
-        public bool Equals(IVariableNode other)
-        {
-            return Node.Equals(other);
-        }
+    /// <inheritdoc/>
+    public bool Equals(IVariableNode other)
+    {
+        return Node.Equals(other);
+    }
 
-        /// <inheritdoc/>
-        public bool Equals(ITripleNode other)
-        {
-            return Node.Equals(other);
-        }
+    /// <inheritdoc/>
+    public bool Equals(ITripleNode other)
+    {
+        return Node.Equals(other);
+    }
 
-        /// <inheritdoc/>
-        public string ToString(INodeFormatter formatter)
-        {
-            return Node.ToString(formatter);
-        }
+    /// <inheritdoc/>
+    public string ToString(INodeFormatter formatter)
+    {
+        return Node.ToString(formatter);
+    }
 
-        /// <inheritdoc/>
-        public string ToString(INodeFormatter formatter, TripleSegment segment)
-        {
-            return Node.ToString(formatter, segment);
-        }
+    /// <inheritdoc/>
+    public string ToString(INodeFormatter formatter, TripleSegment segment)
+    {
+        return Node.ToString(formatter, segment);
     }
 }

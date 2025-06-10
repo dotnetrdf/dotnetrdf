@@ -24,86 +24,85 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+/// <summary>
+/// Context Class for writing serializing Configuration information.
+/// </summary>
+public class ConfigurationSerializationContext
 {
     /// <summary>
-    /// Context Class for writing serializing Configuration information.
+    /// Configuration Graph being written to.
     /// </summary>
-    public class ConfigurationSerializationContext
+    protected IGraph _g;
+
+    private INode _nextSubj = null;
+
+    /// <summary>
+    /// Creates a new Serialization Context.
+    /// </summary>
+    public ConfigurationSerializationContext()
     {
-        /// <summary>
-        /// Configuration Graph being written to.
-        /// </summary>
-        protected IGraph _g;
+        _g = new Graph();
+        _g.NamespaceMap.AddNamespace("dnr", _g.UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
+    }
 
-        private INode _nextSubj = null;
+    /// <summary>
+    /// Creates a new Serialization Context.
+    /// </summary>
+    /// <param name="g">Base Configuration Graph.</param>
+    public ConfigurationSerializationContext(IGraph g)
+    {
+        _g = g;
+    }
 
-        /// <summary>
-        /// Creates a new Serialization Context.
-        /// </summary>
-        public ConfigurationSerializationContext()
+    /// <summary>
+    /// Gets the Graph to which Configuration information should be written.
+    /// </summary>
+    public IGraph Graph
+    {
+        get
         {
-            _g = new Graph();
-            _g.NamespaceMap.AddNamespace("dnr", _g.UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
+            return _g;
         }
+    }
 
-        /// <summary>
-        /// Creates a new Serialization Context.
-        /// </summary>
-        /// <param name="g">Base Configuration Graph.</param>
-        public ConfigurationSerializationContext(IGraph g)
+    /// <summary>
+    /// Gets the URI factory to use when populating the graph.
+    /// </summary>
+    public IUriFactory UriFactory { get => _g.UriFactory; }
+
+    /// <summary>
+    /// Gets/Sets the next subject to be used.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Always returns a Blank Node if none is currently explicitly specified.
+    /// </para>
+    /// <para>
+    /// Used to link objects together when you want some subsidiary object to serialize it's configuration and link that to the configuration you are currently serializing.
+    /// </para>
+    /// </remarks>
+    public INode NextSubject
+    {
+        get
         {
-            _g = g;
+            INode temp = _nextSubj;
+            if (temp == null)
+            {
+                // When not set generate a new blank node
+                temp = _g.CreateBlankNode();
+            }
+            else
+            {
+                // When retrieving a set subject null it so it isn't reused
+                _nextSubj = null;
+            }
+            return temp;
         }
-
-        /// <summary>
-        /// Gets the Graph to which Configuration information should be written.
-        /// </summary>
-        public IGraph Graph
+        set
         {
-            get
-            {
-                return _g;
-            }
-        }
-
-        /// <summary>
-        /// Gets the URI factory to use when populating the graph.
-        /// </summary>
-        public IUriFactory UriFactory { get => _g.UriFactory; }
-
-        /// <summary>
-        /// Gets/Sets the next subject to be used.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Always returns a Blank Node if none is currently explicitly specified.
-        /// </para>
-        /// <para>
-        /// Used to link objects together when you want some subsidiary object to serialize it's configuration and link that to the configuration you are currently serializing.
-        /// </para>
-        /// </remarks>
-        public INode NextSubject
-        {
-            get
-            {
-                INode temp = _nextSubj;
-                if (temp == null)
-                {
-                    // When not set generate a new blank node
-                    temp = _g.CreateBlankNode();
-                }
-                else
-                {
-                    // When retrieving a set subject null it so it isn't reused
-                    _nextSubj = null;
-                }
-                return temp;
-            }
-            set
-            {
-                _nextSubj = value;
-            }
+            _nextSubj = value;
         }
     }
 }

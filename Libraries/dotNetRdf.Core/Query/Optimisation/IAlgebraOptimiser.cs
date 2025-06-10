@@ -27,40 +27,39 @@
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Query.Optimisation
+namespace VDS.RDF.Query.Optimisation;
+
+/// <summary>
+/// An Algebra Optimiser is a class that can transform a SPARQL algebra from one form to another typically for optimisation purposes.
+/// </summary>
+public interface IAlgebraOptimiser
 {
     /// <summary>
-    /// An Algebra Optimiser is a class that can transform a SPARQL algebra from one form to another typically for optimisation purposes.
+    /// Optimises the given Algebra.
     /// </summary>
-    public interface IAlgebraOptimiser
-    {
-        /// <summary>
-        /// Optimises the given Algebra.
-        /// </summary>
-        /// <param name="algebra">Algebra to optimise.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <strong>Important:</strong> An Algebra Optimiser must guarantee to return an equivalent algebra to the given algebra.  In the event of any error the optimiser <em>should</em> still return a valid algebra (or at least the original algebra).
-        /// </remarks>
-        ISparqlAlgebra Optimise(ISparqlAlgebra algebra);
+    /// <param name="algebra">Algebra to optimise.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <strong>Important:</strong> An Algebra Optimiser must guarantee to return an equivalent algebra to the given algebra.  In the event of any error the optimiser <em>should</em> still return a valid algebra (or at least the original algebra).
+    /// </remarks>
+    ISparqlAlgebra Optimise(ISparqlAlgebra algebra);
 
-        /// <summary>
-        /// Determines whether an Optimiser is applicable based on the Query whose Algebra is being optimised.
-        /// </summary>
-        /// <param name="q">SPARQL Query.</param>
-        /// <returns></returns>
-        bool IsApplicable(SparqlQuery q);
+    /// <summary>
+    /// Determines whether an Optimiser is applicable based on the Query whose Algebra is being optimised.
+    /// </summary>
+    /// <param name="q">SPARQL Query.</param>
+    /// <returns></returns>
+    bool IsApplicable(SparqlQuery q);
 
-        /// <summary>
-        /// Determines whether an Optimiser is applicable based on the Update Command Set being optimised.
-        /// </summary>
-        /// <param name="cmds">Update Command Set.</param>
-        /// <returns></returns>
-        bool IsApplicable(SparqlUpdateCommandSet cmds);
+    /// <summary>
+    /// Determines whether an Optimiser is applicable based on the Update Command Set being optimised.
+    /// </summary>
+    /// <param name="cmds">Update Command Set.</param>
+    /// <returns></returns>
+    bool IsApplicable(SparqlUpdateCommandSet cmds);
 
-        /// <summary>
-        /// Determines whether an Optimiser will perform algebra optimizations that are potentially unsafe at execution time.
-        /// </summary>
-        bool UnsafeOptimisation { get; set; }
-    }
+    /// <summary>
+    /// Determines whether an Optimiser will perform algebra optimizations that are potentially unsafe at execution time.
+    /// </summary>
+    bool UnsafeOptimisation { get; set; }
 }

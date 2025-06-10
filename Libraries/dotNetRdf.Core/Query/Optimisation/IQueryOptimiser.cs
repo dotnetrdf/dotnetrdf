@@ -27,18 +27,17 @@
 using System.Collections.Generic;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Optimisation
+namespace VDS.RDF.Query.Optimisation;
+
+/// <summary>
+/// A Query Optimiser is a class which optimises Graph Patterns in a Query by reordering Graph Patterns.
+/// </summary>
+public interface IQueryOptimiser
 {
     /// <summary>
-    /// A Query Optimiser is a class which optimises Graph Patterns in a Query by reordering Graph Patterns.
+    /// Attempts to optimise the given Graph Pattern.
     /// </summary>
-    public interface IQueryOptimiser
-    {
-        /// <summary>
-        /// Attempts to optimise the given Graph Pattern.
-        /// </summary>
-        /// <param name="gp">Graph Pattern.</param>
-        /// <param name="vars">Variables that are present prior to the pattern.</param>
-        void Optimise(GraphPattern gp, IEnumerable<string> vars);
-    }
+    /// <param name="gp">Graph Pattern.</param>
+    /// <param name="vars">Variables that are present prior to the pattern.</param>
+    void Optimise(GraphPattern gp, IEnumerable<string> vars);
 }

@@ -26,18 +26,17 @@
 
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions;
+
+/// <summary>
+/// Represents a RDF term expression (IRI, literal or blank node).
+/// </summary>
+public class RdfTermExpression : SparqlExpression
 {
     /// <summary>
-    /// Represents a RDF term expression (IRI, literal or blank node).
+    /// Wraps the <paramref name="expression"/> as an RDF term expression.
     /// </summary>
-    public class RdfTermExpression : SparqlExpression
+    public RdfTermExpression(ISparqlExpression expression) : base(expression)
     {
-        /// <summary>
-        /// Wraps the <paramref name="expression"/> as an RDF term expression.
-        /// </summary>
-        public RdfTermExpression(ISparqlExpression expression) : base(expression)
-        {
-        }
     }
 }

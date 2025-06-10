@@ -26,48 +26,47 @@
 
 using System.Collections.Generic;
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing.Contexts;
+
+/// <summary>
+/// Represents an incomplete Triple as part of the RDFa parsing process.
+/// </summary>
+public class IncompleteTriple
 {
     /// <summary>
-    /// Represents an incomplete Triple as part of the RDFa parsing process.
+    /// Creates a new Incomplete Triple.
     /// </summary>
-    public class IncompleteTriple
+    /// <param name="pred">Predicate.</param>
+    /// <param name="direction">Direction.</param>
+    public IncompleteTriple(INode pred, IncompleteTripleDirection direction)
     {
-        /// <summary>
-        /// Creates a new Incomplete Triple.
-        /// </summary>
-        /// <param name="pred">Predicate.</param>
-        /// <param name="direction">Direction.</param>
-        public IncompleteTriple(INode pred, IncompleteTripleDirection direction)
-        {
-            Predicate = pred;
-            Direction = direction;
-        }
-
-        /// <summary>
-        /// Creates a new incomplete list triple.
-        /// </summary>
-        /// <param name="list">List content.</param>
-        /// <param name="direction">Direction.</param>
-        public IncompleteTriple(List<INode> list, IncompleteTripleDirection direction)
-        {
-            List = list;
-            Direction = direction;
-        }
-
-        /// <summary>
-        /// Gets the list associated with the incomplete triple.
-        /// </summary>
-        public List<INode> List { get; }
-
-        /// <summary>
-        /// Gets the Predicate of the Incomplete Triple.
-        /// </summary>
-        public INode Predicate { get; }
-
-        /// <summary>
-        /// Gets the Direction of the Incomplete Triple.
-        /// </summary>
-        public IncompleteTripleDirection Direction { get; }
+        Predicate = pred;
+        Direction = direction;
     }
+
+    /// <summary>
+    /// Creates a new incomplete list triple.
+    /// </summary>
+    /// <param name="list">List content.</param>
+    /// <param name="direction">Direction.</param>
+    public IncompleteTriple(List<INode> list, IncompleteTripleDirection direction)
+    {
+        List = list;
+        Direction = direction;
+    }
+
+    /// <summary>
+    /// Gets the list associated with the incomplete triple.
+    /// </summary>
+    public List<INode> List { get; }
+
+    /// <summary>
+    /// Gets the Predicate of the Incomplete Triple.
+    /// </summary>
+    public INode Predicate { get; }
+
+    /// <summary>
+    /// Gets the Direction of the Incomplete Triple.
+    /// </summary>
+    public IncompleteTripleDirection Direction { get; }
 }

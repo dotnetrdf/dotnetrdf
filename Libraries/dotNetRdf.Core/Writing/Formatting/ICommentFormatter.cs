@@ -24,18 +24,17 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Interface for Comment Formatters.
+/// </summary>
+public interface ICommentFormatter
 {
     /// <summary>
-    /// Interface for Comment Formatters.
+    /// Formats a String as comment String with the specified text.
     /// </summary>
-    public interface ICommentFormatter
-    {
-        /// <summary>
-        /// Formats a String as comment String with the specified text.
-        /// </summary>
-        /// <param name="text">The comment String text.</param>
-        /// <returns>Comment string.</returns>
-        string FormatComment(string text);
-    }
+    /// <param name="text">The comment String text.</param>
+    /// <returns>Comment string.</returns>
+    string FormatComment(string text);
 }

@@ -24,68 +24,67 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Parsing.Tokens
+namespace VDS.RDF.Parsing.Tokens;
+
+
+/// <summary>
+/// Interface for defining Token classes to be used in Parsing RDF.
+/// </summary>
+public interface IToken
 {
+    /// <summary>
+    /// Gives some Integer representing the Token Type as understood by a specific Parser implementation.
+    /// </summary>
+    int TokenType
+    {
+        get;
+    }
 
     /// <summary>
-    /// Interface for defining Token classes to be used in Parsing RDF.
+    /// Gives the Value of the Token.
     /// </summary>
-    public interface IToken
+    string Value
     {
-        /// <summary>
-        /// Gives some Integer representing the Token Type as understood by a specific Parser implementation.
-        /// </summary>
-        int TokenType
-        {
-            get;
-        }
+        get;
+    }
 
-        /// <summary>
-        /// Gives the Value of the Token.
-        /// </summary>
-        string Value
-        {
-            get;
-        }
+    /// <summary>
+    /// Gives the Line at which the Token starts.
+    /// </summary>
+    int StartLine
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gives the Line at which the Token starts.
-        /// </summary>
-        int StartLine
-        {
-            get;
-        }
+    /// <summary>
+    /// Gives the Line at which the Token ends.
+    /// </summary>
+    int EndLine
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gives the Line at which the Token ends.
-        /// </summary>
-        int EndLine
-        {
-            get;
-        }
+    /// <summary>
+    /// Gives the Position within the Start Line that the Token starts.
+    /// </summary>
+    int StartPosition
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gives the Position within the Start Line that the Token starts.
-        /// </summary>
-        int StartPosition
-        {
-            get;
-        }
+    /// <summary>
+    /// Gives the Position within the End Line that the Token ends.
+    /// </summary>
+    int EndPosition
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gives the Position within the End Line that the Token ends.
-        /// </summary>
-        int EndPosition
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gives the Length of the Token.
-        /// </summary>
-        int Length
-        {
-            get;
-        }
+    /// <summary>
+    /// Gives the Length of the Token.
+    /// </summary>
+    int Length
+    {
+        get;
     }
 }

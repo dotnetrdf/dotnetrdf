@@ -27,95 +27,94 @@ using System.Linq;
 using Xunit;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 
-namespace VDS.RDF.Query.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions;
+
+
+public class SparqlCastBuilderTests
 {
+    private SparqlCastBuilder _castCall;
+    private SparqlExpression _variable;
 
-    public class SparqlCastBuilderTests
+    public SparqlCastBuilderTests()
     {
-        private SparqlCastBuilder _castCall;
-        private SparqlExpression _variable;
+        _variable = new VariableExpression("var");
+        _castCall = new SparqlCastBuilder(_variable);
+    }
 
-        public SparqlCastBuilderTests()
-        {
-            _variable = new VariableExpression("var");
-            _castCall = new SparqlCastBuilder(_variable);
-        }
+    [Fact]
+    public void ShouldAllowCastingAsInteger()
+    {
+        // when
+        NumericExpression<int> cast = _castCall.AsInteger();
 
-        [Fact]
-        public void ShouldAllowCastingAsInteger()
-        {
-            // when
-            NumericExpression<int> cast = _castCall.AsInteger();
+        // then
+        Assert.True(cast.Expression is IntegerCast);
+        Assert.Same(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
+    }
 
-            // then
-            Assert.True(cast.Expression is IntegerCast);
-            Assert.Same(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
-        }
+    [Fact]
+    public void ShouldAllowCastingAsFloat()
+    {
+        // when
+        NumericExpression<float> cast = _castCall.AsFloat();
 
-        [Fact]
-        public void ShouldAllowCastingAsFloat()
-        {
-            // when
-            NumericExpression<float> cast = _castCall.AsFloat();
+        // then
+        Assert.True(cast.Expression is FloatCast);
+        Assert.Same(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
+    }
 
-            // then
-            Assert.True(cast.Expression is FloatCast);
-            Assert.Same(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
-        }
+    [Fact]
+    public void ShouldAllowCastingAsDateTime()
+    {
+        // when
+        LiteralExpression cast = _castCall.AsDateTime();
 
-        [Fact]
-        public void ShouldAllowCastingAsDateTime()
-        {
-            // when
-            LiteralExpression cast = _castCall.AsDateTime();
+        // then
+        Assert.True(cast.Expression is DateTimeCast);
+        Assert.Same(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
+    }
 
-            // then
-            Assert.True(cast.Expression is DateTimeCast);
-            Assert.Same(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
-        }
+    [Fact]
+    public void ShouldAllowCastingAsDecimal()
+    {
+        // when
+        NumericExpression<decimal> cast = _castCall.AsDecimal();
 
-        [Fact]
-        public void ShouldAllowCastingAsDecimal()
-        {
-            // when
-            NumericExpression<decimal> cast = _castCall.AsDecimal();
+        // then
+        Assert.True(cast.Expression is DecimalCast);
+        Assert.Same(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
+    }
 
-            // then
-            Assert.True(cast.Expression is DecimalCast);
-            Assert.Same(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
-        }
+    [Fact]
+    public void ShouldAllowCastingAsDouble()
+    {
+        // when
+        NumericExpression<double> cast = _castCall.AsDouble();
 
-        [Fact]
-        public void ShouldAllowCastingAsDouble()
-        {
-            // when
-            NumericExpression<double> cast = _castCall.AsDouble();
+        // then
+        Assert.True(cast.Expression is DoubleCast);
+        Assert.Same(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
+    }
 
-            // then
-            Assert.True(cast.Expression is DoubleCast);
-            Assert.Same(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
-        }
+    [Fact]
+    public void ShouldAllowCastingAsString()
+    {
+        // when
+        LiteralExpression cast = _castCall.AsString();
 
-        [Fact]
-        public void ShouldAllowCastingAsString()
-        {
-            // when
-            LiteralExpression cast = _castCall.AsString();
+        // then
+        Assert.True(cast.Expression is StringCast);
+        Assert.Same(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
+    }
 
-            // then
-            Assert.True(cast.Expression is StringCast);
-            Assert.Same(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
-        }
+    [Fact]
+    public void ShouldAllowCastingAsBoolean()
+    {
+        // when
+        BooleanExpression cast = _castCall.AsBoolean();
 
-        [Fact]
-        public void ShouldAllowCastingAsBoolean()
-        {
-            // when
-            BooleanExpression cast = _castCall.AsBoolean();
-
-            // then
-            Assert.True(cast.Expression is BooleanCast);
-            Assert.Same(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
-        }
+        // then
+        Assert.True(cast.Expression is BooleanCast);
+        Assert.Same(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
     }
 }

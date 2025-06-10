@@ -24,36 +24,35 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
+namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime;
+
+/// <summary>
+/// Abstract Base Class for functions which are Unary functions applied to Date Time objects in the XPath function library.
+/// </summary>
+public abstract class BaseUnaryDateTimeFunction
+    : BaseUnaryExpression
 {
     /// <summary>
-    /// Abstract Base Class for functions which are Unary functions applied to Date Time objects in the XPath function library.
+    /// Creates a new Unary XPath Date Time function.
     /// </summary>
-    public abstract class BaseUnaryDateTimeFunction
-        : BaseUnaryExpression
+    /// <param name="expr"></param>
+    protected BaseUnaryDateTimeFunction(ISparqlExpression expr)
+        : base(expr) { }
+
+    /// <summary>
+    /// Gets the String representation of the Function.
+    /// </summary>
+    /// <returns></returns>
+    public abstract override string ToString();
+
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
     {
-        /// <summary>
-        /// Creates a new Unary XPath Date Time function.
-        /// </summary>
-        /// <param name="expr"></param>
-        protected BaseUnaryDateTimeFunction(ISparqlExpression expr)
-            : base(expr) { }
-
-        /// <summary>
-        /// Gets the String representation of the Function.
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return SparqlExpressionType.Function;
         }
     }
 }

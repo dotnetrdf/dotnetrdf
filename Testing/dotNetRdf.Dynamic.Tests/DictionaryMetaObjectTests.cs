@@ -29,102 +29,101 @@ using System.Linq.Expressions;
 using VDS.RDF;
 using Xunit;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+public class DictionaryMetaObjectTests
 {
-    public class DictionaryMetaObjectTests
+    [Fact]
+    public void Handles_get_member()
     {
-        [Fact]
-        public void Handles_get_member()
-        {
-            var g = new DynamicGraph(subjectBaseUri: new Uri("urn:"));
-            g.LoadFromString(@"
+        var g = new DynamicGraph(subjectBaseUri: new Uri("urn:"));
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            dynamic d = g;
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        dynamic d = g;
 
-            Assert.Equal(s, d.s);
-        }
+        Assert.Equal(s, d.s);
+    }
 
-        [Fact]
-        public void Handles_set_member()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
+    [Fact]
+    public void Handles_set_member()
+    {
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s> <urn:p> ""o"" .
 ");
 
-            var g = new DynamicGraph(subjectBaseUri: new Uri("urn:"));
-            g.LoadFromString(@"
+        var g = new DynamicGraph(subjectBaseUri: new Uri("urn:"));
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            dynamic d = g;
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        dynamic d = g;
 
-            d.s = new { p = "o" };
+        d.s = new { p = "o" };
 
-            Assert.Equal<IGraph>(expected, g);
-        }
+        Assert.Equal<IGraph>(expected, g);
+    }
 
-        [Fact]
-        public void Handles_member_names()
-        {
-            var g = new DynamicGraph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Handles_member_names()
+    {
+        var g = new DynamicGraph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var provider = g as IDynamicMetaObjectProvider;
-            var meta = provider.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
+        var provider = g as IDynamicMetaObjectProvider;
+        var meta = provider.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
 
-            var names = meta.GetDynamicMemberNames();
+        var names = meta.GetDynamicMemberNames();
 
-            Assert.Equal(new[] { "urn:s", "urn:o" }, names);
-        }
+        Assert.Equal(new[] { "urn:s", "urn:o" }, names);
+    }
 
-        [Fact]
-        public void Existing_get_members_pass_through()
-        {
-            var g = new DynamicGraph { BaseUri = new Uri("urn:") };
-            g.LoadFromString(@"
+    [Fact]
+    public void Existing_get_members_pass_through()
+    {
+        var g = new DynamicGraph { BaseUri = new Uri("urn:") };
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            dynamic d = g;
+        dynamic d = g;
 
-            Assert.Equal<object>(new Uri("urn:"), d.BaseUri);
-        }
+        Assert.Equal<object>(new Uri("urn:"), d.BaseUri);
+    }
 
-        [Fact]
-        public void Existing_set_members_pass_through()
-        {
-            var g = new DynamicGraph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Existing_set_members_pass_through()
+    {
+        var g = new DynamicGraph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            dynamic d = g;
+        dynamic d = g;
 
-            d.BaseUri = new Uri("urn:");
+        d.BaseUri = new Uri("urn:");
 
-            Assert.Equal(new Uri("urn:"), g.BaseUri);
-        }
+        Assert.Equal(new Uri("urn:"), g.BaseUri);
+    }
 
-        [Fact]
-        public void Existing_methods_pass_through()
-        {
-            var g = new DynamicGraph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Existing_methods_pass_through()
+    {
+        var g = new DynamicGraph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            dynamic d = g;
+        dynamic d = g;
 
-            d.Clear();
+        d.Clear();
 
-            Assert.True(g.IsEmpty);
-        }
+        Assert.True(g.IsEmpty);
     }
 }

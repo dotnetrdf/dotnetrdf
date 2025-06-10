@@ -27,502 +27,501 @@
 using System.IO;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Parsing.Tokens
+namespace VDS.RDF.Parsing.Tokens;
+
+/// <summary>
+/// Tokeniser for tokenising TSV inputs.
+/// </summary>
+public class TsvTokeniser
+    : BaseTokeniser
 {
+    private ParsingTextReader _in;
+
     /// <summary>
-    /// Tokeniser for tokenising TSV inputs.
+    /// Creates a new TSV Tokeniser.
     /// </summary>
-    public class TsvTokeniser
-        : BaseTokeniser
+    /// <param name="reader">Text Reader.</param>
+    public TsvTokeniser(ParsingTextReader reader)
+        : base(reader)
     {
-        private ParsingTextReader _in;
+        _in = reader;
+    }
 
-        /// <summary>
-        /// Creates a new TSV Tokeniser.
-        /// </summary>
-        /// <param name="reader">Text Reader.</param>
-        public TsvTokeniser(ParsingTextReader reader)
-            : base(reader)
+    /// <summary>
+    /// Creates a new TSV Tokeniser.
+    /// </summary>
+    /// <param name="reader">Stream Reader.</param>
+    public TsvTokeniser(StreamReader reader)
+        : this(ParsingTextReader.Create(reader)) { }
+    
+    /// <summary>
+    /// Gets the next available token from the input.
+    /// </summary>
+    /// <returns></returns>
+    public override IToken GetNextToken()
+    {
+        // Have we read anything yet?
+        if (LastTokenType == -1)
         {
-            _in = reader;
+            // Nothing read yet so produce a BOF Token
+            LastTokenType = Token.BOF;
+            return new BOFToken();
         }
-
-        /// <summary>
-        /// Creates a new TSV Tokeniser.
-        /// </summary>
-        /// <param name="reader">Stream Reader.</param>
-        public TsvTokeniser(StreamReader reader)
-            : this(ParsingTextReader.Create(reader)) { }
-        
-        /// <summary>
-        /// Gets the next available token from the input.
-        /// </summary>
-        /// <returns></returns>
-        public override IToken GetNextToken()
+        else
         {
-            // Have we read anything yet?
-            if (LastTokenType == -1)
+            try
             {
-                // Nothing read yet so produce a BOF Token
-                LastTokenType = Token.BOF;
-                return new BOFToken();
-            }
-            else
-            {
-                try
+                // Reading has started
+                StartNewToken();
+
+                // Check for EOF
+                if (_in.EndOfStream)
                 {
-                    // Reading has started
-                    StartNewToken();
-
-                    // Check for EOF
-                    if (_in.EndOfStream)
+                    if (Length == 0)
                     {
-                        if (Length == 0)
-                        {
-                            // We're at the End of the Stream and not part-way through reading a Token
-                            return new EOFToken(CurrentLine, CurrentPosition);
-                        }
-                        else
-                        {
-                            // We're at the End of the Stream and part-way through reading a Token
-                            // Raise an error
-                            throw UnexpectedEndOfInput("Token");
-                        }
-                    }
-
-                    var next = Peek();
-
-                    // Always need to do a check for End of Stream after Peeking to handle empty files OK
-                    if (next == char.MaxValue && _in.EndOfStream)
-                    {
-                        if (Length == 0)
-                        {
-                            // We're at the End of the Stream and not part-way through reading a Token
-                            return new EOFToken(CurrentLine, CurrentPosition);
-                        }
-                        else
-                        {
-                            // We're at the End of the Stream and part-way through reading a Token
-                            // Raise an error
-                            throw UnexpectedEndOfInput("Token");
-                        }
-                    }
-
-                    if (char.IsDigit(next) || next == '+' || next == '-')
-                    {
-                        return TryGetNumericLiteral();
-                    }
-
-                    switch (next)
-                    {
-                        case '\t':
-                            // Tab
-                            ConsumeCharacter();
-                            LastTokenType = Token.TAB;
-                            return new TabToken(StartLine, StartPosition);
-
-                        case '\r':
-                        case '\n':
-                            // New Line
-                            ConsumeNewLine(true);
-                            LastTokenType = Token.EOL;
-                            return new EOLToken(StartLine, StartPosition);
-
-                        case '.':
-                            // Dot
-                            ConsumeCharacter();
-                            return TryGetNumericLiteral();
-
-                        case '@':
-                            // Start of a Keyword or Language Specifier
-                            return TryGetLangSpec();
-
-                        case '?':
-                            // Start of a Variable
-                            return TryGetVariable();
-
-                        case '<':
-                            // Start of a Uri
-                            return TryGetUri();
-
-                        case '_':
-                            // Start of a  QName
-                            return TryGetQName();
-
-                        case '"':
-                            // Start of a Literal
-                            return TryGetLiteral();
-
-                        case '^':
-                            // Data Type Specifier
-                            ConsumeCharacter();
-                            next = Peek();
-                            if (next == '^')
-                            {
-                                ConsumeCharacter();
-                                // Try and get the Datatype
-                                StartNewToken();
-                                return TryGetDataType();
-                            }
-                            else
-                            {
-                                throw UnexpectedCharacter(next, "the second ^ as part of a ^^ Data Type Specifier");
-                            }
-
-                        case 't':
-                        case 'f':
-                            // Plain Literal?
-                            return TryGetPlainLiteral();
-
-                        default:
-                            // Unexpected Character
-                            throw UnexpectedCharacter(next, string.Empty);
-                    }
-                }
-                catch (IOException)
-                {
-                    // End Of Stream Check
-                    if (_in.EndOfStream)
-                    {
-                        // At End of Stream so produce the EOFToken
+                        // We're at the End of the Stream and not part-way through reading a Token
                         return new EOFToken(CurrentLine, CurrentPosition);
                     }
                     else
                     {
-                        // Some other Error so throw
-                        throw;
+                        // We're at the End of the Stream and part-way through reading a Token
+                        // Raise an error
+                        throw UnexpectedEndOfInput("Token");
                     }
                 }
-            }
-        }
 
-        private IToken TryGetVariable()
-        {
-            // Consume first Character which must be a ?/$
-            ConsumeCharacter();
+                var next = Peek();
 
-            // Consume other valid Characters
-            var next = Peek();
-            while (char.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterOrDigit(next) || next == '-' || next == '_' || next == '\\')
-            {
-                if (next == '\\')
+                // Always need to do a check for End of Stream after Peeking to handle empty files OK
+                if (next == char.MaxValue && _in.EndOfStream)
                 {
-                    // Check its a valid Escape
-                    HandleEscapes(TokeniserEscapeMode.QName);
-                }
-                else
-                {
-                    ConsumeCharacter();
-                }
-                next = Peek();
-            }
-
-            // Validate
-            var value = Value;
-
-            if (value.EndsWith("."))
-            {
-                Backtrack();
-                value = value.Substring(0, value.Length - 1);
-            }
-
-            if (SparqlSpecsHelper.IsValidVarName(value))
-            {
-                return new VariableToken(value, CurrentLine, StartPosition, EndPosition);
-            }
-            else
-            {
-                throw Error("The value '" + value + "' is not valid a Variable Name");
-            }
-
-        }
-
-        private IToken TryGetLangSpec()
-        {
-            // Skip the first Character which must have been an @
-            SkipCharacter();
-
-            // Consume characters which can be in the keyword or Language Specifier
-            var next = Peek();
-            while (char.IsLetterOrDigit(next) || next == '-')
-            {
-                ConsumeCharacter();
-                next = Peek();
-            }
-
-            // Check the output to see if it's valid
-            var output = Value;
-            if (RdfSpecsHelper.IsValidLangSpecifier(output))
-            {
-                LastTokenType = Token.LANGSPEC;
-                return new LanguageSpecifierToken(output, CurrentLine, StartPosition, EndPosition);
-            }
-            else
-            {
-                throw Error("Unexpected Content '" + output + "' encountered, expected a valid Language Specifier");
-            }
-        }
-
-        private IToken TryGetUri()
-        {
-            // Consume the first Character which must have been a <
-            ConsumeCharacter();
-
-            // Consume subsequent characters
-            char next;
-            do
-            {
-                next = Peek();
-
-                // Watch out for escapes
-                if (next == '\\')
-                {
-                    HandleEscapes(TokeniserEscapeMode.Uri);
-                }
-                else
-                {
-                    ConsumeCharacter();
-                }
-
-            } while (next != '>');
-
-            // Return the Token
-            LastTokenType = Token.URI;
-            return new UriToken(Value, CurrentLine, StartPosition, EndPosition);
-        }
-
-        private IToken TryGetQName()
-        {
-            var colonoccurred = false;
-
-            var next = Peek();
-            while (char.IsLetterOrDigit(next) || next == '-' || next == '_' || next == ':')
-            {
-                ConsumeCharacter();
-                if (next == ':')
-                {
-                    if (colonoccurred)
+                    if (Length == 0)
                     {
-                        throw Error("Unexpected Colon encountered in input '" + Value + "', a Colon may only occur once in a QName");
+                        // We're at the End of the Stream and not part-way through reading a Token
+                        return new EOFToken(CurrentLine, CurrentPosition);
                     }
-                    colonoccurred = true;
-                }
-
-                next = Peek();
-            }
-
-            // Validate the QName
-            if (Value.StartsWith("_:"))
-            {
-                // Blank Node ID
-                LastTokenType = Token.BLANKNODEWITHID;
-                return new BlankNodeWithIDToken(Value, CurrentLine, StartPosition, EndPosition);
-            }
-            else
-            {
-                throw Error("The input '" + Value + "' is not a valid Blank Node Name in {0}");
-            }
-
-        }
-
-        private IToken TryGetLiteral()
-        {
-            var longliteral = false;
-
-            // Consume first character which must have been a "
-            ConsumeCharacter();
-
-            // Check if this is a long literal
-            var next = Peek();
-            if (next == '"')
-            {
-                ConsumeCharacter();
-                next = Peek();
-
-                if (next == '"')
-                {
-                    // Long Literal
-                    longliteral = true;
-                }
-                else
-                {
-                    // Empty Literal
-                    LastTokenType = Token.LITERAL;
-                    return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
-                }
-            }
-
-            while (true)
-            {
-                // Handle Escapes
-                if (next == '\\')
-                {
-                    HandleEscapes(TokeniserEscapeMode.QuotedLiterals);
-                    next = Peek();
-                    continue;
-                }
-
-                // Add character to output buffer
-                ConsumeCharacter();
-
-                // Check for end of Literal
-                if (next == '"')
-                {
-                    if (longliteral)
+                    else
                     {
+                        // We're at the End of the Stream and part-way through reading a Token
+                        // Raise an error
+                        throw UnexpectedEndOfInput("Token");
+                    }
+                }
+
+                if (char.IsDigit(next) || next == '+' || next == '-')
+                {
+                    return TryGetNumericLiteral();
+                }
+
+                switch (next)
+                {
+                    case '\t':
+                        // Tab
+                        ConsumeCharacter();
+                        LastTokenType = Token.TAB;
+                        return new TabToken(StartLine, StartPosition);
+
+                    case '\r':
+                    case '\n':
+                        // New Line
+                        ConsumeNewLine(true);
+                        LastTokenType = Token.EOL;
+                        return new EOLToken(StartLine, StartPosition);
+
+                    case '.':
+                        // Dot
+                        ConsumeCharacter();
+                        return TryGetNumericLiteral();
+
+                    case '@':
+                        // Start of a Keyword or Language Specifier
+                        return TryGetLangSpec();
+
+                    case '?':
+                        // Start of a Variable
+                        return TryGetVariable();
+
+                    case '<':
+                        // Start of a Uri
+                        return TryGetUri();
+
+                    case '_':
+                        // Start of a  QName
+                        return TryGetQName();
+
+                    case '"':
+                        // Start of a Literal
+                        return TryGetLiteral();
+
+                    case '^':
+                        // Data Type Specifier
+                        ConsumeCharacter();
                         next = Peek();
-                        if (next == '"')
+                        if (next == '^')
                         {
-                            // Got two quotes so far
                             ConsumeCharacter();
-                            next = Peek();
-                            if (next == '"')
-                            {
-                                // Triple quote - end of literal
-                                LastTokenType = Token.LONGLITERAL;
-                                return new LongLiteralToken(Value, StartLine, EndLine, StartPosition, EndPosition);
-                            }
-                            else
-                            {
-                                // Not a triple quote so continue
-                                continue;
-                            }
+                            // Try and get the Datatype
+                            StartNewToken();
+                            return TryGetDataType();
                         }
                         else
                         {
-                            // Not a Triple quote so continue
+                            throw UnexpectedCharacter(next, "the second ^ as part of a ^^ Data Type Specifier");
+                        }
+
+                    case 't':
+                    case 'f':
+                        // Plain Literal?
+                        return TryGetPlainLiteral();
+
+                    default:
+                        // Unexpected Character
+                        throw UnexpectedCharacter(next, string.Empty);
+                }
+            }
+            catch (IOException)
+            {
+                // End Of Stream Check
+                if (_in.EndOfStream)
+                {
+                    // At End of Stream so produce the EOFToken
+                    return new EOFToken(CurrentLine, CurrentPosition);
+                }
+                else
+                {
+                    // Some other Error so throw
+                    throw;
+                }
+            }
+        }
+    }
+
+    private IToken TryGetVariable()
+    {
+        // Consume first Character which must be a ?/$
+        ConsumeCharacter();
+
+        // Consume other valid Characters
+        var next = Peek();
+        while (char.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterOrDigit(next) || next == '-' || next == '_' || next == '\\')
+        {
+            if (next == '\\')
+            {
+                // Check its a valid Escape
+                HandleEscapes(TokeniserEscapeMode.QName);
+            }
+            else
+            {
+                ConsumeCharacter();
+            }
+            next = Peek();
+        }
+
+        // Validate
+        var value = Value;
+
+        if (value.EndsWith("."))
+        {
+            Backtrack();
+            value = value.Substring(0, value.Length - 1);
+        }
+
+        if (SparqlSpecsHelper.IsValidVarName(value))
+        {
+            return new VariableToken(value, CurrentLine, StartPosition, EndPosition);
+        }
+        else
+        {
+            throw Error("The value '" + value + "' is not valid a Variable Name");
+        }
+
+    }
+
+    private IToken TryGetLangSpec()
+    {
+        // Skip the first Character which must have been an @
+        SkipCharacter();
+
+        // Consume characters which can be in the keyword or Language Specifier
+        var next = Peek();
+        while (char.IsLetterOrDigit(next) || next == '-')
+        {
+            ConsumeCharacter();
+            next = Peek();
+        }
+
+        // Check the output to see if it's valid
+        var output = Value;
+        if (RdfSpecsHelper.IsValidLangSpecifier(output))
+        {
+            LastTokenType = Token.LANGSPEC;
+            return new LanguageSpecifierToken(output, CurrentLine, StartPosition, EndPosition);
+        }
+        else
+        {
+            throw Error("Unexpected Content '" + output + "' encountered, expected a valid Language Specifier");
+        }
+    }
+
+    private IToken TryGetUri()
+    {
+        // Consume the first Character which must have been a <
+        ConsumeCharacter();
+
+        // Consume subsequent characters
+        char next;
+        do
+        {
+            next = Peek();
+
+            // Watch out for escapes
+            if (next == '\\')
+            {
+                HandleEscapes(TokeniserEscapeMode.Uri);
+            }
+            else
+            {
+                ConsumeCharacter();
+            }
+
+        } while (next != '>');
+
+        // Return the Token
+        LastTokenType = Token.URI;
+        return new UriToken(Value, CurrentLine, StartPosition, EndPosition);
+    }
+
+    private IToken TryGetQName()
+    {
+        var colonoccurred = false;
+
+        var next = Peek();
+        while (char.IsLetterOrDigit(next) || next == '-' || next == '_' || next == ':')
+        {
+            ConsumeCharacter();
+            if (next == ':')
+            {
+                if (colonoccurred)
+                {
+                    throw Error("Unexpected Colon encountered in input '" + Value + "', a Colon may only occur once in a QName");
+                }
+                colonoccurred = true;
+            }
+
+            next = Peek();
+        }
+
+        // Validate the QName
+        if (Value.StartsWith("_:"))
+        {
+            // Blank Node ID
+            LastTokenType = Token.BLANKNODEWITHID;
+            return new BlankNodeWithIDToken(Value, CurrentLine, StartPosition, EndPosition);
+        }
+        else
+        {
+            throw Error("The input '" + Value + "' is not a valid Blank Node Name in {0}");
+        }
+
+    }
+
+    private IToken TryGetLiteral()
+    {
+        var longliteral = false;
+
+        // Consume first character which must have been a "
+        ConsumeCharacter();
+
+        // Check if this is a long literal
+        var next = Peek();
+        if (next == '"')
+        {
+            ConsumeCharacter();
+            next = Peek();
+
+            if (next == '"')
+            {
+                // Long Literal
+                longliteral = true;
+            }
+            else
+            {
+                // Empty Literal
+                LastTokenType = Token.LITERAL;
+                return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
+            }
+        }
+
+        while (true)
+        {
+            // Handle Escapes
+            if (next == '\\')
+            {
+                HandleEscapes(TokeniserEscapeMode.QuotedLiterals);
+                next = Peek();
+                continue;
+            }
+
+            // Add character to output buffer
+            ConsumeCharacter();
+
+            // Check for end of Literal
+            if (next == '"')
+            {
+                if (longliteral)
+                {
+                    next = Peek();
+                    if (next == '"')
+                    {
+                        // Got two quotes so far
+                        ConsumeCharacter();
+                        next = Peek();
+                        if (next == '"')
+                        {
+                            // Triple quote - end of literal
+                            LastTokenType = Token.LONGLITERAL;
+                            return new LongLiteralToken(Value, StartLine, EndLine, StartPosition, EndPosition);
+                        }
+                        else
+                        {
+                            // Not a triple quote so continue
                             continue;
                         }
                     }
                     else
                     {
-                        // End of Literal
-                        LastTokenType = Token.LITERAL;
-                        return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
+                        // Not a Triple quote so continue
+                        continue;
                     }
                 }
-
-                // Continue Reading
-                next = Peek();
+                else
+                {
+                    // End of Literal
+                    LastTokenType = Token.LITERAL;
+                    return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
+                }
             }
-        }
 
-        private IToken TryGetNumericLiteral()
+            // Continue Reading
+            next = Peek();
+        }
+    }
+
+    private IToken TryGetNumericLiteral()
+    {
+        var dotoccurred = false;
+        var expoccurred = false;
+        var negoccurred = false;
+
+        if (Length == 1) dotoccurred = true;
+
+        var next = Peek();
+
+        while (char.IsDigit(next) || next == '-' || next == '+' || next == 'e' || (next == '.' && !dotoccurred))
         {
-            var dotoccurred = false;
-            var expoccurred = false;
-            var negoccurred = false;
+            // Consume the Character
+            ConsumeCharacter();
 
-            if (Length == 1) dotoccurred = true;
-
-            var next = Peek();
-
-            while (char.IsDigit(next) || next == '-' || next == '+' || next == 'e' || (next == '.' && !dotoccurred))
+            if (next == '+')
             {
-                // Consume the Character
-                ConsumeCharacter();
-
-                if (next == '+')
+                // Can only be first character in the numeric literal or come immediately after the 'e'
+                if (Length > 1 && !Value.EndsWith("e+"))
                 {
-                    // Can only be first character in the numeric literal or come immediately after the 'e'
-                    if (Length > 1 && !Value.EndsWith("e+"))
+                    throw Error("Unexpected Character (Code " + (int)next + ") +\nThe plus sign can only occur once at the Start of a Numeric Literal and once immediately after the 'e' exponent specifier, if this was intended as an additive operator please insert space to disambiguate this");
+                }
+            }
+            if (next == '-')
+            {
+                if (negoccurred && !Value.EndsWith("e-"))
+                {
+                    // Negative sign already seen
+                    throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur once at the Start of a Numeric Literal, if this was intended as a subtractive operator please insert space to disambiguate this");
+                }
+                else
+                {
+                    negoccurred = true;
+
+                    // Check this is at the start of the string or immediately after the 'e'
+                    if (Length > 1 && !Value.EndsWith("e-"))
                     {
-                        throw Error("Unexpected Character (Code " + (int)next + ") +\nThe plus sign can only occur once at the Start of a Numeric Literal and once immediately after the 'e' exponent specifier, if this was intended as an additive operator please insert space to disambiguate this");
+                        throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur at the Start of a Numeric Literal and once immediately after the 'e' exponent specifier, if this was intended as a subtractive operator please insert space to disambiguate this");
                     }
                 }
-                if (next == '-')
+            }
+            else if (next == 'e')
+            {
+                if (expoccurred)
                 {
-                    if (negoccurred && !Value.EndsWith("e-"))
-                    {
-                        // Negative sign already seen
-                        throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur once at the Start of a Numeric Literal, if this was intended as a subtractive operator please insert space to disambiguate this");
-                    }
-                    else
-                    {
-                        negoccurred = true;
+                    // Exponent already seen
+                    throw Error("Unexpected Character (Code " + (int)next + " e\nThe Exponent specifier can only occur once in a Numeric Literal");
+                }
+                else
+                {
+                    expoccurred = true;
 
-                        // Check this is at the start of the string or immediately after the 'e'
-                        if (Length > 1 && !Value.EndsWith("e-"))
-                        {
-                            throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur at the Start of a Numeric Literal and once immediately after the 'e' exponent specifier, if this was intended as a subtractive operator please insert space to disambiguate this");
-                        }
+                    // Check that it isn't the start of the string
+                    if (Length == 1)
+                    {
+                        throw Error("Unexpected Character (Code " + (int)next + " e\nThe Exponent specifier cannot occur at the start of a Numeric Literal");
                     }
                 }
-                else if (next == 'e')
-                {
-                    if (expoccurred)
-                    {
-                        // Exponent already seen
-                        throw Error("Unexpected Character (Code " + (int)next + " e\nThe Exponent specifier can only occur once in a Numeric Literal");
-                    }
-                    else
-                    {
-                        expoccurred = true;
-
-                        // Check that it isn't the start of the string
-                        if (Length == 1)
-                        {
-                            throw Error("Unexpected Character (Code " + (int)next + " e\nThe Exponent specifier cannot occur at the start of a Numeric Literal");
-                        }
-                    }
-                }
-                else if (next == '.')
-                {
-                    dotoccurred = true;
-                }
-
-                next = Peek();
+            }
+            else if (next == '.')
+            {
+                dotoccurred = true;
             }
 
-            // Decimals can't end with a . so backtrack
-            if (Value.EndsWith(".")) Backtrack();
-
-            var value = Value;
-            if (!SparqlSpecsHelper.IsValidNumericLiteral(value))
-            {
-                // Invalid Numeric Literal
-                throw Error("The format of the Numeric Literal '" + Value + "' is not valid!");
-            }
-
-            // Return the Token
-            LastTokenType = Token.PLAINLITERAL;
-            return new PlainLiteralToken(Value, CurrentLine, StartPosition, EndPosition);
+            next = Peek();
         }
 
-        private IToken TryGetPlainLiteral()
+        // Decimals can't end with a . so backtrack
+        if (Value.EndsWith(".")) Backtrack();
+
+        var value = Value;
+        if (!SparqlSpecsHelper.IsValidNumericLiteral(value))
+        {
+            // Invalid Numeric Literal
+            throw Error("The format of the Numeric Literal '" + Value + "' is not valid!");
+        }
+
+        // Return the Token
+        LastTokenType = Token.PLAINLITERAL;
+        return new PlainLiteralToken(Value, CurrentLine, StartPosition, EndPosition);
+    }
+
+    private IToken TryGetPlainLiteral()
+    {
+        ConsumeCharacter();
+        var next = Peek();
+        while (char.IsLetter(next))
         {
             ConsumeCharacter();
-            var next = Peek();
-            while (char.IsLetter(next))
-            {
-                ConsumeCharacter();
-                next = Peek();
-            }
-
-            if (TurtleSpecsHelper.IsValidPlainLiteral(Value, TurtleSyntax.Original))
-            {
-                LastTokenType = Token.PLAINLITERAL;
-                return new PlainLiteralToken(Value, StartLine, StartPosition, EndPosition);
-            }
-            else
-            {
-                throw new RdfParseException("'" + Value + "' is not a valid Plain Literal!");
-            }
+            next = Peek();
         }
 
-        private IToken TryGetDataType()
+        if (TurtleSpecsHelper.IsValidPlainLiteral(Value, TurtleSyntax.Original))
         {
-            var next = Peek();
-            if (next == '<')
-            {
-                // Uri for Data Type
-                IToken temp = TryGetUri();
-                return new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition - 3, temp.EndPosition + 1);
-            }
-            else
-            {
-                throw UnexpectedCharacter(next, "expected a < to start a URI to specify a Data Type for a Typed Literal");
-            }
+            LastTokenType = Token.PLAINLITERAL;
+            return new PlainLiteralToken(Value, StartLine, StartPosition, EndPosition);
+        }
+        else
+        {
+            throw new RdfParseException("'" + Value + "' is not a valid Plain Literal!");
+        }
+    }
+
+    private IToken TryGetDataType()
+    {
+        var next = Peek();
+        if (next == '<')
+        {
+            // Uri for Data Type
+            IToken temp = TryGetUri();
+            return new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition - 3, temp.EndPosition + 1);
+        }
+        else
+        {
+            throw UnexpectedCharacter(next, "expected a < to start a URI to specify a Data Type for a Typed Literal");
         }
     }
 }

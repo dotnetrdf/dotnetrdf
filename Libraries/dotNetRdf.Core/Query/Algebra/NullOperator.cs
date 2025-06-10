@@ -28,93 +28,92 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Represents a part of the algebra that has been determined to not return any results in advance and so can be replaced with this operator which always returns null.
+/// </summary>
+/// <remarks>
+/// Primarily intended for use with Algebra Optimisers which are rewriting the algebra to run against an out of memory dataset (e.g. SQL based) where it may be easily possible to determine if a triple pattern will match in advance of actually returning the matches.
+/// </remarks>
+public class NullOperator 
+    : ISparqlAlgebra, ITerminalOperator
 {
+    private List<string> _vars = new List<string>();
+
     /// <summary>
-    /// Represents a part of the algebra that has been determined to not return any results in advance and so can be replaced with this operator which always returns null.
+    /// Creates a new Null Operator.
     /// </summary>
-    /// <remarks>
-    /// Primarily intended for use with Algebra Optimisers which are rewriting the algebra to run against an out of memory dataset (e.g. SQL based) where it may be easily possible to determine if a triple pattern will match in advance of actually returning the matches.
-    /// </remarks>
-    public class NullOperator 
-        : ISparqlAlgebra, ITerminalOperator
+    /// <param name="variables">Variables in the algebra that this null is replacing.</param>
+    public NullOperator(IEnumerable<string> variables)
     {
-        private List<string> _vars = new List<string>();
+        _vars.AddRange(variables);
+    }
 
-        /// <summary>
-        /// Creates a new Null Operator.
-        /// </summary>
-        /// <param name="variables">Variables in the algebra that this null is replacing.</param>
-        public NullOperator(IEnumerable<string> variables)
+
+    /// <summary>
+    /// Gets the variables used in this algebra.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get 
         {
-            _vars.AddRange(variables);
+            return _vars;
         }
+    }
 
+    /// <summary>
+    /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FixedVariables
+    {
+        get { return Enumerable.Empty<string>(); }
+    }
 
-        /// <summary>
-        /// Gets the variables used in this algebra.
-        /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get 
-            {
-                return _vars;
-            }
-        }
+    /// <summary>
+    /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FloatingVariables
+    {
+        get { return Enumerable.Empty<string>(); }
+    }
 
-        /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FixedVariables
-        {
-            get { return Enumerable.Empty<string>(); }
-        }
+    /// <summary>
+    /// Throws an error since a null operator cannot be transformed back into a query.
+    /// </summary>
+    /// <returns></returns>
+    public SparqlQuery ToQuery()
+    {
+        throw new RdfQueryException("A NullOperator cannot be transformed back to a Query");
+    }
 
-        /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FloatingVariables
-        {
-            get { return Enumerable.Empty<string>(); }
-        }
+    /// <summary>
+    /// Throws an error since a null operator cannot be transformed back into a query.
+    /// </summary>
+    /// <returns></returns>
+    public GraphPattern ToGraphPattern()
+    {
+        throw new RdfQueryException("A NullOperator cannot be transformed into a Graph Pattern");
+    }
 
-        /// <summary>
-        /// Throws an error since a null operator cannot be transformed back into a query.
-        /// </summary>
-        /// <returns></returns>
-        public SparqlQuery ToQuery()
-        {
-            throw new RdfQueryException("A NullOperator cannot be transformed back to a Query");
-        }
+    /// <summary>
+    /// Gets the string representation of the algebra.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "NullOperator()";
+    }
 
-        /// <summary>
-        /// Throws an error since a null operator cannot be transformed back into a query.
-        /// </summary>
-        /// <returns></returns>
-        public GraphPattern ToGraphPattern()
-        {
-            throw new RdfQueryException("A NullOperator cannot be transformed into a Graph Pattern");
-        }
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    {
+        return processor.ProcessNullOperator(this, context);
+    }
 
-        /// <summary>
-        /// Gets the string representation of the algebra.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "NullOperator()";
-        }
-
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
-        {
-            return processor.ProcessNullOperator(this, context);
-        }
-
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
-        {
-            return visitor.VisitNullOperator(this);
-        }
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    {
+        return visitor.VisitNullOperator(this);
     }
 }

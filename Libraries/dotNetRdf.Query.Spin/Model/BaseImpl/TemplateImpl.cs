@@ -27,21 +27,20 @@
 using System;
 using VDS.RDF.Query.Spin.LibraryOntology;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class TemplateImpl : ModuleImpl, ITemplate
 {
-    internal class TemplateImpl : ModuleImpl, ITemplate
+
+    public TemplateImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
 
-        public TemplateImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
-
-        }
+    }
 
 
-        public String getLabelTemplate()
-        {
-            return getString(SPIN.PropertyLabelTemplate);
-        }
+    public String getLabelTemplate()
+    {
+        return getString(SPIN.PropertyLabelTemplate);
     }
 }
