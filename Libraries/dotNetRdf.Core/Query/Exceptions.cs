@@ -24,35 +24,34 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+/// <summary>
+/// Class for representing Termination errors.
+/// </summary>
+class RdfQueryTerminatedException : RdfQueryException
 {
     /// <summary>
-    /// Class for representing Termination errors.
+    /// Creates a new RDF Query Termination Exception.
     /// </summary>
-    class RdfQueryTerminatedException : RdfQueryException
-    {
-        /// <summary>
-        /// Creates a new RDF Query Termination Exception.
-        /// </summary>
-        public RdfQueryTerminatedException()
-            : base("Terminated Query since there are no results at the point reached so further execution is unnecessary") { }
-    }
+    public RdfQueryTerminatedException()
+        : base("Terminated Query since there are no results at the point reached so further execution is unnecessary") { }
+}
 
+/// <summary>
+/// Class for representing Path Found terminations.
+/// </summary>
+class RdfQueryPathFoundException : RdfQueryException
+{
     /// <summary>
-    /// Class for representing Path Found terminations.
+    /// Creates a new Path Found exception.
     /// </summary>
-    class RdfQueryPathFoundException : RdfQueryException
-    {
-        /// <summary>
-        /// Creates a new Path Found exception.
-        /// </summary>
-        public RdfQueryPathFoundException()
-            : base("Terminated Path Evaluation since the required path has been found") { }
-    }
+    public RdfQueryPathFoundException()
+        : base("Terminated Path Evaluation since the required path has been found") { }
+}
 
-    class RdfQueryComparisonException : RdfQueryException
-    {
-        public RdfQueryComparisonException(INode left, INode right) : base(
-            $"There is no valid comparison operation defined that will compare the node `{left}` and the node `{right}`.") { }
-    }
+class RdfQueryComparisonException : RdfQueryException
+{
+    public RdfQueryComparisonException(INode left, INode right) : base(
+        $"There is no valid comparison operation defined that will compare the node `{left}` and the node `{right}`.") { }
 }

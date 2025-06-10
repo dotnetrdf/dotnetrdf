@@ -27,1044 +27,1043 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Parsing.Events.RdfXml
+namespace VDS.RDF.Parsing.Events.RdfXml;
+
+/// <summary>
+/// Static Class which defines the Event Types for RDF/XML Events.
+/// </summary>
+public static class RdfXmlEvent
 {
     /// <summary>
-    /// Static Class which defines the Event Types for RDF/XML Events.
+    /// Constants for Event Types.
     /// </summary>
-    public static class RdfXmlEvent
+    public const int Root = 0,
+                     Clear = 1,
+
+                     Element = 10,
+                     EndElement = 11,
+
+                     Attribute = 20,
+                     NamespaceAttribute = 21,
+                     LanguageAttribute = 22,
+                     ParseTypeAttribute = 23,
+                     XmlBaseAttribute = 24,
+
+                     Text = 25,
+
+                     UriReference = 30,
+                     QName = 31,
+
+                     BlankNodeID = 35,
+
+                     Literal = 40,
+                     TypedLiteral = 41;
+
+}
+
+/// <summary>
+/// Event representing the Root Node of the Document.
+/// </summary>
+public class RootEvent : BaseRdfXmlEvent
+{
+    private ElementEvent _docelement;
+    private List<ElementEvent> _children = new List<ElementEvent>();
+    private string _baseuri = string.Empty;
+    private string _language = string.Empty;
+
+    /// <summary>
+    /// Creates a new Root Event.
+    /// </summary>
+    /// <param name="baseUri">Base Uri of the Document.</param>
+    /// <param name="sourceXml">Source XML of the Document.</param>
+    /// <param name="pos">Position Info.</param>
+    public RootEvent(string baseUri, string sourceXml, PositionInfo pos) 
+        : base(RdfXmlEvent.Root, sourceXml, pos)
     {
-        /// <summary>
-        /// Constants for Event Types.
-        /// </summary>
-        public const int Root = 0,
-                         Clear = 1,
-
-                         Element = 10,
-                         EndElement = 11,
-
-                         Attribute = 20,
-                         NamespaceAttribute = 21,
-                         LanguageAttribute = 22,
-                         ParseTypeAttribute = 23,
-                         XmlBaseAttribute = 24,
-
-                         Text = 25,
-
-                         UriReference = 30,
-                         QName = 31,
-
-                         BlankNodeID = 35,
-
-                         Literal = 40,
-                         TypedLiteral = 41;
-
+        _baseuri = baseUri;
     }
 
     /// <summary>
-    /// Event representing the Root Node of the Document.
+    /// Creates a new Root Event.
     /// </summary>
-    public class RootEvent : BaseRdfXmlEvent
-    {
-        private ElementEvent _docelement;
-        private List<ElementEvent> _children = new List<ElementEvent>();
-        private string _baseuri = string.Empty;
-        private string _language = string.Empty;
-
-        /// <summary>
-        /// Creates a new Root Event.
-        /// </summary>
-        /// <param name="baseUri">Base Uri of the Document.</param>
-        /// <param name="sourceXml">Source XML of the Document.</param>
-        /// <param name="pos">Position Info.</param>
-        public RootEvent(string baseUri, string sourceXml, PositionInfo pos) 
-            : base(RdfXmlEvent.Root, sourceXml, pos)
-        {
-            _baseuri = baseUri;
-        }
-
-        /// <summary>
-        /// Creates a new Root Event.
-        /// </summary>
-        /// <param name="baseUri">Base Uri of the Document.</param>
-        /// <param name="sourceXml">Source XML of the Document.</param>
-        public RootEvent(string baseUri, string sourceXml)
-            : this(baseUri, sourceXml, null) { }
-
-        /// <summary>
-        /// Gets/Sets the ElementEvent that represents the actual DocumentElement.
-        /// </summary>
-        public ElementEvent DocumentElement
-        {
-            get
-            {
-                return _docelement;
-            }
-            set
-            {
-                _docelement = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets all the Child ElementEvents of the Document Root.
-        /// </summary>
-        public List<ElementEvent> Children
-        {
-            get
-            {
-                return _children;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Base Uri of the Node.
-        /// </summary>
-        public string BaseUri
-        {
-            get
-            {
-                return _baseuri;
-            }
-            set
-            {
-                _baseuri = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Language of the Node.
-        /// </summary>
-        public string Language
-        {
-            get
-            {
-                return _language;
-            }
-            set
-            {
-                _language = value;
-            }
-        }
-        
-    }
+    /// <param name="baseUri">Base Uri of the Document.</param>
+    /// <param name="sourceXml">Source XML of the Document.</param>
+    public RootEvent(string baseUri, string sourceXml)
+        : this(baseUri, sourceXml, null) { }
 
     /// <summary>
-    /// Event representing a Node from the XML Document.
+    /// Gets/Sets the ElementEvent that represents the actual DocumentElement.
     /// </summary>
-    public class ElementEvent : BaseRdfXmlEvent 
+    public ElementEvent DocumentElement
     {
-        private List<IRdfXmlEvent> _children = new List<IRdfXmlEvent>();
-        private string _baseuri = string.Empty;
-        private string _localname, _namespace;
-        private List<AttributeEvent> _attributes = new List<AttributeEvent>();
-        private List<NamespaceAttributeEvent> _namespaces = new List<NamespaceAttributeEvent>();
-        private string _language = string.Empty;
-        private int _listcounter = 1;
-        private IRdfXmlEvent _subject = null;
-        private RdfXmlParseType _parsetype = RdfXmlParseType.None;
-        private INode _subjectNode = null;
-
-        /// <summary>
-        /// Creates a new Element Event.
-        /// </summary>
-        /// <param name="qname">QName of the XML Node.</param>
-        /// <param name="baseUri">Base Uri of the XML Node.</param>
-        /// <param name="sourceXml">Source XML of the XML Node.</param>
-        /// <param name="pos">Position Info.</param>
-        public ElementEvent(string qname, string baseUri, string sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.Element, sourceXml, pos) {
-            _baseuri = baseUri;
-
-            if (qname.Contains(':'))
-            {
-                // Has a Namespace
-                // Split the QName into Namespace and Local Name
-                var parts = qname.Split(':');
-                _namespace = parts[0];
-                _localname = parts[1];
-            }
-            else
-            {
-                // Is in the Default Namespace
-                _namespace = string.Empty;
-                _localname = qname;
-            }
-        }
-
-        /// <summary>
-        /// Creates a new Element Event.
-        /// </summary>
-        /// <param name="qname">QName of the XML Node.</param>
-        /// <param name="baseUri">Base Uri of the XML Node.</param>
-        /// <param name="sourceXml">Source XML of the XML Node.</param>
-        public ElementEvent(string qname, string baseUri, string sourceXml)
-            : this(qname, baseUri, sourceXml, (PositionInfo)null) { }
-
-        /// <summary>
-        /// Creates new Element Event.
-        /// </summary>
-        /// <param name="localname">Local Name of the XML Node.</param>
-        /// <param name="ns">Namespace Prefix of the XML Node.</param>
-        /// <param name="baseUri">Base Uri of the XML Node.</param>
-        /// <param name="sourceXml">Source XML of the XML Node.</param>
-        /// <param name="pos">Position Info.</param>
-        public ElementEvent(string localname, string ns, string baseUri, string sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.Element, sourceXml, pos)
+        get
         {
-            _baseuri = baseUri;
-            _localname = localname;
-            _namespace = ns;
+            return _docelement;
         }
-
-        /// <summary>
-        /// Creates new Element Event.
-        /// </summary>
-        /// <param name="localname">Local Name of the XML Node.</param>
-        /// <param name="ns">Namespace Prefix of the XML Node.</param>
-        /// <param name="baseUri">Base Uri of the XML Node.</param>
-        /// <param name="sourceXml">Source XML of the XML Node.</param>
-        public ElementEvent(string localname, string ns, string baseUri, string sourceXml)
-            : this(localname, ns, baseUri, sourceXml, null) { }
-
-        /// <summary>
-        /// Gets the Local Name of this Element Event.
-        /// </summary>
-        public string LocalName
+        set
         {
-            get
-            {
-                return _localname;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Namespace of this Element Event.
-        /// </summary>
-        public string Namespace
-        {
-            get
-            {
-                return _namespace;
-            }
-        }
-
-        /// <summary>
-        /// Gets the QName of this Element Event.
-        /// </summary>
-        public string QName
-        {
-            get
-            {
-                return _namespace + ":" + _localname;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Child Element Events. 
-        /// </summary>
-        /// <remarks>These correspond to the Child Nodes of the XML Node.</remarks>
-        public List<IRdfXmlEvent> Children
-        {
-            get
-            {
-                return _children;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the Base Uri of the XML Node.
-        /// </summary>
-        public string BaseUri
-        {
-            get
-            {
-                return _baseuri;
-            }
-            set
-            {
-                _baseuri = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Attribute Events.
-        /// </summary>
-        /// <remarks>These correspond to the Attributes of the XML Node (with some exceptions as defined in the RDF/XML specification).</remarks>
-        public List<AttributeEvent> Attributes
-        {
-            get
-            {
-                return _attributes;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Namespace Attribute Events.
-        /// </summary>
-        /// <remarks>
-        /// These correspond to all the Namespace Attributes of the XML Node.
-        /// </remarks>
-        public List<NamespaceAttributeEvent> NamespaceAttributes
-        {
-            get
-            {
-                return _namespaces;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the List Counter.
-        /// </summary>
-        public int ListCounter
-        {
-            get
-            {
-                return _listcounter;
-            }
-            set
-            {
-                _listcounter = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the Language of this Event.
-        /// </summary>
-        public string Language
-        {
-            get
-            {
-                return _language;
-            }
-            set
-            {
-                _language = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the Subject Event of this Event.
-        /// </summary>
-        /// <remarks>Will be assigned according to the Parsing rules during the Parsing process and later used to generate a Subject Node.</remarks>
-        public IRdfXmlEvent Subject
-        {
-            get
-            {
-                return _subject;
-            }
-            set
-            {
-                _subject = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the Subject Node of this Event.
-        /// </summary>
-        /// <remarks>Will be created from the Subject at some point during the Parsing process.</remarks>
-        public INode SubjectNode
-        {
-            get
-            {
-                return _subjectNode;
-            }
-            set
-            {
-                _subjectNode = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the Parse Type for this Event.
-        /// </summary>
-        public RdfXmlParseType ParseType
-        {
-            get
-            {
-                return _parsetype;
-            }
-            set
-            {
-                _parsetype = value;
-            }
-        }
-
-        /// <summary>
-        /// Method which sets the Uri for this Element Event.
-        /// </summary>
-        /// <param name="u">Uri Reference to set Uri from.</param>
-        /// <remarks>This can only be used on Elements which are rdf:li and thus need expanding into actual list elements according to List Expansion rules.  Attempting to set the Uri on any other Element Event will cause an Error message.</remarks>
-        public void SetUri(UriReferenceEvent u)
-        {
-            if (QName.Equals("rdf:li"))
-            {
-                // Split the QName into Namespace and Local Name
-                var qname = u.Identifier;
-                var parts = qname.Split(':');
-                _namespace = parts[0];
-                _localname = parts[1];
-            }
-            else
-            {
-                throw new RdfParseException("It is forbidden to change the URI of an Element Event unless it is a rdf:li Element and thus needs expanding to the form rdf:_X according to List Expansion rules");
-            }
-        }
-
-        /// <summary>
-        /// Method which sets the Uri for this Element Event.
-        /// </summary>
-        /// <param name="u">Uri Reference to set Uri from.</param>
-        /// <param name="nsMapper">Namespace prefix mappings to use for resolving the QName of this element event.</param>
-        /// <remarks>This can only be used on Elements which are rdf:li and thus need expanding into actual list elements according to List Expansion rules.  Attempting to set the Uri on any other Element Event will cause an Error message.</remarks>
-        public void SetUri(UriReferenceEvent u, INamespaceMapper nsMapper)
-        {
-            if (RdfXmlSpecsHelper.IsLiElement(this, nsMapper))
-            {
-                // Split the QName into Namespace and Local Name
-                var qname = u.Identifier;
-                var parts = qname.Split(':');
-                _namespace = parts[0];
-                _localname = parts[1];
-            }
-            else
-            {
-                throw new RdfParseException("It is forbidden to change the URI of an Element Event unless it is a rdf:li Element and thus needs expanding to the form rdf:_X according to List Expansion rules");
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Event.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "[Element] " + _namespace + ":" + _localname;
-        }
-
-    }
-
-    /// <summary>
-    /// An Event for representing the End of Elements.
-    /// </summary>
-    public class EndElementEvent : BaseRdfXmlEvent
-    {
-        /// <summary>
-        /// Creates a new EndElementEvent.
-        /// </summary>
-        public EndElementEvent(PositionInfo pos) 
-            : base(RdfXmlEvent.EndElement, string.Empty, pos) { }
-
-        /// <summary>
-        /// Creates a new EndElementEvent.
-        /// </summary>
-        public EndElementEvent()
-            : this(null) { }
-    }
-
-    /// <summary>
-    /// An Event for representing Attributes of XML Node.
-    /// </summary>
-    public class AttributeEvent : BaseRdfXmlEvent
-    {
-        private string _localname, _namespace;
-        private string _value;
-
-        /// <summary>
-        /// Creates a new Attribute Event from an XML Attribute.
-        /// </summary>
-        /// <param name="qname">QName of the Attribute.</param>
-        /// <param name="value">Value of the Attribute.</param>
-        /// <param name="sourceXml">Source XML of the Attribute.</param>
-        /// <param name="pos">Position Info.</param>
-        public AttributeEvent(string qname, string value, string sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.Attribute, sourceXml, pos)
-        {
-            _value = value;
-            if (qname.Contains(':'))
-            {
-                // Has a Namespace
-                // Split the QName into Namespace and Local Name
-                var parts = qname.Split(':');
-                _namespace = parts[0];
-                _localname = parts[1];
-            }
-            else
-            {
-                // Is in the Default Namespace
-                _namespace = string.Empty;
-                _localname = qname;
-            }
-        }
-
-        /// <summary>
-        /// Creates a new Attribute Event from an XML Attribute.
-        /// </summary>
-        /// <param name="qname">QName of the Attribute.</param>
-        /// <param name="value">Value of the Attribute.</param>
-        /// <param name="sourceXml">Source XML of the Attribute.</param>
-        public AttributeEvent(string qname, string value, string sourceXml)
-            : this(qname, value, sourceXml, (PositionInfo)null) { }
-
-        /// <summary>
-        /// Creates a new Attribute Event from an XML Attribute.
-        /// </summary>
-        /// <param name="localname">Local Name of the Attribute.</param>
-        /// <param name="ns">Namespace Prefix of the Attribute.</param>
-        /// <param name="value">Value of the Attribute.</param>
-        /// <param name="sourceXml">Source XML of the Attribute.</param>
-        /// <param name="pos">Position Info.</param>
-        public AttributeEvent(string localname, string ns, string value, string sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.Attribute, sourceXml, pos)
-        {
-            _value = value;
-            _localname = localname;
-            _namespace = ns;
-        }
-
-        /// <summary>
-        /// Creates a new Attribute Event from an XML Attribute.
-        /// </summary>
-        /// <param name="localname">Local Name of the Attribute.</param>
-        /// <param name="ns">Namespace Prefix of the Attribute.</param>
-        /// <param name="value">Value of the Attribute.</param>
-        /// <param name="sourceXml">Source XML of the Attribute.</param>
-        public AttributeEvent(string localname, string ns, string value, string sourceXml)
-            : this(localname, ns, value, sourceXml, null) { }
-
-        /// <summary>
-        /// Gets the Local Name of the Attribute.
-        /// </summary>
-        public string LocalName
-        {
-            get
-            {
-                return _localname;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Namespace Prefix of the Attribute.
-        /// </summary>
-        public string Namespace
-        {
-            get
-            {
-                return _namespace;
-            }
-        }
-
-        /// <summary>
-        /// Gets the QName of the Attribute.
-        /// </summary>
-        public string QName
-        {
-            get
-            {
-                return _namespace + ":" + _localname;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Value of the Attribute.
-        /// </summary>
-        public string Value
-        {
-            get
-            {
-                return _value;
-            }
+            _docelement = value;
         }
     }
 
     /// <summary>
-    /// An Event for representing Namespace Attributes of an XML Node.
+    /// Gets all the Child ElementEvents of the Document Root.
     /// </summary>
-    public class NamespaceAttributeEvent : BaseRdfXmlEvent
+    public List<ElementEvent> Children
     {
-        private string _prefix, _uri;
-
-        /// <summary>
-        /// Creates a new Namespace Attribute Event.
-        /// </summary>
-        /// <param name="prefix">Namespace Prefix.</param>
-        /// <param name="uri">Namespace Uri.</param>
-        /// <param name="sourceXml">Source XML.</param>
-        /// <param name="pos">Position Info.</param>
-        public NamespaceAttributeEvent(string prefix, string uri, string sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.NamespaceAttribute, sourceXml, pos)
+        get
         {
-            _prefix = prefix;
-            _uri = uri;
-        }
-
-        /// <summary>
-        /// Creates a new Namespace Attribute Event.
-        /// </summary>
-        /// <param name="prefix">Namespace Prefix.</param>
-        /// <param name="uri">Namespace Uri.</param>
-        /// <param name="sourceXml">Source XML.</param>
-        public NamespaceAttributeEvent(string prefix, string uri, string sourceXml)
-            : this(prefix, uri, sourceXml, null) { }
-
-        /// <summary>
-        /// Gets the Namespace Prefix.
-        /// </summary>
-        public string Prefix
-        {
-            get
-            {
-                return _prefix;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Namespace Uri.
-        /// </summary>
-        public string Uri
-        {
-            get
-            {
-                return _uri;
-            }
+            return _children;
         }
     }
 
     /// <summary>
-    /// An Event for representing Language Attributes of an XML Node.
+    /// Gets the Base Uri of the Node.
     /// </summary>
-    public class LanguageAttributeEvent : BaseRdfXmlEvent
+    public string BaseUri
     {
-        private string _lang;
-
-        /// <summary>
-        /// Creates a new Language Attribute Event.
-        /// </summary>
-        /// <param name="lang">Language.</param>
-        /// <param name="sourceXml">Source XML.</param>
-        /// <param name="pos">Position Info.</param>
-        public LanguageAttributeEvent(string lang, string sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.LanguageAttribute, sourceXml, pos)
+        get
         {
-            _lang = lang;
+            return _baseuri;
         }
-
-        /// <summary>
-        /// Creates a new Language Attribute Event.
-        /// </summary>
-        /// <param name="lang">Language.</param>
-        /// <param name="sourceXml">Source XML.</param>
-        public LanguageAttributeEvent(string lang, string sourceXml)
-            : this(lang, sourceXml, null) { }
-
-        /// <summary>
-        /// Gets the Language.
-        /// </summary>
-        public string Language
+        set
         {
-            get
-            {
-                return _lang;
-            }
+            _baseuri = value;
         }
     }
 
     /// <summary>
-    /// An Event for representing rdf:parseType Attributes of an XML Node.
+    /// Gets the Language of the Node.
     /// </summary>
-    public class ParseTypeAttributeEvent : BaseRdfXmlEvent
+    public string Language
     {
-        private RdfXmlParseType _type;
-
-        /// <summary>
-        /// Creates a new Parse Type Attribute Event.
-        /// </summary>
-        /// <param name="type">Parse Type.</param>
-        /// <param name="sourceXml">Source XML.</param>
-        /// <param name="pos">Position Info.</param>
-        public ParseTypeAttributeEvent(RdfXmlParseType type, string sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.ParseTypeAttribute, sourceXml, pos)
+        get
         {
-            _type = type;
+            return _language;
         }
-
-        /// <summary>
-        /// Creates a new Parse Type Attribute Event.
-        /// </summary>
-        /// <param name="type">Parse Type.</param>
-        /// <param name="sourceXml">Source XML.</param>
-        public ParseTypeAttributeEvent(RdfXmlParseType type, string sourceXml)
-            : this(type, sourceXml, null) { }
-
-        /// <summary>
-        /// Gets the Parse Type.
-        /// </summary>
-        public RdfXmlParseType ParseType
+        set
         {
-            get
-            {
-                return _type;
-            }
+            _language = value;
+        }
+    }
+    
+}
+
+/// <summary>
+/// Event representing a Node from the XML Document.
+/// </summary>
+public class ElementEvent : BaseRdfXmlEvent 
+{
+    private List<IRdfXmlEvent> _children = new List<IRdfXmlEvent>();
+    private string _baseuri = string.Empty;
+    private string _localname, _namespace;
+    private List<AttributeEvent> _attributes = new List<AttributeEvent>();
+    private List<NamespaceAttributeEvent> _namespaces = new List<NamespaceAttributeEvent>();
+    private string _language = string.Empty;
+    private int _listcounter = 1;
+    private IRdfXmlEvent _subject = null;
+    private RdfXmlParseType _parsetype = RdfXmlParseType.None;
+    private INode _subjectNode = null;
+
+    /// <summary>
+    /// Creates a new Element Event.
+    /// </summary>
+    /// <param name="qname">QName of the XML Node.</param>
+    /// <param name="baseUri">Base Uri of the XML Node.</param>
+    /// <param name="sourceXml">Source XML of the XML Node.</param>
+    /// <param name="pos">Position Info.</param>
+    public ElementEvent(string qname, string baseUri, string sourceXml, PositionInfo pos)
+        : base(RdfXmlEvent.Element, sourceXml, pos) {
+        _baseuri = baseUri;
+
+        if (qname.Contains(':'))
+        {
+            // Has a Namespace
+            // Split the QName into Namespace and Local Name
+            var parts = qname.Split(':');
+            _namespace = parts[0];
+            _localname = parts[1];
+        }
+        else
+        {
+            // Is in the Default Namespace
+            _namespace = string.Empty;
+            _localname = qname;
         }
     }
 
     /// <summary>
-    /// An Event for representing xml:base attributes of XML Nodes.
+    /// Creates a new Element Event.
     /// </summary>
-    public class XmlBaseAttributeEvent : BaseRdfXmlEvent
+    /// <param name="qname">QName of the XML Node.</param>
+    /// <param name="baseUri">Base Uri of the XML Node.</param>
+    /// <param name="sourceXml">Source XML of the XML Node.</param>
+    public ElementEvent(string qname, string baseUri, string sourceXml)
+        : this(qname, baseUri, sourceXml, (PositionInfo)null) { }
+
+    /// <summary>
+    /// Creates new Element Event.
+    /// </summary>
+    /// <param name="localname">Local Name of the XML Node.</param>
+    /// <param name="ns">Namespace Prefix of the XML Node.</param>
+    /// <param name="baseUri">Base Uri of the XML Node.</param>
+    /// <param name="sourceXml">Source XML of the XML Node.</param>
+    /// <param name="pos">Position Info.</param>
+    public ElementEvent(string localname, string ns, string baseUri, string sourceXml, PositionInfo pos)
+        : base(RdfXmlEvent.Element, sourceXml, pos)
     {
-        private string _baseUri;
+        _baseuri = baseUri;
+        _localname = localname;
+        _namespace = ns;
+    }
 
-        /// <summary>
-        /// Creates a new XML Base Attribute.
-        /// </summary>
-        /// <param name="baseUri">Base URI.</param>
-        /// <param name="sourceXml">Source XML.</param>
-        /// <param name="pos">Position Info.</param>
-        public XmlBaseAttributeEvent(string baseUri, string sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.XmlBaseAttribute, sourceXml, pos)
+    /// <summary>
+    /// Creates new Element Event.
+    /// </summary>
+    /// <param name="localname">Local Name of the XML Node.</param>
+    /// <param name="ns">Namespace Prefix of the XML Node.</param>
+    /// <param name="baseUri">Base Uri of the XML Node.</param>
+    /// <param name="sourceXml">Source XML of the XML Node.</param>
+    public ElementEvent(string localname, string ns, string baseUri, string sourceXml)
+        : this(localname, ns, baseUri, sourceXml, null) { }
+
+    /// <summary>
+    /// Gets the Local Name of this Element Event.
+    /// </summary>
+    public string LocalName
+    {
+        get
         {
-            _baseUri = baseUri;
-        }
-
-        /// <summary>
-        /// Creates a new XML Base Attribute.
-        /// </summary>
-        /// <param name="baseUri">Base URI.</param>
-        /// <param name="sourceXml">Source XML.</param>
-        public XmlBaseAttributeEvent(string baseUri, string sourceXml)
-            : this(baseUri, sourceXml, null) { }
-
-        /// <summary>
-        /// Gets the Base URI.
-        /// </summary>
-        public string BaseUri
-        {
-            get
-            {
-                return _baseUri;
-            }
+            return _localname;
         }
     }
 
     /// <summary>
-    /// Event for representing plain text content (XML Text Nodes).
+    /// Gets the Namespace of this Element Event.
     /// </summary>
-    public class TextEvent : BaseRdfXmlEvent
+    public string Namespace
     {
-        private string _value;
-
-        /// <summary>
-        /// Creates a new Text Node.
-        /// </summary>
-        /// <param name="value">Textual Content of the XML Text Node.</param>
-        /// <param name="sourceXml">Source XML of the Node.</param>
-        /// <param name="pos">Position Info.</param>
-        public TextEvent(string value, string sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.Text, sourceXml, pos)
+        get
         {
-            _value = value;
-        }
-
-        /// <summary>
-        /// Creates a new Text Node.
-        /// </summary>
-        /// <param name="value">Textual Content of the XML Text Node.</param>
-        /// <param name="sourceXml">Source XML of the Node.</param>
-        public TextEvent(string value, string sourceXml)
-            : this(value, sourceXml, null) { }
-
-        /// <summary>
-        /// Gets the Textual Content of the Event.
-        /// </summary>
-        public string Value
-        {
-            get
-            {
-                return _value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Event.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "[Text] " + _value;
+            return _namespace;
         }
     }
 
     /// <summary>
-    /// Event for representing URIRefs.
+    /// Gets the QName of this Element Event.
     /// </summary>
-    public class UriReferenceEvent : BaseRdfXmlEvent
+    public string QName
     {
-        private string _id;
-
-        /// <summary>
-        /// Creates a new URIRef Event from a URIRef in an XML Attribute value or similar.
-        /// </summary>
-        /// <param name="identifier">URIRef.</param>
-        /// <param name="sourceXml">Source XML of the URIRef.</param>
-        /// <param name="pos">Position Info.</param>
-        public UriReferenceEvent(string identifier, string sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.UriReference, sourceXml, pos)
+        get
         {
-            _id = identifier;
-        }
-
-        /// <summary>
-        /// Creates a new URIRef Event from a URIRef in an XML Attribute value or similar.
-        /// </summary>
-        /// <param name="identifier">URIRef.</param>
-        /// <param name="sourceXml">Source XML of the URIRef.</param>
-        public UriReferenceEvent(string identifier, string sourceXml)
-            : this(identifier, sourceXml, null) { }
-
-        /// <summary>
-        /// Gets the URIRef.
-        /// </summary>
-        public string Identifier
-        {
-            get
-            {
-                return _id;
-            }
+            return _namespace + ":" + _localname;
         }
     }
 
     /// <summary>
-    /// Event for representing QNames.
+    /// Gets the Child Element Events. 
     /// </summary>
-    public class QNameEvent : BaseRdfXmlEvent
+    /// <remarks>These correspond to the Child Nodes of the XML Node.</remarks>
+    public List<IRdfXmlEvent> Children
     {
-        private string _qname;
-
-        /// <summary>
-        /// Creates a new QName Event.
-        /// </summary>
-        /// <param name="qname">QName.</param>
-        /// <param name="sourceXml">Source XML of the QName.</param>
-        /// <param name="pos">Position Info.</param>
-        public QNameEvent(string qname, string sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.QName, sourceXml, pos)
+        get
         {
-            _qname = qname;
-        }
-
-        /// <summary>
-        /// Creates a new QName Event.
-        /// </summary>
-        /// <param name="qname">QName.</param>
-        /// <param name="sourceXml">Source XML of the QName.</param>
-        public QNameEvent(string qname, string sourceXml)
-            : this(qname, sourceXml, null) { }
-
-        /// <summary>
-        /// Gets the QName.
-        /// </summary>
-        public string QName
-        {
-            get
-            {
-                return _qname;
-            }
-        }
-
-    }
-
-    /// <summary>
-    /// Event for representing the need for a Blank Node.
-    /// </summary>
-    public class BlankNodeIDEvent : BaseRdfXmlEvent
-    {
-        private string _id;
-
-        /// <summary>
-        /// Creates a new Blank Node ID Event for a named Blank Node.
-        /// </summary>
-        /// <param name="identifier">Node ID for the Blank Node.</param>
-        /// <param name="sourceXml">Source XML.</param>
-        /// <param name="pos">Position Info.</param>
-        public BlankNodeIDEvent(string identifier, string sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.BlankNodeID, sourceXml, pos)
-        {
-            _id = identifier;
-        }
-
-        /// <summary>
-        /// Creates a new Blank Node ID Event for a named Blank Node.
-        /// </summary>
-        /// <param name="identifier">Node ID for the Blank Node.</param>
-        /// <param name="sourceXml">Source XML.</param>
-        public BlankNodeIDEvent(string identifier, string sourceXml)
-            : this(identifier, sourceXml, null) { }
-
-        /// <summary>
-        /// Creates a new Blank Node ID Event for an anonymous Blank Node.
-        /// </summary>
-        /// <param name="sourceXml">Source XML.</param>
-        /// <param name="pos">Position Info.</param>
-        public BlankNodeIDEvent(string sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.BlankNodeID, sourceXml, pos)
-        {
-            _id = string.Empty;
-        }
-
-        /// <summary>
-        /// Creates a new Blank Node ID Event for an anonymous Blank Node.
-        /// </summary>
-        /// <param name="sourceXml">Source XML.</param>
-        public BlankNodeIDEvent(string sourceXml)
-            : this(sourceXml, (PositionInfo)null) { }
-
-        /// <summary>
-        /// Gets the Blank Node ID (if any).
-        /// </summary>
-        public string Identifier
-        {
-            get
-            {
-                return _id;
-            }
+            return _children;
         }
     }
 
     /// <summary>
-    /// An Event for representing Plain Literals.
+    /// Gets/Sets the Base Uri of the XML Node.
     /// </summary>
-    public class PlainLiteralEvent : BaseRdfXmlEvent
+    public string BaseUri
     {
-        private string _value;
-        private string _language;
-
-        /// <summary>
-        /// Creates a new Plain Literal Event.
-        /// </summary>
-        /// <param name="value">Value of the Literal.</param>
-        /// <param name="language">Language Specifier of the Literal.</param>
-        /// <param name="sourceXml">Source XML of the Event.</param>
-        /// <param name="pos">Position Info.</param>
-        public PlainLiteralEvent(string value, string language, string sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.Literal, sourceXml, pos)
+        get
         {
-            _value = value;
-            _language = language;
+            return _baseuri;
         }
-
-        /// <summary>
-        /// Creates a new Plain Literal Event.
-        /// </summary>
-        /// <param name="value">Value of the Literal.</param>
-        /// <param name="language">Language Specifier of the Literal.</param>
-        /// <param name="sourceXml">Source XML of the Event.</param>
-        public PlainLiteralEvent(string value, string language, string sourceXml)
-            : this(value, language, sourceXml, null) { }
-
-        /// <summary>
-        /// Gets the Value of the Plain Literal.
-        /// </summary>
-        public string Value
+        set
         {
-            get
-            {
-                return _value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Langugage Specifier of the Plain Literal.
-        /// </summary>
-        public string Language
-        {
-            get
-            {
-                return _language;
-            }
-            set
-            {
-                _language = value;
-            }
+            _baseuri = value;
         }
     }
 
     /// <summary>
-    /// An Event for representing Typed Literals.
+    /// Gets the Attribute Events.
     /// </summary>
-    public class TypedLiteralEvent : BaseRdfXmlEvent
+    /// <remarks>These correspond to the Attributes of the XML Node (with some exceptions as defined in the RDF/XML specification).</remarks>
+    public List<AttributeEvent> Attributes
     {
-        private string _value;
-        private string _datatype;
-
-        /// <summary>
-        /// Creates a new Typed Literal Event.
-        /// </summary>
-        /// <param name="value">Value of the Literal.</param>
-        /// <param name="datatype">DataType Uri of the Literal.</param>
-        /// <param name="sourceXml">Source XML of the Event.</param>
-        /// <param name="pos">Position Info.</param>
-        public TypedLiteralEvent(string value, string datatype, string sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.TypedLiteral, sourceXml, pos)
+        get
         {
-            _value = value;
-            _datatype = datatype;
-        }
-
-        /// <summary>
-        /// Creates a new Typed Literal Event.
-        /// </summary>
-        /// <param name="value">Value of the Literal.</param>
-        /// <param name="datatype">DataType Uri of the Literal.</param>
-        /// <param name="sourceXml">Source XML of the Event.</param>
-        public TypedLiteralEvent(string value, string datatype, string sourceXml)
-            : this(value, datatype, sourceXml, null) { }
-
-        /// <summary>
-        /// Gets the Value of the Typed Literal.
-        /// </summary>
-        public string Value
-        {
-            get
-            {
-                return _value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the DataType of the Typed Literal.
-        /// </summary>
-        public string DataType
-        {
-            get
-            {
-                return _datatype;
-            }
-            set
-            {
-                _datatype = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Event.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "[Literal] " + _value;
+            return _attributes;
         }
     }
 
     /// <summary>
-    /// An Event for representing that the Event Queue should be cleared of previously queued events.
+    /// Gets the Namespace Attribute Events.
     /// </summary>
-    internal class ClearQueueEvent : BaseRdfXmlEvent
+    /// <remarks>
+    /// These correspond to all the Namespace Attributes of the XML Node.
+    /// </remarks>
+    public List<NamespaceAttributeEvent> NamespaceAttributes
     {
-        /// <summary>
-        /// Creates a new Clear Queue Event.
-        /// </summary>
-        public ClearQueueEvent()
-            : base(RdfXmlEvent.Clear, string.Empty) { }
+        get
+        {
+            return _namespaces;
+        }
     }
+
+    /// <summary>
+    /// Gets/Sets the List Counter.
+    /// </summary>
+    public int ListCounter
+    {
+        get
+        {
+            return _listcounter;
+        }
+        set
+        {
+            _listcounter = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets/Sets the Language of this Event.
+    /// </summary>
+    public string Language
+    {
+        get
+        {
+            return _language;
+        }
+        set
+        {
+            _language = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets/Sets the Subject Event of this Event.
+    /// </summary>
+    /// <remarks>Will be assigned according to the Parsing rules during the Parsing process and later used to generate a Subject Node.</remarks>
+    public IRdfXmlEvent Subject
+    {
+        get
+        {
+            return _subject;
+        }
+        set
+        {
+            _subject = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets/Sets the Subject Node of this Event.
+    /// </summary>
+    /// <remarks>Will be created from the Subject at some point during the Parsing process.</remarks>
+    public INode SubjectNode
+    {
+        get
+        {
+            return _subjectNode;
+        }
+        set
+        {
+            _subjectNode = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets/Sets the Parse Type for this Event.
+    /// </summary>
+    public RdfXmlParseType ParseType
+    {
+        get
+        {
+            return _parsetype;
+        }
+        set
+        {
+            _parsetype = value;
+        }
+    }
+
+    /// <summary>
+    /// Method which sets the Uri for this Element Event.
+    /// </summary>
+    /// <param name="u">Uri Reference to set Uri from.</param>
+    /// <remarks>This can only be used on Elements which are rdf:li and thus need expanding into actual list elements according to List Expansion rules.  Attempting to set the Uri on any other Element Event will cause an Error message.</remarks>
+    public void SetUri(UriReferenceEvent u)
+    {
+        if (QName.Equals("rdf:li"))
+        {
+            // Split the QName into Namespace and Local Name
+            var qname = u.Identifier;
+            var parts = qname.Split(':');
+            _namespace = parts[0];
+            _localname = parts[1];
+        }
+        else
+        {
+            throw new RdfParseException("It is forbidden to change the URI of an Element Event unless it is a rdf:li Element and thus needs expanding to the form rdf:_X according to List Expansion rules");
+        }
+    }
+
+    /// <summary>
+    /// Method which sets the Uri for this Element Event.
+    /// </summary>
+    /// <param name="u">Uri Reference to set Uri from.</param>
+    /// <param name="nsMapper">Namespace prefix mappings to use for resolving the QName of this element event.</param>
+    /// <remarks>This can only be used on Elements which are rdf:li and thus need expanding into actual list elements according to List Expansion rules.  Attempting to set the Uri on any other Element Event will cause an Error message.</remarks>
+    public void SetUri(UriReferenceEvent u, INamespaceMapper nsMapper)
+    {
+        if (RdfXmlSpecsHelper.IsLiElement(this, nsMapper))
+        {
+            // Split the QName into Namespace and Local Name
+            var qname = u.Identifier;
+            var parts = qname.Split(':');
+            _namespace = parts[0];
+            _localname = parts[1];
+        }
+        else
+        {
+            throw new RdfParseException("It is forbidden to change the URI of an Element Event unless it is a rdf:li Element and thus needs expanding to the form rdf:_X according to List Expansion rules");
+        }
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Event.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "[Element] " + _namespace + ":" + _localname;
+    }
+
+}
+
+/// <summary>
+/// An Event for representing the End of Elements.
+/// </summary>
+public class EndElementEvent : BaseRdfXmlEvent
+{
+    /// <summary>
+    /// Creates a new EndElementEvent.
+    /// </summary>
+    public EndElementEvent(PositionInfo pos) 
+        : base(RdfXmlEvent.EndElement, string.Empty, pos) { }
+
+    /// <summary>
+    /// Creates a new EndElementEvent.
+    /// </summary>
+    public EndElementEvent()
+        : this(null) { }
+}
+
+/// <summary>
+/// An Event for representing Attributes of XML Node.
+/// </summary>
+public class AttributeEvent : BaseRdfXmlEvent
+{
+    private string _localname, _namespace;
+    private string _value;
+
+    /// <summary>
+    /// Creates a new Attribute Event from an XML Attribute.
+    /// </summary>
+    /// <param name="qname">QName of the Attribute.</param>
+    /// <param name="value">Value of the Attribute.</param>
+    /// <param name="sourceXml">Source XML of the Attribute.</param>
+    /// <param name="pos">Position Info.</param>
+    public AttributeEvent(string qname, string value, string sourceXml, PositionInfo pos)
+        : base(RdfXmlEvent.Attribute, sourceXml, pos)
+    {
+        _value = value;
+        if (qname.Contains(':'))
+        {
+            // Has a Namespace
+            // Split the QName into Namespace and Local Name
+            var parts = qname.Split(':');
+            _namespace = parts[0];
+            _localname = parts[1];
+        }
+        else
+        {
+            // Is in the Default Namespace
+            _namespace = string.Empty;
+            _localname = qname;
+        }
+    }
+
+    /// <summary>
+    /// Creates a new Attribute Event from an XML Attribute.
+    /// </summary>
+    /// <param name="qname">QName of the Attribute.</param>
+    /// <param name="value">Value of the Attribute.</param>
+    /// <param name="sourceXml">Source XML of the Attribute.</param>
+    public AttributeEvent(string qname, string value, string sourceXml)
+        : this(qname, value, sourceXml, (PositionInfo)null) { }
+
+    /// <summary>
+    /// Creates a new Attribute Event from an XML Attribute.
+    /// </summary>
+    /// <param name="localname">Local Name of the Attribute.</param>
+    /// <param name="ns">Namespace Prefix of the Attribute.</param>
+    /// <param name="value">Value of the Attribute.</param>
+    /// <param name="sourceXml">Source XML of the Attribute.</param>
+    /// <param name="pos">Position Info.</param>
+    public AttributeEvent(string localname, string ns, string value, string sourceXml, PositionInfo pos)
+        : base(RdfXmlEvent.Attribute, sourceXml, pos)
+    {
+        _value = value;
+        _localname = localname;
+        _namespace = ns;
+    }
+
+    /// <summary>
+    /// Creates a new Attribute Event from an XML Attribute.
+    /// </summary>
+    /// <param name="localname">Local Name of the Attribute.</param>
+    /// <param name="ns">Namespace Prefix of the Attribute.</param>
+    /// <param name="value">Value of the Attribute.</param>
+    /// <param name="sourceXml">Source XML of the Attribute.</param>
+    public AttributeEvent(string localname, string ns, string value, string sourceXml)
+        : this(localname, ns, value, sourceXml, null) { }
+
+    /// <summary>
+    /// Gets the Local Name of the Attribute.
+    /// </summary>
+    public string LocalName
+    {
+        get
+        {
+            return _localname;
+        }
+    }
+
+    /// <summary>
+    /// Gets the Namespace Prefix of the Attribute.
+    /// </summary>
+    public string Namespace
+    {
+        get
+        {
+            return _namespace;
+        }
+    }
+
+    /// <summary>
+    /// Gets the QName of the Attribute.
+    /// </summary>
+    public string QName
+    {
+        get
+        {
+            return _namespace + ":" + _localname;
+        }
+    }
+
+    /// <summary>
+    /// Gets the Value of the Attribute.
+    /// </summary>
+    public string Value
+    {
+        get
+        {
+            return _value;
+        }
+    }
+}
+
+/// <summary>
+/// An Event for representing Namespace Attributes of an XML Node.
+/// </summary>
+public class NamespaceAttributeEvent : BaseRdfXmlEvent
+{
+    private string _prefix, _uri;
+
+    /// <summary>
+    /// Creates a new Namespace Attribute Event.
+    /// </summary>
+    /// <param name="prefix">Namespace Prefix.</param>
+    /// <param name="uri">Namespace Uri.</param>
+    /// <param name="sourceXml">Source XML.</param>
+    /// <param name="pos">Position Info.</param>
+    public NamespaceAttributeEvent(string prefix, string uri, string sourceXml, PositionInfo pos)
+        : base(RdfXmlEvent.NamespaceAttribute, sourceXml, pos)
+    {
+        _prefix = prefix;
+        _uri = uri;
+    }
+
+    /// <summary>
+    /// Creates a new Namespace Attribute Event.
+    /// </summary>
+    /// <param name="prefix">Namespace Prefix.</param>
+    /// <param name="uri">Namespace Uri.</param>
+    /// <param name="sourceXml">Source XML.</param>
+    public NamespaceAttributeEvent(string prefix, string uri, string sourceXml)
+        : this(prefix, uri, sourceXml, null) { }
+
+    /// <summary>
+    /// Gets the Namespace Prefix.
+    /// </summary>
+    public string Prefix
+    {
+        get
+        {
+            return _prefix;
+        }
+    }
+
+    /// <summary>
+    /// Gets the Namespace Uri.
+    /// </summary>
+    public string Uri
+    {
+        get
+        {
+            return _uri;
+        }
+    }
+}
+
+/// <summary>
+/// An Event for representing Language Attributes of an XML Node.
+/// </summary>
+public class LanguageAttributeEvent : BaseRdfXmlEvent
+{
+    private string _lang;
+
+    /// <summary>
+    /// Creates a new Language Attribute Event.
+    /// </summary>
+    /// <param name="lang">Language.</param>
+    /// <param name="sourceXml">Source XML.</param>
+    /// <param name="pos">Position Info.</param>
+    public LanguageAttributeEvent(string lang, string sourceXml, PositionInfo pos)
+        : base(RdfXmlEvent.LanguageAttribute, sourceXml, pos)
+    {
+        _lang = lang;
+    }
+
+    /// <summary>
+    /// Creates a new Language Attribute Event.
+    /// </summary>
+    /// <param name="lang">Language.</param>
+    /// <param name="sourceXml">Source XML.</param>
+    public LanguageAttributeEvent(string lang, string sourceXml)
+        : this(lang, sourceXml, null) { }
+
+    /// <summary>
+    /// Gets the Language.
+    /// </summary>
+    public string Language
+    {
+        get
+        {
+            return _lang;
+        }
+    }
+}
+
+/// <summary>
+/// An Event for representing rdf:parseType Attributes of an XML Node.
+/// </summary>
+public class ParseTypeAttributeEvent : BaseRdfXmlEvent
+{
+    private RdfXmlParseType _type;
+
+    /// <summary>
+    /// Creates a new Parse Type Attribute Event.
+    /// </summary>
+    /// <param name="type">Parse Type.</param>
+    /// <param name="sourceXml">Source XML.</param>
+    /// <param name="pos">Position Info.</param>
+    public ParseTypeAttributeEvent(RdfXmlParseType type, string sourceXml, PositionInfo pos)
+        : base(RdfXmlEvent.ParseTypeAttribute, sourceXml, pos)
+    {
+        _type = type;
+    }
+
+    /// <summary>
+    /// Creates a new Parse Type Attribute Event.
+    /// </summary>
+    /// <param name="type">Parse Type.</param>
+    /// <param name="sourceXml">Source XML.</param>
+    public ParseTypeAttributeEvent(RdfXmlParseType type, string sourceXml)
+        : this(type, sourceXml, null) { }
+
+    /// <summary>
+    /// Gets the Parse Type.
+    /// </summary>
+    public RdfXmlParseType ParseType
+    {
+        get
+        {
+            return _type;
+        }
+    }
+}
+
+/// <summary>
+/// An Event for representing xml:base attributes of XML Nodes.
+/// </summary>
+public class XmlBaseAttributeEvent : BaseRdfXmlEvent
+{
+    private string _baseUri;
+
+    /// <summary>
+    /// Creates a new XML Base Attribute.
+    /// </summary>
+    /// <param name="baseUri">Base URI.</param>
+    /// <param name="sourceXml">Source XML.</param>
+    /// <param name="pos">Position Info.</param>
+    public XmlBaseAttributeEvent(string baseUri, string sourceXml, PositionInfo pos)
+        : base(RdfXmlEvent.XmlBaseAttribute, sourceXml, pos)
+    {
+        _baseUri = baseUri;
+    }
+
+    /// <summary>
+    /// Creates a new XML Base Attribute.
+    /// </summary>
+    /// <param name="baseUri">Base URI.</param>
+    /// <param name="sourceXml">Source XML.</param>
+    public XmlBaseAttributeEvent(string baseUri, string sourceXml)
+        : this(baseUri, sourceXml, null) { }
+
+    /// <summary>
+    /// Gets the Base URI.
+    /// </summary>
+    public string BaseUri
+    {
+        get
+        {
+            return _baseUri;
+        }
+    }
+}
+
+/// <summary>
+/// Event for representing plain text content (XML Text Nodes).
+/// </summary>
+public class TextEvent : BaseRdfXmlEvent
+{
+    private string _value;
+
+    /// <summary>
+    /// Creates a new Text Node.
+    /// </summary>
+    /// <param name="value">Textual Content of the XML Text Node.</param>
+    /// <param name="sourceXml">Source XML of the Node.</param>
+    /// <param name="pos">Position Info.</param>
+    public TextEvent(string value, string sourceXml, PositionInfo pos)
+        : base(RdfXmlEvent.Text, sourceXml, pos)
+    {
+        _value = value;
+    }
+
+    /// <summary>
+    /// Creates a new Text Node.
+    /// </summary>
+    /// <param name="value">Textual Content of the XML Text Node.</param>
+    /// <param name="sourceXml">Source XML of the Node.</param>
+    public TextEvent(string value, string sourceXml)
+        : this(value, sourceXml, null) { }
+
+    /// <summary>
+    /// Gets the Textual Content of the Event.
+    /// </summary>
+    public string Value
+    {
+        get
+        {
+            return _value;
+        }
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Event.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "[Text] " + _value;
+    }
+}
+
+/// <summary>
+/// Event for representing URIRefs.
+/// </summary>
+public class UriReferenceEvent : BaseRdfXmlEvent
+{
+    private string _id;
+
+    /// <summary>
+    /// Creates a new URIRef Event from a URIRef in an XML Attribute value or similar.
+    /// </summary>
+    /// <param name="identifier">URIRef.</param>
+    /// <param name="sourceXml">Source XML of the URIRef.</param>
+    /// <param name="pos">Position Info.</param>
+    public UriReferenceEvent(string identifier, string sourceXml, PositionInfo pos)
+        : base(RdfXmlEvent.UriReference, sourceXml, pos)
+    {
+        _id = identifier;
+    }
+
+    /// <summary>
+    /// Creates a new URIRef Event from a URIRef in an XML Attribute value or similar.
+    /// </summary>
+    /// <param name="identifier">URIRef.</param>
+    /// <param name="sourceXml">Source XML of the URIRef.</param>
+    public UriReferenceEvent(string identifier, string sourceXml)
+        : this(identifier, sourceXml, null) { }
+
+    /// <summary>
+    /// Gets the URIRef.
+    /// </summary>
+    public string Identifier
+    {
+        get
+        {
+            return _id;
+        }
+    }
+}
+
+/// <summary>
+/// Event for representing QNames.
+/// </summary>
+public class QNameEvent : BaseRdfXmlEvent
+{
+    private string _qname;
+
+    /// <summary>
+    /// Creates a new QName Event.
+    /// </summary>
+    /// <param name="qname">QName.</param>
+    /// <param name="sourceXml">Source XML of the QName.</param>
+    /// <param name="pos">Position Info.</param>
+    public QNameEvent(string qname, string sourceXml, PositionInfo pos)
+        : base(RdfXmlEvent.QName, sourceXml, pos)
+    {
+        _qname = qname;
+    }
+
+    /// <summary>
+    /// Creates a new QName Event.
+    /// </summary>
+    /// <param name="qname">QName.</param>
+    /// <param name="sourceXml">Source XML of the QName.</param>
+    public QNameEvent(string qname, string sourceXml)
+        : this(qname, sourceXml, null) { }
+
+    /// <summary>
+    /// Gets the QName.
+    /// </summary>
+    public string QName
+    {
+        get
+        {
+            return _qname;
+        }
+    }
+
+}
+
+/// <summary>
+/// Event for representing the need for a Blank Node.
+/// </summary>
+public class BlankNodeIDEvent : BaseRdfXmlEvent
+{
+    private string _id;
+
+    /// <summary>
+    /// Creates a new Blank Node ID Event for a named Blank Node.
+    /// </summary>
+    /// <param name="identifier">Node ID for the Blank Node.</param>
+    /// <param name="sourceXml">Source XML.</param>
+    /// <param name="pos">Position Info.</param>
+    public BlankNodeIDEvent(string identifier, string sourceXml, PositionInfo pos)
+        : base(RdfXmlEvent.BlankNodeID, sourceXml, pos)
+    {
+        _id = identifier;
+    }
+
+    /// <summary>
+    /// Creates a new Blank Node ID Event for a named Blank Node.
+    /// </summary>
+    /// <param name="identifier">Node ID for the Blank Node.</param>
+    /// <param name="sourceXml">Source XML.</param>
+    public BlankNodeIDEvent(string identifier, string sourceXml)
+        : this(identifier, sourceXml, null) { }
+
+    /// <summary>
+    /// Creates a new Blank Node ID Event for an anonymous Blank Node.
+    /// </summary>
+    /// <param name="sourceXml">Source XML.</param>
+    /// <param name="pos">Position Info.</param>
+    public BlankNodeIDEvent(string sourceXml, PositionInfo pos)
+        : base(RdfXmlEvent.BlankNodeID, sourceXml, pos)
+    {
+        _id = string.Empty;
+    }
+
+    /// <summary>
+    /// Creates a new Blank Node ID Event for an anonymous Blank Node.
+    /// </summary>
+    /// <param name="sourceXml">Source XML.</param>
+    public BlankNodeIDEvent(string sourceXml)
+        : this(sourceXml, (PositionInfo)null) { }
+
+    /// <summary>
+    /// Gets the Blank Node ID (if any).
+    /// </summary>
+    public string Identifier
+    {
+        get
+        {
+            return _id;
+        }
+    }
+}
+
+/// <summary>
+/// An Event for representing Plain Literals.
+/// </summary>
+public class PlainLiteralEvent : BaseRdfXmlEvent
+{
+    private string _value;
+    private string _language;
+
+    /// <summary>
+    /// Creates a new Plain Literal Event.
+    /// </summary>
+    /// <param name="value">Value of the Literal.</param>
+    /// <param name="language">Language Specifier of the Literal.</param>
+    /// <param name="sourceXml">Source XML of the Event.</param>
+    /// <param name="pos">Position Info.</param>
+    public PlainLiteralEvent(string value, string language, string sourceXml, PositionInfo pos)
+        : base(RdfXmlEvent.Literal, sourceXml, pos)
+    {
+        _value = value;
+        _language = language;
+    }
+
+    /// <summary>
+    /// Creates a new Plain Literal Event.
+    /// </summary>
+    /// <param name="value">Value of the Literal.</param>
+    /// <param name="language">Language Specifier of the Literal.</param>
+    /// <param name="sourceXml">Source XML of the Event.</param>
+    public PlainLiteralEvent(string value, string language, string sourceXml)
+        : this(value, language, sourceXml, null) { }
+
+    /// <summary>
+    /// Gets the Value of the Plain Literal.
+    /// </summary>
+    public string Value
+    {
+        get
+        {
+            return _value;
+        }
+    }
+
+    /// <summary>
+    /// Gets the Langugage Specifier of the Plain Literal.
+    /// </summary>
+    public string Language
+    {
+        get
+        {
+            return _language;
+        }
+        set
+        {
+            _language = value;
+        }
+    }
+}
+
+/// <summary>
+/// An Event for representing Typed Literals.
+/// </summary>
+public class TypedLiteralEvent : BaseRdfXmlEvent
+{
+    private string _value;
+    private string _datatype;
+
+    /// <summary>
+    /// Creates a new Typed Literal Event.
+    /// </summary>
+    /// <param name="value">Value of the Literal.</param>
+    /// <param name="datatype">DataType Uri of the Literal.</param>
+    /// <param name="sourceXml">Source XML of the Event.</param>
+    /// <param name="pos">Position Info.</param>
+    public TypedLiteralEvent(string value, string datatype, string sourceXml, PositionInfo pos)
+        : base(RdfXmlEvent.TypedLiteral, sourceXml, pos)
+    {
+        _value = value;
+        _datatype = datatype;
+    }
+
+    /// <summary>
+    /// Creates a new Typed Literal Event.
+    /// </summary>
+    /// <param name="value">Value of the Literal.</param>
+    /// <param name="datatype">DataType Uri of the Literal.</param>
+    /// <param name="sourceXml">Source XML of the Event.</param>
+    public TypedLiteralEvent(string value, string datatype, string sourceXml)
+        : this(value, datatype, sourceXml, null) { }
+
+    /// <summary>
+    /// Gets the Value of the Typed Literal.
+    /// </summary>
+    public string Value
+    {
+        get
+        {
+            return _value;
+        }
+    }
+
+    /// <summary>
+    /// Gets the DataType of the Typed Literal.
+    /// </summary>
+    public string DataType
+    {
+        get
+        {
+            return _datatype;
+        }
+        set
+        {
+            _datatype = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Event.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "[Literal] " + _value;
+    }
+}
+
+/// <summary>
+/// An Event for representing that the Event Queue should be cleared of previously queued events.
+/// </summary>
+internal class ClearQueueEvent : BaseRdfXmlEvent
+{
+    /// <summary>
+    /// Creates a new Clear Queue Event.
+    /// </summary>
+    public ClearQueueEvent()
+        : base(RdfXmlEvent.Clear, string.Empty) { }
 }

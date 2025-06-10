@@ -29,202 +29,201 @@ using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+internal partial class ExpressionBuilder : IAggregateBuilder
 {
-    internal partial class ExpressionBuilder : IAggregateBuilder
+    private bool _distinctAggregate;
+
+    public IDistinctAggregateBuilder Distinct => new ExpressionBuilder(Prefixes)
     {
-        private bool _distinctAggregate;
+        _distinctAggregate = true,
+    };
 
-        public IDistinctAggregateBuilder Distinct => new ExpressionBuilder(Prefixes)
+    public AggregateExpression Sum(VariableTerm variable)
+    {
+        var sumAggregate = new SumAggregate(variable, _distinctAggregate);
+
+        return new AggregateExpression(sumAggregate);
+    }
+
+    public AggregateExpression Sum(string variable)
+    {
+        return Sum(new VariableTerm(variable));
+    }
+
+    public AggregateExpression Sum(SparqlVariable variable)
+    {
+        return Sum(new VariableTerm(variable.Name));
+    }
+
+    public AggregateExpression Sum(SparqlExpression expression)
+    {
+        var sumAggregate = new SumAggregate(expression.Expression, _distinctAggregate);
+
+        return new AggregateExpression(sumAggregate);
+    }
+
+    public AggregateExpression Avg(VariableTerm variable)
+    {
+        var aggregate = new AverageAggregate(variable, _distinctAggregate);
+
+        return new AggregateExpression(aggregate);
+    }
+
+    public AggregateExpression Avg(string variable)
+    {
+        return Avg(new VariableTerm(variable));
+    }
+
+    public AggregateExpression Avg(SparqlVariable variable)
+    {
+        return Avg(new VariableTerm(variable.Name));
+    }
+
+    public AggregateExpression Avg(SparqlExpression expression)
+    {
+        var aggregate = new AverageAggregate(expression.Expression, _distinctAggregate);
+
+        return new AggregateExpression(aggregate);
+    }
+
+    public AggregateExpression Min(VariableTerm variable)
+    {
+        var aggregate = new MinAggregate(variable, _distinctAggregate);
+
+        return new AggregateExpression(aggregate);
+    }
+
+    public AggregateExpression Min(string variable)
+    {
+        return Min(new VariableTerm(variable));
+    }
+
+    public AggregateExpression Min(SparqlVariable variable)
+    {
+        return Min(new VariableTerm(variable.Name));
+    }
+
+    public AggregateExpression Min(SparqlExpression expression)
+    {
+        var aggregate = new MinAggregate(expression.Expression, _distinctAggregate);
+
+        return new AggregateExpression(aggregate);
+    }
+
+    public AggregateExpression Max(VariableTerm variable)
+    {
+        var aggregate = new MaxAggregate(variable, _distinctAggregate);
+
+        return new AggregateExpression(aggregate);
+    }
+
+    public AggregateExpression Max(string variable)
+    {
+        return Max(new VariableTerm(variable));
+    }
+
+    public AggregateExpression Max(SparqlVariable variable)
+    {
+        return Max(new VariableTerm(variable.Name));
+    }
+
+    public AggregateExpression Max(SparqlExpression expression)
+    {
+        var aggregate = new MaxAggregate(expression.Expression, _distinctAggregate);
+
+        return new AggregateExpression(aggregate);
+    }
+
+    public AggregateExpression GroupConcat(VariableTerm variable, string separator = " ")
+    {
+        GroupConcatAggregate aggregate;
+        if (separator != " ")
         {
-            _distinctAggregate = true,
-        };
-
-        public AggregateExpression Sum(VariableTerm variable)
+            aggregate = new GroupConcatAggregate(variable, Constant(separator).Expression, _distinctAggregate);
+        }
+        else
         {
-            var sumAggregate = new SumAggregate(variable, _distinctAggregate);
-
-            return new AggregateExpression(sumAggregate);
+            aggregate = new GroupConcatAggregate(variable, _distinctAggregate);
         }
 
-        public AggregateExpression Sum(string variable)
+        return new AggregateExpression(aggregate);
+    }
+
+    public AggregateExpression GroupConcat(string variable, string separator = " ")
+    {
+        return GroupConcat(new VariableTerm(variable), separator);
+    }
+
+    public AggregateExpression GroupConcat(SparqlExpression expression, string separator = " ")
+    {
+        GroupConcatAggregate aggregate;
+        if (separator != " ")
         {
-            return Sum(new VariableTerm(variable));
+            aggregate = new GroupConcatAggregate(expression.Expression, Constant(separator).Expression, _distinctAggregate);
+        }
+        else
+        {
+            aggregate = new GroupConcatAggregate(expression.Expression, _distinctAggregate);
         }
 
-        public AggregateExpression Sum(SparqlVariable variable)
-        {
-            return Sum(new VariableTerm(variable.Name));
-        }
+        return new AggregateExpression(aggregate);
+    }
 
-        public AggregateExpression Sum(SparqlExpression expression)
-        {
-            var sumAggregate = new SumAggregate(expression.Expression, _distinctAggregate);
+    public AggregateExpression Sample(VariableTerm variable)
+    {
+        var aggregate = new SampleAggregate(variable);
 
-            return new AggregateExpression(sumAggregate);
-        }
+        return new AggregateExpression(aggregate);
+    }
 
-        public AggregateExpression Avg(VariableTerm variable)
-        {
-            var aggregate = new AverageAggregate(variable, _distinctAggregate);
+    public AggregateExpression Sample(string variable)
+    {
+        return Sample(new VariableTerm(variable));
+    }
 
-            return new AggregateExpression(aggregate);
-        }
+    public AggregateExpression Sample(SparqlExpression expression)
+    {
+        var aggregate = new SampleAggregate(expression.Expression);
 
-        public AggregateExpression Avg(string variable)
-        {
-            return Avg(new VariableTerm(variable));
-        }
+        return new AggregateExpression(aggregate);
+    }
 
-        public AggregateExpression Avg(SparqlVariable variable)
-        {
-            return Avg(new VariableTerm(variable.Name));
-        }
+    public AggregateExpression Count()
+    {
+        ISparqlAggregate aggregate = _distinctAggregate 
+            ? (ISparqlAggregate)new CountAllDistinctAggregate()
+            : new CountAllAggregate();
 
-        public AggregateExpression Avg(SparqlExpression expression)
-        {
-            var aggregate = new AverageAggregate(expression.Expression, _distinctAggregate);
+        return new AggregateExpression(aggregate);
+    }
 
-            return new AggregateExpression(aggregate);
-        }
+    public AggregateExpression Count(VariableTerm variable)
+    {
+        ISparqlAggregate aggregate = _distinctAggregate
+            ? (ISparqlAggregate)new CountDistinctAggregate(variable)
+            : new CountAggregate(variable);
 
-        public AggregateExpression Min(VariableTerm variable)
-        {
-            var aggregate = new MinAggregate(variable, _distinctAggregate);
+        return new AggregateExpression(aggregate);
+    }
 
-            return new AggregateExpression(aggregate);
-        }
+    public AggregateExpression Count(string variable)
+    {
+        return Count(new VariableTerm(variable));
+    }
 
-        public AggregateExpression Min(string variable)
-        {
-            return Min(new VariableTerm(variable));
-        }
+    public AggregateExpression Count(SparqlVariable variable)
+    {
+        return Count(new VariableTerm(variable.Name));
+    }
 
-        public AggregateExpression Min(SparqlVariable variable)
-        {
-            return Min(new VariableTerm(variable.Name));
-        }
+    public AggregateExpression Count(SparqlExpression expression)
+    {
+        ISparqlAggregate aggregate = _distinctAggregate
+            ? (ISparqlAggregate)new CountDistinctAggregate(expression.Expression)
+            : new CountAggregate(expression.Expression);
 
-        public AggregateExpression Min(SparqlExpression expression)
-        {
-            var aggregate = new MinAggregate(expression.Expression, _distinctAggregate);
-
-            return new AggregateExpression(aggregate);
-        }
-
-        public AggregateExpression Max(VariableTerm variable)
-        {
-            var aggregate = new MaxAggregate(variable, _distinctAggregate);
-
-            return new AggregateExpression(aggregate);
-        }
-
-        public AggregateExpression Max(string variable)
-        {
-            return Max(new VariableTerm(variable));
-        }
-
-        public AggregateExpression Max(SparqlVariable variable)
-        {
-            return Max(new VariableTerm(variable.Name));
-        }
-
-        public AggregateExpression Max(SparqlExpression expression)
-        {
-            var aggregate = new MaxAggregate(expression.Expression, _distinctAggregate);
-
-            return new AggregateExpression(aggregate);
-        }
-
-        public AggregateExpression GroupConcat(VariableTerm variable, string separator = " ")
-        {
-            GroupConcatAggregate aggregate;
-            if (separator != " ")
-            {
-                aggregate = new GroupConcatAggregate(variable, Constant(separator).Expression, _distinctAggregate);
-            }
-            else
-            {
-                aggregate = new GroupConcatAggregate(variable, _distinctAggregate);
-            }
-
-            return new AggregateExpression(aggregate);
-        }
-
-        public AggregateExpression GroupConcat(string variable, string separator = " ")
-        {
-            return GroupConcat(new VariableTerm(variable), separator);
-        }
-
-        public AggregateExpression GroupConcat(SparqlExpression expression, string separator = " ")
-        {
-            GroupConcatAggregate aggregate;
-            if (separator != " ")
-            {
-                aggregate = new GroupConcatAggregate(expression.Expression, Constant(separator).Expression, _distinctAggregate);
-            }
-            else
-            {
-                aggregate = new GroupConcatAggregate(expression.Expression, _distinctAggregate);
-            }
-
-            return new AggregateExpression(aggregate);
-        }
-
-        public AggregateExpression Sample(VariableTerm variable)
-        {
-            var aggregate = new SampleAggregate(variable);
-
-            return new AggregateExpression(aggregate);
-        }
-
-        public AggregateExpression Sample(string variable)
-        {
-            return Sample(new VariableTerm(variable));
-        }
-
-        public AggregateExpression Sample(SparqlExpression expression)
-        {
-            var aggregate = new SampleAggregate(expression.Expression);
-
-            return new AggregateExpression(aggregate);
-        }
-
-        public AggregateExpression Count()
-        {
-            ISparqlAggregate aggregate = _distinctAggregate 
-                ? (ISparqlAggregate)new CountAllDistinctAggregate()
-                : new CountAllAggregate();
-
-            return new AggregateExpression(aggregate);
-        }
-
-        public AggregateExpression Count(VariableTerm variable)
-        {
-            ISparqlAggregate aggregate = _distinctAggregate
-                ? (ISparqlAggregate)new CountDistinctAggregate(variable)
-                : new CountAggregate(variable);
-
-            return new AggregateExpression(aggregate);
-        }
-
-        public AggregateExpression Count(string variable)
-        {
-            return Count(new VariableTerm(variable));
-        }
-
-        public AggregateExpression Count(SparqlVariable variable)
-        {
-            return Count(new VariableTerm(variable.Name));
-        }
-
-        public AggregateExpression Count(SparqlExpression expression)
-        {
-            ISparqlAggregate aggregate = _distinctAggregate
-                ? (ISparqlAggregate)new CountDistinctAggregate(expression.Expression)
-                : new CountAggregate(expression.Expression);
-
-            return new AggregateExpression(aggregate);
-        }
+        return new AggregateExpression(aggregate);
     }
 }

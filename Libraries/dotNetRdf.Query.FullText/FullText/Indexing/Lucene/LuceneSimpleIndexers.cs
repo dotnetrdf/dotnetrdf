@@ -28,53 +28,52 @@ using Lucene.Net.Analysis;
 using Lucene.Net.Store;
 using VDS.RDF.Query.FullText.Schema;
 
-namespace VDS.RDF.Query.FullText.Indexing.Lucene
+namespace VDS.RDF.Query.FullText.Indexing.Lucene;
+
+/// <summary>
+/// A Lucene.Net based indexer which indexes the predicate from the triple with the full text of the literal object.
+/// </summary>
+public class LucenePredicatesIndexer
+    : BaseSimpleLuceneIndexer
 {
     /// <summary>
-    /// A Lucene.Net based indexer which indexes the predicate from the triple with the full text of the literal object.
+    /// Creates a Lucene Predicates Indexer.
     /// </summary>
-    public class LucenePredicatesIndexer
-        : BaseSimpleLuceneIndexer
-    {
-        /// <summary>
-        /// Creates a Lucene Predicates Indexer.
-        /// </summary>
-        /// <param name="indexDir">Directory.</param>
-        /// <param name="analyzer">Analyzer.</param>
-        /// <param name="schema">Index Schema.</param>
-        public LucenePredicatesIndexer(Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
-            : base(indexDir, analyzer, schema, IndexingMode.Predicates) { }
-    }
+    /// <param name="indexDir">Directory.</param>
+    /// <param name="analyzer">Analyzer.</param>
+    /// <param name="schema">Index Schema.</param>
+    public LucenePredicatesIndexer(Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
+        : base(indexDir, analyzer, schema, IndexingMode.Predicates) { }
+}
 
+/// <summary>
+/// A Lucene.Net based indexer which indexes the original object from the triple with the full text of that literal object.
+/// </summary>
+public class LuceneObjectsIndexer
+    : BaseSimpleLuceneIndexer
+{
     /// <summary>
-    /// A Lucene.Net based indexer which indexes the original object from the triple with the full text of that literal object.
+    /// Creates a Lucene Objects Indexer.
     /// </summary>
-    public class LuceneObjectsIndexer
-        : BaseSimpleLuceneIndexer
-    {
-        /// <summary>
-        /// Creates a Lucene Objects Indexer.
-        /// </summary>
-        /// <param name="indexDir">Directory.</param>
-        /// <param name="analyzer">Analyzer.</param>
-        /// <param name="schema">Index Schema.</param>
-        public LuceneObjectsIndexer(Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
-            : base(indexDir, analyzer, schema, IndexingMode.Objects) { }
-    }
+    /// <param name="indexDir">Directory.</param>
+    /// <param name="analyzer">Analyzer.</param>
+    /// <param name="schema">Index Schema.</param>
+    public LuceneObjectsIndexer(Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
+        : base(indexDir, analyzer, schema, IndexingMode.Objects) { }
+}
 
+/// <summary>
+/// A Lucene.Net based indexer which indexes the original subject from the triple with the full text of the literal object.
+/// </summary>
+public class LuceneSubjectsIndexer
+    : BaseSimpleLuceneIndexer
+{
     /// <summary>
-    /// A Lucene.Net based indexer which indexes the original subject from the triple with the full text of the literal object.
+    /// Creates a Lucene Subjects Indexer.
     /// </summary>
-    public class LuceneSubjectsIndexer
-        : BaseSimpleLuceneIndexer
-    {
-        /// <summary>
-        /// Creates a Lucene Subjects Indexer.
-        /// </summary>
-        /// <param name="indexDir">Directory.</param>
-        /// <param name="analyzer">Analyzer.</param>
-        /// <param name="schema">Index Schema.</param>
-        public LuceneSubjectsIndexer(Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
-            : base(indexDir, analyzer, schema, IndexingMode.Subjects) { }
-    }
+    /// <param name="indexDir">Directory.</param>
+    /// <param name="analyzer">Analyzer.</param>
+    /// <param name="schema">Index Schema.</param>
+    public LuceneSubjectsIndexer(Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
+        : base(indexDir, analyzer, schema, IndexingMode.Subjects) { }
 }

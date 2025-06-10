@@ -26,37 +26,36 @@
 
 using System;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Class for representing RDF-star triple nodes.
+/// </summary>
+public class TripleNode : BaseTripleNode, IComparable<TripleNode>, IEquatable<TripleNode>
 {
     /// <summary>
-    /// Class for representing RDF-star triple nodes.
+    /// Create a new node that quotes the specified triple.
     /// </summary>
-    public class TripleNode : BaseTripleNode, IComparable<TripleNode>, IEquatable<TripleNode>
+    /// <param name="triple">The triple to be quoted.</param>
+    public TripleNode(Triple triple):base(triple){}
+
+    /// <summary>
+    /// Determines whether this node is equal to another <see cref="TripleNode"/>.
+    /// </summary>
+    /// <param name="other">The other node to compare to.</param>
+    /// <returns>True if the quoted triple of this node is equal to the quoted triple of the other node, false otherwise.</returns>
+    public bool Equals(TripleNode other)
     {
-        /// <summary>
-        /// Create a new node that quotes the specified triple.
-        /// </summary>
-        /// <param name="triple">The triple to be quoted.</param>
-        public TripleNode(Triple triple):base(triple){}
+        return base.Equals(other as ITripleNode);
+    }
 
-        /// <summary>
-        /// Determines whether this node is equal to another <see cref="TripleNode"/>.
-        /// </summary>
-        /// <param name="other">The other node to compare to.</param>
-        /// <returns>True if the quoted triple of this node is equal to the quoted triple of the other node, false otherwise.</returns>
-        public bool Equals(TripleNode other)
-        {
-            return base.Equals(other as ITripleNode);
-        }
-
-        /// <summary>
-        /// Perform a sort order comparison of this node with another <see cref="TripleNode"/>.
-        /// </summary>
-        /// <param name="other">The other node to compare to.</param>
-        /// <returns>1 if <paramref name="other"/> is null, otherwise the result of comparing this node's <see cref="Triple"/> property value with <paramref name="other"/>'s <see cref="Triple"/> property value.</returns>
-        public int CompareTo(TripleNode other)
-        {
-            return base.CompareTo(other as ITripleNode);
-        }
+    /// <summary>
+    /// Perform a sort order comparison of this node with another <see cref="TripleNode"/>.
+    /// </summary>
+    /// <param name="other">The other node to compare to.</param>
+    /// <returns>1 if <paramref name="other"/> is null, otherwise the result of comparing this node's <see cref="Triple"/> property value with <paramref name="other"/>'s <see cref="Triple"/> property value.</returns>
+    public int CompareTo(TripleNode other)
+    {
+        return base.CompareTo(other as ITripleNode);
     }
 }

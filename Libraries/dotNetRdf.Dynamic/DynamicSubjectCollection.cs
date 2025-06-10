@@ -31,143 +31,142 @@ using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+/// <summary>
+/// Represents a read/write dynamic collection of subjects by predicate and object.
+/// </summary>
+public class DynamicSubjectCollection : ICollection<INode>, IDynamicMetaObjectProvider
 {
+    private readonly DynamicNode @object;
+    private readonly INode predicate;
+
     /// <summary>
-    /// Represents a read/write dynamic collection of subjects by predicate and object.
+    /// Initializes a new instance of the <see cref="DynamicSubjectCollection"/> class.
     /// </summary>
-    public class DynamicSubjectCollection : ICollection<INode>, IDynamicMetaObjectProvider
+    /// <param name="predicate">The predicate to use.</param>
+    /// <param name="object">The object to use.</param>
+    /// <exception cref="ArgumentNullException">When <paramref name="predicate"/> or <paramref name="object"/> are null.</exception>
+    public DynamicSubjectCollection(INode predicate, DynamicNode @object)
     {
-        private readonly DynamicNode @object;
-        private readonly INode predicate;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DynamicSubjectCollection"/> class.
-        /// </summary>
-        /// <param name="predicate">The predicate to use.</param>
-        /// <param name="object">The object to use.</param>
-        /// <exception cref="ArgumentNullException">When <paramref name="predicate"/> or <paramref name="object"/> are null.</exception>
-        public DynamicSubjectCollection(INode predicate, DynamicNode @object)
+        if (predicate is null)
         {
-            if (predicate is null)
-            {
-                throw new ArgumentNullException(nameof(predicate));
-            }
-
-            if (@object is null)
-            {
-                throw new ArgumentNullException(nameof(@object));
-            }
-
-            this.@object = @object;
-            this.predicate = predicate;
+            throw new ArgumentNullException(nameof(predicate));
         }
 
-        /// <summary>
-        /// Gets the number of statements with given predicate and object.
-        /// </summary>
-        public int Count
+        if (@object is null)
         {
-            get
-            {
-                return Subjects.Count();
-            }
+            throw new ArgumentNullException(nameof(@object));
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this collection is read only (always false).
-        /// </summary>
-        public bool IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
+        this.@object = @object;
+        this.predicate = predicate;
+    }
 
-        /// <summary>
-        /// Gets subjects of statements with given predicate and object.
-        /// </summary>
-        /// <remarks>Nodes are wrapped in a <see cref="DynamicNode"/>.</remarks>
-        protected IEnumerable<INode> Subjects
+    /// <summary>
+    /// Gets the number of statements with given predicate and object.
+    /// </summary>
+    public int Count
+    {
+        get
         {
-            get
-            {
-                return
-                    from triple
-                    in @object.Graph.GetTriplesWithPredicateObject(predicate, @object)
-                    select (INode)triple.Subject.AsObject(@object.Graph, @object.BaseUri);
-            }
+            return Subjects.Count();
         }
+    }
 
-        /// <summary>
-        /// Asserts a statement with <paramref name="subject"/> and given predicate and object.
-        /// </summary>
-        /// <param name="subject">The subject to assert.</param>
-        public void Add(INode subject)
+    /// <summary>
+    /// Gets a value indicating whether this collection is read only (always false).
+    /// </summary>
+    public bool IsReadOnly
+    {
+        get
         {
-            @object.Graph.Assert(subject.AsNode(@object.Graph), predicate, @object);
+            return false;
         }
+    }
 
-        /// <summary>
-        /// Retracts statements with given predicate and object.
-        /// </summary>
-        public void Clear()
+    /// <summary>
+    /// Gets subjects of statements with given predicate and object.
+    /// </summary>
+    /// <remarks>Nodes are wrapped in a <see cref="DynamicNode"/>.</remarks>
+    protected IEnumerable<INode> Subjects
+    {
+        get
         {
-            @object.Graph.Retract(@object.Graph.GetTriplesWithPredicateObject(predicate, @object).ToList());
+            return
+                from triple
+                in @object.Graph.GetTriplesWithPredicateObject(predicate, @object)
+                select (INode)triple.Subject.AsObject(@object.Graph, @object.BaseUri);
         }
+    }
 
-        /// <summary>
-        /// Checks whether a statement exists with <paramref name="subject"/> and given predicate and object.
-        /// </summary>
-        /// <param name="subject">The subject to check.</param>
-        /// <returns>Whether a statement exists with <paramref name="subject"/> and given predicate and object.</returns>
-        public bool Contains(INode subject)
-        {
-            return Subjects.Contains(subject);
-        }
+    /// <summary>
+    /// Asserts a statement with <paramref name="subject"/> and given predicate and object.
+    /// </summary>
+    /// <param name="subject">The subject to assert.</param>
+    public void Add(INode subject)
+    {
+        @object.Graph.Assert(subject.AsNode(@object.Graph), predicate, @object);
+    }
 
-        /// <summary>
-        /// Copies subjects of statements with given predicate and object to <paramref name="array"/> starting at <paramref name="index"/>.
-        /// </summary>
-        /// <param name="array">The destination of subjects copied.</param>
-        /// <param name="index">The index at which copying begins.</param>
-        /// <remarks>Nodes are wrapped in a <see cref="DynamicNode"/>.</remarks>
-        public void CopyTo(INode[] array, int index)
-        {
-            Subjects.ToArray().CopyTo(array, index);
-        }
+    /// <summary>
+    /// Retracts statements with given predicate and object.
+    /// </summary>
+    public void Clear()
+    {
+        @object.Graph.Retract(@object.Graph.GetTriplesWithPredicateObject(predicate, @object).ToList());
+    }
 
-        /// <summary>
-        /// Returns an enumerator that iterates through subjects of statements with given predicate and object.
-        /// </summary>
-        /// <returns>An enumerator that can be used to iterate through subjects of statements with given predicate and object.</returns>
-        /// <remarks>Nodes are wrapped in a <see cref="DynamicNode"/>.</remarks>
-        public IEnumerator<INode> GetEnumerator()
-        {
-            return Subjects.GetEnumerator();
-        }
+    /// <summary>
+    /// Checks whether a statement exists with <paramref name="subject"/> and given predicate and object.
+    /// </summary>
+    /// <param name="subject">The subject to check.</param>
+    /// <returns>Whether a statement exists with <paramref name="subject"/> and given predicate and object.</returns>
+    public bool Contains(INode subject)
+    {
+        return Subjects.Contains(subject);
+    }
 
-        /// <summary>
-        /// Retracts statements with <paramref name="subject"/> and given predicate and object.
-        /// </summary>
-        /// <param name="subject">The subject to retract.</param>
-        /// <returns>Whether any statements were retracted.</returns>
-        public bool Remove(INode subject)
-        {
-            return @object.Graph.Retract(@object.Graph.GetTriplesWithPredicateObject(predicate, @object).WithSubject(subject.AsNode(@object.Graph)).ToList());
-        }
+    /// <summary>
+    /// Copies subjects of statements with given predicate and object to <paramref name="array"/> starting at <paramref name="index"/>.
+    /// </summary>
+    /// <param name="array">The destination of subjects copied.</param>
+    /// <param name="index">The index at which copying begins.</param>
+    /// <remarks>Nodes are wrapped in a <see cref="DynamicNode"/>.</remarks>
+    public void CopyTo(INode[] array, int index)
+    {
+        Subjects.ToArray().CopyTo(array, index);
+    }
 
-        /// <inheritdoc/>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+    /// <summary>
+    /// Returns an enumerator that iterates through subjects of statements with given predicate and object.
+    /// </summary>
+    /// <returns>An enumerator that can be used to iterate through subjects of statements with given predicate and object.</returns>
+    /// <remarks>Nodes are wrapped in a <see cref="DynamicNode"/>.</remarks>
+    public IEnumerator<INode> GetEnumerator()
+    {
+        return Subjects.GetEnumerator();
+    }
 
-        /// <inheritdoc/>
-        DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
-        {
-            return new EnumerableMetaObject(parameter, this);
-        }
+    /// <summary>
+    /// Retracts statements with <paramref name="subject"/> and given predicate and object.
+    /// </summary>
+    /// <param name="subject">The subject to retract.</param>
+    /// <returns>Whether any statements were retracted.</returns>
+    public bool Remove(INode subject)
+    {
+        return @object.Graph.Retract(@object.Graph.GetTriplesWithPredicateObject(predicate, @object).WithSubject(subject.AsNode(@object.Graph)).ToList());
+    }
+
+    /// <inheritdoc/>
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    /// <inheritdoc/>
+    DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
+    {
+        return new EnumerableMetaObject(parameter, this);
     }
 }

@@ -26,24 +26,23 @@
 
 using VDS.RDF.Query.Algebra;
 
-namespace VDS.RDF.Query.Paths
+namespace VDS.RDF.Query.Paths;
+
+/// <summary>
+/// Represents a Path expression in SPARQL.
+/// </summary>
+public interface ISparqlPath
 {
     /// <summary>
-    /// Represents a Path expression in SPARQL.
+    /// Converts a Path into its Algebra Form.
     /// </summary>
-    public interface ISparqlPath
-    {
-        /// <summary>
-        /// Converts a Path into its Algebra Form.
-        /// </summary>
-        /// <param name="context">Path Transformation Context.</param>
-        /// <returns></returns>
-        ISparqlAlgebra ToAlgebra(PathTransformContext context);
+    /// <param name="context">Path Transformation Context.</param>
+    /// <returns></returns>
+    ISparqlAlgebra ToAlgebra(PathTransformContext context);
 
-        /// <summary>
-        /// Gets the String representation of a Path.
-        /// </summary>
-        /// <returns></returns>
-        string ToString();
-    }
+    /// <summary>
+    /// Gets the String representation of a Path.
+    /// </summary>
+    /// <returns></returns>
+    string ToString();
 }

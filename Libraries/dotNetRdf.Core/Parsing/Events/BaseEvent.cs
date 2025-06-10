@@ -26,157 +26,156 @@
 
 using System.Collections.Generic;
 
-namespace VDS.RDF.Parsing.Events
+namespace VDS.RDF.Parsing.Events;
+
+/// <summary>
+/// Abstract Base Class for <see cref="IEvent">IEvent</see> implementations.
+/// </summary>
+public abstract class BaseEvent 
+    : IEvent
 {
+    private int _eventtype;
+    private PositionInfo _pos;
+
     /// <summary>
-    /// Abstract Base Class for <see cref="IEvent">IEvent</see> implementations.
+    /// Creates a new Event.
     /// </summary>
-    public abstract class BaseEvent 
-        : IEvent
+    /// <param name="eventType">Event Type.</param>
+    /// <param name="info">Position Information.</param>
+    public BaseEvent(int eventType, PositionInfo info)
     {
-        private int _eventtype;
-        private PositionInfo _pos;
+        _eventtype = eventType;
+        _pos = info;
+    }
 
-        /// <summary>
-        /// Creates a new Event.
-        /// </summary>
-        /// <param name="eventType">Event Type.</param>
-        /// <param name="info">Position Information.</param>
-        public BaseEvent(int eventType, PositionInfo info)
+    /// <summary>
+    /// Creates a new Event.
+    /// </summary>
+    /// <param name="eventType">Event Type.</param>
+    public BaseEvent(int eventType)
+        : this(eventType, null) { }
+
+    /// <summary>
+    /// Gets the Type for this Event.
+    /// </summary>
+    public int EventType
+    {
+        get
         {
-            _eventtype = eventType;
-            _pos = info;
-        }
-
-        /// <summary>
-        /// Creates a new Event.
-        /// </summary>
-        /// <param name="eventType">Event Type.</param>
-        public BaseEvent(int eventType)
-            : this(eventType, null) { }
-
-        /// <summary>
-        /// Gets the Type for this Event.
-        /// </summary>
-        public int EventType
-        {
-            get
-            {
-                return _eventtype;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Position Information (if any).
-        /// </summary>
-        /// <remarks>
-        /// Availability of Position Information depends on the how the source document was parsed.
-        /// </remarks>
-        public PositionInfo Position
-        {
-            get
-            {
-                return _pos;
-            }
+            return _eventtype;
         }
     }
 
     /// <summary>
-    /// Abstract Base Class for <see cref="IRdfXmlEvent">IRdfXmlEvent</see> implementations.
+    /// Gets the Position Information (if any).
     /// </summary>
-    public abstract class BaseRdfXmlEvent 
-        : BaseEvent, IRdfXmlEvent
+    /// <remarks>
+    /// Availability of Position Information depends on the how the source document was parsed.
+    /// </remarks>
+    public PositionInfo Position
     {
-        private string _sourcexml;
-
-        /// <summary>
-        /// Creates an Event and fills in its Values.
-        /// </summary>
-        /// <param name="eventType">Type of the Event.</param>
-        /// <param name="sourceXml">Source XML that generated the Event.</param>
-        /// <param name="pos">Position of the XML Event.</param>
-        public BaseRdfXmlEvent(int eventType, string sourceXml, PositionInfo pos)
-            : base(eventType, pos)
+        get
         {
-            _sourcexml = sourceXml;
+            return _pos;
         }
+    }
+}
 
-        /// <summary>
-        /// Creates an Event and fills in its Values.
-        /// </summary>
-        /// <param name="eventType">Type of the Event.</param>
-        /// <param name="sourceXml">Source XML that generated the Event.</param>
-        public BaseRdfXmlEvent(int eventType, string sourceXml)
-            : this(eventType, sourceXml, null) { }
+/// <summary>
+/// Abstract Base Class for <see cref="IRdfXmlEvent">IRdfXmlEvent</see> implementations.
+/// </summary>
+public abstract class BaseRdfXmlEvent 
+    : BaseEvent, IRdfXmlEvent
+{
+    private string _sourcexml;
 
-        /// <summary>
-        /// Gets the XML that this Event was generated from.
-        /// </summary>
-        public string SourceXml
+    /// <summary>
+    /// Creates an Event and fills in its Values.
+    /// </summary>
+    /// <param name="eventType">Type of the Event.</param>
+    /// <param name="sourceXml">Source XML that generated the Event.</param>
+    /// <param name="pos">Position of the XML Event.</param>
+    public BaseRdfXmlEvent(int eventType, string sourceXml, PositionInfo pos)
+        : base(eventType, pos)
+    {
+        _sourcexml = sourceXml;
+    }
+
+    /// <summary>
+    /// Creates an Event and fills in its Values.
+    /// </summary>
+    /// <param name="eventType">Type of the Event.</param>
+    /// <param name="sourceXml">Source XML that generated the Event.</param>
+    public BaseRdfXmlEvent(int eventType, string sourceXml)
+        : this(eventType, sourceXml, null) { }
+
+    /// <summary>
+    /// Gets the XML that this Event was generated from.
+    /// </summary>
+    public string SourceXml
+    {
+        get 
         {
-            get 
-            {
-                return _sourcexml;
-            }
+            return _sourcexml;
+        }
+    }
+}
+
+/// <summary>
+/// Abstract Base Class for <see cref="IRdfAEvent">IRdfAEvent</see> implementations.
+/// </summary>
+public abstract class BaseRdfAEvent 
+    : BaseEvent, IRdfAEvent
+{
+    private Dictionary<string, string> _attributes;
+
+    /// <summary>
+    /// Creates a new RDFa Event.
+    /// </summary>
+    /// <param name="eventType">Event Type.</param>
+    /// <param name="pos">Position Info.</param>
+    /// <param name="attributes">Attributes.</param>
+    public BaseRdfAEvent(int eventType, PositionInfo pos, IEnumerable<KeyValuePair<string, string>> attributes)
+        : base(eventType, pos)
+    {
+        _attributes = new Dictionary<string, string>();
+        foreach (KeyValuePair<string, string> attr in attributes)
+        {
+            _attributes.Add(attr.Key, attr.Value);
         }
     }
 
     /// <summary>
-    /// Abstract Base Class for <see cref="IRdfAEvent">IRdfAEvent</see> implementations.
+    /// Gets the attributes of the event i.e. the attributes of the source element.
     /// </summary>
-    public abstract class BaseRdfAEvent 
-        : BaseEvent, IRdfAEvent
+    public IEnumerable<KeyValuePair<string, string>> Attributes
     {
-        private Dictionary<string, string> _attributes;
-
-        /// <summary>
-        /// Creates a new RDFa Event.
-        /// </summary>
-        /// <param name="eventType">Event Type.</param>
-        /// <param name="pos">Position Info.</param>
-        /// <param name="attributes">Attributes.</param>
-        public BaseRdfAEvent(int eventType, PositionInfo pos, IEnumerable<KeyValuePair<string, string>> attributes)
-            : base(eventType, pos)
+        get 
         {
-            _attributes = new Dictionary<string, string>();
-            foreach (KeyValuePair<string, string> attr in attributes)
-            {
-                _attributes.Add(attr.Key, attr.Value);
-            }
+            return _attributes; 
         }
+    }
 
-        /// <summary>
-        /// Gets the attributes of the event i.e. the attributes of the source element.
-        /// </summary>
-        public IEnumerable<KeyValuePair<string, string>> Attributes
-        {
-            get 
-            {
-                return _attributes; 
-            }
-        }
+    /// <summary>
+    /// Gets whether the Event has a given attribute.
+    /// </summary>
+    /// <param name="name">Attribute Name.</param>
+    /// <returns></returns>
+    public bool HasAttribute(string name)
+    {
+        return _attributes.ContainsKey(name);
+    }
 
-        /// <summary>
-        /// Gets whether the Event has a given attribute.
-        /// </summary>
-        /// <param name="name">Attribute Name.</param>
-        /// <returns></returns>
-        public bool HasAttribute(string name)
+    /// <summary>
+    /// Gets the value of a specific attribute.
+    /// </summary>
+    /// <param name="name">Attribute Name.</param>
+    /// <returns></returns>
+    public string this[string name]
+    {
+        get
         {
-            return _attributes.ContainsKey(name);
-        }
-
-        /// <summary>
-        /// Gets the value of a specific attribute.
-        /// </summary>
-        /// <param name="name">Attribute Name.</param>
-        /// <returns></returns>
-        public string this[string name]
-        {
-            get
-            {
-                return _attributes[name];
-            }
+            return _attributes[name];
         }
     }
 }

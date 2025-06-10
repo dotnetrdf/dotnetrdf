@@ -24,15 +24,14 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
-{
+namespace VDS.RDF.Query.Spin.Model;
 
-    /**
-     * A MINUS element group.
-     *
-     * @author Holger Knublauch
-     */
-    internal interface IMinus : IElementGroup
-    {
-    }
+
+/**
+ * A MINUS element group.
+ *
+ * @author Holger Knublauch
+ */
+internal interface IMinus : IElementGroup
+{
 }

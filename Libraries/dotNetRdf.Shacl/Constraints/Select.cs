@@ -34,120 +34,119 @@ using VDS.RDF.Query.Patterns;
 using VDS.RDF.Shacl.Paths;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class Select : Sparql
 {
-    internal class Select : Sparql
+    [DebuggerStepThrough]
+    internal Select(Shape shape, INode value)
+        : base(shape, value)
     {
-        [DebuggerStepThrough]
-        internal Select(Shape shape, INode value)
-            : base(shape, value)
+    }
+
+    [DebuggerStepThrough]
+    internal Select(Shape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
+        : base(shape, value, parameters)
+    {
+    }
+
+    protected override string DefaultMessage => "SPARQL SELECT query must not return any result bindings.";
+
+    protected override string Query
+    {
+        get
         {
+            return Vocabulary.Select.ObjectsOf(this).Single().AsValuedNode().AsString();
+        }
+    }
+
+    protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report, SparqlQuery query)
+    {
+        var propertyShape = Shape as Shapes.Property;
+
+        if (propertyShape != null)
+        {
+            BindPath(query.RootGraphPattern, propertyShape.Path.SparqlPath);
         }
 
-        [DebuggerStepThrough]
-        internal Select(Shape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
-            : base(shape, value, parameters)
+        var solutions = (SparqlResultSet)dataGraph.ExecuteQuery(query);
+
+        if (solutions.IsEmpty)
         {
+            return true;
         }
 
-        protected override string DefaultMessage => "SPARQL SELECT query must not return any result bindings.";
-
-        protected override string Query
+        if (report is null)
         {
-            get
-            {
-                return Vocabulary.Select.ObjectsOf(this).Single().AsValuedNode().AsString();
-            }
-        }
-
-        protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report, SparqlQuery query)
-        {
-            var propertyShape = Shape as Shapes.Property;
-
-            if (propertyShape != null)
-            {
-                BindPath(query.RootGraphPattern, propertyShape.Path.SparqlPath);
-            }
-
-            var solutions = (SparqlResultSet)dataGraph.ExecuteQuery(query);
-
-            if (solutions.IsEmpty)
-            {
-                return true;
-            }
-
-            if (report is null)
-            {
-                return false;
-            }
-
-            foreach (SparqlResult solution in solutions)
-            {
-                var result = Result.Create(report.Graph);
-                result.FocusNode = solution["this"];
-
-                if (solution.TryGetBoundValue("path", out INode pathValue) && pathValue.NodeType == NodeType.Uri)
-                {
-                    result.ResultPath = new Predicate(pathValue, result.Graph);
-                }
-                else
-                {
-                    if (propertyShape != null)
-                    {
-                        result.ResultPath = propertyShape.Path;
-                    }
-                }
-
-                if (solution.HasValue("value"))
-                {
-                    result.ResultValue = solution["value"];
-                }
-                else
-                {
-                    result.ResultValue = focusNode;
-                }
-
-                if (solution.HasValue("message"))
-                {
-                    result.Message = (ILiteralNode)solution["message"];
-                }
-                else
-                {
-                    result.Message = Message;
-                }
-
-                result.SourceConstraintComponent = ConstraintComponent;
-                result.SourceShape = Shape;
-                result.Severity = Shape.Severity;
-                result.SourceConstraint = this;
-
-                report.Results.Add(result);
-            }
-
             return false;
         }
 
-        private static void BindPath(GraphPattern pattern, ISparqlPath path)
+        foreach (SparqlResult solution in solutions)
         {
-            for (var i = 0; i < pattern.TriplePatterns.Count(); i++)
-            {
-                if (pattern.TriplePatterns[i] is not TriplePattern triplePattern) { continue; }
-                if (triplePattern.Predicate is not VariablePattern variablePattern) { continue; }
-                if (variablePattern.VariableName != "PATH") { continue; }
+            var result = Result.Create(report.Graph);
+            result.FocusNode = solution["this"];
 
-                pattern.TriplePatterns.RemoveAt(i);
-                pattern.TriplePatterns.Insert(i, new PropertyPathPattern(triplePattern.Subject, path, triplePattern.Object));
+            if (solution.TryGetBoundValue("path", out INode pathValue) && pathValue.NodeType == NodeType.Uri)
+            {
+                result.ResultPath = new Predicate(pathValue, result.Graph);
+            }
+            else
+            {
+                if (propertyShape != null)
+                {
+                    result.ResultPath = propertyShape.Path;
+                }
             }
 
-            foreach (GraphPattern subPattern in pattern.ChildGraphPatterns)
+            if (solution.HasValue("value"))
             {
-                BindPath(subPattern, path);
+                result.ResultValue = solution["value"];
+            }
+            else
+            {
+                result.ResultValue = focusNode;
             }
 
-            foreach (SubQueryPattern subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
+            if (solution.HasValue("message"))
             {
-                BindPath(subQueryPattern.SubQuery.RootGraphPattern, path);
+                result.Message = (ILiteralNode)solution["message"];
             }
+            else
+            {
+                result.Message = Message;
+            }
+
+            result.SourceConstraintComponent = ConstraintComponent;
+            result.SourceShape = Shape;
+            result.Severity = Shape.Severity;
+            result.SourceConstraint = this;
+
+            report.Results.Add(result);
+        }
+
+        return false;
+    }
+
+    private static void BindPath(GraphPattern pattern, ISparqlPath path)
+    {
+        for (var i = 0; i < pattern.TriplePatterns.Count(); i++)
+        {
+            if (pattern.TriplePatterns[i] is not TriplePattern triplePattern) { continue; }
+            if (triplePattern.Predicate is not VariablePattern variablePattern) { continue; }
+            if (variablePattern.VariableName != "PATH") { continue; }
+
+            pattern.TriplePatterns.RemoveAt(i);
+            pattern.TriplePatterns.Insert(i, new PropertyPathPattern(triplePattern.Subject, path, triplePattern.Object));
+        }
+
+        foreach (GraphPattern subPattern in pattern.ChildGraphPatterns)
+        {
+            BindPath(subPattern, path);
+        }
+
+        foreach (SubQueryPattern subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
+        {
+            BindPath(subQueryPattern.SubQuery.RootGraphPattern, path);
         }
     }
 }

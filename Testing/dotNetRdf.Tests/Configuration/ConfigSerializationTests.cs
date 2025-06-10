@@ -29,47 +29,46 @@ using VDS.RDF.Query.Operators;
 using VDS.RDF.Query.Operators.DateTime;
 using VDS.RDF.Query.Operators.Numeric;
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+
+public class ConfigSerializationTests
 {
-
-    public class ConfigSerializationTests
+    [Fact]
+    public void ConfigurationSerializationOperators()
     {
-        [Fact]
-        public void ConfigurationSerializationOperators()
+        var ops = new List<ISparqlOperator>
         {
-            var ops = new List<ISparqlOperator>
-            {
-                new AdditionOperator(),
-                new DateTimeAddition(),
-                new TimeSpanAddition(),
-                new DivisionOperator(),
-                new MultiplicationOperator(),
-                new DivisionOperator(),
-                new SubtractionOperator(),
-                new DateTimeSubtraction(),
-                new TimeSpanSubtraction()
-            };
+            new AdditionOperator(),
+            new DateTimeAddition(),
+            new TimeSpanAddition(),
+            new DivisionOperator(),
+            new MultiplicationOperator(),
+            new DivisionOperator(),
+            new SubtractionOperator(),
+            new DateTimeSubtraction(),
+            new TimeSpanSubtraction()
+        };
 
-            var g = new Graph();
-            var context = new ConfigurationSerializationContext(g);
-            var nodes = new List<INode>();
+        var g = new Graph();
+        var context = new ConfigurationSerializationContext(g);
+        var nodes = new List<INode>();
 
-            foreach (ISparqlOperator op in ops)
-            {
-                INode opNode = g.CreateBlankNode();
-                context.NextSubject = opNode;
-                nodes.Add(opNode);
+        foreach (ISparqlOperator op in ops)
+        {
+            INode opNode = g.CreateBlankNode();
+            context.NextSubject = opNode;
+            nodes.Add(opNode);
 
-                ((IConfigurationSerializable)op).SerializeConfiguration(context);
-            }
+            ((IConfigurationSerializable)op).SerializeConfiguration(context);
+        }
 
-            for (var i = 0; i < ops.Count; i++)
-            {
-                INode opNode = nodes[i];
-                var resultOp = ConfigurationLoader.LoadObject(g, opNode) as ISparqlOperator;
-                Assert.NotNull(resultOp);
-                Assert.Equal(ops[i].GetType(), resultOp.GetType());
-            }
+        for (var i = 0; i < ops.Count; i++)
+        {
+            INode opNode = nodes[i];
+            var resultOp = ConfigurationLoader.LoadObject(g, opNode) as ISparqlOperator;
+            Assert.NotNull(resultOp);
+            Assert.Equal(ops[i].GetType(), resultOp.GetType());
         }
     }
 }

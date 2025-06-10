@@ -28,88 +28,87 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Represents a sub-query as an Algebra operator (only used when strict algebra is generated).
+/// </summary>
+public class SubQuery : ITerminalOperator
 {
     /// <summary>
-    /// Represents a sub-query as an Algebra operator (only used when strict algebra is generated).
+    /// Get the sub-query.
     /// </summary>
-    public class SubQuery : ITerminalOperator
+    public SparqlQuery Query { get; }
+
+    /// <summary>
+    /// Creates a new sub-query operator.
+    /// </summary>
+    /// <param name="q">Sub-query.</param>
+    public SubQuery(SparqlQuery q)
     {
-        /// <summary>
-        /// Get the sub-query.
-        /// </summary>
-        public SparqlQuery Query { get; }
+        Query = q;
+    }
 
-        /// <summary>
-        /// Creates a new sub-query operator.
-        /// </summary>
-        /// <param name="q">Sub-query.</param>
-        public SubQuery(SparqlQuery q)
-        {
-            Query = q;
+    /// <summary>
+    /// Gets the variables used in the sub-query which are projected out of it.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get 
+        { 
+            return Query.Variables.Where(v => v.IsResultVariable).Select(v => v.Name); 
         }
+    }
 
-        /// <summary>
-        /// Gets the variables used in the sub-query which are projected out of it.
-        /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get 
-            { 
-                return Query.Variables.Where(v => v.IsResultVariable).Select(v => v.Name); 
-            }
-        }
+    /// <summary>
+    /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FloatingVariables { get { return Query.ToAlgebra().FloatingVariables; } }
 
-        /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FloatingVariables { get { return Query.ToAlgebra().FloatingVariables; } }
+    /// <summary>
+    /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
+    /// </summary>
+    public IEnumerable<string> FixedVariables { get { return Query.ToAlgebra().FixedVariables; } }
 
-        /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FixedVariables { get { return Query.ToAlgebra().FixedVariables; } }
+    /// <summary>
+    /// Converts the algebra back into a Query.
+    /// </summary>
+    /// <returns></returns>
+    public SparqlQuery ToQuery()
+    {
+        var q = new SparqlQuery { RootGraphPattern = ToGraphPattern() };
+        return q;
+    }
 
-        /// <summary>
-        /// Converts the algebra back into a Query.
-        /// </summary>
-        /// <returns></returns>
-        public SparqlQuery ToQuery()
-        {
-            var q = new SparqlQuery { RootGraphPattern = ToGraphPattern() };
-            return q;
-        }
+    /// <summary>
+    /// Converts the algebra back into a sub-query.
+    /// </summary>
+    /// <returns></returns>
+    public GraphPattern ToGraphPattern()
+    {
+        var gp = new GraphPattern();
+        gp.TriplePatterns.Add(new SubQueryPattern(Query));
+        return gp;
+    }
 
-        /// <summary>
-        /// Converts the algebra back into a sub-query.
-        /// </summary>
-        /// <returns></returns>
-        public GraphPattern ToGraphPattern()
-        {
-            var gp = new GraphPattern();
-            gp.TriplePatterns.Add(new SubQueryPattern(Query));
-            return gp;
-        }
+    /// <summary>
+    /// Gets the string representation of the algebra.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "Subquery()";
+    }
 
-        /// <summary>
-        /// Gets the string representation of the algebra.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "Subquery()";
-        }
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    {
+        return processor.ProcessSubQuery(this, context);
+    }
 
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
-        {
-            return processor.ProcessSubQuery(this, context);
-        }
-
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
-        {
-            return visitor.VisitSubQuery(this);
-        }
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    {
+        return visitor.VisitSubQuery(this);
     }
 }

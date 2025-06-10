@@ -27,123 +27,122 @@ using System;
 using System.IO;
 using Xunit;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+
+public class GraphCollectionTests
 {
-
-    public class GraphCollectionTests
+    [Fact]
+    public void GraphCollectionBasic1()
     {
-        [Fact]
-        public void GraphCollectionBasic1()
+        var store = new GraphCollection();
+        var g = new Graph();
+        store.Add(g, false);
+
+        Assert.True(store.Contains(g.Name), "Graph Collection should contain the Graph");
+        Assert.Equal(g, store[g.Name]);
+    }
+
+    [Fact]
+    public void GraphCollectionAddUnnamedGraph()
+    {
+        var collection = new GraphCollection();
+        var g = new Graph();
+        collection.Add(g, false);
+        Assert.True(collection.Contains((IRefNode)null));
+    }
+
+    [Fact]
+    public void GraphCollectionBasic2()
+    {
+        var store = new TripleStore();
+        var g = new Graph(new UriNode(new Uri("http://example.org/graph")));
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        store.Add(g);
+
+        Assert.True(store.HasGraph(g.Name), "Graph Collection should contain the Graph");
+        Assert.Equal(g, store[g.Name]);
+    }
+
+    [Fact]
+    public void GraphCollectionBasic3()
+    {
+        var collection = new GraphCollection();
+        var g = new Graph();
+        collection.Add(g, true);
+
+        Assert.True(collection.Contains(g.Name));
+    }
+
+    [Fact]
+    public void GraphCollectionBasic4()
+    {
+        var collection = new GraphCollection();
+        var g = new Graph();
+        collection.Add(g, true);
+
+        Assert.True(collection.Contains(g.Name));
+        Assert.Contains(null, collection.GraphNames);
+    }
+
+    [Fact]
+    public void GraphCollectionDiskDemand1()
+    {
+        var store = new TripleStore(new DiskDemandGraphCollection());
+        var g = new Graph(new UriNode(new Uri("file://" + Path.GetFullPath(Path.Combine("resources", "InferenceTest.ttl")))));
+        g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+
+        Assert.True(store.HasGraph(g.Name), "Graph Collection should contain the Graph");
+        Assert.Equal(g, store[g.Name]);
+    }
+
+    [Fact]
+    public void GraphCollectionDiskDemand2()
+    {
+        //Test that on-demand loading does not kick in for pre-existing graphs
+        var store = new TripleStore(new DiskDemandGraphCollection());
+
+        var g = new Graph(new UriNode(new Uri("file:///" + Path.GetFullPath(Path.Combine("resources", "InferenceTest.ttl")))));
+        g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+
+        var empty = new Graph(g.Name)
         {
-            var store = new GraphCollection();
-            var g = new Graph();
-            store.Add(g, false);
+            BaseUri = g.BaseUri
+        };
+        store.Add(empty);
 
-            Assert.True(store.Contains(g.Name), "Graph Collection should contain the Graph");
-            Assert.Equal(g, store[g.Name]);
-        }
+        Assert.True(store.HasGraph(g.Name), "Graph Collection should contain the Graph");
+        Assert.NotEqual(g, store[g.Name]);
+    }
 
-        [Fact]
-        public void GraphCollectionAddUnnamedGraph()
-        {
-            var collection = new GraphCollection();
-            var g = new Graph();
-            collection.Add(g, false);
-            Assert.True(collection.Contains((IRefNode)null));
-        }
+    [Fact(Skip="Remote configuration file is not currently available")]
+    public void GraphCollectionWebDemand1()
+    {
+        var store = new TripleStore(new WebDemandGraphCollection());
+        var u = new Uri("http://www.dotnetrdf.org/configuration#");
+        var nodeFactory = new NodeFactory(new NodeFactoryOptions {BaseUri = u});
+        var g = new Graph(nodeFactory.CreateUriNode(u));
+        g.LoadFromUri(u);
 
-        [Fact]
-        public void GraphCollectionBasic2()
-        {
-            var store = new TripleStore();
-            var g = new Graph(new UriNode(new Uri("http://example.org/graph")));
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            store.Add(g);
+        Assert.True(store.HasGraph(g.Name), "Graph Collection should contain the Graph");
+        Assert.Equal(g, store[g.Name]);
+    }
 
-            Assert.True(store.HasGraph(g.Name), "Graph Collection should contain the Graph");
-            Assert.Equal(g, store[g.Name]);
-        }
+    [Fact(Skip = "Remote configuration file is not currently available")]
+    public void GraphCollectionWebDemand2()
+    {
+        //Test that on-demand loading does not kick in for pre-existing graphs
+        var store = new TripleStore(new WebDemandGraphCollection());
+        var nodeFactory = new NodeFactory(new NodeFactoryOptions());
+        var u = new Uri("http://www.dotnetrdf.org/configuration#");
+        var n = nodeFactory.CreateUriNode(u);
+        var g = new Graph(n);
+        g.LoadFromUri(u);
 
-        [Fact]
-        public void GraphCollectionBasic3()
-        {
-            var collection = new GraphCollection();
-            var g = new Graph();
-            collection.Add(g, true);
+        var empty = new Graph(n);
+        store.Add(empty);
 
-            Assert.True(collection.Contains(g.Name));
-        }
-
-        [Fact]
-        public void GraphCollectionBasic4()
-        {
-            var collection = new GraphCollection();
-            var g = new Graph();
-            collection.Add(g, true);
-
-            Assert.True(collection.Contains(g.Name));
-            Assert.Contains(null, collection.GraphNames);
-        }
-
-        [Fact]
-        public void GraphCollectionDiskDemand1()
-        {
-            var store = new TripleStore(new DiskDemandGraphCollection());
-            var g = new Graph(new UriNode(new Uri("file://" + Path.GetFullPath(Path.Combine("resources", "InferenceTest.ttl")))));
-            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
-
-            Assert.True(store.HasGraph(g.Name), "Graph Collection should contain the Graph");
-            Assert.Equal(g, store[g.Name]);
-        }
-
-        [Fact]
-        public void GraphCollectionDiskDemand2()
-        {
-            //Test that on-demand loading does not kick in for pre-existing graphs
-            var store = new TripleStore(new DiskDemandGraphCollection());
-
-            var g = new Graph(new UriNode(new Uri("file:///" + Path.GetFullPath(Path.Combine("resources", "InferenceTest.ttl")))));
-            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
-
-            var empty = new Graph(g.Name)
-            {
-                BaseUri = g.BaseUri
-            };
-            store.Add(empty);
-
-            Assert.True(store.HasGraph(g.Name), "Graph Collection should contain the Graph");
-            Assert.NotEqual(g, store[g.Name]);
-        }
-
-        [Fact(Skip="Remote configuration file is not currently available")]
-        public void GraphCollectionWebDemand1()
-        {
-            var store = new TripleStore(new WebDemandGraphCollection());
-            var u = new Uri("http://www.dotnetrdf.org/configuration#");
-            var nodeFactory = new NodeFactory(new NodeFactoryOptions {BaseUri = u});
-            var g = new Graph(nodeFactory.CreateUriNode(u));
-            g.LoadFromUri(u);
-
-            Assert.True(store.HasGraph(g.Name), "Graph Collection should contain the Graph");
-            Assert.Equal(g, store[g.Name]);
-        }
-
-        [Fact(Skip = "Remote configuration file is not currently available")]
-        public void GraphCollectionWebDemand2()
-        {
-            //Test that on-demand loading does not kick in for pre-existing graphs
-            var store = new TripleStore(new WebDemandGraphCollection());
-            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
-            var u = new Uri("http://www.dotnetrdf.org/configuration#");
-            var n = nodeFactory.CreateUriNode(u);
-            var g = new Graph(n);
-            g.LoadFromUri(u);
-
-            var empty = new Graph(n);
-            store.Add(empty);
-
-            Assert.True(store.HasGraph(g.Name), "Graph Collection should contain the Graph");
-            Assert.NotEqual(g, store[g.Name]);
-        }
+        Assert.True(store.HasGraph(g.Name), "Graph Collection should contain the Graph");
+        Assert.NotEqual(g, store[g.Name]);
     }
 }

@@ -24,75 +24,74 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+
+/// <summary>
+/// Class representing the Sparql LangMatches() function.
+/// </summary>
+public class LangMatchesFunction
+    : BaseBinaryExpression
 {
     /// <summary>
-    /// Class representing the Sparql LangMatches() function.
+    /// Creates a new LangMatches() function expression.
     /// </summary>
-    public class LangMatchesFunction
-        : BaseBinaryExpression
+    /// <param name="term">Expression to obtain the Language of.</param>
+    /// <param name="langRange">Expression representing the Language Range to match.</param>
+    public LangMatchesFunction(ISparqlExpression term, ISparqlExpression langRange)
+        : base(term, langRange) { }
+
+    
+
+    /// <summary>
+    /// Gets the String representation of this Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new LangMatches() function expression.
-        /// </summary>
-        /// <param name="term">Expression to obtain the Language of.</param>
-        /// <param name="langRange">Expression representing the Language Range to match.</param>
-        public LangMatchesFunction(ISparqlExpression term, ISparqlExpression langRange)
-            : base(term, langRange) { }
+        return "LANGMATCHES(" + _leftExpr + "," + _rightExpr + ")";
+    }
 
-        
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessLangMatchesFunction(this, context, binding);
+    }
 
-        /// <summary>
-        /// Gets the String representation of this Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitLangMatchesFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return "LANGMATCHES(" + _leftExpr + "," + _rightExpr + ")";
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return processor.ProcessLangMatchesFunction(this, context, binding);
+            return SparqlSpecsHelper.SparqlKeywordLangMatches;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitLangMatchesFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordLangMatches;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new LangMatchesFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new LangMatchesFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
     }
 }

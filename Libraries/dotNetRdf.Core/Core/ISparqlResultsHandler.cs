@@ -26,42 +26,41 @@
 
 using VDS.RDF.Query;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface for Handlers which handle the SPARQL Results produced by parsers.
+/// </summary>
+public interface ISparqlResultsHandler : INodeFactory
 {
     /// <summary>
-    /// Interface for Handlers which handle the SPARQL Results produced by parsers.
+    /// Starts the Handling of Results.
     /// </summary>
-    public interface ISparqlResultsHandler : INodeFactory
-    {
-        /// <summary>
-        /// Starts the Handling of Results.
-        /// </summary>
-        void StartResults();
+    void StartResults();
 
-        /// <summary>
-        /// Ends the Handling of Results.
-        /// </summary>
-        /// <param name="ok">Indicates whether parsing completed without error.</param>
-        void EndResults(bool ok);
+    /// <summary>
+    /// Ends the Handling of Results.
+    /// </summary>
+    /// <param name="ok">Indicates whether parsing completed without error.</param>
+    void EndResults(bool ok);
 
-        /// <summary>
-        /// Handles a Boolean Result.
-        /// </summary>
-        /// <param name="result">Result.</param>
-        void HandleBooleanResult(bool result);
+    /// <summary>
+    /// Handles a Boolean Result.
+    /// </summary>
+    /// <param name="result">Result.</param>
+    void HandleBooleanResult(bool result);
 
-        /// <summary>
-        /// Handles a Variable Declaration.
-        /// </summary>
-        /// <param name="var">Variable Name.</param>
-        /// <returns></returns>
-        bool HandleVariable(string var);
+    /// <summary>
+    /// Handles a Variable Declaration.
+    /// </summary>
+    /// <param name="var">Variable Name.</param>
+    /// <returns></returns>
+    bool HandleVariable(string var);
 
-        /// <summary>
-        /// Handles a SPARQL Result.
-        /// </summary>
-        /// <param name="result">Result.</param>
-        /// <returns></returns>
-        bool HandleResult(ISparqlResult result);
-    }
+    /// <summary>
+    /// Handles a SPARQL Result.
+    /// </summary>
+    /// <param name="result">Result.</param>
+    /// <returns></returns>
+    bool HandleResult(ISparqlResult result);
 }

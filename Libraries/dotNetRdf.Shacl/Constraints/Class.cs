@@ -29,37 +29,36 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class Class : Constraint
 {
-    internal class Class : Constraint
+    [DebuggerStepThrough]
+    internal Class(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal Class(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage => $"Value node must be an instance of type {this}.";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.ClassConstraintComponent;
         }
+    }
 
-        protected override string DefaultMessage => $"Value node must be an instance of type {this}.";
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        //IEnumerable<INode> invalidValues =
+        //    from valueNode in valueNodes
+        //    let isInstance = this.IsShaclInstance(valueNode, dataGraph)
+        //    group isInstance by valueNode into valid
+        //    where !valid.Any(isValid => isValid)
+        //    select valid.Key;
+        IEnumerable<INode> invalidValues = valueNodes.Where(v => !this.IsShaclInstance(v, dataGraph)).ToList();
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.ClassConstraintComponent;
-            }
-        }
-
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            //IEnumerable<INode> invalidValues =
-            //    from valueNode in valueNodes
-            //    let isInstance = this.IsShaclInstance(valueNode, dataGraph)
-            //    group isInstance by valueNode into valid
-            //    where !valid.Any(isValid => isValid)
-            //    select valid.Key;
-            IEnumerable<INode> invalidValues = valueNodes.Where(v => !this.IsShaclInstance(v, dataGraph)).ToList();
-
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
+        return ReportValueNodes(focusNode, invalidValues, report);
     }
 }

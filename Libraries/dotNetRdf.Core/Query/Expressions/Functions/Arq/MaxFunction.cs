@@ -24,73 +24,72 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Arq
+namespace VDS.RDF.Query.Expressions.Functions.Arq;
+
+/// <summary>
+/// Represents the ARQ max() function.
+/// </summary>
+public class MaxFunction
+    : BaseBinaryExpression
 {
     /// <summary>
-    /// Represents the ARQ max() function.
+    /// Creates a new ARQ max() function.
     /// </summary>
-    public class MaxFunction
-        : BaseBinaryExpression
+    /// <param name="arg1">First Argument.</param>
+    /// <param name="arg2">Second Argument.</param>
+    public MaxFunction(ISparqlExpression arg1, ISparqlExpression arg2)
+        : base(arg1, arg2) { }
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new ARQ max() function.
-        /// </summary>
-        /// <param name="arg1">First Argument.</param>
-        /// <param name="arg2">Second Argument.</param>
-        public MaxFunction(ISparqlExpression arg1, ISparqlExpression arg2)
-            : base(arg1, arg2) { }
+        return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Max + ">(" + _leftExpr + ", " + _rightExpr + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Max + ">(" + _leftExpr + ", " + _rightExpr + ")";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessMaxFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessMaxFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitMaxFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return visitor.VisitMaxFunction(this);
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Max;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Max;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new MaxFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new MaxFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
     }
 }

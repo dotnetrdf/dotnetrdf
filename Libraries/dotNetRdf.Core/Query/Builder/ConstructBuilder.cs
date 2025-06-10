@@ -26,22 +26,21 @@
 
 using System;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+internal sealed class ConstructBuilder : QueryBuilder
 {
-    internal sealed class ConstructBuilder : QueryBuilder
+    private readonly GraphPatternBuilder _builder;
+
+    internal ConstructBuilder(Action<IDescribeGraphPatternBuilder> buildPattern) : base(SparqlQueryType.Construct)
     {
-        private readonly GraphPatternBuilder _builder;
+        _builder = new GraphPatternBuilder();
+        buildPattern(_builder);
+    }
 
-        internal ConstructBuilder(Action<IDescribeGraphPatternBuilder> buildPattern) : base(SparqlQueryType.Construct)
-        {
-            _builder = new GraphPatternBuilder();
-            buildPattern(_builder);
-        }
-
-        protected override SparqlQuery BuildQuery(SparqlQuery query)
-        {
-            query.ConstructTemplate = _builder.BuildGraphPattern(Prefixes);
-            return base.BuildQuery(query);
-        }
+    protected override SparqlQuery BuildQuery(SparqlQuery query)
+    {
+        query.ConstructTemplate = _builder.BuildGraphPattern(Prefixes);
+        return base.BuildQuery(query);
     }
 }

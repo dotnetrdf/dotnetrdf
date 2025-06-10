@@ -30,145 +30,144 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Nodes
+namespace VDS.RDF.Nodes;
+
+/// <summary>
+/// Valued Node representing a Time Span value.
+/// </summary>
+public class TimeSpanNode
+    : LiteralNode, IValuedNode
 {
+    private TimeSpan _value;
+
     /// <summary>
-    /// Valued Node representing a Time Span value.
+    /// Creates a new Time span node.
     /// </summary>
-    public class TimeSpanNode
-        : LiteralNode, IValuedNode
+    /// <param name="value">Time Span.</param>
+    public TimeSpanNode(TimeSpan value)
+        : this(value, XmlConvert.ToString(value), UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
+
+    /// <summary>
+    /// Creates a new Time span node. 
+    /// </summary>
+    /// <param name="value">Time Span.</param>
+    /// <param name="lexicalValue">Lexical value.</param>
+    public TimeSpanNode(TimeSpan value, string lexicalValue)
+        : this(value, lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
+
+    /// <summary>
+    /// Creates a new Time span node.
+    /// </summary>
+    /// <param name="value">Time Span.</param>
+    /// <param name="lexicalValue">Lexical value.</param>
+    /// <param name="dtUri">Data type URI.</param>
+    /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="lexicalValue"/>.</param>
+    public TimeSpanNode(TimeSpan value, string lexicalValue, Uri dtUri, bool normalizeLiteralValue = false)
+        : base(lexicalValue, dtUri, normalizeLiteralValue)
     {
-        private TimeSpan _value;
+        _value = value;
+    }
 
-        /// <summary>
-        /// Creates a new Time span node.
-        /// </summary>
-        /// <param name="value">Time Span.</param>
-        public TimeSpanNode(TimeSpan value)
-            : this(value, XmlConvert.ToString(value), UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
+    /// <summary>
+    /// Gets the date time value as a string.
+    /// </summary>
+    /// <returns></returns>
+    public string AsString()
+    {
+        return Value;
+    }
 
-        /// <summary>
-        /// Creates a new Time span node. 
-        /// </summary>
-        /// <param name="value">Time Span.</param>
-        /// <param name="lexicalValue">Lexical value.</param>
-        public TimeSpanNode(TimeSpan value, string lexicalValue)
-            : this(value, lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
+    /// <summary>
+    /// Throws an error as date times cannot be converted to integers.
+    /// </summary>
+    /// <returns></returns>
+    public long AsInteger()
+    {
+        throw new RdfQueryException("Cannot convert Time Spans to other types");
+    }
 
-        /// <summary>
-        /// Creates a new Time span node.
-        /// </summary>
-        /// <param name="value">Time Span.</param>
-        /// <param name="lexicalValue">Lexical value.</param>
-        /// <param name="dtUri">Data type URI.</param>
-        /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="lexicalValue"/>.</param>
-        public TimeSpanNode(TimeSpan value, string lexicalValue, Uri dtUri, bool normalizeLiteralValue = false)
-            : base(lexicalValue, dtUri, normalizeLiteralValue)
+    /// <summary>
+    /// Throws an error as date times cannot be converted to decimals.
+    /// </summary>
+    /// <returns></returns>
+    public decimal AsDecimal()
+    {
+        throw new RdfQueryException("Cannot convert Time Spans to other types");
+    }
+
+    /// <summary>
+    /// Throws an error as date times cannot be converted to floats.
+    /// </summary>
+    /// <returns></returns>
+    public float AsFloat()
+    {
+        throw new RdfQueryException("Cannot convert Time Spans to other types");
+    }
+
+    /// <summary>
+    /// Throws an error as date times cannot be converted to doubles.
+    /// </summary>
+    /// <returns></returns>
+    public double AsDouble()
+    {
+        throw new RdfQueryException("Cannot convert Time Spans to other types");
+    }
+
+    /// <summary>
+    /// Throws an error as date times cannot be converted to booleans.
+    /// </summary>
+    /// <returns></returns>
+    public bool AsBoolean()
+    {
+        throw new RdfQueryException("Cannot convert Time Spans to other types");
+    }
+
+    /// <summary>
+    /// Gets the date time value of the node.
+    /// </summary>
+    /// <returns></returns>
+    public DateTime AsDateTime()
+    {
+        throw new RdfQueryException("Cannot convert Time Spans to other types");
+    }
+
+    /// <summary>
+    /// Gets the date time value of the node.
+    /// </summary>
+    /// <returns></returns>
+    public DateTimeOffset AsDateTimeOffset()
+    {
+        throw new RdfQueryException("Cannot convert Time Spans to other types");
+    }
+
+    /// <summary>
+    /// Gets the time span value of the node.
+    /// </summary>
+    /// <returns></returns>
+    public TimeSpan AsTimeSpan()
+    {
+        return _value;
+    }
+
+    /// <summary>
+    /// Gets the URI of the datatype this valued node represents as a String.
+    /// </summary>
+    public string EffectiveType
+    {
+        get
         {
-            _value = value;
+            return DataType.AbsoluteUri;
         }
+    }
 
-        /// <summary>
-        /// Gets the date time value as a string.
-        /// </summary>
-        /// <returns></returns>
-        public string AsString()
+    /// <summary>
+    /// Gets the numeric type of the node.
+    /// </summary>
+    public SparqlNumericType NumericType
+    {
+        get
         {
-            return Value;
-        }
-
-        /// <summary>
-        /// Throws an error as date times cannot be converted to integers.
-        /// </summary>
-        /// <returns></returns>
-        public long AsInteger()
-        {
-            throw new RdfQueryException("Cannot convert Time Spans to other types");
-        }
-
-        /// <summary>
-        /// Throws an error as date times cannot be converted to decimals.
-        /// </summary>
-        /// <returns></returns>
-        public decimal AsDecimal()
-        {
-            throw new RdfQueryException("Cannot convert Time Spans to other types");
-        }
-
-        /// <summary>
-        /// Throws an error as date times cannot be converted to floats.
-        /// </summary>
-        /// <returns></returns>
-        public float AsFloat()
-        {
-            throw new RdfQueryException("Cannot convert Time Spans to other types");
-        }
-
-        /// <summary>
-        /// Throws an error as date times cannot be converted to doubles.
-        /// </summary>
-        /// <returns></returns>
-        public double AsDouble()
-        {
-            throw new RdfQueryException("Cannot convert Time Spans to other types");
-        }
-
-        /// <summary>
-        /// Throws an error as date times cannot be converted to booleans.
-        /// </summary>
-        /// <returns></returns>
-        public bool AsBoolean()
-        {
-            throw new RdfQueryException("Cannot convert Time Spans to other types");
-        }
-
-        /// <summary>
-        /// Gets the date time value of the node.
-        /// </summary>
-        /// <returns></returns>
-        public DateTime AsDateTime()
-        {
-            throw new RdfQueryException("Cannot convert Time Spans to other types");
-        }
-
-        /// <summary>
-        /// Gets the date time value of the node.
-        /// </summary>
-        /// <returns></returns>
-        public DateTimeOffset AsDateTimeOffset()
-        {
-            throw new RdfQueryException("Cannot convert Time Spans to other types");
-        }
-
-        /// <summary>
-        /// Gets the time span value of the node.
-        /// </summary>
-        /// <returns></returns>
-        public TimeSpan AsTimeSpan()
-        {
-            return _value;
-        }
-
-        /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String.
-        /// </summary>
-        public string EffectiveType
-        {
-            get
-            {
-                return DataType.AbsoluteUri;
-            }
-        }
-
-        /// <summary>
-        /// Gets the numeric type of the node.
-        /// </summary>
-        public SparqlNumericType NumericType
-        {
-            get
-            {
-                return SparqlNumericType.NaN;
-            }
+            return SparqlNumericType.NaN;
         }
     }
 }

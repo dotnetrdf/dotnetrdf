@@ -27,21 +27,20 @@
 using System;
 using VDS.RDF.Query.Spin.SparqlUtil;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+/**
+ * Represents instances of sp:Command (Queries or Update requests).
+ *
+ * @author Holger Knublauch
+ */
+internal interface ICommand : IPrintable, IResource
 {
 
     /**
-     * Represents instances of sp:Command (Queries or Update requests).
-     *
-     * @author Holger Knublauch
+     * Gets the comment if any has been stored as rdfs:comment.
+     * @return the comment or null
      */
-    internal interface ICommand : IPrintable, IResource
-    {
-
-        /**
-         * Gets the comment if any has been stored as rdfs:comment.
-         * @return the comment or null
-         */
-        String getComment();
-    }
+    String getComment();
 }

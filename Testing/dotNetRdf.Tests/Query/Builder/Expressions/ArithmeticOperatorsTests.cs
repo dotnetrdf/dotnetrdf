@@ -28,483 +28,482 @@ using Xunit;
 using VDS.RDF.Query.Expressions.Arithmetic;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions;
+
+
+public class ArithmeticOperatorsTests
 {
-
-    public class ArithmeticOperatorsTests
+    [Fact]
+    public void CanMultiplyTypedNumericsOfMatchingTypes()
     {
-        [Fact]
-        public void CanMultiplyTypedNumericsOfMatchingTypes()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            var left = new NumericExpression<int>(10);
-
-            // when
-            var multiplication = (left * right).Expression;
-
-            // then
-            Assert.True(multiplication is MultiplicationExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanMultiplyTypedNumericsOfdifferentTypes()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            var left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (left * right).Expression;
-
-            // then
-            Assert.True(multiplication is MultiplicationExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanMultiplyTypedNumericAndUntypedNumeric()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            NumericExpression left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (right * left).Expression;
-
-            // then
-            Assert.True(multiplication is MultiplicationExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanMultiplyTypedNumericAndUntypedNumeric2()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            NumericExpression left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (left * right).Expression;
-
-            // then
-            Assert.True(multiplication is MultiplicationExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanMultiplyTypedNumericBySimpleValue()
-        {
-            // given
-            var left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (left * 10m).Expression;
-
-            // then
-            Assert.True(multiplication is MultiplicationExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanMultiplySimpleValueByTypedNumeric()
-        {
-            // given
-            var right = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (10m * right).Expression;
-
-            // then
-            Assert.True(multiplication is MultiplicationExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanMultiplyNumericBySimpleValue()
-        {
-            // given
-            var left = new NumericExpression(new VariableTerm("x"));
-
-            // when
-            var multiplication = (left * 10).Expression;
-
-            // then
-            Assert.True(multiplication is MultiplicationExpression);
-            Assert.Same(left.Expression, multiplication.Arguments.ElementAt(0));
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanMultiplySimpleValueByNumeric()
-        {
-            // given
-            var right = new NumericExpression(new VariableTerm("x"));
-
-            // when
-            var multiplication = (10 * right).Expression;
-
-            // then
-            Assert.True(multiplication is MultiplicationExpression);
-            Assert.Same(right.Expression, multiplication.Arguments.ElementAt(1));
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanChainMultiplicationOfNumerics()
-        {
-            // given
-            var op2 = new NumericExpression<int>(10);
-            var op1 = new NumericExpression<decimal>(10);
-            var op3 = new NumericExpression<int>(5);
-
-            // when
-            var multiplication = (op1 * op2 * op3).Expression;
-
-            // then
-            Assert.True(multiplication is MultiplicationExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is MultiplicationExpression);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanDivideTypedNumericsOfMatchingTypes()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            var left = new NumericExpression<int>(10);
-
-            // when
-            var multiplication = (left / right).Expression;
-
-            // then
-            Assert.True(multiplication is DivisionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanDivideTypedNumericsOfdifferentTypes()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            var left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (left / right).Expression;
-
-            // then
-            Assert.True(multiplication is DivisionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanDivideTypedNumericByUntypedNumeric()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            NumericExpression left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (right / left).Expression;
-
-            // then
-            Assert.True(multiplication is DivisionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanDivideTypedNumericByUntypedNumeric2()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            NumericExpression left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (left / right).Expression;
-
-            // then
-            Assert.True(multiplication is DivisionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanDivideTypedNumericBySimpleValue()
-        {
-            // given
-            var left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (left / 10m).Expression;
-
-            // then
-            Assert.True(multiplication is DivisionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanDivideSimpleValueByTypedNumeric()
-        {
-            // given
-            var right = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (10m / right).Expression;
-
-            // then
-            Assert.True(multiplication is DivisionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanChainDivisionsOfNumerics()
-        {
-            // given
-            var op2 = new NumericExpression<int>(10);
-            var op1 = new NumericExpression<decimal>(10);
-            var op3 = new NumericExpression<int>(5);
-
-            // when
-            var multiplication = (op1 / op2 / op3).Expression;
-
-            // then
-            Assert.True(multiplication is DivisionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is DivisionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanAddTypedNumericsOfMatchingTypes()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            var left = new NumericExpression<int>(10);
-
-            // when
-            var multiplication = (left + right).Expression;
-
-            // then
-            Assert.True(multiplication is AdditionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanAddTypedNumericsOfdifferentTypes()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            var left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (left + right).Expression;
-
-            // then
-            Assert.True(multiplication is AdditionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanAddTypedNumericToUntypedNumeric()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            NumericExpression left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (right + left).Expression;
-
-            // then
-            Assert.True(multiplication is AdditionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanAddTypedNumericToUntypedNumeric2()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            NumericExpression left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (left + right).Expression;
-
-            // then
-            Assert.True(multiplication is AdditionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanAddSimpleValueToTypedNumeric()
-        {
-            // given
-            var left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (left + 10m).Expression;
-
-            // then
-            Assert.True(multiplication is AdditionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanAddTypedNumericToSimpleValue()
-        {
-            // given
-            var right = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (10m + right).Expression;
-
-            // then
-            Assert.True(multiplication is AdditionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanChainAdditionsOfNumerics()
-        {
-            // given
-            var op2 = new NumericExpression<int>(10);
-            var op1 = new NumericExpression<decimal>(10);
-            var op3 = new NumericExpression<int>(5);
-
-            // when
-            var multiplication = (op1 + op2 + op3).Expression;
-
-            // then
-            Assert.True(multiplication is AdditionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is AdditionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanSubtractTypedNumericsOfMatchingTypes()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            var left = new NumericExpression<int>(10);
-
-            // when
-            var multiplication = (left - right).Expression;
-
-            // then
-            Assert.True(multiplication is SubtractionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanSubtractTypedNumericsOfdifferentTypes()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            var left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (left - right).Expression;
-
-            // then
-            Assert.True(multiplication is SubtractionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanSubtractTypedNumericToUntypedNumeric()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            NumericExpression left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (right - left).Expression;
-
-            // then
-            Assert.True(multiplication is SubtractionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanSubtractTypedNumericToUntypedNumeric2()
-        {
-            // given
-            var right = new NumericExpression<int>(10);
-            NumericExpression left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (left - right).Expression;
-
-            // then
-            Assert.True(multiplication is SubtractionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanSubtractSimpleValueFromTypedNumeric()
-        {
-            // given
-            var left = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (left - 10m).Expression;
-
-            // then
-            Assert.True(multiplication is SubtractionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanSubtractTypedNumericFromSimpleValue()
-        {
-            // given
-            var right = new NumericExpression<decimal>(10);
-
-            // when
-            var multiplication = (10m - right).Expression;
-
-            // then
-            Assert.True(multiplication is SubtractionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
-
-        [Fact]
-        public void CanChainSubtractionsOfNumerics()
-        {
-            // given
-            var op2 = new NumericExpression<int>(10);
-            var op1 = new NumericExpression<decimal>(10);
-            var op3 = new NumericExpression<int>(5);
-
-            // when
-            var multiplication = (op1 - op2 - op3).Expression;
-
-            // then
-            Assert.True(multiplication is SubtractionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(0) is SubtractionExpression);
-            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
-        }
+        // given
+        var right = new NumericExpression<int>(10);
+        var left = new NumericExpression<int>(10);
+
+        // when
+        var multiplication = (left * right).Expression;
+
+        // then
+        Assert.True(multiplication is MultiplicationExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanMultiplyTypedNumericsOfdifferentTypes()
+    {
+        // given
+        var right = new NumericExpression<int>(10);
+        var left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (left * right).Expression;
+
+        // then
+        Assert.True(multiplication is MultiplicationExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanMultiplyTypedNumericAndUntypedNumeric()
+    {
+        // given
+        var right = new NumericExpression<int>(10);
+        NumericExpression left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (right * left).Expression;
+
+        // then
+        Assert.True(multiplication is MultiplicationExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanMultiplyTypedNumericAndUntypedNumeric2()
+    {
+        // given
+        var right = new NumericExpression<int>(10);
+        NumericExpression left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (left * right).Expression;
+
+        // then
+        Assert.True(multiplication is MultiplicationExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanMultiplyTypedNumericBySimpleValue()
+    {
+        // given
+        var left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (left * 10m).Expression;
+
+        // then
+        Assert.True(multiplication is MultiplicationExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanMultiplySimpleValueByTypedNumeric()
+    {
+        // given
+        var right = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (10m * right).Expression;
+
+        // then
+        Assert.True(multiplication is MultiplicationExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanMultiplyNumericBySimpleValue()
+    {
+        // given
+        var left = new NumericExpression(new VariableTerm("x"));
+
+        // when
+        var multiplication = (left * 10).Expression;
+
+        // then
+        Assert.True(multiplication is MultiplicationExpression);
+        Assert.Same(left.Expression, multiplication.Arguments.ElementAt(0));
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanMultiplySimpleValueByNumeric()
+    {
+        // given
+        var right = new NumericExpression(new VariableTerm("x"));
+
+        // when
+        var multiplication = (10 * right).Expression;
+
+        // then
+        Assert.True(multiplication is MultiplicationExpression);
+        Assert.Same(right.Expression, multiplication.Arguments.ElementAt(1));
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanChainMultiplicationOfNumerics()
+    {
+        // given
+        var op2 = new NumericExpression<int>(10);
+        var op1 = new NumericExpression<decimal>(10);
+        var op3 = new NumericExpression<int>(5);
+
+        // when
+        var multiplication = (op1 * op2 * op3).Expression;
+
+        // then
+        Assert.True(multiplication is MultiplicationExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is MultiplicationExpression);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanDivideTypedNumericsOfMatchingTypes()
+    {
+        // given
+        var right = new NumericExpression<int>(10);
+        var left = new NumericExpression<int>(10);
+
+        // when
+        var multiplication = (left / right).Expression;
+
+        // then
+        Assert.True(multiplication is DivisionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanDivideTypedNumericsOfdifferentTypes()
+    {
+        // given
+        var right = new NumericExpression<int>(10);
+        var left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (left / right).Expression;
+
+        // then
+        Assert.True(multiplication is DivisionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanDivideTypedNumericByUntypedNumeric()
+    {
+        // given
+        var right = new NumericExpression<int>(10);
+        NumericExpression left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (right / left).Expression;
+
+        // then
+        Assert.True(multiplication is DivisionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanDivideTypedNumericByUntypedNumeric2()
+    {
+        // given
+        var right = new NumericExpression<int>(10);
+        NumericExpression left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (left / right).Expression;
+
+        // then
+        Assert.True(multiplication is DivisionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanDivideTypedNumericBySimpleValue()
+    {
+        // given
+        var left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (left / 10m).Expression;
+
+        // then
+        Assert.True(multiplication is DivisionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanDivideSimpleValueByTypedNumeric()
+    {
+        // given
+        var right = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (10m / right).Expression;
+
+        // then
+        Assert.True(multiplication is DivisionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanChainDivisionsOfNumerics()
+    {
+        // given
+        var op2 = new NumericExpression<int>(10);
+        var op1 = new NumericExpression<decimal>(10);
+        var op3 = new NumericExpression<int>(5);
+
+        // when
+        var multiplication = (op1 / op2 / op3).Expression;
+
+        // then
+        Assert.True(multiplication is DivisionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is DivisionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanAddTypedNumericsOfMatchingTypes()
+    {
+        // given
+        var right = new NumericExpression<int>(10);
+        var left = new NumericExpression<int>(10);
+
+        // when
+        var multiplication = (left + right).Expression;
+
+        // then
+        Assert.True(multiplication is AdditionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanAddTypedNumericsOfdifferentTypes()
+    {
+        // given
+        var right = new NumericExpression<int>(10);
+        var left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (left + right).Expression;
+
+        // then
+        Assert.True(multiplication is AdditionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanAddTypedNumericToUntypedNumeric()
+    {
+        // given
+        var right = new NumericExpression<int>(10);
+        NumericExpression left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (right + left).Expression;
+
+        // then
+        Assert.True(multiplication is AdditionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanAddTypedNumericToUntypedNumeric2()
+    {
+        // given
+        var right = new NumericExpression<int>(10);
+        NumericExpression left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (left + right).Expression;
+
+        // then
+        Assert.True(multiplication is AdditionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanAddSimpleValueToTypedNumeric()
+    {
+        // given
+        var left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (left + 10m).Expression;
+
+        // then
+        Assert.True(multiplication is AdditionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanAddTypedNumericToSimpleValue()
+    {
+        // given
+        var right = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (10m + right).Expression;
+
+        // then
+        Assert.True(multiplication is AdditionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanChainAdditionsOfNumerics()
+    {
+        // given
+        var op2 = new NumericExpression<int>(10);
+        var op1 = new NumericExpression<decimal>(10);
+        var op3 = new NumericExpression<int>(5);
+
+        // when
+        var multiplication = (op1 + op2 + op3).Expression;
+
+        // then
+        Assert.True(multiplication is AdditionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is AdditionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanSubtractTypedNumericsOfMatchingTypes()
+    {
+        // given
+        var right = new NumericExpression<int>(10);
+        var left = new NumericExpression<int>(10);
+
+        // when
+        var multiplication = (left - right).Expression;
+
+        // then
+        Assert.True(multiplication is SubtractionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanSubtractTypedNumericsOfdifferentTypes()
+    {
+        // given
+        var right = new NumericExpression<int>(10);
+        var left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (left - right).Expression;
+
+        // then
+        Assert.True(multiplication is SubtractionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanSubtractTypedNumericToUntypedNumeric()
+    {
+        // given
+        var right = new NumericExpression<int>(10);
+        NumericExpression left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (right - left).Expression;
+
+        // then
+        Assert.True(multiplication is SubtractionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanSubtractTypedNumericToUntypedNumeric2()
+    {
+        // given
+        var right = new NumericExpression<int>(10);
+        NumericExpression left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (left - right).Expression;
+
+        // then
+        Assert.True(multiplication is SubtractionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanSubtractSimpleValueFromTypedNumeric()
+    {
+        // given
+        var left = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (left - 10m).Expression;
+
+        // then
+        Assert.True(multiplication is SubtractionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanSubtractTypedNumericFromSimpleValue()
+    {
+        // given
+        var right = new NumericExpression<decimal>(10);
+
+        // when
+        var multiplication = (10m - right).Expression;
+
+        // then
+        Assert.True(multiplication is SubtractionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+    }
+
+    [Fact]
+    public void CanChainSubtractionsOfNumerics()
+    {
+        // given
+        var op2 = new NumericExpression<int>(10);
+        var op1 = new NumericExpression<decimal>(10);
+        var op3 = new NumericExpression<int>(5);
+
+        // when
+        var multiplication = (op1 - op2 - op3).Expression;
+
+        // then
+        Assert.True(multiplication is SubtractionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(0) is SubtractionExpression);
+        Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
     }
 }

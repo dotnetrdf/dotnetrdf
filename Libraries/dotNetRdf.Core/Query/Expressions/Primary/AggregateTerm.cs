@@ -27,113 +27,112 @@
 using System.Collections.Generic;
 using VDS.RDF.Query.Aggregates;
 
-namespace VDS.RDF.Query.Expressions.Primary
+namespace VDS.RDF.Query.Expressions.Primary;
+
+/// <summary>
+/// Class for representing Aggregate Expressions which have Numeric Results.
+/// </summary>
+public class AggregateTerm 
+    : BaseUnaryExpression
 {
     /// <summary>
-    /// Class for representing Aggregate Expressions which have Numeric Results.
+    /// Creates a new Aggregate Expression Term that uses the given Aggregate.
     /// </summary>
-    public class AggregateTerm 
-        : BaseUnaryExpression
+    /// <param name="aggregate">Aggregate.</param>
+    public AggregateTerm(ISparqlAggregate aggregate)
+        : base(null)
     {
-        /// <summary>
-        /// Creates a new Aggregate Expression Term that uses the given Aggregate.
-        /// </summary>
-        /// <param name="aggregate">Aggregate.</param>
-        public AggregateTerm(ISparqlAggregate aggregate)
-            : base(null)
-        {
-            Aggregate = aggregate;
-        }
+        Aggregate = aggregate;
+    }
 
-        /// <summary>
-        /// Gets the Aggregate this Expression represents.
-        /// </summary>
-        public ISparqlAggregate Aggregate { get; }
+    /// <summary>
+    /// Gets the Aggregate this Expression represents.
+    /// </summary>
+    public ISparqlAggregate Aggregate { get; }
 
-        /// <summary>
-        /// Gets the String representation of the Aggregate Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return Aggregate.ToString();
-        }
+    /// <summary>
+    /// Gets the String representation of the Aggregate Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return Aggregate.ToString();
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessAggregateTerm(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessAggregateTerm(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitAggregateTerm(this);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitAggregateTerm(this);
+    }
 
-        /// <summary>
-        /// Gets the enumeration of variables that are used in the the aggregate expression.
-        /// </summary>
-        public override IEnumerable<string> Variables
+    /// <summary>
+    /// Gets the enumeration of variables that are used in the the aggregate expression.
+    /// </summary>
+    public override IEnumerable<string> Variables
+    {
+        get
         {
-            get
-            {
-                return Aggregate.Expression.Variables;
-            }
+            return Aggregate.Expression.Variables;
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Aggregate;
-            }
+            return SparqlExpressionType.Aggregate;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            get
-            {
-                return Aggregate.Functor;
-            }
+            return Aggregate.Functor;
         }
+    }
 
-        /// <summary>
-        /// Gets the Arguments of the Expression.
-        /// </summary>
-        public override IEnumerable<ISparqlExpression> Arguments
+    /// <summary>
+    /// Gets the Arguments of the Expression.
+    /// </summary>
+    public override IEnumerable<ISparqlExpression> Arguments
+    {
+        get
         {
-            get
-            {
-                return Aggregate.Arguments;
-            }
+            return Aggregate.Arguments;
         }
+    }
 
-        /// <summary>
-        /// Gets whether the expression can be parallelised.
-        /// </summary>
-        public override bool CanParallelise
+    /// <summary>
+    /// Gets whether the expression can be parallelised.
+    /// </summary>
+    public override bool CanParallelise
+    {
+        get
         {
-            get
-            {
-                return false;
-            }
+            return false;
         }
+    }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return this;
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return this;
     }
 }

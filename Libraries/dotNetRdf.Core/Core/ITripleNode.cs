@@ -24,16 +24,15 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface for triple nodes.
+/// </summary>
+public interface ITripleNode : IRefNode
 {
     /// <summary>
-    /// Interface for triple nodes.
+    /// Get the triple that is the value of this node.
     /// </summary>
-    public interface ITripleNode : IRefNode
-    {
-        /// <summary>
-        /// Get the triple that is the value of this node.
-        /// </summary>
-        public Triple Triple { get; }
-    }
+    public Triple Triple { get; }
 }

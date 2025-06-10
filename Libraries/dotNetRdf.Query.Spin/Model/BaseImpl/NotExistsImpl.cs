@@ -26,27 +26,26 @@
 
 using VDS.RDF.Query.Spin.SparqlUtil;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class NotExistsImpl : ElementImpl, INotExists
 {
-    internal class NotExistsImpl : ElementImpl, INotExists
+
+    public NotExistsImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
-
-        public NotExistsImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
-        }
+    }
 
 
-        //override public void visit(IElementVisitor visitor)
-        //{
-        //    visitor.visit(this);
-        //}
+    //override public void visit(IElementVisitor visitor)
+    //{
+    //    visitor.visit(this);
+    //}
 
 
-        override public void Print(ISparqlPrinter p)
-        {
-            p.printKeyword("NOT EXISTS");
-            printNestedElementList(p);
-        }
+    override public void Print(ISparqlPrinter p)
+    {
+        p.printKeyword("NOT EXISTS");
+        printNestedElementList(p);
     }
 }

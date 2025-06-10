@@ -30,44 +30,44 @@ using VDS.RDF.Parsing;
 using Xunit;
 using System.Threading;
 
-namespace VDS.RDF.Query.Aggregates
+namespace VDS.RDF.Query.Aggregates;
+
+public class AggregateTests : IDisposable
 {
-    public class AggregateTests : IDisposable
+    private readonly CultureInfo _previousCulture;
+
+    public AggregateTests()
     {
-        private readonly CultureInfo _previousCulture;
+        _previousCulture = Thread.CurrentThread.CurrentCulture;
+        Thread.CurrentThread.CurrentCulture = new CultureInfo("pl-PL");
+    }
 
-        public AggregateTests()
-        {
-            _previousCulture = Thread.CurrentThread.CurrentCulture;
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("pl-PL");
-        }
+    public void Dispose()
+    {
+        Thread.CurrentThread.CurrentCulture = _previousCulture;
+    }
 
-        public void Dispose()
-        {
-            Thread.CurrentThread.CurrentCulture = _previousCulture;
-        }
+    private static IGraph ExecuteGraphQuery(IInMemoryQueryableStore store, string query, Action<LeviathanQueryOptions> options = null)
+    {
+        return ExecuteQuery(store, query, options) as IGraph;
+    }
 
-        private static IGraph ExecuteGraphQuery(IInMemoryQueryableStore store, string query, Action<LeviathanQueryOptions> options = null)
-        {
-            return ExecuteQuery(store, query, options) as IGraph;
-        }
+    private static object ExecuteQuery(IInMemoryQueryableStore store, string query, Action<LeviathanQueryOptions> options = null)
+    {
+        var qp = new LeviathanQueryProcessor(store, options);
+        var parser = new SparqlQueryParser();
+        var q = parser.ParseFromString(query);
+        return qp.ProcessQuery(q);
+    }
 
-        private static object ExecuteQuery(IInMemoryQueryableStore store, string query, Action<LeviathanQueryOptions> options = null)
-        {
-            var qp = new LeviathanQueryProcessor(store, options);
-            var parser = new SparqlQueryParser();
-            var q = parser.ParseFromString(query);
-            return qp.ProcessQuery(q);
-        }
+    [Fact]
+    public void SparqlAggregatesMaxBug1()
+    {
+        var store = new TripleStore();
+        store.LoadFromFile(Path.Combine("resources", "LearningStyles.rdf"));
 
-        [Fact]
-        public void SparqlAggregatesMaxBug1()
-        {
-            var store = new TripleStore();
-            store.LoadFromFile(Path.Combine("resources", "LearningStyles.rdf"));
-
-            
-            IGraph graph = ExecuteGraphQuery(store, @"prefix sage:
+        
+        IGraph graph = ExecuteGraphQuery(store, @"prefix sage:
 <http://www.semanticsage.home.lc/LearningStyles.owl#>
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 prefix : <http://semanticsage.home.lc/files/LearningStyles.rdf#>
@@ -97,22 +97,22 @@ WHERE
     }
     GROUP BY ?MTech
 }");
-            Assert.NotNull(graph);
+        Assert.NotNull(graph);
 
-            INode zero = (0).ToLiteral(graph);
-            foreach (Triple t in graph.Triples)
-            {
-                Assert.False(t.Object.CompareTo(zero) == 0, "Unexpected zero value returned");
-            }
-        }
-
-        [Fact]
-        public void SparqlAggregatesMaxBug2()
+        INode zero = (0).ToLiteral(graph);
+        foreach (Triple t in graph.Triples)
         {
-            var store = new TripleStore();
-            store.LoadFromFile(Path.Combine("resources","LearningStyles.rdf"));
+            Assert.False(t.Object.CompareTo(zero) == 0, "Unexpected zero value returned");
+        }
+    }
 
-            IGraph graph = ExecuteGraphQuery(store, @"prefix sage:
+    [Fact]
+    public void SparqlAggregatesMaxBug2()
+    {
+        var store = new TripleStore();
+        store.LoadFromFile(Path.Combine("resources","LearningStyles.rdf"));
+
+        IGraph graph = ExecuteGraphQuery(store, @"prefix sage:
 <http://www.semanticsage.home.lc/LearningStyles.owl#>
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 prefix : <http://semanticsage.home.lc/files/LearningStyles.rdf#>
@@ -142,26 +142,26 @@ WHERE
     }
     GROUP BY ?MTech
 }");
-            Assert.NotNull(graph);
+        Assert.NotNull(graph);
 
-            INode zero = (0).ToLiteral(graph);
-            foreach (Triple t in graph.Triples)
-            {
-                Assert.False(t.Object.CompareTo(zero) == 0, "Unexpected zero value returned");
-            }
-        }
-
-        [Fact]
-        public void SparqlAggregatesMaxBug3()
+        INode zero = (0).ToLiteral(graph);
+        foreach (Triple t in graph.Triples)
         {
-            var store = new TripleStore();
-            var g = new Graph();
-            g.LoadFromFile(Path.Combine("resources", "LearningStyles.rdf"));
-            Assert.False(g.IsEmpty);
-            g.BaseUri = null;
-            store.Add(g);
+            Assert.False(t.Object.CompareTo(zero) == 0, "Unexpected zero value returned");
+        }
+    }
 
-            var graph = ExecuteGraphQuery(store, @"
+    [Fact]
+    public void SparqlAggregatesMaxBug3()
+    {
+        var store = new TripleStore();
+        var g = new Graph();
+        g.LoadFromFile(Path.Combine("resources", "LearningStyles.rdf"));
+        Assert.False(g.IsEmpty);
+        g.BaseUri = null;
+        store.Add(g);
+
+        var graph = ExecuteGraphQuery(store, @"
                     PREFIX sage: <http://www.semanticsage.home.lc/LearningStyles.owl#>
                     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                     PREFIX : <http://www.semanticsage.home.lc/LearningStyles.rdf#>
@@ -191,14 +191,14 @@ WHERE
                        GROUP BY ?MTech
                     }", options => { options.AlgebraOptimisation = false;});
 
-            Assert.False(graph.IsEmpty, "CONSTRUCTed graph should not be empty");
+        Assert.False(graph.IsEmpty, "CONSTRUCTed graph should not be empty");
 
-            // here a graph name is given to the result graph
-            var graph2 = new Graph(new UriNode(new Uri("http://semanticsage.home.lc/files/LearningStyles.rdf#maxValues")));
-            graph2.Assert(graph.Triples);
-            store.Add(graph2, true);
+        // here a graph name is given to the result graph
+        var graph2 = new Graph(new UriNode(new Uri("http://semanticsage.home.lc/files/LearningStyles.rdf#maxValues")));
+        graph2.Assert(graph.Triples);
+        store.Add(graph2, true);
 
-            var actualResults = ExecuteQuery(store, @"
+        var actualResults = ExecuteQuery(store, @"
                     PREFIX sage: <http://www.semanticsage.home.lc/LearningStyles.owl#>
                     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                     PREFIX : <http://www.semanticsage.home.lc/LearningStyles.rdf#>
@@ -227,8 +227,7 @@ WHERE
                        }
                        FILTER(?Score = ?max)
                     }", options => { options.AlgebraOptimisation = false;}) as SparqlResultSet;
-            Assert.NotNull(actualResults);
-            Assert.False(actualResults.IsEmpty, "Final results should not be empty");
-        }
+        Assert.NotNull(actualResults);
+        Assert.False(actualResults.IsEmpty, "Final results should not be empty");
     }
 }

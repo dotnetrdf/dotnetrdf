@@ -24,51 +24,50 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+/// <summary>
+/// Reasoning modes supported by Stardog.
+/// </summary>
+public enum StardogReasoningMode
 {
     /// <summary>
-    /// Reasoning modes supported by Stardog.
+    /// No Reasoning (default)
     /// </summary>
-    public enum StardogReasoningMode
-    {
-        /// <summary>
-        /// No Reasoning (default)
-        /// </summary>
-        None,
+    None,
 
-        /// <summary>
-        /// OWL-QL Reasoning
-        /// </summary>
-        QL,
+    /// <summary>
+    /// OWL-QL Reasoning
+    /// </summary>
+    QL,
 
-        /// <summary>
-        /// OWL-EL Reasoning
-        /// </summary>
-        EL,
+    /// <summary>
+    /// OWL-EL Reasoning
+    /// </summary>
+    EL,
 
-        /// <summary>
-        /// OWL-RL Reasoning
-        /// </summary>
-        RL,
+    /// <summary>
+    /// OWL-RL Reasoning
+    /// </summary>
+    RL,
 
-        /// <summary>
-        /// OWL-DL Reasoning
-        /// </summary>
-        DL,
+    /// <summary>
+    /// OWL-DL Reasoning
+    /// </summary>
+    DL,
 
-        /// <summary>
-        /// RDFS Reasoning
-        /// </summary>
-        RDFS,
+    /// <summary>
+    /// RDFS Reasoning
+    /// </summary>
+    RDFS,
 
-        /// <summary>
-        /// RDFS, QL, RL, and EL axioms, plus SWRL rules
-        /// </summary>
-        SL,
+    /// <summary>
+    /// RDFS, QL, RL, and EL axioms, plus SWRL rules
+    /// </summary>
+    SL,
 
-        /// <summary>
-        /// As of Stardog 3.x the reasoning mode is no longer a connection property and is instead managed at the database level
-        /// </summary>
-        DatabaseControlled,
-    }
+    /// <summary>
+    /// As of Stardog 3.x the reasoning mode is no longer a connection property and is instead managed at the database level
+    /// </summary>
+    DatabaseControlled,
 }

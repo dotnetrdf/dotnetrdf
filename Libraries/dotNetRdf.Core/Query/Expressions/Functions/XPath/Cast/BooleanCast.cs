@@ -26,62 +26,61 @@
 
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
+namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast;
+
+/// <summary>
+/// Class representing an XPath Boolean Cast Function.
+/// </summary>
+public class BooleanCast
+    : BaseCast
 {
     /// <summary>
-    /// Class representing an XPath Boolean Cast Function.
+    /// Creates a new XPath Boolean Cast Function Expression.
     /// </summary>
-    public class BooleanCast
-        : BaseCast
+    /// <param name="expr">Expression to be cast.</param>
+    public BooleanCast(ISparqlExpression expr) 
+        : base(expr) { }
+
+
+    /// <summary>
+    /// Gets the String representation of the Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new XPath Boolean Cast Function Expression.
-        /// </summary>
-        /// <param name="expr">Expression to be cast.</param>
-        public BooleanCast(ISparqlExpression expr) 
-            : base(expr) { }
+        return "<" + XmlSpecsHelper.XmlSchemaDataTypeBoolean + ">(" + _expr + ")";
+    }
 
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessBooleanCast(this, context, binding);
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitBooleanCast(this);
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeBoolean + ">(" + _expr + ")";
+            return XmlSpecsHelper.XmlSchemaDataTypeBoolean;
         }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessBooleanCast(this, context, binding);
-        }
-
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitBooleanCast(this);
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XmlSpecsHelper.XmlSchemaDataTypeBoolean;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new BooleanCast(transformer.Transform(_expr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new BooleanCast(transformer.Transform(_expr));
     }
 }

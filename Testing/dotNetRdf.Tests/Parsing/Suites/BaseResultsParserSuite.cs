@@ -26,47 +26,46 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Parsing.Suites
+namespace VDS.RDF.Parsing.Suites;
+
+
+public abstract class BaseResultsParserSuite : BaseParserSuite<ISparqlResultsReader, SparqlResultSet>
 {
-
-    public abstract class BaseResultsParserSuite : BaseParserSuite<ISparqlResultsReader, SparqlResultSet>
+    protected BaseResultsParserSuite(ISparqlResultsReader testParser, ISparqlResultsReader resultsParser, String baseDir)
+        : base(testParser, resultsParser, baseDir)
     {
-        protected BaseResultsParserSuite(ISparqlResultsReader testParser, ISparqlResultsReader resultsParser, String baseDir)
-            : base(testParser, resultsParser, baseDir)
-        {
-            Parser.Warning += TestTools.WarningPrinter;
-            ResultsParser.Warning += TestTools.WarningPrinter;
-        }
-
-        protected override SparqlResultSet TryParseTestInput(string file)
-        {
-            var actual = new SparqlResultSet();
-            Parser.Load(actual, file);
-            return actual;
-        }
-
-        protected override void TryValidateResults(string testName, string resultFile, SparqlResultSet actual)
-        {
-            var expected = new SparqlResultSet();
-            ResultsParser.Load(expected, resultFile);
-
-            if (expected.Equals(actual))
-            {
-                Console.WriteLine("Parsed Results matches Expected Results (Test Passed)");
-                PassedTest(testName);
-            }
-            else
-            {
-                Console.WriteLine("Parsed Results did not match Expected Graph (Test Failed)");
-                FailedTest(testName, "Parsed Results did not match Expected Graph ");
-                Console.WriteLine("Expected:");
-                TestTools.ShowResults(expected);
-                Console.WriteLine();
-                Console.WriteLine("Actual:");
-                TestTools.ShowResults(actual);
-            }
-        }
-
-        protected override string FileExtension => ".srx";
+        Parser.Warning += TestTools.WarningPrinter;
+        ResultsParser.Warning += TestTools.WarningPrinter;
     }
+
+    protected override SparqlResultSet TryParseTestInput(string file)
+    {
+        var actual = new SparqlResultSet();
+        Parser.Load(actual, file);
+        return actual;
+    }
+
+    protected override void TryValidateResults(string testName, string resultFile, SparqlResultSet actual)
+    {
+        var expected = new SparqlResultSet();
+        ResultsParser.Load(expected, resultFile);
+
+        if (expected.Equals(actual))
+        {
+            Console.WriteLine("Parsed Results matches Expected Results (Test Passed)");
+            PassedTest(testName);
+        }
+        else
+        {
+            Console.WriteLine("Parsed Results did not match Expected Graph (Test Failed)");
+            FailedTest(testName, "Parsed Results did not match Expected Graph ");
+            Console.WriteLine("Expected:");
+            TestTools.ShowResults(expected);
+            Console.WriteLine();
+            Console.WriteLine("Actual:");
+            TestTools.ShowResults(actual);
+        }
+    }
+
+    protected override string FileExtension => ".srx";
 }

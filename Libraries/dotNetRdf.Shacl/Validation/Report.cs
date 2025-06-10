@@ -28,148 +28,147 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Shacl.Validation
+namespace VDS.RDF.Shacl.Validation;
+
+/// <summary>
+/// Represents a SHACL validation report.
+/// </summary>
+public class Report : GraphWrapperNode
 {
-    /// <summary>
-    /// Represents a SHACL validation report.
-    /// </summary>
-    public class Report : GraphWrapperNode
+    private Report(INode node, IGraph reportGraph)
+        : base(node, reportGraph)
     {
-        private Report(INode node, IGraph reportGraph)
-            : base(node, reportGraph)
-        {
-            Graph.TripleAsserted += TripleAsserted;
-            Graph.TripleRetracted += TripleRetracted;
-        }
+        Graph.TripleAsserted += TripleAsserted;
+        Graph.TripleRetracted += TripleRetracted;
+    }
 
-        /// <summary>
-        /// Gets a value indicating whether conformance checking was successful.
-        /// </summary>
-        public bool Conforms
+    /// <summary>
+    /// Gets a value indicating whether conformance checking was successful.
+    /// </summary>
+    public bool Conforms
+    {
+        get
         {
-            get
+            INode conforms = Vocabulary.Conforms.ObjectsOf(this).SingleOrDefault();
+
+            if (conforms is null)
             {
-                INode conforms = Vocabulary.Conforms.ObjectsOf(this).SingleOrDefault();
-
-                if (conforms is null)
-                {
-                    return true;
-                }
-
-                return conforms.AsValuedNode().AsBoolean();
+                return true;
             }
 
-            internal set
-            {
-                foreach (INode conforms in Vocabulary.Conforms.ObjectsOf(this).ToList())
-                {
-                    Graph.Retract(this, Vocabulary.Conforms, conforms);
-                }
-
-                Graph.Assert(this, Vocabulary.Conforms, value.ToLiteral(Graph));
-            }
+            return conforms.AsValuedNode().AsBoolean();
         }
 
-        /// <summary>
-        /// Gets a normalised graph containing validation report data as required for SHACL compliance testing.
-        /// </summary>
-        public IGraph Normalised
+        internal set
         {
-            get
+            foreach (INode conforms in Vocabulary.Conforms.ObjectsOf(this).ToList())
             {
-                IEnumerable<INode> reportNodes = Graph.GetTriplesWithPredicateObject(Vocabulary.RdfType, Vocabulary.ValidationReport)
-                    .Select(t => t.Subject);
-                var describer = new ReportDescribeAlgorithm();
-                return describer.Describe(Graph, reportNodes);
+                Graph.Retract(this, Vocabulary.Conforms, conforms);
+            }
 
-                /*
-                SparqlQuery q = new SparqlQueryParser().ParseFromString(@"
+            Graph.Assert(this, Vocabulary.Conforms, value.ToLiteral(Graph));
+        }
+    }
+
+    /// <summary>
+    /// Gets a normalised graph containing validation report data as required for SHACL compliance testing.
+    /// </summary>
+    public IGraph Normalised
+    {
+        get
+        {
+            IEnumerable<INode> reportNodes = Graph.GetTriplesWithPredicateObject(Vocabulary.RdfType, Vocabulary.ValidationReport)
+                .Select(t => t.Subject);
+            var describer = new ReportDescribeAlgorithm();
+            return describer.Describe(Graph, reportNodes);
+
+            /*
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(@"
 PREFIX sh: <http://www.w3.org/ns/shacl#> 
 
 DESCRIBE ?s
 WHERE {
-    ?s a sh:ValidationReport .
+?s a sh:ValidationReport .
 }
 ");
 
-                var processor = new LeviathanQueryProcessor(new InMemoryDataset(Graph), option =>
-                {
-                    option.Describer = new SparqlDescriber(new ReportDescribeAlgorithm());
-                });
-                return (IGraph)processor.ProcessQuery(q);
-                */
-            }
+            var processor = new LeviathanQueryProcessor(new InMemoryDataset(Graph), option =>
+            {
+                option.Describer = new SparqlDescriber(new ReportDescribeAlgorithm());
+            });
+            return (IGraph)processor.ProcessQuery(q);
+            */
+        }
+    }
+
+    /// <summary>
+    /// Gets the collection of validation results for this report.
+    /// </summary>
+    public ICollection<Result> Results
+    {
+        get
+        {
+            return new ResultCollection(this);
+        }
+    }
+
+    internal INode Type
+    {
+        get
+        {
+            return Vocabulary.RdfType.ObjectsOf(this).SingleOrDefault();
         }
 
-        /// <summary>
-        /// Gets the collection of validation results for this report.
-        /// </summary>
-        public ICollection<Result> Results
+        set
         {
-            get
+            foreach (INode type in Vocabulary.RdfType.ObjectsOf(this).ToList())
             {
-                return new ResultCollection(this);
-            }
-        }
-
-        internal INode Type
-        {
-            get
-            {
-                return Vocabulary.RdfType.ObjectsOf(this).SingleOrDefault();
+                Graph.Retract(this, Vocabulary.RdfType, type);
             }
 
-            set
+            if (value is null)
             {
-                foreach (INode type in Vocabulary.RdfType.ObjectsOf(this).ToList())
-                {
-                    Graph.Retract(this, Vocabulary.RdfType, type);
-                }
-
-                if (value is null)
-                {
-                    return;
-                }
-
-                Graph.Assert(this, Vocabulary.RdfType, value);
+                return;
             }
+
+            Graph.Assert(this, Vocabulary.RdfType, value);
         }
+    }
 
-        /// <summary>
-        /// Wraps a graph with SHACL validation report data.
-        /// </summary>
-        /// <param name="g">The graph containing SHACL validation report statements.</param>
-        /// <returns>A report representing the SHACL validation report in the erapped graph.</returns>
-        public static Report Parse(IGraph g)
+    /// <summary>
+    /// Wraps a graph with SHACL validation report data.
+    /// </summary>
+    /// <param name="g">The graph containing SHACL validation report statements.</param>
+    /// <returns>A report representing the SHACL validation report in the erapped graph.</returns>
+    public static Report Parse(IGraph g)
+    {
+        return new Report(g.InstancesOf(Vocabulary.ValidationReport).Single(), g);
+    }
+
+    internal static Report Create(IGraph g)
+    {
+        var report = new Report(g.CreateBlankNode(), g)
         {
-            return new Report(g.InstancesOf(Vocabulary.ValidationReport).Single(), g);
+            Type = Vocabulary.ValidationReport,
+            Conforms = true,
+        };
+
+        return report;
+    }
+
+    private void TripleRetracted(object sender, TripleEventArgs args)
+    {
+        if (args.Triple.Predicate.Equals(Vocabulary.Result))
+        {
+            Conforms = !Results.Any();
         }
+    }
 
-        internal static Report Create(IGraph g)
+    private void TripleAsserted(object sender, TripleEventArgs args)
+    {
+        if (args.Triple.Predicate.Equals(Vocabulary.Result))
         {
-            var report = new Report(g.CreateBlankNode(), g)
-            {
-                Type = Vocabulary.ValidationReport,
-                Conforms = true,
-            };
-
-            return report;
-        }
-
-        private void TripleRetracted(object sender, TripleEventArgs args)
-        {
-            if (args.Triple.Predicate.Equals(Vocabulary.Result))
-            {
-                Conforms = !Results.Any();
-            }
-        }
-
-        private void TripleAsserted(object sender, TripleEventArgs args)
-        {
-            if (args.Triple.Predicate.Equals(Vocabulary.Result))
-            {
-                Conforms = false;
-            }
+            Conforms = false;
         }
     }
 }

@@ -30,43 +30,42 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Expressions
+namespace VDS.RDF.Query.Expressions;
+
+
+public class ReplaceFunctionTests
 {
-
-    public class ReplaceFunctionTests
+    [Fact]
+    public void SparqlParsingReplaceExpression()
     {
-        [Fact]
-        public void SparqlParsingReplaceExpression()
-        {
-            var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString("SELECT (REPLACE(?term, 'find', 'replace') AS ?test) { }");
+        var parser = new SparqlQueryParser();
+        SparqlQuery q = parser.ParseFromString("SELECT (REPLACE(?term, 'find', 'replace') AS ?test) { }");
 
-            ISparqlExpression expr = q.Variables.First().Projection;
-            Assert.IsType<ReplaceFunction>(expr);
-        }
+        ISparqlExpression expr = q.Variables.First().Projection;
+        Assert.IsType<ReplaceFunction>(expr);
+    }
 
-        [Fact]
-        public void SparqlExpressionsXPathReplaceNullInCanParallelise1()
-        {
-            // when
-            var find = new ConstantTerm(new StringNode(null, "find"));
-            var replace = new VariableTerm("replacement");
-            var func = new ReplaceFunction(new VariableTerm("term"), find, replace);
+    [Fact]
+    public void SparqlExpressionsXPathReplaceNullInCanParallelise1()
+    {
+        // when
+        var find = new ConstantTerm(new StringNode(null, "find"));
+        var replace = new VariableTerm("replacement");
+        var func = new ReplaceFunction(new VariableTerm("term"), find, replace);
 
-            // then
-            var canParallelise = func.CanParallelise;
-        }
+        // then
+        var canParallelise = func.CanParallelise;
+    }
 
-        [Fact]
-        public void SparqlExpressionsXPathReplaceNullInCanParallelise2()
-        {
-            // when
-            var find = new VariableTerm("find");
-            var replace = new ConstantTerm(new StringNode(null, "replacement"));
-            var func = new ReplaceFunction(new VariableTerm("term"), find, replace);
+    [Fact]
+    public void SparqlExpressionsXPathReplaceNullInCanParallelise2()
+    {
+        // when
+        var find = new VariableTerm("find");
+        var replace = new ConstantTerm(new StringNode(null, "replacement"));
+        var func = new ReplaceFunction(new VariableTerm("term"), find, replace);
 
-            // then
-            var canParallelise = func.CanParallelise;
-        }
+        // then
+        var canParallelise = func.CanParallelise;
     }
 }

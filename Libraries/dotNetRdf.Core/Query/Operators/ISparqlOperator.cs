@@ -26,39 +26,38 @@
 
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Query.Operators
+namespace VDS.RDF.Query.Operators;
+
+/// <summary>
+/// Interface which represents an operator in SPARQL e.g. +.
+/// </summary>
+public interface ISparqlOperator
 {
     /// <summary>
-    /// Interface which represents an operator in SPARQL e.g. +.
+    /// Gets the Operator this is an implementation of.
     /// </summary>
-    public interface ISparqlOperator
+    SparqlOperatorType Operator
     {
-        /// <summary>
-        /// Gets the Operator this is an implementation of.
-        /// </summary>
-        SparqlOperatorType Operator
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Get the flag that indicates if this operator is an extension to the set of operators defined in the SPARQL specification.
-        /// </summary>
-        bool IsExtension { get; }
-
-        /// <summary>
-        /// Gets whether the operator can be applied to the given inputs.
-        /// </summary>
-        /// <param name="ns">Inputs.</param>
-        /// <returns>True if applicable to the given inputs.</returns>
-        bool IsApplicable(params IValuedNode[] ns);
-
-        /// <summary>
-        /// Applies the operator to the given inputs.
-        /// </summary>
-        /// <param name="ns">Inputs.</param>
-        /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown if an error occurs in applying the operator.</exception>
-        IValuedNode Apply(params IValuedNode[] ns);
+        get;
     }
+
+    /// <summary>
+    /// Get the flag that indicates if this operator is an extension to the set of operators defined in the SPARQL specification.
+    /// </summary>
+    bool IsExtension { get; }
+
+    /// <summary>
+    /// Gets whether the operator can be applied to the given inputs.
+    /// </summary>
+    /// <param name="ns">Inputs.</param>
+    /// <returns>True if applicable to the given inputs.</returns>
+    bool IsApplicable(params IValuedNode[] ns);
+
+    /// <summary>
+    /// Applies the operator to the given inputs.
+    /// </summary>
+    /// <param name="ns">Inputs.</param>
+    /// <returns></returns>
+    /// <exception cref="RdfQueryException">Thrown if an error occurs in applying the operator.</exception>
+    IValuedNode Apply(params IValuedNode[] ns);
 }

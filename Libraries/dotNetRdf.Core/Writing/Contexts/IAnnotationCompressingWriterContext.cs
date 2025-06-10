@@ -26,16 +26,15 @@
 
 using System.Collections.Generic;
 
-namespace VDS.RDF.Writing.Contexts
+namespace VDS.RDF.Writing.Contexts;
+
+/// <summary>
+/// Interface for writer contexts which store triple annotation compression data.
+/// </summary>
+public interface IAnnotationCompressingWriterContext : ICompressingWriterContext
 {
     /// <summary>
-    /// Interface for writer contexts which store triple annotation compression data.
+    /// Gets the mapping from asserted triples to triples that have the asserted triple as subject.
     /// </summary>
-    public interface IAnnotationCompressingWriterContext : ICompressingWriterContext
-    {
-        /// <summary>
-        /// Gets the mapping from asserted triples to triples that have the asserted triple as subject.
-        /// </summary>
-        Dictionary<Triple, List<Triple>> Annotations { get; }
-    }
+    Dictionary<Triple, List<Triple>> Annotations { get; }
 }

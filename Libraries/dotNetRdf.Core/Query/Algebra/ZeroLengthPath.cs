@@ -27,81 +27,80 @@
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Represents a Zero Length Path in the SPARQL Algebra.
+/// </summary>
+public class ZeroLengthPath : BasePathOperator
 {
     /// <summary>
-    /// Represents a Zero Length Path in the SPARQL Algebra.
+    /// Creates a new Zero Length Path.
     /// </summary>
-    public class ZeroLengthPath : BasePathOperator
+    /// <param name="start">Path Start.</param>
+    /// <param name="end">Path End.</param>
+    /// <param name="path">Property Path.</param>
+    public ZeroLengthPath(PatternItem start, PatternItem end, ISparqlPath path)
+        : base(start, path, end) { }
+
+    /// <summary>
+    /// Return true if both the path start and the path end are fixed terms,
+    /// or false if either start or end are a variable.
+    /// </summary>
+    /// <returns></returns>
+    public bool AreBothTerms()
     {
-        /// <summary>
-        /// Creates a new Zero Length Path.
-        /// </summary>
-        /// <param name="start">Path Start.</param>
-        /// <param name="end">Path End.</param>
-        /// <param name="path">Property Path.</param>
-        public ZeroLengthPath(PatternItem start, PatternItem end, ISparqlPath path)
-            : base(start, path, end) { }
+        return PathStart.IsFixed && PathEnd.IsFixed;
+    }
 
-        /// <summary>
-        /// Return true if both the path start and the path end are fixed terms,
-        /// or false if either start or end are a variable.
-        /// </summary>
-        /// <returns></returns>
-        public bool AreBothTerms()
+    /// <summary>
+    /// Return true of the path start and path end reference the same term,
+    /// false otherwise.
+    /// </summary>
+    /// <returns></returns>
+    public bool AreSameTerms()
+    {
+        switch (PathStart)
         {
-            return PathStart.IsFixed && PathEnd.IsFixed;
+            case NodeMatchPattern startPattern when PathEnd is NodeMatchPattern endPattern:
+                return startPattern.Node.Equals(endPattern.Node);
+            case FixedBlankNodePattern startBlankNodePattern when PathEnd is FixedBlankNodePattern endBlankNodePattern:
+                return startBlankNodePattern.InternalID.Equals(endBlankNodePattern.InternalID);
+            default:
+                return false;
         }
+    }
 
-        /// <summary>
-        /// Return true of the path start and path end reference the same term,
-        /// false otherwise.
-        /// </summary>
-        /// <returns></returns>
-        public bool AreSameTerms()
-        {
-            switch (PathStart)
-            {
-                case NodeMatchPattern startPattern when PathEnd is NodeMatchPattern endPattern:
-                    return startPattern.Node.Equals(endPattern.Node);
-                case FixedBlankNodePattern startBlankNodePattern when PathEnd is FixedBlankNodePattern endBlankNodePattern:
-                    return startBlankNodePattern.InternalID.Equals(endBlankNodePattern.InternalID);
-                default:
-                    return false;
-            }
-        }
+    /// <summary>
+    /// Gets the String representation of the Algebra.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "ZeroLengthPath(" + PathStart + ", " + Path.ToString() + ", " + PathEnd + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Algebra.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "ZeroLengthPath(" + PathStart + ", " + Path.ToString() + ", " + PathEnd + ")";
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+    {
+        return visitor.VisitZeroLengthPath(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
-        {
-            return visitor.VisitZeroLengthPath(this);
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+    {
+        return processor.ProcessZeroLengthPath(this, context);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
-        {
-            return processor.ProcessZeroLengthPath(this, context);
-        }
-
-        /// <summary>
-        /// Transforms the Algebra back into a Graph Pattern.
-        /// </summary>
-        /// <returns></returns>
-        public override GraphPattern ToGraphPattern()
-        {
-            var gp = new GraphPattern();
-            var pp = new PropertyPathPattern(PathStart, new FixedCardinality(Path, 0), PathEnd);
-            gp.AddTriplePattern(pp);
-            return gp;
-        }
+    /// <summary>
+    /// Transforms the Algebra back into a Graph Pattern.
+    /// </summary>
+    /// <returns></returns>
+    public override GraphPattern ToGraphPattern()
+    {
+        var gp = new GraphPattern();
+        var pp = new PropertyPathPattern(PathStart, new FixedCardinality(Path, 0), PathEnd);
+        gp.AddTriplePattern(pp);
+        return gp;
     }
 }

@@ -27,26 +27,25 @@
 using Newtonsoft.Json.Linq;
 using VDS.RDF.JsonLd.Processors;
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd;
+
+/// <summary>
+/// Interface for the JSON-LD node map generator.
+/// </summary>
+public interface INodeMapGenerator
 {
     /// <summary>
-    /// Interface for the JSON-LD node map generator.
+    /// Applies the Node Map Generation algorithm to the specified input.
     /// </summary>
-    public interface INodeMapGenerator
-    {
-        /// <summary>
-        /// Applies the Node Map Generation algorithm to the specified input.
-        /// </summary>
-        /// <param name="element">The element to be processed.</param>
-        /// <param name="identifierGenerator">The identifier generator instance to use when creating new blank node identifiers. Defaults to a new instance of <see cref="BlankNodeGenerator"/>.</param>
-        /// <returns>The generated node map dictionary as a JObject instance.</returns>
-        JObject GenerateNodeMap(JToken element, IBlankNodeGenerator identifierGenerator = null);
+    /// <param name="element">The element to be processed.</param>
+    /// <param name="identifierGenerator">The identifier generator instance to use when creating new blank node identifiers. Defaults to a new instance of <see cref="BlankNodeGenerator"/>.</param>
+    /// <returns>The generated node map dictionary as a JObject instance.</returns>
+    JObject GenerateNodeMap(JToken element, IBlankNodeGenerator identifierGenerator = null);
 
-        /// <summary>
-        /// Creates a new node map object by merging the graph-level node maps contained in the input graph map object.
-        /// </summary>
-        /// <param name="graphMap">The input graph map to be merged.</param>
-        /// <returns>The merged node map as a new object (the original node map is not modified).</returns>
-        JObject GenerateMergedNodeMap(JObject graphMap);
-    }
+    /// <summary>
+    /// Creates a new node map object by merging the graph-level node maps contained in the input graph map object.
+    /// </summary>
+    /// <param name="graphMap">The input graph map to be merged.</param>
+    /// <returns>The merged node map as a new object (the original node map is not modified).</returns>
+    JObject GenerateMergedNodeMap(JObject graphMap);
 }

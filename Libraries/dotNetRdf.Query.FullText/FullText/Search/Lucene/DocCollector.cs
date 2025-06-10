@@ -29,110 +29,109 @@ using System.Collections.Generic;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
 
-namespace VDS.RDF.Query.FullText.Search.Lucene
+namespace VDS.RDF.Query.FullText.Search.Lucene;
+
+/// <summary>
+/// Collector Implementation used as part of our Lucene.Net integration.
+/// </summary>
+class DocCollector
+    : ICollector
 {
+    private Scorer _scorer;
+    private int _currBase;
+    private readonly List<KeyValuePair<int,double>> _docs = new();
+    private readonly double _scoreThreshold = Double.NaN;
+
     /// <summary>
-    /// Collector Implementation used as part of our Lucene.Net integration.
+    /// Creates a new Collector.
     /// </summary>
-    class DocCollector
-        : ICollector
+    public DocCollector()
     {
-        private Scorer _scorer;
-        private int _currBase;
-        private readonly List<KeyValuePair<int,double>> _docs = new();
-        private readonly double _scoreThreshold = Double.NaN;
 
-        /// <summary>
-        /// Creates a new Collector.
-        /// </summary>
-        public DocCollector()
+    }
+
+    /// <summary>
+    /// Creates a new Collector with a given score threshold.
+    /// </summary>
+    /// <param name="scoreThreshold">Score Threshold.</param>
+    public DocCollector(double scoreThreshold)
+        : this()
+    {
+        _scoreThreshold = scoreThreshold;
+    }
+
+    /// <summary>
+    /// Gets the Documents that have been collected.
+    /// </summary>
+    public IEnumerable<KeyValuePair<int,double>> Documents
+    {
+        get
         {
-
+            return _docs;
         }
+    }
 
-        /// <summary>
-        /// Creates a new Collector with a given score threshold.
-        /// </summary>
-        /// <param name="scoreThreshold">Score Threshold.</param>
-        public DocCollector(double scoreThreshold)
-            : this()
+    /// <summary>
+    /// Gets the number of collected documents.
+    /// </summary>
+    public int Count
+    {
+        get
         {
-            _scoreThreshold = scoreThreshold;
+            return _docs.Count;
         }
+    }
 
-        /// <summary>
-        /// Gets the Documents that have been collected.
-        /// </summary>
-        public IEnumerable<KeyValuePair<int,double>> Documents
+
+    /// <summary>
+    /// Collects a document if it meets the score threshold (if any).
+    /// </summary>
+    /// <param name="doc">Document ID.</param>
+    public void Collect(int doc)
+    {
+        double score =_scorer.GetScore();
+        if (!Double.IsNaN(_scoreThreshold))
         {
-            get
-            {
-                return _docs;
-            }
-        }
-
-        /// <summary>
-        /// Gets the number of collected documents.
-        /// </summary>
-        public int Count
-        {
-            get
-            {
-                return _docs.Count;
-            }
-        }
-
-
-        /// <summary>
-        /// Collects a document if it meets the score threshold (if any).
-        /// </summary>
-        /// <param name="doc">Document ID.</param>
-        public void Collect(int doc)
-        {
-            double score =_scorer.GetScore();
-            if (!Double.IsNaN(_scoreThreshold))
-            {
-                if (score >= _scoreThreshold)
-                {
-                    _docs.Add(new KeyValuePair<int, double>(doc + _currBase, score));
-                }
-            }
-            else
+            if (score >= _scoreThreshold)
             {
                 _docs.Add(new KeyValuePair<int, double>(doc + _currBase, score));
             }
         }
-
-        /// <summary>
-        /// Sets the Next Reader.
-        /// </summary>
-        /// <param name="context">Index Reader context.</param>
-        public void SetNextReader(AtomicReaderContext context)
+        else
         {
-            _currBase = context.DocBase;
+            _docs.Add(new KeyValuePair<int, double>(doc + _currBase, score));
         }
-
-
-        /// <summary>
-        /// Sets the Scorer.
-        /// </summary>
-        /// <param name="scorer">Scorer.</param>
-        public void SetScorer(Scorer scorer)
-        {
-            _scorer = scorer;
-        }
-
-        /// <summary>
-        /// Returns that documents are accepted out of order.
-        /// </summary>
-        /// <returns></returns>
-        public bool AcceptsDocsOutOfOrder
-        {
-            get
-            {
-                return true;
-            }
-        }
-
     }
+
+    /// <summary>
+    /// Sets the Next Reader.
+    /// </summary>
+    /// <param name="context">Index Reader context.</param>
+    public void SetNextReader(AtomicReaderContext context)
+    {
+        _currBase = context.DocBase;
+    }
+
+
+    /// <summary>
+    /// Sets the Scorer.
+    /// </summary>
+    /// <param name="scorer">Scorer.</param>
+    public void SetScorer(Scorer scorer)
+    {
+        _scorer = scorer;
+    }
+
+    /// <summary>
+    /// Returns that documents are accepted out of order.
+    /// </summary>
+    /// <returns></returns>
+    public bool AcceptsDocsOutOfOrder
+    {
+        get
+        {
+            return true;
+        }
+    }
+
 }

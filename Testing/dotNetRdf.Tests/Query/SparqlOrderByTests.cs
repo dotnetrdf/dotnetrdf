@@ -34,130 +34,130 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Ordering;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+
+public class SparqlOrderByTests
 {
-
-    public class SparqlOrderByTests
+    [Fact]
+    public void SparqlOrderByWithRawVariableName()
     {
-        [Fact]
-        public void SparqlOrderByWithRawVariableName()
+        // when
+        var ordering = new OrderByVariable("name");
+
+        // then
+        Assert.Equal("name", ordering.Variables.Single());
+    }
+
+    [Fact]
+    public void SparqlOrderByWithVariableNameWithDollarSign()
+    {
+        // when
+        var ordering = new OrderByVariable("$name");
+
+        // then
+        Assert.Equal("name", ordering.Variables.Single());
+    }
+
+    [Fact]
+    public void SparqlOrderByWithVariableNameWithQuestionMark()
+    {
+        // when
+        var ordering = new OrderByVariable("?name");
+
+        // then
+        Assert.Equal("name", ordering.Variables.Single());
+    }
+
+    [Fact]
+    public void SparqlOrderByDescendingScope1()
+    {
+        //Test Case for CORE-350
+        //DESC() on a condition causes subsequent condition to act as DESC even if it was an ASC condition
+
+        IGraph g = new Graph();
+        g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Root.Create("http://example/"));
+        INode a = g.CreateUriNode(":a");
+        INode b = g.CreateUriNode(":b");
+        INode c = g.CreateUriNode(":c");
+
+        var nodes = new List<INode>() { a, b, c };
+        var ts = new List<Triple>();
+        foreach (INode s in nodes)
         {
-            // when
-            var ordering = new OrderByVariable("name");
-
-            // then
-            Assert.Equal("name", ordering.Variables.Single());
-        }
-
-        [Fact]
-        public void SparqlOrderByWithVariableNameWithDollarSign()
-        {
-            // when
-            var ordering = new OrderByVariable("$name");
-
-            // then
-            Assert.Equal("name", ordering.Variables.Single());
-        }
-
-        [Fact]
-        public void SparqlOrderByWithVariableNameWithQuestionMark()
-        {
-            // when
-            var ordering = new OrderByVariable("?name");
-
-            // then
-            Assert.Equal("name", ordering.Variables.Single());
-        }
-
-        [Fact]
-        public void SparqlOrderByDescendingScope1()
-        {
-            //Test Case for CORE-350
-            //DESC() on a condition causes subsequent condition to act as DESC even if it was an ASC condition
-
-            IGraph g = new Graph();
-            g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Root.Create("http://example/"));
-            INode a = g.CreateUriNode(":a");
-            INode b = g.CreateUriNode(":b");
-            INode c = g.CreateUriNode(":c");
-
-            var nodes = new List<INode>() { a, b, c };
-            var ts = new List<Triple>();
-            foreach (INode s in nodes)
+            foreach (INode p in nodes.OrderByDescending(x => x))
             {
-                foreach (INode p in nodes.OrderByDescending(x => x))
+                foreach (INode o in nodes)
                 {
-                    foreach (INode o in nodes)
-                    {
-                        ts.Add(new Triple(s, p, o));
-                    }
+                    ts.Add(new Triple(s, p, o));
                 }
             }
-            g.Assert(ts);
-            Assert.Equal(27, g.Triples.Count);
-
-            var query = @"SELECT * WHERE { ?s ?p ?o } ORDER BY ?s DESC(?p) ?o";
-            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
-
-            var results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.NotNull(results);
-            Assert.Equal(27, results.Count);
-
-            for (var i = 0; i < ts.Count; i++)
-            {
-                var t = new Triple(results[i]["s"], results[i]["p"], results[i]["o"]);
-                Assert.Equal(ts[i], t);
-            }
         }
+        g.Assert(ts);
+        Assert.Equal(27, g.Triples.Count);
 
-        [Fact]
-        public void SparqlOrderByDescendingScope2()
+        var query = @"SELECT * WHERE { ?s ?p ?o } ORDER BY ?s DESC(?p) ?o";
+        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+
+        var results = g.ExecuteQuery(q) as SparqlResultSet;
+        Assert.NotNull(results);
+        Assert.Equal(27, results.Count);
+
+        for (var i = 0; i < ts.Count; i++)
         {
-            //Test Case for CORE-350
-            //DESC() on a condition causes subsequent condition to act as DESC even if it was an ASC condition
+            var t = new Triple(results[i]["s"], results[i]["p"], results[i]["o"]);
+            Assert.Equal(ts[i], t);
+        }
+    }
 
-            IGraph g = new Graph();
-            g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Root.Create("http://example/"));
-            INode a = g.CreateUriNode(":a");
-            INode b = g.CreateUriNode(":b");
-            INode c = g.CreateUriNode(":c");
+    [Fact]
+    public void SparqlOrderByDescendingScope2()
+    {
+        //Test Case for CORE-350
+        //DESC() on a condition causes subsequent condition to act as DESC even if it was an ASC condition
 
-            var nodes = new List<INode>() { a, b, c };
-            var ts = new List<Triple>();
-            foreach (INode s in nodes)
+        IGraph g = new Graph();
+        g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Root.Create("http://example/"));
+        INode a = g.CreateUriNode(":a");
+        INode b = g.CreateUriNode(":b");
+        INode c = g.CreateUriNode(":c");
+
+        var nodes = new List<INode>() { a, b, c };
+        var ts = new List<Triple>();
+        foreach (INode s in nodes)
+        {
+            foreach (INode p in nodes.OrderByDescending(x => x))
             {
-                foreach (INode p in nodes.OrderByDescending(x => x))
+                foreach (INode o in nodes)
                 {
-                    foreach (INode o in nodes)
-                    {
-                        ts.Add(new Triple(s, p, o));
-                    }
+                    ts.Add(new Triple(s, p, o));
                 }
             }
-            g.Assert(ts);
-            Assert.Equal(27, g.Triples.Count);
-
-            var query = @"SELECT * WHERE { ?s ?p ?o } ORDER BY STR(?s) DESC(STR(?p)) STR(?o)";
-            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
-
-            var results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.NotNull(results);
-            Assert.Equal(27, results.Count);
-
-            for (var i = 0; i < ts.Count; i++)
-            {
-                var t = new Triple(results[i]["s"], results[i]["p"], results[i]["o"]);
-                Assert.Equal(ts[i], t);
-            }
         }
+        g.Assert(ts);
+        Assert.Equal(27, g.Triples.Count);
 
-        [Fact]
-        public void SparqlOrderByNullInFirstCondition1()
+        var query = @"SELECT * WHERE { ?s ?p ?o } ORDER BY STR(?s) DESC(STR(?p)) STR(?o)";
+        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+
+        var results = g.ExecuteQuery(q) as SparqlResultSet;
+        Assert.NotNull(results);
+        Assert.Equal(27, results.Count);
+
+        for (var i = 0; i < ts.Count; i++)
         {
-            //Test Case for CORE-350
-            //If first condition has a null in it subsequent conditions are not applied
+            var t = new Triple(results[i]["s"], results[i]["p"], results[i]["o"]);
+            Assert.Equal(ts[i], t);
+        }
+    }
 
-            var query = @"SELECT * WHERE
+    [Fact]
+    public void SparqlOrderByNullInFirstCondition1()
+    {
+        //Test Case for CORE-350
+        //If first condition has a null in it subsequent conditions are not applied
+
+        var query = @"SELECT * WHERE
 {
   VALUES ( ?a ?b )
   {
@@ -170,35 +170,35 @@ namespace VDS.RDF.Query
   }
 } ORDER BY ?a ?b";
 
-            var g = new Graph();
-            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var g = new Graph();
+        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
 
-            var results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.NotNull(results);
-            Assert.Equal(6, results.Count);
+        var results = g.ExecuteQuery(q) as SparqlResultSet;
+        Assert.NotNull(results);
+        Assert.Equal(6, results.Count);
 
-            for (var i = 0; i < results.Count; i++)
-            {
-                if (i < 3)
-                {
-                    Assert.False(results[i].HasBoundValue("a"));
-                }
-                else
-                {
-                    Assert.True(results[i].HasBoundValue("a"));
-                }
-                var expected = (i % 3) + 1;
-                Assert.Equal(expected, results[i]["b"].AsValuedNode().AsInteger());
-            }
-        }
-
-        [Fact]
-        public void SparqlOrderByNullInFirstCondition2()
+        for (var i = 0; i < results.Count; i++)
         {
-            //Test Case for CORE-350
-            //If first condition has a null in it subsequent conditions are not applied
+            if (i < 3)
+            {
+                Assert.False(results[i].HasBoundValue("a"));
+            }
+            else
+            {
+                Assert.True(results[i].HasBoundValue("a"));
+            }
+            var expected = (i % 3) + 1;
+            Assert.Equal(expected, results[i]["b"].AsValuedNode().AsInteger());
+        }
+    }
 
-            var query = @"SELECT * WHERE
+    [Fact]
+    public void SparqlOrderByNullInFirstCondition2()
+    {
+        //Test Case for CORE-350
+        //If first condition has a null in it subsequent conditions are not applied
+
+        var query = @"SELECT * WHERE
 {
   VALUES ( ?a ?b )
   {
@@ -211,32 +211,32 @@ namespace VDS.RDF.Query
   }
 } ORDER BY STR(?a) STR(?b)";
 
-            var g = new Graph();
-            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var g = new Graph();
+        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
 
-            var results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.NotNull(results);
-            Assert.Equal(6, results.Count);
+        var results = g.ExecuteQuery(q) as SparqlResultSet;
+        Assert.NotNull(results);
+        Assert.Equal(6, results.Count);
 
-            for (var i = 0; i < results.Count; i++)
-            {
-                if (i < 3)
-                {
-                    Assert.False(results[i].HasBoundValue("a"));
-                }
-                else
-                {
-                    Assert.True(results[i].HasBoundValue("a"));
-                }
-                var expected = (i % 3) + 1;
-                Assert.Equal(expected, results[i]["b"].AsValuedNode().AsInteger());
-            }
-        }
-
-        [Fact]
-        public void SparqlOrderByNonDefaultCulture()
+        for (var i = 0; i < results.Count; i++)
         {
-            const string query = @"SELECT * WHERE { 
+            if (i < 3)
+            {
+                Assert.False(results[i].HasBoundValue("a"));
+            }
+            else
+            {
+                Assert.True(results[i].HasBoundValue("a"));
+            }
+            var expected = (i % 3) + 1;
+            Assert.Equal(expected, results[i]["b"].AsValuedNode().AsInteger());
+        }
+    }
+
+    [Fact]
+    public void SparqlOrderByNonDefaultCulture()
+    {
+        const string query = @"SELECT * WHERE { 
   VALUES (?a) {
     ('cote')
     ('coté')
@@ -244,16 +244,15 @@ namespace VDS.RDF.Query
     ('côté')
   }
 } ORDER BY ?a";
-            var q = new SparqlQueryParser().ParseFromString(query);
-            var leviathan = new LeviathanQueryProcessor(new InMemoryDataset(),
-                options =>
-                {
-                    options.NodeComparer = new SparqlNodeComparer(CultureInfo.GetCultureInfo("fr-FR"), CompareOptions.None);
-                });
-            var results = leviathan.ProcessQuery(q) as SparqlResultSet;
-            var resultValues = results.Select(r => r["a"]).OfType<ILiteralNode>().Select(n => n.Value).ToList();
-            resultValues.Should().BeInAscendingOrder(CultureInfo.GetCultureInfo("fr-FR").CompareInfo
-                .GetStringComparer(CompareOptions.None));
-        }
+        var q = new SparqlQueryParser().ParseFromString(query);
+        var leviathan = new LeviathanQueryProcessor(new InMemoryDataset(),
+            options =>
+            {
+                options.NodeComparer = new SparqlNodeComparer(CultureInfo.GetCultureInfo("fr-FR"), CompareOptions.None);
+            });
+        var results = leviathan.ProcessQuery(q) as SparqlResultSet;
+        var resultValues = results.Select(r => r["a"]).OfType<ILiteralNode>().Select(n => n.Value).ToList();
+        resultValues.Should().BeInAscendingOrder(CultureInfo.GetCultureInfo("fr-FR").CompareInfo
+            .GetStringComparer(CompareOptions.None));
     }
 }

@@ -31,56 +31,55 @@ using VDS.RDF.Query.Spin.LibraryOntology;
  *******************************************************************************/
 using VDS.RDF.Query.Spin.SparqlUtil;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class SubQueryImpl : ElementImpl, ISubQuery
 {
-    internal class SubQueryImpl : ElementImpl, ISubQuery
+
+    public SubQueryImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
 
-        public SubQueryImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
-
-        }
-
-
-        public IQuery getQuery()
-        {
-            IResource r = getResource(SP.PropertyQuery);
-            if (r != null)
-            {
-                return SPINFactory.asQuery(r);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-
-        override public void Print(ISparqlPrinter p)
-        {
-            p.print("{");
-            p.println();
-            IQuery query = getQuery();
-            if (query != null)
-            {
-                p.setIndentation(p.getIndentation() + 1);
-                query.Print(p);
-                p.setIndentation(p.getIndentation() - 1);
-            }
-            else
-            {
-                p.print("<Exception: Missing sub-query>");
-            }
-            p.println();
-            p.printIndentation(p.getIndentation());
-            p.print("}");
-        }
-
-
-        //override public void visit(IElementVisitor visitor)
-        //{
-        //    visitor.visit(this);
-        //}
     }
+
+
+    public IQuery getQuery()
+    {
+        IResource r = getResource(SP.PropertyQuery);
+        if (r != null)
+        {
+            return SPINFactory.asQuery(r);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    override public void Print(ISparqlPrinter p)
+    {
+        p.print("{");
+        p.println();
+        IQuery query = getQuery();
+        if (query != null)
+        {
+            p.setIndentation(p.getIndentation() + 1);
+            query.Print(p);
+            p.setIndentation(p.getIndentation() - 1);
+        }
+        else
+        {
+            p.print("<Exception: Missing sub-query>");
+        }
+        p.println();
+        p.printIndentation(p.getIndentation());
+        p.print("}");
+    }
+
+
+    //override public void visit(IElementVisitor visitor)
+    //{
+    //    visitor.visit(this);
+    //}
 }

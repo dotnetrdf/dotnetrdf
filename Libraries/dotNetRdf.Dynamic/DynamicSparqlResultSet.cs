@@ -31,51 +31,50 @@ using System.Dynamic;
 using System.Linq.Expressions;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+/// <summary>
+/// Provides dynamic functionality for <see cref="SparqlResultSet">SPARQL result sets</see>.
+/// </summary>
+public class DynamicSparqlResultSet : IEnumerable<DynamicSparqlResult>, IDynamicMetaObjectProvider
 {
+    private readonly SparqlResultSet original;
+
     /// <summary>
-    /// Provides dynamic functionality for <see cref="SparqlResultSet">SPARQL result sets</see>.
+    /// Initializes a new instance of the <see cref="DynamicSparqlResultSet"/> class.
     /// </summary>
-    public class DynamicSparqlResultSet : IEnumerable<DynamicSparqlResult>, IDynamicMetaObjectProvider
+    /// <param name="original">The SPARQL result set to wrap.</param>
+    public DynamicSparqlResultSet(SparqlResultSet original)
     {
-        private readonly SparqlResultSet original;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DynamicSparqlResultSet"/> class.
-        /// </summary>
-        /// <param name="original">The SPARQL result set to wrap.</param>
-        public DynamicSparqlResultSet(SparqlResultSet original)
+        if (original is null)
         {
-            if (original is null)
-            {
-                throw new ArgumentNullException(nameof(original));
-            }
-
-            this.original = original;
+            throw new ArgumentNullException(nameof(original));
         }
 
-        /// <summary>
-        /// Returns an enumerator that iterates through dynamic results in the set.
-        /// </summary>
-        /// <returns>An enumerator that can be used to iterate through dynamic results in the set.</returns>
-        public IEnumerator<DynamicSparqlResult> GetEnumerator()
-        {
-            foreach (SparqlResult result in original)
-            {
-                yield return new DynamicSparqlResult(result);
-            }
-        }
+        this.original = original;
+    }
 
-        /// <inheritdoc/>
-        IEnumerator IEnumerable.GetEnumerator()
+    /// <summary>
+    /// Returns an enumerator that iterates through dynamic results in the set.
+    /// </summary>
+    /// <returns>An enumerator that can be used to iterate through dynamic results in the set.</returns>
+    public IEnumerator<DynamicSparqlResult> GetEnumerator()
+    {
+        foreach (SparqlResult result in original)
         {
-            return GetEnumerator();
+            yield return new DynamicSparqlResult(result);
         }
+    }
 
-        /// <inheritdoc/>
-        DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
-        {
-            return new EnumerableMetaObject(parameter, this);
-        }
+    /// <inheritdoc/>
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    /// <inheritdoc/>
+    DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
+    {
+        return new EnumerableMetaObject(parameter, this);
     }
 }

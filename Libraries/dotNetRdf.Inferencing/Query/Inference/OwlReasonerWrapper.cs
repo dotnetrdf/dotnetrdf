@@ -24,89 +24,88 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Inference
+namespace VDS.RDF.Query.Inference;
+
+/// <summary>
+/// Wrapper around an <see cref="IOwlReasoner">IOwlReasoner</see> to make it appear like a forward-chaining reasoner.
+/// </summary>
+/// <remarks>
+/// Essentially all this class does is extract all triples which the underlying reasoner can infer.  Currently the input graph and any graph passed to the <see cref="IInferenceEngine.Initialise">Initialise()</see> method have no effect on the output of the reasoner.
+/// </remarks>
+public class StaticOwlReasonerWrapper : IInferenceEngine
 {
+    private IOwlReasoner _reasoner;
+
     /// <summary>
-    /// Wrapper around an <see cref="IOwlReasoner">IOwlReasoner</see> to make it appear like a forward-chaining reasoner.
+    /// Creates a new OWL Reasoner Wrapper around the given OWL Reasoner.
     /// </summary>
-    /// <remarks>
-    /// Essentially all this class does is extract all triples which the underlying reasoner can infer.  Currently the input graph and any graph passed to the <see cref="IInferenceEngine.Initialise">Initialise()</see> method have no effect on the output of the reasoner.
-    /// </remarks>
-    public class StaticOwlReasonerWrapper : IInferenceEngine
+    /// <param name="reasoner">OWL Reasoner.</param>
+    public StaticOwlReasonerWrapper(IOwlReasoner reasoner)
     {
-        private IOwlReasoner _reasoner;
-
-        /// <summary>
-        /// Creates a new OWL Reasoner Wrapper around the given OWL Reasoner.
-        /// </summary>
-        /// <param name="reasoner">OWL Reasoner.</param>
-        public StaticOwlReasonerWrapper(IOwlReasoner reasoner)
-        {
-            _reasoner = reasoner;
-        }
-
-        /// <summary>
-        /// Applies the reasoner to the given Graph outputting inferences into the same Graph.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        public virtual void Apply(IGraph g)
-        {
-            Apply(g, g);
-        }
-
-        /// <summary>
-        /// Applies the reasoner to the given input Graph outputting inferences into the output Graph.
-        /// </summary>
-        /// <param name="input">Input Graph.</param>
-        /// <param name="output">Output Graph.</param>
-        public virtual void Apply(IGraph input, IGraph output)
-        {
-            output.Assert(_reasoner.Extract(OwlHelper.OwlExtractMode.AllStatements));
-        }
-
-        /// <summary>
-        /// Initialises the reasoner.
-        /// </summary>
-        /// <param name="g">Graph to initialise with.</param>
-        public void Initialise(IGraph g)
-        {
-            _reasoner.Add(g);
-        }
+        _reasoner = reasoner;
     }
 
     /// <summary>
-    /// Wrapper around an <see cref="IOwlReasoner">IOwlReasoner</see> to make it appear like a forward-chaining reasoner.
+    /// Applies the reasoner to the given Graph outputting inferences into the same Graph.
     /// </summary>
-    /// <remarks>
-    /// Effectively equivalent to <see cref="StaticOwlReasonerWrapper">StaticOwlReasonerWrapper</see> except that every Graph reasoning is applied to is added to the reasoners knowledge base (unless the reasoner uses a fixed knowledge base).
-    /// </remarks>
-    public class OwlReasonerWrapper : StaticOwlReasonerWrapper
+    /// <param name="g">Graph.</param>
+    public virtual void Apply(IGraph g)
     {
-        /// <summary>
-        /// Creates a new OWL Reasoner Wrapper around the given OWL Reasoner.
-        /// </summary>
-        /// <param name="reasoner">OWL Reasoner.</param>
-        public OwlReasonerWrapper(IOwlReasoner reasoner)
-            : base(reasoner) { }
+        Apply(g, g);
+    }
 
-        /// <summary>
-        /// Applies the reasoner to the given Graph outputting inferences into the same Graph.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        public override void Apply(IGraph g)
-        {
-            Apply(g, g);
-        }
+    /// <summary>
+    /// Applies the reasoner to the given input Graph outputting inferences into the output Graph.
+    /// </summary>
+    /// <param name="input">Input Graph.</param>
+    /// <param name="output">Output Graph.</param>
+    public virtual void Apply(IGraph input, IGraph output)
+    {
+        output.Assert(_reasoner.Extract(OwlHelper.OwlExtractMode.AllStatements));
+    }
 
-        /// <summary>
-        /// Applies the reasoner to the given input Graph outputting inferences into the output Graph.
-        /// </summary>
-        /// <param name="input">Input Graph.</param>
-        /// <param name="output">Output Graph.</param>
-        public override void Apply(IGraph input, IGraph output)
-        {
-            Initialise(input);
-            base.Apply(input, output);
-        }
+    /// <summary>
+    /// Initialises the reasoner.
+    /// </summary>
+    /// <param name="g">Graph to initialise with.</param>
+    public void Initialise(IGraph g)
+    {
+        _reasoner.Add(g);
+    }
+}
+
+/// <summary>
+/// Wrapper around an <see cref="IOwlReasoner">IOwlReasoner</see> to make it appear like a forward-chaining reasoner.
+/// </summary>
+/// <remarks>
+/// Effectively equivalent to <see cref="StaticOwlReasonerWrapper">StaticOwlReasonerWrapper</see> except that every Graph reasoning is applied to is added to the reasoners knowledge base (unless the reasoner uses a fixed knowledge base).
+/// </remarks>
+public class OwlReasonerWrapper : StaticOwlReasonerWrapper
+{
+    /// <summary>
+    /// Creates a new OWL Reasoner Wrapper around the given OWL Reasoner.
+    /// </summary>
+    /// <param name="reasoner">OWL Reasoner.</param>
+    public OwlReasonerWrapper(IOwlReasoner reasoner)
+        : base(reasoner) { }
+
+    /// <summary>
+    /// Applies the reasoner to the given Graph outputting inferences into the same Graph.
+    /// </summary>
+    /// <param name="g">Graph.</param>
+    public override void Apply(IGraph g)
+    {
+        Apply(g, g);
+    }
+
+    /// <summary>
+    /// Applies the reasoner to the given input Graph outputting inferences into the output Graph.
+    /// </summary>
+    /// <param name="input">Input Graph.</param>
+    /// <param name="output">Output Graph.</param>
+    public override void Apply(IGraph input, IGraph output)
+    {
+        Initialise(input);
+        base.Apply(input, output);
     }
 }

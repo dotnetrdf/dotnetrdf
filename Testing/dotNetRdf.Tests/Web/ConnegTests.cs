@@ -27,40 +27,39 @@ using System;
 using Xunit;
 using VDS.RDF.Writing;
 
-namespace VDS.RDF.Web
+namespace VDS.RDF.Web;
+
+
+public class ConnegTests
 {
-
-    public class ConnegTests
+    private void TestSparqlWriterConneg(String header, Type expected, String contentType)
     {
-        private void TestSparqlWriterConneg(String header, Type expected, String contentType)
-        {
-            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter(header, out var ctype);
-            Assert.Equal(expected, writer.GetType());
-            Assert.Equal(contentType, ctype);
-        }
+        ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter(header, out var ctype);
+        Assert.Equal(expected, writer.GetType());
+        Assert.Equal(contentType, ctype);
+    }
 
-        [Fact]
-        public void WebConnegGetSparqlWriterWithAcceptAll()
-        {
-            TestSparqlWriterConneg("*/*", typeof(SparqlXmlWriter), "application/sparql-results+xml");
-        }
+    [Fact]
+    public void WebConnegGetSparqlWriterWithAcceptAll()
+    {
+        TestSparqlWriterConneg("*/*", typeof(SparqlXmlWriter), "application/sparql-results+xml");
+    }
 
-        [Fact]
-        public void WebConnegGetSparqlWriterWithAcceptXml()
-        {
-            TestSparqlWriterConneg("application/sparql-results+xml", typeof(SparqlXmlWriter), "application/sparql-results+xml");
-        }
+    [Fact]
+    public void WebConnegGetSparqlWriterWithAcceptXml()
+    {
+        TestSparqlWriterConneg("application/sparql-results+xml", typeof(SparqlXmlWriter), "application/sparql-results+xml");
+    }
 
-        [Fact]
-        public void WebConnegGetSparqlWriterWithAcceptJson()
-        {
-            TestSparqlWriterConneg("application/sparql-results+json", typeof(SparqlJsonWriter), "application/sparql-results+json");
-        }
+    [Fact]
+    public void WebConnegGetSparqlWriterWithAcceptJson()
+    {
+        TestSparqlWriterConneg("application/sparql-results+json", typeof(SparqlJsonWriter), "application/sparql-results+json");
+    }
 
-        [Fact]
-        public void WebConnegGetSparqlWriterWithAcceptHtml()
-        {
-            TestSparqlWriterConneg("text/html", typeof(SparqlHtmlWriter), "text/html");
-        }
+    [Fact]
+    public void WebConnegGetSparqlWriterWithAcceptHtml()
+    {
+        TestSparqlWriterConneg("text/html", typeof(SparqlHtmlWriter), "text/html");
     }
 }

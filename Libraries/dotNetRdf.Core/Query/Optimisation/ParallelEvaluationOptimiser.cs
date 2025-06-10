@@ -27,87 +27,86 @@
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Query.Optimisation
-{
-    /// <summary>
-    /// An Algebra Optimiser which looks for unions and joins that can be evaluated in parallel to improve query evaluation speed in some cases.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Using this feature allows you to use experimental parallel SPARQL evaluation optimisations which may improve query evaluation speed for some queries.  A query must either use UNION or have joins which are disjoint in order for any parallel evaluation to take place.
-    /// </para>
-    /// <para>
-    /// Users should be aware that using this optimiser may actually increase evaluation speed in some cases e.g. where either side of a disjoint join will return empty especially when it is the left hand side that will do so.
-    /// </para>
-    /// <para>
-    /// Also note that while use of this optimiser should not cause queries to return incorrect results as it does not change the semantics of the evaluation as it only parallelises independent operators we cannot guarantee that all parallelised queries will return identical results to their non-parallelised counterparts.  If you find a query that you believe is giving incorrect results when used with this optimiser please test without the optimiser enabled to check that the apparent incorrect result is not an artifact of this optimisation.
-    /// </para>
-    /// </remarks>
-    public class ParallelEvaluationOptimiser 
-        : IAlgebraOptimiser
-    {
-        /// <inheritdoc/>
-        public bool UnsafeOptimisation { get; set; }
+namespace VDS.RDF.Query.Optimisation;
 
-        /// <summary>
-        /// Optimises the algebra to use parallelised variants of <see cref="Join">Join</see> and <see cref="Union">Union</see> where possible.
-        /// </summary>
-        /// <param name="algebra">Algebra.</param>
-        /// <returns></returns>
-        public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
+/// <summary>
+/// An Algebra Optimiser which looks for unions and joins that can be evaluated in parallel to improve query evaluation speed in some cases.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Using this feature allows you to use experimental parallel SPARQL evaluation optimisations which may improve query evaluation speed for some queries.  A query must either use UNION or have joins which are disjoint in order for any parallel evaluation to take place.
+/// </para>
+/// <para>
+/// Users should be aware that using this optimiser may actually increase evaluation speed in some cases e.g. where either side of a disjoint join will return empty especially when it is the left hand side that will do so.
+/// </para>
+/// <para>
+/// Also note that while use of this optimiser should not cause queries to return incorrect results as it does not change the semantics of the evaluation as it only parallelises independent operators we cannot guarantee that all parallelised queries will return identical results to their non-parallelised counterparts.  If you find a query that you believe is giving incorrect results when used with this optimiser please test without the optimiser enabled to check that the apparent incorrect result is not an artifact of this optimisation.
+/// </para>
+/// </remarks>
+public class ParallelEvaluationOptimiser 
+    : IAlgebraOptimiser
+{
+    /// <inheritdoc/>
+    public bool UnsafeOptimisation { get; set; }
+
+    /// <summary>
+    /// Optimises the algebra to use parallelised variants of <see cref="Join">Join</see> and <see cref="Union">Union</see> where possible.
+    /// </summary>
+    /// <param name="algebra">Algebra.</param>
+    /// <returns></returns>
+    public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
+    {
+        if (algebra is IAbstractJoin)
         {
-            if (algebra is IAbstractJoin)
+            if (algebra is Join)
             {
-                if (algebra is Join)
+                var join = (Join)algebra;
+                if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
                 {
-                    var join = (Join)algebra;
-                    if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
-                    {
-                        return new ParallelJoin(Optimise(join.Lhs), Optimise(join.Rhs));
-                    }
-                    else
-                    {
-                        return join.Transform(this);
-                    }
-                }
-                else if (algebra is Union)
-                {
-                    var u = (Union)algebra;
-                    return new ParallelUnion(Optimise(u.Lhs), Optimise(u.Rhs));
+                    return new ParallelJoin(Optimise(join.Lhs), Optimise(join.Rhs));
                 }
                 else
                 {
-                    return ((IAbstractJoin)algebra).Transform(this);
+                    return join.Transform(this);
                 }
             }
-            else if (algebra is IUnaryOperator)
+            else if (algebra is Union)
             {
-                return ((IUnaryOperator)algebra).Transform(this);
+                var u = (Union)algebra;
+                return new ParallelUnion(Optimise(u.Lhs), Optimise(u.Rhs));
             }
             else
             {
-                return algebra;
+                return ((IAbstractJoin)algebra).Transform(this);
             }
         }
-
-        /// <summary>
-        /// Returns that the optimser is applicable to all queries.
-        /// </summary>
-        /// <param name="q">Query.</param>
-        /// <returns></returns>
-        public bool IsApplicable(SparqlQuery q)
+        else if (algebra is IUnaryOperator)
         {
-            return true;
+            return ((IUnaryOperator)algebra).Transform(this);
         }
-
-        /// <summary>
-        /// Returns that the optimiser is not applicable to updates.
-        /// </summary>
-        /// <param name="cmds">Updates.</param>
-        /// <returns></returns>
-        public bool IsApplicable(SparqlUpdateCommandSet cmds)
+        else
         {
-            return false;
+            return algebra;
         }
+    }
+
+    /// <summary>
+    /// Returns that the optimser is applicable to all queries.
+    /// </summary>
+    /// <param name="q">Query.</param>
+    /// <returns></returns>
+    public bool IsApplicable(SparqlQuery q)
+    {
+        return true;
+    }
+
+    /// <summary>
+    /// Returns that the optimiser is not applicable to updates.
+    /// </summary>
+    /// <param name="cmds">Updates.</param>
+    /// <returns></returns>
+    public bool IsApplicable(SparqlUpdateCommandSet cmds)
+    {
+        return false;
     }
 }

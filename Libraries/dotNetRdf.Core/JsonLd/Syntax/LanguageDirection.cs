@@ -24,24 +24,23 @@
 // </copyright>
 */
 
-namespace VDS.RDF.JsonLd.Syntax
+namespace VDS.RDF.JsonLd.Syntax;
+
+/// <summary>
+/// An enumeration of the text flow directions supported by JSON-LD 1.1.
+/// </summary>
+public enum LanguageDirection
 {
     /// <summary>
-    /// An enumeration of the text flow directions supported by JSON-LD 1.1.
+    /// Text direction is unspecified / null
     /// </summary>
-    public enum LanguageDirection
-    {
-        /// <summary>
-        /// Text direction is unspecified / null
-        /// </summary>
-        Unspecified = 0,
-        /// <summary>
-        /// Text direction is left to right
-        /// </summary>
-        LeftToRight = 1,
-        /// <summary>
-        /// Text direction is right to left
-        /// </summary>
-        RightToLeft = 2,
-    }
+    Unspecified = 0,
+    /// <summary>
+    /// Text direction is left to right
+    /// </summary>
+    LeftToRight = 1,
+    /// <summary>
+    /// Text direction is right to left
+    /// </summary>
+    RightToLeft = 2,
 }

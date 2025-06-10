@@ -26,55 +26,54 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System.IO;
 using Xunit;
 
-namespace VDS.RDF.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers;
+
+
+public class FileLoaderHandlerTests
 {
+    private const string TestDataFile = "resources\\file_loader_handler_tests_temp.ttl";
 
-    public class FileLoaderHandlerTests
+    public FileLoaderHandlerTests()
     {
-        private const string TestDataFile = "resources\\file_loader_handler_tests_temp.ttl";
-
-        public FileLoaderHandlerTests()
+        if (File.Exists(TestDataFile))
         {
-            if (File.Exists(TestDataFile))
-            {
-                File.Delete(TestDataFile);
-            }
-            
-            var g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            g.SaveToFile(TestDataFile);
+            File.Delete(TestDataFile);
         }
+        
+        var g = new Graph();
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        g.SaveToFile(TestDataFile);
+    }
 
-        [Fact]
-        public void ParsingFileLoaderGraphHandlerImplicitTurtle()
-        {
-            var g = new Graph();
-            FileLoader.Load(g, TestDataFile);
+    [Fact]
+    public void ParsingFileLoaderGraphHandlerImplicitTurtle()
+    {
+        var g = new Graph();
+        FileLoader.Load(g, TestDataFile);
 
-            TestTools.ShowGraph(g);
-            Assert.False(g.IsEmpty, "Graph should not be empty");
-        }
+        TestTools.ShowGraph(g);
+        Assert.False(g.IsEmpty, "Graph should not be empty");
+    }
 
-        [Fact]
-        public void ParsingFileLoaderGraphHandlerExplicitTurtle()
-        {
-            var g = new Graph();
-            var handler = new GraphHandler(g);
-            FileLoader.Load(handler, TestDataFile);
+    [Fact]
+    public void ParsingFileLoaderGraphHandlerExplicitTurtle()
+    {
+        var g = new Graph();
+        var handler = new GraphHandler(g);
+        FileLoader.Load(handler, TestDataFile);
 
-            TestTools.ShowGraph(g);
-            Assert.False(g.IsEmpty, "Graph should not be empty");
-        }
+        TestTools.ShowGraph(g);
+        Assert.False(g.IsEmpty, "Graph should not be empty");
+    }
 
-        [Fact]
-        public void ParsingFileLoaderCountHandlerTurtle()
-        {
-            var orig = new Graph();
-            orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            var handler = new CountHandler();
-            FileLoader.Load(handler, TestDataFile);
+    [Fact]
+    public void ParsingFileLoaderCountHandlerTurtle()
+    {
+        var orig = new Graph();
+        orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        var handler = new CountHandler();
+        FileLoader.Load(handler, TestDataFile);
 
-            Assert.Equal(orig.Triples.Count, handler.Count);
-        }
+        Assert.Equal(orig.Triples.Count, handler.Count);
     }
 }

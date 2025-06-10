@@ -26,30 +26,29 @@
 
 using System.Collections.Generic;
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Interface for formatters designed to format entire SPARQL Result Sets.
+/// </summary>
+public interface IResultSetFormatter : IResultFormatter
 {
     /// <summary>
-    /// Interface for formatters designed to format entire SPARQL Result Sets.
+    /// Generates a header section using the given variables.
     /// </summary>
-    public interface IResultSetFormatter : IResultFormatter
-    {
-        /// <summary>
-        /// Generates a header section using the given variables.
-        /// </summary>
-        /// <param name="variables">Variables.</param>
-        /// <returns></returns>
-        string FormatResultSetHeader(IEnumerable<string> variables);
+    /// <param name="variables">Variables.</param>
+    /// <returns></returns>
+    string FormatResultSetHeader(IEnumerable<string> variables);
 
-        /// <summary>
-        /// Generates a header section assuming no variables.
-        /// </summary>
-        /// <returns></returns>
-        string FormatResultSetHeader();
+    /// <summary>
+    /// Generates a header section assuming no variables.
+    /// </summary>
+    /// <returns></returns>
+    string FormatResultSetHeader();
 
-        /// <summary>
-        /// Generates a footer section.
-        /// </summary>
-        /// <returns></returns>
-        string FormatResultSetFooter();
-    }
+    /// <summary>
+    /// Generates a footer section.
+    /// </summary>
+    /// <returns></returns>
+    string FormatResultSetFooter();
 }

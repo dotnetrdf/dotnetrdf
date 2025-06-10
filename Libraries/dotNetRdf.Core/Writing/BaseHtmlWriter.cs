@@ -24,146 +24,145 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+/// <summary>
+/// Abstract Base Class for HTML Writers which provides basic implementation of the IHtmlWriter interface.
+/// </summary>
+public abstract class BaseHtmlWriter 
+    : IHtmlWriter
 {
+    #region IHtmlWriter Members
+
+    private string _stylesheet = string.Empty;
+    private string _uriClass = "uri",
+                   _bnodeClass = "bnode",
+                   _literalClass = "literal",
+                   _datatypeClass = "datatype",
+                   _langClass = "langspec",
+                   _boxClass = "box";
+    private string _uriPrefix = string.Empty;
+
+
     /// <summary>
-    /// Abstract Base Class for HTML Writers which provides basic implementation of the IHtmlWriter interface.
+    /// Gets/Sets a path to a Stylesheet which is used to format the Graph output.
     /// </summary>
-    public abstract class BaseHtmlWriter 
-        : IHtmlWriter
+    public string Stylesheet
     {
-        #region IHtmlWriter Members
-
-        private string _stylesheet = string.Empty;
-        private string _uriClass = "uri",
-                       _bnodeClass = "bnode",
-                       _literalClass = "literal",
-                       _datatypeClass = "datatype",
-                       _langClass = "langspec",
-                       _boxClass = "box";
-        private string _uriPrefix = string.Empty;
-
-
-        /// <summary>
-        /// Gets/Sets a path to a Stylesheet which is used to format the Graph output.
-        /// </summary>
-        public string Stylesheet
+        get
         {
-            get
-            {
-                return _stylesheet;
-            }
-            set
-            {
-                if (value != null) _stylesheet = value;
-            }
+            return _stylesheet;
         }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for the anchor tags used to display the URIs of URI Nodes.
-        /// </summary>
-        public string CssClassUri
+        set
         {
-            get
-            {
-                return _uriClass;
-            }
-            set
-            {
-                if (value != null) _uriClass = value;
-            }
+            if (value != null) _stylesheet = value;
         }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for the span tags used to display Blank Node IDs.
-        /// </summary>
-        public string CssClassBlankNode
-        {
-            get
-            {
-                return _bnodeClass;
-            }
-            set
-            {
-                if (value != null) _bnodeClass = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for the span tags used to display Literals.
-        /// </summary>
-        public string CssClassLiteral
-        {
-            get
-            {
-                return _literalClass;
-            }
-            set
-            {
-                if (value != null) _literalClass = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for the anchor tags used to display Literal datatypes.
-        /// </summary>
-        public string CssClassDatatype
-        {
-            get
-            {
-                return _datatypeClass;
-            }
-            set
-            {
-                if (value != null) _datatypeClass = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for the span tags used to display Literal language specifiers.
-        /// </summary>
-        public string CssClassLangSpec
-        {
-            get
-            {
-                return _langClass;
-            }
-            set
-            {
-                if (value != null) _langClass = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for div tags used to group chunks of markup into a box.
-        /// </summary>
-        public string CssClassBox
-        {
-            get
-            {
-                return _boxClass;
-            }
-            set
-            {
-                if (value != null) _boxClass = value;
-            }
-        }
-        
-        /// <summary>
-        /// Gets/Sets the Prefix applied to href attributes.
-        /// </summary>
-        public string UriPrefix
-        {
-            get
-            {
-                return _uriPrefix;
-            }
-            set
-            {
-                if (value != null) _uriPrefix = value;
-            }
-        }
-
-        #endregion
     }
+
+    /// <summary>
+    /// Gets/Sets the CSS class used for the anchor tags used to display the URIs of URI Nodes.
+    /// </summary>
+    public string CssClassUri
+    {
+        get
+        {
+            return _uriClass;
+        }
+        set
+        {
+            if (value != null) _uriClass = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets/Sets the CSS class used for the span tags used to display Blank Node IDs.
+    /// </summary>
+    public string CssClassBlankNode
+    {
+        get
+        {
+            return _bnodeClass;
+        }
+        set
+        {
+            if (value != null) _bnodeClass = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets/Sets the CSS class used for the span tags used to display Literals.
+    /// </summary>
+    public string CssClassLiteral
+    {
+        get
+        {
+            return _literalClass;
+        }
+        set
+        {
+            if (value != null) _literalClass = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets/Sets the CSS class used for the anchor tags used to display Literal datatypes.
+    /// </summary>
+    public string CssClassDatatype
+    {
+        get
+        {
+            return _datatypeClass;
+        }
+        set
+        {
+            if (value != null) _datatypeClass = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets/Sets the CSS class used for the span tags used to display Literal language specifiers.
+    /// </summary>
+    public string CssClassLangSpec
+    {
+        get
+        {
+            return _langClass;
+        }
+        set
+        {
+            if (value != null) _langClass = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets/Sets the CSS class used for div tags used to group chunks of markup into a box.
+    /// </summary>
+    public string CssClassBox
+    {
+        get
+        {
+            return _boxClass;
+        }
+        set
+        {
+            if (value != null) _boxClass = value;
+        }
+    }
+    
+    /// <summary>
+    /// Gets/Sets the Prefix applied to href attributes.
+    /// </summary>
+    public string UriPrefix
+    {
+        get
+        {
+            return _uriPrefix;
+        }
+        set
+        {
+            if (value != null) _uriPrefix = value;
+        }
+    }
+
+    #endregion
 }

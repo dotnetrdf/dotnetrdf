@@ -24,55 +24,54 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Ontology
+namespace VDS.RDF.Ontology;
+
+/// <summary>
+/// Static Helper class for the Ontology API.
+/// </summary>
+/// <remarks>
+/// <para>
+/// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace.
+/// </para>
+/// </remarks>
+public static class OntologyHelper
 {
     /// <summary>
-    /// Static Helper class for the Ontology API.
+    /// Constant URIs for properties exposed by <see cref="OntologyResource">OntologyResource</see> and its derived classes.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace.
-    /// </para>
-    /// </remarks>
-    public static class OntologyHelper
-    {
-        /// <summary>
-        /// Constant URIs for properties exposed by <see cref="OntologyResource">OntologyResource</see> and its derived classes.
-        /// </summary>
-        public const string PropertyVersionInfo = NamespaceMapper.OWL + "versionInfo",
-                            PropertySameAs = NamespaceMapper.OWL + "sameAs",
-                            PropertyDifferentFrom = NamespaceMapper.OWL + "differentFrom",
-                            PropertyEquivalentClass = NamespaceMapper.OWL + "equivalentClass",
-                            PropertyDisjointWith = NamespaceMapper.OWL + "disjointWith",
-                            PropertyEquivalentProperty = NamespaceMapper.OWL + "equivalentProperty",
-                            PropertyInverseOf = NamespaceMapper.OWL + "inverseOf",
-                            PropertyBackwardCompatibleWith = NamespaceMapper.OWL + "backwardCompatibleWith",
-                            PropertyIncompatibleWith = NamespaceMapper.OWL + "incompatibleWith",
-                            PropertyPriorVersion = NamespaceMapper.OWL + "priorVersion",
-                            PropertyImports = NamespaceMapper.OWL + "imports",
+    public const string PropertyVersionInfo = NamespaceMapper.OWL + "versionInfo",
+                        PropertySameAs = NamespaceMapper.OWL + "sameAs",
+                        PropertyDifferentFrom = NamespaceMapper.OWL + "differentFrom",
+                        PropertyEquivalentClass = NamespaceMapper.OWL + "equivalentClass",
+                        PropertyDisjointWith = NamespaceMapper.OWL + "disjointWith",
+                        PropertyEquivalentProperty = NamespaceMapper.OWL + "equivalentProperty",
+                        PropertyInverseOf = NamespaceMapper.OWL + "inverseOf",
+                        PropertyBackwardCompatibleWith = NamespaceMapper.OWL + "backwardCompatibleWith",
+                        PropertyIncompatibleWith = NamespaceMapper.OWL + "incompatibleWith",
+                        PropertyPriorVersion = NamespaceMapper.OWL + "priorVersion",
+                        PropertyImports = NamespaceMapper.OWL + "imports",
 
-                            PropertyComment = NamespaceMapper.RDFS + "comment",
-                            PropertyLabel = NamespaceMapper.RDFS + "label",
-                            PropertySeeAlso = NamespaceMapper.RDFS + "seeAlso",
-                            PropertyIsDefinedBy = NamespaceMapper.RDFS + "isDefinedBy",
-                            PropertySubClassOf = NamespaceMapper.RDFS + "subClassOf",
-                            PropertySubPropertyOf = NamespaceMapper.RDFS + "subPropertyOf",
-                            PropertyRange = NamespaceMapper.RDFS + "range",
-                            PropertyDomain = NamespaceMapper.RDFS + "domain",
+                        PropertyComment = NamespaceMapper.RDFS + "comment",
+                        PropertyLabel = NamespaceMapper.RDFS + "label",
+                        PropertySeeAlso = NamespaceMapper.RDFS + "seeAlso",
+                        PropertyIsDefinedBy = NamespaceMapper.RDFS + "isDefinedBy",
+                        PropertySubClassOf = NamespaceMapper.RDFS + "subClassOf",
+                        PropertySubPropertyOf = NamespaceMapper.RDFS + "subPropertyOf",
+                        PropertyRange = NamespaceMapper.RDFS + "range",
+                        PropertyDomain = NamespaceMapper.RDFS + "domain",
 
-                            PropertyType = NamespaceMapper.RDF + "type";
+                        PropertyType = NamespaceMapper.RDF + "type";
 
-        /// <summary>
-        /// Constants for URIs for classes in Ontologies.
-        /// </summary>
-        public const string RdfsClass = NamespaceMapper.RDFS + "Class",
-                            OwlClass = NamespaceMapper.OWL + "Class",
-                            RdfProperty = NamespaceMapper.RDF + "Property",
-                            RdfsResource = NamespaceMapper.RDFS + "Resource",
-                            OwlObjectProperty = NamespaceMapper.OWL + "ObjectProperty",
-                            OwlDatatypeProperty = NamespaceMapper.OWL + "DatatypeProperty",
-                            OwlAnnotationProperty = NamespaceMapper.OWL + "AnnotationProperty",
-                            OwlOntology = NamespaceMapper.OWL + "Ontology";
+    /// <summary>
+    /// Constants for URIs for classes in Ontologies.
+    /// </summary>
+    public const string RdfsClass = NamespaceMapper.RDFS + "Class",
+                        OwlClass = NamespaceMapper.OWL + "Class",
+                        RdfProperty = NamespaceMapper.RDF + "Property",
+                        RdfsResource = NamespaceMapper.RDFS + "Resource",
+                        OwlObjectProperty = NamespaceMapper.OWL + "ObjectProperty",
+                        OwlDatatypeProperty = NamespaceMapper.OWL + "DatatypeProperty",
+                        OwlAnnotationProperty = NamespaceMapper.OWL + "AnnotationProperty",
+                        OwlOntology = NamespaceMapper.OWL + "Ontology";
 
-    }
 }

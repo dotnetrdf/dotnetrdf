@@ -24,18 +24,17 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Interface for Triple Formatters.
+/// </summary>
+public interface ITripleFormatter
 {
     /// <summary>
-    /// Interface for Triple Formatters.
+    /// Formats a Triple as a String.
     /// </summary>
-    public interface ITripleFormatter
-    {
-        /// <summary>
-        /// Formats a Triple as a String.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        string Format(Triple t);
-    }
+    /// <param name="t">Triple.</param>
+    /// <returns></returns>
+    string Format(Triple t);
 }

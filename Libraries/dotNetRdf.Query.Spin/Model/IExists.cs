@@ -24,15 +24,14 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
-{
+namespace VDS.RDF.Query.Spin.Model;
 
-    /**
-     * An EXISTS element group.
-     *
-     * @author Holger Knublauch
-     */
-    internal interface IExists : IElementGroup
-    {
-    }
+
+/**
+ * An EXISTS element group.
+ *
+ * @author Holger Knublauch
+ */
+internal interface IExists : IElementGroup
+{
 }

@@ -29,45 +29,44 @@ using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+internal class EnumerableMetaObject : DynamicMetaObject
 {
-    internal class EnumerableMetaObject : DynamicMetaObject
+    internal EnumerableMetaObject(Expression parameter, object value)
+        : base(parameter, BindingRestrictions.Empty, value)
     {
-        internal EnumerableMetaObject(Expression parameter, object value)
-            : base(parameter, BindingRestrictions.Empty, value)
+    }
+
+    public override DynamicMetaObject BindInvokeMember(InvokeMemberBinder binder, DynamicMetaObject[] args)
+    {
+        Expression expression = FindMethod(binder, args);
+        var restrictions = BindingRestrictions.GetTypeRestriction(Expression, LimitType);
+        var errorSuggestion = new DynamicMetaObject(expression, restrictions);
+
+        return binder.FallbackInvokeMember(this, args, errorSuggestion);
+    }
+
+    private Expression FindMethod(InvokeMemberBinder binder, DynamicMetaObject[] args)
+    {
+        InvalidOperationException invalid = null;
+
+        for (var i = 1; i < 4; i++)
         {
-        }
-
-        public override DynamicMetaObject BindInvokeMember(InvokeMemberBinder binder, DynamicMetaObject[] args)
-        {
-            Expression expression = FindMethod(binder, args);
-            var restrictions = BindingRestrictions.GetTypeRestriction(Expression, LimitType);
-            var errorSuggestion = new DynamicMetaObject(expression, restrictions);
-
-            return binder.FallbackInvokeMember(this, args, errorSuggestion);
-        }
-
-        private Expression FindMethod(InvokeMemberBinder binder, DynamicMetaObject[] args)
-        {
-            InvalidOperationException invalid = null;
-
-            for (var i = 1; i < 4; i++)
+            try
             {
-                try
-                {
-                    Expression[] arguments = Expression.Convert(Expression, RuntimeType).AsEnumerable().Union(args.Select(arg => arg.Expression)).ToArray();
-                    Type[] typeArguments = Enumerable.Repeat(typeof(object), i).ToArray();
-                    MethodCallExpression expression = Expression.Call(typeof(Enumerable), binder.Name, typeArguments, arguments);
+                Expression[] arguments = Expression.Convert(Expression, RuntimeType).AsEnumerable().Union(args.Select(arg => arg.Expression)).ToArray();
+                Type[] typeArguments = Enumerable.Repeat(typeof(object), i).ToArray();
+                MethodCallExpression expression = Expression.Call(typeof(Enumerable), binder.Name, typeArguments, arguments);
 
-                    return Expression.Convert(expression, binder.ReturnType);
-                }
-                catch (InvalidOperationException e)
-                {
-                    invalid = e;
-                }
+                return Expression.Convert(expression, binder.ReturnType);
             }
-
-            return Expression.Throw(Expression.Constant(invalid), typeof(object));
+            catch (InvalidOperationException e)
+            {
+                invalid = e;
+            }
         }
+
+        return Expression.Throw(Expression.Constant(invalid), typeof(object));
     }
 }

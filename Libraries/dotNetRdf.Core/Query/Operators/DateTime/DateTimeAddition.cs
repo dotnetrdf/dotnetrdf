@@ -28,46 +28,45 @@ using System;
 using System.Linq;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Query.Operators.DateTime
+namespace VDS.RDF.Query.Operators.DateTime;
+
+/// <summary>
+/// Represents the date time addition operator.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Allows for queries to add durations to date times.
+/// </para>
+/// </remarks>
+public class DateTimeAddition
+    : BaseDateTimeOperator
 {
     /// <summary>
-    /// Represents the date time addition operator.
+    /// Gets the operator type.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Allows for queries to add durations to date times.
-    /// </para>
-    /// </remarks>
-    public class DateTimeAddition
-        : BaseDateTimeOperator
+    public override SparqlOperatorType Operator
     {
-        /// <summary>
-        /// Gets the operator type.
-        /// </summary>
-        public override SparqlOperatorType Operator
+        get
         {
-            get
-            {
-                return SparqlOperatorType.Add;
-            }
+            return SparqlOperatorType.Add;
         }
+    }
 
-        /// <summary>
-        /// Applies the operator.
-        /// </summary>
-        /// <param name="ns">Arguments.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(params IValuedNode[] ns)
-        {
-            if (ns == null) throw new RdfQueryException("Cannot apply to null arguments");
-            if (ns.Length != 2) throw new RdfQueryException("Incorrect number of arguments");
-            if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply operator when one/more arguments are null");
+    /// <summary>
+    /// Applies the operator.
+    /// </summary>
+    /// <param name="ns">Arguments.</param>
+    /// <returns></returns>
+    public override IValuedNode Apply(params IValuedNode[] ns)
+    {
+        if (ns == null) throw new RdfQueryException("Cannot apply to null arguments");
+        if (ns.Length != 2) throw new RdfQueryException("Incorrect number of arguments");
+        if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply operator when one/more arguments are null");
 
-            DateTimeOffset dateTime = ns[0].AsDateTimeOffset();
-            TimeSpan addition = ns[1].AsTimeSpan();
+        DateTimeOffset dateTime = ns[0].AsDateTimeOffset();
+        TimeSpan addition = ns[1].AsTimeSpan();
 
-            DateTimeOffset result = dateTime.Add(addition);
-            return new DateTimeNode(result);
-        }
+        DateTimeOffset result = dateTime.Add(addition);
+        return new DateTimeNode(result);
     }
 }

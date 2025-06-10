@@ -26,37 +26,36 @@
 
 using System.Data;
 
-namespace VDS.RDF.Data.DataTables
+namespace VDS.RDF.Data.DataTables;
+
+/// <summary>
+/// Extends <see cref="IGraph"/> with a method to retrieve the graph triples as a <see cref="DataTable"/>
+/// </summary>
+public static class GraphExtensions
 {
     /// <summary>
-    /// Extends <see cref="IGraph"/> with a method to retrieve the graph triples as a <see cref="DataTable"/>
+    /// Casts a Graph to a DataTable with all Columns typed as <see cref="INode">INode</see> (Column Names are Subject, Predicate and Object
     /// </summary>
-    public static class GraphExtensions
+    /// <param name="g">Graph to convert</param>
+    /// <returns>
+    /// A DataTable containing three Columns (Subject, Predicate and Object) all typed as <see cref="INode">INode</see> with a Row per Triple
+    /// </returns>
+    public static DataTable ToDataTable(this IGraph g)
     {
-        /// <summary>
-        /// Casts a Graph to a DataTable with all Columns typed as <see cref="INode">INode</see> (Column Names are Subject, Predicate and Object
-        /// </summary>
-        /// <param name="g">Graph to convert</param>
-        /// <returns>
-        /// A DataTable containing three Columns (Subject, Predicate and Object) all typed as <see cref="INode">INode</see> with a Row per Triple
-        /// </returns>
-        public static DataTable ToDataTable(this IGraph g)
+        var table = new DataTable();
+        table.Columns.Add(new DataColumn("Subject", typeof(INode)));
+        table.Columns.Add(new DataColumn("Predicate", typeof(INode)));
+        table.Columns.Add(new DataColumn("Object", typeof(INode)));
+
+        foreach (Triple t in g.Triples)
         {
-            var table = new DataTable();
-            table.Columns.Add(new DataColumn("Subject", typeof(INode)));
-            table.Columns.Add(new DataColumn("Predicate", typeof(INode)));
-            table.Columns.Add(new DataColumn("Object", typeof(INode)));
-
-            foreach (Triple t in g.Triples)
-            {
-                DataRow row = table.NewRow();
-                row["Subject"] = t.Subject;
-                row["Predicate"] = t.Predicate;
-                row["Object"] = t.Object;
-                table.Rows.Add(row);
-            }
-
-            return table;
+            DataRow row = table.NewRow();
+            row["Subject"] = t.Subject;
+            row["Predicate"] = t.Predicate;
+            row["Object"] = t.Object;
+            table.Rows.Add(row);
         }
+
+        return table;
     }
 }

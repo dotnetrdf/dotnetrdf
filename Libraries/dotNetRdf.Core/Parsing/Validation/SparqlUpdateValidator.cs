@@ -27,45 +27,44 @@
 using System;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Parsing.Validation
+namespace VDS.RDF.Parsing.Validation;
+
+/// <summary>
+/// A Syntax Validator for validating SPARQL Update Commands.
+/// </summary>
+public class SparqlUpdateValidator : ISyntaxValidator
 {
+    private SparqlUpdateParser _parser = new SparqlUpdateParser();
+
     /// <summary>
-    /// A Syntax Validator for validating SPARQL Update Commands.
+    /// Validates whether the given data is a SPARQL Update Command.
     /// </summary>
-    public class SparqlUpdateValidator : ISyntaxValidator
+    /// <param name="data">Data.</param>
+    /// <returns></returns>
+    public ISyntaxValidationResults Validate(string data)
     {
-        private SparqlUpdateParser _parser = new SparqlUpdateParser();
-
-        /// <summary>
-        /// Validates whether the given data is a SPARQL Update Command.
-        /// </summary>
-        /// <param name="data">Data.</param>
-        /// <returns></returns>
-        public ISyntaxValidationResults Validate(string data)
+        string message;
+        try
         {
-            string message;
-            try
-            {
-                SparqlUpdateCommandSet cmds = _parser.ParseFromString(data);
-                message = "Valid SPARQL Update";
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(data);
+            message = "Valid SPARQL Update";
 
-                return new SyntaxValidationResults(true, message, cmds);
-            }
-            catch (RdfParseException parseEx)
-            {
-                message = "Invalid SPARQL Update - Parsing Error - " + parseEx.Message;
-                return new SyntaxValidationResults(message, parseEx);
-            }
-            catch (RdfException rdfEx)
-            {
-                message = "Invalid SPARQL Update - RDF Error - " + rdfEx.Message;
-                return new SyntaxValidationResults(message, rdfEx);
-            }
-            catch (Exception ex)
-            {
-                message = "Invalid SPARQL Update - Error - " + ex.Message;
-                return new SyntaxValidationResults(message, ex);
-            }
+            return new SyntaxValidationResults(true, message, cmds);
+        }
+        catch (RdfParseException parseEx)
+        {
+            message = "Invalid SPARQL Update - Parsing Error - " + parseEx.Message;
+            return new SyntaxValidationResults(message, parseEx);
+        }
+        catch (RdfException rdfEx)
+        {
+            message = "Invalid SPARQL Update - RDF Error - " + rdfEx.Message;
+            return new SyntaxValidationResults(message, rdfEx);
+        }
+        catch (Exception ex)
+        {
+            message = "Invalid SPARQL Update - Error - " + ex.Message;
+            return new SyntaxValidationResults(message, ex);
         }
     }
 }

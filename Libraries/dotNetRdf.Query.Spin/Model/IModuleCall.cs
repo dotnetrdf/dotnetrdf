@@ -24,21 +24,20 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+/**
+ * Abstract base interface of TemplateCall and FunctionCall.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IModuleCall : IResource
 {
 
     /**
-     * Abstract base interface of TemplateCall and FunctionCall.
-     * 
-     * @author Holger Knublauch
+     * Gets the associated module, i.e. SPIN function or template, derived from the rdf:type.
+     * @return the module
      */
-    internal interface IModuleCall : IResource
-    {
-
-        /**
-         * Gets the associated module, i.e. SPIN function or template, derived from the rdf:type.
-         * @return the module
-         */
-        IModule getModule();
-    }
+    IModule getModule();
 }

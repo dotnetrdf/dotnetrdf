@@ -27,98 +27,97 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Query.Expressions.Functions.Arq
+namespace VDS.RDF.Query.Expressions.Functions.Arq;
+
+/// <summary>
+/// Represents the ARQ pi() function.
+/// </summary>
+public class PiFunction 
+    : ISparqlExpression
 {
     /// <summary>
-    /// Represents the ARQ pi() function.
+    /// Gets the String representation of the function.
     /// </summary>
-    public class PiFunction 
-        : ISparqlExpression
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Pi + ">()";
-        }
+        return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Pi + ">()";
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public string Functor
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public string Functor
+    {
+        get
         {
-            get
-            {
-                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Pi;
-            }
+            return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Pi;
         }
+    }
 
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessPiFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessPiFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitPiFunction(this);
-        }
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitPiFunction(this);
+    }
 
-        /// <summary>
-        /// Gets the variables in the expression.
-        /// </summary>
-        public IEnumerable<string> Variables
+    /// <summary>
+    /// Gets the variables in the expression.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
         {
-            get
-            {
-                return Enumerable.Empty<string>();
-            }
+            return Enumerable.Empty<string>();
         }
+    }
 
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel.
-        /// </summary>
-        public virtual bool CanParallelise
+    /// <summary>
+    /// Gets whether an expression can safely be evaluated in parallel.
+    /// </summary>
+    public virtual bool CanParallelise
+    {
+        get
         {
-            get
-            {
-                return true;
-            }
+            return true;
         }
+    }
 
-        /// <summary>
-        /// Gets the type of the expression.
-        /// </summary>
-        public SparqlExpressionType Type
+    /// <summary>
+    /// Gets the type of the expression.
+    /// </summary>
+    public SparqlExpressionType Type
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <summary>
-        /// Gets the arguments of the expression.
-        /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+    /// <summary>
+    /// Gets the arguments of the expression.
+    /// </summary>
+    public IEnumerable<ISparqlExpression> Arguments
+    {
+        get
         {
-            get
-            {
-                return Enumerable.Empty<ISparqlExpression>();
-            }
+            return Enumerable.Empty<ISparqlExpression>();
         }
+    }
 
-        /// <summary>
-        /// Returns the expression as there are no arguments to be transformed.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return this;
-        }
+    /// <summary>
+    /// Returns the expression as there are no arguments to be transformed.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return this;
     }
 }

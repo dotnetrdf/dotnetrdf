@@ -24,28 +24,27 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Enumeration of the forms of language tag validation supported by the library.
+/// </summary>
+public enum LanguageTagValidationMode
 {
     /// <summary>
-    /// Enumeration of the forms of language tag validation supported by the library.
+    /// Do not perform any validation on language tags
     /// </summary>
-    public enum LanguageTagValidationMode
-    {
-        /// <summary>
-        /// Do not perform any validation on language tags
-        /// </summary>
-        None = 0,
-        /// <summary>
-        /// Validate language tags against the production defined in the Turtle 1.1 specification
-        /// </summary>
-        /// <remarks>
-        /// <para>The Turtle 1.1 grammar requires a language tag to match the production: <code>'@' [a-zA-Z]+ ('-' [a-zA-Z0-9]+)*</code>.</para>
-        /// <para>NOTE: This validation is more lax than the <see cref="WellFormed"/> validation option.</para>
-        /// </remarks>
-        Turtle = 1,
-        /// <summary>
-        /// Validate that language tags are well-formed according to the rules defined by the BCP-47 specification.
-        /// </summary>
-        WellFormed = 2,
-    }
+    None = 0,
+    /// <summary>
+    /// Validate language tags against the production defined in the Turtle 1.1 specification
+    /// </summary>
+    /// <remarks>
+    /// <para>The Turtle 1.1 grammar requires a language tag to match the production: <code>'@' [a-zA-Z]+ ('-' [a-zA-Z0-9]+)*</code>.</para>
+    /// <para>NOTE: This validation is more lax than the <see cref="WellFormed"/> validation option.</para>
+    /// </remarks>
+    Turtle = 1,
+    /// <summary>
+    /// Validate that language tags are well-formed according to the rules defined by the BCP-47 specification.
+    /// </summary>
+    WellFormed = 2,
 }

@@ -28,29 +28,28 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+/// <summary>
+/// Interface for storage providers which allow SPARQL Updates to be made against them asynchronously.
+/// </summary>
+public interface IAsyncUpdateableStorage
+    : IAsyncQueryableStorage
 {
     /// <summary>
-    /// Interface for storage providers which allow SPARQL Updates to be made against them asynchronously.
+    /// Updates the store asynchronously.
     /// </summary>
-    public interface IAsyncUpdateableStorage
-        : IAsyncQueryableStorage
-    {
-        /// <summary>
-        /// Updates the store asynchronously.
-        /// </summary>
-        /// <param name="sparqlUpdates">SPARQL Update.</param>
-        /// <param name="callback">Callback.</param>
-        /// <param name="state">State to pass to the callback.</param>
-        [Obsolete("This method is obsolete and will be removed in a future version. Replaced by UpdateAsync(string, CancellationToken).")]
-        void Update(string sparqlUpdates, AsyncStorageCallback callback, object state);
+    /// <param name="sparqlUpdates">SPARQL Update.</param>
+    /// <param name="callback">Callback.</param>
+    /// <param name="state">State to pass to the callback.</param>
+    [Obsolete("This method is obsolete and will be removed in a future version. Replaced by UpdateAsync(string, CancellationToken).")]
+    void Update(string sparqlUpdates, AsyncStorageCallback callback, object state);
 
-        /// <summary>
-        /// Updates the store asynchronously.
-        /// </summary>
-        /// <param name="sparqlUpdates"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task UpdateAsync(string sparqlUpdates, CancellationToken cancellationToken);
-    }
+    /// <summary>
+    /// Updates the store asynchronously.
+    /// </summary>
+    /// <param name="sparqlUpdates"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task UpdateAsync(string sparqlUpdates, CancellationToken cancellationToken);
 }

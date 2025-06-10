@@ -27,12 +27,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Query.Spin.Util
+namespace VDS.RDF.Query.Spin.Util;
+
+/// <summary>
+/// 
+/// </summary>
+class QuerySolutionMap : Dictionary<String, INode>
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    class QuerySolutionMap : Dictionary<String, INode>
-    {
-    }
 }

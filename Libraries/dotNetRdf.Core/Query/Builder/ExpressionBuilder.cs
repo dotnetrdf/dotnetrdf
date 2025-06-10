@@ -29,88 +29,87 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+internal partial class ExpressionBuilder : IExpressionBuilder
 {
-    internal partial class ExpressionBuilder : IExpressionBuilder
+    internal ExpressionBuilder(INamespaceMapper prefixes)
     {
-        internal ExpressionBuilder(INamespaceMapper prefixes)
-        {
-            Prefixes = prefixes;
-            SparqlVersion = SparqlQuerySyntax.Sparql_1_1;
-        }
+        Prefixes = prefixes;
+        SparqlVersion = SparqlQuerySyntax.Sparql_1_1;
+    }
 
-        public SparqlQuerySyntax SparqlVersion { get; set; }
+    public SparqlQuerySyntax SparqlVersion { get; set; }
 
-        private INamespaceMapper Prefixes { get; }
+    private INamespaceMapper Prefixes { get; }
 
-        public VariableExpression Variable(string variable)
-        {
-            return new VariableExpression(variable);
-        }
+    public VariableExpression Variable(string variable)
+    {
+        return new VariableExpression(variable);
+    }
 
-        public TypedLiteralExpression<string> Constant(string value)
-        {
-            return new NumericExpression<string>(value);
-        }
+    public TypedLiteralExpression<string> Constant(string value)
+    {
+        return new NumericExpression<string>(value);
+    }
 
-        public NumericExpression<int> Constant(int value)
-        {
-            return new NumericExpression<int>(value);
-        }
+    public NumericExpression<int> Constant(int value)
+    {
+        return new NumericExpression<int>(value);
+    }
 
-        public NumericExpression<decimal> Constant(decimal value)
-        {
-            return new NumericExpression<decimal>(value);
-        }
+    public NumericExpression<decimal> Constant(decimal value)
+    {
+        return new NumericExpression<decimal>(value);
+    }
 
-        public NumericExpression<float> Constant(float value)
-        {
-            return new NumericExpression<float>(value);
-        }
+    public NumericExpression<float> Constant(float value)
+    {
+        return new NumericExpression<float>(value);
+    }
 
-        public NumericExpression<double> Constant(double value)
-        {
-            return new NumericExpression<double>(value);
-        }
+    public NumericExpression<double> Constant(double value)
+    {
+        return new NumericExpression<double>(value);
+    }
 
-        public TypedLiteralExpression<bool> Constant(bool value)
-        {
-            return new TypedLiteralExpression<bool>(value);
-        }
+    public TypedLiteralExpression<bool> Constant(bool value)
+    {
+        return new TypedLiteralExpression<bool>(value);
+    }
 
-        public NumericExpression<byte> Constant(byte value)
-        {
-            return new NumericExpression<byte>(value);
-        }
+    public NumericExpression<byte> Constant(byte value)
+    {
+        return new NumericExpression<byte>(value);
+    }
 
-        public NumericExpression<sbyte> Constant(sbyte value)
-        {
-            return new NumericExpression<sbyte>(value);
-        }
+    public NumericExpression<sbyte> Constant(sbyte value)
+    {
+        return new NumericExpression<sbyte>(value);
+    }
 
-        public NumericExpression<short> Constant(short value)
-        {
-            return new NumericExpression<short>(value);
-        }
+    public NumericExpression<short> Constant(short value)
+    {
+        return new NumericExpression<short>(value);
+    }
 
-        public TypedLiteralExpression<DateTime> Constant(DateTime value)
-        {
-            return new NumericExpression<DateTime>(value);
-        }
+    public TypedLiteralExpression<DateTime> Constant(DateTime value)
+    {
+        return new NumericExpression<DateTime>(value);
+    }
 
-        public VariableExpression Variable(SparqlVariable variable)
-        {
-            return new VariableExpression(variable.Name);
-        }
+    public VariableExpression Variable(SparqlVariable variable)
+    {
+        return new VariableExpression(variable.Name);
+    }
 
-        public RdfTermExpression Constant(Uri value)
-        {
-            return new RdfTermExpression(new ConstantTerm(new UriNode(value)));
-        }
+    public RdfTermExpression Constant(Uri value)
+    {
+        return new RdfTermExpression(new ConstantTerm(new UriNode(value)));
+    }
 
-        public SparqlCastBuilder Cast(SparqlExpression castedExpression)
-        {
-            return new SparqlCastBuilder(castedExpression);
-        }
+    public SparqlCastBuilder Cast(SparqlExpression castedExpression)
+    {
+        return new SparqlCastBuilder(castedExpression);
     }
 }

@@ -26,36 +26,35 @@
 
 using System;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface for Literal Nodes.
+/// </summary>
+public interface ILiteralNode
+    : INode
 {
     /// <summary>
-    /// Interface for Literal Nodes.
+    /// Gets the Lexical Value of the Literal.
     /// </summary>
-    public interface ILiteralNode
-        : INode
+    string Value
     {
-        /// <summary>
-        /// Gets the Lexical Value of the Literal.
-        /// </summary>
-        string Value
-        {
-            get;
-        }
+        get;
+    }
 
-        /// <summary>
-        /// Gets the Language specifier (if any) of the Literal or the Empty String.
-        /// </summary>
-        string Language
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets the Language specifier (if any) of the Literal or the Empty String.
+    /// </summary>
+    string Language
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gets the DataType URI (if any) of the Literal or null.
-        /// </summary>
-        Uri DataType
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets the DataType URI (if any) of the Literal or null.
+    /// </summary>
+    Uri DataType
+    {
+        get;
     }
 }

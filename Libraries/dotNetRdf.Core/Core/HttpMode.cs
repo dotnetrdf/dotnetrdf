@@ -24,24 +24,23 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// An enumeration of the remote access modes supported by the <see cref="Query.SparqlQueryClient"/> class.
+/// </summary>
+public enum HttpMode
 {
     /// <summary>
-    /// An enumeration of the remote access modes supported by the <see cref="Query.SparqlQueryClient"/> class.
+    /// Use GET by default, switching to POST when the query string is too long or the query cannot be encoded as an HTTP request parameter.
     /// </summary>
-    public enum HttpMode
-    {
-        /// <summary>
-        /// Use GET by default, switching to POST when the query string is too long or the query cannot be encoded as an HTTP request parameter.
-        /// </summary>
-        Auto,
-        /// <summary>
-        /// Always use HTTP GET. This may cause queries to fail if the query string is too long or the SPARQL query contains characters that cannot be encoded as an HTTP request parameter.
-        /// </summary>
-        Get,
-        /// <summary>
-        /// Always use HTTP POST.
-        /// </summary>
-        Post,
-    };
-}
+    Auto,
+    /// <summary>
+    /// Always use HTTP GET. This may cause queries to fail if the query string is too long or the SPARQL query contains characters that cannot be encoded as an HTTP request parameter.
+    /// </summary>
+    Get,
+    /// <summary>
+    /// Always use HTTP POST.
+    /// </summary>
+    Post,
+};

@@ -25,23 +25,22 @@
 */
 
 using VDS.RDF.Query.Spin.SparqlUtil;
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+/**
+ * Part of a SPARQL expression that calls an Aggregation (such as SUM).
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IAggregation : IPrintable, IResource
 {
 
-    /**
-     * Part of a SPARQL expression that calls an Aggregation (such as SUM).
-     * 
-     * @author Holger Knublauch
-     */
-    internal interface IAggregation : IPrintable, IResource
-    {
-
-        IVariable getAs();
+    IVariable getAs();
 
 
-        INode getExpression();
+    INode getExpression();
 
 
-        bool isDistinct();
-    }
+    bool isDistinct();
 }

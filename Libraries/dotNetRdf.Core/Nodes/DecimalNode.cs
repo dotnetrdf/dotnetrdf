@@ -30,89 +30,88 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Nodes
+namespace VDS.RDF.Nodes;
+
+/// <summary>
+/// A Valued Node representing decimal nodes.
+/// </summary>
+public class DecimalNode
+    : NumericNode
 {
+    private decimal _value;
+
     /// <summary>
-    /// A Valued Node representing decimal nodes.
+    /// Creates a new decimal valued node.
     /// </summary>
-    public class DecimalNode
-        : NumericNode
+    /// <param name="value">Decimal value.</param>
+    /// <param name="lexicalValue">Lexical value.</param>
+    public DecimalNode(decimal value, string lexicalValue)
+        : base(lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal), SparqlNumericType.Decimal)
     {
-        private decimal _value;
+        _value = value;
+    }
 
-        /// <summary>
-        /// Creates a new decimal valued node.
-        /// </summary>
-        /// <param name="value">Decimal value.</param>
-        /// <param name="lexicalValue">Lexical value.</param>
-        public DecimalNode(decimal value, string lexicalValue)
-            : base(lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal), SparqlNumericType.Decimal)
+    /// <summary>
+    /// Creates a new decimal valued node.
+    /// </summary>
+    /// <param name="value">Decimal value.</param>
+    public DecimalNode(decimal value)
+        : this(value, value.ToString(CultureInfo.InvariantCulture)) { }
+
+    /// <summary>
+    /// Gets the integer value of the decimal.
+    /// </summary>
+    /// <returns></returns>
+    public override long AsInteger()
+    {
+        try
         {
-            _value = value;
+            return Convert.ToInt64(_value);
         }
-
-        /// <summary>
-        /// Creates a new decimal valued node.
-        /// </summary>
-        /// <param name="value">Decimal value.</param>
-        public DecimalNode(decimal value)
-            : this(value, value.ToString(CultureInfo.InvariantCulture)) { }
-
-        /// <summary>
-        /// Gets the integer value of the decimal.
-        /// </summary>
-        /// <returns></returns>
-        public override long AsInteger()
+        catch
         {
-            try
-            {
-                return Convert.ToInt64(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to downcast Decimal to Long");
-            }
+            throw new RdfQueryException("Unable to downcast Decimal to Long");
         }
+    }
 
-        /// <summary>
-        /// Gets the decimal value.
-        /// </summary>
-        /// <returns></returns>
-        public override decimal AsDecimal()
+    /// <summary>
+    /// Gets the decimal value.
+    /// </summary>
+    /// <returns></returns>
+    public override decimal AsDecimal()
+    {
+        return _value;
+    }
+
+    /// <summary>
+    /// Gets the float value of the decimal.
+    /// </summary>
+    /// <returns></returns>
+    public override float AsFloat()
+    {
+        try
         {
-            return _value;
+            return Convert.ToSingle(_value);
         }
-
-        /// <summary>
-        /// Gets the float value of the decimal.
-        /// </summary>
-        /// <returns></returns>
-        public override float AsFloat()
+        catch
         {
-            try
-            {
-                return Convert.ToSingle(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to cast Decimal to Float");
-            }
+            throw new RdfQueryException("Unable to cast Decimal to Float");
         }
+    }
 
-        /// <summary>
-        /// Gets the double value of the decimal.
-        /// </summary>
-        /// <returns></returns>
-        public override double AsDouble()
+    /// <summary>
+    /// Gets the double value of the decimal.
+    /// </summary>
+    /// <returns></returns>
+    public override double AsDouble()
+    {
+        try
         {
-            try
-            {
-                return Convert.ToDouble(_value);
-            }
-            catch
-            {
-                throw new RdfQueryException("Unable to cast Decimal to Double");
-            }
+            return Convert.ToDouble(_value);
+        }
+        catch
+        {
+            throw new RdfQueryException("Unable to cast Decimal to Double");
         }
     }
 }

@@ -25,20 +25,19 @@
 */
 
 using System.Collections.Generic;
-namespace VDS.RDF.Query.Spin.Model
-{
-    /**
-     * A CONSTRUCT Query.
-     * 
-     * @author Holger Knublauch
-     */
-    internal interface IConstruct : ISolutionModifierQuery
-    {
+namespace VDS.RDF.Query.Spin.Model;
 
-        /**
-         * Gets the list of TripleTemplates in the head of the query.
-         * @return the templates
-         */
-        List<ITripleTemplate> getTemplates();
-    }
+/**
+ * A CONSTRUCT Query.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IConstruct : ISolutionModifierQuery
+{
+
+    /**
+     * Gets the list of TripleTemplates in the head of the query.
+     * @return the templates
+     */
+    List<ITripleTemplate> getTemplates();
 }

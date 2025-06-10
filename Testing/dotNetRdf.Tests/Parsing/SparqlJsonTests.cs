@@ -29,17 +29,17 @@ using System.Linq;
 using Xunit;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+
+public class SparqlJsonTests
 {
+    private readonly SparqlJsonParser _parser = new SparqlJsonParser();
 
-    public class SparqlJsonTests
+    [Fact]
+    public void ParsingSparqlJsonDates1()
     {
-        private readonly SparqlJsonParser _parser = new SparqlJsonParser();
-
-        [Fact]
-        public void ParsingSparqlJsonDates1()
-        {
-            const string data = @"{
+        const string data = @"{
  ""head"" : { ""vars"" : [ ""date"" ] } ,
  ""results"" : {
   ""bindings"" : [
@@ -48,16 +48,16 @@ namespace VDS.RDF.Parsing
  }
 }";
 
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(1, results.Count);
-        }
+        Assert.Equal(1, results.Count);
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonNumerics1()
-        {
-            const string data = @"{
+    [Fact]
+    public void ParsingSparqlJsonNumerics1()
+    {
+        const string data = @"{
  ""head"" : { ""vars"" : [ ""num"" ] } ,
  ""results"" : {
   ""bindings"" : [
@@ -66,16 +66,16 @@ namespace VDS.RDF.Parsing
  }
 }";
 
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(1, results.Count);
-        }
+        Assert.Equal(1, results.Count);
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonNumerics2()
-        {
-            const string data = @"{
+    [Fact]
+    public void ParsingSparqlJsonNumerics2()
+    {
+        const string data = @"{
  ""head"" : { ""vars"" : [ ""num"" ] } ,
  ""results"" : {
   ""bindings"" : [
@@ -84,14 +84,14 @@ namespace VDS.RDF.Parsing
  }
 }";
 
-            var results = new SparqlResultSet();
-            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
-        }
+        var results = new SparqlResultSet();
+        Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonBoolean1()
-        {
-            const string data = @"{
+    [Fact]
+    public void ParsingSparqlJsonBoolean1()
+    {
+        const string data = @"{
  ""head"" : { ""vars"" : [ ""bool"" ] } ,
  ""results"" : {
   ""bindings"" : [
@@ -100,16 +100,16 @@ namespace VDS.RDF.Parsing
  }
 }";
 
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(1, results.Count);
-        }
+        Assert.Equal(1, results.Count);
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonBoolean2()
-        {
-            const string data = @"{
+    [Fact]
+    public void ParsingSparqlJsonBoolean2()
+    {
+        const string data = @"{
  ""head"" : { ""vars"" : [ ""bool"" ] } ,
  ""results"" : {
   ""bindings"" : [
@@ -118,14 +118,14 @@ namespace VDS.RDF.Parsing
  }
 }";
 
-            var results = new SparqlResultSet();
-            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
-        }
+        var results = new SparqlResultSet();
+        Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonGuid1()
-        {
-            var data = @"{
+    [Fact]
+    public void ParsingSparqlJsonGuid1()
+    {
+        var data = @"{
  ""head"" : { ""vars"" : [ ""guid"" ] } ,
  ""results"" : {
   ""bindings"" : [
@@ -134,16 +134,16 @@ namespace VDS.RDF.Parsing
  }
 }";
 
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(1, results.Count);
-        }
+        Assert.Equal(1, results.Count);
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore419_01()
-        {
-            const String data = @"{
+    [Fact]
+    public void ParsingSparqlJsonCore419_01()
+    {
+        const String data = @"{
   ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
   ""results"" : {
    ""bindings"" : [ 
@@ -153,16 +153,16 @@ namespace VDS.RDF.Parsing
    ""ordered"" : true
  }
 }";
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(1, results.Count);
-        }
+        Assert.Equal(1, results.Count);
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore419_02()
-        {
-            const String data = @"{
+    [Fact]
+    public void ParsingSparqlJsonCore419_02()
+    {
+        const String data = @"{
   ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
   ""results"" : {
    ""distinct"" : false,
@@ -172,16 +172,16 @@ namespace VDS.RDF.Parsing
    ""ordered"" : true
  }
 }";
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(1, results.Count);
-        }
+        Assert.Equal(1, results.Count);
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore419_03()
-        {
-            const String data = @"{
+    [Fact]
+    public void ParsingSparqlJsonCore419_03()
+    {
+        const String data = @"{
   ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
   ""results"" : {
    ""ordered"" : true,
@@ -191,16 +191,16 @@ namespace VDS.RDF.Parsing
    ]
  }
 }";
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(1, results.Count);
-        }
+        Assert.Equal(1, results.Count);
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore419_04()
-        {
-            const String data = @"{
+    [Fact]
+    public void ParsingSparqlJsonCore419_04()
+    {
+        const String data = @"{
   ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
   ""results"" : {
    ""ordered"" : true,
@@ -211,16 +211,16 @@ namespace VDS.RDF.Parsing
    ""extra"" : ""ignored""
  }
 }";
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(1, results.Count);
-        }
+        Assert.Equal(1, results.Count);
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore419_05()
-        {
-            const String data = @"{
+    [Fact]
+    public void ParsingSparqlJsonCore419_05()
+    {
+        const String data = @"{
   ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
   ""results"" : {
    ""ordered"" : true,
@@ -231,16 +231,16 @@ namespace VDS.RDF.Parsing
    ""extra"" : [ ""ignored"", ""junk"" ]
  }
 }";
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(1, results.Count);
-        }
+        Assert.Equal(1, results.Count);
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore419_06()
-        {
-            const String data = @"{
+    [Fact]
+    public void ParsingSparqlJsonCore419_06()
+    {
+        const String data = @"{
   ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
   ""results"" : {
    ""ordered"" : true,
@@ -251,16 +251,16 @@ namespace VDS.RDF.Parsing
    ""extra"" : { ""ignored"" : true }
  }
 }";
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(1, results.Count);
-        }
+        Assert.Equal(1, results.Count);
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore419_07()
-        {
-            const String data = @"{
+    [Fact]
+    public void ParsingSparqlJsonCore419_07()
+    {
+        const String data = @"{
   ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
   ""results"" : {
    ""ordered"" : true,
@@ -271,16 +271,16 @@ namespace VDS.RDF.Parsing
    ""extra"" : { ""ignored"" : { ""foo"" : ""bar"" } }
  }
 }";
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(1, results.Count);
-        }
+        Assert.Equal(1, results.Count);
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore419_08()
-        {
-            const String data = @"{
+    [Fact]
+    public void ParsingSparqlJsonCore419_08()
+    {
+        const String data = @"{
   ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
   ""results"" : {
    ""ordered"" : true,
@@ -291,16 +291,16 @@ namespace VDS.RDF.Parsing
    ""extra"" : { ""ignored"" : { ""foo"" : [ ""bar"", ""faz"", { ""object"" : ""value"" } ] } }
  }
 }";
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(1, results.Count);
-        }
+        Assert.Equal(1, results.Count);
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore419_09()
-        {
-            const String data = @"{
+    [Fact]
+    public void ParsingSparqlJsonCore419_09()
+    {
+        const String data = @"{
   ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
   ""results"" : {
    ""ordered"" : true,
@@ -311,99 +311,99 @@ namespace VDS.RDF.Parsing
    ""extra"" : 
  }
 }";
-            var results = new SparqlResultSet();
+        var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
-        }
+        Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonMalformed()
-        {
-            const String data = @"{ ""junk"": ]";
+    [Fact]
+    public void ParsingSparqlJsonMalformed()
+    {
+        const String data = @"{ ""junk"": ]";
 
-            var results = new SparqlResultSet();
+        var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
-        }
+        Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore423_01()
-        {
-            const String data = @"{""boolean"": false, ""head"": {""link"": []}}";
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+    [Fact]
+    public void ParsingSparqlJsonCore423_01()
+    {
+        const String data = @"{""boolean"": false, ""head"": {""link"": []}}";
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
-            Assert.False(results.Result);
-        }
+        Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
+        Assert.False(results.Result);
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore423_02()
-        {
-            const String data = @"{""boolean"": true, ""head"": {""link"": []}}";
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+    [Fact]
+    public void ParsingSparqlJsonCore423_02()
+    {
+        const String data = @"{""boolean"": true, ""head"": {""link"": []}}";
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
-            Assert.True(results.Result);
-        }
+        Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
+        Assert.True(results.Result);
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore423_03()
-        {
-            const String data = @"{ 
+    [Fact]
+    public void ParsingSparqlJsonCore423_03()
+    {
+        const String data = @"{ 
   ""results"" : {
    ""bindings"" : [ 
     { ""x"" : { ""type"" : ""uri"",  ""value"" : ""urn:a:test"" } }
    ],
   },
   ""head"": { ""vars"": [ ""x"" ] }";
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.Equal(1, results.Count);
-            Assert.Single(results.Variables);
-        }
+        Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
+        Assert.Equal(1, results.Count);
+        Assert.Single(results.Variables);
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore423_04()
-        {
-            const String data = @"{ 
+    [Fact]
+    public void ParsingSparqlJsonCore423_04()
+    {
+        const String data = @"{ 
   ""results"" : {
    ""bindings"" : [ 
     { ""x"" : { ""type"" : ""uri"",  ""value"" : ""urn:a:test"" } }
    ],
   },
   ""head"": { ""vars"": [ ""x"", ""y"" ] }";
-            var results = new SparqlResultSet();
-            _parser.Load(results, new StringReader(data));
+        var results = new SparqlResultSet();
+        _parser.Load(results, new StringReader(data));
 
-            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.Equal(1, results.Count);
-            Assert.Equal(2, results.Variables.Count());
-        }
+        Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
+        Assert.Equal(1, results.Count);
+        Assert.Equal(2, results.Variables.Count());
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore423_05()
-        {
-            const String data = @"{ 
+    [Fact]
+    public void ParsingSparqlJsonCore423_05()
+    {
+        const String data = @"{ 
   ""results"" : {
    ""bindings"" : [ 
     { ""y"" : { ""type"" : ""uri"",  ""value"" : ""urn:a:test"" } }
    ],
   },
   ""head"": { ""vars"": [ ""x"" ] }";
-            var results = new SparqlResultSet();
+        var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
-        }
+        Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore432_01()
-        {
-            // Test case based off of CORE-432 - relative URI in JSON
-            const String data = @"{ 
+    [Fact]
+    public void ParsingSparqlJsonCore432_01()
+    {
+        // Test case based off of CORE-432 - relative URI in JSON
+        const String data = @"{ 
   ""head"": { ""vars"": [ ""x"", ""y"" ] },
   ""results"" : {
    ""bindings"" : [ 
@@ -411,16 +411,16 @@ namespace VDS.RDF.Parsing
    ],
   }
 }";
-            var results = new SparqlResultSet();
+        var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
-        }
+        Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore432_02()
-        {
-            // Test case based off of CORE-432 - relative URI in JSON
-            const String data = @"{ 
+    [Fact]
+    public void ParsingSparqlJsonCore432_02()
+    {
+        // Test case based off of CORE-432 - relative URI in JSON
+        const String data = @"{ 
   ""head"": { ""vars"": [ ""x"", ""y"" ] },
   ""results"" : {
    ""bindings"" : [ 
@@ -428,16 +428,16 @@ namespace VDS.RDF.Parsing
    ],
   }
 }";
-            var results = new SparqlResultSet();
+        var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
-        }
+        Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore432_03()
-        {
-            // Test case based off of CORE-432 - invalid URI in JSON
-            const String data = @"{ 
+    [Fact]
+    public void ParsingSparqlJsonCore432_03()
+    {
+        // Test case based off of CORE-432 - invalid URI in JSON
+        const String data = @"{ 
   ""head"": { ""vars"": [ ""x"", ""y"" ] },
   ""results"" : {
    ""bindings"" : [ 
@@ -445,16 +445,16 @@ namespace VDS.RDF.Parsing
    ],
   }
 }";
-            var results = new SparqlResultSet();
+        var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
-        }
+        Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
+    }
 
-        [Fact]
-        public void ParsingSparqlJsonCore432_04()
-        {
-            // Test case based off of CORE-432 - invalid URI in JSON
-            const String data = @"{ 
+    [Fact]
+    public void ParsingSparqlJsonCore432_04()
+    {
+        // Test case based off of CORE-432 - invalid URI in JSON
+        const String data = @"{ 
   ""head"": { ""vars"": [ ""x"", ""y"" ] },
   ""results"" : {
    ""bindings"" : [ 
@@ -462,9 +462,8 @@ namespace VDS.RDF.Parsing
    ],
   }
 }";
-            var results = new SparqlResultSet();
+        var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
-        }
+        Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
     }
 }

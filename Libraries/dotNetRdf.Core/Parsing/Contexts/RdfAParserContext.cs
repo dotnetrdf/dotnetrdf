@@ -24,134 +24,133 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing.Contexts;
+
+/// <summary>
+/// Parser Context for RDFa Parsers.
+/// </summary>
+public class RdfAParserContext<THtmlDocument> : BaseParserContext
 {
+    private readonly THtmlDocument _document;
+    private RdfASyntax _syntax = RdfASyntax.RDFa_1_1;
+    private bool _allowXmlBase = true;
+    private IRdfAContext _defaultContext;
+
     /// <summary>
-    /// Parser Context for RDFa Parsers.
+    /// Creates a new Parser Context.
     /// </summary>
-    public class RdfAParserContext<THtmlDocument> : BaseParserContext
+    /// <param name="g">Graph.</param>
+    /// <param name="document">XML Document.</param>
+    public RdfAParserContext(IGraph g, THtmlDocument document)
+        : this(g, document, false) { }
+
+    /// <summary>
+    /// Creates a new Parser Context.
+    /// </summary>
+    /// <param name="g">Graph.</param>
+    /// <param name="document">HTML Document.</param>
+    /// <param name="traceParsing">Whether to Trace Parsing.</param>
+    public RdfAParserContext(IGraph g, THtmlDocument document, bool traceParsing)
+        : base(g, traceParsing) 
     {
-        private readonly THtmlDocument _document;
-        private RdfASyntax _syntax = RdfASyntax.RDFa_1_1;
-        private bool _allowXmlBase = true;
-        private IRdfAContext _defaultContext;
+        _document = document;
+    }
 
-        /// <summary>
-        /// Creates a new Parser Context.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="document">XML Document.</param>
-        public RdfAParserContext(IGraph g, THtmlDocument document)
-            : this(g, document, false) { }
+    /// <summary>
+    /// Creates a new Parser Context.
+    /// </summary>
+    /// <param name="handler">RDF Handler to use.</param>
+    /// <param name="document">HTML Document.</param>
+    /// <param name="traceParsing">Whether to Trace Parsing.</param>
+    public RdfAParserContext(IRdfHandler handler, THtmlDocument document, bool traceParsing)
+        : base(handler, traceParsing)
+    {
+        _document = document;
+    }
 
-        /// <summary>
-        /// Creates a new Parser Context.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="document">HTML Document.</param>
-        /// <param name="traceParsing">Whether to Trace Parsing.</param>
-        public RdfAParserContext(IGraph g, THtmlDocument document, bool traceParsing)
-            : base(g, traceParsing) 
+    /// <summary>
+    /// Creates a new Parser Context.
+    /// </summary>
+    /// <param name="handler">RDF Handler to use.</param>
+    /// <param name="document">HTML Document.</param>
+    public RdfAParserContext(IRdfHandler handler, THtmlDocument document)
+        : this(handler, document, false) { }
+
+    /// <summary>
+    /// Creates a new Parser Context.
+    /// </summary>
+    /// <param name="handler">RDF Handler to use.</param>
+    /// <param name="document">HTML Document.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public RdfAParserContext(IRdfHandler handler, THtmlDocument document, IUriFactory uriFactory)
+        : this(handler, document, false, uriFactory) { }
+
+    /// <summary>
+    /// Creates a new parser context.
+    /// </summary>
+    /// <param name="handler">RDF Handler to use.</param>
+    /// <param name="document">HTML document.</param>
+    /// <param name="traceParsing">Whether to trace parsing.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public RdfAParserContext(IRdfHandler handler, THtmlDocument document, bool traceParsing, IUriFactory uriFactory)
+        : base(handler, traceParsing, uriFactory)
+    {
+        _document = document;
+    }
+
+    /// <summary>
+    /// Gets the HTML Document.
+    /// </summary>
+    public THtmlDocument Document
+    {
+        get
         {
-            _document = document;
+            return _document;
         }
+    }
 
-        /// <summary>
-        /// Creates a new Parser Context.
-        /// </summary>
-        /// <param name="handler">RDF Handler to use.</param>
-        /// <param name="document">HTML Document.</param>
-        /// <param name="traceParsing">Whether to Trace Parsing.</param>
-        public RdfAParserContext(IRdfHandler handler, THtmlDocument document, bool traceParsing)
-            : base(handler, traceParsing)
+    /// <summary>
+    /// Gets/Sets whether xml:base is allowed in the embedded RDF.
+    /// </summary>
+    public bool XmlBaseAllowed
+    {
+        get
         {
-            _document = document;
+            return _allowXmlBase;
         }
-
-        /// <summary>
-        /// Creates a new Parser Context.
-        /// </summary>
-        /// <param name="handler">RDF Handler to use.</param>
-        /// <param name="document">HTML Document.</param>
-        public RdfAParserContext(IRdfHandler handler, THtmlDocument document)
-            : this(handler, document, false) { }
-
-        /// <summary>
-        /// Creates a new Parser Context.
-        /// </summary>
-        /// <param name="handler">RDF Handler to use.</param>
-        /// <param name="document">HTML Document.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public RdfAParserContext(IRdfHandler handler, THtmlDocument document, IUriFactory uriFactory)
-            : this(handler, document, false, uriFactory) { }
-
-        /// <summary>
-        /// Creates a new parser context.
-        /// </summary>
-        /// <param name="handler">RDF Handler to use.</param>
-        /// <param name="document">HTML document.</param>
-        /// <param name="traceParsing">Whether to trace parsing.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public RdfAParserContext(IRdfHandler handler, THtmlDocument document, bool traceParsing, IUriFactory uriFactory)
-            : base(handler, traceParsing, uriFactory)
+        set
         {
-            _document = document;
+            _allowXmlBase = value;
         }
+    }
 
-        /// <summary>
-        /// Gets the HTML Document.
-        /// </summary>
-        public THtmlDocument Document
+    /// <summary>
+    /// Gets/Sets the Default Vocabulary.
+    /// </summary>
+    public IRdfAContext DefaultContext
+    {
+        get
         {
-            get
-            {
-                return _document;
-            }
+            return _defaultContext;
         }
-
-        /// <summary>
-        /// Gets/Sets whether xml:base is allowed in the embedded RDF.
-        /// </summary>
-        public bool XmlBaseAllowed
+        set
         {
-            get
-            {
-                return _allowXmlBase;
-            }
-            set
-            {
-                _allowXmlBase = value;
-            }
+            _defaultContext = value;
         }
+    }
 
-        /// <summary>
-        /// Gets/Sets the Default Vocabulary.
-        /// </summary>
-        public IRdfAContext DefaultContext
+    /// <summary>
+    /// Gets/Sets the RDFa syntax in use.
+    /// </summary>
+    public RdfASyntax Syntax
+    {
+        get
         {
-            get
-            {
-                return _defaultContext;
-            }
-            set
-            {
-                _defaultContext = value;
-            }
+            return _syntax;
         }
-
-        /// <summary>
-        /// Gets/Sets the RDFa syntax in use.
-        /// </summary>
-        public RdfASyntax Syntax
+        set
         {
-            get
-            {
-                return _syntax;
-            }
-            set
-            {
-                _syntax = value;
-            }
+            _syntax = value;
         }
     }
 }

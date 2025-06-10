@@ -28,81 +28,80 @@ using System;
 using System.Collections.Generic;
 using VDS.RDF.Parsing.Tokens;
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing.Contexts;
+
+/// <summary>
+/// Interface for Parser Contexts.
+/// </summary>
+public interface IParserContext
 {
     /// <summary>
-    /// Interface for Parser Contexts.
+    /// Gets the RDF Handler which is used to instantiate Nodes and to handle the generated RDF.
     /// </summary>
-    public interface IParserContext
+    IRdfHandler Handler
     {
-        /// <summary>
-        /// Gets the RDF Handler which is used to instantiate Nodes and to handle the generated RDF.
-        /// </summary>
-        IRdfHandler Handler
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets/Sets whether Parser Tracing should be used (if the Parser supports it).
-        /// </summary>
-        bool TraceParsing
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets the Namespace Map for the Handler.
-        /// </summary>
-        INestedNamespaceMapper Namespaces
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Base URI for the Handler.
-        /// </summary>
-        Uri BaseUri
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets the URI factory for the handler.
-        /// </summary>
-        IUriFactory UriFactory { get; }
+        get;
     }
 
     /// <summary>
-    /// Interface for Parser Contexts which use Tokeniser based parsing.
+    /// Gets/Sets whether Parser Tracing should be used (if the Parser supports it).
     /// </summary>
-    public interface ITokenisingParserContext
+    bool TraceParsing
     {
-        /// <summary>
-        /// Gets/Sets whether Tokenisation is Traced.
-        /// </summary>
-        bool TraceTokeniser
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
 
-        /// <summary>
-        /// Gets the Local Tokens Stack.
-        /// </summary>
-        Stack<IToken> LocalTokens
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets the Namespace Map for the Handler.
+    /// </summary>
+    INestedNamespaceMapper Namespaces
+    {
+        get;
+    }
 
-        /// <summary>
-        /// Gets the Token Queue.
-        /// </summary>
-        ITokenQueue Tokens
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets the Base URI for the Handler.
+    /// </summary>
+    Uri BaseUri
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Gets the URI factory for the handler.
+    /// </summary>
+    IUriFactory UriFactory { get; }
+}
+
+/// <summary>
+/// Interface for Parser Contexts which use Tokeniser based parsing.
+/// </summary>
+public interface ITokenisingParserContext
+{
+    /// <summary>
+    /// Gets/Sets whether Tokenisation is Traced.
+    /// </summary>
+    bool TraceTokeniser
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Gets the Local Tokens Stack.
+    /// </summary>
+    Stack<IToken> LocalTokens
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the Token Queue.
+    /// </summary>
+    ITokenQueue Tokens
+    {
+        get;
     }
 }

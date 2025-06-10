@@ -26,66 +26,65 @@
 
 using System;
 
-namespace VDS.RDF.Query.FullText.Schema
+namespace VDS.RDF.Query.FullText.Schema;
+
+/// <summary>
+/// Abstract Base Implementation of an Index Schema.
+/// </summary>
+public abstract class BaseIndexSchema
+    : IFullTextIndexSchema
 {
     /// <summary>
-    /// Abstract Base Implementation of an Index Schema.
+    /// Gets the field in which the full text is indexed.
     /// </summary>
-    public abstract class BaseIndexSchema
-        : IFullTextIndexSchema
+    public string IndexField
     {
-        /// <summary>
-        /// Gets the field in which the full text is indexed.
-        /// </summary>
-        public string IndexField
-        {
-            get;
-            protected set;
-        }
+        get;
+        protected set;
+    }
 
-        /// <summary>
-        /// Gets the field in which the Graph URI is indexed.
-        /// </summary>
-        public String GraphField
-        {
-            get;
-            protected set;
-        }
+    /// <summary>
+    /// Gets the field in which the Graph URI is indexed.
+    /// </summary>
+    public String GraphField
+    {
+        get;
+        protected set;
+    }
 
-        /// <summary>
-        /// Gets the field in which the hash is stored.
-        /// </summary>
-        public String HashField
-        {
-            get;
-            protected set;
-        }
+    /// <summary>
+    /// Gets the field in which the hash is stored.
+    /// </summary>
+    public String HashField
+    {
+        get;
+        protected set;
+    }
 
-        /// <summary>
-        /// Gets the field in which the Node type is stored.
-        /// </summary>
-        public string NodeTypeField
-        {
-            get;
-            protected set;
-        }
+    /// <summary>
+    /// Gets the field in which the Node type is stored.
+    /// </summary>
+    public string NodeTypeField
+    {
+        get;
+        protected set;
+    }
 
-        /// <summary>
-        /// Gets the field in which the Node value is stored.
-        /// </summary>
-        public string NodeValueField
-        {
-            get;
-            protected set;
-        }
+    /// <summary>
+    /// Gets the field in which the Node value is stored.
+    /// </summary>
+    public string NodeValueField
+    {
+        get;
+        protected set;
+    }
 
-        /// <summary>
-        /// Gets the field in which the Node meta is stored.
-        /// </summary>
-        public string NodeMetaField
-        {
-            get;
-            protected set;
-        }
+    /// <summary>
+    /// Gets the field in which the Node meta is stored.
+    /// </summary>
+    public string NodeMetaField
+    {
+        get;
+        protected set;
     }
 }

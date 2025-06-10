@@ -27,57 +27,56 @@
 using System;
 using System.IO;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// The File Graph Persistence Wrapper is a wrapper around another Graph that will be persisted to a file.
+/// </summary>
+public class FileGraphPersistenceWrapper 
+    : GraphPersistenceWrapper
 {
+    private readonly string _filename;
+
     /// <summary>
-    /// The File Graph Persistence Wrapper is a wrapper around another Graph that will be persisted to a file.
+    /// Creates a new File Graph Persistence Wrapper around the given Graph.
     /// </summary>
-    public class FileGraphPersistenceWrapper 
-        : GraphPersistenceWrapper
+    /// <param name="g">Graph.</param>
+    /// <param name="filename">File to persist to.</param>
+    public FileGraphPersistenceWrapper(IGraph g, string filename)
+        : base(g)
     {
-        private readonly string _filename;
+        _filename = filename ?? throw new ArgumentException("Cannot persist to a null Filename", nameof(filename));
+    }
 
-        /// <summary>
-        /// Creates a new File Graph Persistence Wrapper around the given Graph.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="filename">File to persist to.</param>
-        public FileGraphPersistenceWrapper(IGraph g, string filename)
-            : base(g)
+    /// <summary>
+    /// Creates a new File Graph Persistence Wrapper around a new empty Graph.
+    /// </summary>
+    /// <param name="filename">File to persist to.</param>
+    /// <param name="graphName">The name to assign to the new graph.</param>
+    /// <remarks>
+    /// If the given file already exists then the Graph will be loaded from that file.
+    /// </remarks>
+    public FileGraphPersistenceWrapper(string filename, IRefNode graphName = null)
+        : base(new Graph(graphName))
+    {
+        if (filename == null) throw new ArgumentException("Cannot persist to a null Filename", nameof(filename));
+
+        if (File.Exists(filename))
         {
-            _filename = filename ?? throw new ArgumentException("Cannot persist to a null Filename", nameof(filename));
+            _g.LoadFromFile(filename);
         }
+    }
 
-        /// <summary>
-        /// Creates a new File Graph Persistence Wrapper around a new empty Graph.
-        /// </summary>
-        /// <param name="filename">File to persist to.</param>
-        /// <param name="graphName">The name to assign to the new graph.</param>
-        /// <remarks>
-        /// If the given file already exists then the Graph will be loaded from that file.
-        /// </remarks>
-        public FileGraphPersistenceWrapper(string filename, IRefNode graphName = null)
-            : base(new Graph(graphName))
-        {
-            if (filename == null) throw new ArgumentException("Cannot persist to a null Filename", nameof(filename));
+    /// <summary>
+    /// Returns that Triple persistence is not supported.
+    /// </summary>
+    protected override bool SupportsTriplePersistence => false;
 
-            if (File.Exists(filename))
-            {
-                _g.LoadFromFile(filename);
-            }
-        }
-
-        /// <summary>
-        /// Returns that Triple persistence is not supported.
-        /// </summary>
-        protected override bool SupportsTriplePersistence => false;
-
-        /// <summary>
-        /// Persists the entire Graph to a File.
-        /// </summary>
-        protected override void PersistGraph()
-        {
-            this.SaveToFile(_filename);
-        }
+    /// <summary>
+    /// Persists the entire Graph to a File.
+    /// </summary>
+    protected override void PersistGraph()
+    {
+        this.SaveToFile(_filename);
     }
 }

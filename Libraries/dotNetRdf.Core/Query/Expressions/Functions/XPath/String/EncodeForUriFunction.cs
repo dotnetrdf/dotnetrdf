@@ -24,61 +24,60 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.String
+namespace VDS.RDF.Query.Expressions.Functions.XPath.String;
+
+/// <summary>
+/// Represents the XPath fn:encode-for-uri() function.
+/// </summary>
+public class EncodeForUriFunction
+    : BaseUnaryStringFunction
 {
     /// <summary>
-    /// Represents the XPath fn:encode-for-uri() function.
+    /// Creates a new XPath Encode for URI function.
     /// </summary>
-    public class EncodeForUriFunction
-        : BaseUnaryStringFunction
+    /// <param name="stringExpr">Expression.</param>
+    public EncodeForUriFunction(ISparqlExpression stringExpr)
+        : base(stringExpr) { }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
     {
-        /// <summary>
-        /// Creates a new XPath Encode for URI function.
-        /// </summary>
-        /// <param name="stringExpr">Expression.</param>
-        public EncodeForUriFunction(ISparqlExpression stringExpr)
-            : base(stringExpr) { }
+        return processor.ProcessEncodeForUriFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessEncodeForUriFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitEncodeForUriFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitEncodeForUriFunction(this);
-        }
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EncodeForURI + ">(" + _expr + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EncodeForURI + ">(" + _expr + ")";
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EncodeForURI;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EncodeForURI;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new EncodeForUriFunction(transformer.Transform(_expr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new EncodeForUriFunction(transformer.Transform(_expr));
     }
 }

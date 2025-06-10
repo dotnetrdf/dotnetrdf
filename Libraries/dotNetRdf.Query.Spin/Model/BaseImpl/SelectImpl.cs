@@ -29,152 +29,151 @@ using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.Util;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class SelectImpl : QueryImpl, ISelect
 {
-    internal class SelectImpl : QueryImpl, ISelect
+
+    public SelectImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
+    }
 
-        public SelectImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
+
+    public List<IResource> getResultVariables()
+    {
+        var results = new List<IResource>();
+        foreach (IResource node in getList(SP.PropertyResultVariables))
         {
+            results.Add(SPINFactory.asExpression(node));
         }
+        return results;
+    }
 
 
-        public List<IResource> getResultVariables()
+    public bool isDistinct()
+    {
+        return hasProperty(SP.PropertyDistinct, RDFUtil.TRUE);
+    }
+
+
+    public bool isReduced()
+    {
+        return hasProperty(SP.PropertyReduced, RDFUtil.TRUE);
+    }
+
+    override public void printSPINRDF(ISparqlPrinter p)
+    {
+        printComment(p);
+        printPrefixes(p);
+        p.printIndentation(p.getIndentation());
+        p.printKeyword("SELECT");
+        p.print(" ");
+        if (isDistinct())
         {
-            var results = new List<IResource>();
-            foreach (IResource node in getList(SP.PropertyResultVariables))
-            {
-                results.Add(SPINFactory.asExpression(node));
-            }
-            return results;
-        }
-
-
-        public bool isDistinct()
-        {
-            return hasProperty(SP.PropertyDistinct, RDFUtil.TRUE);
-        }
-
-
-        public bool isReduced()
-        {
-            return hasProperty(SP.PropertyReduced, RDFUtil.TRUE);
-        }
-
-        override public void printSPINRDF(ISparqlPrinter p)
-        {
-            printComment(p);
-            printPrefixes(p);
-            p.printIndentation(p.getIndentation());
-            p.printKeyword("SELECT");
+            p.printKeyword("DISTINCT");
             p.print(" ");
-            if (isDistinct())
+        }
+        if (isReduced())
+        {
+            p.printKeyword("REDUCED");
+            p.print(" ");
+        }
+        List<IResource> vars = getResultVariables();
+        if (vars.Count == 0)
+        {
+            p.print("*");
+        }
+        else
+        {
+            for (IEnumerator<IResource> vit = vars.GetEnumerator(); vit.MoveNext(); )
             {
-                p.printKeyword("DISTINCT");
-                p.print(" ");
-            }
-            if (isReduced())
-            {
-                p.printKeyword("REDUCED");
-                p.print(" ");
-            }
-            List<IResource> vars = getResultVariables();
-            if (vars.Count == 0)
-            {
-                p.print("*");
-            }
-            else
-            {
-                for (IEnumerator<IResource> vit = vars.GetEnumerator(); vit.MoveNext(); )
+                IResource var = vit.Current;
+                if (var is IVariable)
                 {
-                    IResource var = vit.Current;
-                    if (var is IVariable)
+                    if (getModel().ContainsTriple(var, SP.PropertyExpression, null))
                     {
-                        if (getModel().ContainsTriple(var, SP.PropertyExpression, null))
-                        {
-                            printProjectExpression(p, (IVariable)var);
-                        }
-                        else
-                        {
-                            ((IVariable)var).Print(p);
-                        }
-                    }
-                    else if (var is IAggregation)
-                    {
-                        ((IPrintable)var).Print(p);
+                        printProjectExpression(p, (IVariable)var);
                     }
                     else
                     {
-                        p.print("(");
-                        ((IPrintable)var).Print(p);
-                        p.print(")");
-                    }
-                    if (vit.MoveNext())
-                    {
-                        p.print(" ");
+                        ((IVariable)var).Print(p);
                     }
                 }
-            }
-            printStringFrom(p);
-            p.println();
-            printWhere(p);
-            printGroupBy(p);
-            printHaving(p);
-            printSolutionModifiers(p);
-            printValues(p);
-        }
-
-
-        private void printGroupBy(ISparqlPrinter p)
-        {
-            List<IResource> groupBy = getList(SP.PropertyGroupBy);
-            if (groupBy.Count > 0)
-            {
-                IEnumerator<IResource> it = groupBy.GetEnumerator();
-                p.println();
-                p.printIndentation(p.getIndentation());
-                p.printKeyword("GROUP BY");
-                while (it.MoveNext())
+                else if (var is IAggregation)
+                {
+                    ((IPrintable)var).Print(p);
+                }
+                else
+                {
+                    p.print("(");
+                    ((IPrintable)var).Print(p);
+                    p.print(")");
+                }
+                if (vit.MoveNext())
                 {
                     p.print(" ");
-                    IResource node = it.Current;
-                    printNestedExpressionString(p, node);
                 }
             }
         }
-
-
-        private void printHaving(ISparqlPrinter p)
-        {
-            List<IResource> havings = getList(SP.PropertyHaving);
-            if (havings.Count > 0)
-            {
-                IEnumerator<IResource> it = havings.GetEnumerator();
-                p.println();
-                p.printIndentation(p.getIndentation());
-                p.printKeyword("HAVING");
-                while (it.MoveNext())
-                {
-                    p.print(" ");
-                    printNestedExpressionString(p, it.Current);
-                }
-            }
-        }
-
-
-        private void printProjectExpression(ISparqlPrinter p, IVariable var)
-        {
-            p.print("((");
-            IResource expr = var.getResource(SP.PropertyExpression);
-            var expression = (IPrintable)SPINFactory.asExpression(expr);
-            expression.Print(p);
-            p.print(") ");
-            p.printKeyword("AS");
-            p.print(" ");
-            p.print(var.ToString());
-            p.print(")");
-        }
-
+        printStringFrom(p);
+        p.println();
+        printWhere(p);
+        printGroupBy(p);
+        printHaving(p);
+        printSolutionModifiers(p);
+        printValues(p);
     }
+
+
+    private void printGroupBy(ISparqlPrinter p)
+    {
+        List<IResource> groupBy = getList(SP.PropertyGroupBy);
+        if (groupBy.Count > 0)
+        {
+            IEnumerator<IResource> it = groupBy.GetEnumerator();
+            p.println();
+            p.printIndentation(p.getIndentation());
+            p.printKeyword("GROUP BY");
+            while (it.MoveNext())
+            {
+                p.print(" ");
+                IResource node = it.Current;
+                printNestedExpressionString(p, node);
+            }
+        }
+    }
+
+
+    private void printHaving(ISparqlPrinter p)
+    {
+        List<IResource> havings = getList(SP.PropertyHaving);
+        if (havings.Count > 0)
+        {
+            IEnumerator<IResource> it = havings.GetEnumerator();
+            p.println();
+            p.printIndentation(p.getIndentation());
+            p.printKeyword("HAVING");
+            while (it.MoveNext())
+            {
+                p.print(" ");
+                printNestedExpressionString(p, it.Current);
+            }
+        }
+    }
+
+
+    private void printProjectExpression(ISparqlPrinter p, IVariable var)
+    {
+        p.print("((");
+        IResource expr = var.getResource(SP.PropertyExpression);
+        var expression = (IPrintable)SPINFactory.asExpression(expr);
+        expression.Print(p);
+        p.print(") ");
+        p.printKeyword("AS");
+        p.print(" ");
+        p.print(var.ToString());
+        p.print(")");
+    }
+
 }

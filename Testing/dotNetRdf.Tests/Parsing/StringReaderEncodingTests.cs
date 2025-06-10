@@ -26,25 +26,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System.IO;
 using Xunit;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+
+public class StringReaderEncodingTests
 {
-
-    public class StringReaderEncodingTests
+    [Fact]
+    public void ParsingStringReaderEncoding()
     {
-        [Fact]
-        public void ParsingStringReaderEncoding()
-        {
-            var test = "<http://example.org/subject> <http://example.org/predicate> \"" + (char)32769 + "\" . ";
+        var test = "<http://example.org/subject> <http://example.org/predicate> \"" + (char)32769 + "\" . ";
 
-            var parser = new TurtleParser();
-            var g = new Graph();
-            parser.Load(g, new StringReader(test));
-            g.SaveToFile("encoding.ttl");
+        var parser = new TurtleParser();
+        var g = new Graph();
+        parser.Load(g, new StringReader(test));
+        g.SaveToFile("encoding.ttl");
 
-            var h = new Graph();
-            parser.Load(h, "encoding.ttl");
+        var h = new Graph();
+        parser.Load(h, "encoding.ttl");
 
-            Assert.Equal(g, h);
-        }
+        Assert.Equal(g, h);
     }
 }

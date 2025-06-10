@@ -25,16 +25,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Xunit;
 
-namespace VDS.RDF.Shacl
+namespace VDS.RDF.Shacl;
+
+public class Bugs
 {
-    public class Bugs
+    // https://github.com/dotnetrdf/dotnetrdf/issues/303
+    [Fact]
+    public void Issue303()
     {
-        // https://github.com/dotnetrdf/dotnetrdf/issues/303
-        [Fact]
-        public void Issue303()
-        {
-            var shapesGraph = new Graph();
-            shapesGraph.LoadFromString(@"
+        var shapesGraph = new Graph();
+        shapesGraph.LoadFromString(@"
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 
 [
@@ -43,18 +43,18 @@ namespace VDS.RDF.Shacl
 ] .
 ");
 
-            var dataGraph = new Graph();
-            dataGraph.LoadFromString(@"<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+        var dataGraph = new Graph();
+        dataGraph.LoadFromString(@"<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
 
-            new ShapesGraph(shapesGraph).Validate(dataGraph);
-        }
+        new ShapesGraph(shapesGraph).Validate(dataGraph);
+    }
 
-        // https://github.com/dotnetrdf/dotnetrdf/issues/670
-        [Fact]
-        public void Issue670()
-        {
-            var shapesGraph = new Graph();
-            shapesGraph.LoadFromString(@"
+    // https://github.com/dotnetrdf/dotnetrdf/issues/670
+    [Fact]
+    public void Issue670()
+    {
+        var shapesGraph = new Graph();
+        shapesGraph.LoadFromString(@"
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix schema: <http://schema.org/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
@@ -69,8 +69,8 @@ sh:property [
 sh:path schema:givenName ;
 sh:disjoint schema:lastName
 ] .");
-            var dataGraph1 = new Graph();
-            dataGraph1.LoadFromString(@"
+        var dataGraph1 = new Graph();
+        dataGraph1.LoadFromString(@"
 @prefix schema: <http://schema.org/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix : <http://example.com/> .
@@ -78,8 +78,8 @@ sh:disjoint schema:lastName
 schema:givenName ""Alice"";
 schema:lastName ""Cooper"";
 foaf:firstName ""Alice"" .");
-            var dataGraph2 = new Graph();
-            dataGraph2.LoadFromString(@"
+        var dataGraph2 = new Graph();
+        dataGraph2.LoadFromString(@"
 @prefix schema: <http://schema.org/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix : <http://example.com/> .
@@ -88,8 +88,8 @@ schema:givenName ""Bob"";
 schema:lastName ""Smith"" ;
 foaf:firstName ""Robert"" .
 ");
-            var dataGraph3 = new Graph();
-            dataGraph3.LoadFromString(@"
+        var dataGraph3 = new Graph();
+        dataGraph3.LoadFromString(@"
 @prefix schema: <http://schema.org/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix : <http://example.com/> .
@@ -97,67 +97,66 @@ foaf:firstName ""Robert"" .
 schema:givenName ""Carol"";
 schema:lastName ""Carol"" ;
 foaf:firstName ""Carol"" .");
-            var shaclGraph = new ShapesGraph(shapesGraph);
-            Assert.True(shaclGraph.Validate(dataGraph1).Conforms);
-            Assert.False(shaclGraph.Validate(dataGraph2).Conforms);
-            Assert.False(shaclGraph.Validate(dataGraph3).Conforms);
-        }
+        var shaclGraph = new ShapesGraph(shapesGraph);
+        Assert.True(shaclGraph.Validate(dataGraph1).Conforms);
+        Assert.False(shaclGraph.Validate(dataGraph2).Conforms);
+        Assert.False(shaclGraph.Validate(dataGraph3).Conforms);
+    }
 
-        // https://github.com/dotnetrdf/dotnetrdf/issues/692
-        [Fact]
-        public void Issue692()
-        {
-            var dataGraph = new Graph();
-            dataGraph.LoadFromString("""
-                @prefix ex: <http://example.org/> .
-                @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    // https://github.com/dotnetrdf/dotnetrdf/issues/692
+    [Fact]
+    public void Issue692()
+    {
+        var dataGraph = new Graph();
+        dataGraph.LoadFromString("""
+            @prefix ex: <http://example.org/> .
+            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
-                ex:Alice
-                    a foaf:Person ;
-                    foaf:knows ex:Bob .
+            ex:Alice
+                a foaf:Person ;
+                foaf:knows ex:Bob .
 
-                ex:Bob a ex:Person .
-                """);
+            ex:Bob a ex:Person .
+            """);
 
-            var shapesGraph = new Graph();
-            shapesGraph.LoadFromString(""""
-                @prefix ex: <http://example.org/> .
-                @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-                @prefix sh: <http://www.w3.org/ns/shacl#> .
+        var shapesGraph = new Graph();
+        shapesGraph.LoadFromString(""""
+            @prefix ex: <http://example.org/> .
+            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+            @prefix sh: <http://www.w3.org/ns/shacl#> .
 
-                ex:doesNotKnowSomeoneShape
-                    sh:targetClass foaf:Person ;
-                    sh:property [
-                        sh:path foaf:knows ;
-                        ex:someone ex:Bob ;
-                    ]
-                .
-    
-                ex:doesNotKnowSomeoneComponent
-                    a sh:ConstraintComponent ;
-                    sh:parameter [
-                        sh:path ex:someone ;
-                    ] ;
-                    sh:propertyValidator [
-                        sh:select """
-                            PREFIX ex: <http://example.org/>
-                            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-                            SELECT DISTINCT $this
-                            WHERE {
-                                $this
-                                    a foaf:Person ;
-                                    $PATH $someone ;
-                                .
-                            }
-                        """ ;
-                    ] .
-                """");
+            ex:doesNotKnowSomeoneShape
+                sh:targetClass foaf:Person ;
+                sh:property [
+                    sh:path foaf:knows ;
+                    ex:someone ex:Bob ;
+                ]
+            .
+
+            ex:doesNotKnowSomeoneComponent
+                a sh:ConstraintComponent ;
+                sh:parameter [
+                    sh:path ex:someone ;
+                ] ;
+                sh:propertyValidator [
+                    sh:select """
+                        PREFIX ex: <http://example.org/>
+                        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+                        SELECT DISTINCT $this
+                        WHERE {
+                            $this
+                                a foaf:Person ;
+                                $PATH $someone ;
+                            .
+                        }
+                    """ ;
+                ] .
+            """");
 
 
 
-            var shaclGraph = new ShapesGraph(shapesGraph);
+        var shaclGraph = new ShapesGraph(shapesGraph);
 
-            Assert.False(shaclGraph.Validate(dataGraph).Conforms);
-        }
+        Assert.False(shaclGraph.Validate(dataGraph).Conforms);
     }
 }

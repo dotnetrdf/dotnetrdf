@@ -24,44 +24,43 @@
 // </copyright>
 */
 
-namespace VDS.RDF.JsonLd.Syntax
+namespace VDS.RDF.JsonLd.Syntax;
+
+/// <summary>
+/// Enumeration of the supported container mappings.
+/// </summary>
+public enum JsonLdContainer
 {
     /// <summary>
-    /// Enumeration of the supported container mappings.
+    /// No container mapping
     /// </summary>
-    public enum JsonLdContainer
-    {
-        /// <summary>
-        /// No container mapping
-        /// </summary>
-        Null,
-        /// <summary>
-        /// @graph container mapping
-        /// </summary>
-        Graph,
-        /// <summary>
-        /// @list container mapping
-        /// </summary>
-        List,
-        /// <summary>
-        /// @set container mapping
-        /// </summary>
-        Set,
-        /// <summary>
-        /// @index container mapping
-        /// </summary>
-        Index,
-        /// <summary>
-        /// @id container mapping
-        /// </summary>
-        Id,
-        /// <summary>
-        /// @type container mapping
-        /// </summary>
-        Type,
-        /// <summary>
-        /// @language container mapping
-        /// </summary>
-        Language,
-    }
+    Null,
+    /// <summary>
+    /// @graph container mapping
+    /// </summary>
+    Graph,
+    /// <summary>
+    /// @list container mapping
+    /// </summary>
+    List,
+    /// <summary>
+    /// @set container mapping
+    /// </summary>
+    Set,
+    /// <summary>
+    /// @index container mapping
+    /// </summary>
+    Index,
+    /// <summary>
+    /// @id container mapping
+    /// </summary>
+    Id,
+    /// <summary>
+    /// @type container mapping
+    /// </summary>
+    Type,
+    /// <summary>
+    /// @language container mapping
+    /// </summary>
+    Language,
 }

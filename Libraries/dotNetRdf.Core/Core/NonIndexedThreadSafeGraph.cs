@@ -26,31 +26,30 @@
 
 using System.Threading;
 
-namespace VDS.RDF
-{
+namespace VDS.RDF;
 
+
+/// <summary>
+/// A Thread Safe version of the <see cref="Graph">Graph</see> class.
+/// </summary>
+/// <threadsafety instance="true">Should be safe for almost any concurrent read and write access scenario, internally managed using a <see cref="ReaderWriterLockSlim">ReaderWriterLockSlim</see>.  If you encounter any sort of Threading/Concurrency issue please report to the. <a href="mailto:dotnetrdf-bugs@lists.sourceforge.net">dotNetRDF Bugs Mailing List</a></threadsafety>
+/// <remarks>
+/// <para>
+/// Performance will be marginally worse than a normal <see cref="Graph">Graph</see> but in multi-threaded scenarios this will likely be offset by the benefits of multi-threading.
+/// </para>
+/// <para>
+/// Since this is a non-indexed version load performance will be better but query performance better.
+/// </para>
+/// </remarks>
+public class NonIndexedThreadSafeGraph
+    : ThreadSafeGraph
+{
     /// <summary>
-    /// A Thread Safe version of the <see cref="Graph">Graph</see> class.
+    /// Creates a new non-indexed Thread Safe Graph.
     /// </summary>
-    /// <threadsafety instance="true">Should be safe for almost any concurrent read and write access scenario, internally managed using a <see cref="ReaderWriterLockSlim">ReaderWriterLockSlim</see>.  If you encounter any sort of Threading/Concurrency issue please report to the. <a href="mailto:dotnetrdf-bugs@lists.sourceforge.net">dotNetRDF Bugs Mailing List</a></threadsafety>
-    /// <remarks>
-    /// <para>
-    /// Performance will be marginally worse than a normal <see cref="Graph">Graph</see> but in multi-threaded scenarios this will likely be offset by the benefits of multi-threading.
-    /// </para>
-    /// <para>
-    /// Since this is a non-indexed version load performance will be better but query performance better.
-    /// </para>
-    /// </remarks>
-    public class NonIndexedThreadSafeGraph
-        : ThreadSafeGraph
+    /// <param name="graphName">The name to assign to the new graph.</param>
+    public NonIndexedThreadSafeGraph(IRefNode graphName = null)
+        : base(graphName, new ThreadSafeTripleCollection())
     {
-        /// <summary>
-        /// Creates a new non-indexed Thread Safe Graph.
-        /// </summary>
-        /// <param name="graphName">The name to assign to the new graph.</param>
-        public NonIndexedThreadSafeGraph(IRefNode graphName = null)
-            : base(graphName, new ThreadSafeTripleCollection())
-        {
-        }
     }
 }

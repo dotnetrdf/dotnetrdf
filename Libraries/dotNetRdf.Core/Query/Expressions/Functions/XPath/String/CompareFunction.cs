@@ -24,62 +24,61 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.String
+namespace VDS.RDF.Query.Expressions.Functions.XPath.String;
+
+/// <summary>
+/// Represents the XPath fn:compare() function.
+/// </summary>
+public class CompareFunction
+    : BaseBinaryStringFunction
 {
     /// <summary>
-    /// Represents the XPath fn:compare() function.
+    /// Creates a new XPath Compare function.
     /// </summary>
-    public class CompareFunction
-        : BaseBinaryStringFunction
+    /// <param name="a">First comparand.</param>
+    /// <param name="b">Second comparand.</param>
+    public CompareFunction(ISparqlExpression a, ISparqlExpression b)
+        : base(a, b, false, XPathFunctionFactory.AcceptStringArguments) { }
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
     {
-        /// <summary>
-        /// Creates a new XPath Compare function.
-        /// </summary>
-        /// <param name="a">First comparand.</param>
-        /// <param name="b">Second comparand.</param>
-        public CompareFunction(ISparqlExpression a, ISparqlExpression b)
-            : base(a, b, false, XPathFunctionFactory.AcceptStringArguments) { }
+        return processor.ProcessCompareFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessCompareFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitCompareFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitCompareFunction(this);
-        }
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Compare + ">(" + _expr + "," + _arg + ")";
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Compare + ">(" + _expr + "," + _arg + ")";
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Compare;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Compare;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new CompareFunction(transformer.Transform(_expr), transformer.Transform(_arg));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new CompareFunction(transformer.Transform(_expr), transformer.Transform(_arg));
     }
 }

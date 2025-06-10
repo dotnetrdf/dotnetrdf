@@ -24,109 +24,108 @@
 // </copyright>
 */
 
-namespace VDS.RDF.JsonLd.Syntax
+namespace VDS.RDF.JsonLd.Syntax;
+
+/// <summary>
+/// Defines the keywords and categories of keywords that are valid in JSON-LD 1.1.
+/// </summary>
+public static class JsonLdKeywords
 {
     /// <summary>
-    /// Defines the keywords and categories of keywords that are valid in JSON-LD 1.1.
+    /// The list of JSON-LD keywords defined by the API and Processing specification.
     /// </summary>
-    public static class JsonLdKeywords
+    public static readonly string[] CoreKeywords =
     {
-        /// <summary>
-        /// The list of JSON-LD keywords defined by the API and Processing specification.
-        /// </summary>
-        public static readonly string[] CoreKeywords =
-        {
-            "@base",
-            "@container",
-            "@context",
-            "@direction",
-            "@graph",
-            "@id",
-            "@import",
-            "@included",
-            "@index",
-            "@json",
-            "@language",
-            "@list",
-            "@nest",
-            "@none",
-            "@prefix",
-            "@propagate",
-            "@protected",
-            "@reverse",
-            "@value",
-            "@set",
-            "@type",
-            "@value",
-            "@version",
-            "@vocab",
-        };
+        "@base",
+        "@container",
+        "@context",
+        "@direction",
+        "@graph",
+        "@id",
+        "@import",
+        "@included",
+        "@index",
+        "@json",
+        "@language",
+        "@list",
+        "@nest",
+        "@none",
+        "@prefix",
+        "@propagate",
+        "@protected",
+        "@reverse",
+        "@value",
+        "@set",
+        "@type",
+        "@value",
+        "@version",
+        "@vocab",
+    };
 
-        /// <summary>
-        /// The list of JSON-LD keywords added by the Framing specification.
-        /// </summary>
-        public static readonly string[] FramingKeywords =
-        {
-            "@default",
-            "@embed",
-            "@explicit",
-            "@omitDefault",
-            "@requireAll",
-        };
+    /// <summary>
+    /// The list of JSON-LD keywords added by the Framing specification.
+    /// </summary>
+    public static readonly string[] FramingKeywords =
+    {
+        "@default",
+        "@embed",
+        "@explicit",
+        "@omitDefault",
+        "@requireAll",
+    };
 
-        /// <summary>
-        /// Keywords that are valid in a term definition.
-        /// </summary>
-        public static readonly string[] TermDefinitionKeys =
-        {
-            "@id",
-            "@reverse",
-            "@container",
-            "@context",
-            "@direction",
-            "@index",
-            "@language",
-            "@nest",
-            "@prefix",
-            "@protected",
-            "@type",
-        };
+    /// <summary>
+    /// Keywords that are valid in a term definition.
+    /// </summary>
+    public static readonly string[] TermDefinitionKeys =
+    {
+        "@id",
+        "@reverse",
+        "@container",
+        "@context",
+        "@direction",
+        "@index",
+        "@language",
+        "@nest",
+        "@prefix",
+        "@protected",
+        "@type",
+    };
 
-        /// <summary>
-        /// Keywords that are valid properties of a value object.
-        /// </summary>
-        public static readonly string[] ValueObjectKeys =
-        {
-            "@direction",
-            "@value",
-            "@language",
-            "@type",
-            "@index",
-        };
+    /// <summary>
+    /// Keywords that are valid properties of a value object.
+    /// </summary>
+    public static readonly string[] ValueObjectKeys =
+    {
+        "@direction",
+        "@value",
+        "@language",
+        "@type",
+        "@index",
+    };
 
-        /// <summary>
-        /// Keywords that are valid properties of a graph object.
-        /// </summary>
-        public static readonly string[] GraphObjectKeys =
-        {
-            "@graph",
-            "@id",
-            "@index",
-        };
+    /// <summary>
+    /// Keywords that are valid properties of a graph object.
+    /// </summary>
+    public static readonly string[] GraphObjectKeys =
+    {
+        "@graph",
+        "@id",
+        "@index",
+    };
 
-        /// <summary>
-        /// Keywords that are valid top-level properties of a context object.
-        /// </summary>
-        public static readonly string[] JsonLdContextKeywords =
-        {
-            "@base",
-            "@direction",
-            "@import",
-            "@language",
-            "@propagate",
-            "@protected",
-            "@version",
-            "@vocab",
-        };
-    }
+    /// <summary>
+    /// Keywords that are valid top-level properties of a context object.
+    /// </summary>
+    public static readonly string[] JsonLdContextKeywords =
+    {
+        "@base",
+        "@direction",
+        "@import",
+        "@language",
+        "@propagate",
+        "@protected",
+        "@version",
+        "@vocab",
+    };
 }

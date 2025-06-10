@@ -24,38 +24,37 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Interface for formatters designed to format entire RDF Graphs.
+/// </summary>
+public interface IGraphFormatter : ITripleFormatter
 {
     /// <summary>
-    /// Interface for formatters designed to format entire RDF Graphs.
+    /// Generates the header section for the Graph.
     /// </summary>
-    public interface IGraphFormatter : ITripleFormatter
-    {
-        /// <summary>
-        /// Generates the header section for the Graph.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <returns></returns>
-        string FormatGraphHeader(IGraph g);
+    /// <param name="g">Graph.</param>
+    /// <returns></returns>
+    string FormatGraphHeader(IGraph g);
 
-        /// <summary>
-        /// Generates the header section for the Graph.
-        /// </summary>
-        /// <param name="namespaces">Namespaces.</param>
-        /// <param name="uriFactory">UriFactory to use when creating new Uri instances.</param>
-        /// <returns></returns>
-        string FormatGraphHeader(INamespaceMapper namespaces, IUriFactory uriFactory=null);
+    /// <summary>
+    /// Generates the header section for the Graph.
+    /// </summary>
+    /// <param name="namespaces">Namespaces.</param>
+    /// <param name="uriFactory">UriFactory to use when creating new Uri instances.</param>
+    /// <returns></returns>
+    string FormatGraphHeader(INamespaceMapper namespaces, IUriFactory uriFactory=null);
 
-        /// <summary>
-        /// Generates a generic header section.
-        /// </summary>
-        /// <returns></returns>
-        string FormatGraphHeader();
+    /// <summary>
+    /// Generates a generic header section.
+    /// </summary>
+    /// <returns></returns>
+    string FormatGraphHeader();
 
-        /// <summary>
-        /// Generates the footer section.
-        /// </summary>
-        /// <returns></returns>
-        string FormatGraphFooter();
-    }
+    /// <summary>
+    /// Generates the footer section.
+    /// </summary>
+    /// <returns></returns>
+    string FormatGraphFooter();
 }

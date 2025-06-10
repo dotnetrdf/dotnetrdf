@@ -28,24 +28,24 @@ using System;
 using System.Collections.Generic;
 using VDS.RDF.Query.Spin.Model;
 
-namespace VDS.RDF.Query.Spin.Constraints {
+namespace VDS.RDF.Query.Spin.Constraints; 
 
 /**
- * An object representing a failure of a SPIN constraint.
- * 
- * @author Holger Knublauch
- */
+* An object representing a failure of a SPIN constraint.
+* 
+* @author Holger Knublauch
+*/
 internal class ConstraintViolation {
 
-    private List<ITemplateCall> fixes;
+private List<ITemplateCall> fixes;
 	
 	private String message;
 
-    private List<SimplePropertyPath> paths;
+private List<SimplePropertyPath> paths;
 
-    private INode root;
+private INode root;
 
-    private INode source;
+private INode source;
 	
 	
 	/**
@@ -57,12 +57,12 @@ internal class ConstraintViolation {
 	 * @param source  the SPIN Query or template call that has caused this violation
 	 *                (may be null)
 	 */
-    public ConstraintViolation(INode root,
-                List<SimplePropertyPath> paths,
-                List<ITemplateCall> fixes,
+public ConstraintViolation(INode root,
+            List<SimplePropertyPath> paths,
+            List<ITemplateCall> fixes,
 				String message,
-                INode source)
-    {
+            INode source)
+{
 		this.root = root;
 		this.paths = paths;
 		this.fixes = fixes;
@@ -71,8 +71,8 @@ internal class ConstraintViolation {
 	}
 
 
-    public List<ITemplateCall> getFixes()
-    {
+public List<ITemplateCall> getFixes()
+{
 		return fixes;
 	}
 	
@@ -82,14 +82,14 @@ internal class ConstraintViolation {
 	}
 
 
-    public List<SimplePropertyPath> getPaths()
-    {
+public List<SimplePropertyPath> getPaths()
+{
 		return paths;
 	}
 
 
-    public INode getRoot()
-    {
+public INode getRoot()
+{
 		return root;
 	}
 	
@@ -98,9 +98,8 @@ internal class ConstraintViolation {
 	 * Gets the SPIN Query or template call that has caused this violation.
 	 * @return the source (code should be robust against null values)
 	 */
-    public INode getSource()
-    {
+public INode getSource()
+{
 		return source;
 	}
-}
 }

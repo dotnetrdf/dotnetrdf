@@ -29,279 +29,278 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder;
+
+/// <inheritdoc />
+internal partial class ExpressionBuilder
 {
     /// <inheritdoc />
-    internal partial class ExpressionBuilder
+    public BooleanExpression Regex(VariableExpression text, string pattern)
     {
-        /// <inheritdoc />
-        public BooleanExpression Regex(VariableExpression text, string pattern)
-        {
-            return Regex(text.Expression, pattern.ToSimpleLiteral(false), null);
-        }
+        return Regex(text.Expression, pattern.ToSimpleLiteral(false), null);
+    }
 
-        /// <inheritdoc />
-        public BooleanExpression Regex(VariableExpression text, VariableExpression pattern)
-        {
-            return Regex(text.Expression, pattern.Expression, null);
-        }
+    /// <inheritdoc />
+    public BooleanExpression Regex(VariableExpression text, VariableExpression pattern)
+    {
+        return Regex(text.Expression, pattern.Expression, null);
+    }
 
-        /// <inheritdoc />
-        public BooleanExpression Regex(LiteralExpression text, string pattern)
-        {
-            return Regex(text.Expression, pattern.ToSimpleLiteral(false), null);
-        }
+    /// <inheritdoc />
+    public BooleanExpression Regex(LiteralExpression text, string pattern)
+    {
+        return Regex(text.Expression, pattern.ToSimpleLiteral(false), null);
+    }
 
-        /// <inheritdoc />
-        public BooleanExpression Regex(LiteralExpression text, LiteralExpression pattern)
-        {
-            return Regex(text.Expression, pattern.Expression, null);
-        }
+    /// <inheritdoc />
+    public BooleanExpression Regex(LiteralExpression text, LiteralExpression pattern)
+    {
+        return Regex(text.Expression, pattern.Expression, null);
+    }
 
-        /// <inheritdoc />
-        public BooleanExpression Regex(LiteralExpression text, VariableExpression pattern)
-        {
-            return Regex(text.Expression, pattern.Expression, null);
-        }
+    /// <inheritdoc />
+    public BooleanExpression Regex(LiteralExpression text, VariableExpression pattern)
+    {
+        return Regex(text.Expression, pattern.Expression, null);
+    }
 
-        /// <inheritdoc />
-        public BooleanExpression Regex(SparqlExpression text, string pattern, string flags)
-        {
-            return Regex(text.Expression, Constant(pattern).Expression, flags.ToConstantTerm());
-        }
+    /// <inheritdoc />
+    public BooleanExpression Regex(SparqlExpression text, string pattern, string flags)
+    {
+        return Regex(text.Expression, Constant(pattern).Expression, flags.ToConstantTerm());
+    }
 
-        /// <inheritdoc />
-        public BooleanExpression Regex(VariableExpression text, VariableExpression pattern, string flags)
-        {
-            return Regex(text.Expression, pattern.Expression, flags.ToConstantTerm());
-        }
+    /// <inheritdoc />
+    public BooleanExpression Regex(VariableExpression text, VariableExpression pattern, string flags)
+    {
+        return Regex(text.Expression, pattern.Expression, flags.ToConstantTerm());
+    }
 
-        /// <inheritdoc />
-        public BooleanExpression Regex(LiteralExpression text, string pattern, string flags)
-        {
-            return Regex(text.Expression, pattern.ToSimpleLiteral(false), flags.ToConstantTerm());
-        }
+    /// <inheritdoc />
+    public BooleanExpression Regex(LiteralExpression text, string pattern, string flags)
+    {
+        return Regex(text.Expression, pattern.ToSimpleLiteral(false), flags.ToConstantTerm());
+    }
 
-        /// <inheritdoc />
-        public BooleanExpression Regex(LiteralExpression text, LiteralExpression pattern, string flags)
-        {
-            return Regex(text.Expression, pattern.Expression, flags.ToConstantTerm());
-        }
+    /// <inheritdoc />
+    public BooleanExpression Regex(LiteralExpression text, LiteralExpression pattern, string flags)
+    {
+        return Regex(text.Expression, pattern.Expression, flags.ToConstantTerm());
+    }
 
-        /// <inheritdoc />
-        public BooleanExpression Regex(LiteralExpression text, VariableExpression pattern, string flags)
-        {
-            return Regex(text.Expression, pattern.Expression, flags.ToConstantTerm());
-        }
+    /// <inheritdoc />
+    public BooleanExpression Regex(LiteralExpression text, VariableExpression pattern, string flags)
+    {
+        return Regex(text.Expression, pattern.Expression, flags.ToConstantTerm());
+    }
 
-        private static BooleanExpression Regex(ISparqlExpression text, ISparqlExpression pattern, ISparqlExpression flags)
-        {
-            RegexFunction regex = flags == null ? new RegexFunction(text, pattern) : new RegexFunction(text, pattern, flags);
+    private static BooleanExpression Regex(ISparqlExpression text, ISparqlExpression pattern, ISparqlExpression flags)
+    {
+        RegexFunction regex = flags == null ? new RegexFunction(text, pattern) : new RegexFunction(text, pattern, flags);
 
-            return new BooleanExpression(regex);
-        }
+        return new BooleanExpression(regex);
+    }
 
-        /// <inheritdoc />
-        public NumericExpression<int> StrLen(VariableExpression str)
-        {
-            return new NumericExpression<int>(new StrLenFunction(str.Expression));
-        }
+    /// <inheritdoc />
+    public NumericExpression<int> StrLen(VariableExpression str)
+    {
+        return new NumericExpression<int>(new StrLenFunction(str.Expression));
+    }
 
-        /// <inheritdoc />
-        public NumericExpression<int> StrLen(TypedLiteralExpression<string> str)
-        {
-            return new NumericExpression<int>(new StrLenFunction(str.Expression));
-        }
+    /// <inheritdoc />
+    public NumericExpression<int> StrLen(TypedLiteralExpression<string> str)
+    {
+        return new NumericExpression<int>(new StrLenFunction(str.Expression));
+    }
 
-        private static TypedLiteralExpression<string> Substr(ISparqlExpression str, ISparqlExpression startingLoc, ISparqlExpression length)
-        {
-            SubStrFunction subStrFunction = length == null ? new SubStrFunction(str, startingLoc) : new SubStrFunction(str, startingLoc, length);
-            return new TypedLiteralExpression<string>(subStrFunction);
-        }
+    private static TypedLiteralExpression<string> Substr(ISparqlExpression str, ISparqlExpression startingLoc, ISparqlExpression length)
+    {
+        SubStrFunction subStrFunction = length == null ? new SubStrFunction(str, startingLoc) : new SubStrFunction(str, startingLoc, length);
+        return new TypedLiteralExpression<string>(subStrFunction);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, NumericExpression<int> startingLoc)
-        {
-            return Substr(str.Expression, startingLoc.Expression, null);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, NumericExpression<int> startingLoc)
+    {
+        return Substr(str.Expression, startingLoc.Expression, null);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, VariableExpression startingLoc)
-        {
-            return Substr(str.Expression, startingLoc.Expression, null);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, VariableExpression startingLoc)
+    {
+        return Substr(str.Expression, startingLoc.Expression, null);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, int startingLoc)
-        {
-            return Substr(str.Expression, startingLoc.ToConstantTerm(), null);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, int startingLoc)
+    {
+        return Substr(str.Expression, startingLoc.ToConstantTerm(), null);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(VariableExpression str, NumericExpression<int> startingLoc)
-        {
-            return Substr(str.Expression, startingLoc.Expression, null);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(VariableExpression str, NumericExpression<int> startingLoc)
+    {
+        return Substr(str.Expression, startingLoc.Expression, null);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(VariableExpression str, int startingLoc)
-        {
-            return Substr(str.Expression, startingLoc.ToConstantTerm(), null);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(VariableExpression str, int startingLoc)
+    {
+        return Substr(str.Expression, startingLoc.ToConstantTerm(), null);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(VariableExpression str, VariableExpression startingLoc)
-        {
-            return Substr(str.Expression, startingLoc.Expression, null);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(VariableExpression str, VariableExpression startingLoc)
+    {
+        return Substr(str.Expression, startingLoc.Expression, null);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, NumericExpression<int> startingLoc, int length)
-        {
-            return Substr(str.Expression, startingLoc.Expression, length.ToConstantTerm());
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, NumericExpression<int> startingLoc, int length)
+    {
+        return Substr(str.Expression, startingLoc.Expression, length.ToConstantTerm());
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, VariableExpression startingLoc, int length)
-        {
-            return Substr(str.Expression, startingLoc.Expression, length.ToConstantTerm());
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, VariableExpression startingLoc, int length)
+    {
+        return Substr(str.Expression, startingLoc.Expression, length.ToConstantTerm());
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, int startingLoc, int length)
-        {
-            return Substr(str.Expression, startingLoc.ToConstantTerm(), length.ToConstantTerm());
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, int startingLoc, int length)
+    {
+        return Substr(str.Expression, startingLoc.ToConstantTerm(), length.ToConstantTerm());
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(VariableExpression str, NumericExpression<int> startingLoc, int length)
-        {
-            return Substr(str.Expression, startingLoc.Expression, length.ToConstantTerm());
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(VariableExpression str, NumericExpression<int> startingLoc, int length)
+    {
+        return Substr(str.Expression, startingLoc.Expression, length.ToConstantTerm());
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(VariableExpression str, int startingLoc, int length)
-        {
-            return Substr(str.Expression, startingLoc.ToConstantTerm(), length.ToConstantTerm());
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(VariableExpression str, int startingLoc, int length)
+    {
+        return Substr(str.Expression, startingLoc.ToConstantTerm(), length.ToConstantTerm());
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(VariableExpression str, VariableExpression startingLoc, int length)
-        {
-            return Substr(str.Expression, startingLoc.Expression, length.ToConstantTerm());
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(VariableExpression str, VariableExpression startingLoc, int length)
+    {
+        return Substr(str.Expression, startingLoc.Expression, length.ToConstantTerm());
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, NumericExpression<int> startingLoc, NumericExpression<int> length)
-        {
-            return Substr(str.Expression, startingLoc.Expression, length.Expression);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, NumericExpression<int> startingLoc, NumericExpression<int> length)
+    {
+        return Substr(str.Expression, startingLoc.Expression, length.Expression);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, VariableExpression startingLoc, NumericExpression<int> length)
-        {
-            return Substr(str.Expression, startingLoc.Expression, length.Expression);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, VariableExpression startingLoc, NumericExpression<int> length)
+    {
+        return Substr(str.Expression, startingLoc.Expression, length.Expression);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, int startingLoc, NumericExpression<int> length)
-        {
-            return Substr(str.Expression, startingLoc.ToConstantTerm(), length.Expression);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, int startingLoc, NumericExpression<int> length)
+    {
+        return Substr(str.Expression, startingLoc.ToConstantTerm(), length.Expression);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(VariableExpression str, NumericExpression<int> startingLoc, NumericExpression<int> length)
-        {
-            return Substr(str.Expression, startingLoc.Expression, length.Expression);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(VariableExpression str, NumericExpression<int> startingLoc, NumericExpression<int> length)
+    {
+        return Substr(str.Expression, startingLoc.Expression, length.Expression);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(VariableExpression str, int startingLoc, NumericExpression<int> length)
-        {
-            return Substr(str.Expression, startingLoc.ToConstantTerm(), length.Expression);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(VariableExpression str, int startingLoc, NumericExpression<int> length)
+    {
+        return Substr(str.Expression, startingLoc.ToConstantTerm(), length.Expression);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(VariableExpression str, VariableExpression startingLoc, NumericExpression<int> length)
-        {
-            return Substr(str.Expression, startingLoc.Expression, length.Expression);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(VariableExpression str, VariableExpression startingLoc, NumericExpression<int> length)
+    {
+        return Substr(str.Expression, startingLoc.Expression, length.Expression);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, NumericExpression<int> startingLoc, VariableExpression length)
-        {
-            return Substr(str.Expression, startingLoc.Expression, length.Expression);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, NumericExpression<int> startingLoc, VariableExpression length)
+    {
+        return Substr(str.Expression, startingLoc.Expression, length.Expression);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, VariableExpression startingLoc, VariableExpression length)
-        {
-            return Substr(str.Expression, startingLoc.Expression, length.Expression);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, VariableExpression startingLoc, VariableExpression length)
+    {
+        return Substr(str.Expression, startingLoc.Expression, length.Expression);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, int startingLoc, VariableExpression length)
-        {
-            return Substr(str.Expression, startingLoc.ToConstantTerm(), length.Expression);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(TypedLiteralExpression<string> str, int startingLoc, VariableExpression length)
+    {
+        return Substr(str.Expression, startingLoc.ToConstantTerm(), length.Expression);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(VariableExpression str, NumericExpression<int> startingLoc, VariableExpression length)
-        {
-            return Substr(str.Expression, startingLoc.Expression, length.Expression);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(VariableExpression str, NumericExpression<int> startingLoc, VariableExpression length)
+    {
+        return Substr(str.Expression, startingLoc.Expression, length.Expression);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(VariableExpression str, int startingLoc, VariableExpression length)
-        {
-            return Substr(str.Expression, startingLoc.ToConstantTerm(), length.Expression);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(VariableExpression str, int startingLoc, VariableExpression length)
+    {
+        return Substr(str.Expression, startingLoc.ToConstantTerm(), length.Expression);
+    }
 
-        /// <inheritdoc />
-        public TypedLiteralExpression<string> Substr(VariableExpression str, VariableExpression startingLoc, VariableExpression length)
-        {
-            return Substr(str.Expression, startingLoc.Expression, length.Expression);
-        }
+    /// <inheritdoc />
+    public TypedLiteralExpression<string> Substr(VariableExpression str, VariableExpression startingLoc, VariableExpression length)
+    {
+        return Substr(str.Expression, startingLoc.Expression, length.Expression);
+    }
 
-        private static BooleanExpression LangMatches(ISparqlExpression languageTag, ISparqlExpression languageRange)
-        {
-            return new BooleanExpression(new LangMatchesFunction(languageTag, languageRange));
-        }
+    private static BooleanExpression LangMatches(ISparqlExpression languageTag, ISparqlExpression languageRange)
+    {
+        return new BooleanExpression(new LangMatchesFunction(languageTag, languageRange));
+    }
 
-        /// <inheritdoc />
-        public BooleanExpression LangMatches(LiteralExpression languageTag, string languageRange)
-        {
-            return LangMatches(languageTag.Expression, languageRange.ToConstantTerm());
-        }
+    /// <inheritdoc />
+    public BooleanExpression LangMatches(LiteralExpression languageTag, string languageRange)
+    {
+        return LangMatches(languageTag.Expression, languageRange.ToConstantTerm());
+    }
 
-        /// <inheritdoc />
-        public BooleanExpression LangMatches(VariableExpression languageTag, string languageRange)
-        {
-            return LangMatches(languageTag.Expression, languageRange.ToConstantTerm());
-        }
+    /// <inheritdoc />
+    public BooleanExpression LangMatches(VariableExpression languageTag, string languageRange)
+    {
+        return LangMatches(languageTag.Expression, languageRange.ToConstantTerm());
+    }
 
-        /// <inheritdoc />
-        public BooleanExpression LangMatches(LiteralExpression languageTag, LiteralExpression languageRange)
-        {
-            return LangMatches(languageTag.Expression, languageRange.Expression);
-        }
+    /// <inheritdoc />
+    public BooleanExpression LangMatches(LiteralExpression languageTag, LiteralExpression languageRange)
+    {
+        return LangMatches(languageTag.Expression, languageRange.Expression);
+    }
 
-        /// <inheritdoc />
-        public BooleanExpression LangMatches(VariableExpression languageTag, LiteralExpression languageRange)
-        {
-            return LangMatches(languageTag.Expression, languageRange.Expression);
-        }
+    /// <inheritdoc />
+    public BooleanExpression LangMatches(VariableExpression languageTag, LiteralExpression languageRange)
+    {
+        return LangMatches(languageTag.Expression, languageRange.Expression);
+    }
 
-        /// <inheritdoc />
-        public BooleanExpression LangMatches(LiteralExpression languageTag, VariableExpression languageRange)
-        {
-            return LangMatches(languageTag.Expression, languageRange.Expression);
-        }
+    /// <inheritdoc />
+    public BooleanExpression LangMatches(LiteralExpression languageTag, VariableExpression languageRange)
+    {
+        return LangMatches(languageTag.Expression, languageRange.Expression);
+    }
 
-        /// <inheritdoc />
-        public BooleanExpression LangMatches(VariableExpression languageTag, VariableExpression languageRange)
-        {
-            return LangMatches(languageTag.Expression, languageRange.Expression);
-        }
+    /// <inheritdoc />
+    public BooleanExpression LangMatches(VariableExpression languageTag, VariableExpression languageRange)
+    {
+        return LangMatches(languageTag.Expression, languageRange.Expression);
     }
 }

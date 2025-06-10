@@ -27,89 +27,88 @@
 using System;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers;
+
+/// <summary>
+/// A SPARQL Results Handler which loads Results into a <see cref="SparqlResultSet">SparqlResultSet</see>.
+/// </summary>
+public class ResultSetHandler
+    : BaseResultsHandler
 {
+    private SparqlResultSet _results;
+
     /// <summary>
-    /// A SPARQL Results Handler which loads Results into a <see cref="SparqlResultSet">SparqlResultSet</see>.
+    /// Creates a new Result Set Handler.
     /// </summary>
-    public class ResultSetHandler
-        : BaseResultsHandler
+    /// <param name="results">Result Set.</param>
+    public ResultSetHandler(SparqlResultSet results)
     {
-        private SparqlResultSet _results;
+        if (results == null) throw new ArgumentNullException("results");
+        _results = results;
+    }
 
-        /// <summary>
-        /// Creates a new Result Set Handler.
-        /// </summary>
-        /// <param name="results">Result Set.</param>
-        public ResultSetHandler(SparqlResultSet results)
+    /// <summary>
+    /// Starts Results Handling.
+    /// </summary>
+    protected override void StartResultsInternal()
+    {
+        // Ensure Empty Result Set
+        if (!_results.IsEmpty || _results.ResultsType != SparqlResultsType.Unknown)
         {
-            if (results == null) throw new ArgumentNullException("results");
-            _results = results;
-        }
-
-        /// <summary>
-        /// Starts Results Handling.
-        /// </summary>
-        protected override void StartResultsInternal()
-        {
-            // Ensure Empty Result Set
-            if (!_results.IsEmpty || _results.ResultsType != SparqlResultsType.Unknown)
-            {
-                throw new RdfParseException("Cannot start Results Handling into a non-empty Result Set");
-            }
-        }
-
-        /// <summary>
-        /// Handles a Boolean Result by setting the <see cref="SparqlResultSet.Result">Result</see> property of the Result Set.
-        /// </summary>
-        /// <param name="result">Result.</param>
-        protected override void HandleBooleanResultInternal(bool result)
-        {
-            _results.SetResult(result);
-        }
-
-        /// <summary>
-        /// Handles a Variable Declaration by adding the Variable to the Result Set.
-        /// </summary>
-        /// <param name="var">Variable Name.</param>
-        /// <returns></returns>
-        protected override bool HandleVariableInternal(string var)
-        {
-            _results.AddVariable(var);
-            return true;
-        }
-
-        /// <summary>
-        /// Handles a Result by adding it to the Result Set.
-        /// </summary>
-        /// <param name="result">Result.</param>
-        /// <returns></returns>
-        protected override bool HandleResultInternal(ISparqlResult result)
-        {
-            _results.AddResult(result);
-            return true;
+            throw new RdfParseException("Cannot start Results Handling into a non-empty Result Set");
         }
     }
 
     /// <summary>
-    /// A SPARQL Results Handler which allows you to load multiple Result Sets into a single <see cref="SparqlResultSet">SparqlResultSet</see> which the standard <see cref="ResultSetHandler">ResultSetHandler</see> does not permit.
+    /// Handles a Boolean Result by setting the <see cref="SparqlResultSet.Result">Result</see> property of the Result Set.
     /// </summary>
-    public class MergingResultSetHandler
-        : ResultSetHandler
+    /// <param name="result">Result.</param>
+    protected override void HandleBooleanResultInternal(bool result)
     {
-        /// <summary>
-        /// Creates a new Merging Result Set Handler.
-        /// </summary>
-        /// <param name="results">Result Set.</param>
-        public MergingResultSetHandler(SparqlResultSet results)
-            : base(results) { }
+        _results.SetResult(result);
+    }
 
-        /// <summary>
-        /// Overrides the base classes logic to avoid the empty check on the Result Set thus allowing multiple result sets to be merged.
-        /// </summary>
-        protected override void StartResultsInternal()
-        {
-            // Don't do an empty check
-        }
+    /// <summary>
+    /// Handles a Variable Declaration by adding the Variable to the Result Set.
+    /// </summary>
+    /// <param name="var">Variable Name.</param>
+    /// <returns></returns>
+    protected override bool HandleVariableInternal(string var)
+    {
+        _results.AddVariable(var);
+        return true;
+    }
+
+    /// <summary>
+    /// Handles a Result by adding it to the Result Set.
+    /// </summary>
+    /// <param name="result">Result.</param>
+    /// <returns></returns>
+    protected override bool HandleResultInternal(ISparqlResult result)
+    {
+        _results.AddResult(result);
+        return true;
+    }
+}
+
+/// <summary>
+/// A SPARQL Results Handler which allows you to load multiple Result Sets into a single <see cref="SparqlResultSet">SparqlResultSet</see> which the standard <see cref="ResultSetHandler">ResultSetHandler</see> does not permit.
+/// </summary>
+public class MergingResultSetHandler
+    : ResultSetHandler
+{
+    /// <summary>
+    /// Creates a new Merging Result Set Handler.
+    /// </summary>
+    /// <param name="results">Result Set.</param>
+    public MergingResultSetHandler(SparqlResultSet results)
+        : base(results) { }
+
+    /// <summary>
+    /// Overrides the base classes logic to avoid the empty check on the Result Set thus allowing multiple result sets to be merged.
+    /// </summary>
+    protected override void StartResultsInternal()
+    {
+        // Don't do an empty check
     }
 }
