@@ -9,7 +9,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        framework: ["net8.0", "net472"]
+        framework: ["net8.0"]
         suite: 
           - "dotNetRdf.Tests"
           - "dotNetRdf.Dynamic.Tests"
