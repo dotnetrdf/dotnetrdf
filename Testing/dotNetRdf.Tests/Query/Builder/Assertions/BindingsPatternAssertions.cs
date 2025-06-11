@@ -9,7 +9,12 @@ namespace VDS.RDF.Query.Builder.Assertions;
 
 public class BindingsPatternAssertions : ReferenceTypeAssertions<BindingsPattern, BindingsPatternAssertions>
 {
-    public BindingsPatternAssertions(BindingsPattern pattern) : base(pattern) { }
+    private AssertionChain _chain;
+
+    public BindingsPatternAssertions(BindingsPattern pattern, AssertionChain chain) : base(pattern, chain)
+    {
+        _chain = chain;
+    }
 
     public AndConstraint<BindingsPatternAssertions> BeEquivalentTo(BindingsPattern expected)
     {
@@ -32,7 +37,8 @@ public class BindingsPatternAssertions : ReferenceTypeAssertions<BindingsPattern
 
         foreach (BindingTuple tuple in tuples)
         {
-            Execute.Assertion
+            //Execute.Assertion
+            _chain
                 .Given(() => Subject.Tuples)
                 .ForCondition(actual => actual.Any(t => variables.All(v => Equals(t[v], tuple[v]))))
                 .FailWith("{0} should contain tuple {1}", Subject, tuple);
