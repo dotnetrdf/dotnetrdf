@@ -39,7 +39,8 @@ public class StoreFactory
 {
     private const string TripleStore = "VDS.RDF.TripleStore",
                          WebDemandTripleStore = "VDS.RDF.WebDemandTripleStore",
-                         PersistentTripleStore = "VDS.RDF.PersistentTripleStore";
+                         PersistentTripleStore = "VDS.RDF.PersistentTripleStore",
+                         ThreadSafeTripleStore = "VDS.RDF.ThreadSafeTripleStore";
 
 
     /// <summary>
@@ -55,12 +56,10 @@ public class StoreFactory
         obj = null;
 
         ITripleStore store = null;
-        INode subObj;
         object temp;
 
         // Get Property Nodes we need
-        INode propStorageProvider = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider)),
-              propAsync = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAsync));
+        INode propStorageProvider = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
 
         // Check whether to use a specific Graph Collection
         INode collectionNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraphCollection)));
@@ -95,17 +94,30 @@ public class StoreFactory
                 break;
 
             case PersistentTripleStore:
-                subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
+                INode subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
                 if (subObj == null) return false;
 
                 temp = ConfigurationLoader.LoadObject(g, subObj);
-                if (temp is IStorageProvider)
+                if (temp is IStorageProvider storageProvider)
                 {
-                    store = new PersistentTripleStore((IStorageProvider)temp);
+                    store = new PersistentTripleStore(storageProvider);
                 }
                 else
                 {
                     throw new DotNetRdfConfigurationException("Unable to load a Persistent Triple Store identified by the Node '" + objNode.ToString() + "' as the value given the for dnr:genericManager property points to an Object which could not be loaded as an object which implements the IStorageProvider interface");
+                }
+                break;
+            
+            case ThreadSafeTripleStore:
+                if (collectionNode == null)
+                {
+                    store = new ThreadSafeTripleStore();
+                }
+                else
+                {
+                    var graphCollection = ConfigurationLoader.LoadObject(g, collectionNode) as BaseGraphCollection;
+                    if (graphCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Triple Store identified by the Node '" + objNode.ToString() + "' as the dnr:usingGraphCollection points to an object which cannot be loaded as an instance of the required type BaseGraphCollection");
+                    store = new ThreadSafeTripleStore(graphCollection);
                 }
                 break;
         }
@@ -119,9 +131,9 @@ public class StoreFactory
             foreach (INode source in sources)
             {
                 temp = ConfigurationLoader.LoadObject(g, source);
-                if (temp is IGraph)
+                if (temp is IGraph graph)
                 {
-                    store.Add((IGraph)temp);
+                    store.Add(graph);
                 }
                 else
                 {
@@ -157,10 +169,10 @@ public class StoreFactory
                 }
             }
 
-            // And as an absolute final step if the store is transactional we'll flush any changes we've made
-            if (store is ITransactionalStore)
+            // And as an absolute final step, if the store is transactional we'll flush any changes we've made
+            if (store is ITransactionalStore transactionalStore)
             {
-                ((ITransactionalStore)store).Flush();
+                transactionalStore.Flush();
             }
         }
 
@@ -180,6 +192,7 @@ public class StoreFactory
             case TripleStore:
             case WebDemandTripleStore:
             case PersistentTripleStore:
+            case ThreadSafeTripleStore:
                 return true;
             default:
                 return false;
