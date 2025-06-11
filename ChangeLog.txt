@@ -12,6 +12,7 @@ NEW: Moved to centrally managed package versions. Thanks to @hellikopter for the
 FIX: Fixed documentation of RemoveFromList methods to correctly document the limitations of the methods. Thanks to @langsamu for the report. (#702, #708)
 NEW: Added Graph extension methods RemoveAllFromList to remove all instances of a specified node or object (with node mapping function) from an RDF collection. (#709)
 FIX: Fix the ParserHelper so that methods that resolve URIs use the same UriFactory for URI resolution that will be used for creating the fully resolved URI. Thanks to @Aeolin for the bug report. (#699)
+NEW: It is now possible to create a triple store of type `VDS.RDF.ThreadSafeTripleStore` using the configuration loader. The store will by default be configured with a `ThreadSafeGraphCollection` allowing it to be used in environments that can expect concurrent read and write access. (#698)
 
 3.3.2
 -----

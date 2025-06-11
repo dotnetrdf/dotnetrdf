@@ -328,6 +328,21 @@ _:b a dnr:GraphCollection ;
         Assert.Equal(typeof(TripleStore), result.GetType());
         Assert.Equal(typeof(ThreadSafeGraphCollection), result.Graphs.GetType());
     }
+
+    [Fact]
+    public void ConfigurationLoadThreadSafeTripleStoreEmpty()
+    {
+        var graph = ConfigLookupTests.Prefixes + @"
+_:a a dnr:TripleStore ;
+    dnr:type ""VDS.RDF.ThreadSafeTripleStore"" ;
+.";
+        var g = new Graph();
+        g.LoadFromString(graph);
+        var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as ITripleStore;
+        Assert.NotNull(result);
+        result.Should().NotBeNull().And.BeAssignableTo<ThreadSafeTripleStore>();
+        result.Graphs.Should().BeAssignableTo<ThreadSafeGraphCollection>();
+    }
 }
 
 class MockPropertyFunctionFactory
