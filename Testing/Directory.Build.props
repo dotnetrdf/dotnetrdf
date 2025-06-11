@@ -15,6 +15,7 @@
     <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PublicSign>true</PublicSign>
+    <OutputType>Exe</OutputType>
    </PropertyGroup>
 
 </Project>
