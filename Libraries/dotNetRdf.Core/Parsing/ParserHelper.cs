@@ -53,7 +53,7 @@ public static class ParserHelper
     /// </summary>
     /// <param name="context">Parser Context.</param>
     /// <param name="t">Token to resolve.</param>
-    /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to the Base URI.</param>
+    /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined, it can fall back to the Base URI.</param>
     /// <returns></returns>
     public static IUriNode TryResolveUri(IParserContext context, IToken t, bool allowDefaultPrefixFallback)
     {
@@ -65,8 +65,8 @@ public static class ParserHelper
     /// </summary>
     /// <param name="context">Parser Context.</param>
     /// <param name="t">Token to resolve.</param>
-    /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to the Base URI.</param>
-    /// <param name="qnameUnescape">QName unescaping function.</param>
+    /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined, it can fall back to the Base URI.</param>
+    /// <param name="qnameUnescape">QName un-escaping function.</param>
     /// <returns></returns>
     public static IUriNode TryResolveUri(IParserContext context, IToken t, bool allowDefaultPrefixFallback, Func<string, string> qnameUnescape)
     {
@@ -89,7 +89,7 @@ public static class ParserHelper
             case Token.URI:
                 try
                 {
-                    var uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString());
+                    var uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString(), context.UriFactory);
                     return context.Handler.CreateUriNode(context.UriFactory.Create(uri));
                 }
                 catch (UriFormatException formatEx)
@@ -133,7 +133,7 @@ public static class ParserHelper
             case Token.URI:
                 try
                 {
-                    var uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString());
+                    var uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString(), context.UriFactory);
                     return context.Handler.CreateUriNode(context.UriFactory.Create(uri));
                 }
                 catch (UriFormatException formatEx)
@@ -170,7 +170,7 @@ public static class ParserHelper
             case Token.URI:
                 try
                 {
-                    var uri = Tools.ResolveUri(t.Value, string.Empty);
+                    var uri = Tools.ResolveUri(t.Value, string.Empty, uriFactory);
                     return handler.CreateUriNode(uriFactory.Create(uri));
                 }
                 catch (UriFormatException formatEx)
@@ -194,7 +194,7 @@ public static class ParserHelper
             case Token.URI:
                 try
                 {
-                    var uri = Tools.ResolveUri(t.Value, string.Empty);
+                    var uri = Tools.ResolveUri(t.Value, string.Empty, context.UriFactory);
                     return context.Handler.CreateUriNode(context.UriFactory.Create(uri));
                 }
                 catch (UriFormatException formatEx)
@@ -215,7 +215,7 @@ public static class ParserHelper
     {
         try
         {
-            var uri = Tools.ResolveUri(value, string.Empty);
+            var uri = Tools.ResolveUri(value, string.Empty, context.UriFactory);
             return context.Handler.CreateUriNode(context.UriFactory.Create(uri));
         }
         catch (UriFormatException formatEx)
@@ -262,7 +262,7 @@ public static class ParserHelper
             case Token.URI:
                 try
                 {
-                    var uri = Tools.ResolveUri(t.Value, g.BaseUri.ToSafeString());
+                    var uri = Tools.ResolveUri(t.Value, g.BaseUri.ToSafeString(), g.UriFactory);
                     return g.CreateUriNode(g.UriFactory.Create(uri));
                 }
                 catch (UriFormatException formatEx)
@@ -286,7 +286,7 @@ public static class ParserHelper
     }
 
     /// <summary>
-    /// Helper method for raising informative standardised Parser Errors.
+    /// Helper method for raising informative, standardised Parser Errors.
     /// </summary>
     /// <param name="msg">The Error Message.</param>
     /// <param name="t">The Token that is the cause of the Error.</param>

@@ -125,7 +125,7 @@ public static class Tools
             var u = new Uri(FixMalformedUriStrings(uriref), UriKind.RelativeOrAbsolute);
             if (u.IsAbsoluteUri) 
             {
-                // Uri Reference is an Absolute Uri so no need to resolve against Base Uri
+                // Uri reference is an absolute URI, so no need to resolve against Base Uri
                 return u.AbsoluteUri;
             }
 
@@ -193,7 +193,7 @@ public static class Tools
     /// <param name="qname">QName to resolve.</param>
     /// <param name="nsmap">Namespace Map to resolve against.</param>
     /// <param name="baseUri">Base Uri to resolve against.</param>
-    /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to Base URI.</param>
+    /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined, it can fall back to Base URI.</param>
     /// <returns></returns>
     public static string ResolveQName(string qname, INamespaceMapper nsmap, Uri baseUri, bool allowDefaultPrefixFallback)
     {
@@ -211,7 +211,7 @@ public static class Tools
             {
                 // No Default Namespace so use Base Uri
                 // These type of QNames are scoped to the local Uri regardless of the type of the Base Uri
-                // i.e. these always result in Hash URIs
+                // i.e., these always result in Hash URIs
                 if (baseUri != null)
                 {
                     output = baseUri.AbsoluteUri;
@@ -237,7 +237,7 @@ public static class Tools
         else
         {
             // QName in some other Namespace
-            var parts = qname.Split(new char[] { ':' }, 2);
+            var parts = qname.Split([':'], 2);
             if (parts.Length == 1)
             {
                 output = nsmap.GetNamespaceUri(string.Empty).AbsoluteUri + parts[0];
