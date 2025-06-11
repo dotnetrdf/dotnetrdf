@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <RootNamespace>dotNetRdf.LDF.Tests</RootNamespace>
-    <TargetFrameworks>net8.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
