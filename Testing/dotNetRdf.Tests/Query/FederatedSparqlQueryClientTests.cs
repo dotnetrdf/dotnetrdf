@@ -33,8 +33,10 @@ public class FederatedSparqlQueryClientTests : IClassFixture<FederatedEndpointFi
     [Fact]
     public async Task QueryWithResultGraphCombinesGraphsFromFederatedEndpoints()
     {
+        var server1Path = "/query2/" + Guid.NewGuid().ToString("D").ToLowerInvariant();
+        var server2Path = "/query2/" + Guid.NewGuid().ToString("D").ToLowerInvariant();
         var endpoint = new FederatedSparqlQueryClient(
-            HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query2"), new Uri(_fixture.Server2.Urls[0] + "/query2"));
+            HttpClient, new Uri(_fixture.Server1.Urls[0] + server1Path), new Uri(_fixture.Server2.Urls[0] + server2Path));
         IGraph resultGraph = await endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }", TestContext.Current.CancellationToken);
         resultGraph.Should().NotBeNull();
         resultGraph.Triples.Should().HaveCount(2);
@@ -52,7 +54,7 @@ public class FederatedSparqlQueryClientTests : IClassFixture<FederatedEndpointFi
     public async Task QueryWithResultGraphThrowsAnExceptionIfOneEndpointFails()
     {
         var endpoint = new FederatedSparqlQueryClient(
-            HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query2"), new Uri(_fixture.Server2.Urls[0] + "/fail"));
+            HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query2/" + Guid.NewGuid().ToString("D").ToLowerInvariant()), new Uri(_fixture.Server2.Urls[0] + "/fail"));
         await Assert.ThrowsAsync<RdfQueryException>( () => endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }", TestContext.Current.CancellationToken));
     }
 
@@ -70,7 +72,7 @@ public class FederatedSparqlQueryClientTests : IClassFixture<FederatedEndpointFi
     public async Task QueryWithResultGraphAllowsEndpointErrorsToBeIgnored()
     {
         var endpoint = new FederatedSparqlQueryClient(
-                HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query2"), new Uri(_fixture.Server2.Urls[0] + "/fail"))
+                HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query2/" + Guid.NewGuid().ToString("D").ToLowerInvariant()), new Uri(_fixture.Server2.Urls[0] + "/fail"))
             {IgnoreFailedRequests = true};
         IGraph results = await endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }", TestContext.Current.CancellationToken);
         results.Should().NotBeNull();
@@ -90,7 +92,7 @@ public class FederatedSparqlQueryClientTests : IClassFixture<FederatedEndpointFi
     public async Task QueryWithResultGraphThrowsAnExceptionIfOneEndpointTimesOut()
     {
         var endpoint = new FederatedSparqlQueryClient(
-                HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query2"), new Uri(_fixture.Server2.Urls[0] + "/timeout"))
+                HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query2/" + Guid.NewGuid().ToString("D").ToLowerInvariant()), new Uri(_fixture.Server2.Urls[0] + "/timeout"))
             { Timeout = 2000 };
         await Assert.ThrowsAsync<RdfQueryTimeoutException>(async () =>
             await endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }", TestContext.Current.CancellationToken));
@@ -113,13 +115,14 @@ public class FederatedSparqlQueryClientTests : IClassFixture<FederatedEndpointFi
     [Fact]
     public async Task QueryWithResultGraphAllowsTimeoutsToBeIgnored()
     {
+        var server1Path = "/query2/" + Guid.NewGuid().ToString("D").ToLowerInvariant();
         var endpoint = new FederatedSparqlQueryClient(
-                HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query2"), new Uri(_fixture.Server2.Urls[0] + "/timeout"))
+                HttpClient, new Uri(_fixture.Server1.Urls[0] + server1Path), new Uri(_fixture.Server2.Urls[0] + "/timeout"))
             { Timeout = 3000, IgnoreFailedRequests = true };
         IGraph results = await endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }", TestContext.Current.CancellationToken);
         results.Should().NotBeNull();
         results.Triples.Count.Should().Be(1);
-        _fixture.Server1.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/query2"))
+        _fixture.Server1.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, server1Path))
             .Should().HaveCount(1).And.Contain(x =>
                 x.RequestMessage.Method.Equals("get", StringComparison.InvariantCultureIgnoreCase));
     }
