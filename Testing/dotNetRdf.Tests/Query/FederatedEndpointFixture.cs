@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentAssertions.Equivalency.Steps;
+using System;
 using System.Net;
 using System.Text;
 using WireMock.Matchers;
@@ -61,7 +62,7 @@ public class FederatedEndpointFixture : IDisposable
                 .WithBody(Server1ResultsXml, encoding: Encoding.UTF8)
                 .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])
                 .WithStatusCode(HttpStatusCode.OK));
-        Server1.Given(Request.Create().WithPath("/query2").UsingGet().WithParam("query"))
+        Server1.Given(Request.Create().WithPath("/query2/*").UsingGet().WithParam("query"))
             .RespondWith(Response.Create().WithBody(Server1ConstructResults, encoding: Encoding.UTF8)
                 .WithHeader("Content-Type", "application/n-triples").WithStatusCode(HttpStatusCode.OK));
 
@@ -69,7 +70,7 @@ public class FederatedEndpointFixture : IDisposable
             .Given(Request.Create().WithPath("/query").UsingGet().WithParam("query"))
             .RespondWith(Response.Create().WithBody(Server2ResultsXml, encoding: Encoding.UTF8)
                 .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0]).WithStatusCode(HttpStatusCode.OK));
-        Server2.Given(Request.Create().WithPath("/query2").UsingGet().WithParam("query"))
+        Server2.Given(Request.Create().WithPath("/query2/*").UsingGet().WithParam("query"))
             .RespondWith(Response.Create().WithBody(Server2ConstructResults, encoding: Encoding.UTF8)
                 .WithHeader("Content-Type", "application/n-triples").WithStatusCode(HttpStatusCode.OK));
         Server2.Given(Request.Create().WithPath("/fail"))

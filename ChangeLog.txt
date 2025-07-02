@@ -1,8 +1,8 @@
 ﻿Change Log
 ==========
 
-Next release
-------------
+3.4
+---
 
 NEW: Added a new `SafeMode` option for the JSONLD Parser. Setting this option to true will cause additional warnings to be raised when an invalid type, subject, predicate or object is encountered when parsing JSON-LD rather than silently ignoring them. Thanks to @BigBlueHat for the suggestion and @sdml for the initial implementation (#675)
 FIX: Fix for `$PATH` substitution in `SELECT`-based validators in `SPARQL`-based Constraint Components. Thanks to @Ikeragnell for the report and @langsamu for the fix. (#694)
