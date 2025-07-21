@@ -32,6 +32,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="../../icon.png" pack="true" PackagePath=""/>
+    <None Include="../../icon.png" pack="true" PackagePath="" />
   </ItemGroup>
 </Project>
