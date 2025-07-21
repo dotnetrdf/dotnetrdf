@@ -42,7 +42,7 @@
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="HtmlAgilityPack" />
     <PackageReference Include="VDS.Common" />
-    <PackageReference Include="StyleCop.Analyzers" >
+    <PackageReference Include="StyleCop.Analyzers">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>
