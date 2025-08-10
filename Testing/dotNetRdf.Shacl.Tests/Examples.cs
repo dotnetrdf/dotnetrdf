@@ -27,22 +27,22 @@ using VDS.RDF.Shacl.Validation;
 using System.Linq;
 using Xunit;
 
-namespace VDS.RDF.Shacl
+namespace VDS.RDF.Shacl;
+
+public class Examples
 {
-    public class Examples
+    [Fact]
+    public void Validation()
     {
-        [Fact]
-        public void Validation()
-        {
-            var dataGraph = new Graph();
-            dataGraph.LoadFromString(@"
+        var dataGraph = new Graph();
+        dataGraph.LoadFromString(@"
 @prefix : <urn:> .
 
 :s :p :o .
 ");
 
-            var shapesGraph = new Graph();
-            shapesGraph.LoadFromString(@"
+        var shapesGraph = new Graph();
+        shapesGraph.LoadFromString(@"
 @prefix : <urn:> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 
@@ -55,8 +55,8 @@ namespace VDS.RDF.Shacl
 ] .
 ");
 
-            var reportGraph = new Graph();
-            reportGraph.LoadFromString(@"
+        var reportGraph = new Graph();
+        reportGraph.LoadFromString(@"
 @prefix : <urn:> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 
@@ -76,24 +76,24 @@ namespace VDS.RDF.Shacl
 ] .
 ");
 
-            var processor = new ShapesGraph(shapesGraph);
-            var report = processor.Validate(dataGraph);
+        var processor = new ShapesGraph(shapesGraph);
+        var report = processor.Validate(dataGraph);
 
-            Assert.Equal(reportGraph, report.Graph);
-        }
+        Assert.Equal(reportGraph, report.Graph);
+    }
 
-        [Fact]
-        public void Conformance()
-        {
-            var dataGraph = new Graph();
-            dataGraph.LoadFromString(@"
+    [Fact]
+    public void Conformance()
+    {
+        var dataGraph = new Graph();
+        dataGraph.LoadFromString(@"
 @prefix : <urn:> .
 
 :s :p :o .
 ");
 
-            var shapesGraph = new Graph();
-            shapesGraph.LoadFromString(@"
+        var shapesGraph = new Graph();
+        shapesGraph.LoadFromString(@"
 @prefix : <urn:> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 
@@ -103,24 +103,24 @@ namespace VDS.RDF.Shacl
 ] .
 ");
 
-            var processor = new ShapesGraph(shapesGraph);
-            var conforms = processor.Conforms(dataGraph);
+        var processor = new ShapesGraph(shapesGraph);
+        var conforms = processor.Conforms(dataGraph);
 
-            Assert.False(conforms);
-        }
+        Assert.False(conforms);
+    }
 
-        [Fact]
-        public void Consume_validation_results()
-        {
-            var dataGraph = new Graph();
-            dataGraph.LoadFromString(@"
+    [Fact]
+    public void Consume_validation_results()
+    {
+        var dataGraph = new Graph();
+        dataGraph.LoadFromString(@"
 @prefix : <urn:> .
 
 :s :p :o .
 ");
 
-            var shapesGraph = new Graph();
-            shapesGraph.LoadFromString(@"
+        var shapesGraph = new Graph();
+        shapesGraph.LoadFromString(@"
 @prefix : <urn:> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 
@@ -134,13 +134,12 @@ namespace VDS.RDF.Shacl
 ] .
 ");
 
-            var processor = new ShapesGraph(shapesGraph);
-            Report report = processor.Validate(dataGraph);
+        var processor = new ShapesGraph(shapesGraph);
+        Report report = processor.Validate(dataGraph);
 
-            Assert.Equal(1, report.Results.Count);
-            
-            Result result = report.Results.Single();
-            Assert.Equal("test message", result.Message.Value);
-        }
+        Assert.Single(report.Results);
+        
+        Result result = report.Results.Single();
+        Assert.Equal("test message", result.Message.Value);
     }
 }

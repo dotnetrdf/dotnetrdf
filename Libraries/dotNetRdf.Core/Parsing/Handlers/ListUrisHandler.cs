@@ -28,187 +28,186 @@ using System;
 using System.Collections.Generic;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Parsing.Handlers
-{
-    /// <summary>
-    /// A Results Handler which extracts URIs from one/more variables in a Result Set.
-    /// </summary>
-    public class ListUrisHandler 
-        : BaseResultsHandler
-    {
-        private List<Uri> _uris;
-        private HashSet<string> _vars = new HashSet<string>();
+namespace VDS.RDF.Parsing.Handlers;
 
-        /// <summary>
-        /// Creates a new List URIs Handler.
-        /// </summary>
-        /// <param name="var">Variable to build the list from.</param>
-        public ListUrisHandler(string var)
+/// <summary>
+/// A Results Handler which extracts URIs from one/more variables in a Result Set.
+/// </summary>
+public class ListUrisHandler 
+    : BaseResultsHandler
+{
+    private List<Uri> _uris;
+    private HashSet<string> _vars = new HashSet<string>();
+
+    /// <summary>
+    /// Creates a new List URIs Handler.
+    /// </summary>
+    /// <param name="var">Variable to build the list from.</param>
+    public ListUrisHandler(string var)
+    {
+        _vars.Add(var);
+    }
+
+    /// <summary>
+    /// Creates a new List URIs Handler.
+    /// </summary>
+    /// <param name="vars">Variables to build the list from.</param>
+    public ListUrisHandler(IEnumerable<string> vars)
+    {
+        foreach (var var in vars)
         {
             _vars.Add(var);
-        }
-
-        /// <summary>
-        /// Creates a new List URIs Handler.
-        /// </summary>
-        /// <param name="vars">Variables to build the list from.</param>
-        public ListUrisHandler(IEnumerable<string> vars)
-        {
-            foreach (var var in vars)
-            {
-                _vars.Add(var);
-            }
-        }
-
-        /// <summary>
-        /// Gets the URIs.
-        /// </summary>
-        public IEnumerable<Uri> Uris
-        {
-            get
-            {
-                return _uris;
-            }
-        }
-
-        /// <summary>
-        /// Starts handling results.
-        /// </summary>
-        protected override void StartResultsInternal()
-        {
-            _uris = new List<Uri>();
-        }
-
-        /// <summary>
-        /// Handles boolean results.
-        /// </summary>
-        /// <param name="result">Result.</param>
-        protected override void HandleBooleanResultInternal(bool result)
-        {
-            // Nothing to do
-        }
-
-        /// <summary>
-        /// Handles variable declarations.
-        /// </summary>
-        /// <param name="var">Variable.</param>
-        /// <returns></returns>
-        protected override bool HandleVariableInternal(string var)
-        {
-            // Nothing to do
-            return true;
-        }
-
-        /// <summary>
-        /// Handles results by extracting any URI values from the relevant variables.
-        /// </summary>
-        /// <param name="result">Result.</param>
-        /// <returns></returns>
-        protected override bool HandleResultInternal(ISparqlResult result)
-        {
-            foreach (var var in result.Variables)
-            {
-                if (_vars.Contains(var) && result.HasValue(var))
-                {
-                    INode value = result[var];
-                    if (value.NodeType == NodeType.Uri)
-                    {
-                        _uris.Add(((IUriNode)value).Uri);
-                    }
-                }
-            }
-            return true;
         }
     }
 
     /// <summary>
-    /// A Results Handler which extracts Literals from one/more variables in a Result Set.
+    /// Gets the URIs.
     /// </summary>
-    public class ListStringsHandler
-        : BaseResultsHandler
+    public IEnumerable<Uri> Uris
     {
-        private List<string> _values;
-        private HashSet<string> _vars = new HashSet<string>();
+        get
+        {
+            return _uris;
+        }
+    }
 
-        /// <summary>
-        /// Creates a new List Strings handler.
-        /// </summary>
-        /// <param name="var">Variable to build the list from.</param>
-        public ListStringsHandler(string var)
+    /// <summary>
+    /// Starts handling results.
+    /// </summary>
+    protected override void StartResultsInternal()
+    {
+        _uris = new List<Uri>();
+    }
+
+    /// <summary>
+    /// Handles boolean results.
+    /// </summary>
+    /// <param name="result">Result.</param>
+    protected override void HandleBooleanResultInternal(bool result)
+    {
+        // Nothing to do
+    }
+
+    /// <summary>
+    /// Handles variable declarations.
+    /// </summary>
+    /// <param name="var">Variable.</param>
+    /// <returns></returns>
+    protected override bool HandleVariableInternal(string var)
+    {
+        // Nothing to do
+        return true;
+    }
+
+    /// <summary>
+    /// Handles results by extracting any URI values from the relevant variables.
+    /// </summary>
+    /// <param name="result">Result.</param>
+    /// <returns></returns>
+    protected override bool HandleResultInternal(ISparqlResult result)
+    {
+        foreach (var var in result.Variables)
+        {
+            if (_vars.Contains(var) && result.HasValue(var))
+            {
+                INode value = result[var];
+                if (value.NodeType == NodeType.Uri)
+                {
+                    _uris.Add(((IUriNode)value).Uri);
+                }
+            }
+        }
+        return true;
+    }
+}
+
+/// <summary>
+/// A Results Handler which extracts Literals from one/more variables in a Result Set.
+/// </summary>
+public class ListStringsHandler
+    : BaseResultsHandler
+{
+    private List<string> _values;
+    private HashSet<string> _vars = new HashSet<string>();
+
+    /// <summary>
+    /// Creates a new List Strings handler.
+    /// </summary>
+    /// <param name="var">Variable to build the list from.</param>
+    public ListStringsHandler(string var)
+    {
+        _vars.Add(var);
+    }
+
+    /// <summary>
+    /// Creates a new List Strings handler.
+    /// </summary>
+    /// <param name="vars">Variables to build the list from.</param>
+    public ListStringsHandler(IEnumerable<string> vars)
+    {
+        foreach (var var in vars)
         {
             _vars.Add(var);
         }
+    }
 
-        /// <summary>
-        /// Creates a new List Strings handler.
-        /// </summary>
-        /// <param name="vars">Variables to build the list from.</param>
-        public ListStringsHandler(IEnumerable<string> vars)
+    /// <summary>
+    /// Gets the Strings.
+    /// </summary>
+    public IEnumerable<string> Strings
+    {
+        get
         {
-            foreach (var var in vars)
+            return _values;
+        }
+    }
+
+    /// <summary>
+    /// Starts handling results.
+    /// </summary>
+    protected override void StartResultsInternal()
+    {
+        _values = new List<string>();
+    }
+
+    /// <summary>
+    /// Handles boolean results.
+    /// </summary>
+    /// <param name="result">Result.</param>
+    protected override void HandleBooleanResultInternal(bool result)
+    {
+        // Nothing to do
+    }
+
+    /// <summary>
+    /// Handles variable declarations.
+    /// </summary>
+    /// <param name="var">Variable.</param>
+    /// <returns></returns>
+    protected override bool HandleVariableInternal(string var)
+    {
+        // Nothing to do
+        return true;
+    }
+
+    /// <summary>
+    /// Handles results by extracting strings from relevant variables.
+    /// </summary>
+    /// <param name="result">Result.</param>
+    /// <returns></returns>
+    protected override bool HandleResultInternal(ISparqlResult result)
+    {
+        foreach (var var in result.Variables)
+        {
+            if (_vars.Contains(var) && result.HasValue(var))
             {
-                _vars.Add(var);
-            }
-        }
-
-        /// <summary>
-        /// Gets the Strings.
-        /// </summary>
-        public IEnumerable<string> Strings
-        {
-            get
-            {
-                return _values;
-            }
-        }
-
-        /// <summary>
-        /// Starts handling results.
-        /// </summary>
-        protected override void StartResultsInternal()
-        {
-            _values = new List<string>();
-        }
-
-        /// <summary>
-        /// Handles boolean results.
-        /// </summary>
-        /// <param name="result">Result.</param>
-        protected override void HandleBooleanResultInternal(bool result)
-        {
-            // Nothing to do
-        }
-
-        /// <summary>
-        /// Handles variable declarations.
-        /// </summary>
-        /// <param name="var">Variable.</param>
-        /// <returns></returns>
-        protected override bool HandleVariableInternal(string var)
-        {
-            // Nothing to do
-            return true;
-        }
-
-        /// <summary>
-        /// Handles results by extracting strings from relevant variables.
-        /// </summary>
-        /// <param name="result">Result.</param>
-        /// <returns></returns>
-        protected override bool HandleResultInternal(ISparqlResult result)
-        {
-            foreach (var var in result.Variables)
-            {
-                if (_vars.Contains(var) && result.HasValue(var))
+                INode value = result[var];
+                if (value.NodeType == NodeType.Literal)
                 {
-                    INode value = result[var];
-                    if (value.NodeType == NodeType.Literal)
-                    {
-                        _values.Add(((ILiteralNode)value).Value);
-                    }
+                    _values.Add(((ILiteralNode)value).Value);
                 }
             }
-            return true;
         }
+        return true;
     }
 }

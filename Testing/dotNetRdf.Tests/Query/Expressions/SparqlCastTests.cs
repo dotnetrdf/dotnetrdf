@@ -28,75 +28,73 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 using VDS.RDF.Query.Expressions.Primary;
-using Xunit.Abstractions;
 
-namespace VDS.RDF.Query.Expressions
+namespace VDS.RDF.Query.Expressions;
+
+public class SparqlCastTests : BaseTest
 {
-    public class SparqlCastTests : BaseTest
+    private INodeFactory _graph;
+    private LeviathanExpressionProcessor _expressionProcessor;
+    public SparqlCastTests(ITestOutputHelper output):base(output)
     {
-        private INodeFactory _graph;
-        private LeviathanExpressionProcessor _expressionProcessor;
-        public SparqlCastTests(ITestOutputHelper output):base(output)
-        {
-            _graph = new Graph();
-            _expressionProcessor = new LeviathanExpressionProcessor(new LeviathanQueryOptions(), null);
-        }
-
-        [Fact]
-        public void ShouldSuccesfullyEvaluateDecimalCastRegardlessOfCulture()
-        {
-            foreach (var ci in TestedCultureInfos)
-            {
-                TestTools.ExecuteWithChangedCulture(ci, () =>
-                {
-                    // given
-                    var cast = new DecimalCast(new ConstantTerm(3.4m.ToLiteral(_graph)));
-
-                    // when
-                    IValuedNode valuedNode = cast.Accept(_expressionProcessor, new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
-
-                    // then
-                    Assert.Equal(3.4m, valuedNode.AsDecimal());
-                });
-            }
-        }
-
-        [Fact]
-        public void ShouldSuccesfullyEvaluateDoubleCastRegardlessOfCulture()
-        {
-            foreach (var ci in TestedCultureInfos)
-            {
-                TestTools.ExecuteWithChangedCulture(ci, () =>
-                {
-                    // given
-                    var cast = new DoubleCast(new ConstantTerm(3.4d.ToLiteral(_graph)));
-
-                    // when
-                    IValuedNode valuedNode = cast.Accept(_expressionProcessor, new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
-
-                    // then
-                    Assert.Equal(3.4d, valuedNode.AsDouble());
-                });
-            }
-        }
-
-        [Fact]
-        public void ShouldSuccesfullyEvaluateFloatCastRegardlessOfCulture()
-        {
-            foreach (var ci in TestedCultureInfos)
-            {
-                TestTools.ExecuteWithChangedCulture(ci, () =>
-                {
-                    // given
-                    var cast = new FloatCast(new ConstantTerm(3.4f.ToLiteral(_graph)));
-
-                    // when
-                    IValuedNode valuedNode = cast.Accept(_expressionProcessor, new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
-
-                    // then
-                    Assert.Equal(3.4f, valuedNode.AsFloat());
-                });
-            }
-        } 
+        _graph = new Graph();
+        _expressionProcessor = new LeviathanExpressionProcessor(new LeviathanQueryOptions(), null);
     }
+
+    [Fact]
+    public void ShouldSuccesfullyEvaluateDecimalCastRegardlessOfCulture()
+    {
+        foreach (var ci in TestedCultureInfos)
+        {
+            TestTools.ExecuteWithChangedCulture(ci, () =>
+            {
+                // given
+                var cast = new DecimalCast(new ConstantTerm(3.4m.ToLiteral(_graph)));
+
+                // when
+                IValuedNode valuedNode = cast.Accept(_expressionProcessor, new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
+
+                // then
+                Assert.Equal(3.4m, valuedNode.AsDecimal());
+            });
+        }
+    }
+
+    [Fact]
+    public void ShouldSuccesfullyEvaluateDoubleCastRegardlessOfCulture()
+    {
+        foreach (var ci in TestedCultureInfos)
+        {
+            TestTools.ExecuteWithChangedCulture(ci, () =>
+            {
+                // given
+                var cast = new DoubleCast(new ConstantTerm(3.4d.ToLiteral(_graph)));
+
+                // when
+                IValuedNode valuedNode = cast.Accept(_expressionProcessor, new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
+
+                // then
+                Assert.Equal(3.4d, valuedNode.AsDouble());
+            });
+        }
+    }
+
+    [Fact]
+    public void ShouldSuccesfullyEvaluateFloatCastRegardlessOfCulture()
+    {
+        foreach (var ci in TestedCultureInfos)
+        {
+            TestTools.ExecuteWithChangedCulture(ci, () =>
+            {
+                // given
+                var cast = new FloatCast(new ConstantTerm(3.4f.ToLiteral(_graph)));
+
+                // when
+                IValuedNode valuedNode = cast.Accept(_expressionProcessor, new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
+
+                // then
+                Assert.Equal(3.4f, valuedNode.AsFloat());
+            });
+        }
+    } 
 }

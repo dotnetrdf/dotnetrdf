@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace VDS.RDF.TestSuite.W3C;
 
@@ -26,9 +25,9 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
 
     protected Dictionary<string, string> SkipTests = new();
 
-    protected async void PerformTest(ManifestTestData t)
+    protected async Task PerformTest(ManifestTestData t)
     {
-        Skip.If(SkipTests.TryGetValue(t.Id, out var reason), reason);
+        Assert.SkipWhen(SkipTests.TryGetValue(t.Id, out var reason), reason ?? "No reason given");
         output.WriteLine($"{t.Id}: {t.Name} is a {t.Type}");
         await InvokeTestRunnerAsync(t);
     }

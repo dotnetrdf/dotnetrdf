@@ -31,242 +31,241 @@ using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal abstract class QueryImpl : AbstractSPINResource, ISolutionModifierQuery
 {
-    internal abstract class QueryImpl : AbstractSPINResource, ISolutionModifierQuery
+
+
+    public QueryImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
 
+    }
 
-        public QueryImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
+
+    public List<IResource> getFrom()
+    {
+        return getList(SP.PropertyFrom);
+    }
+
+
+    public List<IResource> getFromNamed()
+    {
+        return getList(SP.PropertyFromNamed);
+    }
+
+
+    public long? getLimit()
+    {
+        return getLong(SP.PropertyLimit);
+    }
+
+
+    public long? getOffset()
+    {
+        return getLong(SP.PropertyOffset);
+    }
+
+
+    private List<String> getStringList(INode predicate)
+    {
+        var results = new List<String>();
+        IEnumerator<Triple> it = listProperties(predicate).GetEnumerator();
+        while (it.MoveNext())
         {
-
-        }
-
-
-        public List<IResource> getFrom()
-        {
-            return getList(SP.PropertyFrom);
-        }
-
-
-        public List<IResource> getFromNamed()
-        {
-            return getList(SP.PropertyFromNamed);
-        }
-
-
-        public long? getLimit()
-        {
-            return getLong(SP.PropertyLimit);
-        }
-
-
-        public long? getOffset()
-        {
-            return getLong(SP.PropertyOffset);
-        }
-
-
-        private List<String> getStringList(INode predicate)
-        {
-            var results = new List<String>();
-            IEnumerator<Triple> it = listProperties(predicate).GetEnumerator();
-            while (it.MoveNext())
+            INode node = it.Current.Object;
+            if (node is IValuedNode)
             {
-                INode node = it.Current.Object;
-                if (node is IValuedNode)
-                {
-                    results.Add(((IValuedNode)node).AsString());
-                }
-                else if (node is IUriNode)
-                {
-                    results.Add(((IUriNode)node).Uri.ToString());
-                }
+                results.Add(((IValuedNode)node).AsString());
             }
-            return results;
-        }
-
-
-        public IValues getValues()
-        {
-            IResource values = getResource(SP.PropertyValues);
-            if (values != null)
+            else if (node is IUriNode)
             {
-                return (IValues)values.As(typeof(ValuesImpl));
-            }
-            else
-            {
-                return null;
+                results.Add(((IUriNode)node).Uri.ToString());
             }
         }
+        return results;
+    }
 
 
-        public IElementList getWhere()
+    public IValues getValues()
+    {
+        IResource values = getResource(SP.PropertyValues);
+        if (values != null)
         {
-            IResource whereS = getResource(SP.PropertyWhere);
-            if (whereS != null)
-            {
-                IElement element = SPINFactory.asElement(whereS);
-                return (IElementList)element;
-            }
-            else
-            {
-                return null;
-            }
+            return (IValues)values.As(typeof(ValuesImpl));
         }
-
-
-        public List<IElement> getWhereElements()
+        else
         {
-            return getElements(SP.PropertyWhere);
+            return null;
         }
+    }
 
 
-        override public void Print(ISparqlPrinter p)
+    public IElementList getWhere()
+    {
+        IResource whereS = getResource(SP.PropertyWhere);
+        if (whereS != null)
         {
-            var text = getString(SP.PropertyText);
-            if (text != null)
+            IElement element = SPINFactory.asElement(whereS);
+            return (IElementList)element;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    public List<IElement> getWhereElements()
+    {
+        return getElements(SP.PropertyWhere);
+    }
+
+
+    override public void Print(ISparqlPrinter p)
+    {
+        var text = getString(SP.PropertyText);
+        if (text != null)
+        {
+            if (p.hasInitialBindings())
             {
-                if (p.hasInitialBindings())
-                {
-                    throw new ArgumentException("Queries that only have an sp:text cannot be converted to a query string if initial bindings are present.");
-                }
-                else
-                {
-                    p.print(text);
-                }
+                throw new ArgumentException("Queries that only have an sp:text cannot be converted to a query string if initial bindings are present.");
             }
             else
             {
-                printSPINRDF(p);
+                p.print(text);
             }
         }
-
-
-        public abstract void printSPINRDF(ISparqlPrinter p);
-
-
-        protected void printStringFrom(ISparqlPrinter context)
+        else
         {
-            IEnumerable<INode> froms = getFrom();
-            if (froms.Count() == 0)
-            {
-                froms = context.Dataset.DefaultGraphs;
-            }
-            foreach (IResource from in froms)
-            {
-                context.println();
-                context.printKeyword("FROM");
-                context.printURIResource(from);
-            }
-            froms = getFromNamed();
-            if (froms.Count() == 0)
-            {
-                froms = context.Dataset.DefaultGraphs;
-            }
-            foreach (IResource fromNamed in froms)
-            {
-                context.println();
-                context.printKeyword("FROM NAMED");
-                context.printURIResource(fromNamed);
-            }
+            printSPINRDF(p);
         }
+    }
 
 
-        protected void printSolutionModifiers(ISparqlPrinter context)
+    public abstract void printSPINRDF(ISparqlPrinter p);
+
+
+    protected void printStringFrom(ISparqlPrinter context)
+    {
+        IEnumerable<INode> froms = getFrom();
+        if (froms.Count() == 0)
         {
-            List<IResource> orderBy = getList(SP.PropertyOrderBy);
-            if (orderBy.Count > 0)
+            froms = context.Dataset.DefaultGraphs;
+        }
+        foreach (IResource from in froms)
+        {
+            context.println();
+            context.printKeyword("FROM");
+            context.printURIResource(from);
+        }
+        froms = getFromNamed();
+        if (froms.Count() == 0)
+        {
+            froms = context.Dataset.DefaultGraphs;
+        }
+        foreach (IResource fromNamed in froms)
+        {
+            context.println();
+            context.printKeyword("FROM NAMED");
+            context.printURIResource(fromNamed);
+        }
+    }
+
+
+    protected void printSolutionModifiers(ISparqlPrinter context)
+    {
+        List<IResource> orderBy = getList(SP.PropertyOrderBy);
+        if (orderBy.Count > 0)
+        {
+            context.println();
+            context.printIndentation(context.getIndentation());
+            context.printKeyword("ORDER BY");
+            foreach (IResource node in orderBy)
             {
-                context.println();
-                context.printIndentation(context.getIndentation());
-                context.printKeyword("ORDER BY");
-                foreach (IResource node in orderBy)
+                if (!node.isLiteral())
                 {
-                    if (!node.isLiteral())
+                    if (node.hasProperty(RDF.PropertyType, SP.ClassAsc))
                     {
-                        if (node.hasProperty(RDF.PropertyType, SP.ClassAsc))
-                        {
-                            context.print(" ");
-                            context.printKeyword("ASC");
-                            context.print(" ");
-                            IResource expression = node.getResource(SP.PropertyExpression);
-                            printOrderByExpression(context, expression);
-                        }
-                        else if (node.hasProperty(RDF.PropertyType, SP.ClassDesc))
-                        {
-                            context.print(" ");
-                            context.printKeyword("DESC");
-                            context.print(" ");
-                            IResource expression = node.getResource(SP.PropertyExpression);
-                            printOrderByExpression(context, expression);
-                        }
-                        else
-                        {
-                            context.print(" ");
-                            printOrderByExpression(context, node);
-                        }
+                        context.print(" ");
+                        context.printKeyword("ASC");
+                        context.print(" ");
+                        IResource expression = node.getResource(SP.PropertyExpression);
+                        printOrderByExpression(context, expression);
+                    }
+                    else if (node.hasProperty(RDF.PropertyType, SP.ClassDesc))
+                    {
+                        context.print(" ");
+                        context.printKeyword("DESC");
+                        context.print(" ");
+                        IResource expression = node.getResource(SP.PropertyExpression);
+                        printOrderByExpression(context, expression);
+                    }
+                    else
+                    {
+                        context.print(" ");
+                        printOrderByExpression(context, node);
                     }
                 }
             }
-            var limit = getLimit();
-            if (limit != null)
-            {
-                context.println();
-                context.printIndentation(context.getIndentation());
-                context.printKeyword("LIMIT");
-                context.print(" " + limit);
-            }
-            var offset = getOffset();
-            if (offset != null)
-            {
-                context.println();
-                context.printIndentation(context.getIndentation());
-                context.print("OFFSET");
-                context.print(" " + offset);
-            }
         }
-
-
-        private void printOrderByExpression(ISparqlPrinter sb, IResource node)
+        var limit = getLimit();
+        if (limit != null)
         {
-            // TODO check for real test
-            if (node is INode)
-            {
-                var resource = (IResource)node;
-                IFunctionCall call = SPINFactory.asFunctionCall(resource);
-                if (call != null)
-                {
-                    sb.print("(");
-                    ISparqlPrinter pc = sb.clone();
-                    pc.setNested(true);
-                    call.Print(pc);
-                    sb.print(")");
-                    return;
-                }
-            }
-
-            printNestedExpressionString(sb, node, true);
+            context.println();
+            context.printIndentation(context.getIndentation());
+            context.printKeyword("LIMIT");
+            context.print(" " + limit);
         }
-
-
-        protected void printValues(ISparqlPrinter p)
+        var offset = getOffset();
+        if (offset != null)
         {
-            IValues values = getValues();
-            if (values != null)
+            context.println();
+            context.printIndentation(context.getIndentation());
+            context.print("OFFSET");
+            context.print(" " + offset);
+        }
+    }
+
+
+    private void printOrderByExpression(ISparqlPrinter sb, IResource node)
+    {
+        // TODO check for real test
+        if (node is INode)
+        {
+            var resource = (IResource)node;
+            IFunctionCall call = SPINFactory.asFunctionCall(resource);
+            if (call != null)
             {
-                p.println();
-                values.Print(p);
+                sb.print("(");
+                ISparqlPrinter pc = sb.clone();
+                pc.setNested(true);
+                call.Print(pc);
+                sb.print(")");
+                return;
             }
         }
 
+        printNestedExpressionString(sb, node, true);
+    }
 
-        protected void printWhere(ISparqlPrinter p)
+
+    protected void printValues(ISparqlPrinter p)
+    {
+        IValues values = getValues();
+        if (values != null)
         {
-            p.printIndentation(p.getIndentation());
-            p.printKeyword("WHERE");
-            printNestedElementList(p, SP.PropertyWhere);
+            p.println();
+            values.Print(p);
         }
+    }
+
+
+    protected void printWhere(ISparqlPrinter p)
+    {
+        p.printIndentation(p.getIndentation());
+        p.printKeyword("WHERE");
+        printNestedElementList(p, SP.PropertyWhere);
     }
 }

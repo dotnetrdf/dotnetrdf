@@ -26,46 +26,45 @@
 
 using System;
 
-namespace VDS.RDF.Query.Describe
+namespace VDS.RDF.Query.Describe;
+
+/// <summary>
+/// Interface for classes that implement the DESCRIBE functionality of SPARQL.
+/// </summary>
+/// <remarks>
+/// <para>
+/// This is designed so that developers can introduce their own DESCRIBE algorithms as required.
+/// </para>
+/// </remarks>
+public interface ISparqlDescribe
 {
     /// <summary>
-    /// Interface for classes that implement the DESCRIBE functionality of SPARQL.
+    /// Generates a Graph which is the description of the resources resulting from the Query.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This is designed so that developers can introduce their own DESCRIBE algorithms as required.
-    /// </para>
-    /// </remarks>
-    public interface ISparqlDescribe
-    {
-        /// <summary>
-        /// Generates a Graph which is the description of the resources resulting from the Query.
-        /// </summary>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        /// <returns></returns>
-        [Obsolete("Replaced by Describe(ISparqlDescribeContext).")]
-        IGraph Describe(SparqlEvaluationContext context);
+    /// <param name="context">SPARQL Evaluation Context.</param>
+    /// <returns></returns>
+    [Obsolete("Replaced by Describe(ISparqlDescribeContext).")]
+    IGraph Describe(SparqlEvaluationContext context);
 
-        /// <summary>
-        /// Generates the Description Graph based on the Query Results from the given Evaluation Context passing the resulting Triples to the given RDF Handler.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        [Obsolete("Replaced by Describe(IRdfHandler, ISparqlDescribeContext).")]
-        void Describe(IRdfHandler handler, SparqlEvaluationContext context);
-        
-        /// <summary>
-        /// Generates a Graph which is the description of the resources resulting from the Query.
-        /// </summary>
-        /// <param name="context">SPARQL Describe evaluation context.</param>
-        /// <returns></returns>
-        IGraph Describe(ISparqlDescribeContext context);
+    /// <summary>
+    /// Generates the Description Graph based on the Query Results from the given Evaluation Context passing the resulting Triples to the given RDF Handler.
+    /// </summary>
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="context">SPARQL Evaluation Context.</param>
+    [Obsolete("Replaced by Describe(IRdfHandler, ISparqlDescribeContext).")]
+    void Describe(IRdfHandler handler, SparqlEvaluationContext context);
+    
+    /// <summary>
+    /// Generates a Graph which is the description of the resources resulting from the Query.
+    /// </summary>
+    /// <param name="context">SPARQL Describe evaluation context.</param>
+    /// <returns></returns>
+    IGraph Describe(ISparqlDescribeContext context);
 
-        /// <summary>
-        /// Generates the Description Graph based on the Query Results from the given context passing the resulting Triples to the given RDF Handler.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="context">SPARQL Describe evaluation context.</param>
-        void Describe(IRdfHandler handler, ISparqlDescribeContext context);
-    }
+    /// <summary>
+    /// Generates the Description Graph based on the Query Results from the given context passing the resulting Triples to the given RDF Handler.
+    /// </summary>
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="context">SPARQL Describe evaluation context.</param>
+    void Describe(IRdfHandler handler, ISparqlDescribeContext context);
 }

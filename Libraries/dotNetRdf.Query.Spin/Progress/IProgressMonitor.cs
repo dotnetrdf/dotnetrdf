@@ -26,37 +26,36 @@
 
 using System;
 
-namespace VDS.RDF.Query.Spin.Progress
+namespace VDS.RDF.Query.Spin.Progress;
+
+
+
+/**
+ * An abstraction of the Eclipse IProgressMonitor for intermediate
+ * status messages and the ability to cancel long-running processes.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IProgressMonitor
 {
 
-
-    /**
-     * An abstraction of the Eclipse IProgressMonitor for intermediate
-     * status messages and the ability to cancel long-running processes.
-     * 
-     * @author Holger Knublauch
-     */
-    internal interface IProgressMonitor
-    {
-
-        bool isCanceled();
+    bool isCanceled();
 
 
-        void beginTask(String label, int totalWork);
+    void beginTask(String label, int totalWork);
 
 
-        void done();
+    void done();
 
 
-        void setCanceled(bool value);
+    void setCanceled(bool value);
 
 
-        void setTaskName(String value);
+    void setTaskName(String value);
 
 
-        void subTask(String label);
+    void subTask(String label);
 
 
-        void worked(int amount);
-    }
+    void worked(int amount);
 }

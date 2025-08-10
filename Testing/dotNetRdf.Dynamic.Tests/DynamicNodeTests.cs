@@ -27,78 +27,77 @@ using System.Dynamic;
 using System.Linq.Expressions;
 using Xunit;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+public class DynamicNodeTests
 {
-    public class DynamicNodeTests
+    [Fact]
+    public void BaseUri_defaults_to_graph_base_uri()
     {
-        [Fact]
-        public void BaseUri_defaults_to_graph_base_uri()
-        {
-            var g = new Graph { BaseUri = new Uri("urn:g") };
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var d = new DynamicNode(s, g);
+        var g = new Graph { BaseUri = new Uri("urn:g") };
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var d = new DynamicNode(s, g);
 
-            Assert.Equal(g.BaseUri, d.BaseUri);
-        }
+        Assert.Equal(g.BaseUri, d.BaseUri);
+    }
 
-        [Fact]
-        public void Can_act_like_uri_node()
-        {
-            var g = new Graph();
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var d = new DynamicNode(s, g);
+    [Fact]
+    public void Can_act_like_uri_node()
+    {
+        var g = new Graph();
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var d = new DynamicNode(s, g);
 
-            Assert.IsAssignableFrom<IUriNode>(d);
-            Assert.Equal(((IUriNode)d).Uri, s.Uri);
-        }
+        Assert.IsType<IUriNode>(d, exactMatch: false);
+        Assert.Equal(((IUriNode)d).Uri, s.Uri);
+    }
 
-        [Fact]
-        public void Uri_fails_if_underlying_node_is_not_uri()
-        {
-            var g = new Graph();
-            var s = g.CreateBlankNode();
-            var d = new DynamicNode(s, g);
+    [Fact]
+    public void Uri_fails_if_underlying_node_is_not_uri()
+    {
+        var g = new Graph();
+        var s = g.CreateBlankNode();
+        var d = new DynamicNode(s, g);
 
-            Assert.Throws<InvalidOperationException>(() =>
-                ((IUriNode)d).Uri);
-        }
+        Assert.Throws<InvalidOperationException>(() =>
+            ((IUriNode)d).Uri);
+    }
 
-        [Fact]
-        public void Can_act_like_blank_node()
-        {
-            var g = new Graph();
-            var s = g.CreateBlankNode();
-            var d = new DynamicNode(s, g);
+    [Fact]
+    public void Can_act_like_blank_node()
+    {
+        var g = new Graph();
+        var s = g.CreateBlankNode();
+        var d = new DynamicNode(s, g);
 
-            Assert.IsAssignableFrom<IBlankNode>(d);
-            Assert.Equal(((IBlankNode)d).InternalID, s.InternalID);
-        }
+        Assert.IsType<IBlankNode>(d, exactMatch: false);
+        Assert.Equal(((IBlankNode)d).InternalID, s.InternalID);
+    }
 
-        [Fact]
-        public void InternalId_fails_if_underlying_node_is_not_blank()
-        {
-            var g = new Graph();
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var d = new DynamicNode(s, g);
+    [Fact]
+    public void InternalId_fails_if_underlying_node_is_not_blank()
+    {
+        var g = new Graph();
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var d = new DynamicNode(s, g);
 
-            Assert.Throws<InvalidOperationException>(() =>
-                ((IBlankNode)d).InternalID);
-        }
+        Assert.Throws<InvalidOperationException>(() =>
+            ((IBlankNode)d).InternalID);
+    }
 
-        [Fact]
-        public void Provides_dictionary_meta_object()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Provides_dictionary_meta_object()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var d = new DynamicNode(s, g);
-            var p = (IDynamicMetaObjectProvider)d;
-            var mo = p.GetMetaObject(Expression.Empty());
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var d = new DynamicNode(s, g);
+        var p = (IDynamicMetaObjectProvider)d;
+        var mo = p.GetMetaObject(Expression.Empty());
 
-            Assert.NotNull(mo);
-        }
+        Assert.NotNull(mo);
     }
 }

@@ -25,15 +25,14 @@
 */
 
 using System;
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+/**
+ * Deprecated: for old SPIN files only.
+ *
+ * @author Holger Knublauch
+ */
+[Obsolete()]
+internal interface IDelete : IUpdate
 {
-    /**
-     * Deprecated: for old SPIN files only.
-     *
-     * @author Holger Knublauch
-     */
-    [Obsolete()]
-    internal interface IDelete : IUpdate
-    {
-    }
 }

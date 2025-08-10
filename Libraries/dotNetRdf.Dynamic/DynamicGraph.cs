@@ -28,55 +28,54 @@ using System;
 using System.Dynamic;
 using System.Linq.Expressions;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+/// <summary>
+/// A <see cref="WrapperGraph">wrapper</see> that provides read/write dictionary and dynamic functionality.
+/// </summary>
+public partial class DynamicGraph : WrapperGraph, IDynamicMetaObjectProvider
 {
+    private readonly Uri subjectBaseUri;
+    private readonly Uri predicateBaseUri;
+
     /// <summary>
-    /// A <see cref="WrapperGraph">wrapper</see> that provides read/write dictionary and dynamic functionality.
+    /// Initializes a new instance of the <see cref="DynamicGraph"/> class.
     /// </summary>
-    public partial class DynamicGraph : WrapperGraph, IDynamicMetaObjectProvider
+    /// <param name="graph">The <see cref="IGraph"/> to wrap.</param>
+    /// <param name="subjectBaseUri">The <see cref="Uri"/> used for resolving relative subject references.</param>
+    /// <param name="predicateBaseUri">The <see cref="Uri"/> used for resolving relative predicate references.</param>
+    public DynamicGraph(IGraph graph = null, Uri subjectBaseUri = null, Uri predicateBaseUri = null)
+        : base(graph ?? new Graph())
     {
-        private readonly Uri subjectBaseUri;
-        private readonly Uri predicateBaseUri;
+        this.subjectBaseUri = subjectBaseUri;
+        this.predicateBaseUri = predicateBaseUri;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DynamicGraph"/> class.
-        /// </summary>
-        /// <param name="graph">The <see cref="IGraph"/> to wrap.</param>
-        /// <param name="subjectBaseUri">The <see cref="Uri"/> used for resolving relative subject references.</param>
-        /// <param name="predicateBaseUri">The <see cref="Uri"/> used for resolving relative predicate references.</param>
-        public DynamicGraph(IGraph graph = null, Uri subjectBaseUri = null, Uri predicateBaseUri = null)
-            : base(graph ?? new Graph())
+    /// <summary>
+    /// Gets the <see cref="Uri"/> used for resolving relative subject references.
+    /// </summary>
+    public Uri SubjectBaseUri
+    {
+        get
         {
-            this.subjectBaseUri = subjectBaseUri;
-            this.predicateBaseUri = predicateBaseUri;
+            return subjectBaseUri ?? BaseUri;
         }
+    }
 
-        /// <summary>
-        /// Gets the <see cref="Uri"/> used for resolving relative subject references.
-        /// </summary>
-        public Uri SubjectBaseUri
+    /// <summary>
+    /// Gets the URI used for resolving relative predicate references.
+    /// </summary>
+    public Uri PredicateBaseUri
+    {
+        get
         {
-            get
-            {
-                return subjectBaseUri ?? BaseUri;
-            }
+            return predicateBaseUri ?? SubjectBaseUri;
         }
+    }
 
-        /// <summary>
-        /// Gets the URI used for resolving relative predicate references.
-        /// </summary>
-        public Uri PredicateBaseUri
-        {
-            get
-            {
-                return predicateBaseUri ?? SubjectBaseUri;
-            }
-        }
-
-        /// <inheritdoc/>
-        DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
-        {
-            return new DictionaryMetaObject(parameter, this);
-        }
+    /// <inheritdoc/>
+    DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
+    {
+        return new DictionaryMetaObject(parameter, this);
     }
 }

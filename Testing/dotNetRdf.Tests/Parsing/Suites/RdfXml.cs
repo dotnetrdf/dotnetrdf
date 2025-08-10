@@ -26,105 +26,103 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System.IO;
 using System.Linq;
 using Xunit;
-using Xunit.Abstractions;
 
-namespace VDS.RDF.Parsing.Suites
+namespace VDS.RDF.Parsing.Suites;
+
+
+public class RdfXmlDomParser
+    : BaseRdfParserSuite
 {
-
-    public class RdfXmlDomParser
-        : BaseRdfParserSuite
+    private readonly ITestOutputHelper _testOutputHelper;
+    private static readonly string[] SkipTests =
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-        private static readonly string[] SkipTests =
-        {
-            // Path.Combine("amp-in-url", "test001.rdf"), // Uses entities in DTD - not supported in .NET Core RDF/XML parser
-            Path.Combine("rdf-containers-syntax-vs-schema", "test005.rdf"), // Obsoleted test file with no root element
-            Path.Combine("xmlbase", "test012.rdf"), // Obsoleted test file with no root element
-        };
+        // Path.Combine("amp-in-url", "test001.rdf"), // Uses entities in DTD - not supported in .NET Core RDF/XML parser
+        Path.Combine("rdf-containers-syntax-vs-schema", "test005.rdf"), // Obsoleted test file with no root element
+        Path.Combine("xmlbase", "test012.rdf"), // Obsoleted test file with no root element
+    };
 
-        public RdfXmlDomParser(ITestOutputHelper testOutputHelper)
-            : base(new RdfXmlParser(RdfXmlParserMode.DOM), new NTriplesParser(), "rdfxml")
-        {
-            _testOutputHelper = testOutputHelper;
-            CheckResults = false;
-        }
-
-        [SkippableFact]
-        public void ParsingSuiteRdfXmlDom()
-        {
-            //Run manifests
-            RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error") && !SkipTests.Any(f.EndsWith), true);
-            RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error") && !SkipTests.Any(f.EndsWith), false);
-
-            if (Count == 0)
-            {
-                Assert.True(false, "No tests found");
-            }
-
-            _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
-            _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
-
-            if (Failed > 0)
-            {
-                Assert.True(false, Failed + " Tests failed: \n\t" + string.Join("\n\t", FailedTests));
-            }
-
-            Skip.If(Indeterminate> 0,$"{Indeterminate} Tests are indeterminate: " + string.Join(", ", IndeterminateTests));
-        }
-
-        [Fact]
-        public void ParsingRdfXmlIDsDom()
-        {
-            IGraph g = new Graph
-            {
-                BaseUri = BaseUri
-            };
-            Parser.Load(g, Path.Combine("resources", "rdfxml", "xmlbase", "test014.rdf"));
-        }
+    public RdfXmlDomParser(ITestOutputHelper testOutputHelper)
+        : base(new RdfXmlParser(RdfXmlParserMode.DOM), new NTriplesParser(), "rdfxml")
+    {
+        _testOutputHelper = testOutputHelper;
+        CheckResults = false;
     }
 
-    public class RdfXmlStreamingParser
-        : BaseRdfParserSuite
+    [Fact]
+    public void ParsingSuiteRdfXmlDom()
     {
-        private readonly ITestOutputHelper _testOutputHelper;
+        //Run manifests
+        RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error") && !SkipTests.Any(f.EndsWith), true);
+        RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error") && !SkipTests.Any(f.EndsWith), false);
 
-        private static readonly string[] SkipTests =
+        if (Count == 0)
         {
-            Path.Combine("amp-in-url", "test001.rdf"), // Uses entities in DTD - not supported in .NET Core RDF/XML parser
-            Path.Combine("rdf-containers-syntax-vs-schema", "test005.rdf"), // Obsoleted test file with no root element
-            Path.Combine("xmlbase", "test012.rdf"), // Obsoleted test file with no root element
+            Assert.Fail("No tests found");
+        }
+
+        _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
+        _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
+
+        if (Failed > 0)
+        {
+            Assert.Fail(Failed + " Tests failed: \n\t" + string.Join("\n\t", FailedTests));
+        }
+
+        Assert.SkipWhen(Indeterminate> 0,$"{Indeterminate} Tests are indeterminate: " + string.Join(", ", IndeterminateTests));
+    }
+
+    [Fact]
+    public void ParsingRdfXmlIDsDom()
+    {
+        IGraph g = new Graph
+        {
+            BaseUri = BaseUri
         };
+        Parser.Load(g, Path.Combine("resources", "rdfxml", "xmlbase", "test014.rdf"));
+    }
+}
 
-        public RdfXmlStreamingParser(ITestOutputHelper testOutputHelper)
-            : base(new RdfXmlParser(RdfXmlParserMode.Streaming), new NTriplesParser(), "rdfxml")
+public class RdfXmlStreamingParser
+    : BaseRdfParserSuite
+{
+    private readonly ITestOutputHelper _testOutputHelper;
+
+    private static readonly string[] SkipTests =
+    {
+        Path.Combine("amp-in-url", "test001.rdf"), // Uses entities in DTD - not supported in .NET Core RDF/XML parser
+        Path.Combine("rdf-containers-syntax-vs-schema", "test005.rdf"), // Obsoleted test file with no root element
+        Path.Combine("xmlbase", "test012.rdf"), // Obsoleted test file with no root element
+    };
+
+    public RdfXmlStreamingParser(ITestOutputHelper testOutputHelper)
+        : base(new RdfXmlParser(RdfXmlParserMode.Streaming), new NTriplesParser(), "rdfxml")
+    {
+        _testOutputHelper = testOutputHelper;
+        CheckResults = false;
+    }
+
+    [Fact]
+    public void ParsingSuiteRdfXmlStreaming()
+    {
+        //Run manifests
+        RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error") && !SkipTests.Any(f.EndsWith), true);
+        RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error") && !SkipTests.Any(f.EndsWith), false);
+        if (Count == 0) Assert.Fail("No tests found");
+
+        _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
+        _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
+
+        if (Failed > 0) Assert.Fail(Failed + " Tests failed: " + string.Join(", ", FailedTests));
+        Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate" + string.Join(", ", PassedTests));
+    }
+
+    [Fact]
+    public void ParsingRdfXmlIDsStreaming()
+    {
+        IGraph g = new Graph
         {
-            _testOutputHelper = testOutputHelper;
-            CheckResults = false;
-        }
-
-        [Fact]
-        public void ParsingSuiteRdfXmlStreaming()
-        {
-            //Run manifests
-            RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error") && !SkipTests.Any(f.EndsWith), true);
-            RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error") && !SkipTests.Any(f.EndsWith), false);
-            if (Count == 0) Assert.True(false, "No tests found");
-
-            _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
-            _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
-
-            if (Failed > 0) Assert.True(false, Failed + " Tests failed: " + string.Join(", ", FailedTests));
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate" + string.Join(", ", PassedTests));
-        }
-
-        [Fact]
-        public void ParsingRdfXmlIDsStreaming()
-        {
-            IGraph g = new Graph
-            {
-                BaseUri = BaseUri
-            };
-            Parser.Load(g, Path.Combine("resources", "rdfxml", "xmlbase", "test014.rdf"));
-        }
+            BaseUri = BaseUri
+        };
+        Parser.Load(g, Path.Combine("resources", "rdfxml", "xmlbase", "test014.rdf"));
     }
 }

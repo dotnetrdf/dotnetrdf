@@ -32,230 +32,229 @@ using VDS.RDF.Data.DataTables;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+public class SparqlResultsToDataTableTests
 {
-    public class SparqlResultsToDataTableTests
+    [Fact]
+    public void SparqlResultSetToDataTable()
     {
-        [Fact]
-        public void SparqlResultSetToDataTable()
+        var query = "SELECT * WHERE {?s ?p ?o}";
+        var parser = new SparqlQueryParser();
+        SparqlQuery q = parser.ParseFromString(query);
+
+        var g = new Graph();
+        FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
+
+        var results = g.ExecuteQuery(q);
+        if (results is SparqlResultSet resultSet)
         {
-            var query = "SELECT * WHERE {?s ?p ?o}";
-            var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
-
-            var g = new Graph();
-            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
-
-            var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet resultSet)
+            var table = new DataTable();
+            foreach (var var in resultSet.Variables)
             {
-                var table = new DataTable();
+                table.Columns.Add(new DataColumn(var, typeof(INode)));
+            }
+
+            foreach (ISparqlResult r in resultSet)
+            {
+                DataRow row = table.NewRow();
+
                 foreach (var var in resultSet.Variables)
                 {
-                    table.Columns.Add(new DataColumn(var, typeof(INode)));
-                }
-
-                foreach (ISparqlResult r in resultSet)
-                {
-                    DataRow row = table.NewRow();
-
-                    foreach (var var in resultSet.Variables)
+                    if (r.HasValue(var))
                     {
-                        if (r.HasValue(var))
-                        {
-                            row[var] = r[var];
-                        }
-                        else
-                        {
-                            row[var] = null;
-                        }
+                        row[var] = r[var];
                     }
-                    table.Rows.Add(row);
+                    else
+                    {
+                        row[var] = null;
+                    }
                 }
+                table.Rows.Add(row);
+            }
 
-                Assert.Equal(resultSet.Variables.Count(), table.Columns.Count);
-                Assert.Equal(resultSet.Count, table.Rows.Count);
-            }
-            else
-            {
-                Assert.True(false, "Query should have returned a Result Set");
-            }
+            Assert.Equal(resultSet.Variables.Count(), table.Columns.Count);
+            Assert.Equal(resultSet.Count, table.Rows.Count);
         }
-
-        [Fact]
-        public void SparqlResultSetToDataTable2()
+        else
         {
-            var query = "PREFIX ex: <http://example.org/vehicles/> SELECT * WHERE {?s a ex:Car . OPTIONAL { ?s ex:Speed ?speed }}";
-            var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
+            Assert.Fail("Query should have returned a Result Set");
+        }
+    }
 
-            var g = new Graph();
-            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
+    [Fact]
+    public void SparqlResultSetToDataTable2()
+    {
+        var query = "PREFIX ex: <http://example.org/vehicles/> SELECT * WHERE {?s a ex:Car . OPTIONAL { ?s ex:Speed ?speed }}";
+        var parser = new SparqlQueryParser();
+        SparqlQuery q = parser.ParseFromString(query);
 
-            var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet resultSet)
+        var g = new Graph();
+        FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
+
+        var results = g.ExecuteQuery(q);
+        if (results is SparqlResultSet resultSet)
+        {
+            var table = new DataTable();
+            foreach (var var in resultSet.Variables)
             {
-                var table = new DataTable();
+                table.Columns.Add(new DataColumn(var, typeof(INode)));
+            }
+
+            foreach (ISparqlResult r in resultSet)
+            {
+                DataRow row = table.NewRow();
+
                 foreach (var var in resultSet.Variables)
                 {
-                    table.Columns.Add(new DataColumn(var, typeof(INode)));
-                }
-
-                foreach (ISparqlResult r in resultSet)
-                {
-                    DataRow row = table.NewRow();
-
-                    foreach (var var in resultSet.Variables)
+                    if (r.HasValue(var))
                     {
-                        if (r.HasValue(var))
-                        {
-                            row[var] = r[var];
-                        }
-                        else
-                        {
-                            row[var] = null;
-                        }
+                        row[var] = r[var];
                     }
-                    table.Rows.Add(row);
+                    else
+                    {
+                        row[var] = null;
+                    }
                 }
+                table.Rows.Add(row);
+            }
 
-                Assert.Equal(resultSet.Variables.Count(), table.Columns.Count);
-                Assert.Equal(resultSet.Count, table.Rows.Count);
-            }
-            else
-            {
-                Assert.True(false, "Query should have returned a Result Set");
-            }
+            Assert.Equal(resultSet.Variables.Count(), table.Columns.Count);
+            Assert.Equal(resultSet.Count, table.Rows.Count);
         }
-
-        [Fact]
-        public void SparqlResultSetToDataTable3()
+        else
         {
-            var query = "SELECT * WHERE {?s ?p ?o}";
-            var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
-
-            var g = new Graph();
-            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
-
-            var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet resultSet)
-            {
-                var table = resultSet.ToDataTable();
-                Assert.Equal(resultSet.Variables.Count(), table.Columns.Count);
-                Assert.Equal(resultSet.Count, table.Rows.Count);
-            }
-            else
-            {
-                Assert.True(false, "Query should have returned a Result Set");
-            }
+            Assert.Fail("Query should have returned a Result Set");
         }
+    }
 
-        [Fact]
-        public void SparqlResultSetToDataTable4()
+    [Fact]
+    public void SparqlResultSetToDataTable3()
+    {
+        var query = "SELECT * WHERE {?s ?p ?o}";
+        var parser = new SparqlQueryParser();
+        SparqlQuery q = parser.ParseFromString(query);
+
+        var g = new Graph();
+        FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
+
+        var results = g.ExecuteQuery(q);
+        if (results is SparqlResultSet resultSet)
         {
-            var query = "PREFIX ex: <http://example.org/vehicles/> SELECT * WHERE {?s a ex:Car . OPTIONAL { ?s ex:Speed ?speed }}";
-            var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
-
-            var g = new Graph();
-            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
-
-            var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet resultSet)
-            {
-                var table = resultSet.ToDataTable();
-                Assert.Equal(resultSet.Variables.Count(), table.Columns.Count);
-                Assert.Equal(resultSet.Count, table.Rows.Count);
-            }
-            else
-            {
-                Assert.True(false, "Query should have returned a Result Set");
-            }
-        }
-
-        [Fact]
-        public void SparqlResultSetToDataTable5()
-        {
-            var query = "ASK WHERE {?s ?p ?o}";
-            var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
-
-            var g = new Graph();
-            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
-
-            var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet resultSet)
-            {
-                var table = resultSet.ToDataTable();
-                Assert.True(resultSet.ResultsType == SparqlResultsType.Boolean);
-                Assert.Single(table.Columns);
-                Assert.Single(table.Rows);
-                Assert.True((bool)table.Rows[0]["ASK"], "Should be true");
-            }
-            else
-            {
-                Assert.True(false, "Query should have returned a Result Set");
-            }
-        }
-
-        [Fact]
-        public void SparqlResultSetToDataTable6()
-        {
-            var query = "ASK WHERE {?s <http://example.org/noSuchPredicate> ?o}";
-            var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
-
-            var g = new Graph();
-            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
-
-            var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet resultSet)
-            {
-                var table = resultSet.ToDataTable();
-
-                Assert.True(resultSet.ResultsType == SparqlResultsType.Boolean);
-                Assert.Single(table.Columns);
-                Assert.Single(table.Rows);
-                Assert.False((bool)table.Rows[0]["ASK"], "Should be false");
-            }
-            else
-            {
-                Assert.True(false, "Query should have returned a Result Set");
-            }
-        }
-
-        [Fact]
-        public void SparqlResultSetToDataTable7()
-        {
-            var resultSet = new SparqlResultSet(true);
-
             var table = resultSet.ToDataTable();
+            Assert.Equal(resultSet.Variables.Count(), table.Columns.Count);
+            Assert.Equal(resultSet.Count, table.Rows.Count);
+        }
+        else
+        {
+            Assert.Fail("Query should have returned a Result Set");
+        }
+    }
 
-            Assert.True(resultSet.ResultsType == SparqlResultsType.Boolean);
+    [Fact]
+    public void SparqlResultSetToDataTable4()
+    {
+        var query = "PREFIX ex: <http://example.org/vehicles/> SELECT * WHERE {?s a ex:Car . OPTIONAL { ?s ex:Speed ?speed }}";
+        var parser = new SparqlQueryParser();
+        SparqlQuery q = parser.ParseFromString(query);
+
+        var g = new Graph();
+        FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
+
+        var results = g.ExecuteQuery(q);
+        if (results is SparqlResultSet resultSet)
+        {
+            var table = resultSet.ToDataTable();
+            Assert.Equal(resultSet.Variables.Count(), table.Columns.Count);
+            Assert.Equal(resultSet.Count, table.Rows.Count);
+        }
+        else
+        {
+            Assert.Fail("Query should have returned a Result Set");
+        }
+    }
+
+    [Fact]
+    public void SparqlResultSetToDataTable5()
+    {
+        var query = "ASK WHERE {?s ?p ?o}";
+        var parser = new SparqlQueryParser();
+        SparqlQuery q = parser.ParseFromString(query);
+
+        var g = new Graph();
+        FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
+
+        var results = g.ExecuteQuery(q);
+        if (results is SparqlResultSet resultSet)
+        {
+            var table = resultSet.ToDataTable();
+            Assert.Equal(SparqlResultsType.Boolean, resultSet.ResultsType);
             Assert.Single(table.Columns);
             Assert.Single(table.Rows);
             Assert.True((bool)table.Rows[0]["ASK"], "Should be true");
         }
-
-        [Fact]
-        public void SparqlResultSetToDataTable8()
+        else
         {
-            var resultSet = new SparqlResultSet(false);
+            Assert.Fail("Query should have returned a Result Set");
+        }
+    }
 
+    [Fact]
+    public void SparqlResultSetToDataTable6()
+    {
+        var query = "ASK WHERE {?s <http://example.org/noSuchPredicate> ?o}";
+        var parser = new SparqlQueryParser();
+        SparqlQuery q = parser.ParseFromString(query);
+
+        var g = new Graph();
+        FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
+
+        var results = g.ExecuteQuery(q);
+        if (results is SparqlResultSet resultSet)
+        {
             var table = resultSet.ToDataTable();
 
-            Assert.True(resultSet.ResultsType == SparqlResultsType.Boolean);
+            Assert.Equal(SparqlResultsType.Boolean, resultSet.ResultsType);
             Assert.Single(table.Columns);
             Assert.Single(table.Rows);
             Assert.False((bool)table.Rows[0]["ASK"], "Should be false");
         }
-
-        [Fact]
-        public void SparqlResultSetToDataTable9()
+        else
         {
-            var results = new SparqlResultSet();
-            Assert.Throws<InvalidCastException>(() => results.ToDataTable());
+            Assert.Fail("Query should have returned a Result Set");
         }
+    }
+
+    [Fact]
+    public void SparqlResultSetToDataTable7()
+    {
+        var resultSet = new SparqlResultSet(true);
+
+        var table = resultSet.ToDataTable();
+
+        Assert.Equal(SparqlResultsType.Boolean, resultSet.ResultsType);
+        Assert.Single(table.Columns);
+        Assert.Single(table.Rows);
+        Assert.True((bool)table.Rows[0]["ASK"], "Should be true");
+    }
+
+    [Fact]
+    public void SparqlResultSetToDataTable8()
+    {
+        var resultSet = new SparqlResultSet(false);
+
+        var table = resultSet.ToDataTable();
+
+        Assert.Equal(SparqlResultsType.Boolean, resultSet.ResultsType);
+        Assert.Single(table.Columns);
+        Assert.Single(table.Rows);
+        Assert.False((bool)table.Rows[0]["ASK"], "Should be false");
+    }
+
+    [Fact]
+    public void SparqlResultSetToDataTable9()
+    {
+        var results = new SparqlResultSet();
+        Assert.Throws<InvalidCastException>(() => results.ToDataTable());
     }
 }

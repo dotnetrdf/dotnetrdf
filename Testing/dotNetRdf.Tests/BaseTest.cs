@@ -27,44 +27,43 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Xunit.Abstractions;
+using Xunit;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+
+public class BaseTest
 {
+    protected ITestOutputHelper _output;
 
-    public class BaseTest
+    public BaseTest(ITestOutputHelper output)
     {
-        protected ITestOutputHelper _output;
+        _output = output;
+    }
 
-        public BaseTest(ITestOutputHelper output)
-        {
-            _output = output;
-        }
+    protected void ShowResults(object results)
+    {
+        TestTools.ShowResults(results, _output);
+    }
 
-        protected void ShowResults(object results)
-        {
-            TestTools.ShowResults(results, _output);
-        }
+    protected static readonly IEnumerable<CultureInfo> TestedCultureInfos = new[]
+    {
+        new CultureInfo("en-US"),
+        new CultureInfo("pl-PL"),
+        new CultureInfo("ja-JP"),
+        new CultureInfo("ru-RU"),
+        new CultureInfo("pt-BR")
+    };
 
-        protected static readonly IEnumerable<CultureInfo> TestedCultureInfos = new[]
-        {
-            new CultureInfo("en-US"),
-            new CultureInfo("pl-PL"),
-            new CultureInfo("ja-JP"),
-            new CultureInfo("ru-RU"),
-            new CultureInfo("pt-BR")
-        };
+    public static IEnumerable<TheoryDataRow<CultureInfo>> GetTestCultures()
+    {
+        return TestedCultureInfos.Select(ci => new TheoryDataRow<CultureInfo>(ci));
+    }
 
-        public static IEnumerable<object[]> GetTestCultures()
-        {
-            return TestedCultureInfos.Select(ci => new object[] { ci });
-        }
-
-        public void Debug(string msg = null)
-        {
+    public void Debug(string msg = null)
+    {
 #if DEBUG
-            _output.WriteLine(msg ?? Environment.NewLine);
+        _output.WriteLine(msg ?? Environment.NewLine);
 #endif
-        }
     }
 }

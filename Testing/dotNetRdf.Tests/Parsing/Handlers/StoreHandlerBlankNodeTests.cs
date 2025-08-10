@@ -29,12 +29,12 @@ using System.IO;
 using System.Linq;
 using Xunit;
 
-namespace VDS.RDF.Parsing.Handlers
-{
+namespace VDS.RDF.Parsing.Handlers;
 
-    public class StoreHandlerBlankNodeTests
-    {
-        private const String TestFragment = @"@prefix : <http://example.org/bnodes#> .
+
+public class StoreHandlerBlankNodeTests
+{
+    private const String TestFragment = @"@prefix : <http://example.org/bnodes#> .
 {
   [] a :BNode , :AnonymousBNode .
   _:autos1 a :Node , :NamedBNode .
@@ -44,99 +44,98 @@ namespace VDS.RDF.Parsing.Handlers
   _:autos1 a :Node , :NamedBNode .
 }
 ";
-        private void EnsureTestData(String testFile)
+    private void EnsureTestData(String testFile)
+    {
+        if (!File.Exists(testFile))
         {
-            if (!File.Exists(testFile))
-            {
-                var parser = new TriGParser();
-                var store = new TripleStore();
-                parser.Load(store, new StringReader(TestFragment));
-
-                store.SaveToFile(testFile);
-            }
-        }
-
-        private void EnsureTestResults(TripleStore store)
-        {
-            foreach (IGraph g in store.Graphs)
-            {
-                TestTools.ShowGraph(g);
-                Console.WriteLine();
-            }
-
-            Assert.Equal(2, store.Graphs.Count);
-            Assert.Equal(8, store.Graphs.Sum(g => g.Triples.Count));
-
-            IGraph def = store[(IRefNode)null];
-            IGraph named = store[new UriNode(new Uri("http://example.org/bnodes#graph"))];
-
-            var subjects = new HashSet<INode>();
-            var defSubjects = new HashSet<INode>();
-            var namedSubjects = new HashSet<INode>();
-            foreach (Triple t in def.Triples)
-            {
-                subjects.Add(t.Subject);
-                defSubjects.Add(t.Subject);
-            }
-            foreach (Triple t in named.Triples)
-            {
-                subjects.Add(t.Subject);
-                namedSubjects.Add(t.Subject);
-            }
-            Assert.Equal(2, defSubjects.Count);
-            Assert.Equal(2, namedSubjects.Count);
-            Assert.Equal(3, subjects.Count);
-        }
-
-        [SkippableFact(typeof(PlatformNotSupportedException))]
-        public void ParsingStoreHandlerBlankNodesTriG()
-        {
-            TestTools.TestInMTAThread(ParsingStoreHandlerBlankNodesTriGActual);
-        }
-
-        protected void ParsingStoreHandlerBlankNodesTriGActual()
-        {
-            EnsureTestData("test-bnodes.trig");
-
             var parser = new TriGParser();
             var store = new TripleStore();
-            parser.Load(store, "test-bnodes.trig");
+            parser.Load(store, new StringReader(TestFragment));
 
-            EnsureTestResults(store);
+            store.SaveToFile(testFile);
         }
+    }
 
-        [SkippableFact(typeof(PlatformNotSupportedException))]
-        public void ParsingStoreHandlerBlankNodesTriX()
+    private void EnsureTestResults(TripleStore store)
+    {
+        foreach (IGraph g in store.Graphs)
         {
-            TestTools.TestInMTAThread(ParsingStoreHandlerBlankNodesTriXActual);
+            TestTools.ShowGraph(g);
+            Console.WriteLine();
         }
 
-        protected void ParsingStoreHandlerBlankNodesTriXActual()
+        Assert.Equal(2, store.Graphs.Count);
+        Assert.Equal(8, store.Graphs.Sum(g => g.Triples.Count));
+
+        IGraph def = store[(IRefNode)null];
+        IGraph named = store[new UriNode(new Uri("http://example.org/bnodes#graph"))];
+
+        var subjects = new HashSet<INode>();
+        var defSubjects = new HashSet<INode>();
+        var namedSubjects = new HashSet<INode>();
+        foreach (Triple t in def.Triples)
         {
-            EnsureTestData("test-bnodes.xml");
-
-            var parser = new TriXParser();
-            var store = new TripleStore();
-            parser.Load(store, "test-bnodes.xml");
-
-            EnsureTestResults(store);
+            subjects.Add(t.Subject);
+            defSubjects.Add(t.Subject);
         }
-
-        [SkippableFact(typeof(System.PlatformNotSupportedException))]
-        public void ParsingStoreHandlerBlankNodesNQuads()
+        foreach (Triple t in named.Triples)
         {
-            TestTools.TestInMTAThread(ParsingStoreHandlerBlankNodesNQuadsActual);
+            subjects.Add(t.Subject);
+            namedSubjects.Add(t.Subject);
         }
+        Assert.Equal(2, defSubjects.Count);
+        Assert.Equal(2, namedSubjects.Count);
+        Assert.Equal(3, subjects.Count);
+    }
 
-        protected void ParsingStoreHandlerBlankNodesNQuadsActual()
-        {
-            EnsureTestData("test-bnodes.nq");
+    [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
+    public void ParsingStoreHandlerBlankNodesTriG()
+    {
+        TestTools.TestInMTAThread(ParsingStoreHandlerBlankNodesTriGActual);
+    }
 
-            var parser = new NQuadsParser();
-            var store = new TripleStore();
-            parser.Load(store, "test-bnodes.nq");
+    protected void ParsingStoreHandlerBlankNodesTriGActual()
+    {
+        EnsureTestData("test-bnodes.trig");
 
-            EnsureTestResults(store);
-        }
+        var parser = new TriGParser();
+        var store = new TripleStore();
+        parser.Load(store, "test-bnodes.trig");
+
+        EnsureTestResults(store);
+    }
+
+    [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
+    public void ParsingStoreHandlerBlankNodesTriX()
+    {
+        TestTools.TestInMTAThread(ParsingStoreHandlerBlankNodesTriXActual);
+    }
+
+    protected void ParsingStoreHandlerBlankNodesTriXActual()
+    {
+        EnsureTestData("test-bnodes.xml");
+
+        var parser = new TriXParser();
+        var store = new TripleStore();
+        parser.Load(store, "test-bnodes.xml");
+
+        EnsureTestResults(store);
+    }
+
+    [Fact(SkipExceptions = [typeof(PlatformNotSupportedException)])]
+    public void ParsingStoreHandlerBlankNodesNQuads()
+    {
+        TestTools.TestInMTAThread(ParsingStoreHandlerBlankNodesNQuadsActual);
+    }
+
+    protected void ParsingStoreHandlerBlankNodesNQuadsActual()
+    {
+        EnsureTestData("test-bnodes.nq");
+
+        var parser = new NQuadsParser();
+        var store = new TripleStore();
+        parser.Load(store, "test-bnodes.nq");
+
+        EnsureTestResults(store);
     }
 }

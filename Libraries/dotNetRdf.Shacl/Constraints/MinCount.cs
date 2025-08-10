@@ -29,39 +29,38 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal class MinCount : Numeric
 {
-    internal class MinCount : Numeric
+    [DebuggerStepThrough]
+    internal MinCount(Shape shape, INode node)
+        : base(shape, node)
     {
-        [DebuggerStepThrough]
-        internal MinCount(Shape shape, INode node)
-            : base(shape, node)
+    }
+
+    protected override string DefaultMessage => $"There should be at least {NumericValue} value(s).";
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.MinCountConstraintComponent;
+        }
+    }
+
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        if (NumericValue == 0)
+        {
+            return true;
         }
 
-        protected override string DefaultMessage => $"There should be at least {NumericValue} value(s).";
+        IEnumerable<INode> invalidValues =
+            from valueNode in focusNode.AsEnumerable()
+            where !valueNodes.Skip(NumericValue - 1).Any()
+            select valueNode;
 
-        internal override INode ConstraintComponent
-        {
-            get
-            {
-                return Vocabulary.MinCountConstraintComponent;
-            }
-        }
-
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-        {
-            if (NumericValue == 0)
-            {
-                return true;
-            }
-
-            IEnumerable<INode> invalidValues =
-                from valueNode in focusNode.AsEnumerable()
-                where !valueNodes.Skip(NumericValue - 1).Any()
-                select valueNode;
-
-            return ReportFocusNode(focusNode, invalidValues, report);
-        }
+        return ReportFocusNode(focusNode, invalidValues, report);
     }
 }

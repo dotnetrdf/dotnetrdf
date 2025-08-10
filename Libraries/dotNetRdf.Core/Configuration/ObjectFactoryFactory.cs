@@ -28,68 +28,67 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+/// <summary>
+/// Factory class for producing <see cref="IObjectFactory">IObjectFactory</see> instances from Configuration Graphs.
+/// </summary>
+/// <remarks>
+/// <para>
+/// This essentially reflexive implementation allows for defining additional <see cref="IObjectFactory">IObjectFactory</see> instances that can load custom/user defined types based on user definable Configuration.  If your Configuration Graphs contain custom object factory definitions then you should call <see cref="ConfigurationLoader.AutoConfigureObjectFactories">ConfigurationLoader.AutoConfigureObjectFactories()</see> before attempting to load any Configuration.
+/// </para>
+/// </remarks>
+public class ObjectFactoryFactory
+    : IObjectFactory
 {
     /// <summary>
-    /// Factory class for producing <see cref="IObjectFactory">IObjectFactory</see> instances from Configuration Graphs.
+    /// Tries to load an Object Factory based on information from the Configuration Graph.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This essentially reflexive implementation allows for defining additional <see cref="IObjectFactory">IObjectFactory</see> instances that can load custom/user defined types based on user definable Configuration.  If your Configuration Graphs contain custom object factory definitions then you should call <see cref="ConfigurationLoader.AutoConfigureObjectFactories">ConfigurationLoader.AutoConfigureObjectFactories()</see> before attempting to load any Configuration.
-    /// </para>
-    /// </remarks>
-    public class ObjectFactoryFactory
-        : IObjectFactory
+    /// <param name="g">Configuration Graph.</param>
+    /// <param name="objNode">Object Node.</param>
+    /// <param name="targetType">Target Type.</param>
+    /// <param name="obj">Output Object.</param>
+    /// <returns></returns>
+    public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
     {
-        /// <summary>
-        /// Tries to load an Object Factory based on information from the Configuration Graph.
-        /// </summary>
-        /// <param name="g">Configuration Graph.</param>
-        /// <param name="objNode">Object Node.</param>
-        /// <param name="targetType">Target Type.</param>
-        /// <param name="obj">Output Object.</param>
-        /// <returns></returns>
-        public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
+        obj = null;
+        IObjectFactory output;
+        try
         {
-            obj = null;
-            IObjectFactory output;
-            try
-            {
-                output = (IObjectFactory)Activator.CreateInstance(targetType);
-            }
-            catch
-            {
-                // Any error means this loader can't load this type
-                return false;
-            }
-
-            obj = output;
-            return true;
+            output = (IObjectFactory)Activator.CreateInstance(targetType);
         }
-
-        /// <summary>
-        /// Gets whether this Factory can load objects of the given Type.
-        /// </summary>
-        /// <param name="t">Type.</param>
-        /// <returns></returns>
-        public bool CanLoadObject(Type t)
+        catch
         {
-            Type iobjloader = typeof(IObjectFactory);
-
-            // We can load any object which implements IObjectLoader and has a public unparameterized constructor
-            if (t.GetInterfaces().Any(i => i.Equals(iobjloader)))
-            {
-                ConstructorInfo c = t.GetConstructor(new Type[0]);
-                if (c != null)
-                {
-                    return c.IsPublic;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            // Any error means this loader can't load this type
             return false;
         }
+
+        obj = output;
+        return true;
+    }
+
+    /// <summary>
+    /// Gets whether this Factory can load objects of the given Type.
+    /// </summary>
+    /// <param name="t">Type.</param>
+    /// <returns></returns>
+    public bool CanLoadObject(Type t)
+    {
+        Type iobjloader = typeof(IObjectFactory);
+
+        // We can load any object which implements IObjectLoader and has a public unparameterized constructor
+        if (t.GetInterfaces().Any(i => i.Equals(iobjloader)))
+        {
+            ConstructorInfo c = t.GetConstructor(new Type[0]);
+            if (c != null)
+            {
+                return c.IsPublic;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
     }
 }

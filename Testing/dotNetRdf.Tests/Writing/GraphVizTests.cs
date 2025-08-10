@@ -25,43 +25,42 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Xunit;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+
+public class GraphVizTests
 {
-
-    public class GraphVizTests
+    [Fact]
+    public void WritingGraphViz1()
     {
-        [Fact]
-        public void WritingGraphViz1()
-        {
-            var g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        var g = new Graph();
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            var writer = new GraphVizWriter();
-            writer.Save(g, "WritingGraphViz1.dot");
-        }
+        var writer = new GraphVizWriter();
+        writer.Save(g, "WritingGraphViz1.dot");
+    }
 
-        [SkippableFact]
-        public void WritingGraphViz2()
-        {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz), "Test Config marks GraphViz as unavailable, test cannot be run");
+    [Fact]
+    public void WritingGraphViz2()
+    {
+        Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz), "Test Config marks GraphViz as unavailable, test cannot be run");
 
-            var g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        var g = new Graph();
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            var generator = new GraphVizGenerator("svg");
-            generator.Generate(g, "WritingGraphViz2.svg", false);
-        }
+        var generator = new GraphVizGenerator("svg");
+        generator.Generate(g, "WritingGraphViz2.svg", false);
+    }
 
-        [SkippableFact]
-        public void WritingGraphViz3()
-        {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz), "Test Config marks GraphViz as unavailable, test cannot be run");
+    [Fact]
+    public void WritingGraphViz3()
+    {
+        Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz), "Test Config marks GraphViz as unavailable, test cannot be run");
 
-            var g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        var g = new Graph();
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            var generator = new GraphVizGenerator("png");
-            generator.Generate(g, "WritingGraphViz3.png", false);
-        }
+        var generator = new GraphVizGenerator("png");
+        generator.Generate(g, "WritingGraphViz3.png", false);
     }
 }

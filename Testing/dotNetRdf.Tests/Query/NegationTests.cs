@@ -29,209 +29,208 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
-using Xunit.Abstractions;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+
+public class NegationTests
 {
+    private readonly ITestOutputHelper _testOutputHelper;
+    private readonly SparqlQueryParser _parser = new SparqlQueryParser();
 
-    public class NegationTests
+    public NegationTests(ITestOutputHelper testOutputHelper)
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-        private readonly SparqlQueryParser _parser = new SparqlQueryParser();
+        _testOutputHelper = testOutputHelper;
+    }
 
-        public NegationTests(ITestOutputHelper testOutputHelper)
+    private static ISparqlDataset GetTestData()
+    {
+        var dataset = new InMemoryDataset();
+        var g = new Graph();
+        g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+        dataset.AddGraph(g);
+
+        return dataset;
+    }
+
+    [Fact]
+    public void SparqlNegationMinusSimple()
+    {
+        var negQuery = new SparqlParameterizedString();
+        negQuery.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
+        negQuery.CommandText = "SELECT ?s WHERE { ?s a ex:Car MINUS { ?s ex:Speed ?speed } }";
+
+        var query = new SparqlParameterizedString
         {
-            _testOutputHelper = testOutputHelper;
-        }
+            Namespaces = negQuery.Namespaces,
+            CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed } FILTER(!BOUND(?speed)) }"
+        };
 
-        private static ISparqlDataset GetTestData()
+        TestNegation(GetTestData(), negQuery, query);
+    }
+
+    [Fact]
+    public void SparqlNegationMinusComplex()
+    {
+        var negQuery = new SparqlParameterizedString();
+        negQuery.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
+        negQuery.CommandText = "SELECT ?s WHERE { ?s a ex:Car MINUS { ?s ex:Speed ?speed FILTER(EXISTS { ?s ex:PassengerCapacity ?passengers }) } }";
+
+        var query = new SparqlParameterizedString
         {
-            var dataset = new InMemoryDataset();
-            var g = new Graph();
-            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
-            dataset.AddGraph(g);
+            Namespaces = negQuery.Namespaces,
+            CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed ; ex:PassengerCapacity ?passengers} FILTER(!BOUND(?speed)) }"
+        };
 
-            return dataset;
-        }
+        TestNegation(GetTestData(), negQuery, query);
+    }
 
-        [Fact]
-        public void SparqlNegationMinusSimple()
+    [Fact]
+    public void SparqlNegationMinusComplex2()
+    {
+        var negQuery = new SparqlParameterizedString();
+        negQuery.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
+        negQuery.CommandText = "SELECT ?s WHERE { ?s a ex:Car MINUS { ?s ex:Speed ?speed FILTER(NOT EXISTS { ?s ex:PassengerCapacity ?passengers }) } }";
+
+        var query = new SparqlParameterizedString
         {
-            var negQuery = new SparqlParameterizedString();
-            negQuery.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
-            negQuery.CommandText = "SELECT ?s WHERE { ?s a ex:Car MINUS { ?s ex:Speed ?speed } }";
+            Namespaces = negQuery.Namespaces,
+            CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed OPTIONAL { ?s ex:PassengerCapacity ?passengers} FILTER(!BOUND(?passengers)) } FILTER(!BOUND(?speed)) }"
+        };
 
-            var query = new SparqlParameterizedString
-            {
-                Namespaces = negQuery.Namespaces,
-                CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed } FILTER(!BOUND(?speed)) }"
-            };
+        TestNegation(GetTestData(), negQuery, query);
+    }
 
-            TestNegation(GetTestData(), negQuery, query);
-        }
+    [Fact]
+    public void SparqlNegationMinusDisjoint()
+    {
+        var query = "SELECT ?s ?p ?o WHERE { ?s ?p ?o }";
+        var negQuery = "SELECT ?s ?p ?o WHERE { ?s ?p ?o MINUS { ?x ?y ?z }}";
 
-        [Fact]
-        public void SparqlNegationMinusComplex()
+        TestNegation(GetTestData(), negQuery, query);
+    }
+
+    [Fact]
+    public void SparqlNegationNotExistsDisjoint()
+    {
+        var negQuery = "SELECT ?s ?p ?o WHERE { ?s ?p ?o FILTER(NOT EXISTS { ?x ?y ?z }) }";
+
+        TestNegation(GetTestData(), negQuery);
+    }
+
+    [Fact]
+    public void SparqlNegationNotExistsSimple()
+    {
+        var negQuery = new SparqlParameterizedString();
+        negQuery.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
+        negQuery.CommandText = "SELECT ?s WHERE { ?s a ex:Car FILTER(NOT EXISTS { ?s ex:Speed ?speed }) }";
+
+        var query = new SparqlParameterizedString
         {
-            var negQuery = new SparqlParameterizedString();
-            negQuery.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
-            negQuery.CommandText = "SELECT ?s WHERE { ?s a ex:Car MINUS { ?s ex:Speed ?speed FILTER(EXISTS { ?s ex:PassengerCapacity ?passengers }) } }";
+            Namespaces = negQuery.Namespaces,
+            CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed } FILTER(!BOUND(?speed)) }"
+        };
 
-            var query = new SparqlParameterizedString
-            {
-                Namespaces = negQuery.Namespaces,
-                CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed ; ex:PassengerCapacity ?passengers} FILTER(!BOUND(?speed)) }"
-            };
+        TestNegation(GetTestData(), negQuery, query);
+    }
 
-            TestNegation(GetTestData(), negQuery, query);
-        }
+    [Fact]
+    public void SparqlNegationExistsSimple()
+    {
+        var negQuery = new SparqlParameterizedString();
+        negQuery.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
+        negQuery.CommandText = "SELECT ?s WHERE { ?s a ex:Car FILTER(EXISTS { ?s ex:Speed ?speed }) }";
 
-        [Fact]
-        public void SparqlNegationMinusComplex2()
+        var query = new SparqlParameterizedString
         {
-            var negQuery = new SparqlParameterizedString();
-            negQuery.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
-            negQuery.CommandText = "SELECT ?s WHERE { ?s a ex:Car MINUS { ?s ex:Speed ?speed FILTER(NOT EXISTS { ?s ex:PassengerCapacity ?passengers }) } }";
+            Namespaces = negQuery.Namespaces,
+            CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed } FILTER(BOUND(?speed)) }"
+        };
 
-            var query = new SparqlParameterizedString
-            {
-                Namespaces = negQuery.Namespaces,
-                CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed OPTIONAL { ?s ex:PassengerCapacity ?passengers} FILTER(!BOUND(?passengers)) } FILTER(!BOUND(?speed)) }"
-            };
+        TestNegation(GetTestData(), negQuery, query);
+    }
 
-            TestNegation(GetTestData(), negQuery, query);
-        }
+    [Fact]
+    public void SparqlNegationFullMinued()
+    {
+        SparqlQuery lhsQuery = _parser.ParseFromFile(Path.Combine("resources", "full-minuend-lhs.rq"));
+        SparqlQuery rhsQuery = _parser.ParseFromFile(Path.Combine("resources", "full-minuend-rhs.rq"));
+        SparqlQuery query = _parser.ParseFromFile(Path.Combine("resources", "full-minuend.rq"));
+        var g = new Graph();
+        g.LoadFromFile(Path.Combine("resources", "full-minuend.ttl"));
+        var processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(g));
 
-        [Fact]
-        public void SparqlNegationMinusDisjoint()
-        {
-            var query = "SELECT ?s ?p ?o WHERE { ?s ?p ?o }";
-            var negQuery = "SELECT ?s ?p ?o WHERE { ?s ?p ?o MINUS { ?x ?y ?z }}";
+        var lhs = processor.ProcessQuery(lhsQuery) as SparqlResultSet;
+        _testOutputHelper.WriteLine("LHS Intermediate Results");
+        TestTools.ShowResults(lhs, _testOutputHelper);
+        _testOutputHelper.WriteLine();
 
-            TestNegation(GetTestData(), negQuery, query);
-        }
+        var rhs = processor.ProcessQuery(rhsQuery) as SparqlResultSet;
+        _testOutputHelper.WriteLine("RHS Intermediate Results");
+        TestTools.ShowResults(rhs, _testOutputHelper);
+        _testOutputHelper.WriteLine();
 
-        [Fact]
-        public void SparqlNegationNotExistsDisjoint()
-        {
-            var negQuery = "SELECT ?s ?p ?o WHERE { ?s ?p ?o FILTER(NOT EXISTS { ?x ?y ?z }) }";
+        var actual = processor.ProcessQuery(query) as SparqlResultSet;
+        if (actual == null) Assert.Fail("Null results");
+        var expected = new SparqlResultSet();
+        var parser = new SparqlXmlParser();
+        parser.Load(expected, Path.Combine("resources", "full-minuend.srx"));
 
-            TestNegation(GetTestData(), negQuery);
-        }
+        _testOutputHelper.WriteLine("Actual Results:");
+        TestTools.ShowResults(actual, _testOutputHelper);
+        _testOutputHelper.WriteLine();
+        _testOutputHelper.WriteLine("Expected Results:");
+        TestTools.ShowResults(expected);
 
-        [Fact]
-        public void SparqlNegationNotExistsSimple()
-        {
-            var negQuery = new SparqlParameterizedString();
-            negQuery.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
-            negQuery.CommandText = "SELECT ?s WHERE { ?s a ex:Car FILTER(NOT EXISTS { ?s ex:Speed ?speed }) }";
+        Assert.Equal(expected, actual);
+    }
 
-            var query = new SparqlParameterizedString
-            {
-                Namespaces = negQuery.Namespaces,
-                CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed } FILTER(!BOUND(?speed)) }"
-            };
+    private void TestNegation(ISparqlDataset data, SparqlParameterizedString queryWithNegation, SparqlParameterizedString queryWithoutNegation)
+    {
+        TestNegation(data, queryWithNegation.ToString(), queryWithoutNegation.ToString());
+    }
 
-            TestNegation(GetTestData(), negQuery, query);
-        }
+    private void TestNegation(ISparqlDataset data, String queryWithNegation, String queryWithoutNegation)
+    {
+        var processor = new LeviathanQueryProcessor(data);
+        SparqlQuery negQuery = _parser.ParseFromString(queryWithNegation);
+        SparqlQuery noNegQuery = _parser.ParseFromString(queryWithoutNegation);
 
-        [Fact]
-        public void SparqlNegationExistsSimple()
-        {
-            var negQuery = new SparqlParameterizedString();
-            negQuery.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
-            negQuery.CommandText = "SELECT ?s WHERE { ?s a ex:Car FILTER(EXISTS { ?s ex:Speed ?speed }) }";
+        var negResults = processor.ProcessQuery(negQuery) as SparqlResultSet;
+        var noNegResults = processor.ProcessQuery(noNegQuery) as SparqlResultSet;
 
-            var query = new SparqlParameterizedString
-            {
-                Namespaces = negQuery.Namespaces,
-                CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed } FILTER(BOUND(?speed)) }"
-            };
+        if (negResults == null) Assert.Fail("Did not get a SPARQL Result Set for the Negation Query");
+        if (noNegResults == null) Assert.Fail("Did not get a SPARQL Result Set for the Non-Negation Query");
 
-            TestNegation(GetTestData(), negQuery, query);
-        }
+        Console.WriteLine("Negation Results");
+        TestTools.ShowResults(negResults);
+        Console.WriteLine();
+        Console.WriteLine("Non-Negation Results");
+        TestTools.ShowResults(noNegResults);
+        Console.WriteLine();
 
-        [Fact]
-        public void SparqlNegationFullMinued()
-        {
-            SparqlQuery lhsQuery = _parser.ParseFromFile(Path.Combine("resources", "full-minuend-lhs.rq"));
-            SparqlQuery rhsQuery = _parser.ParseFromFile(Path.Combine("resources", "full-minuend-rhs.rq"));
-            SparqlQuery query = _parser.ParseFromFile(Path.Combine("resources", "full-minuend.rq"));
-            var g = new Graph();
-            g.LoadFromFile(Path.Combine("resources", "full-minuend.ttl"));
-            var processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(g));
+        Assert.Equal(noNegResults, negResults);
+    }
 
-            var lhs = processor.ProcessQuery(lhsQuery) as SparqlResultSet;
-            _testOutputHelper.WriteLine("LHS Intermediate Results");
-            TestTools.ShowResults(lhs, _testOutputHelper);
-            _testOutputHelper.WriteLine();
+    private void TestNegation(ISparqlDataset data, String queryWithNegation)
+    {
+        var processor = new LeviathanQueryProcessor(data);
+        SparqlQuery negQuery = _parser.ParseFromString(queryWithNegation);
 
-            var rhs = processor.ProcessQuery(rhsQuery) as SparqlResultSet;
-            _testOutputHelper.WriteLine("RHS Intermediate Results");
-            TestTools.ShowResults(rhs, _testOutputHelper);
-            _testOutputHelper.WriteLine();
+        var negResults = processor.ProcessQuery(negQuery) as SparqlResultSet;
 
-            var actual = processor.ProcessQuery(query) as SparqlResultSet;
-            if (actual == null) Assert.True(false, "Null results");
-            var expected = new SparqlResultSet();
-            var parser = new SparqlXmlParser();
-            parser.Load(expected, Path.Combine("resources", "full-minuend.srx"));
+        if (negResults == null) Assert.Fail("Did not get a SPARQL Result Set for the Negation Query");
 
-            _testOutputHelper.WriteLine("Actual Results:");
-            TestTools.ShowResults(actual, _testOutputHelper);
-            _testOutputHelper.WriteLine();
-            _testOutputHelper.WriteLine("Expected Results:");
-            TestTools.ShowResults(expected);
+        Console.WriteLine("Negation Results");
+        TestTools.ShowResults(negResults);
+        Console.WriteLine();
 
-            Assert.Equal(expected, actual);
-        }
+        Assert.True(negResults.IsEmpty, "Result Set should be empty");
+    }
 
-        private void TestNegation(ISparqlDataset data, SparqlParameterizedString queryWithNegation, SparqlParameterizedString queryWithoutNegation)
-        {
-            TestNegation(data, queryWithNegation.ToString(), queryWithoutNegation.ToString());
-        }
+    private const string TestData = @"<http://r> <http://r> <http://r> .";
 
-        private void TestNegation(ISparqlDataset data, String queryWithNegation, String queryWithoutNegation)
-        {
-            var processor = new LeviathanQueryProcessor(data);
-            SparqlQuery negQuery = _parser.ParseFromString(queryWithNegation);
-            SparqlQuery noNegQuery = _parser.ParseFromString(queryWithoutNegation);
-
-            var negResults = processor.ProcessQuery(negQuery) as SparqlResultSet;
-            var noNegResults = processor.ProcessQuery(noNegQuery) as SparqlResultSet;
-
-            if (negResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Negation Query");
-            if (noNegResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Non-Negation Query");
-
-            Console.WriteLine("Negation Results");
-            TestTools.ShowResults(negResults);
-            Console.WriteLine();
-            Console.WriteLine("Non-Negation Results");
-            TestTools.ShowResults(noNegResults);
-            Console.WriteLine();
-
-            Assert.Equal(noNegResults, negResults);
-        }
-
-        private void TestNegation(ISparqlDataset data, String queryWithNegation)
-        {
-            var processor = new LeviathanQueryProcessor(data);
-            SparqlQuery negQuery = _parser.ParseFromString(queryWithNegation);
-
-            var negResults = processor.ProcessQuery(negQuery) as SparqlResultSet;
-
-            if (negResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Negation Query");
-
-            Console.WriteLine("Negation Results");
-            TestTools.ShowResults(negResults);
-            Console.WriteLine();
-
-            Assert.True(negResults.IsEmpty, "Result Set should be empty");
-        }
-
-        private const string TestData = @"<http://r> <http://r> <http://r> .";
-
-        private const string MinusQuery = @"
+    private const string MinusQuery = @"
 SELECT *
 WHERE
 {
@@ -241,7 +240,7 @@ WHERE
 }
 ";
 
-        private const string UnionQuery = @"
+    private const string UnionQuery = @"
 SELECT *
 WHERE
 {
@@ -255,7 +254,7 @@ WHERE
 }
 ";
 
-        private const string MinusNamedGraphQuery = @"
+    private const string MinusNamedGraphQuery = @"
 SELECT *
 WHERE
 {
@@ -265,7 +264,7 @@ WHERE
 }
 ";
 
-        private const string UnionNamedGraphQuery = @"
+    private const string UnionNamedGraphQuery = @"
 SELECT *
 WHERE
 {
@@ -279,43 +278,42 @@ WHERE
 }
 ";
 
-        [Fact]
-        public void SparqlNegationSimpleMinus()
+    [Fact]
+    public void SparqlNegationSimpleMinus()
+    {
+        Test(MinusQuery, false, 0);
+    }
+
+    [Fact]
+    public void SparqlNegationSimpleMinusAndUnion()
+    {
+        Test(UnionQuery, false, 1);
+    }
+
+    [Fact]
+    public void SparqlNegationMinusWithNamedGraph()
+    {
+        Test(MinusNamedGraphQuery, true, 0);
+    }
+
+    [Fact]
+    public void SparqlNegationMinusAndUnionWithNamedGraph()
+    {
+        Test(UnionNamedGraphQuery, true, 1);
+    }
+
+    private static void Test(string query, bool isNamedGraph, int expectedCount)
+    {
+        IGraph graph = isNamedGraph ? new Graph(new UriNode(new Uri("http://g"))) : new Graph();
+        new TurtleParser().Load(graph, new StringReader(TestData));
+
+        IInMemoryQueryableStore store = new TripleStore();
+        store.Add(graph);
+        IQueryableStorage storage = new InMemoryManager(store);
+
+        using (var resultSet = (SparqlResultSet)storage.Query(query))
         {
-            Test(MinusQuery, false, 0);
-        }
-
-        [Fact]
-        public void SparqlNegationSimpleMinusAndUnion()
-        {
-            Test(UnionQuery, false, 1);
-        }
-
-        [Fact]
-        public void SparqlNegationMinusWithNamedGraph()
-        {
-            Test(MinusNamedGraphQuery, true, 0);
-        }
-
-        [Fact]
-        public void SparqlNegationMinusAndUnionWithNamedGraph()
-        {
-            Test(UnionNamedGraphQuery, true, 1);
-        }
-
-        private static void Test(string query, bool isNamedGraph, int expectedCount)
-        {
-            IGraph graph = isNamedGraph ? new Graph(new UriNode(new Uri("http://g"))) : new Graph();
-            new TurtleParser().Load(graph, new StringReader(TestData));
-
-            IInMemoryQueryableStore store = new TripleStore();
-            store.Add(graph);
-            IQueryableStorage storage = new InMemoryManager(store);
-
-            using (var resultSet = (SparqlResultSet)storage.Query(query))
-            {
-                Assert.Equal(expectedCount, resultSet.Count);
-            }
+            Assert.Equal(expectedCount, resultSet.Count);
         }
     }
 }

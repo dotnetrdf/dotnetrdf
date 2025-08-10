@@ -34,24 +34,24 @@ namespace VDS.RDF.LDF.Client;
 
 internal class TpfMetadataGraph : WrapperGraph
 {
-    private readonly ISparqlResult result;
+    private readonly ISparqlResult _result;
 
     internal TpfMetadataGraph(IGraph g) : base(g)
     {
         var sparqlResults = this.ExecuteQuery(Queries.Select) as SparqlResultSet;
-        if (sparqlResults.Count != 1)
+        if (sparqlResults == null || sparqlResults.Count != 1)
         {
             throw new LdfException("Could not interpret metadata in TPF response graph");
         }
 
-        result = sparqlResults.Single();
+        _result = sparqlResults.Single();
     }
 
-    internal IriTemplate Search => new(result["search"], this);
+    internal IriTemplate Search => new(_result["search"], this);
 
     internal Uri NextPageUri => Vocabulary.Hydra.Next.ObjectsOf(Page).Cast<IUriNode>().SingleOrDefault()?.Uri;
 
     internal long? TripleCount => Vocabulary.Void.Triples.ObjectsOf(Page).SingleOrDefault()?.AsValuedNode().AsInteger();
 
-    private GraphWrapperNode Page => new(result["page"], this);
+    private GraphWrapperNode Page => new(_result["page"], this);
 }

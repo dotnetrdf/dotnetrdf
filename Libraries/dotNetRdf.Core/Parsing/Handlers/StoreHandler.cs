@@ -26,111 +26,110 @@
 
 using System;
 
-namespace VDS.RDF.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers;
+
+/// <summary>
+/// A RDF Handler that loads Quads into a <see cref="ITripleStore">ITripleStore</see> instance.
+/// </summary>
+public class StoreHandler
+    : BaseRdfHandler
 {
+    private readonly INamespaceMapper _nsmap = new NamespaceMapper();
+
     /// <summary>
-    /// A RDF Handler that loads Quads into a <see cref="ITripleStore">ITripleStore</see> instance.
+    /// Creates a new Store Handler.
     /// </summary>
-    public class StoreHandler
-        : BaseRdfHandler
+    /// <param name="store">Triple Store.</param>
+    public StoreHandler(ITripleStore store)
     {
-        private readonly INamespaceMapper _nsmap = new NamespaceMapper();
-
-        /// <summary>
-        /// Creates a new Store Handler.
-        /// </summary>
-        /// <param name="store">Triple Store.</param>
-        public StoreHandler(ITripleStore store)
-        {
-            Store = store ?? throw new ArgumentNullException(nameof(store));
-        }
-
-        /// <summary>
-        /// Gets the Triple Store that this Handler is populating.
-        /// </summary>
-        protected ITripleStore Store { get; }
-
-        #region IRdfHandler Members
-
-        /// <summary>
-        /// Handles namespaces by adding them to each graph.
-        /// </summary>
-        /// <param name="prefix">Namespace Prefix.</param>
-        /// <param name="namespaceUri">Namespace URI.</param>
-        /// <returns></returns>
-        protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
-        {
-            _nsmap.AddNamespace(prefix, namespaceUri);
-            return true;
-        }
-
-        /// <summary>
-        /// Handles Triples by asserting them into the un-named graph creating the graph if necessary.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        protected override bool HandleTripleInternal(Triple t)
-        {
-            if (!Store.HasGraph((IRefNode)null))
-            {
-                var g = new Graph();
-                Store.Add(g);
-            }
-            IGraph target = Store[(IRefNode)null];
-            target.Assert(t);
-            return true;
-        }
-
-        /// <summary>
-        /// Handles Triples by asserting them into the appropriate graph creating the graph if necessary.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <param name="graph">The graph containing the triple.</param>
-        /// <returns></returns>
-        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
-        {
-            if (!Store.HasGraph(graph))
-            {
-                var g = new Graph(graph);
-                Store.Add(g);
-            }
-            IGraph target = Store[graph];
-            target.Assert(t);
-            return true;
-        }
-
-        /// <summary>
-        /// Starts handling RDF.
-        /// </summary>
-        protected override void StartRdfInternal()
-        {
-            _nsmap.Clear();
-        }
-
-        /// <summary>
-        /// Ends RDF handling and propagates all discovered namespaces to all discovered graphs.
-        /// </summary>
-        /// <param name="ok">Whether parsing completed successfully.</param>
-        protected override void EndRdfInternal(bool ok)
-        {
-            // Propogate discovered namespaces to all graphs
-            foreach (IGraph g in Store.Graphs)
-            {
-                g.NamespaceMap.Import(_nsmap);
-            }
-        }
-
-        /// <summary>
-        /// Gets that the Handler accepts all Triples.
-        /// </summary>
-        public override bool AcceptsAll
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        #endregion
+        Store = store ?? throw new ArgumentNullException(nameof(store));
     }
+
+    /// <summary>
+    /// Gets the Triple Store that this Handler is populating.
+    /// </summary>
+    protected ITripleStore Store { get; }
+
+    #region IRdfHandler Members
+
+    /// <summary>
+    /// Handles namespaces by adding them to each graph.
+    /// </summary>
+    /// <param name="prefix">Namespace Prefix.</param>
+    /// <param name="namespaceUri">Namespace URI.</param>
+    /// <returns></returns>
+    protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
+    {
+        _nsmap.AddNamespace(prefix, namespaceUri);
+        return true;
+    }
+
+    /// <summary>
+    /// Handles Triples by asserting them into the un-named graph creating the graph if necessary.
+    /// </summary>
+    /// <param name="t">Triple.</param>
+    /// <returns></returns>
+    protected override bool HandleTripleInternal(Triple t)
+    {
+        if (!Store.HasGraph((IRefNode)null))
+        {
+            var g = new Graph();
+            Store.Add(g);
+        }
+        IGraph target = Store[(IRefNode)null];
+        target.Assert(t);
+        return true;
+    }
+
+    /// <summary>
+    /// Handles Triples by asserting them into the appropriate graph creating the graph if necessary.
+    /// </summary>
+    /// <param name="t">Triple.</param>
+    /// <param name="graph">The graph containing the triple.</param>
+    /// <returns></returns>
+    protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+    {
+        if (!Store.HasGraph(graph))
+        {
+            var g = new Graph(graph);
+            Store.Add(g);
+        }
+        IGraph target = Store[graph];
+        target.Assert(t);
+        return true;
+    }
+
+    /// <summary>
+    /// Starts handling RDF.
+    /// </summary>
+    protected override void StartRdfInternal()
+    {
+        _nsmap.Clear();
+    }
+
+    /// <summary>
+    /// Ends RDF handling and propagates all discovered namespaces to all discovered graphs.
+    /// </summary>
+    /// <param name="ok">Whether parsing completed successfully.</param>
+    protected override void EndRdfInternal(bool ok)
+    {
+        // Propogate discovered namespaces to all graphs
+        foreach (IGraph g in Store.Graphs)
+        {
+            g.NamespaceMap.Import(_nsmap);
+        }
+    }
+
+    /// <summary>
+    /// Gets that the Handler accepts all Triples.
+    /// </summary>
+    public override bool AcceptsAll
+    {
+        get
+        {
+            return true;
+        }
+    }
+
+    #endregion
 }

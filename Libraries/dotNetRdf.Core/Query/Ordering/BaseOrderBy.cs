@@ -28,61 +28,60 @@ using System.Collections.Generic;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Ordering
+namespace VDS.RDF.Query.Ordering;
+
+/// <summary>
+/// Base Class for implementing Sparql ORDER BYs.
+/// </summary>
+public abstract class BaseOrderBy 
+    : ISparqlOrderBy
 {
     /// <summary>
-    /// Base Class for implementing Sparql ORDER BYs.
+    /// Gets/Sets the Child Order By.
     /// </summary>
-    public abstract class BaseOrderBy 
-        : ISparqlOrderBy
+    public ISparqlOrderBy Child { get; set; } = null;
+
+    /// <summary>
+    /// Sets the Ordering to Descending.
+    /// </summary>
+    public bool Descending { get; set; }
+    
+    /// <summary>
+    /// Gets whether the Ordering is Simple.
+    /// </summary>
+    public abstract bool IsSimple
     {
-        /// <summary>
-        /// Gets/Sets the Child Order By.
-        /// </summary>
-        public ISparqlOrderBy Child { get; set; } = null;
-
-        /// <summary>
-        /// Sets the Ordering to Descending.
-        /// </summary>
-        public bool Descending { get; set; }
-        
-        /// <summary>
-        /// Gets whether the Ordering is Simple.
-        /// </summary>
-        public abstract bool IsSimple
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets all the Variables used in the Ordering.
-        /// </summary>
-        public abstract IEnumerable<string> Variables
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Expression used in the Ordering.
-        /// </summary>
-        public abstract ISparqlExpression Expression
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern.
-        /// </summary>
-        /// <param name="pattern">Triple Pattern.</param>
-        /// <param name="nodeComparer">The node comparer to use.</param>
-        /// <returns></returns>
-        public abstract IComparer<Triple> GetComparer(IMatchTriplePattern pattern, ISparqlNodeComparer nodeComparer);
-
-        /// <summary>
-        /// Gets the String representation of the Order By.
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
-
+        get;
     }
+
+    /// <summary>
+    /// Gets all the Variables used in the Ordering.
+    /// </summary>
+    public abstract IEnumerable<string> Variables
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the Expression used in the Ordering.
+    /// </summary>
+    public abstract ISparqlExpression Expression
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern.
+    /// </summary>
+    /// <param name="pattern">Triple Pattern.</param>
+    /// <param name="nodeComparer">The node comparer to use.</param>
+    /// <returns></returns>
+    public abstract IComparer<Triple> GetComparer(IMatchTriplePattern pattern, ISparqlNodeComparer nodeComparer);
+
+    /// <summary>
+    /// Gets the String representation of the Order By.
+    /// </summary>
+    /// <returns></returns>
+    public abstract override string ToString();
+
 }

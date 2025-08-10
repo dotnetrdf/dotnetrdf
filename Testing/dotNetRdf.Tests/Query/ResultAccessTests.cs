@@ -31,160 +31,160 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+
+public class ResultAccessTests
 {
+    private readonly LeviathanQueryProcessor _processor;
+    private readonly SparqlQueryParser _parser = new SparqlQueryParser();
+    private readonly NTriplesFormatter _formatter = new NTriplesFormatter();
 
-    public class ResultAccessTests
+    public ResultAccessTests()
     {
-        private readonly LeviathanQueryProcessor _processor;
-        private readonly SparqlQueryParser _parser = new SparqlQueryParser();
-        private readonly NTriplesFormatter _formatter = new NTriplesFormatter();
+        var g = new Graph();
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        var store = new TripleStore();
+        store.Add(g);
+        ISparqlDataset dataset = new InMemoryDataset(store);
+        _processor = new LeviathanQueryProcessor(dataset);
+    }
 
-        public ResultAccessTests()
+    private SparqlQuery CreateQuery(String query)
+    {
+        var nsMapper = new NamespaceMapper();
+        nsMapper.AddNamespace("ex", new Uri("http://example.org/"));
+        var queryStr = new SparqlParameterizedString(query) {Namespaces = nsMapper};
+        return _parser.ParseFromString(queryStr);
+    }
+
+    private SparqlResultSet GetResults(SparqlQuery query)
+    {
+        object results = _processor.ProcessQuery(query);
+        Assert.IsType<SparqlResultSet>(results, exactMatch: false);
+        return results as SparqlResultSet;
+    }
+
+    [Fact]
+    public void SparqlResultAccessByName()
+    {
+        var query = "SELECT * WHERE { ?s a ?type ; rdfs:comment ?comment }";
+        SparqlQuery q = CreateQuery(query);
+        SparqlResultSet results = GetResults(q);
+
+        foreach (SparqlResult r in results)
         {
-            var g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            var store = new TripleStore();
-            store.Add(g);
-            ISparqlDataset dataset = new InMemoryDataset(store);
-            _processor = new LeviathanQueryProcessor(dataset);
+            Assert.NotNull(r["s"]);
+            Assert.NotNull(r["comment"]);
+            Assert.NotNull(r["type"]);
         }
+    }
 
-        private SparqlQuery CreateQuery(String query)
+    [Fact]
+    public void SparqlResultAccessByNameError()
+    {
+        var query =
+            "PREFIX ex: <http://example.org/> SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:range ?range } }";
+        SparqlQuery q = CreateQuery(query);
+        SparqlResultSet results = GetResults(q);
+
+        foreach (SparqlResult r in results)
         {
-            var nsMapper = new NamespaceMapper();
-            nsMapper.AddNamespace("ex", new Uri("http://example.org/"));
-            var queryStr = new SparqlParameterizedString(query) {Namespaces = nsMapper};
-            return _parser.ParseFromString(queryStr);
+            Assert.Throws<RdfException>(() => r["range"]);
         }
+    }
 
-        private SparqlResultSet GetResults(SparqlQuery query)
+    [Fact]
+    public void SparqlResultAccessByNameSafeHasValue()
+    {
+        var query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
+        SparqlQuery q = CreateQuery(query);
+        SparqlResultSet results = GetResults(q);
+
+        var vars = results.Variables.ToList();
+        foreach (SparqlResult r in results)
         {
-            object results = _processor.ProcessQuery(query);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
-            return results as SparqlResultSet;
-        }
-
-        [Fact]
-        public void SparqlResultAccessByName()
-        {
-            var query = "SELECT * WHERE { ?s a ?type ; rdfs:comment ?comment }";
-            SparqlQuery q = CreateQuery(query);
-            SparqlResultSet results = GetResults(q);
-
-            foreach (SparqlResult r in results)
+            foreach (var var in vars)
             {
-                Assert.NotNull(r["s"]);
-                Assert.NotNull(r["comment"]);
-                Assert.NotNull(r["type"]);
-            }
-        }
-
-        [Fact]
-        public void SparqlResultAccessByNameError()
-        {
-            var query =
-                "PREFIX ex: <http://example.org/> SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:range ?range } }";
-            SparqlQuery q = CreateQuery(query);
-            SparqlResultSet results = GetResults(q);
-
-            foreach (SparqlResult r in results)
-            {
-                Assert.Throws<RdfException>(() => r["range"]);
-            }
-        }
-
-        [Fact]
-        public void SparqlResultAccessByNameSafeHasValue()
-        {
-            var query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
-            SparqlQuery q = CreateQuery(query);
-            SparqlResultSet results = GetResults(q);
-
-            var vars = results.Variables.ToList();
-            foreach (SparqlResult r in results)
-            {
-                foreach (var var in vars)
+                if (r.HasValue(var) && r[var] != null)
                 {
-                    if (r.HasValue(var) && r[var] != null)
-                    {
-                        Assert.NotNull(r[var].ToString(_formatter));
-                    }
+                    Assert.NotNull(r[var].ToString(_formatter));
                 }
             }
         }
+    }
 
-        [Fact]
-        public void SparqlResultAccessByNameSafeTryGetValue()
+    [Fact]
+    public void SparqlResultAccessByNameSafeTryGetValue()
+    {
+        var query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
+        SparqlQuery q = CreateQuery(query);
+        SparqlResultSet results = GetResults(q);
+
+        var vars = results.Variables.ToList();
+        foreach (SparqlResult r in results)
         {
-            var query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
-            SparqlQuery q = CreateQuery(query);
-            SparqlResultSet results = GetResults(q);
-
-            var vars = results.Variables.ToList();
-            foreach (SparqlResult r in results)
+            foreach (var var in vars)
             {
-                foreach (var var in vars)
+                if (r.TryGetValue(var, out INode value) && value != null)
                 {
-                    if (r.TryGetValue(var, out INode value) && value != null)
-                    {
-                        Assert.NotNull(value.ToString(_formatter));
-                    }
+                    Assert.NotNull(value.ToString(_formatter));
                 }
             }
         }
+    }
 
-        [Fact]
-        public void SparqlResultAccessByNameSafeTryGetBoundValue()
+    [Fact]
+    public void SparqlResultAccessByNameSafeTryGetBoundValue()
+    {
+        var query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
+        SparqlQuery q = CreateQuery(query);
+        SparqlResultSet results = GetResults(q);
+
+        var vars = results.Variables.ToList();
+        foreach (SparqlResult r in results)
         {
-            var query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
-            SparqlQuery q = CreateQuery(query);
-            SparqlResultSet results = GetResults(q);
-
-            var vars = results.Variables.ToList();
-            foreach (SparqlResult r in results)
+            foreach (var var in vars)
             {
-                foreach (var var in vars)
+                if (r.TryGetBoundValue(var, out INode value))
                 {
-                    if (r.TryGetBoundValue(var, out INode value))
-                    {
-                        Assert.NotNull(value);
-                    }
+                    Assert.NotNull(value);
                 }
             }
         }
+    }
 
-        [Fact]
-        public void SparqlResultAccessByIndex()
+    [Fact]
+    public void SparqlResultAccessByIndex()
+    {
+        var query = "SELECT * WHERE { ?s a ?type ; rdfs:comment ?comment }";
+        SparqlQuery q = CreateQuery(query);
+        SparqlResultSet results = GetResults(q);
+
+        var vars = results.Variables.ToList();
+        foreach (SparqlResult r in results)
         {
-            var query = "SELECT * WHERE { ?s a ?type ; rdfs:comment ?comment }";
-            SparqlQuery q = CreateQuery(query);
-            SparqlResultSet results = GetResults(q);
-
-            var vars = results.Variables.ToList();
-            foreach (SparqlResult r in results)
+            for (var i = 0; i < vars.Count; i++)
             {
-                for (var i = 0; i < vars.Count; i++)
-                {
-                    Assert.NotNull(r[i]);
-                }
+                Assert.NotNull(r[i]);
             }
         }
+    }
 
-        [Fact]
-        public void SparqlResultSetVariableOrder4()
-        {
-            var query = "SELECT ?comment ?type WHERE { ?s a ?type ; rdfs:comment ?comment }";
-            SparqlQuery q = CreateQuery(query);
-            SparqlResultSet results = GetResults(q);
+    [Fact]
+    public void SparqlResultSetVariableOrder4()
+    {
+        var query = "SELECT ?comment ?type WHERE { ?s a ?type ; rdfs:comment ?comment }";
+        SparqlQuery q = CreateQuery(query);
+        SparqlResultSet results = GetResults(q);
 
-            TestVariableOrder(results, new List<String>() { "comment", "type" });
-        }
+        TestVariableOrder(results, new List<String>() { "comment", "type" });
+    }
 
-        [Fact]
-        public void SparqlResultSetVariableOrder5()
-        {
-            var data = @"<?xml version=""1.0"" encoding=""utf-8""?>
+    [Fact]
+    public void SparqlResultSetVariableOrder5()
+    {
+        var data = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <sparql xmlns=""" + SparqlSpecsHelper.SparqlNamespace + @""">
     <head>
         <variable name=""a"" />
@@ -193,16 +193,16 @@ namespace VDS.RDF.Query
     <results />
 </sparql>";
 
-            var results = new SparqlResultSet();
-            StringParser.ParseResultSet(results, data, new SparqlXmlParser());
+        var results = new SparqlResultSet();
+        StringParser.ParseResultSet(results, data, new SparqlXmlParser());
 
-            TestVariableOrder(results, new List<string>() { "a", "b" });
-        }
+        TestVariableOrder(results, new List<string>() { "a", "b" });
+    }
 
-        [Fact]
-        public void SparqlResultSetVariableOrder6()
-        {
-            var data = @"<?xml version=""1.0"" encoding=""utf-8""?>
+    [Fact]
+    public void SparqlResultSetVariableOrder6()
+    {
+        var data = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <sparql xmlns=""" + SparqlSpecsHelper.SparqlNamespace + @""">
     <head>
         <variable name=""b"" />
@@ -211,16 +211,16 @@ namespace VDS.RDF.Query
     <results />
 </sparql>";
 
-            var results = new SparqlResultSet();
-            StringParser.ParseResultSet(results, data, new SparqlXmlParser());
+        var results = new SparqlResultSet();
+        StringParser.ParseResultSet(results, data, new SparqlXmlParser());
 
-            TestVariableOrder(results, new List<string>() { "b", "a" });
-        }
+        TestVariableOrder(results, new List<string>() { "b", "a" });
+    }
 
-        [Fact]
-        public void SparqlResultSetVariableOrder7()
-        {
-            var data = @"<?xml version=""1.0"" encoding=""utf-8""?>
+    [Fact]
+    public void SparqlResultSetVariableOrder7()
+    {
+        var data = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <sparql xmlns=""" + SparqlSpecsHelper.SparqlNamespace + @""">
     <head>
         <variable name=""b"" />
@@ -244,31 +244,30 @@ namespace VDS.RDF.Query
     </results>
 </sparql>";
 
-            var results = new SparqlResultSet();
-            StringParser.ParseResultSet(results, data, new SparqlXmlParser());
+        var results = new SparqlResultSet();
+        StringParser.ParseResultSet(results, data, new SparqlXmlParser());
 
-            TestVariableOrder(results, new List<string>() { "b", "a" });
-        }
+        TestVariableOrder(results, new List<string>() { "b", "a" });
+    }
 
-        private void TestVariableOrder(SparqlResultSet results, List<String> expected)
+    private void TestVariableOrder(SparqlResultSet results, List<String> expected)
+    {
+        var vars = results.Variables.ToList();
+        TestVariableOrder(expected, vars);
+
+        foreach (SparqlResult r in results)
         {
-            var vars = results.Variables.ToList();
+            vars = r.Variables.ToList();
             TestVariableOrder(expected, vars);
-
-            foreach (SparqlResult r in results)
-            {
-                vars = r.Variables.ToList();
-                TestVariableOrder(expected, vars);
-            }
         }
+    }
 
-        private void TestVariableOrder(List<String> expected, List<String> actual)
+    private void TestVariableOrder(List<String> expected, List<String> actual)
+    {
+        Assert.Equal(expected.Count, actual.Count);
+        for (var i = 0; i < expected.Count; i++)
         {
-            Assert.Equal(expected.Count, actual.Count);
-            for (var i = 0; i < expected.Count; i++)
-            {
-                Assert.Equal(expected[i], actual[i]);
-            }
+            Assert.Equal(expected[i], actual[i]);
         }
     }
 }

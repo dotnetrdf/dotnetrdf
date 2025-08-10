@@ -31,166 +31,200 @@ using System.Linq;
 using VDS.RDF.Shacl.Constraints;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl
+namespace VDS.RDF.Shacl;
+
+internal abstract class Constraint : GraphWrapperNode
 {
-    internal abstract class Constraint : GraphWrapperNode
+    [DebuggerStepThrough]
+    protected Constraint(Shape shape, INode value)
+        : base(value, shape.Graph)
     {
-        [DebuggerStepThrough]
-        protected Constraint(Shape shape, INode value)
-            : base(value, shape.Graph)
+        Shape = shape;
+    }
+
+    internal abstract INode ConstraintComponent { get; }
+
+    protected Shape Shape { get; private set; }
+
+    protected virtual string DefaultMessage { get; }
+
+    // TODO: Spec says this is a collection
+    private ILiteralNode Message
+    {
+        get
         {
-            Shape = shape;
+            if (Shape.Message is ILiteralNode message)
+            {
+                return message;
+            }
+
+            if (DefaultMessage is null)
+            {
+                return null;
+            }
+
+            return Graph.CreateLiteralNode(DefaultMessage);
+        }
+    }
+
+    internal static Constraint Parse(Shape shape, INode type, INode value)
+    {
+        switch (type)
+        {
+            case INode t when t.Equals(Vocabulary.Property): return new Property(shape, value);
+            case INode t when t.Equals(Vocabulary.MaxCount): return new MaxCount(shape, value);
+            case INode t when t.Equals(Vocabulary.NodeKind): return new NodeKind(shape, value);
+            case INode t when t.Equals(Vocabulary.MinCount): return new MinCount(shape, value);
+            case INode t when t.Equals(Vocabulary.Node): return new Node(shape, value);
+            case INode t when t.Equals(Vocabulary.Datatype): return new Datatype(shape, value);
+            case INode t when t.Equals(Vocabulary.Closed): return new Closed(shape, value);
+            case INode t when t.Equals(Vocabulary.HasValue): return new HasValue(shape, value);
+            case INode t when t.Equals(Vocabulary.Or): return new Or(shape, value);
+            case INode t when t.Equals(Vocabulary.Class): return new Class(shape, value);
+            case INode t when t.Equals(Vocabulary.Not): return new Not(shape, value);
+            case INode t when t.Equals(Vocabulary.Xone): return new Xone(shape, value);
+            case INode t when t.Equals(Vocabulary.In): return new In(shape, value);
+            case INode t when t.Equals(Vocabulary.Sparql): return new Select(shape, value);
+            case INode t when t.Equals(Vocabulary.Pattern): return new Pattern(shape, value);
+            case INode t when t.Equals(Vocabulary.MinInclusive): return new MinInclusive(shape, value);
+            case INode t when t.Equals(Vocabulary.MinExclusive): return new MinExclusive(shape, value);
+            case INode t when t.Equals(Vocabulary.MaxExclusive): return new MaxExclusive(shape, value);
+            case INode t when t.Equals(Vocabulary.MinLength): return new MinLength(shape, value);
+            case INode t when t.Equals(Vocabulary.MaxInclusive): return new MaxInclusive(shape, value);
+            case INode t when t.Equals(Vocabulary.And): return new And(shape, value);
+            case INode t when t.Equals(Vocabulary.QualifiedMinCount): return new QualifiedMinCount(shape, value);
+            case INode t when t.Equals(Vocabulary.QualifiedMaxCount): return new QualifiedMaxCount(shape, value);
+            case INode t when t.Equals(Vocabulary.EqualsNode): return new Equals(shape, value);
+            case INode t when t.Equals(Vocabulary.LanguageIn): return new LanguageIn(shape, value);
+            case INode t when t.Equals(Vocabulary.LessThan): return new LessThan(shape, value);
+            case INode t when t.Equals(Vocabulary.Disjoint): return new Disjoint(shape, value);
+            case INode t when t.Equals(Vocabulary.LessThanOrEquals): return new LessThanOrEquals(shape, value);
+            case INode t when t.Equals(Vocabulary.UniqueLang): return new UniqueLang(shape, value);
+            case INode t when t.Equals(Vocabulary.MaxLength): return new MaxLength(shape, value);
+
+            default: throw new Exception();
+        }
+    }
+
+    internal abstract bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report);
+
+    protected bool ReportValueNodes(INode focusNode, IEnumerable<INode> invalidValues, Report report)
+    {
+        var allValid = !invalidValues.Any();
+
+        if (report is null)
+        {
+            return allValid;
         }
 
-        internal abstract INode ConstraintComponent { get; }
-
-        protected Shape Shape { get; private set; }
-
-        protected virtual string DefaultMessage { get; }
-
-        // TODO: Spec says this is a collection
-        private ILiteralNode Message
+        if (allValid)
         {
-            get
-            {
-                if (Shape.Message is ILiteralNode message)
-                {
-                    return message;
-                }
-
-                if (DefaultMessage is null)
-                {
-                    return null;
-                }
-
-                return Graph.CreateLiteralNode(DefaultMessage);
-            }
+            return true;
         }
 
-        internal static Constraint Parse(Shape shape, INode type, INode value)
+        foreach (INode invalidValue in invalidValues)
         {
-            switch (type)
-            {
-                case INode t when t.Equals(Vocabulary.Property): return new Property(shape, value);
-                case INode t when t.Equals(Vocabulary.MaxCount): return new MaxCount(shape, value);
-                case INode t when t.Equals(Vocabulary.NodeKind): return new NodeKind(shape, value);
-                case INode t when t.Equals(Vocabulary.MinCount): return new MinCount(shape, value);
-                case INode t when t.Equals(Vocabulary.Node): return new Node(shape, value);
-                case INode t when t.Equals(Vocabulary.Datatype): return new Datatype(shape, value);
-                case INode t when t.Equals(Vocabulary.Closed): return new Closed(shape, value);
-                case INode t when t.Equals(Vocabulary.HasValue): return new HasValue(shape, value);
-                case INode t when t.Equals(Vocabulary.Or): return new Or(shape, value);
-                case INode t when t.Equals(Vocabulary.Class): return new Class(shape, value);
-                case INode t when t.Equals(Vocabulary.Not): return new Not(shape, value);
-                case INode t when t.Equals(Vocabulary.Xone): return new Xone(shape, value);
-                case INode t when t.Equals(Vocabulary.In): return new In(shape, value);
-                case INode t when t.Equals(Vocabulary.Sparql): return new Select(shape, value);
-                case INode t when t.Equals(Vocabulary.Pattern): return new Pattern(shape, value);
-                case INode t when t.Equals(Vocabulary.MinInclusive): return new MinInclusive(shape, value);
-                case INode t when t.Equals(Vocabulary.MinExclusive): return new MinExclusive(shape, value);
-                case INode t when t.Equals(Vocabulary.MaxExclusive): return new MaxExclusive(shape, value);
-                case INode t when t.Equals(Vocabulary.MinLength): return new MinLength(shape, value);
-                case INode t when t.Equals(Vocabulary.MaxInclusive): return new MaxInclusive(shape, value);
-                case INode t when t.Equals(Vocabulary.And): return new And(shape, value);
-                case INode t when t.Equals(Vocabulary.QualifiedMinCount): return new QualifiedMinCount(shape, value);
-                case INode t when t.Equals(Vocabulary.QualifiedMaxCount): return new QualifiedMaxCount(shape, value);
-                case INode t when t.Equals(Vocabulary.EqualsNode): return new Equals(shape, value);
-                case INode t when t.Equals(Vocabulary.LanguageIn): return new LanguageIn(shape, value);
-                case INode t when t.Equals(Vocabulary.LessThan): return new LessThan(shape, value);
-                case INode t when t.Equals(Vocabulary.Disjoint): return new Disjoint(shape, value);
-                case INode t when t.Equals(Vocabulary.LessThanOrEquals): return new LessThanOrEquals(shape, value);
-                case INode t when t.Equals(Vocabulary.UniqueLang): return new UniqueLang(shape, value);
-                case INode t when t.Equals(Vocabulary.MaxLength): return new MaxLength(shape, value);
+            var result = Result.Create(report.Graph);
+            result.SourceConstraintComponent = ConstraintComponent;
+            result.Severity = Shape.Severity;
+            result.Message = Message;
+            result.SourceShape = Shape;
+            result.FocusNode = focusNode;
 
-                default: throw new Exception();
+            if (Shape is Shapes.Property propertyShape)
+            {
+                result.ResultPath = propertyShape.Path;
+                report.Graph.Assert(propertyShape.Path.AsTriples);
             }
+
+            result.ResultValue = invalidValue;
+
+            report.Results.Add(result);
         }
 
-        internal abstract bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report);
+        return false;
+    }
 
-        protected bool ReportValueNodes(INode focusNode, IEnumerable<INode> invalidValues, Report report)
+    protected bool ReportValueNodes(IEnumerable<Triple> invalidValues, Report report)
+    {
+        var allValid = !invalidValues.Any();
+
+        if (report is null)
         {
-            var allValid = !invalidValues.Any();
-
-            if (report is null)
-            {
-                return allValid;
-            }
-
-            if (allValid)
-            {
-                return true;
-            }
-
-            foreach (INode invalidValue in invalidValues)
-            {
-                var result = Result.Create(report.Graph);
-                result.SourceConstraintComponent = ConstraintComponent;
-                result.Severity = Shape.Severity;
-                result.Message = Message;
-                result.SourceShape = Shape;
-                result.FocusNode = focusNode;
-
-                if (Shape is Shapes.Property propertyShape)
-                {
-                    result.ResultPath = propertyShape.Path;
-                    report.Graph.Assert(propertyShape.Path.AsTriples);
-                }
-
-                result.ResultValue = invalidValue;
-
-                report.Results.Add(result);
-            }
-
-            return false;
+            return allValid;
         }
 
-        protected bool ReportValueNodes(IEnumerable<Triple> invalidValues, Report report)
+        if (allValid)
         {
-            var allValid = !invalidValues.Any();
-
-            if (report is null)
-            {
-                return allValid;
-            }
-
-            if (allValid)
-            {
-                return true;
-            }
-
-            foreach (Triple invalidValue in invalidValues)
-            {
-                var result = Result.Create(report.Graph);
-                result.SourceConstraintComponent = ConstraintComponent;
-                result.Severity = Shape.Severity;
-                result.Message = Message;
-                result.SourceShape = Shape;
-                result.FocusNode = invalidValue.Subject;
-                result.ResultPath = Path.Parse(invalidValue.Predicate, Graph);
-                report.Graph.Assert(result.ResultPath.AsTriples);
-                result.ResultValue = invalidValue.Object;
-
-                report.Results.Add(result);
-            }
-
-            return false;
+            return true;
         }
 
-        protected bool ReportFocusNode(INode focusNode, IEnumerable<INode> invalidValues, Report report)
+        foreach (Triple invalidValue in invalidValues)
         {
-            var allValid = !invalidValues.Any();
+            var result = Result.Create(report.Graph);
+            result.SourceConstraintComponent = ConstraintComponent;
+            result.Severity = Shape.Severity;
+            result.Message = Message;
+            result.SourceShape = Shape;
+            result.FocusNode = invalidValue.Subject;
+            result.ResultPath = Path.Parse(invalidValue.Predicate, Graph);
+            report.Graph.Assert(result.ResultPath.AsTriples);
+            result.ResultValue = invalidValue.Object;
 
-            if (report is null)
-            {
-                return allValid;
-            }
+            report.Results.Add(result);
+        }
 
-            if (allValid)
-            {
-                return true;
-            }
+        return false;
+    }
 
+    protected bool ReportFocusNode(INode focusNode, IEnumerable<INode> invalidValues, Report report)
+    {
+        var allValid = !invalidValues.Any();
+
+        if (report is null)
+        {
+            return allValid;
+        }
+
+        if (allValid)
+        {
+            return true;
+        }
+
+        var result = Result.Create(report.Graph);
+        result.SourceConstraintComponent = ConstraintComponent;
+        result.Severity = Shape.Severity;
+        result.Message = Message;
+        result.SourceShape = Shape;
+        result.FocusNode = focusNode;
+
+        if (Shape is Shapes.Property propertyShape)
+        {
+            result.ResultPath = propertyShape.Path;
+            report.Graph.Assert(propertyShape.Path.AsTriples);
+        }
+
+        report.Results.Add(result);
+
+        return false;
+    }
+
+    protected bool ReportFocusNodes(INode focusNode, IEnumerable<INode> invalidValues, Report report)
+    {
+        var allValid = !invalidValues.Any();
+
+        if (report is null)
+        {
+            return allValid;
+        }
+
+        if (allValid)
+        {
+            return true;
+        }
+
+        foreach (INode invalidValue in invalidValues)
+        {
             var result = Result.Create(report.Graph);
             result.SourceConstraintComponent = ConstraintComponent;
             result.Severity = Shape.Severity;
@@ -205,43 +239,8 @@ namespace VDS.RDF.Shacl
             }
 
             report.Results.Add(result);
-
-            return false;
         }
 
-        protected bool ReportFocusNodes(INode focusNode, IEnumerable<INode> invalidValues, Report report)
-        {
-            var allValid = !invalidValues.Any();
-
-            if (report is null)
-            {
-                return allValid;
-            }
-
-            if (allValid)
-            {
-                return true;
-            }
-
-            foreach (INode invalidValue in invalidValues)
-            {
-                var result = Result.Create(report.Graph);
-                result.SourceConstraintComponent = ConstraintComponent;
-                result.Severity = Shape.Severity;
-                result.Message = Message;
-                result.SourceShape = Shape;
-                result.FocusNode = focusNode;
-
-                if (Shape is Shapes.Property propertyShape)
-                {
-                    result.ResultPath = propertyShape.Path;
-                    report.Graph.Assert(propertyShape.Path.AsTriples);
-                }
-
-                report.Results.Add(result);
-            }
-
-            return false;
-        }
+        return false;
     }
 }

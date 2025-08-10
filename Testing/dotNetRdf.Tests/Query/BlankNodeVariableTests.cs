@@ -31,46 +31,45 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+
+public class BlankNodeVariableTests
 {
+    private LeviathanQueryProcessor _processor;
+    private TripleStore _data;
+    private SparqlQueryParser _parser = new SparqlQueryParser();
 
-    public class BlankNodeVariableTests
+    private void EnsureTestData()
     {
-        private LeviathanQueryProcessor _processor;
-        private TripleStore _data;
-        private SparqlQueryParser _parser = new SparqlQueryParser();
-
-        private void EnsureTestData()
+        if (_data == null)
         {
-            if (_data == null)
-            {
-                _data = new TripleStore();
-                var g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                _data.Add(g);
-            }
-            if (_processor == null)
-            {
-                _processor = new LeviathanQueryProcessor(new InMemoryDataset(_data, _data.Graphs.First().Name));
-            }
+            _data = new TripleStore();
+            var g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            _data.Add(g);
         }
-
-        [Fact]
-        public void SparqlBlankNodeVariables1()
+        if (_processor == null)
         {
-            EnsureTestData();
-
-            SparqlQuery q = _parser.ParseFromString("SELECT ?o WHERE { _:s ?p1 ?o1 FILTER(ISURI(?o1)) ?o1 ?p2 ?o . FILTER(ISLITERAL(?o)) }");
-            q.AlgebraOptimisers = new IAlgebraOptimiser[] { new StrictAlgebraOptimiser() };
-            var formatter = new SparqlFormatter();
-            Console.WriteLine(formatter.Format(q));
-            Console.WriteLine(q.ToAlgebra().ToString());
-
-            var results = _processor.ProcessQuery(q) as SparqlResultSet;
-            if (results == null) Assert.True(false, "Did not get a SPARQL Result Set as expected");
-            Assert.False(results.Count == 0, "Result Set should not be empty");
-
-            Assert.True(results.All(r => r.HasValue("o") && r["o"] != null && r["o"].NodeType == NodeType.Literal), "All results should be literals");
+            _processor = new LeviathanQueryProcessor(new InMemoryDataset(_data, _data.Graphs.First().Name));
         }
+    }
+
+    [Fact]
+    public void SparqlBlankNodeVariables1()
+    {
+        EnsureTestData();
+
+        SparqlQuery q = _parser.ParseFromString("SELECT ?o WHERE { _:s ?p1 ?o1 FILTER(ISURI(?o1)) ?o1 ?p2 ?o . FILTER(ISLITERAL(?o)) }");
+        q.AlgebraOptimisers = new IAlgebraOptimiser[] { new StrictAlgebraOptimiser() };
+        var formatter = new SparqlFormatter();
+        Console.WriteLine(formatter.Format(q));
+        Console.WriteLine(q.ToAlgebra().ToString());
+
+        var results = _processor.ProcessQuery(q) as SparqlResultSet;
+        if (results == null) Assert.Fail("Did not get a SPARQL Result Set as expected");
+        Assert.False(results.Count == 0, "Result Set should not be empty");
+
+        Assert.True(results.All(r => r.HasValue("o") && r["o"] != null && r["o"].NodeType == NodeType.Literal), "All results should be literals");
     }
 }

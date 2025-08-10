@@ -29,77 +29,76 @@
 using System.IO;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Writing.Contexts
+namespace VDS.RDF.Writing.Contexts;
+
+/// <summary>
+/// Interface for Writer Contexts.
+/// </summary>
+public interface IWriterContext
 {
     /// <summary>
-    /// Interface for Writer Contexts.
+    /// Gets the Graph being written.
     /// </summary>
-    public interface IWriterContext
+    IGraph Graph
     {
-        /// <summary>
-        /// Gets the Graph being written.
-        /// </summary>
-        IGraph Graph
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the TextWriter being written to.
-        /// </summary>
-        TextWriter Output
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets/Sets the Pretty Printing Mode used.
-        /// </summary>
-        bool PrettyPrint
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets/Sets the High Speed Mode used.
-        /// </summary>
-        bool HighSpeedModePermitted
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets/Sets the Compression Level used.
-        /// </summary>
-        int CompressionLevel
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets/Sets the Node Formatter used.
-        /// </summary>
-        INodeFormatter NodeFormatter
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets/Sets the URI Formatter used.
-        /// </summary>
-        IUriFormatter UriFormatter
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets/sets the URI factory used.
-        /// </summary>
-        IUriFactory UriFactory { get; set; }
+        get;
     }
+
+    /// <summary>
+    /// Gets the TextWriter being written to.
+    /// </summary>
+    TextWriter Output
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets/Sets the Pretty Printing Mode used.
+    /// </summary>
+    bool PrettyPrint
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Gets/Sets the High Speed Mode used.
+    /// </summary>
+    bool HighSpeedModePermitted
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Gets/Sets the Compression Level used.
+    /// </summary>
+    int CompressionLevel
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Gets/Sets the Node Formatter used.
+    /// </summary>
+    INodeFormatter NodeFormatter
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Gets/Sets the URI Formatter used.
+    /// </summary>
+    IUriFormatter UriFormatter
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Gets/sets the URI factory used.
+    /// </summary>
+    IUriFactory UriFactory { get; set; }
 }

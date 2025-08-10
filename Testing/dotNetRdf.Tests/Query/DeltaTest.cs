@@ -28,39 +28,39 @@ using System.IO;
 using Xunit;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+
+public class DeltaTest
 {
+    private readonly TurtleParser _parser = new TurtleParser();
+    private readonly SparqlQueryParser _sparqlParser = new SparqlQueryParser();
 
-    public class DeltaTest
-    {
-        private readonly TurtleParser _parser = new TurtleParser();
-        private readonly SparqlQueryParser _sparqlParser = new SparqlQueryParser();
-
-        private const string TestData = @"
+    private const string TestData = @"
 <http://r1> <http://r1> <http://r1> .
 <http://r2> <http://r2> <http://r2> .
 ";
 
-        private const string TestData2 = @"
+    private const string TestData2 = @"
 <http://r1> <http://r1> <http://r1> , <http://r2> .
 <http://r2> <http://r2> <http://r2> .
 ";
 
-        private const string TestData3 = @"
+    private const string TestData3 = @"
 <http://r1> <http://r1> <http://r1> , ""value"" .
 <http://r2> <http://r2> <http://r2> , 1234 .
 ";
 
-        private const string TestData4 = @"
+    private const string TestData4 = @"
 <http://r1> <http://r1> <http://r1> , ""value"" , 1234, 123e4, 123.4, true, false .
 <http://r2> <http://r2> <http://r2> .
 ";
 
-        private const string TestData5 = @"
+    private const string TestData5 = @"
 <http://r2> <http://r2> <http://r2> .
 ";
 
-        private const string MinusQuery = @"
+    private const string MinusQuery = @"
 SELECT *
 WHERE
 {
@@ -75,7 +75,7 @@ WHERE
 }
 ";
 
-        private const string OptionalSameTermQuery1 = @"
+    private const string OptionalSameTermQuery1 = @"
 SELECT *
 WHERE
 {
@@ -92,7 +92,7 @@ WHERE
 }
 ";
 
-        private const string OptionalSameTermQuery2 = @"
+    private const string OptionalSameTermQuery2 = @"
 SELECT *
 WHERE
 {
@@ -109,7 +109,7 @@ WHERE
 }
 ";
 
-        private const string NotExistsQuery = @"
+    private const string NotExistsQuery = @"
 SELECT *
 WHERE
 {
@@ -121,52 +121,51 @@ WHERE
 }
 ";
 
-        private void TestQuery(IInMemoryQueryableStore store, string query, int differences)
+    private void TestQuery(IInMemoryQueryableStore store, string query, int differences)
+    {
+        SparqlQuery q = _sparqlParser.ParseFromString(query);
+        var processor = new LeviathanQueryProcessor(store);
+        using (var resultSet = processor.ProcessQuery(q) as SparqlResultSet)
         {
-            SparqlQuery q = _sparqlParser.ParseFromString(query);
-            var processor = new LeviathanQueryProcessor(store);
-            using (var resultSet = processor.ProcessQuery(q) as SparqlResultSet)
-            {
-                Assert.NotNull(resultSet);
-                Assert.Equal(differences, resultSet.Count);
-            }
+            Assert.NotNull(resultSet);
+            Assert.Equal(differences, resultSet.Count);
         }
-
-        private void TestDeltas(IGraph a, IGraph b, int differences)
-        {
-            a.BaseUri = new Uri("http://a");
-            b.BaseUri = new Uri("http://b");
-
-            IInMemoryQueryableStore store = new TripleStore();
-            store.Add(a);
-            store.Add(b);
-
-            TestQuery(store, MinusQuery, differences);
-            TestQuery(store, OptionalSameTermQuery1, differences);
-            TestQuery(store, OptionalSameTermQuery2, differences);
-            TestQuery(store, NotExistsQuery, differences);
-        }
-
-        [Theory]
-        [InlineData(TestData, TestData, 0)]
-        [InlineData(TestData, TestData2, 0)]
-        [InlineData(TestData2, TestData, 1)]
-        [InlineData(TestData, TestData5, 1)]
-        [InlineData(TestData5, TestData, 0)]
-        [InlineData(TestData, null, 2)]
-        [InlineData(null, TestData, 0)]
-        [InlineData(TestData3, TestData, 2)]
-        [InlineData(TestData, TestData3, 0)]
-        [InlineData(TestData4, TestData, 6)]
-        [InlineData(TestData, TestData4, 0)]
-        public void SparqlGraphDeltas(string graphAData, string graphBData, int difference)
-        {
-            IGraph a = new Graph(new UriNode(new Uri("http://a")));
-            IGraph b = new Graph(new UriNode(new Uri("http://b")));
-            if (graphAData != null) _parser.Load(a, new StringReader(graphAData));
-            if (graphBData != null) _parser.Load(b, new StringReader(graphBData));
-            TestDeltas(a, b, difference);
-        }
-
     }
+
+    private void TestDeltas(IGraph a, IGraph b, int differences)
+    {
+        a.BaseUri = new Uri("http://a");
+        b.BaseUri = new Uri("http://b");
+
+        IInMemoryQueryableStore store = new TripleStore();
+        store.Add(a);
+        store.Add(b);
+
+        TestQuery(store, MinusQuery, differences);
+        TestQuery(store, OptionalSameTermQuery1, differences);
+        TestQuery(store, OptionalSameTermQuery2, differences);
+        TestQuery(store, NotExistsQuery, differences);
+    }
+
+    [Theory]
+    [InlineData(TestData, TestData, 0)]
+    [InlineData(TestData, TestData2, 0)]
+    [InlineData(TestData2, TestData, 1)]
+    [InlineData(TestData, TestData5, 1)]
+    [InlineData(TestData5, TestData, 0)]
+    [InlineData(TestData, null, 2)]
+    [InlineData(null, TestData, 0)]
+    [InlineData(TestData3, TestData, 2)]
+    [InlineData(TestData, TestData3, 0)]
+    [InlineData(TestData4, TestData, 6)]
+    [InlineData(TestData, TestData4, 0)]
+    public void SparqlGraphDeltas(string graphAData, string graphBData, int difference)
+    {
+        IGraph a = new Graph(new UriNode(new Uri("http://a")));
+        IGraph b = new Graph(new UriNode(new Uri("http://b")));
+        if (graphAData != null) _parser.Load(a, new StringReader(graphAData));
+        if (graphBData != null) _parser.Load(b, new StringReader(graphBData));
+        TestDeltas(a, b, difference);
+    }
+
 }

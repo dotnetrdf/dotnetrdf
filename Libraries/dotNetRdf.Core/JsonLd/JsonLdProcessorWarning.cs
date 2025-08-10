@@ -24,41 +24,40 @@
 // </copyright>
 */
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd;
+
+/// <summary>
+/// Represents a warning message raised during JSON-LD processing.
+/// </summary>
+public class JsonLdProcessorWarning
 {
     /// <summary>
-    /// Represents a warning message raised during JSON-LD processing.
+    /// The error code associated with the warning.
     /// </summary>
-    public class JsonLdProcessorWarning
+    public JsonLdErrorCode ErrorCode { get; }
+
+    /// <summary>
+    /// The detailed warning message.
+    /// </summary>
+    public string Message { get;}
+
+    /// <summary>
+    /// Create a new warning message with the specified code and message.
+    /// </summary>
+    /// <param name="errorCode"></param>
+    /// <param name="message"></param>
+    public JsonLdProcessorWarning(JsonLdErrorCode errorCode, string message)
     {
-        /// <summary>
-        /// The error code associated with the warning.
-        /// </summary>
-        public JsonLdErrorCode ErrorCode { get; }
+        ErrorCode = errorCode;
+        Message = message;
+    }
 
-        /// <summary>
-        /// The detailed warning message.
-        /// </summary>
-        public string Message { get;}
-
-        /// <summary>
-        /// Create a new warning message with the specified code and message.
-        /// </summary>
-        /// <param name="errorCode"></param>
-        /// <param name="message"></param>
-        public JsonLdProcessorWarning(JsonLdErrorCode errorCode, string message)
-        {
-            ErrorCode = errorCode;
-            Message = message;
-        }
-
-        /// <summary>
-        /// Get a string representation of the warning.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return $"{ErrorCode}: {Message}";
-        }
+    /// <summary>
+    /// Get a string representation of the warning.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return $"{ErrorCode}: {Message}";
     }
 }

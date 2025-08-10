@@ -27,70 +27,69 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Storage.Virtualisation
+namespace VDS.RDF.Storage.Virtualisation;
+
+/// <summary>
+/// A Cache that maps from Virtual IDs to Materialised Values.
+/// </summary>
+public class VirtualNodeCache<TNodeID, TKey>
+{
+    private Dictionary<TKey, INode> _mapping = new Dictionary<TKey, INode>();
+    private Func<TNodeID, TKey> _keyGenerator;
+
+    /// <summary>
+    /// Creates a new Virtual ID cache.
+    /// </summary>
+    /// <param name="keyGenerator">Function that maps Node IDs to dictionary keys.</param>
+    public VirtualNodeCache(Func<TNodeID, TKey> keyGenerator)
+    {
+        _keyGenerator = keyGenerator;
+    }
+
+    /// <summary>
+    /// Gets/Sets the materialised value for a particular Virtual ID.
+    /// </summary>
+    /// <param name="id">Virtual ID.</param>
+    /// <returns></returns>
+    public INode this[TNodeID id]
+    {
+        get
+        {
+            INode temp;
+            if (_mapping.TryGetValue(_keyGenerator(id), out temp))
+            {
+                return temp;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        set
+        {
+            TKey key = _keyGenerator(id);
+            if (_mapping.ContainsKey(key))
+            {
+                _mapping[key] = value;
+            }
+            else
+            {
+                _mapping.Add(key, value);
+            }
+        }
+    }
+}
+
+/// <summary>
+/// A Cache that maps from Virtual IDs to Materialised Values where the IDs map directly to dictionary keys.
+/// </summary>
+/// <typeparam name="TNodeID">Node ID Type.</typeparam>
+public class SimpleVirtualNodeCache<TNodeID>
+    : VirtualNodeCache<TNodeID, TNodeID>
 {
     /// <summary>
-    /// A Cache that maps from Virtual IDs to Materialised Values.
+    /// Creates a new Simple Virtual Node Cache.
     /// </summary>
-    public class VirtualNodeCache<TNodeID, TKey>
-    {
-        private Dictionary<TKey, INode> _mapping = new Dictionary<TKey, INode>();
-        private Func<TNodeID, TKey> _keyGenerator;
-
-        /// <summary>
-        /// Creates a new Virtual ID cache.
-        /// </summary>
-        /// <param name="keyGenerator">Function that maps Node IDs to dictionary keys.</param>
-        public VirtualNodeCache(Func<TNodeID, TKey> keyGenerator)
-        {
-            _keyGenerator = keyGenerator;
-        }
-
-        /// <summary>
-        /// Gets/Sets the materialised value for a particular Virtual ID.
-        /// </summary>
-        /// <param name="id">Virtual ID.</param>
-        /// <returns></returns>
-        public INode this[TNodeID id]
-        {
-            get
-            {
-                INode temp;
-                if (_mapping.TryGetValue(_keyGenerator(id), out temp))
-                {
-                    return temp;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            set
-            {
-                TKey key = _keyGenerator(id);
-                if (_mapping.ContainsKey(key))
-                {
-                    _mapping[key] = value;
-                }
-                else
-                {
-                    _mapping.Add(key, value);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// A Cache that maps from Virtual IDs to Materialised Values where the IDs map directly to dictionary keys.
-    /// </summary>
-    /// <typeparam name="TNodeID">Node ID Type.</typeparam>
-    public class SimpleVirtualNodeCache<TNodeID>
-        : VirtualNodeCache<TNodeID, TNodeID>
-    {
-        /// <summary>
-        /// Creates a new Simple Virtual Node Cache.
-        /// </summary>
-        public SimpleVirtualNodeCache()
-            : base(id => id) { }
-    }
+    public SimpleVirtualNodeCache()
+        : base(id => id) { }
 }

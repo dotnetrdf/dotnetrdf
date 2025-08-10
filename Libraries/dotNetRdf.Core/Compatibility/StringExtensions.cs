@@ -26,22 +26,21 @@
 
 using System;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// A collection of cross-target extensions to the string class.
+/// </summary>
+public static class StringExtensions
 {
     /// <summary>
-    /// A collection of cross-target extensions to the string class.
+    /// Return true if the character sequence starting at the specified offset is a URI hex-encoded character.
     /// </summary>
-    public static class StringExtensions
+    /// <param name="str">The input string.</param>
+    /// <param name="index">The character offset from which to start the check for a hex-encoded character.</param>
+    /// <returns></returns>
+    public static bool IsHexEncoding(this string str, int index)
     {
-        /// <summary>
-        /// Return true if the character sequence starting at the specified offset is a URI hex-encoded character.
-        /// </summary>
-        /// <param name="str">The input string.</param>
-        /// <param name="index">The character offset from which to start the check for a hex-encoded character.</param>
-        /// <returns></returns>
-        public static bool IsHexEncoding(this string str, int index)
-        {
-            return Uri.IsHexEncoding(str, index);
-        }
+        return Uri.IsHexEncoding(str, index);
     }
 }

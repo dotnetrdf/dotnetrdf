@@ -27,82 +27,80 @@ using System;
 using System.IO;
 using VDS.RDF.Query;
 using Xunit;
-using Xunit.Abstractions;
 
-namespace VDS.RDF.Parsing.Suites
+namespace VDS.RDF.Parsing.Suites;
+
+
+
+public class SparqlResultsXml
+    : BaseResultsParserSuite
 {
-   
+    private readonly ITestOutputHelper _testOutputHelper;
 
-    public class SparqlResultsXml
-        : BaseResultsParserSuite
+    public SparqlResultsXml(ITestOutputHelper testOutputHelper)
+        : base(new SparqlXmlParser(), new SparqlXmlParser(), "srx")
     {
-        private readonly ITestOutputHelper _testOutputHelper;
+        _testOutputHelper = testOutputHelper;
+        CheckResults = false;
+    }
 
-        public SparqlResultsXml(ITestOutputHelper testOutputHelper)
-            : base(new SparqlXmlParser(), new SparqlXmlParser(), "srx")
-        {
-            _testOutputHelper = testOutputHelper;
-            CheckResults = false;
-        }
+    [Fact]
+    public void ParsingSuiteSparqlResultsXml()
+    {
+        //Run manifests
+        RunDirectory(f => Path.GetExtension(f).Equals(".srx") && !f.Contains("bad"), true);
+        RunDirectory(f => Path.GetExtension(f).Equals(".srx") && f.Contains("bad"), false);
 
-        [Fact]
-        public void ParsingSuiteSparqlResultsXml()
-        {
-            //Run manifests
-            RunDirectory(f => Path.GetExtension(f).Equals(".srx") && !f.Contains("bad"), true);
-            RunDirectory(f => Path.GetExtension(f).Equals(".srx") && f.Contains("bad"), false);
+        if (Count == 0) Assert.Fail("No tests found");
 
-            if (Count == 0) Assert.True(false, "No tests found");
+        _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
+        _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
-            _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
-            _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
+        if (Failed > 0) Assert.Fail(Failed + " Tests failed");
+        Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
+    }
 
-            if (Failed > 0) Assert.True(false, Failed + " Tests failed");
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
-        }
+    [Fact]
+    public void ParsingSparqlResultsXmlCustomAttributes()
+    {
+        // Test case based off of CORE-410
+        var results = new SparqlResultSet();
+        ResultsParser.Load(results, Path.Combine("resources", "sparql", "core-410.srx"));
 
-        [Fact]
-        public void ParsingSparqlResultsXmlCustomAttributes()
-        {
-            // Test case based off of CORE-410
-            var results = new SparqlResultSet();
-            ResultsParser.Load(results, Path.Combine("resources", "sparql", "core-410.srx"));
+        TestTools.ShowResults(results);
 
-            TestTools.ShowResults(results);
+        INode first = results[0]["test"];
+        INode second = results[1]["test"];
+        INode third = results[2]["test"];
 
-            INode first = results[0]["test"];
-            INode second = results[1]["test"];
-            INode third = results[2]["test"];
+        Assert.Equal(NodeType.Literal, first.NodeType);
+        var firstLit = (ILiteralNode) first;
+        Assert.NotNull(firstLit.DataType);
+        Assert.Equal(XmlSpecsHelper.XmlSchemaDataTypeInteger, firstLit.DataType.AbsoluteUri);
+        Assert.Equal("1993", firstLit.Value);
 
-            Assert.Equal(NodeType.Literal, first.NodeType);
-            var firstLit = (ILiteralNode) first;
-            Assert.NotNull(firstLit.DataType);
-            Assert.Equal(XmlSpecsHelper.XmlSchemaDataTypeInteger, firstLit.DataType.AbsoluteUri);
-            Assert.Equal("1993", firstLit.Value);
+        Assert.Equal(NodeType.Literal, second.NodeType);
+        var secondLit = (ILiteralNode) second;
+        Assert.NotEqual(String.Empty, secondLit.Language);
+        Assert.NotNull(secondLit.DataType);
+        Assert.Equal("en", secondLit.Language);
+        Assert.Equal("test", secondLit.Value);
+        Assert.Equal(RdfSpecsHelper.RdfLangString, secondLit.DataType.AbsoluteUri);
 
-            Assert.Equal(NodeType.Literal, second.NodeType);
-            var secondLit = (ILiteralNode) second;
-            Assert.NotEqual(String.Empty, secondLit.Language);
-            Assert.NotNull(secondLit.DataType);
-            Assert.Equal("en", secondLit.Language);
-            Assert.Equal("test", secondLit.Value);
-            Assert.Equal(RdfSpecsHelper.RdfLangString, secondLit.DataType.AbsoluteUri);
+        Assert.Equal(NodeType.Literal, third.NodeType);
+        var thirdLit = (ILiteralNode) third;
+        Assert.Equal(String.Empty, thirdLit.Language);
+        Assert.NotNull(thirdLit.DataType);
+        Assert.Equal(XmlSpecsHelper.XmlSchemaDataTypeString, thirdLit.DataType.AbsoluteUri);
+        Assert.Equal("test plain literal", thirdLit.Value);
+    }
 
-            Assert.Equal(NodeType.Literal, third.NodeType);
-            var thirdLit = (ILiteralNode) third;
-            Assert.Equal(String.Empty, thirdLit.Language);
-            Assert.NotNull(thirdLit.DataType);
-            Assert.Equal(XmlSpecsHelper.XmlSchemaDataTypeString, thirdLit.DataType.AbsoluteUri);
-            Assert.Equal("test plain literal", thirdLit.Value);
-        }
+    [Fact]
+    public void ParsingSparqlResultsXmlConflictingAttributes()
+    {
+        // Test case based off of CORE-410
+        var results = new SparqlResultSet();
 
-        [Fact]
-        public void ParsingSparqlResultsXmlConflictingAttributes()
-        {
-            // Test case based off of CORE-410
-            var results = new SparqlResultSet();
-
-            Assert.Throws<RdfParseException>(() => ResultsParser.Load(results, Path.Combine("resources", "sparql", "bad-core-410.srx")));
-        }
+        Assert.Throws<RdfParseException>(() => ResultsParser.Load(results, Path.Combine("resources", "sparql", "bad-core-410.srx")));
     }
 }

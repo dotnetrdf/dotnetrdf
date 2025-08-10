@@ -29,53 +29,71 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Sdk;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+
+public abstract class BaseAsyncTests
 {
+    private const string SaveGraphUri = "http://localhost/storage/async/SaveGraph";
+    private const string SaveGraphUri2 = "http://localhost/storage/async/SaveGraph2";
+    private const string AddTripleUri = "http://localhost/storage/async/AddTriples";
+    private const string RemoveTriplesUri = "http://localhost/storage/async/RemoveTriples";
+    private const string DeleteGraphUri = "http://localhost/storage/async/DeleteGraph";
+    private const string QueryGraphUri = "http://localhost/storage/async/QueryGraph";
+    private const string ListGraphsUri = "http://localhost/storage/async/ListGraphs";
 
-    public abstract class BaseAsyncTests
+
+    protected int WaitDelay = 15000;
+
+    /// <summary>
+    /// Method to be implemented by derived classes to obtain the storage provider to test
+    /// </summary>
+    /// <returns></returns>
+    protected abstract IAsyncStorageProvider GetAsyncProvider();
+
+    protected void Fail(IAsyncStorageProvider provider, string msg)
     {
-        private const string SaveGraphUri = "http://localhost/storage/async/SaveGraph";
-        private const string SaveGraphUri2 = "http://localhost/storage/async/SaveGraph2";
-        private const string AddTripleUri = "http://localhost/storage/async/AddTriples";
-        private const string RemoveTriplesUri = "http://localhost/storage/async/RemoveTriples";
-        private const string DeleteGraphUri = "http://localhost/storage/async/DeleteGraph";
-        private const string QueryGraphUri = "http://localhost/storage/async/QueryGraph";
-        private const string ListGraphsUri = "http://localhost/storage/async/ListGraphs";
+        Assert.Fail("[" + provider.GetType().Name + "] " + msg);
+    }
 
+    protected void Fail(IAsyncStorageProvider provider, string msg, Exception e)
+    {
+        throw new Exception("[" + provider.GetType().Name + "] " + msg, e);
+    }
 
-        protected int WaitDelay = 15000;
-
-        /// <summary>
-        /// Method to be implemented by derived classes to obtain the storage provider to test
-        /// </summary>
-        /// <returns></returns>
-        protected abstract IAsyncStorageProvider GetAsyncProvider();
-
-        protected void Fail(IAsyncStorageProvider provider, string msg)
-        {
-            Assert.True(false, "[" + provider.GetType().Name + "] " + msg);
-        }
-
-        protected void Fail(IAsyncStorageProvider provider, string msg, Exception e)
-        {
-            throw new Exception("[" + provider.GetType().Name + "] " + msg, e);
-        }
-
-        #region Callback-based async API tests
+    #region Callback-based async API tests
 #pragma warning disable CS0618 // Type or member is obsolete
 
-        protected void TestAsyncSaveLoad(IGraph g)
+    protected void TestAsyncSaveLoad(IGraph g)
+    {
+        IAsyncStorageProvider provider = GetAsyncProvider();
+        try
         {
-            IAsyncStorageProvider provider = GetAsyncProvider();
-            try
+            var signal = new ManualResetEvent(false);
+            AsyncStorageCallbackArgs resArgs = null;
+            g.BaseUri = UriFactory.Root.Create(SaveGraphUri);
+            provider.SaveGraph(g, (_, args, state) =>
+                {
+                    resArgs = args;
+                    signal.Set();
+                }, null);
+
+            //Wait for response, max 15s
+            signal.WaitOne(WaitDelay);
+
+            if (resArgs == null) Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+            if (resArgs.WasSuccessful)
             {
-                var signal = new ManualResetEvent(false);
-                AsyncStorageCallbackArgs resArgs = null;
-                g.BaseUri = UriFactory.Root.Create(SaveGraphUri);
-                provider.SaveGraph(g, (_, args, state) =>
+                Console.WriteLine("Async SaveGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
+
+                resArgs = null;
+                signal.Reset();
+                var h = new Graph();
+                provider.LoadGraph(h, SaveGraphUri, (_, args, state) =>
                     {
                         resArgs = args;
                         signal.Set();
@@ -84,19 +102,81 @@ namespace VDS.RDF.Storage
                 //Wait for response, max 15s
                 signal.WaitOne(WaitDelay);
 
-                if (resArgs == null) Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                if (resArgs == null) Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                 if (resArgs.WasSuccessful)
                 {
-                    Console.WriteLine("Async SaveGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
+                    Console.WriteLine("Async LoadGraph() worked OK, checking for graph equality...");
+                    GraphDiffReport diff = g.Difference(resArgs.Graph);
+                    //if (!diff.AreEqual) TestTools.ShowDifferences(diff);
+                    Assert.True(diff.AreEqual, "[" + provider.GetType().Name + "] Graphs were not equal");
+                }
+                else
+                {
+                    Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                }
+            }
+            else
+            {
+                Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+            }
+        }
+        finally 
+        {
+            provider.Dispose();
+        }
+    }
+
+    protected void TestAsyncDelete(IGraph g)
+    {
+        IAsyncStorageProvider provider = GetAsyncProvider();
+        if (!provider.DeleteSupported)
+        {
+            Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
+            return;
+        }
+        try
+        {
+            var signal = new ManualResetEvent(false);
+            var graphUri = (g.Name as IUriNode).Uri.AbsoluteUri;
+            AsyncStorageCallbackArgs resArgs = null;
+            g.BaseUri = UriFactory.Root.Create(graphUri);
+            provider.SaveGraph(g, (_, args, state) =>
+            {
+                resArgs = args;
+                signal.Set();
+            }, null);
+
+            //Wait for response, max 15s
+            signal.WaitOne(WaitDelay);
+
+            if (resArgs == null) Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+            if (resArgs.WasSuccessful)
+            {
+                Console.WriteLine("Async SaveGraph() worked OK, trying async DeleteGraph() to remove newly added graph...");
+                resArgs = null;
+                signal.Reset();
+                provider.DeleteGraph(graphUri, (_, args, state) =>
+                    {
+                        resArgs = args;
+                        signal.Set();
+                    }, null);
+
+                //Wait for response, max 15s
+                signal.WaitOne(WaitDelay);
+
+                if (resArgs == null) Fail(provider, "DeleteGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                if (resArgs.WasSuccessful)
+                {
+                    Console.WriteLine("Async DeleteGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
 
                     resArgs = null;
                     signal.Reset();
                     var h = new Graph();
-                    provider.LoadGraph(h, SaveGraphUri, (_, args, state) =>
-                        {
-                            resArgs = args;
-                            signal.Set();
-                        }, null);
+                    provider.LoadGraph(h, graphUri, (_, args, state) =>
+                    {
+                        resArgs = args;
+                        signal.Set();
+                    }, null);
 
                     //Wait for response, max 15s
                     signal.WaitOne(WaitDelay);
@@ -104,10 +184,8 @@ namespace VDS.RDF.Storage
                     if (resArgs == null) Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                     if (resArgs.WasSuccessful)
                     {
-                        Console.WriteLine("Async LoadGraph() worked OK, checking for graph equality...");
-                        GraphDiffReport diff = g.Difference(resArgs.Graph);
-                        //if (!diff.AreEqual) TestTools.ShowDifferences(diff);
-                        Assert.True(diff.AreEqual, "[" + provider.GetType().Name + "] Graphs were not equal");
+                        Console.WriteLine("Async LoadGraph() worked OK, checking for empty graph");
+                        Assert.True(resArgs.Graph.IsEmpty, "[" + provider.GetType().Name + "] Expected an empty Graph");
                     }
                     else
                     {
@@ -116,30 +194,50 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                    Fail(provider, "DeleteGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                 }
             }
-            finally 
+            else
             {
-                provider.Dispose();
+                Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
             }
         }
-
-        protected void TestAsyncDelete(IGraph g)
+        finally
         {
-            IAsyncStorageProvider provider = GetAsyncProvider();
-            if (!provider.DeleteSupported)
+            provider.Dispose();
+        }
+    }
+
+    protected void TestAsyncDeleteTriples(IGraph g)
+    {
+        IAsyncStorageProvider provider = GetAsyncProvider();
+        if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0)
+        {
+            Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
+            return;
+        }
+        try
+        {
+            var signal = new ManualResetEvent(false);
+            AsyncStorageCallbackArgs resArgs = null;
+            g.BaseUri = UriFactory.Root.Create(RemoveTriplesUri);
+            provider.SaveGraph(g, (_, args, state) =>
             {
-                Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
-                return;
-            }
-            try
+                resArgs = args;
+                signal.Set();
+            }, null);
+
+            //Wait for response, max 15s
+            signal.WaitOne(WaitDelay);
+
+            if (resArgs == null) Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+            if (resArgs.WasSuccessful)
             {
-                var signal = new ManualResetEvent(false);
-                var graphUri = (g.Name as IUriNode).Uri.AbsoluteUri;
-                AsyncStorageCallbackArgs resArgs = null;
-                g.BaseUri = UriFactory.Root.Create(graphUri);
-                provider.SaveGraph(g, (_, args, state) =>
+                Console.WriteLine("Async SaveGraph() worked OK, trying async UpdateGraph() to remove some triples...");
+                var ts = g.GetTriplesWithPredicate(UriFactory.Root.Create(RdfSpecsHelper.RdfType)).ToList();
+                resArgs = null;
+                signal.Reset();
+                provider.UpdateGraph(RemoveTriplesUri, null, ts, (_, args, state) =>
                 {
                     resArgs = args;
                     signal.Set();
@@ -148,95 +246,15 @@ namespace VDS.RDF.Storage
                 //Wait for response, max 15s
                 signal.WaitOne(WaitDelay);
 
-                if (resArgs == null) Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                if (resArgs == null) Fail(provider, "UpdateGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                 if (resArgs.WasSuccessful)
                 {
-                    Console.WriteLine("Async SaveGraph() worked OK, trying async DeleteGraph() to remove newly added graph...");
+                    Console.WriteLine("Async UpdateGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
+
                     resArgs = null;
                     signal.Reset();
-                    provider.DeleteGraph(graphUri, (_, args, state) =>
-                        {
-                            resArgs = args;
-                            signal.Set();
-                        }, null);
-
-                    //Wait for response, max 15s
-                    signal.WaitOne(WaitDelay);
-
-                    if (resArgs == null) Fail(provider, "DeleteGraph() did not return in " + (WaitDelay / 1000) + " seconds");
-                    if (resArgs.WasSuccessful)
-                    {
-                        Console.WriteLine("Async DeleteGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
-
-                        resArgs = null;
-                        signal.Reset();
-                        var h = new Graph();
-                        provider.LoadGraph(h, graphUri, (_, args, state) =>
-                        {
-                            resArgs = args;
-                            signal.Set();
-                        }, null);
-
-                        //Wait for response, max 15s
-                        signal.WaitOne(WaitDelay);
-
-                        if (resArgs == null) Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
-                        if (resArgs.WasSuccessful)
-                        {
-                            Console.WriteLine("Async LoadGraph() worked OK, checking for empty graph");
-                            Assert.True(resArgs.Graph.IsEmpty, "[" + provider.GetType().Name + "] Expected an empty Graph");
-                        }
-                        else
-                        {
-                            Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
-                        }
-                    }
-                    else
-                    {
-                        Fail(provider, "DeleteGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
-                    }
-                }
-                else
-                {
-                    Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
-                }
-            }
-            finally
-            {
-                provider.Dispose();
-            }
-        }
-
-        protected void TestAsyncDeleteTriples(IGraph g)
-        {
-            IAsyncStorageProvider provider = GetAsyncProvider();
-            if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0)
-            {
-                Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
-                return;
-            }
-            try
-            {
-                var signal = new ManualResetEvent(false);
-                AsyncStorageCallbackArgs resArgs = null;
-                g.BaseUri = UriFactory.Root.Create(RemoveTriplesUri);
-                provider.SaveGraph(g, (_, args, state) =>
-                {
-                    resArgs = args;
-                    signal.Set();
-                }, null);
-
-                //Wait for response, max 15s
-                signal.WaitOne(WaitDelay);
-
-                if (resArgs == null) Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
-                if (resArgs.WasSuccessful)
-                {
-                    Console.WriteLine("Async SaveGraph() worked OK, trying async UpdateGraph() to remove some triples...");
-                    var ts = g.GetTriplesWithPredicate(UriFactory.Root.Create(RdfSpecsHelper.RdfType)).ToList();
-                    resArgs = null;
-                    signal.Reset();
-                    provider.UpdateGraph(RemoveTriplesUri, null, ts, (_, args, state) =>
+                    var h = new Graph();
+                    provider.LoadGraph(h, RemoveTriplesUri, (_, args, state) =>
                     {
                         resArgs = args;
                         signal.Set();
@@ -245,224 +263,13 @@ namespace VDS.RDF.Storage
                     //Wait for response, max 15s
                     signal.WaitOne(WaitDelay);
 
-                    if (resArgs == null) Fail(provider, "UpdateGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                    if (resArgs == null) Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                     if (resArgs.WasSuccessful)
                     {
-                        Console.WriteLine("Async UpdateGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
-
-                        resArgs = null;
-                        signal.Reset();
-                        var h = new Graph();
-                        provider.LoadGraph(h, RemoveTriplesUri, (_, args, state) =>
+                        Console.WriteLine("Async LoadGraph() worked OK, checking for triples removed...");
+                        foreach (Triple t in ts)
                         {
-                            resArgs = args;
-                            signal.Set();
-                        }, null);
-
-                        //Wait for response, max 15s
-                        signal.WaitOne(WaitDelay);
-
-                        if (resArgs == null) Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
-                        if (resArgs.WasSuccessful)
-                        {
-                            Console.WriteLine("Async LoadGraph() worked OK, checking for triples removed...");
-                            foreach (Triple t in ts)
-                            {
-                                Assert.False(resArgs.Graph.ContainsTriple(t), "[" + provider.GetType().Name + "] Removed Triple " + t.ToString() + " is still present");
-                            }
-                        }
-                        else
-                        {
-                            Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
-                        }
-                    }
-                    else
-                    {
-                        Fail(provider, "UpdateGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
-                    }
-                }
-                else
-                {
-                    Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
-                }
-            }
-            finally
-            {
-                provider.Dispose();
-            }
-        }
-
-        protected void TestAsyncAddTriples(IGraph g)
-        {
-            IAsyncStorageProvider provider = GetAsyncProvider();
-            if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0)
-            {
-                Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
-                return;
-            }
-            try
-            {
-                var signal = new ManualResetEvent(false);
-                AsyncStorageCallbackArgs resArgs = null;
-                g.BaseUri = UriFactory.Root.Create(AddTripleUri);
-                provider.SaveGraph(g, (_, args, state) =>
-                {
-                    resArgs = args;
-                    signal.Set();
-                }, null);
-
-                //Wait for response, max 15s
-                signal.WaitOne(WaitDelay);
-
-                if (resArgs == null) Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
-                if (resArgs.WasSuccessful)
-                {
-                    Console.WriteLine("Async SaveGraph() worked OK, trying async UpdateGraph() to add some triples...");
-                    var ts = g.GetTriplesWithPredicate(UriFactory.Root.Create(RdfSpecsHelper.RdfType)).Select(t => new Triple(t.Subject, t.Predicate, g.CreateUriNode(UriFactory.Root.Create("http://example.org/Test")))).ToList();
-                    resArgs = null;
-                    signal.Reset();
-                    provider.UpdateGraph(AddTripleUri, ts, null, (_, args, state) =>
-                    {
-                        resArgs = args;
-                        signal.Set();
-                    }, null);
-
-                    //Wait for response, max 15s
-                    signal.WaitOne(WaitDelay);
-
-                    if (resArgs == null) Fail(provider, "UpdateGraph() did not return in " + (WaitDelay / 1000) + " seconds");
-                    if (resArgs.WasSuccessful)
-                    {
-                        Console.WriteLine("Async UpdateGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
-
-                        resArgs = null;
-                        signal.Reset();
-                        var h = new Graph();
-                        provider.LoadGraph(h, AddTripleUri, (_, args, state) =>
-                        {
-                            resArgs = args;
-                            signal.Set();
-                        }, null);
-
-                        //Wait for response, max 15s
-                        signal.WaitOne(WaitDelay);
-
-                        if (resArgs == null) Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
-                        if (resArgs.WasSuccessful)
-                        {
-                            Console.WriteLine("Async LoadGraph() worked OK, checking for triples added...");
-                            foreach (Triple t in ts)
-                            {
-                                Assert.True(resArgs.Graph.ContainsTriple(t), "[" + provider.GetType().Name + "] Added Triple " + t.ToString() + " is not present");
-                            }
-                        }
-                        else
-                        {
-                            Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
-                        }
-                    }
-                    else
-                    {
-                        Fail(provider, "UpdateGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
-                    }
-                }
-                else
-                {
-                    Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
-                }
-            }
-            finally
-            {
-                provider.Dispose();
-            }
-        }
-
-        protected void TestAsyncListGraphs()
-        {
-            IAsyncStorageProvider provider = GetAsyncProvider();
-            if (!provider.ListGraphsSupported)
-            {
-                Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
-                return;
-            }
-            try
-            {
-                var signal = new ManualResetEvent(false);
-                AsyncStorageCallbackArgs resArgs = null;
-                provider.ListGraphs((_, args, state) =>
-                    {
-                        resArgs = args;
-                        signal.Set();
-                    }, null);
-
-                //Wait, max 15s
-                signal.WaitOne(WaitDelay);
-
-                if (resArgs == null) Fail(provider, "ListGraphs() failed to return in 15s");
-                if (resArgs.WasSuccessful)
-                {
-                    foreach (Uri u in resArgs.GraphUris)
-                    {
-                        Console.WriteLine(u != null ? u.ToString() : "Default Graph");
-                    }
-                }
-                else
-                {
-                    Fail(provider, "ListGraphs() returned an error - " + resArgs.Error.Message, resArgs.Error);
-                }
-            }
-            finally
-            {
-                provider.Dispose();
-            }            
-        }
-
-        protected void TestAsyncQuery(IGraph g)
-        {
-            IAsyncStorageProvider provider = GetAsyncProvider();
-            if (!(provider is IAsyncQueryableStorage))
-            {
-                Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
-                return;
-            }
-            try
-            {
-                var signal = new ManualResetEvent(false);
-                AsyncStorageCallbackArgs resArgs = null;
-                provider.SaveGraph(g, (_, args, state) =>
-                {
-                    resArgs = args;
-                    signal.Set();
-                }, null);
-
-                //Wait for response, max 15s
-                signal.WaitOne(WaitDelay);
-
-                if (resArgs == null) Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
-                if (resArgs.WasSuccessful)
-                {
-                    Console.WriteLine("Async SaveGraph() worked OK, trying async Query() to confirm operation worked as expected");
-
-                    resArgs = null;
-                    signal.Reset();
-                    ((IAsyncQueryableStorage)provider).Query("SELECT * WHERE { GRAPh <" + g.Name + "> { ?s a ?type } }", (_, args, state) =>
-                    {
-                        resArgs = args;
-                        signal.Set();
-                    }, null);
-
-                    //Wait for response, max 15s
-                    signal.WaitOne(WaitDelay);
-
-                    if (resArgs == null) Fail(provider, "Query() did not return in " + (WaitDelay / 1000) + " seconds");
-                    if (resArgs.WasSuccessful)
-                    {
-                        Console.WriteLine("Async Query() worked OK, checking results...");
-                        var results = resArgs.QueryResults as SparqlResultSet;
-                        if (results == null) Fail(provider, "Result Set was empty");
-                        foreach (SparqlResult r in results)
-                        {
-                            Assert.True(g.GetTriplesWithSubjectObject(r["s"], r["type"]).Any(), "Unexpected Type triple " + r["s"].ToString() + " a " + r["type"].ToString() + " was returned");
+                            Assert.False(resArgs.Graph.ContainsTriple(t), "[" + provider.GetType().Name + "] Removed Triple " + t.ToString() + " is still present");
                         }
                     }
                     else
@@ -472,270 +279,463 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                    Fail(provider, "UpdateGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                 }
             }
-            finally
+            else
             {
-                provider.Dispose();
+                Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
             }
         }
+        finally
+        {
+            provider.Dispose();
+        }
+    }
 
-        [SkippableFact]
-        public void StorageAsyncSaveLoad()
+    protected void TestAsyncAddTriples(IGraph g)
+    {
+        IAsyncStorageProvider provider = GetAsyncProvider();
+        if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0)
         {
-            var g = new Graph(new Uri(SaveGraphUri));
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            TestAsyncSaveLoad(g);
+            Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
+            return;
         }
+        try
+        {
+            var signal = new ManualResetEvent(false);
+            AsyncStorageCallbackArgs resArgs = null;
+            g.BaseUri = UriFactory.Root.Create(AddTripleUri);
+            provider.SaveGraph(g, (_, args, state) =>
+            {
+                resArgs = args;
+                signal.Set();
+            }, null);
 
-        [SkippableFact]
-        public void StorageAsyncDeleteGraph()
-        {
-            var g = new Graph(new Uri(DeleteGraphUri + "/" + Guid.NewGuid()));
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            TestAsyncDelete(g);
-        }
-        
-        [SkippableFact]
-        public void StorageAsyncRemoveTriples()
-        {
-            var g = new Graph(new Uri(RemoveTriplesUri));
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            TestAsyncDeleteTriples(g);
-        }
+            //Wait for response, max 15s
+            signal.WaitOne(WaitDelay);
 
-        [SkippableFact]
-        public void StorageAsyncAddTriples()
-        {
-            var g = new Graph(new Uri(AddTripleUri));
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            TestAsyncAddTriples(g);
-        }
+            if (resArgs == null) Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+            if (resArgs.WasSuccessful)
+            {
+                Console.WriteLine("Async SaveGraph() worked OK, trying async UpdateGraph() to add some triples...");
+                var ts = g.GetTriplesWithPredicate(UriFactory.Root.Create(RdfSpecsHelper.RdfType)).Select(t => new Triple(t.Subject, t.Predicate, g.CreateUriNode(UriFactory.Root.Create("http://example.org/Test")))).ToList();
+                resArgs = null;
+                signal.Reset();
+                provider.UpdateGraph(AddTripleUri, ts, null, (_, args, state) =>
+                {
+                    resArgs = args;
+                    signal.Set();
+                }, null);
 
-        [SkippableFact]
-        public void StorageAsyncListGraphs()
-        {
-            TestAsyncListGraphs();
-        }
+                //Wait for response, max 15s
+                signal.WaitOne(WaitDelay);
 
-        [SkippableFact]
-        public void StorageAsyncQuery()
-        {
-            var g = new Graph(new Uri(QueryGraphUri));
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            TestAsyncQuery(g);
+                if (resArgs == null) Fail(provider, "UpdateGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                if (resArgs.WasSuccessful)
+                {
+                    Console.WriteLine("Async UpdateGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
+
+                    resArgs = null;
+                    signal.Reset();
+                    var h = new Graph();
+                    provider.LoadGraph(h, AddTripleUri, (_, args, state) =>
+                    {
+                        resArgs = args;
+                        signal.Set();
+                    }, null);
+
+                    //Wait for response, max 15s
+                    signal.WaitOne(WaitDelay);
+
+                    if (resArgs == null) Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                    if (resArgs.WasSuccessful)
+                    {
+                        Console.WriteLine("Async LoadGraph() worked OK, checking for triples added...");
+                        foreach (Triple t in ts)
+                        {
+                            Assert.True(resArgs.Graph.ContainsTriple(t), "[" + provider.GetType().Name + "] Added Triple " + t.ToString() + " is not present");
+                        }
+                    }
+                    else
+                    {
+                        Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                    }
+                }
+                else
+                {
+                    Fail(provider, "UpdateGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                }
+            }
+            else
+            {
+                Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+            }
         }
+        finally
+        {
+            provider.Dispose();
+        }
+    }
+
+    protected void TestAsyncListGraphs()
+    {
+        IAsyncStorageProvider provider = GetAsyncProvider();
+        if (!provider.ListGraphsSupported)
+        {
+            Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
+            return;
+        }
+        try
+        {
+            var signal = new ManualResetEvent(false);
+            AsyncStorageCallbackArgs resArgs = null;
+            provider.ListGraphs((_, args, state) =>
+                {
+                    resArgs = args;
+                    signal.Set();
+                }, null);
+
+            //Wait, max 15s
+            signal.WaitOne(WaitDelay);
+
+            if (resArgs == null) Fail(provider, "ListGraphs() failed to return in 15s");
+            if (resArgs.WasSuccessful)
+            {
+                foreach (Uri u in resArgs.GraphUris)
+                {
+                    Console.WriteLine(u != null ? u.ToString() : "Default Graph");
+                }
+            }
+            else
+            {
+                Fail(provider, "ListGraphs() returned an error - " + resArgs.Error.Message, resArgs.Error);
+            }
+        }
+        finally
+        {
+            provider.Dispose();
+        }            
+    }
+
+    protected void TestAsyncQuery(IGraph g)
+    {
+        IAsyncStorageProvider provider = GetAsyncProvider();
+        if (!(provider is IAsyncQueryableStorage))
+        {
+            Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
+            return;
+        }
+        try
+        {
+            var signal = new ManualResetEvent(false);
+            AsyncStorageCallbackArgs resArgs = null;
+            provider.SaveGraph(g, (_, args, state) =>
+            {
+                resArgs = args;
+                signal.Set();
+            }, null);
+
+            //Wait for response, max 15s
+            signal.WaitOne(WaitDelay);
+
+            if (resArgs == null) Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+            if (resArgs.WasSuccessful)
+            {
+                Console.WriteLine("Async SaveGraph() worked OK, trying async Query() to confirm operation worked as expected");
+
+                resArgs = null;
+                signal.Reset();
+                ((IAsyncQueryableStorage)provider).Query("SELECT * WHERE { GRAPh <" + g.Name + "> { ?s a ?type } }", (_, args, state) =>
+                {
+                    resArgs = args;
+                    signal.Set();
+                }, null);
+
+                //Wait for response, max 15s
+                signal.WaitOne(WaitDelay);
+
+                if (resArgs == null) Fail(provider, "Query() did not return in " + (WaitDelay / 1000) + " seconds");
+                if (resArgs.WasSuccessful)
+                {
+                    Console.WriteLine("Async Query() worked OK, checking results...");
+                    var results = resArgs.QueryResults as SparqlResultSet;
+                    if (results == null) Fail(provider, "Result Set was empty");
+                    foreach (SparqlResult r in results)
+                    {
+                        Assert.True(g.GetTriplesWithSubjectObject(r["s"], r["type"]).Any(), "Unexpected Type triple " + r["s"].ToString() + " a " + r["type"].ToString() + " was returned");
+                    }
+                }
+                else
+                {
+                    Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                }
+            }
+            else
+            {
+                Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+            }
+        }
+        finally
+        {
+            provider.Dispose();
+        }
+    }
+
+    [Fact]
+    public void StorageAsyncSaveLoad()
+    {
+        var g = new Graph(new Uri(SaveGraphUri));
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        TestAsyncSaveLoad(g);
+    }
+
+    [Fact]
+    public void StorageAsyncDeleteGraph()
+    {
+        var g = new Graph(new Uri(DeleteGraphUri + "/" + Guid.NewGuid()));
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        TestAsyncDelete(g);
+    }
+    
+    [Fact]
+    public void StorageAsyncRemoveTriples()
+    {
+        var g = new Graph(new Uri(RemoveTriplesUri));
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        TestAsyncDeleteTriples(g);
+    }
+
+    [Fact]
+    public void StorageAsyncAddTriples()
+    {
+        var g = new Graph(new Uri(AddTripleUri));
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        TestAsyncAddTriples(g);
+    }
+
+    [Fact]
+    public void StorageAsyncListGraphs()
+    {
+        TestAsyncListGraphs();
+    }
+
+    [Fact]
+    public void StorageAsyncQuery()
+    {
+        var g = new Graph(new Uri(QueryGraphUri));
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        TestAsyncQuery(g);
+    }
 
 #pragma warning restore CS0618 // Type or member is obsolete
-        #endregion
+    #endregion
 
-        #region Task-based async API tests
+    #region Task-based async API tests
 
-        protected async Task TestSaveLoadAsync(IGraph g)
+    protected async Task TestSaveLoadAsync(IGraph g)
+    {
+        IAsyncStorageProvider provider = GetAsyncProvider();
+        try
         {
-            IAsyncStorageProvider provider = GetAsyncProvider();
-            try
-            {
-                await provider.SaveGraphAsync(g, CancellationToken.None);
-                var h = new Graph();
-                await provider.LoadGraphAsync(h, SaveGraphUri2, CancellationToken.None);
-                GraphDiffReport diff = g.Difference(h);
-                Assert.True(diff.AreEqual, "[" + provider.GetType().Name + "] Graphs were not equal");
-            }
-            finally
-            {
-                provider.Dispose();
-            }
+            await provider.SaveGraphAsync(g, CancellationToken.None);
+            var h = new Graph();
+            await provider.LoadGraphAsync(h, SaveGraphUri2, CancellationToken.None);
+            GraphDiffReport diff = g.Difference(h);
+            Assert.True(diff.AreEqual, "[" + provider.GetType().Name + "] Graphs were not equal");
         }
-
-        protected async Task TestDeleteGraphAsync(IGraph g)
+        finally
         {
-            IAsyncStorageProvider provider = GetAsyncProvider();
-            if (!provider.DeleteSupported)
-            {
-                throw new SkipException("[" + provider.GetType().Name +
-                                        "] IO Behaviour required for this test is not supported, skipping test for this provider");
-            }
-
-            try
-            {
-                var graphUri = (g.Name as IUriNode).Uri.AbsoluteUri;
-                await provider.SaveGraphAsync(g, CancellationToken.None);
-                await provider.DeleteGraphAsync(graphUri, CancellationToken.None);
-
-                var h = new Graph();
-                await provider.LoadGraphAsync(h, graphUri, CancellationToken.None);
-                Assert.True(h.IsEmpty, "[" + provider.GetType().Name + "] Expected an empty Graph");
-            }
-            finally
-            {
-                provider.Dispose();
-            }
+            provider.Dispose();
         }
-
-        protected async Task TestDeleteTriplesAsync(IGraph g)
-        {
-            IAsyncStorageProvider provider = GetAsyncProvider();
-            if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0)
-            {
-                throw new SkipException("[" + provider.GetType().Name +
-                                        "] IO Behaviour required for this test is not supported, skipping test for this provider");
-            }
-
-            try
-            {
-                g.BaseUri = UriFactory.Root.Create(RemoveTriplesUri);
-                await provider.SaveGraphAsync(g, CancellationToken.None);
-                var ts = g.GetTriplesWithPredicate(UriFactory.Root.Create(RdfSpecsHelper.RdfType)).ToList();
-                await provider.UpdateGraphAsync(RemoveTriplesUri, null, ts, CancellationToken.None);
-                var h = new Graph();
-                await provider.LoadGraphAsync(h, RemoveTriplesUri, CancellationToken.None);
-
-                foreach (Triple t in ts)
-                {
-                    Assert.False(h.ContainsTriple(t),
-                        "[" + provider.GetType().Name + "] Removed Triple " + t + " is still present");
-                }
-            }
-            finally
-            {
-                provider.Dispose();
-            }
-        }
-
-        protected async Task TestAddTriplesAsync(IGraph g)
-        {
-            IAsyncStorageProvider provider = GetAsyncProvider();
-            if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0)
-            {
-                throw new SkipException(
-                    $"[{provider.GetType().Name}] IO Behaviour required for this test is not supported, skipping test for this provider");
-            }
-
-            try
-            {
-                var emptyGraph = new Graph(new Uri(AddTripleUri));
-                await provider.SaveGraphAsync(emptyGraph, CancellationToken.None);
-                var ts = g.GetTriplesWithPredicate(UriFactory.Root.Create(RdfSpecsHelper.RdfType)).Select(t =>
-                        new Triple(t.Subject, t.Predicate,
-                            g.CreateUriNode(UriFactory.Root.Create("http://example.org/Test"))))
-                    .ToList();
-                await provider.UpdateGraphAsync(AddTripleUri, ts, null, CancellationToken.None);
-
-                var h = new Graph();
-                await provider.LoadGraphAsync(h, AddTripleUri, CancellationToken.None);
-                foreach (Triple t in ts)
-                {
-                    Assert.True(h.ContainsTriple(t),
-                        $"[{provider.GetType().Name}] Added Triple {t} is not present");
-                }
-            }
-            finally
-            {
-                provider.Dispose();
-            }
-        }
-
-        protected async Task TestListGraphsAsync(IGraph g)
-        {
-            IAsyncStorageProvider provider = GetAsyncProvider();
-            if (!provider.ListGraphsSupported)
-            {
-                throw new SkipException("[" + provider.GetType().Name +
-                                        "] IO Behaviour required for this test is not supported, skipping test for this provider");
-            }
-
-            try
-            {
-                g.BaseUri = UriFactory.Root.Create(ListGraphsUri);
-                await provider.SaveGraphAsync(g, CancellationToken.None);
-                IEnumerable<string> graphs = await provider.ListGraphsAsync(CancellationToken.None);
-                Assert.Contains(ListGraphsUri, graphs);
-            }
-            finally
-            {
-                provider.Dispose();
-            }
-        }
-
-        protected async Task TestQueryAsync(IGraph g)
-        {
-            IAsyncStorageProvider provider = GetAsyncProvider();
-            if (!(provider is IAsyncQueryableStorage))
-            {
-                throw new SkipException("[" + provider.GetType().Name +
-                                        "] IO Behaviour required for this test is not supported, skipping test for this provider");
-            }
-
-            try
-            {
-                g.BaseUri = UriFactory.Root.Create(QueryGraphUri);
-                await provider.SaveGraphAsync(g, CancellationToken.None);
-                var results = await ((IAsyncQueryableStorage)provider).QueryAsync(
-                    "SELECT * WHERE { GRAPH <" + QueryGraphUri + "> { ?s a ?type } }", CancellationToken.None);
-                Assert.NotNull(results);
-                SparqlResultSet resultSet = Assert.IsAssignableFrom<SparqlResultSet>(results);
-                foreach (SparqlResult r in resultSet)
-                {
-                    Assert.True(g.GetTriplesWithSubjectObject(r["s"], r["type"]).Any(),
-                        "Unexpected Type triple " + r["s"].ToString() + " a " + r["type"].ToString() +
-                        " was returned");
-                }
-            }
-            finally
-            {
-                provider.Dispose();
-            }
-        }
-
-        [SkippableFact]
-        public async Task StorageSaveLoadAsync()
-        {
-            var g = new Graph(new Uri(SaveGraphUri2));
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            await TestSaveLoadAsync(g);
-        }
-
-        [SkippableFact]
-        public async Task StorageDeleteGraphAsync()
-        {
-            var g = new Graph(new Uri(DeleteGraphUri + "/" + Guid.NewGuid()));
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            await TestDeleteGraphAsync(g);
-        }
-
-        [SkippableFact]
-        public async Task StorageDeleteTriplesAsync()
-        {
-            var g = new Graph(new Uri(RemoveTriplesUri));
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            await TestDeleteTriplesAsync(g);
-        }
-
-        [SkippableFact]
-        public async Task StorageAddTriplesAsync()
-        {
-            var g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            await TestAddTriplesAsync(g);
-        }
-
-        [SkippableFact]
-        public async Task StorageListGraphsAsync()
-        {
-            var g = new Graph(new Uri(ListGraphsUri));
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            await TestListGraphsAsync(g);
-        }
-
-        [SkippableFact]
-        public async Task StorageQueryAsync()
-        {
-            var g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            await TestQueryAsync(g);
-        }
-        #endregion 
     }
+
+    protected async Task TestDeleteGraphAsync(IGraph g)
+    {
+        IAsyncStorageProvider provider = GetAsyncProvider();
+        if (!provider.DeleteSupported)
+        {
+            throw SkipException.ForSkip("[" + provider.GetType().Name +
+                                    "] IO Behaviour required for this test is not supported, skipping test for this provider");
+        }
+
+        try
+        {
+            var graphUri = (g.Name as IUriNode).Uri.AbsoluteUri;
+            await provider.SaveGraphAsync(g, CancellationToken.None);
+            await provider.DeleteGraphAsync(graphUri, CancellationToken.None);
+
+            var h = new Graph();
+            await provider.LoadGraphAsync(h, graphUri, CancellationToken.None);
+            Assert.True(h.IsEmpty, "[" + provider.GetType().Name + "] Expected an empty Graph");
+        }
+        finally
+        {
+            provider.Dispose();
+        }
+    }
+
+    protected async Task TestDeleteTriplesAsync(IGraph g)
+    {
+        IAsyncStorageProvider provider = GetAsyncProvider();
+        if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0)
+        {
+            throw SkipException.ForSkip("[" + provider.GetType().Name +
+                                    "] IO Behaviour required for this test is not supported, skipping test for this provider");
+        }
+
+        try
+        {
+            g.BaseUri = UriFactory.Root.Create(RemoveTriplesUri);
+            await provider.SaveGraphAsync(g, CancellationToken.None);
+            var ts = g.GetTriplesWithPredicate(UriFactory.Root.Create(RdfSpecsHelper.RdfType)).ToList();
+            await provider.UpdateGraphAsync(RemoveTriplesUri, null, ts, CancellationToken.None);
+            var h = new Graph();
+            await provider.LoadGraphAsync(h, RemoveTriplesUri, CancellationToken.None);
+
+            foreach (Triple t in ts)
+            {
+                Assert.False(h.ContainsTriple(t),
+                    "[" + provider.GetType().Name + "] Removed Triple " + t + " is still present");
+            }
+        }
+        finally
+        {
+            provider.Dispose();
+        }
+    }
+
+    protected async Task TestAddTriplesAsync(IGraph g)
+    {
+        IAsyncStorageProvider provider = GetAsyncProvider();
+        if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0)
+        {
+            throw SkipException.ForSkip(
+                $"[{provider.GetType().Name}] IO Behaviour required for this test is not supported, skipping test for this provider");
+        }
+
+        try
+        {
+            var emptyGraph = new Graph(new Uri(AddTripleUri));
+            await provider.SaveGraphAsync(emptyGraph, CancellationToken.None);
+            var ts = g.GetTriplesWithPredicate(UriFactory.Root.Create(RdfSpecsHelper.RdfType)).Select(t =>
+                    new Triple(t.Subject, t.Predicate,
+                        g.CreateUriNode(UriFactory.Root.Create("http://example.org/Test"))))
+                .ToList();
+            await provider.UpdateGraphAsync(AddTripleUri, ts, null, CancellationToken.None);
+
+            var h = new Graph();
+            await provider.LoadGraphAsync(h, AddTripleUri, CancellationToken.None);
+            foreach (Triple t in ts)
+            {
+                Assert.True(h.ContainsTriple(t),
+                    $"[{provider.GetType().Name}] Added Triple {t} is not present");
+            }
+        }
+        finally
+        {
+            provider.Dispose();
+        }
+    }
+
+    protected async Task TestListGraphsAsync(IGraph g)
+    {
+        IAsyncStorageProvider provider = GetAsyncProvider();
+        if (!provider.ListGraphsSupported)
+        {
+            throw SkipException.ForSkip("[" + provider.GetType().Name +
+                                    "] IO Behaviour required for this test is not supported, skipping test for this provider");
+        }
+
+        try
+        {
+            g.BaseUri = UriFactory.Root.Create(ListGraphsUri);
+            await provider.SaveGraphAsync(g, CancellationToken.None);
+            IEnumerable<string> graphs = await provider.ListGraphsAsync(CancellationToken.None);
+            Assert.Contains(ListGraphsUri, graphs);
+        }
+        finally
+        {
+            provider.Dispose();
+        }
+    }
+
+    protected async Task TestQueryAsync(IGraph g)
+    {
+        IAsyncStorageProvider provider = GetAsyncProvider();
+        if (!(provider is IAsyncQueryableStorage))
+        {
+            throw SkipException.ForSkip("[" + provider.GetType().Name +
+                                    "] IO Behaviour required for this test is not supported, skipping test for this provider");
+        }
+
+        try
+        {
+            g.BaseUri = UriFactory.Root.Create(QueryGraphUri);
+            await provider.SaveGraphAsync(g, CancellationToken.None);
+            var results = await ((IAsyncQueryableStorage)provider).QueryAsync(
+                "SELECT * WHERE { GRAPH <" + QueryGraphUri + "> { ?s a ?type } }", CancellationToken.None);
+            Assert.NotNull(results);
+            SparqlResultSet resultSet = Assert.IsType<SparqlResultSet>(results, exactMatch: false);
+            foreach (SparqlResult r in resultSet)
+            {
+                Assert.True(g.GetTriplesWithSubjectObject(r["s"], r["type"]).Any(),
+                    "Unexpected Type triple " + r["s"].ToString() + " a " + r["type"].ToString() +
+                    " was returned");
+            }
+        }
+        finally
+        {
+            provider.Dispose();
+        }
+    }
+
+    [Fact]
+    public async Task StorageSaveLoadAsync()
+    {
+        var g = new Graph(new Uri(SaveGraphUri2));
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        await TestSaveLoadAsync(g);
+    }
+
+    [Fact]
+    public async Task StorageDeleteGraphAsync()
+    {
+        var g = new Graph(new Uri(DeleteGraphUri + "/" + Guid.NewGuid()));
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        await TestDeleteGraphAsync(g);
+    }
+
+    [Fact]
+    public async Task StorageDeleteTriplesAsync()
+    {
+        var g = new Graph(new Uri(RemoveTriplesUri));
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        await TestDeleteTriplesAsync(g);
+    }
+
+    [Fact]
+    public async Task StorageAddTriplesAsync()
+    {
+        var g = new Graph();
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        await TestAddTriplesAsync(g);
+    }
+
+    [Fact]
+    public async Task StorageListGraphsAsync()
+    {
+        var g = new Graph(new Uri(ListGraphsUri));
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        await TestListGraphsAsync(g);
+    }
+
+    [Fact]
+    public async Task StorageQueryAsync()
+    {
+        var g = new Graph();
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        await TestQueryAsync(g);
+    }
+    #endregion 
 }

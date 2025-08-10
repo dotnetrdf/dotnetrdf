@@ -29,30 +29,29 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Shacl
+namespace VDS.RDF.Shacl;
+
+internal class PrefixDeclaration : GraphWrapperNode
 {
-    internal class PrefixDeclaration : GraphWrapperNode
+    [DebuggerStepThrough]
+    internal PrefixDeclaration(INode node, IGraph graph)
+        : base(node, graph)
     {
-        [DebuggerStepThrough]
-        internal PrefixDeclaration(INode node, IGraph graph)
-            : base(node, graph)
-        {
-        }
+    }
 
-        internal string Prefix
+    internal string Prefix
+    {
+        get
         {
-            get
-            {
-                return Vocabulary.Prefix.ObjectsOf(this).Single().AsValuedNode().AsString();
-            }
+            return Vocabulary.Prefix.ObjectsOf(this).Single().AsValuedNode().AsString();
         }
+    }
 
-        internal Uri Namespace
+    internal Uri Namespace
+    {
+        get
         {
-            get
-            {
-                return Graph.UriFactory.Create(((ILiteralNode)Vocabulary.Namespace.ObjectsOf(this).Single()).Value);
-            }
+            return Graph.UriFactory.Create(((ILiteralNode)Vocabulary.Namespace.ObjectsOf(this).Single()).Value);
         }
     }
 }

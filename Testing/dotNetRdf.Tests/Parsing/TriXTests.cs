@@ -31,102 +31,101 @@ using Xunit;
 using VDS.RDF.Writing;
 using System.Xml;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+
+public class TriXTests
 {
+    private TriXWriter _writer;
+    private TriXParser _parser;
 
-    public class TriXTests
+    public TriXTests()
     {
-        private TriXWriter _writer;
-        private TriXParser _parser;
+        _writer = new TriXWriter();
+        _parser = new TriXParser();
+    }
 
-        public TriXTests()
-        {
-            _writer = new TriXWriter();
-            _parser = new TriXParser();
-        }
+    [Fact]
+    [Trait("Coverage", "Skip")]
+    public void ParsingTriXPerformanceCore351()
+    {
+        //Test case from CORE-351
+        var store = new TripleStore();
+        var timer = new Stopwatch();
+        timer.Start();
+        _parser.Load(store, Path.Combine("resources", "lib_p11_ontology.trix"));
+        timer.Stop();
+        Console.WriteLine("Took " + timer.Elapsed + " to read from disk");
+    }
 
-        [Fact]
-        [Trait("Coverage", "Skip")]
-        public void ParsingTriXPerformanceCore351()
-        {
-            //Test case from CORE-351
-            var store = new TripleStore();
-            var timer = new Stopwatch();
-            timer.Start();
-            _parser.Load(store, Path.Combine("resources", "lib_p11_ontology.trix"));
-            timer.Stop();
-            Console.WriteLine("Took " + timer.Elapsed + " to read from disk");
-        }
+    [Theory]
+    [Trait("Coverage", "Skip")]
+    [InlineData(1000, 100)]
+    public void ParsingTriXPerformance_LargeDataset(int numGraphs, int triplesPerGraph)
+    {
+        ParsingTriXPerformance(numGraphs, triplesPerGraph);
+    }
 
-        [Theory]
-        [Trait("Coverage", "Skip")]
-        [InlineData(1000, 100)]
-        public void ParsingTriXPerformance_LargeDataset(int numGraphs, int triplesPerGraph)
+    [Theory]
+    [InlineData(1000, 10)]
+    [InlineData(10, 1000)]
+    [InlineData(1, 100)]
+    public void ParsingTriXPerformance(int numGraphs, int triplesPerGraph)
+    {
+        //Generate data
+        var store = new TripleStore();
+        for (var i = 1; i <= numGraphs; i++)
         {
-            ParsingTriXPerformance(numGraphs, triplesPerGraph);
-        }
-
-        [Theory]
-        [InlineData(1000, 10)]
-        [InlineData(10, 1000)]
-        [InlineData(1, 100)]
-        public void ParsingTriXPerformance(int numGraphs, int triplesPerGraph)
-        {
-            //Generate data
-            var store = new TripleStore();
-            for (var i = 1; i <= numGraphs; i++)
+            var g = new Graph(new UriNode(new Uri("http://example.org/graph/" + i)))
             {
-                var g = new Graph(new UriNode(new Uri("http://example.org/graph/" + i)))
-                {
-                    BaseUri = new Uri("http://example.org/graph/" + i)
-                };
+                BaseUri = new Uri("http://example.org/graph/" + i)
+            };
 
-                for (var j = 1; j <= triplesPerGraph; j++)
-                {
-                    g.Assert(new Triple(g.CreateUriNode(UriFactory.Root.Create("http://example.org/subject/" + j)), g.CreateUriNode(UriFactory.Root.Create("http://example.org/predicate/" + j)), (j).ToLiteral(g)));
-                }
-                store.Add(g);
+            for (var j = 1; j <= triplesPerGraph; j++)
+            {
+                g.Assert(new Triple(g.CreateUriNode(UriFactory.Root.Create("http://example.org/subject/" + j)), g.CreateUriNode(UriFactory.Root.Create("http://example.org/predicate/" + j)), (j).ToLiteral(g)));
             }
-
-            Console.WriteLine("Generated dataset with " + numGraphs + " named graphs (" + triplesPerGraph + " triples/graph) with a total of " + (numGraphs * triplesPerGraph) + " triples");
-
-            var timer = new Stopwatch();
-
-            //Write out to disk
-            timer.Start();
-            _writer.Save(store, "temp.trix");
-            timer.Stop();
-            Console.WriteLine("Took " + timer.Elapsed + " to write to disk");
-            timer.Reset();
-
-            //Read back from disk
-            var store2 = new TripleStore();
-            timer.Start();
-            _parser.Load(store2, "temp.trix");
-            timer.Stop();
-            Console.WriteLine("Took " + timer.Elapsed + " to read from disk");
-
-            Assert.Equal(numGraphs * triplesPerGraph, store2.Graphs.Sum(g => g.Triples.Count));
-
+            store.Add(g);
         }
 
-        [Fact]
-        public void ParseTriXWithEmptyGraph()
-        {
-            var store = new TripleStore();
-            _parser.Load(store, Path.Combine("resources", "trix", "emptygraph.trix"));
-            Assert.Equal(0, store.Graphs.Count);
-        }
+        Console.WriteLine("Generated dataset with " + numGraphs + " named graphs (" + triplesPerGraph + " triples/graph) with a total of " + (numGraphs * triplesPerGraph) + " triples");
 
-        [Fact]
-        public void EntityParsingCanBeDisabled()
-        {
-            var store = new TripleStore();
-            var parser = new TriXParser();
-            parser.XmlReaderSettings.DtdProcessing = DtdProcessing.Prohibit;
-            var thrown = Assert.Throws<RdfParseException>(() =>
-            parser.Load(store, System.IO.Path.Combine("resources", "trix", "entities.trix")));
-            Assert.IsType<XmlException>(thrown.InnerException);
-        }
+        var timer = new Stopwatch();
+
+        //Write out to disk
+        timer.Start();
+        _writer.Save(store, "temp.trix");
+        timer.Stop();
+        Console.WriteLine("Took " + timer.Elapsed + " to write to disk");
+        timer.Reset();
+
+        //Read back from disk
+        var store2 = new TripleStore();
+        timer.Start();
+        _parser.Load(store2, "temp.trix");
+        timer.Stop();
+        Console.WriteLine("Took " + timer.Elapsed + " to read from disk");
+
+        Assert.Equal(numGraphs * triplesPerGraph, store2.Graphs.Sum(g => g.Triples.Count));
+
+    }
+
+    [Fact]
+    public void ParseTriXWithEmptyGraph()
+    {
+        var store = new TripleStore();
+        _parser.Load(store, Path.Combine("resources", "trix", "emptygraph.trix"));
+        Assert.Equal(0, store.Graphs.Count);
+    }
+
+    [Fact]
+    public void EntityParsingCanBeDisabled()
+    {
+        var store = new TripleStore();
+        var parser = new TriXParser();
+        parser.XmlReaderSettings.DtdProcessing = DtdProcessing.Prohibit;
+        var thrown = Assert.Throws<RdfParseException>(() =>
+        parser.Load(store, System.IO.Path.Combine("resources", "trix", "entities.trix")));
+        Assert.IsType<XmlException>(thrown.InnerException);
     }
 }

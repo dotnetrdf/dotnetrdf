@@ -26,46 +26,45 @@
 
 using System;
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+/// <summary>
+/// The Configuration Loader is responsible for the loading of Configuration information 
+/// and objects based upon information encoded in a Graph but more generally may be used 
+/// for the loading of any type of object whose configuration has been loaded in a Graph 
+/// and for which a relevant <see cref="IObjectFactory">IObjectFactory</see> is available.
+/// </summary>
+public interface IConfigurationLoader
 {
     /// <summary>
-    /// The Configuration Loader is responsible for the loading of Configuration information 
-    /// and objects based upon information encoded in a Graph but more generally may be used 
-    /// for the loading of any type of object whose configuration has been loaded in a Graph 
-    /// and for which a relevant <see cref="IObjectFactory">IObjectFactory</see> is available.
+    /// Loads the Object identified by the given URI as an object of the given type based on information from the Configuration Graph.
     /// </summary>
-    public interface IConfigurationLoader
-    {
-        /// <summary>
-        /// Loads the Object identified by the given URI as an object of the given type based on information from the Configuration Graph.
-        /// </summary>
-        /// <remarks>
-        /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
-        /// </remarks>
-        T LoadObject<T>(Uri objectIdentifier);
+    /// <remarks>
+    /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
+    /// </remarks>
+    T LoadObject<T>(Uri objectIdentifier);
 
-        /// <summary>
-        /// Loads the Object identified by the given blank node identifier as an object of the given type based on information from the Configuration Graph.
-        /// </summary>
-        /// <remarks>
-        /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
-        /// </remarks>
-        T LoadObject<T>(string blankNodeIdentifier);
+    /// <summary>
+    /// Loads the Object identified by the given blank node identifier as an object of the given type based on information from the Configuration Graph.
+    /// </summary>
+    /// <remarks>
+    /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
+    /// </remarks>
+    T LoadObject<T>(string blankNodeIdentifier);
 
-        /// <summary>
-        /// Loads the Object identified by the given blank node identifier as an <see cref="object"/>.
-        /// </summary>
-        /// <remarks>
-        /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
-        /// </remarks>
-        object LoadObject(string blankNodeIdentifier);
+    /// <summary>
+    /// Loads the Object identified by the given blank node identifier as an <see cref="object"/>.
+    /// </summary>
+    /// <remarks>
+    /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
+    /// </remarks>
+    object LoadObject(string blankNodeIdentifier);
 
-        /// <summary>
-        /// Loads the Object identified by the given URI as an <see cref="object"/>.
-        /// </summary>
-        /// <remarks>
-        /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
-        /// </remarks>
-        object LoadObject(Uri objectIdentifier);
-    }
+    /// <summary>
+    /// Loads the Object identified by the given URI as an <see cref="object"/>.
+    /// </summary>
+    /// <remarks>
+    /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
+    /// </remarks>
+    object LoadObject(Uri objectIdentifier);
 }

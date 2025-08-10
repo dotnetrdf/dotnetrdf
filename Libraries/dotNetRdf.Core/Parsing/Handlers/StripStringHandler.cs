@@ -27,89 +27,88 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers;
+
+/// <summary>
+/// An RDF Handler which wraps another handler, stripping explicit xsd:string datatypes on object literals.
+/// </summary>
+public class StripStringHandler : BaseRdfHandler, IWrappingRdfHandler
 {
+    private IRdfHandler _handler;
+    private static readonly Uri DataTypeString = new Uri(XmlSpecsHelper.XmlSchemaDataTypeString);
+
     /// <summary>
-    /// An RDF Handler which wraps another handler, stripping explicit xsd:string datatypes on object literals.
+    /// Creates a new StripStringHandler.
     /// </summary>
-    public class StripStringHandler : BaseRdfHandler, IWrappingRdfHandler
+    /// <param name="handler">Inner handler to use.</param>
+    public StripStringHandler(IRdfHandler handler) : base(handler)
     {
-        private IRdfHandler _handler;
-        private static readonly Uri DataTypeString = new Uri(XmlSpecsHelper.XmlSchemaDataTypeString);
-
-        /// <summary>
-        /// Creates a new StripStringHandler.
-        /// </summary>
-        /// <param name="handler">Inner handler to use.</param>
-        public StripStringHandler(IRdfHandler handler) : base(handler)
-        {
-            _handler = handler ?? throw new ArgumentNullException(nameof(handler));
-        }
-
-        /// <summary>
-        /// Handles triples by stripping explicit xsd:string datatype on object literals before delegating to inner handler.
-        /// </summary>
-        protected override bool HandleTripleInternal(Triple t)
-        {
-            return _handler.HandleTriple(StripString(t));
-        }
-
-
-        /// <summary>
-        /// Handles triples by stripping explicit xsd:string datatype on object literals before delegating to inner handler.
-        /// </summary>
-        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
-        {
-            return _handler.HandleQuad(StripString(t), graph);
-        }
-
-        private static Triple StripString(Triple t)
-        {
-            if (t.Object is ILiteralNode literal && EqualityHelper.AreUrisEqual(literal.DataType, DataTypeString))
-            {
-                return new Triple(t.Subject, t.Predicate, new LiteralNode(literal.Value, false));
-            }
-
-            return t;
-        }
-
-        #region Delegate to inner handler
-
-        /// <summary>
-        /// Gets the handler wrapped by this handler.
-        /// </summary>
-        public IEnumerable<IRdfHandler> InnerHandlers => _handler.AsEnumerable();
-
-        /// <summary>
-        /// Starts inner handler.
-        /// </summary>
-        protected override void StartRdfInternal() => _handler.StartRdf();
-
-        /// <summary>
-        /// Ends inner handler.
-        /// </summary>
-        protected override void EndRdfInternal(bool ok) => _handler.EndRdf(ok);
-
-        /// <summary>
-        /// Delegates base Uri handling to inner handler.
-        /// </summary>
-        protected override bool HandleBaseUriInternal(Uri baseUri) => _handler.HandleBaseUri(baseUri);
-
-        /// <summary>
-        /// Delegates namespace handling to inner handler.
-        /// </summary>
-        protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri) => _handler.HandleNamespace(prefix, namespaceUri);
-        
-        /// <summary>
-        /// Delegates comment handling to inner handler.
-        /// </summary>
-        protected override bool HandleCommentInternal(string text) => (_handler as ICommentRdfHandler)?.HandleComment(text) ?? true;
-
-        /// <summary>
-        /// Gets whether inner handler accepts all triples.
-        /// </summary>
-        public override bool AcceptsAll => _handler.AcceptsAll;
-
-        #endregion
+        _handler = handler ?? throw new ArgumentNullException(nameof(handler));
     }
+
+    /// <summary>
+    /// Handles triples by stripping explicit xsd:string datatype on object literals before delegating to inner handler.
+    /// </summary>
+    protected override bool HandleTripleInternal(Triple t)
+    {
+        return _handler.HandleTriple(StripString(t));
+    }
+
+
+    /// <summary>
+    /// Handles triples by stripping explicit xsd:string datatype on object literals before delegating to inner handler.
+    /// </summary>
+    protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+    {
+        return _handler.HandleQuad(StripString(t), graph);
+    }
+
+    private static Triple StripString(Triple t)
+    {
+        if (t.Object is ILiteralNode literal && EqualityHelper.AreUrisEqual(literal.DataType, DataTypeString))
+        {
+            return new Triple(t.Subject, t.Predicate, new LiteralNode(literal.Value, false));
+        }
+
+        return t;
+    }
+
+    #region Delegate to inner handler
+
+    /// <summary>
+    /// Gets the handler wrapped by this handler.
+    /// </summary>
+    public IEnumerable<IRdfHandler> InnerHandlers => _handler.AsEnumerable();
+
+    /// <summary>
+    /// Starts inner handler.
+    /// </summary>
+    protected override void StartRdfInternal() => _handler.StartRdf();
+
+    /// <summary>
+    /// Ends inner handler.
+    /// </summary>
+    protected override void EndRdfInternal(bool ok) => _handler.EndRdf(ok);
+
+    /// <summary>
+    /// Delegates base Uri handling to inner handler.
+    /// </summary>
+    protected override bool HandleBaseUriInternal(Uri baseUri) => _handler.HandleBaseUri(baseUri);
+
+    /// <summary>
+    /// Delegates namespace handling to inner handler.
+    /// </summary>
+    protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri) => _handler.HandleNamespace(prefix, namespaceUri);
+    
+    /// <summary>
+    /// Delegates comment handling to inner handler.
+    /// </summary>
+    protected override bool HandleCommentInternal(string text) => (_handler as ICommentRdfHandler)?.HandleComment(text) ?? true;
+
+    /// <summary>
+    /// Gets whether inner handler accepts all triples.
+    /// </summary>
+    public override bool AcceptsAll => _handler.AcceptsAll;
+
+    #endregion
 }

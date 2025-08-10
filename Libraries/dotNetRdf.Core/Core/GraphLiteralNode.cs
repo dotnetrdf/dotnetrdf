@@ -26,48 +26,47 @@
 
 using System;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Class for representing Graph Literal Nodes which are supported in highly expressive RDF syntaxes like Notation 3.
+/// </summary>
+public class GraphLiteralNode 
+    : BaseGraphLiteralNode, IEquatable<GraphLiteralNode>, IComparable<GraphLiteralNode>
 {
     /// <summary>
-    /// Class for representing Graph Literal Nodes which are supported in highly expressive RDF syntaxes like Notation 3.
+    /// Creates a new graph literal node whose value is an empty sub-graph.
     /// </summary>
-    public class GraphLiteralNode 
-        : BaseGraphLiteralNode, IEquatable<GraphLiteralNode>, IComparable<GraphLiteralNode>
+    public GraphLiteralNode() {}
+
+    /// <summary>
+    /// Creates a new Graph Literal Node whose value is the specified sub-graph.
+    /// </summary>
+    /// <param name="subGraph">Sub-graph this node represents.</param>
+    public GraphLiteralNode(IGraph subGraph)
+        : base(subGraph) { }
+
+    /// <summary>
+    /// Implementation of Compare To for Graph Literal Nodes.
+    /// </summary>
+    /// <param name="other">Graph Literal Node to Compare To.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Simply invokes the more general implementation of this method.
+    /// </remarks>
+    public int CompareTo(GraphLiteralNode other)
     {
-        /// <summary>
-        /// Creates a new graph literal node whose value is an empty sub-graph.
-        /// </summary>
-        public GraphLiteralNode() {}
-
-        /// <summary>
-        /// Creates a new Graph Literal Node whose value is the specified sub-graph.
-        /// </summary>
-        /// <param name="subGraph">Sub-graph this node represents.</param>
-        public GraphLiteralNode(IGraph subGraph)
-            : base(subGraph) { }
-
-        /// <summary>
-        /// Implementation of Compare To for Graph Literal Nodes.
-        /// </summary>
-        /// <param name="other">Graph Literal Node to Compare To.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Simply invokes the more general implementation of this method.
-        /// </remarks>
-        public int CompareTo(GraphLiteralNode other)
-        {
-            return CompareTo((IGraphLiteralNode)other);
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Graph Literal Node.
-        /// </summary>
-        /// <param name="other">Graph Literal Node.</param>
-        /// <returns></returns>
-        public bool Equals(GraphLiteralNode other)
-        {
-            return base.Equals((IGraphLiteralNode)other);
-        }
-
+        return CompareTo((IGraphLiteralNode)other);
     }
+
+    /// <summary>
+    /// Determines whether this Node is equal to a Graph Literal Node.
+    /// </summary>
+    /// <param name="other">Graph Literal Node.</param>
+    /// <returns></returns>
+    public bool Equals(GraphLiteralNode other)
+    {
+        return base.Equals((IGraphLiteralNode)other);
+    }
+
 }

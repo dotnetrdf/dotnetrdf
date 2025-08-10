@@ -25,67 +25,66 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 
-namespace VDS.RDF.Parsing.Suites
+namespace VDS.RDF.Parsing.Suites;
+
+
+public abstract class BaseDatasetParserSuite : BaseParserSuite<IStoreReader, TripleStore>
 {
-
-    public abstract class BaseDatasetParserSuite : BaseParserSuite<IStoreReader, TripleStore>
+    protected BaseDatasetParserSuite(IStoreReader testParser, IStoreReader resultsParser, String baseDir)
+        : base(testParser, resultsParser, baseDir)
     {
-        protected BaseDatasetParserSuite(IStoreReader testParser, IStoreReader resultsParser, String baseDir)
-            : base(testParser, resultsParser, baseDir)
+    }
+
+    protected override TripleStore TryParseTestInput(string file)
+    {
+        var actual = new TripleStore();
+        Parser.Load(actual, file);
+        return actual;
+    }
+
+    protected override void TryValidateResults(string testName, string resultFile, TripleStore actual)
+    {
+        var expected = new TripleStore();
+        ResultsParser.Load(expected, resultFile);
+
+        if (AreEqual(expected, actual))
         {
+            Console.WriteLine("Parsed Dataset matches Expected Dataset (Test Passed)");
+            PassedTest(testName);
+        }
+        else
+        {
+            Console.WriteLine("Parsed Dataset did not match Expected Dataset (Test Failed)");
+            FailedTest(testName, "Parsed Dataset did not match Expected Dataset");
+        }
+    }
+
+    protected override string FileExtension => ".nt";
+
+    private static bool AreEqual(TripleStore expected, TripleStore actual)
+    {
+        if (expected.Graphs.Count != actual.Graphs.Count)
+        {
+            Console.WriteLine("Expected " + expected.Graphs.Count + " graphs but got " + actual.Graphs.Count);
+            return false;
         }
 
-        protected override TripleStore TryParseTestInput(string file)
+        foreach (IRefNode expectGraphName in expected.Graphs.GraphNames)
         {
-            var actual = new TripleStore();
-            Parser.Load(actual, file);
-            return actual;
-        }
-
-        protected override void TryValidateResults(string testName, string resultFile, TripleStore actual)
-        {
-            var expected = new TripleStore();
-            ResultsParser.Load(expected, resultFile);
-
-            if (AreEqual(expected, actual))
+            if (!actual.HasGraph(expectGraphName))
             {
-                Console.WriteLine("Parsed Dataset matches Expected Dataset (Test Passed)");
-                PassedTest(testName);
-            }
-            else
-            {
-                Console.WriteLine("Parsed Dataset did not match Expected Dataset (Test Failed)");
-                FailedTest(testName, "Parsed Dataset did not match Expected Dataset");
-            }
-        }
-
-        protected override string FileExtension => ".nt";
-
-        private static bool AreEqual(TripleStore expected, TripleStore actual)
-        {
-            if (expected.Graphs.Count != actual.Graphs.Count)
-            {
-                Console.WriteLine("Expected " + expected.Graphs.Count + " graphs but got " + actual.Graphs.Count);
+                Console.WriteLine("Expected Graph {0} missing", expectGraphName.ToSafeString());
                 return false;
             }
-
-            foreach (IRefNode expectGraphName in expected.Graphs.GraphNames)
+            GraphDiffReport diff = expected[expectGraphName].Difference(actual[expectGraphName]);
+            if (!diff.AreEqual)
             {
-                if (!actual.HasGraph(expectGraphName))
-                {
-                    Console.WriteLine("Expected Graph {0} missing", expectGraphName.ToSafeString());
-                    return false;
-                }
-                GraphDiffReport diff = expected[expectGraphName].Difference(actual[expectGraphName]);
-                if (!diff.AreEqual)
-                {
-                    Console.WriteLine("Expected Graph {0} not as expected", expectGraphName.ToSafeString());
-                    TestTools.ShowDifferences(diff);
-                    return false;
-                }
+                Console.WriteLine("Expected Graph {0} not as expected", expectGraphName.ToSafeString());
+                TestTools.ShowDifferences(diff);
+                return false;
             }
-
-            return true;
         }
+
+        return true;
     }
 }

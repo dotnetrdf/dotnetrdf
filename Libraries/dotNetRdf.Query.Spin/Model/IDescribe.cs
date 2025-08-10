@@ -26,21 +26,20 @@
 
 using System.Collections.Generic;
 
-namespace VDS.RDF.Query.Spin.Model
-{
-    /**
-     * A DESCRIBE query.
-     * 
-     * @author Holger Knublauch
-     */
-    internal interface IDescribe : ISolutionModifierQuery
-    {
+namespace VDS.RDF.Query.Spin.Model;
 
-        /**
-         * Gets the result nodes of this query.  The resulting Resources will be
-         * automatically typecast into Variable if they are variables.
-         * @return a List of Resources (or Variables)
-         */
-        List<IResource> getResultNodes();
-    }
+/**
+ * A DESCRIBE query.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface IDescribe : ISolutionModifierQuery
+{
+
+    /**
+     * Gets the result nodes of this query.  The resulting Resources will be
+     * automatically typecast into Variable if they are variables.
+     * @return a List of Resources (or Variables)
+     */
+    List<IResource> getResultNodes();
 }

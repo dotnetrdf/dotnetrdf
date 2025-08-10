@@ -6,7 +6,7 @@
     <!-- Default Build Options -->
     <CodeAnalysisRuleSet>../../dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <TargetFrameworks>net6.0;net8.0;net472</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <LangVersion>latest</LangVersion>

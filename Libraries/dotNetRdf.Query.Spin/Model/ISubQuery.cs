@@ -24,23 +24,22 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+
+/**
+ * A nested sub-query.  Right now, only SELECT queries seem to be allowed
+ * but this might change in the future.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface ISubQuery : IElement
 {
 
-
     /**
-     * A nested sub-query.  Right now, only SELECT queries seem to be allowed
-     * but this might change in the future.
-     * 
-     * @author Holger Knublauch
+     * Gets the nested query.
+     * @return the query
      */
-    internal interface ISubQuery : IElement
-    {
-
-        /**
-         * Gets the nested query.
-         * @return the query
-         */
-        IQuery getQuery();
-    }
+    IQuery getQuery();
 }

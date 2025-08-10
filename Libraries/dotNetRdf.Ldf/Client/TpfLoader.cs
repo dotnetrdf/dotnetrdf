@@ -49,7 +49,16 @@ internal class TpfLoader : IDisposable
 
     public void Dispose()
     {
-        Data.Dispose();
-        Metadata.Dispose();
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            Data.Dispose();
+            Metadata.Dispose();
+        }
     }
 }

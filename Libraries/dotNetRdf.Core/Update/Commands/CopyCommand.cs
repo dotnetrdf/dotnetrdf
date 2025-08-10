@@ -26,50 +26,49 @@
 
 using System;
 
-namespace VDS.RDF.Update.Commands
+namespace VDS.RDF.Update.Commands;
+
+/// <summary>
+/// Represents the SPARQL Update COPY Command.
+/// </summary>
+public class CopyCommand 
+    : BaseTransferCommand
 {
     /// <summary>
-    /// Represents the SPARQL Update COPY Command.
+    /// Creates a Command which Copies the contents of one Graph to another overwriting the destination Graph.
     /// </summary>
-    public class CopyCommand 
-        : BaseTransferCommand
+    /// <param name="sourceUri">Source Graph URI.</param>
+    /// <param name="destUri">Destination Graph URI.</param>
+    /// <param name="silent">Whether errors should be suppressed.</param>
+    [Obsolete("Replaced by CopyCommand(IRefNode, IRefNode, bool)")]
+    public CopyCommand(Uri sourceUri, Uri destUri, bool silent)
+        : base(SparqlUpdateCommandType.Copy, sourceUri, destUri, silent) { }
+
+    /// <summary>
+    /// Creates a Command which Copies the contents of one Graph to another overwriting the destination Graph.
+    /// </summary>
+    /// <param name="sourceUri">Source Graph URI.</param>
+    /// <param name="destUri">Destination Graph URI.</param>
+    [Obsolete("Replaced by CopyCommand(IRefNode, IRefNode, bool)")]
+    public CopyCommand(Uri sourceUri, Uri destUri)
+        : base(SparqlUpdateCommandType.Copy, sourceUri, destUri) { }
+
+    /// <summary>
+    /// Creates a Command which Copies the contents of one Graph to another overwriting the destination Graph.
+    /// </summary>
+    /// <param name="sourceName">Source Graph name.</param>
+    /// <param name="destName">Destination Graph name.</param>
+    /// <param name="silent">Whether errors should be suppressed.</param>
+    public CopyCommand(IRefNode sourceName, IRefNode destName, bool silent = false)
+        : base(SparqlUpdateCommandType.Copy, sourceName, destName, silent) { }
+
+
+    /// <summary>
+    /// Processes the Command using the given Update Processor.
+    /// </summary>
+    /// <param name="processor">SPARQL Update Processor.</param>
+    public override void Process(ISparqlUpdateProcessor processor)
     {
-        /// <summary>
-        /// Creates a Command which Copies the contents of one Graph to another overwriting the destination Graph.
-        /// </summary>
-        /// <param name="sourceUri">Source Graph URI.</param>
-        /// <param name="destUri">Destination Graph URI.</param>
-        /// <param name="silent">Whether errors should be suppressed.</param>
-        [Obsolete("Replaced by CopyCommand(IRefNode, IRefNode, bool)")]
-        public CopyCommand(Uri sourceUri, Uri destUri, bool silent)
-            : base(SparqlUpdateCommandType.Copy, sourceUri, destUri, silent) { }
-
-        /// <summary>
-        /// Creates a Command which Copies the contents of one Graph to another overwriting the destination Graph.
-        /// </summary>
-        /// <param name="sourceUri">Source Graph URI.</param>
-        /// <param name="destUri">Destination Graph URI.</param>
-        [Obsolete("Replaced by CopyCommand(IRefNode, IRefNode, bool)")]
-        public CopyCommand(Uri sourceUri, Uri destUri)
-            : base(SparqlUpdateCommandType.Copy, sourceUri, destUri) { }
-
-        /// <summary>
-        /// Creates a Command which Copies the contents of one Graph to another overwriting the destination Graph.
-        /// </summary>
-        /// <param name="sourceName">Source Graph name.</param>
-        /// <param name="destName">Destination Graph name.</param>
-        /// <param name="silent">Whether errors should be suppressed.</param>
-        public CopyCommand(IRefNode sourceName, IRefNode destName, bool silent = false)
-            : base(SparqlUpdateCommandType.Copy, sourceName, destName, silent) { }
-
-
-        /// <summary>
-        /// Processes the Command using the given Update Processor.
-        /// </summary>
-        /// <param name="processor">SPARQL Update Processor.</param>
-        public override void Process(ISparqlUpdateProcessor processor)
-        {
-            processor.ProcessCopyCommand(this);
-        }
+        processor.ProcessCopyCommand(this);
     }
 }

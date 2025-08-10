@@ -24,60 +24,58 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using Xunit;
-using Xunit.Abstractions;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+
+public class ComparisonHelperTests : BaseTest
 {
+    private Graph _graph;
 
-    public class ComparisonHelperTests : BaseTest
+    public ComparisonHelperTests(ITestOutputHelper output):base(output)
     {
-        private Graph _graph;
+        _graph = new Graph();
+    }
 
-        public ComparisonHelperTests(ITestOutputHelper output):base(output)
+    [Fact]
+    public void ShouldSuccesfullyCompareDecimalNodeRegardlessOfCulture()
+    {
+        foreach (var ci in TestedCultureInfos)
         {
-            _graph = new Graph();
-        }
-
-        [Fact]
-        public void ShouldSuccesfullyCompareDecimalNodeRegardlessOfCulture()
-        {
-            foreach (var ci in TestedCultureInfos)
+            TestTools.ExecuteWithChangedCulture(ci, () =>
             {
-                TestTools.ExecuteWithChangedCulture(ci, () =>
-                {
-                    const decimal left = 1.4m;
-                    const decimal right = 3.55m;
-                    Assert.Equal(-1, ComparisonHelper.CompareLiterals(left.ToLiteral(_graph), right.ToLiteral(_graph)));
-                });
-            }
+                const decimal left = 1.4m;
+                const decimal right = 3.55m;
+                Assert.Equal(-1, ComparisonHelper.CompareLiterals(left.ToLiteral(_graph), right.ToLiteral(_graph)));
+            });
         }
+    }
 
-        [Fact]
-        public void ShouldSuccesfullyCompareFloatNodeRegardlessOfCulture()
+    [Fact]
+    public void ShouldSuccesfullyCompareFloatNodeRegardlessOfCulture()
+    {
+        foreach (var ci in TestedCultureInfos)
         {
-            foreach (var ci in TestedCultureInfos)
+            TestTools.ExecuteWithChangedCulture(ci, () =>
             {
-                TestTools.ExecuteWithChangedCulture(ci, () =>
-                {
-                    const float left = 1.4f;
-                    const float right = 3.55f;
-                    Assert.Equal(-1, ComparisonHelper.CompareLiterals(left.ToLiteral(_graph), right.ToLiteral(_graph)));
-                });
-            }
+                const float left = 1.4f;
+                const float right = 3.55f;
+                Assert.Equal(-1, ComparisonHelper.CompareLiterals(left.ToLiteral(_graph), right.ToLiteral(_graph)));
+            });
         }
+    }
 
-        [Fact]
-        public void ShouldSuccesfullyCompareDoubleNodeRegardlessOfCulture()
+    [Fact]
+    public void ShouldSuccesfullyCompareDoubleNodeRegardlessOfCulture()
+    {
+        foreach (var ci in TestedCultureInfos)
         {
-            foreach (var ci in TestedCultureInfos)
+            TestTools.ExecuteWithChangedCulture(ci, () =>
             {
-                TestTools.ExecuteWithChangedCulture(ci, () =>
-                {
-                    const double left = 1.4d;
-                    const double right = 3.55d;
-                    Assert.Equal(-1, ComparisonHelper.CompareLiterals(left.ToLiteral(_graph), right.ToLiteral(_graph)));
-                });
-            }
+                const double left = 1.4d;
+                const double right = 3.55d;
+                Assert.Equal(-1, ComparisonHelper.CompareLiterals(left.ToLiteral(_graph), right.ToLiteral(_graph)));
+            });
         }
     }
 }

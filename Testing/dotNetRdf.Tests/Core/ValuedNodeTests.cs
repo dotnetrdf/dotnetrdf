@@ -28,150 +28,148 @@ using System.Globalization;
 using Xunit;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
-using Xunit.Abstractions;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+
+public class ValuedNodeTests : BaseTest
 {
+    private Graph _graph;
 
-    public class ValuedNodeTests : BaseTest
+    public ValuedNodeTests(ITestOutputHelper output) : base(output)
     {
-        private Graph _graph;
+        _graph = new Graph();
+    }
 
-        public ValuedNodeTests(ITestOutputHelper output) : base(output)
+    [Fact]
+    public void NodeAsValuedTimeSpan()
+    {
+        INode orig = new TimeSpan(1, 0, 0).ToLiteral(_graph);
+        IValuedNode valued = orig.AsValuedNode();
+
+        Assert.Equal(((ILiteralNode)orig).Value, ((ILiteralNode)valued).Value);
+        Assert.True(EqualityHelper.AreUrisEqual(((ILiteralNode)orig).DataType, ((ILiteralNode)valued).DataType));
+        Assert.Equal(typeof(TimeSpanNode), valued.GetType());
+    }
+
+    [Fact]
+    public void NodeAsValuedDateTime1()
+    {
+        INode orig = DateTime.Now.ToLiteral(_graph);
+        IValuedNode valued = orig.AsValuedNode();
+
+        Assert.Equal(((ILiteralNode)orig).Value, ((ILiteralNode)valued).Value);
+        Assert.Equal(typeof(DateTimeNode), valued.GetType());
+    }
+
+    [Fact]
+    public void NodeAsValuedDateTime2()
+    {
+        INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        IValuedNode valued = orig.AsValuedNode();
+        Assert.Equal(DateTimeKind.Unspecified, valued.AsDateTime().Kind);
+    }
+
+    [Fact]
+    public void NodeAsValuedDateTime3()
+    {
+        INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00-07:00", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        IValuedNode valued = orig.AsValuedNode();
+        Assert.Equal(16, valued.AsDateTime().Hour);
+        Assert.Equal(DateTimeKind.Utc, valued.AsDateTime().Kind);
+    }
+
+    [Fact]
+    public void NodeDateTimeParsing()
+    {
+        var input = "2013-06-19T09:58:00";
+        var dt = DateTime.Parse(input, null, DateTimeStyles.AdjustToUniversal);
+        Assert.Equal(DateTimeKind.Unspecified, dt.Kind);
+
+        input = "2013-06-19T09:58:00-07:00";
+        dt = DateTime.Parse(input, null, DateTimeStyles.AdjustToUniversal);
+        Assert.Equal(DateTimeKind.Utc, dt.Kind);
+        Assert.Equal(16, dt.Hour);
+
+        input = "2013-06-19T09:58:00Z";
+        dt = DateTime.Parse(input, null, DateTimeStyles.AdjustToUniversal);
+        Assert.Equal(DateTimeKind.Utc, dt.Kind);
+    }
+
+    [Fact]
+    public void ShouldCorrectlyPerformRoundtripConversionOfDecimalValuedNodesRegardlessOfCulture()
+    {
+        foreach (var ci in TestedCultureInfos)
         {
-            _graph = new Graph();
+            TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(3.4m, n => n.AsDecimal()));
+            TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(1000000.0m, n => n.AsDecimal()));
         }
+    }
 
-        [Fact]
-        public void NodeAsValuedTimeSpan()
+    [Fact]
+    public void ShouldCorrectlyPerformRoundtripConversionOfDoubleValuedNodesRegardlessOfCulture()
+    {
+        foreach (var ci in TestedCultureInfos)
         {
-            INode orig = new TimeSpan(1, 0, 0).ToLiteral(_graph);
-            IValuedNode valued = orig.AsValuedNode();
-
-            Assert.Equal(((ILiteralNode)orig).Value, ((ILiteralNode)valued).Value);
-            Assert.True(EqualityHelper.AreUrisEqual(((ILiteralNode)orig).DataType, ((ILiteralNode)valued).DataType));
-            Assert.Equal(typeof(TimeSpanNode), valued.GetType());
+            TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(3.4d, n => n.AsDouble()));
+            TestTools.ExecuteWithChangedCulture(ci, ()=>RoundTripValuedNodeConversion(1000000.0d, n=>n.AsDouble()));
         }
+    }
 
-        [Fact]
-        public void NodeAsValuedDateTime1()
+    [Fact]
+    public void ShouldCorrectlyPerformRoundtripConversionOfSingleValuedNodesRegardlessOfCulture()
+    {
+        foreach (var ci in TestedCultureInfos)
         {
-            INode orig = DateTime.Now.ToLiteral(_graph);
-            IValuedNode valued = orig.AsValuedNode();
-
-            Assert.Equal(((ILiteralNode)orig).Value, ((ILiteralNode)valued).Value);
-            Assert.Equal(typeof(DateTimeNode), valued.GetType());
+            TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(3.4f, n => n.AsFloat()));
+            TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(1000.0e3f, n => n.AsFloat()));
         }
+    }
 
-        [Fact]
-        public void NodeAsValuedDateTime2()
-        {
-            INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-            IValuedNode valued = orig.AsValuedNode();
-            Assert.Equal(DateTimeKind.Unspecified, valued.AsDateTime().Kind);
-        }
+    [Theory]
+    [MemberData(nameof(GetTestCultures))]
+    public void ShouldApplyInvariantFormattingToDecimalLiteralStringRegardlessOfCulture(CultureInfo ci)
+    {
+        TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3.4", ()=>new DecimalNode(3.4m)));
+    }
 
-        [Fact]
-        public void NodeAsValuedDateTime3()
-        {
-            INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00-07:00", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-            IValuedNode valued = orig.AsValuedNode();
-            Assert.Equal(16, valued.AsDateTime().Hour);
-            Assert.Equal(DateTimeKind.Utc, valued.AsDateTime().Kind);
-        }
+    [Theory]
+    [MemberData(nameof(GetTestCultures))]
+    public void ShouldApplyInvariantFormattingToDoubleLiteralStringRegardlessOfCulture(CultureInfo ci)
+    {
+        TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3.4", () => new DoubleNode(3.4d)));
+    }
 
-        [Fact]
-        public void NodeDateTimeParsing()
-        {
-            var input = "2013-06-19T09:58:00";
-            var dt = DateTime.Parse(input, null, DateTimeStyles.AdjustToUniversal);
-            Assert.Equal(DateTimeKind.Unspecified, dt.Kind);
+    [Theory]
+    [MemberData(nameof(GetTestCultures))]
+    public void ShouldApplyInvariantFormattingToFloatLiteralStringRegardlessOfCulture(CultureInfo ci)
+    {
+        TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3.4", () => new FloatNode(3.4f)));
+    }
 
-            input = "2013-06-19T09:58:00-07:00";
-            dt = DateTime.Parse(input, null, DateTimeStyles.AdjustToUniversal);
-            Assert.Equal(DateTimeKind.Utc, dt.Kind);
-            Assert.Equal(16, dt.Hour);
+    [Theory]
+    [MemberData(nameof(GetTestCultures))]
+    public void ShouldApplyInvariantFormattingToLongLiteralStringRegardlessOfCulture(CultureInfo ci)
+    {
+        TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3400000", () => new LongNode(3400000L)));
+    }
 
-            input = "2013-06-19T09:58:00Z";
-            dt = DateTime.Parse(input, null, DateTimeStyles.AdjustToUniversal);
-            Assert.Equal(DateTimeKind.Utc, dt.Kind);
-        }
+    private void AssertLiteralString(string expectLiteral, Func<IValuedNode> constructor)
+    {
+        var valuedNode = constructor();
+        Assert.Equal(expectLiteral, (valuedNode as ILiteralNode).Value);
+    }
 
-        [Fact]
-        public void ShouldCorrectlyPerformRoundtripConversionOfDecimalValuedNodesRegardlessOfCulture()
-        {
-            foreach (var ci in TestedCultureInfos)
-            {
-                TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(3.4m, n => n.AsDecimal()));
-                TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(1000000.0m, n => n.AsDecimal()));
-            }
-        }
+    private void RoundTripValuedNodeConversion<T>(dynamic value, Func<IValuedNode, T> convertBack)
+    {
+        // given
+        ILiteralNode literalNode = LiteralExtensions.ToLiteral(value, _graph);
 
-        [Fact]
-        public void ShouldCorrectlyPerformRoundtripConversionOfDoubleValuedNodesRegardlessOfCulture()
-        {
-            foreach (var ci in TestedCultureInfos)
-            {
-                TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(3.4d, n => n.AsDouble()));
-                TestTools.ExecuteWithChangedCulture(ci, ()=>RoundTripValuedNodeConversion(1000000.0d, n=>n.AsDouble()));
-            }
-        }
+        // when
+        IValuedNode valuedNode = literalNode.AsValuedNode();
+        T convertedBack = convertBack(valuedNode);
 
-        [Fact]
-        public void ShouldCorrectlyPerformRoundtripConversionOfSingleValuedNodesRegardlessOfCulture()
-        {
-            foreach (var ci in TestedCultureInfos)
-            {
-                TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(3.4f, n => n.AsFloat()));
-                TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(1000.0e3f, n => n.AsFloat()));
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(GetTestCultures))]
-        public void ShouldApplyInvariantFormattingToDecimalLiteralStringRegardlessOfCulture(CultureInfo ci)
-        {
-            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3.4", ()=>new DecimalNode(3.4m)));
-        }
-
-        [Theory]
-        [MemberData(nameof(GetTestCultures))]
-        public void ShouldApplyInvariantFormattingToDoubleLiteralStringRegardlessOfCulture(CultureInfo ci)
-        {
-            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3.4", () => new DoubleNode(3.4d)));
-        }
-
-        [Theory]
-        [MemberData(nameof(GetTestCultures))]
-        public void ShouldApplyInvariantFormattingToFloatLiteralStringRegardlessOfCulture(CultureInfo ci)
-        {
-            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3.4", () => new FloatNode(3.4f)));
-        }
-
-        [Theory]
-        [MemberData(nameof(GetTestCultures))]
-        public void ShouldApplyInvariantFormattingToLongLiteralStringRegardlessOfCulture(CultureInfo ci)
-        {
-            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3400000", () => new LongNode(3400000L)));
-        }
-
-        private void AssertLiteralString(string expectLiteral, Func<IValuedNode> constructor)
-        {
-            var valuedNode = constructor();
-            Assert.Equal(expectLiteral, (valuedNode as ILiteralNode).Value);
-        }
-
-        private void RoundTripValuedNodeConversion<T>(dynamic value, Func<IValuedNode, T> convertBack)
-        {
-            // given
-            ILiteralNode literalNode = LiteralExtensions.ToLiteral(value, _graph);
-
-            // when
-            IValuedNode valuedNode = literalNode.AsValuedNode();
-            T convertedBack = convertBack(valuedNode);
-
-            // then
-            Assert.Equal(value, convertedBack);
-        }
+        // then
+        Assert.Equal(value, convertedBack);
     }
 }

@@ -28,47 +28,46 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+public partial class DynamicGraph
 {
-    public partial class DynamicGraph
+    /// <summary>
+    /// Gets a collection of <see cref="DynamicNode"/>s representing URI nodes in this graph.
+    /// </summary>
+    public ICollection<object> Values
     {
-        /// <summary>
-        /// Gets a collection of <see cref="DynamicNode"/>s representing URI nodes in this graph.
-        /// </summary>
-        public ICollection<object> Values
+        get
         {
-            get
-            {
-                return NodePairs.Values;
-            }
+            return NodePairs.Values;
         }
+    }
 
-        /// <summary>
-        /// Gets the number of URI nodes in this graph.
-        /// </summary>
-        public int Count
+    /// <summary>
+    /// Gets the number of URI nodes in this graph.
+    /// </summary>
+    public int Count
+    {
+        get
         {
-            get
-            {
-                return UriNodes.Count();
-            }
+            return UriNodes.Count();
         }
+    }
 
-        /// <summary>
-        /// Gets a value indicating whether this graph dictionary is read only (always false).
-        /// </summary>
-        public bool IsReadOnly
+    /// <summary>
+    /// Gets a value indicating whether this graph dictionary is read only (always false).
+    /// </summary>
+    public bool IsReadOnly
+    {
+        get
         {
-            get
-            {
-                return false;
-            }
+            return false;
         }
+    }
 
-        /// <inheritdoc/>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.Cast<KeyValuePair<INode, object>>().GetEnumerator();
-        }
+    /// <inheritdoc/>
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return this.Cast<KeyValuePair<INode, object>>().GetEnumerator();
     }
 }

@@ -25,44 +25,42 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System.IO;
 using Xunit;
-using Xunit.Abstractions;
 
-namespace VDS.RDF.Parsing.Suites
+namespace VDS.RDF.Parsing.Suites;
+
+public class TriX
+    : BaseDatasetParserSuite
 {
-    public class TriX
-        : BaseDatasetParserSuite
+    private readonly ITestOutputHelper _testOutputHelper;
+
+    public TriX(ITestOutputHelper testOutputHelper)
+        : base(new TriXParser(), new NQuadsParser(), "trix")
     {
-        private readonly ITestOutputHelper _testOutputHelper;
+        _testOutputHelper = testOutputHelper;
+        CheckResults = false;
+    }
 
-        public TriX(ITestOutputHelper testOutputHelper)
-            : base(new TriXParser(), new NQuadsParser(), "trix")
+    [Fact]
+    public void ParsingSuiteTriX()
+    {
+        RunManifests();
+
+        if (Count == 0) Assert.Fail("No tests found");
+
+        _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
+        _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
+
+        if (Failed > 0)
         {
-            _testOutputHelper = testOutputHelper;
-            CheckResults = false;
+            foreach(var failure in FailedTests) { _testOutputHelper.WriteLine(failure.ToString());}
+            Assert.Fail(Failed + " Tests failed");
         }
+        Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
+    }
 
-        [SkippableFact]
-        public void ParsingSuiteTriX()
-        {
-            RunManifests();
-
-            if (Count == 0) Assert.True(false, "No tests found");
-
-            _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
-            _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
-
-            if (Failed > 0)
-            {
-                foreach(var failure in FailedTests) { _testOutputHelper.WriteLine(failure.ToString());}
-                Assert.True(false, Failed + " Tests failed");
-            }
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
-        }
-
-        private void RunManifests()
-        {
-            RunDirectory(f => Path.GetExtension(f).Equals(".xml") && !f.Contains("bad"), true);
-            RunDirectory(f => Path.GetExtension(f).Equals(".xml") && f.Contains("bad"), false);
-        }
+    private void RunManifests()
+    {
+        RunDirectory(f => Path.GetExtension(f).Equals(".xml") && !f.Contains("bad"), true);
+        RunDirectory(f => Path.GetExtension(f).Equals(".xml") && f.Contains("bad"), false);
     }
 }

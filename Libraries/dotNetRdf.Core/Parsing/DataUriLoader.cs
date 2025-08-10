@@ -29,166 +29,165 @@ using System.IO;
 using System.Linq;
 using VDS.RDF.Parsing.Handlers;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+/// <summary>
+/// A Class for parsing RDF data from Data URIs.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Data URIs use the data: scheme and are defined by the IETF in <a href="http://tools.ietf.org/html/rfc2397">RFC 2397</a> and provide a means to embed data directly in a URI either in Base64 or ASCII encoded format.  This class can extract the data from such URIs and attempt to parse it as RDF using the <see cref="StringParser">StringParser</see>.
+/// </para>
+/// <para>
+/// The parsing process for data: URIs involves first extracting and decoding the data embedded in the URI - this may either be in Base64 or ASCII encoding - and then using the <see cref="StringParser">StringParser</see> to actually parse the data string.  If the data: URI defines a MIME type then a parser is selected (if one exists for the given MIME type) and that is used to parse the data, in the event that no MIME type is given or the one given does not have a corresponding parser then the <see cref="StringParser">StringParser</see> will use its basic heuristics to attempt to auto-detect the format and select an appropriate parser.
+/// </para>
+/// <para>
+/// If you attempt to use this loader for non data: URIs then the standard <see cref="UriLoader">UriLoader</see> is used instead.
+/// </para>
+/// </remarks>
+public static class DataUriLoader
 {
     /// <summary>
-    /// A Class for parsing RDF data from Data URIs.
+    /// Loads RDF data into a Graph from a data: URI.
     /// </summary>
+    /// <param name="g">Graph to load into.</param>
+    /// <param name="u">URI to load from.</param>
     /// <remarks>
-    /// <para>
-    /// Data URIs use the data: scheme and are defined by the IETF in <a href="http://tools.ietf.org/html/rfc2397">RFC 2397</a> and provide a means to embed data directly in a URI either in Base64 or ASCII encoded format.  This class can extract the data from such URIs and attempt to parse it as RDF using the <see cref="StringParser">StringParser</see>.
-    /// </para>
-    /// <para>
-    /// The parsing process for data: URIs involves first extracting and decoding the data embedded in the URI - this may either be in Base64 or ASCII encoding - and then using the <see cref="StringParser">StringParser</see> to actually parse the data string.  If the data: URI defines a MIME type then a parser is selected (if one exists for the given MIME type) and that is used to parse the data, in the event that no MIME type is given or the one given does not have a corresponding parser then the <see cref="StringParser">StringParser</see> will use its basic heuristics to attempt to auto-detect the format and select an appropriate parser.
-    /// </para>
-    /// <para>
-    /// If you attempt to use this loader for non data: URIs then the standard <see cref="UriLoader">UriLoader</see> is used instead.
-    /// </para>
+    /// Invokes the normal <see cref="UriLoader">UriLoader</see> instead if a the URI provided is not a data: URI.
     /// </remarks>
-    public static class DataUriLoader
+    /// <exception cref="UriFormatException">Thrown if the metadata portion of the URI which indicates the MIME Type, Character Set and whether Base64 encoding is used is malformed.</exception>
+    public static void Load(IGraph g, Uri u)
     {
-        /// <summary>
-        /// Loads RDF data into a Graph from a data: URI.
-        /// </summary>
-        /// <param name="g">Graph to load into.</param>
-        /// <param name="u">URI to load from.</param>
-        /// <remarks>
-        /// Invokes the normal <see cref="UriLoader">UriLoader</see> instead if a the URI provided is not a data: URI.
-        /// </remarks>
-        /// <exception cref="UriFormatException">Thrown if the metadata portion of the URI which indicates the MIME Type, Character Set and whether Base64 encoding is used is malformed.</exception>
-        public static void Load(IGraph g, Uri u)
+        if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
+        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+        Load(new GraphHandler(g), u);
+    }
+
+    /// <summary>
+    /// Loads RDF data using an RDF Handler from a data: URI.
+    /// </summary>
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="u">URI to load from.</param>
+    /// <remarks>
+    /// Invokes the normal <see cref="UriLoader">UriLoader</see> instead if a the URI provided is not a data: URI.
+    /// </remarks>
+    /// <exception cref="UriFormatException">Thrown if the metadata portion of the URI which indicates the MIME Type, Character Set and whether Base64 encoding is used is malformed.</exception>
+    public static void Load(IRdfHandler handler, Uri u)
+    {
+        if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
+        if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
+
+        if (!u.Scheme.Equals("data"))
         {
-            if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            Load(new GraphHandler(g), u);
+            // Invoke the normal URI Loader if not a data: URI
+            // UriLoader.Load(handler, u);
+            throw new RdfParseException("DataUriLoader cannot load data from a URI that does not use the data: scheme.");
         }
 
-        /// <summary>
-        /// Loads RDF data using an RDF Handler from a data: URI.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="u">URI to load from.</param>
-        /// <remarks>
-        /// Invokes the normal <see cref="UriLoader">UriLoader</see> instead if a the URI provided is not a data: URI.
-        /// </remarks>
-        /// <exception cref="UriFormatException">Thrown if the metadata portion of the URI which indicates the MIME Type, Character Set and whether Base64 encoding is used is malformed.</exception>
-        public static void Load(IRdfHandler handler, Uri u)
+        var mimetype = "text/plain";
+        var mimeSet = false;
+        var base64 = false;
+        var uri = u.AbsolutePath.Split(',');
+        var metadata = uri[0];
+        var data = uri[1];
+
+        // Process the metadata
+        if (metadata.Equals(string.Empty))
         {
-            if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
-            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-
-            if (!u.Scheme.Equals("data"))
+            // Nothing to do
+        }
+        else if (metadata.Contains(';'))
+        {
+            if (metadata.StartsWith(";")) metadata = metadata.Substring(1);
+            var meta = metadata.Split(';');
+            for (var i = 0; i < meta.Length; i++)
             {
-                // Invoke the normal URI Loader if not a data: URI
-                // UriLoader.Load(handler, u);
-                throw new RdfParseException("DataUriLoader cannot load data from a URI that does not use the data: scheme.");
-            }
-
-            var mimetype = "text/plain";
-            var mimeSet = false;
-            var base64 = false;
-            var uri = u.AbsolutePath.Split(',');
-            var metadata = uri[0];
-            var data = uri[1];
-
-            // Process the metadata
-            if (metadata.Equals(string.Empty))
-            {
-                // Nothing to do
-            }
-            else if (metadata.Contains(';'))
-            {
-                if (metadata.StartsWith(";")) metadata = metadata.Substring(1);
-                var meta = metadata.Split(';');
-                for (var i = 0; i < meta.Length; i++)
-                {
-                    if (meta[i].StartsWith("charset="))
-                    {
-                        // OPT: Do we need to process the charset parameter here at all?
-                        // String charset = meta[i].Substring(meta[i].IndexOf('=') + 1);
-                    }
-                    else if (meta[i].Equals("base64"))
-                    {
-                        base64 = true;
-                    }
-                    else if (meta[i].Contains('/'))
-                    {
-                        mimetype = meta[i];
-                        mimeSet = true;
-                    }
-                    else
-                    {
-                        throw new UriFormatException("This data: URI appears to be malformed as encountered the parameter value '" + meta[i] + "' in the metadata section of the URI");
-                    }
-                }
-            }
-            else
-            {
-                if (metadata.StartsWith("charset="))
+                if (meta[i].StartsWith("charset="))
                 {
                     // OPT: Do we need to process the charset parameter here at all?
+                    // String charset = meta[i].Substring(meta[i].IndexOf('=') + 1);
                 }
-                else if (metadata.Equals(";base64"))
+                else if (meta[i].Equals("base64"))
                 {
                     base64 = true;
                 }
-                else if (metadata.Contains('/'))
+                else if (meta[i].Contains('/'))
                 {
-                    mimetype = metadata;
+                    mimetype = meta[i];
                     mimeSet = true;
                 }
                 else
                 {
-                    throw new UriFormatException("This data: URI appears to be malformed as encountered the parameter value '" + metadata + "' in the metadata section of the URI");
+                    throw new UriFormatException("This data: URI appears to be malformed as encountered the parameter value '" + meta[i] + "' in the metadata section of the URI");
                 }
             }
-
-            // Process the data
-            if (base64)
+        }
+        else
+        {
+            if (metadata.StartsWith("charset="))
             {
-                var temp = new StringWriter();
-                foreach (var b in Convert.FromBase64String(data))
-                {
-                    temp.Write((char)((int)b));
-                }
-                data = temp.ToString();
+                // OPT: Do we need to process the charset parameter here at all?
+            }
+            else if (metadata.Equals(";base64"))
+            {
+                base64 = true;
+            }
+            else if (metadata.Contains('/'))
+            {
+                mimetype = metadata;
+                mimeSet = true;
             }
             else
             {
-                data = Uri.UnescapeDataString(data);
+                throw new UriFormatException("This data: URI appears to be malformed as encountered the parameter value '" + metadata + "' in the metadata section of the URI");
             }
+        }
 
-            // Now either select a parser based on the MIME type or let StringParser guess the format
+        // Process the data
+        if (base64)
+        {
+            var temp = new StringWriter();
+            foreach (var b in Convert.FromBase64String(data))
+            {
+                temp.Write((char)((int)b));
+            }
+            data = temp.ToString();
+        }
+        else
+        {
+            data = Uri.UnescapeDataString(data);
+        }
+
+        // Now either select a parser based on the MIME type or let StringParser guess the format
+        try
+        {
+            if (mimeSet)
+            {
+                // If the MIME Type was explicitly set then we'll try and get a parser and use it
+                IRdfReader reader = MimeTypesHelper.GetParser(mimetype);
+                reader.Load(handler, new StringReader(data));
+            }
+            else
+            {
+                // If the MIME Type was not explicitly set we'll let the StringParser guess the format
+                IRdfReader reader = StringParser.GetParser(data);
+                reader.Load(handler, new StringReader(data));
+            }
+        }
+        catch (RdfParserSelectionException)
+        {
             try
             {
-                if (mimeSet)
-                {
-                    // If the MIME Type was explicitly set then we'll try and get a parser and use it
-                    IRdfReader reader = MimeTypesHelper.GetParser(mimetype);
-                    reader.Load(handler, new StringReader(data));
-                }
-                else
-                {
-                    // If the MIME Type was not explicitly set we'll let the StringParser guess the format
-                    IRdfReader reader = StringParser.GetParser(data);
-                    reader.Load(handler, new StringReader(data));
-                }
+                // See if the mime type specifies a dataset parser
+                IStoreReader reader = MimeTypesHelper.GetStoreParser(mimetype);
+                reader.Load(handler, new StringReader(data));
             }
             catch (RdfParserSelectionException)
             {
-                try
-                {
-                    // See if the mime type specifies a dataset parser
-                    IStoreReader reader = MimeTypesHelper.GetStoreParser(mimetype);
-                    reader.Load(handler, new StringReader(data));
-                }
-                catch (RdfParserSelectionException)
-                {
 
-                    // If we still fail to get a parser then we'll let the StringParser guess the format
-                    IRdfReader reader = StringParser.GetParser(data);
-                    reader.Load(handler, new StringReader(data));
-                }
+                // If we still fail to get a parser then we'll let the StringParser guess the format
+                IRdfReader reader = StringParser.GetParser(data);
+                reader.Load(handler, new StringReader(data));
             }
         }
     }

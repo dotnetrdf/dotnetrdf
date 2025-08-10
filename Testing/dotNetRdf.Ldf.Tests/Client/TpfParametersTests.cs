@@ -74,32 +74,28 @@ public class TpfParametersTests
         uri.Should().Be(ResolveTemplate(s, p, o));
     }
 
-    public static IEnumerable<object[]> LegalPatterns =>
+    public static IEnumerable<TheoryDataRow<INode, INode, INode>> LegalPatterns =>
         from s in new List<INode> { nil, iri }
         from p in new List<INode> { nil, iri }
         from o in new List<INode> { nil, iri, lit }
-        select new object[] { s, p, o };
+        select new TheoryDataRow<INode, INode, INode>(s, p, o);
 
-    public static IEnumerable<object[]> IllegalPatterns
-    {
-        get
-        {
-            yield return new object[] { lit, nil, nil, "subject", nameof(lit) };
-            yield return new object[] { blank, nil, nil, "subject", nameof(blank) };
-            yield return new object[] { variable, nil, nil, "subject", nameof(variable) };
-            yield return new object[] { graph, nil, nil, "subject", nameof(graph) };
-            yield return new object[] { triple, nil, nil, "subject", nameof(triple) };
-            yield return new object[] { nil, lit, nil, "predicate", nameof(lit) };
-            yield return new object[] { nil, blank, nil, "predicate", nameof(blank) };
-            yield return new object[] { nil, variable, nil, "predicate", nameof(variable) };
-            yield return new object[] { nil, graph, nil, "predicate", nameof(graph) };
-            yield return new object[] { nil, triple, nil, "predicate", nameof(triple) };
-            yield return new object[] { nil, nil, blank, "object", nameof(blank) };
-            yield return new object[] { nil, nil, variable, "object", nameof(variable) };
-            yield return new object[] { nil, nil, graph, "object", nameof(graph) };
-            yield return new object[] { nil, nil, triple, "object", nameof(triple) };
-        }
-    }
+    public static IEnumerable<TheoryDataRow<INode, INode, INode, string, string>> IllegalPatterns => [
+        new(lit, nil, nil, "subject", nameof(lit)),
+        new(blank, nil, nil, "subject", nameof(blank)),
+        new(variable, nil, nil, "subject", nameof(variable)),
+        new(graph, nil, nil, "subject", nameof(graph)),
+        new(triple, nil, nil, "subject", nameof(triple)),
+        new(nil, lit, nil, "predicate", nameof(lit)),
+        new(nil, blank, nil, "predicate", nameof(blank)),
+        new(nil, variable, nil, "predicate", nameof(variable)),
+        new(nil, graph, nil, "predicate", nameof(graph)),
+        new(nil, triple, nil, "predicate", nameof(triple)),
+        new(nil, nil, blank, "object", nameof(blank)),
+        new(nil, nil, variable, "object", nameof(variable)),
+        new(nil, nil, graph, "object", nameof(graph)),
+        new(nil, nil, triple, "object", nameof(triple)),
+    ];
 
     private static Uri ResolveTemplate(INode s, INode p, INode o) =>
         new UriTemplate(templateString).ResolveUri(new Dictionary<string, object>() {

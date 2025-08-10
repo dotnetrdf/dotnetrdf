@@ -24,26 +24,25 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// A node wrapper that preserves a reference to a graph along with the node itself.
+/// </summary>
+public class GraphWrapperNode : WrapperNode
 {
     /// <summary>
-    /// A node wrapper that preserves a reference to a graph along with the node itself.
+    /// Creates a wrapper node with a specific graph as context.
     /// </summary>
-    public class GraphWrapperNode : WrapperNode
+    /// <param name="node">The node to be wrapped.</param>
+    /// <param name="graph">The graph context for the wrapped node.</param>
+    public GraphWrapperNode(INode node, IGraph graph) : base(node)
     {
-        /// <summary>
-        /// Creates a wrapper node with a specific graph as context.
-        /// </summary>
-        /// <param name="node">The node to be wrapped.</param>
-        /// <param name="graph">The graph context for the wrapped node.</param>
-        public GraphWrapperNode(INode node, IGraph graph) : base(node)
-        {
-            Graph = graph;
-        }
-
-        /// <summary>
-        /// Get the graph context for this wrapper node.
-        /// </summary>
-        public IGraph Graph { get; }
+        Graph = graph;
     }
+
+    /// <summary>
+    /// Get the graph context for this wrapper node.
+    /// </summary>
+    public IGraph Graph { get; }
 }

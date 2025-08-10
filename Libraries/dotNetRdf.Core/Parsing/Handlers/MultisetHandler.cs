@@ -28,62 +28,61 @@ using System;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 
-namespace VDS.RDF.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers;
+
+/// <summary>
+/// A SPARQL Results Handler which loads directly into a <see cref="Multiset">Multiset</see>.
+/// </summary>
+/// <remarks>
+/// Primarily intended for internal usage for future optimisation of some SPARQL evaluation.
+/// </remarks>
+public class MultisetHandler 
+    : BaseResultsHandler
 {
+    private Multiset _mset;
+
     /// <summary>
-    /// A SPARQL Results Handler which loads directly into a <see cref="Multiset">Multiset</see>.
+    /// Creates a new Multiset Handler.
     /// </summary>
-    /// <remarks>
-    /// Primarily intended for internal usage for future optimisation of some SPARQL evaluation.
-    /// </remarks>
-    public class MultisetHandler 
-        : BaseResultsHandler
+    /// <param name="mset">Multiset.</param>
+    public MultisetHandler(Multiset mset)
     {
-        private Multiset _mset;
+        if (mset == null) throw new ArgumentNullException("mset", "Multiset to load into cannot be null");
+        _mset = mset;
+    }
 
-        /// <summary>
-        /// Creates a new Multiset Handler.
-        /// </summary>
-        /// <param name="mset">Multiset.</param>
-        public MultisetHandler(Multiset mset)
-        {
-            if (mset == null) throw new ArgumentNullException("mset", "Multiset to load into cannot be null");
-            _mset = mset;
-        }
+    /// <summary>
+    /// Handles a Boolean Result by doing nothing.
+    /// </summary>
+    /// <param name="result">Boolean Result.</param>
+    protected override void HandleBooleanResultInternal(bool result)
+    {
+        // Does Nothing
+    }
 
-        /// <summary>
-        /// Handles a Boolean Result by doing nothing.
-        /// </summary>
-        /// <param name="result">Boolean Result.</param>
-        protected override void HandleBooleanResultInternal(bool result)
-        {
-            // Does Nothing
-        }
+    /// <summary>
+    /// Handles a Variable by adding it to the Multiset.
+    /// </summary>
+    /// <param name="var">Variable.</param>
+    /// <returns></returns>
+    protected override bool HandleVariableInternal(string var)
+    {
+        _mset.AddVariable(var);
+        return true;
+    }
 
-        /// <summary>
-        /// Handles a Variable by adding it to the Multiset.
-        /// </summary>
-        /// <param name="var">Variable.</param>
-        /// <returns></returns>
-        protected override bool HandleVariableInternal(string var)
+    /// <summary>
+    /// Handles a Result by adding it to the Multiset.
+    /// </summary>
+    /// <param name="result">Result.</param>
+    /// <returns></returns>
+    protected override bool HandleResultInternal(ISparqlResult result)
+    {
+        var set = new Set();
+        foreach (var var in result.Variables)
         {
-            _mset.AddVariable(var);
-            return true;
+            set.Add(var, result[var]);
         }
-
-        /// <summary>
-        /// Handles a Result by adding it to the Multiset.
-        /// </summary>
-        /// <param name="result">Result.</param>
-        /// <returns></returns>
-        protected override bool HandleResultInternal(ISparqlResult result)
-        {
-            var set = new Set();
-            foreach (var var in result.Variables)
-            {
-                set.Add(var, result[var]);
-            }
-            return true;
-        }
+        return true;
     }
 }

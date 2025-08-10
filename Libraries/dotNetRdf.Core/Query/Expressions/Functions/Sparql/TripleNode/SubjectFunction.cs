@@ -24,47 +24,46 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.TripleNode
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.TripleNode;
+
+/// <summary>
+/// Class representing the SPARQL-Star SUBJECT() function.
+/// </summary>
+public class SubjectFunction : BaseUnaryExpression
 {
     /// <summary>
-    /// Class representing the SPARQL-Star SUBJECT() function.
+    /// Create a new SUBJECT() function expression.
     /// </summary>
-    public class SubjectFunction : BaseUnaryExpression
+    /// <param name="expr">Expression to apply the function to.</param>
+    public SubjectFunction(ISparqlExpression expr) : base(expr) { }
+
+    /// <inheritdoc />
+    public override string ToString()
     {
-        /// <summary>
-        /// Create a new SUBJECT() function expression.
-        /// </summary>
-        /// <param name="expr">Expression to apply the function to.</param>
-        public SubjectFunction(ISparqlExpression expr) : base(expr) { }
+        return $"SUBJECT({InnerExpression})";
+    }
 
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return $"SUBJECT({InnerExpression})";
-        }
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessSubjectFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessSubjectFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitSubjectFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitSubjectFunction(this);
-        }
+    /// <inheritdoc />
+    public override SparqlExpressionType Type => SparqlExpressionType.Function;
 
-        /// <inheritdoc />
-        public override SparqlExpressionType Type => SparqlExpressionType.Function;
+    /// <inheritdoc />
+    public override string Functor => SparqlSpecsHelper.SparqlStarKeywordSubject;
 
-        /// <inheritdoc />
-        public override string Functor => SparqlSpecsHelper.SparqlStarKeywordSubject;
-
-        /// <inheritdoc />
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new SubjectFunction(transformer.Transform(InnerExpression));
-        }
+    /// <inheritdoc />
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new SubjectFunction(transformer.Transform(InnerExpression));
     }
 }

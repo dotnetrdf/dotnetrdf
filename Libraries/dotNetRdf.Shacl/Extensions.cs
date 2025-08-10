@@ -27,93 +27,92 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Shacl
+namespace VDS.RDF.Shacl;
+
+internal static class Extensions
 {
-    internal static class Extensions
+    internal static IEnumerable<INode> SubjectsOf(this GraphWrapperNode predicate, INode @object)
     {
-        internal static IEnumerable<INode> SubjectsOf(this GraphWrapperNode predicate, INode @object)
+        return
+            from t in predicate.Graph.GetTriplesWithPredicateObject(predicate, @object)
+            select t.Subject;
+    }
+
+    internal static IEnumerable<INode> SubjectsOf(this INode predicate, GraphWrapperNode @object)
+    {
+        return
+            from t in @object.Graph.GetTriplesWithPredicateObject(predicate, @object)
+            select t.Subject;
+    }
+
+    internal static IEnumerable<INode> SubjectsOf(this INode predicate, INode @object, IGraph graph)
+    {
+        return from t in graph.GetTriplesWithPredicateObject(predicate, @object)
+            select t.Subject;
+    }
+
+    internal static IEnumerable<INode> ObjectsOf(this GraphWrapperNode predicate, INode subject)
+    {
+        return
+            from t in predicate.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
+            select t.Object;
+    }
+
+    internal static IEnumerable<INode> ObjectsOf(this INode predicate, GraphWrapperNode subject)
+    {
+        return
+            from t in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
+            select t.Object;
+    }
+
+    internal static IEnumerable<INode> ObjectsOf(this INode predicate, INode subject, IGraph graph)
+    {
+        return
+            from t in graph.GetTriplesWithSubjectPredicate(subject, predicate)
+            select t.Object;
+    }
+
+    internal static IEnumerable<INode> ShaclInstancesOf(this IGraph g, INode @class)
+    {
+        return InferSubclasses(@class, g).SelectMany(g.InstancesOf);
+    }
+
+    internal static bool IsShaclInstance(this INode @class, INode node, IGraph graph)
+    {
+        return InferSubclasses(@class, graph).Any(c=>node.IsInstanceOf(c, graph));
+    }
+
+    internal static bool IsInstanceOf(this GraphWrapperNode node, INode @class)
+    {
+        return node.Graph.GetTriplesWithSubjectPredicate(node, Vocabulary.RdfType).WithObject(@class).Any();
+    }
+
+    internal static bool IsInstanceOf(this INode node, INode @class, IGraph graph)
+    {
+        return graph.GetTriplesWithSubjectPredicate(node, Vocabulary.RdfType).WithObject(@class).Any();
+    }
+
+    internal static IEnumerable<INode> InstancesOf(this IGraph g, INode @class)
+    {
+        return Vocabulary.RdfType.SubjectsOf(@class, g);
+    }
+
+    private static IEnumerable<INode> InferSubclasses(INode node, IGraph graph, HashSet<INode> seen = null)
+    {
+        if (seen is null)
         {
-            return
-                from t in predicate.Graph.GetTriplesWithPredicateObject(predicate, @object)
-                select t.Subject;
+            seen = new HashSet<INode>();
         }
 
-        internal static IEnumerable<INode> SubjectsOf(this INode predicate, GraphWrapperNode @object)
+        if (seen.Add(node))
         {
-            return
-                from t in @object.Graph.GetTriplesWithPredicateObject(predicate, @object)
-                select t.Subject;
-        }
+            yield return node;
 
-        internal static IEnumerable<INode> SubjectsOf(this INode predicate, INode @object, IGraph graph)
-        {
-            return from t in graph.GetTriplesWithPredicateObject(predicate, @object)
-                select t.Subject;
-        }
-
-        internal static IEnumerable<INode> ObjectsOf(this GraphWrapperNode predicate, INode subject)
-        {
-            return
-                from t in predicate.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
-                select t.Object;
-        }
-
-        internal static IEnumerable<INode> ObjectsOf(this INode predicate, GraphWrapperNode subject)
-        {
-            return
-                from t in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
-                select t.Object;
-        }
-
-        internal static IEnumerable<INode> ObjectsOf(this INode predicate, INode subject, IGraph graph)
-        {
-            return
-                from t in graph.GetTriplesWithSubjectPredicate(subject, predicate)
-                select t.Object;
-        }
-
-        internal static IEnumerable<INode> ShaclInstancesOf(this IGraph g, INode @class)
-        {
-            return InferSubclasses(@class, g).SelectMany(g.InstancesOf);
-        }
-
-        internal static bool IsShaclInstance(this INode @class, INode node, IGraph graph)
-        {
-            return InferSubclasses(@class, graph).Any(c=>node.IsInstanceOf(c, graph));
-        }
-
-        internal static bool IsInstanceOf(this GraphWrapperNode node, INode @class)
-        {
-            return node.Graph.GetTriplesWithSubjectPredicate(node, Vocabulary.RdfType).WithObject(@class).Any();
-        }
-
-        internal static bool IsInstanceOf(this INode node, INode @class, IGraph graph)
-        {
-            return graph.GetTriplesWithSubjectPredicate(node, Vocabulary.RdfType).WithObject(@class).Any();
-        }
-
-        internal static IEnumerable<INode> InstancesOf(this IGraph g, INode @class)
-        {
-            return Vocabulary.RdfType.SubjectsOf(@class, g);
-        }
-
-        private static IEnumerable<INode> InferSubclasses(INode node, IGraph graph, HashSet<INode> seen = null)
-        {
-            if (seen is null)
+            foreach (INode subclass in Vocabulary.RdfsSubClassOf.SubjectsOf(node, graph))
             {
-                seen = new HashSet<INode>();
-            }
-
-            if (seen.Add(node))
-            {
-                yield return node;
-
-                foreach (INode subclass in Vocabulary.RdfsSubClassOf.SubjectsOf(node, graph))
+                foreach (INode inferred in InferSubclasses(subclass, graph, seen))
                 {
-                    foreach (INode inferred in InferSubclasses(subclass, graph, seen))
-                    {
-                        yield return inferred;
-                    }
+                    yield return inferred;
                 }
             }
         }

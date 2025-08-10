@@ -24,63 +24,62 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.String
+namespace VDS.RDF.Query.Expressions.Functions.XPath.String;
+
+/// <summary>
+/// Represents the XPath fn:starts-with() function.
+/// </summary>
+public class StartsWithFunction
+    : BaseBinaryStringFunction
 {
     /// <summary>
-    /// Represents the XPath fn:starts-with() function.
+    /// Creates a new XPath Starts With function.
     /// </summary>
-    public class StartsWithFunction
-        : BaseBinaryStringFunction
+    /// <param name="stringExpr">Expression.</param>
+    /// <param name="prefixExpr">Prefix Expression.</param>
+    public StartsWithFunction(ISparqlExpression stringExpr, ISparqlExpression prefixExpr)
+        : base(stringExpr, prefixExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
+
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
     {
-        /// <summary>
-        /// Creates a new XPath Starts With function.
-        /// </summary>
-        /// <param name="stringExpr">Expression.</param>
-        /// <param name="prefixExpr">Prefix Expression.</param>
-        public StartsWithFunction(ISparqlExpression stringExpr, ISparqlExpression prefixExpr)
-            : base(stringExpr, prefixExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
+        return processor.ProcessStartsWithFunction(this, context, binding);
+    }
 
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitStartsWithFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StartsWith + ">(" + _expr + "," + _arg + ")";
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return processor.ProcessStartsWithFunction(this, context, binding);
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StartsWith;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitStartsWithFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StartsWith + ">(" + _expr + "," + _arg + ")";
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StartsWith;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new StartsWithFunction(transformer.Transform(_expr), transformer.Transform(_arg));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new StartsWithFunction(transformer.Transform(_expr), transformer.Transform(_arg));
     }
 }

@@ -26,26 +26,25 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System.IO;
 using Xunit;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+
+public class RdfXmlNamespaces
 {
-
-    public class RdfXmlNamespaces
+    [Fact]
+    public void ParsingRdfXmlNamespaces()
     {
-        [Fact]
-        public void ParsingRdfXmlNamespaces()
+        var g = new Graph();
+        try
         {
-            var g = new Graph();
-            try
-            {
-                g.LoadFromFile(Path.Combine("resources", "rdfxml-namespaces.rdf"));
-                Assert.True(false, "Parsing should fail as namespaces are not properly defined in the RDF/XML");
-            }
-            catch (RdfParseException parseEx)
-            {
-                Assert.True(parseEx.HasPositionInformation, "Should have position information");
-                TestTools.ReportError("Parser Error", parseEx);
-            }
+            g.LoadFromFile(Path.Combine("resources", "rdfxml-namespaces.rdf"));
+            Assert.Fail("Parsing should fail as namespaces are not properly defined in the RDF/XML");
         }
-
+        catch (RdfParseException parseEx)
+        {
+            Assert.True(parseEx.HasPositionInformation, "Should have position information");
+            TestTools.ReportError("Parser Error", parseEx);
+        }
     }
+
 }

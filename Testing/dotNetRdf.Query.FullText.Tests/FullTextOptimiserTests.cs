@@ -33,108 +33,107 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.FullText.Search;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Writing.Formatting;
-using Xunit.Abstractions;
 
-namespace VDS.RDF.Query.FullText
+namespace VDS.RDF.Query.FullText;
+
+[Trait("category", "explicit")]
+[Trait("category", "fulltext")]
+[Collection("FullText")]
+public class FullTextOptimiserTests
 {
-    [Trait("category", "explicit")]
-    [Trait("category", "fulltext")]
-    [Collection("FullText")]
-    public class FullTextOptimiserTests
+    private readonly SparqlQueryParser _parser = new();
+
+    private readonly List<IAlgebraOptimiser> _optimisers = new()
     {
-        private readonly SparqlQueryParser _parser = new();
+        new StrictAlgebraOptimiser(), new FullTextOptimiser(new MockSearchProvider())
+    };
 
-        private readonly List<IAlgebraOptimiser> _optimisers = new()
-        {
-            new StrictAlgebraOptimiser(), new FullTextOptimiser(new MockSearchProvider())
-        };
+    private readonly SparqlFormatter _formatter = new();
 
-        private readonly SparqlFormatter _formatter = new();
+    private readonly ITestOutputHelper _output;
 
-        private readonly ITestOutputHelper _output;
+    public FullTextOptimiserTests(ITestOutputHelper output)
+    {
+        _output = output;
+    }
 
-        public FullTextOptimiserTests(ITestOutputHelper output)
-        {
-            _output = output;
-        }
+    private SparqlQuery TestOptimisation(String query)
+    {
+        query = "PREFIX pf: <http://jena.hpl.hp.com/ARQ/property#>\n" + query;
+        SparqlQuery q = _parser.ParseFromString(query);
+        _output.WriteLine(_formatter.Format(q));
 
-        private SparqlQuery TestOptimisation(String query)
-        {
-            query = "PREFIX pf: <http://jena.hpl.hp.com/ARQ/property#>\n" + query;
-            SparqlQuery q = _parser.ParseFromString(query);
-            _output.WriteLine(_formatter.Format(q));
+        _output.WriteLine("Normal Algebra: " + q.ToAlgebra());
 
-            _output.WriteLine("Normal Algebra: " + q.ToAlgebra());
+        q.AlgebraOptimisers = _optimisers;
 
-            q.AlgebraOptimisers = _optimisers;
+        var algebra = q.ToAlgebra().ToString();
+        _output.WriteLine("Optimised Algebra: " + algebra);
+        Assert.True(algebra.Contains("FullTextQuery("), "Optimised Algebra should use FullTextQuery operator");
+        Assert.True(algebra.Contains("PropertyFunction("),
+            "Optimised Algebra should use PropertyFunction operator");
 
-            var algebra = q.ToAlgebra().ToString();
-            _output.WriteLine("Optimised Algebra: " + algebra);
-            Assert.True(algebra.Contains("FullTextQuery("), "Optimised Algebra should use FullTextQuery operator");
-            Assert.True(algebra.Contains("PropertyFunction("),
-                "Optimised Algebra should use PropertyFunction operator");
+        return q;
+    }
 
-            return q;
-        }
+    [Fact]
+    public void FullTextOptimiserSimple1()
+    {
+        TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' }");
+    }
 
-        [Fact]
-        public void FullTextOptimiserSimple1()
-        {
-            TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' }");
-        }
+    [Fact]
+    public void FullTextOptimiserSimple2()
+    {
+        TestOptimisation("SELECT * WHERE { ?s ?p ?o . ?s pf:textMatch 'value' }");
+    }
 
-        [Fact]
-        public void FullTextOptimiserSimple2()
-        {
-            TestOptimisation("SELECT * WHERE { ?s ?p ?o . ?s pf:textMatch 'value' }");
-        }
+    [Fact]
+    public void FullTextOptimiserSimple3()
+    {
+        TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' . FILTER(ISURI(?s)) }");
+    }
 
-        [Fact]
-        public void FullTextOptimiserSimple3()
-        {
-            TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' . FILTER(ISURI(?s)) }");
-        }
+    [Fact]
+    public void FullTextOptimiserSimple4()
+    {
+        TestOptimisation("SELECT * WHERE { (?match ?score) pf:textMatch 'value' }");
+    }
 
-        [Fact]
-        public void FullTextOptimiserSimple4()
-        {
-            TestOptimisation("SELECT * WHERE { (?match ?score) pf:textMatch 'value' }");
-        }
+    [Fact]
+    public void FullTextOptimiserComplex1()
+    {
+        TestOptimisation("SELECT * WHERE { ?s ?p ?o . ?s pf:textMatch 'value' }");
+    }
 
-        [Fact]
-        public void FullTextOptimiserComplex1()
-        {
-            TestOptimisation("SELECT * WHERE { ?s ?p ?o . ?s pf:textMatch 'value' }");
-        }
+    [Fact]
+    public void FullTextOptimiserComplex2()
+    {
+        TestOptimisation("SELECT * WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) . ?s pf:textMatch 'value' }");
+    }
 
-        [Fact]
-        public void FullTextOptimiserComplex2()
-        {
-            TestOptimisation("SELECT * WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) . ?s pf:textMatch 'value' }");
-        }
+    [Fact]
+    public void FullTextOptimiserComplex3()
+    {
+        SparqlQuery q = TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
+        ISparqlAlgebra algebra = q.ToAlgebra();
+        Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
+    }
 
-        [Fact]
-        public void FullTextOptimiserComplex3()
-        {
-            SparqlQuery q = TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
-            ISparqlAlgebra algebra = q.ToAlgebra();
-            Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
-        }
+    [Fact]
+    public void FullTextOptimiserComplex4()
+    {
+        SparqlQuery q =
+            TestOptimisation("SELECT * WHERE { (?s ?score) pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
+        ISparqlAlgebra algebra = q.ToAlgebra();
+        Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
+    }
 
-        [Fact]
-        public void FullTextOptimiserComplex4()
-        {
-            SparqlQuery q =
-                TestOptimisation("SELECT * WHERE { (?s ?score) pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
-            ISparqlAlgebra algebra = q.ToAlgebra();
-            Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
-        }
-
-        [Fact]
-        public void FullTextOptimiserComplex5()
-        {
-            //Actual test case from FTXT-364
-            var query = @"PREFIX rdf: <" + NamespaceMapper.RDF + @">
+    [Fact]
+    public void FullTextOptimiserComplex5()
+    {
+        //Actual test case from FTXT-364
+        var query = @"PREFIX rdf: <" + NamespaceMapper.RDF + @">
 PREFIX rdfs: <" + NamespaceMapper.RDFS + @">
 PREFIX my: <http://example.org/my#>
 
@@ -150,99 +149,98 @@ SELECT DISTINCT ?result ?isWebSite WHERE {
        ?result a my:Organization .
        ?result rdfs:label ?label .
     } ORDER BY DESC(?isWebSite) DESC(?score) ASC(?label)";
-            SparqlQuery q = TestOptimisation(query);
-            ISparqlAlgebra algebra = q.ToAlgebra();
-            Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
-        }
+        SparqlQuery q = TestOptimisation(query);
+        ISparqlAlgebra algebra = q.ToAlgebra();
+        Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
     }
+}
 
-    class MockSearchProvider
-        : IFullTextSearchProvider
+class MockSearchProvider
+    : IFullTextSearchProvider
+{
+
+    #region IFullTextSearchProvider Members
+
+    public IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold, int limit)
     {
-
-        #region IFullTextSearchProvider Members
-
-        public IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold, int limit)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<IFullTextSearchResult> Match(string text, int limit)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<IFullTextSearchResult> Match(string text)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold,
-            int limit)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, int limit)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text,
-            double scoreThreshold, int limit)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text,
-            double scoreThreshold)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, int limit)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsAutoSynced
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        #endregion
-
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
+        throw new NotImplementedException();
     }
+
+    public IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<IFullTextSearchResult> Match(string text, int limit)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<IFullTextSearchResult> Match(string text)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold,
+        int limit)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, int limit)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text,
+        double scoreThreshold, int limit)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text,
+        double scoreThreshold)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, int limit)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool IsAutoSynced
+    {
+        get
+        {
+            return true;
+        }
+    }
+
+    #endregion
+
+    #region IDisposable Members
+
+    public void Dispose()
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
 }
 #endif

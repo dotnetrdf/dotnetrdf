@@ -29,112 +29,111 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+
+public class QNameEscapingTests
 {
+    List<char> _cs = new List<char>()
+        {
+             '_',
+             '~',
+             '-',
+             '.',
+             '!',
+             '$',
+             '&',
+             '\'',
+             '(',
+             ')',
+             '*',
+             '+',
+             ',',
+             ';',
+             '=',
+             ',',
+             '/',
+             '?',
+             '#',
+             '@',
+             '%'
+        };
 
-    public class QNameEscapingTests
+    private void TestQNameUnescaping(String input, String expected)
     {
-        List<char> _cs = new List<char>()
-            {
-                 '_',
-                 '~',
-                 '-',
-                 '.',
-                 '!',
-                 '$',
-                 '&',
-                 '\'',
-                 '(',
-                 ')',
-                 '*',
-                 '+',
-                 ',',
-                 ';',
-                 '=',
-                 ',',
-                 '/',
-                 '?',
-                 '#',
-                 '@',
-                 '%'
-            };
+        Console.WriteLine("Input = " + input);
+        Assert.False(SparqlSpecsHelper.IsValidQName(input, SparqlQuerySyntax.Sparql_1_0), "Expected QName to be invalid in SPARQL 1.0 syntax");
+        Assert.True(SparqlSpecsHelper.IsValidQName(input, SparqlQuerySyntax.Sparql_1_1), "Expected a Valid QName as test input");
 
-        private void TestQNameUnescaping(String input, String expected)
+        Console.WriteLine("Output = " + SparqlSpecsHelper.UnescapeQName(input));
+        Console.WriteLine("Expected = " + expected);
+        Assert.Equal(expected, SparqlSpecsHelper.UnescapeQName(input));
+    }
+
+    [Fact]
+    public void SparqlQNameUnescapingPercentEncodingSimple()
+    {
+        TestQNameUnescaping("ex:a%20space", "ex:a%20space");
+    }
+
+    [Fact]
+    public void SparqlQNameUnescapingPercentEncodingComplex()
+    {
+        for (var i = 0; i <= 255; i++)
         {
-            Console.WriteLine("Input = " + input);
-            Assert.False(SparqlSpecsHelper.IsValidQName(input, SparqlQuerySyntax.Sparql_1_0), "Expected QName to be invalid in SPARQL 1.0 syntax");
-            Assert.True(SparqlSpecsHelper.IsValidQName(input, SparqlQuerySyntax.Sparql_1_1), "Expected a Valid QName as test input");
-
-            Console.WriteLine("Output = " + SparqlSpecsHelper.UnescapeQName(input));
-            Console.WriteLine("Expected = " + expected);
-            Assert.Equal(expected, SparqlSpecsHelper.UnescapeQName(input));
+            TestQNameUnescaping("ex:" + Uri.HexEscape((char)i), "ex:" + Uri.HexEscape((char)i));
         }
+    }
 
-        [Fact]
-        public void SparqlQNameUnescapingPercentEncodingSimple()
+    [Fact]
+    public void SparqlQNameUnescapingSpecialCharactersSimple()
+    {
+        foreach (var c in _cs)
         {
-            TestQNameUnescaping("ex:a%20space", "ex:a%20space");
+            TestQNameUnescaping("ex:a\\" + c + "character", "ex:a" + c + "character");
         }
+    }
 
-        [Fact]
-        public void SparqlQNameUnescapingPercentEncodingComplex()
+    [Fact]
+    public void SparqlQNameUnescapingSpecialCharactersComplex()
+    {
+        foreach (var c in _cs)
         {
-            for (var i = 0; i <= 255; i++)
-            {
-                TestQNameUnescaping("ex:" + Uri.HexEscape((char)i), "ex:" + Uri.HexEscape((char)i));
-            }
+            TestQNameUnescaping("ex:\\" + c, "ex:" + c);
         }
+    }
 
-        [Fact]
-        public void SparqlQNameUnescapingSpecialCharactersSimple()
+    [Fact]
+    public void SparqlQNameUnescapingSpecialCharactersMultiple()
+    {
+        var input = new StringBuilder();
+        var output = new StringBuilder();
+        input.Append("ex:");
+        output.Append("ex:");
+        foreach (var c in _cs)
         {
-            foreach (var c in _cs)
-            {
-                TestQNameUnescaping("ex:a\\" + c + "character", "ex:a" + c + "character");
-            }
+            input.Append('\\');
+            input.Append(c);
+            output.Append(c);
         }
+        TestQNameUnescaping(input.ToString(), output.ToString());
+    }
 
-        [Fact]
-        public void SparqlQNameUnescapingSpecialCharactersComplex()
-        {
-            foreach (var c in _cs)
-            {
-                TestQNameUnescaping("ex:\\" + c, "ex:" + c);
-            }
-        }
+    [Fact]
+    public void SparqlQNameUnescapingDawg1()
+    {
+        TestQNameUnescaping("og:audio:title", "og:audio:title");
+    }
 
-        [Fact]
-        public void SparqlQNameUnescapingSpecialCharactersMultiple()
-        {
-            var input = new StringBuilder();
-            var output = new StringBuilder();
-            input.Append("ex:");
-            output.Append("ex:");
-            foreach (var c in _cs)
-            {
-                input.Append('\\');
-                input.Append(c);
-                output.Append(c);
-            }
-            TestQNameUnescaping(input.ToString(), output.ToString());
-        }
+    [Fact]
+    public void SparqlQNameUnescapingDawg2()
+    {
+        TestQNameUnescaping(@":c\~z\.", ":c~z.");
+    }
 
-        [Fact]
-        public void SparqlQNameUnescapingDawg1()
-        {
-            TestQNameUnescaping("og:audio:title", "og:audio:title");
-        }
-
-        [Fact]
-        public void SparqlQNameUnescapingDawg2()
-        {
-            TestQNameUnescaping(@":c\~z\.", ":c~z.");
-        }
-
-        [Fact]
-        public void SparqlBNodeValidation1()
-        {
-            Assert.True(SparqlSpecsHelper.IsValidBNode("_:a"));
-        }
+    [Fact]
+    public void SparqlBNodeValidation1()
+    {
+        Assert.True(SparqlSpecsHelper.IsValidBNode("_:a"));
     }
 }

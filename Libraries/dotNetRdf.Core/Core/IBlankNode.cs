@@ -24,20 +24,19 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Interface for Blank Nodes.
+/// </summary>
+public interface IBlankNode 
+    : IRefNode
 {
     /// <summary>
-    /// Interface for Blank Nodes.
+    /// Gets the Internal ID of the Blank Node.
     /// </summary>
-    public interface IBlankNode 
-        : IRefNode
+    string InternalID
     {
-        /// <summary>
-        /// Gets the Internal ID of the Blank Node.
-        /// </summary>
-        string InternalID
-        {
-            get;
-        }
+        get;
     }
 }

@@ -26,34 +26,33 @@
 
 using VDS.RDF.Query.Paths;
 
-namespace VDS.RDF.Parsing.Tokens
+namespace VDS.RDF.Parsing.Tokens;
+
+/// <summary>
+/// Special Token which acts as a Placeholder for SPARQL Property Paths.
+/// </summary>
+public class PathToken : BaseToken
 {
+    private ISparqlPath _path;
+
     /// <summary>
-    /// Special Token which acts as a Placeholder for SPARQL Property Paths.
+    /// Creates a new Path Token.
     /// </summary>
-    public class PathToken : BaseToken
+    /// <param name="path">Path.</param>
+    public PathToken(ISparqlPath path)
+        : base(Token.PATH, path.ToString(), 0, 0, 0, 0)
     {
-        private ISparqlPath _path;
+        _path = path;
+    }
 
-        /// <summary>
-        /// Creates a new Path Token.
-        /// </summary>
-        /// <param name="path">Path.</param>
-        public PathToken(ISparqlPath path)
-            : base(Token.PATH, path.ToString(), 0, 0, 0, 0)
+    /// <summary>
+    /// Gets the Path this Token acts as a placeholder for.
+    /// </summary>
+    public ISparqlPath Path
+    {
+        get
         {
-            _path = path;
-        }
-
-        /// <summary>
-        /// Gets the Path this Token acts as a placeholder for.
-        /// </summary>
-        public ISparqlPath Path
-        {
-            get
-            {
-                return _path;
-            }
+            return _path;
         }
     }
 }

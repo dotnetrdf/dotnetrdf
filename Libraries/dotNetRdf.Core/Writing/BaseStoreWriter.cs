@@ -28,44 +28,43 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+/// <summary>
+/// Abstract base class for store writers that provides the default logic for implementing the Save method overrides.
+/// </summary>
+public abstract class BaseStoreWriter : IStoreWriter
 {
-    /// <summary>
-    /// Abstract base class for store writers that provides the default logic for implementing the Save method overrides.
-    /// </summary>
-    public abstract class BaseStoreWriter : IStoreWriter
+    /// <inheritdoc />
+    public void Save(ITripleStore store, string filename)
     {
-        /// <inheritdoc />
-        public void Save(ITripleStore store, string filename)
-        {
-            Save(store, filename,
+        Save(store, filename,
 #pragma warning disable CS0618 // Type or member is obsolete
-                    new UTF8Encoding(Options.UseBomForUtf8) //new UTF8Encoding(false)
+                new UTF8Encoding(Options.UseBomForUtf8) //new UTF8Encoding(false)
 #pragma warning restore CS0618 // Type or member is obsolete
-                );
-        }
-
-        /// <inheritdoc />
-        public void Save(ITripleStore store, string filename, Encoding fileEncoding)
-        {
-            if (store == null) throw new ArgumentNullException(nameof(store), "Cannot output a null ITripleStore instance.");
-            if (filename == null) throw new ArgumentNullException(nameof(filename), "Cannot output to a null file");
-            using FileStream stream = File.Open(filename, FileMode.Create);
-            Save(store, new StreamWriter(stream, fileEncoding), false);
-        }
-
-        /// <inheritdoc />
-        public void Save(ITripleStore store, TextWriter output)
-        {
-            if (store == null) throw new ArgumentNullException(nameof(store), "Cannot output a null ITripleStore instance.");
-            if (output == null) throw new ArgumentNullException(nameof(output), "The output TextWriter must not be null.");
-            Save(store, output, false);
-        }
-
-        /// <inheritdoc />
-        public abstract void Save(ITripleStore store, TextWriter writer, bool leaveOpen);
-
-        /// <inheritdoc />
-        public abstract event StoreWriterWarning Warning;
+            );
     }
+
+    /// <inheritdoc />
+    public void Save(ITripleStore store, string filename, Encoding fileEncoding)
+    {
+        if (store == null) throw new ArgumentNullException(nameof(store), "Cannot output a null ITripleStore instance.");
+        if (filename == null) throw new ArgumentNullException(nameof(filename), "Cannot output to a null file");
+        using FileStream stream = File.Open(filename, FileMode.Create);
+        Save(store, new StreamWriter(stream, fileEncoding), false);
+    }
+
+    /// <inheritdoc />
+    public void Save(ITripleStore store, TextWriter output)
+    {
+        if (store == null) throw new ArgumentNullException(nameof(store), "Cannot output a null ITripleStore instance.");
+        if (output == null) throw new ArgumentNullException(nameof(output), "The output TextWriter must not be null.");
+        Save(store, output, false);
+    }
+
+    /// <inheritdoc />
+    public abstract void Save(ITripleStore store, TextWriter writer, bool leaveOpen);
+
+    /// <inheritdoc />
+    public abstract event StoreWriterWarning Warning;
 }

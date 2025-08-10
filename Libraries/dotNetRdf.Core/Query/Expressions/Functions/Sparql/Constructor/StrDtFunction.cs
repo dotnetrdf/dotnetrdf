@@ -24,74 +24,73 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
+
+/// <summary>
+/// Class representing the Sparql StrDt() function.
+/// </summary>
+public class StrDtFunction
+    : BaseBinaryExpression
 {
     /// <summary>
-    /// Class representing the Sparql StrDt() function.
+    /// Creates a new STRDT() function expression.
     /// </summary>
-    public class StrDtFunction
-        : BaseBinaryExpression
+    /// <param name="stringExpr">String Expression.</param>
+    /// <param name="dtExpr">Datatype Expression.</param>
+    public StrDtFunction(ISparqlExpression stringExpr, ISparqlExpression dtExpr)
+        : base(stringExpr, dtExpr) { }
+
+
+    /// <summary>
+    /// Gets the String representation of this Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Creates a new STRDT() function expression.
-        /// </summary>
-        /// <param name="stringExpr">String Expression.</param>
-        /// <param name="dtExpr">Datatype Expression.</param>
-        public StrDtFunction(ISparqlExpression stringExpr, ISparqlExpression dtExpr)
-            : base(stringExpr, dtExpr) { }
+        return "STRDT(" + _leftExpr + ", " + _rightExpr + ")";
+    }
 
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessStrDtFunction(this, context, binding);
+    }
 
-        /// <summary>
-        /// Gets the String representation of this Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitStrDtFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public override SparqlExpressionType Type
+    {
+        get
         {
-            return "STRDT(" + _leftExpr + ", " + _rightExpr + ")";
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return processor.ProcessStrDtFunction(this, context, binding);
+            return SparqlSpecsHelper.SparqlKeywordStrDt;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitStrDtFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordStrDt;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new StrDtFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new StrDtFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
     }
 }

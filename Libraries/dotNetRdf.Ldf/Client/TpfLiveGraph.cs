@@ -49,7 +49,9 @@ namespace VDS.RDF.LDF.Client;
 /// <exception cref="LdfException">Throw under various circumstances to represent operations that are illigal in the context of LDF or when this client is not compatible with the response from the LDF endpoint.</exception>
 public class TpfLiveGraph : Graph
 {
-    private readonly IriTemplate search;
+    private bool _disposed;
+    private readonly TpfLoader _fragment;
+    private readonly IriTemplate _search;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TpfLiveGraph"/> class.
@@ -58,12 +60,12 @@ public class TpfLiveGraph : Graph
     /// <param name="reader">(Optional) The reader to be used for parsing LDF responses (Turtle by default).</param>
     /// <param name="loader">(Optional) The loader to be used when sending LDF requests (<see cref="Loader"/> by default).</param>
     /// <exception cref="ArgumentNullException"><paramref name="baseUri"/> is <see langword="null"/>.</exception>
-    /// <remarks>When this constructor is called then a network request will be sent to gather the LDF metadata.</remarks>
+    /// <remarks>When this constructor is called, a network request will be sent to gather the LDF metadata.</remarks>
     public TpfLiveGraph(Uri baseUri, IRdfReader reader = null, Loader loader = null)
     {
-        using var fragment = new TpfLoader(baseUri ?? throw new ArgumentNullException(nameof(baseUri)), reader, loader);
-        search = fragment.Metadata.Search;
-        _triples = new TpfTripleCollection(search, reader, loader);
+        _fragment = new TpfLoader(baseUri ?? throw new ArgumentNullException(nameof(baseUri)), reader, loader);
+        _search = _fragment.Metadata.Search;
+        _triples = new TpfTripleCollection(_search, reader, loader);
     }
 
     /// <summary>
@@ -85,7 +87,7 @@ public class TpfLiveGraph : Graph
         }
 
         mapping = null; // No blanks in QPF
-        return search.Template == otherLdf.search.Template;
+        return _search.Template == otherLdf._search.Template;
     }
 
     #region Mutation methods throw because this graph is read-only
@@ -257,4 +259,19 @@ public class TpfLiveGraph : Graph
     public override IEnumerable<Triple> QuotedTriples => Enumerable.Empty<Triple>();
 
     #endregion
+
+    /// <inheritdoc />
+    protected override void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            _disposed = true;
+            if (disposing)
+            {
+                _fragment?.Dispose();
+            }
+        }
+
+        base.Dispose(disposing);
+    }
 }

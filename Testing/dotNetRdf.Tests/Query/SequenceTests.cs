@@ -32,118 +32,117 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+
+public class SequenceTests
 {
+    private readonly SparqlQueryParser _queryParser = new SparqlQueryParser();
+    private readonly SparqlUpdateParser _updateParser = new SparqlUpdateParser();
 
-    public class SequenceTests
+    [Fact]
+    public void SparqlSequenceUpdateThenQuery1()
     {
-        private readonly SparqlQueryParser _queryParser = new SparqlQueryParser();
-        private readonly SparqlUpdateParser _updateParser = new SparqlUpdateParser();
+        var dataset = new InMemoryDataset();
+        var updateProcessor = new LeviathanUpdateProcessor(dataset);
+        var queryProcessor = new LeviathanQueryProcessor(dataset);
+        Assert.Single(dataset.Graphs);
 
-        [Fact]
-        public void SparqlSequenceUpdateThenQuery1()
-        {
-            var dataset = new InMemoryDataset();
-            var updateProcessor = new LeviathanUpdateProcessor(dataset);
-            var queryProcessor = new LeviathanQueryProcessor(dataset);
-            Assert.Single(dataset.Graphs);
+        SparqlUpdateCommandSet updates = _updateParser.ParseFromFile(
+            Path.Combine("resources", "sparql", "protocol", "update_dataset_default_graph.ru"));
+        updateProcessor.ProcessCommandSet(updates);
 
-            SparqlUpdateCommandSet updates = _updateParser.ParseFromFile(
-                Path.Combine("resources", "sparql", "protocol", "update_dataset_default_graph.ru"));
-            updateProcessor.ProcessCommandSet(updates);
+        Assert.Equal(3, dataset.Graphs.Count());
+        Assert.Single(dataset[new UriNode(UriFactory.Root.Create("http://example.org/protocol-update-dataset-test/"))].Triples);
 
-            Assert.Equal(3, dataset.Graphs.Count());
-            Assert.Single(dataset[new UriNode(UriFactory.Root.Create("http://example.org/protocol-update-dataset-test/"))].Triples);
+        SparqlQuery query = _queryParser.ParseFromFile(
+            Path.Combine("resources", "sparql", "protocol", "update_dataset_default_graph.rq"));
 
-            SparqlQuery query = _queryParser.ParseFromFile(
-                Path.Combine("resources", "sparql", "protocol", "update_dataset_default_graph.rq"));
+        ISparqlAlgebra algebra = query.ToAlgebra();
 
-            ISparqlAlgebra algebra = query.ToAlgebra();
+        var results = queryProcessor.ProcessQuery(query) as SparqlResultSet;
+        Assert.NotNull(results);
+        Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
+        Assert.True(results.Result);
+    }
 
-            var results = queryProcessor.ProcessQuery(query) as SparqlResultSet;
-            Assert.NotNull(results);
-            Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
-            Assert.True(results.Result);
-        }
+    [Fact]
+    public void SparqlSequenceUpdateThenQuery2()
+    {
+        var dataset = new InMemoryDataset();
+        var updateProcessor = new LeviathanUpdateProcessor(dataset);
+        var queryProcessor = new LeviathanQueryProcessor(dataset);
+        Assert.Single(dataset.Graphs);
 
-        [Fact]
-        public void SparqlSequenceUpdateThenQuery2()
-        {
-            var dataset = new InMemoryDataset();
-            var updateProcessor = new LeviathanUpdateProcessor(dataset);
-            var queryProcessor = new LeviathanQueryProcessor(dataset);
-            Assert.Single(dataset.Graphs);
+        SparqlUpdateCommandSet updates = _updateParser.ParseFromFile(
+            Path.Combine("resources", "sparql", "protocol", "update_dataset_default_graphs.ru"));
+        updateProcessor.ProcessCommandSet(updates);
 
-            SparqlUpdateCommandSet updates = _updateParser.ParseFromFile(
-                Path.Combine("resources", "sparql", "protocol", "update_dataset_default_graphs.ru"));
-            updateProcessor.ProcessCommandSet(updates);
+        Assert.Equal(5, dataset.Graphs.Count());
+        Assert.Equal(2, dataset[new UriNode(UriFactory.Root.Create("http://example.org/protocol-update-dataset-graphs-test/"))].Triples.Count());
 
-            Assert.Equal(5, dataset.Graphs.Count());
-            Assert.Equal(2, dataset[new UriNode(UriFactory.Root.Create("http://example.org/protocol-update-dataset-graphs-test/"))].Triples.Count());
+        SparqlQuery query = _queryParser.ParseFromFile(
+            Path.Combine("resources", "sparql", "protocol", "update_dataset_default_graphs.rq"));
 
-            SparqlQuery query = _queryParser.ParseFromFile(
-                Path.Combine("resources", "sparql", "protocol", "update_dataset_default_graphs.rq"));
+        var results = queryProcessor.ProcessQuery(query) as SparqlResultSet;
+        Assert.NotNull(results);
+        Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
+        Assert.True(results.Result);
+    }
 
-            var results = queryProcessor.ProcessQuery(query) as SparqlResultSet;
-            Assert.NotNull(results);
-            Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
-            Assert.True(results.Result);
-        }
+    [Fact]
+    public void SparqlSequenceUpdateThenQuery3()
+    {
+        var dataset = new InMemoryDataset();
+        var updateProcessor = new LeviathanUpdateProcessor(dataset);
+        var queryProcessor = new LeviathanQueryProcessor(dataset);
+        Assert.Single(dataset.Graphs);
 
-        [Fact]
-        public void SparqlSequenceUpdateThenQuery3()
-        {
-            var dataset = new InMemoryDataset();
-            var updateProcessor = new LeviathanUpdateProcessor(dataset);
-            var queryProcessor = new LeviathanQueryProcessor(dataset);
-            Assert.Single(dataset.Graphs);
+        SparqlUpdateCommandSet updates = _updateParser.ParseFromFile(
+            Path.Combine("resources", "sparql", "protocol", "update_dataset_named_graphs.ru"));
+        updateProcessor.ProcessCommandSet(updates);
 
-            SparqlUpdateCommandSet updates = _updateParser.ParseFromFile(
-                Path.Combine("resources", "sparql", "protocol", "update_dataset_named_graphs.ru"));
-            updateProcessor.ProcessCommandSet(updates);
+        Assert.Equal(5, dataset.Graphs.Count());
+        Assert.Equal(2, dataset[new UriNode(UriFactory.Root.Create("http://example.org/protocol-update-dataset-named-graphs-test/"))].Triples.Count());
 
-            Assert.Equal(5, dataset.Graphs.Count());
-            Assert.Equal(2, dataset[new UriNode(UriFactory.Root.Create("http://example.org/protocol-update-dataset-named-graphs-test/"))].Triples.Count());
+        SparqlQuery query = _queryParser.ParseFromFile(
+            Path.Combine("resources", "sparql", "protocol", "update_dataset_named_graphs.rq"));
 
-            SparqlQuery query = _queryParser.ParseFromFile(
-                Path.Combine("resources", "sparql", "protocol", "update_dataset_named_graphs.rq"));
+        ISparqlAlgebra algebra = query.ToAlgebra();
+        Console.WriteLine(algebra.ToString());
 
-            ISparqlAlgebra algebra = query.ToAlgebra();
-            Console.WriteLine(algebra.ToString());
+        var results = queryProcessor.ProcessQuery(query) as SparqlResultSet;
+        Assert.NotNull(results);
+        Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
+        Assert.True(results.Result);
+    }
 
-            var results = queryProcessor.ProcessQuery(query) as SparqlResultSet;
-            Assert.NotNull(results);
-            Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
-            Assert.True(results.Result);
-        }
+    [Fact]
+    public void SparqlSequenceUpdateThenQuery4()
+    {
+        var dataset = new InMemoryDataset();
+        var updateProcessor = new LeviathanUpdateProcessor(dataset);
+        var queryProcessor = new LeviathanQueryProcessor(dataset);
+        Assert.Single(dataset.Graphs);
 
-        [Fact]
-        public void SparqlSequenceUpdateThenQuery4()
-        {
-            var dataset = new InMemoryDataset();
-            var updateProcessor = new LeviathanUpdateProcessor(dataset);
-            var queryProcessor = new LeviathanQueryProcessor(dataset);
-            Assert.Single(dataset.Graphs);
+        SparqlUpdateCommandSet updates = _updateParser.ParseFromFile(
+            Path.Combine("resources", "sparql", "protocol", "update_dataset_full.ru"));
+        updateProcessor.ProcessCommandSet(updates);
 
-            SparqlUpdateCommandSet updates = _updateParser.ParseFromFile(
-                Path.Combine("resources", "sparql", "protocol", "update_dataset_full.ru"));
-            updateProcessor.ProcessCommandSet(updates);
+        Console.WriteLine(updates.ToString());
 
-            Console.WriteLine(updates.ToString());
+        Assert.Equal(5, dataset.Graphs.Count());
+        Assert.Equal(2, dataset[new UriNode(UriFactory.Root.Create("http://example.org/protocol-update-dataset-full-test/"))].Triples.Count());
 
-            Assert.Equal(5, dataset.Graphs.Count());
-            Assert.Equal(2, dataset[new UriNode(UriFactory.Root.Create("http://example.org/protocol-update-dataset-full-test/"))].Triples.Count());
+        SparqlQuery query = _queryParser.ParseFromFile(
+            Path.Combine("resources", "sparql", "protocol", "update_dataset_full.rq"));
 
-            SparqlQuery query = _queryParser.ParseFromFile(
-                Path.Combine("resources", "sparql", "protocol", "update_dataset_full.rq"));
+        ISparqlAlgebra algebra = query.ToAlgebra();
+        Console.WriteLine(algebra.ToString());
 
-            ISparqlAlgebra algebra = query.ToAlgebra();
-            Console.WriteLine(algebra.ToString());
-
-            var results = queryProcessor.ProcessQuery(query) as SparqlResultSet;
-            Assert.NotNull(results);
-            Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
-            Assert.True(results.Result);
-        }
+        var results = queryProcessor.ProcessQuery(query) as SparqlResultSet;
+        Assert.NotNull(results);
+        Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
+        Assert.True(results.Result);
     }
 }

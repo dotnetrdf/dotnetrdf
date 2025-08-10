@@ -24,12 +24,11 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Update
+namespace VDS.RDF.Update;
+
+/// <summary>
+/// Static Helper class for providing constants, helper functions etc regarding the SPARQL Update specification.
+/// </summary>
+public static class SparqlUpdateSpecsHelper
 {
-    /// <summary>
-    /// Static Helper class for providing constants, helper functions etc regarding the SPARQL Update specification.
-    /// </summary>
-    public static class SparqlUpdateSpecsHelper
-    {
-    }
 }

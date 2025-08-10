@@ -28,199 +28,198 @@ using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Manager for Unit Test Configuration which is basically key value properties used in various tests.  Primarily intended for tests that rely on per system software like triple stores
+/// </summary>
+public static class TestConfigManager
 {
+
     /// <summary>
-    /// Manager for Unit Test Configuration which is basically key value properties used in various tests.  Primarily intended for tests that rely on per system software like triple stores
+    /// Constants for Test Configuration setings related to IIS and ASP.Net tests
     /// </summary>
-    public static class TestConfigManager
+    public const String UseIIS = "Web.IIS",
+                        LocalQueryUri = "Web.Query",
+                        LocalGraphStoreUri = "Web.SparqlServer",
+                        LocalGraphStoreQueryUri = "Web.SparqlServer.Query",
+                        LocalGraphStoreUpdateUri = "Web.SparqlServer.Update";
+
+    public const String UseRemoteSparql = "Sparql.Remote",
+                        RemoteSparqlQuery = "Sparql.Remote.Query";
+
+    /// <summary>
+    /// Constants for Test Configuration settings related to AllegroGraph test
+    /// </summary>
+    public const String UseAllegroGraph = "Storage.AllegroGraph",
+                        AllegroGraphServer = "Storage.AllegroGraph.Server",
+                        AllegroGraphCatalog = "Storage.AllegroGraph.Catalog",
+                        AllegroGraphRepository = "Storage.AllegroGraph.Repository",
+                        AllegroGraphUser = "Storage.AllegroGraph.User",
+                        AllegroGraphPassword = "Storage.AllegroGraph.Password";
+
+    public const String UseDydra = "Storage.Dydra",
+                        DydraAccount = "Storage.Dydra.Account",
+                        DydraRepository = "Storage.Dydra.Repository",
+                        DydraApiKey = "Storage.Dydra.ApiKey";
+
+    public const String UseFourStore = "Storage.FourStore",
+                        FourStoreServer = "Storage.FourStore.Server";
+
+    public const String UseFuseki = "Storage.Fuseki",
+                        FusekiServer = "Storage.Fuseki.Server";
+
+    public const String UseSesame = "Storage.Sesame",
+                        SesameServer = "Storage.Sesame.Server",
+                        SesameRepository = "Storage.Sesame.Repository";
+
+    public const String UseStardog = "Storage.Stardog",
+                        StardogServer = "Storage.Stardog.Server",
+                        StardogDatabase = "Storage.Stardog.DB",
+                        StardogUser = "Storage.Stardog.User",
+                        StardogPassword = "Storage.Stardog.Password";
+
+
+    public const String UseVirtuoso = "Storage.Virtuoso",
+                        VirtuosoServer = "Storage.Virtuoso.Server",
+                        VirtuosoPort = "Storage.Virtuoso.Port",
+                        VirtuosoDatabase = "Storage.Virtuoso.DB",
+                        VirtuosoUser = "Storage.Virtuoso.User",
+                        VirtuosoPassword = "Storage.Virtuoso.Password",
+                        VirtuosoEndpoint = "Storage.Virtuoso.Endpoint";
+
+    public const String UseGraphViz = "Writing.GraphViz";
+
+    public const String UseRemoteParsing = "Parsing.Remote";
+
+    private static bool _init = false, _failed = false;
+    private static readonly Dictionary<String, String> _settings = new Dictionary<string,string>();
+
+    private static void Init()
     {
+        if (_init) return;
+        if (_failed) Fail();
 
-        /// <summary>
-        /// Constants for Test Configuration setings related to IIS and ASP.Net tests
-        /// </summary>
-        public const String UseIIS = "Web.IIS",
-                            LocalQueryUri = "Web.Query",
-                            LocalGraphStoreUri = "Web.SparqlServer",
-                            LocalGraphStoreQueryUri = "Web.SparqlServer.Query",
-                            LocalGraphStoreUpdateUri = "Web.SparqlServer.Update";
-
-        public const String UseRemoteSparql = "Sparql.Remote",
-                            RemoteSparqlQuery = "Sparql.Remote.Query";
-
-        /// <summary>
-        /// Constants for Test Configuration settings related to AllegroGraph test
-        /// </summary>
-        public const String UseAllegroGraph = "Storage.AllegroGraph",
-                            AllegroGraphServer = "Storage.AllegroGraph.Server",
-                            AllegroGraphCatalog = "Storage.AllegroGraph.Catalog",
-                            AllegroGraphRepository = "Storage.AllegroGraph.Repository",
-                            AllegroGraphUser = "Storage.AllegroGraph.User",
-                            AllegroGraphPassword = "Storage.AllegroGraph.Password";
-
-        public const String UseDydra = "Storage.Dydra",
-                            DydraAccount = "Storage.Dydra.Account",
-                            DydraRepository = "Storage.Dydra.Repository",
-                            DydraApiKey = "Storage.Dydra.ApiKey";
-
-        public const String UseFourStore = "Storage.FourStore",
-                            FourStoreServer = "Storage.FourStore.Server";
-
-        public const String UseFuseki = "Storage.Fuseki",
-                            FusekiServer = "Storage.Fuseki.Server";
-
-        public const String UseSesame = "Storage.Sesame",
-                            SesameServer = "Storage.Sesame.Server",
-                            SesameRepository = "Storage.Sesame.Repository";
-
-        public const String UseStardog = "Storage.Stardog",
-                            StardogServer = "Storage.Stardog.Server",
-                            StardogDatabase = "Storage.Stardog.DB",
-                            StardogUser = "Storage.Stardog.User",
-                            StardogPassword = "Storage.Stardog.Password";
-
-
-        public const String UseVirtuoso = "Storage.Virtuoso",
-                            VirtuosoServer = "Storage.Virtuoso.Server",
-                            VirtuosoPort = "Storage.Virtuoso.Port",
-                            VirtuosoDatabase = "Storage.Virtuoso.DB",
-                            VirtuosoUser = "Storage.Virtuoso.User",
-                            VirtuosoPassword = "Storage.Virtuoso.Password",
-                            VirtuosoEndpoint = "Storage.Virtuoso.Endpoint";
-
-        public const String UseGraphViz = "Writing.GraphViz";
-
-        public const String UseRemoteParsing = "Parsing.Remote";
-
-        private static bool _init = false, _failed = false;
-        private static readonly Dictionary<String, String> _settings = new Dictionary<string,string>();
-
-        private static void Init()
+        if (File.Exists(@"resources\UnitTestConfig.properties"))
         {
-            if (_init) return;
-            if (_failed) Fail();
-
-            if (File.Exists(@"resources\UnitTestConfig.properties"))
+            using (StreamReader reader = File.OpenText(@"resources\UnitTestConfig.properties"))
             {
-                using (StreamReader reader = File.OpenText(@"resources\UnitTestConfig.properties"))
+                do
                 {
-                    do
+                    var line = reader.ReadLine();
+                    if (line == null) break;
+                    if (line.TrimStart().StartsWith("#")) continue;
+                    if (line.Equals("")) continue;
+
+                    var parts = line.Split(new char[] { '=' }, 2);
+                    if (parts.Length == 2)
                     {
-                        var line = reader.ReadLine();
-                        if (line == null) break;
-                        if (line.TrimStart().StartsWith("#")) continue;
-                        if (line.Equals("")) continue;
-
-                        var parts = line.Split(new char[] { '=' }, 2);
-                        if (parts.Length == 2)
+                        if (_settings.ContainsKey(parts[0]))
                         {
-                            if (_settings.ContainsKey(parts[0]))
-                            {
-                                _settings[parts[0]] = parts[1];
-                            }
-                            else
-                            {
-                                _settings.Add(parts[0], parts[1]);
-                            }
+                            _settings[parts[0]] = parts[1];
                         }
-                    } while (true);
-                    reader.Close();
-                }
+                        else
+                        {
+                            _settings.Add(parts[0], parts[1]);
+                        }
+                    }
+                } while (true);
+                reader.Close();
             }
-            else
-            {
-                _failed = true;
-                Fail();
-            }
-
-            _init = true;
+        }
+        else
+        {
+            _failed = true;
+            Fail();
         }
 
-        private static void Fail()
-        {
-            Skip.IfNot(true, "UnitTestConfig.properties cannot be found, to configure your test environment please make a copy of UnitTestConfig.template under the resources directory, add it to this project as a Content item and then edit it to match your test environment");
-        }
+        _init = true;
+    }
 
-        /// <summary>
-        /// Gets a Setting by its key, if the setting doesn't exist or is null/empty the the test calling this will be marked as failing with an appropriate error message
-        /// </summary>
-        /// <param name="key">Setting Key</param>
-        /// <returns></returns>
-        public static String GetSetting(String key)
-        {
-            if (!_init) Init();
+    private static void Fail()
+    {
+        Assert.SkipUnless(true, "UnitTestConfig.properties cannot be found, to configure your test environment please make a copy of UnitTestConfig.template under the resources directory, add it to this project as a Content item and then edit it to match your test environment");
+    }
 
-            if (_failed) return null;
-            if (_settings.ContainsKey(key))
+    /// <summary>
+    /// Gets a Setting by its key, if the setting doesn't exist or is null/empty the the test calling this will be marked as failing with an appropriate error message
+    /// </summary>
+    /// <param name="key">Setting Key</param>
+    /// <returns></returns>
+    public static String GetSetting(String key)
+    {
+        if (!_init) Init();
+
+        if (_failed) return null;
+        if (_settings.ContainsKey(key))
+        {
+            var value = _settings[key];
+            if (String.IsNullOrEmpty(value))
             {
-                var value = _settings[key];
-                if (String.IsNullOrEmpty(value))
-                {
-                    Assert.True(false,
-                        "Configuration setting '" + key + "' in your UnitTestConfig.properties file is empty/null");
-                    return null;
-                }
-                else
-                {
-                    return value;
-                }
-            }
-            else
-            {
-                Assert.True(false,
-                    "Required configuration setting '" + key +
-                    "' not found in your UnitTestConfig.properties file");
+                Assert.Fail(
+                    "Configuration setting '" + key + "' in your UnitTestConfig.properties file is empty/null");
                 return null;
             }
-
-        }
-
-        /// <summary>
-        /// Gets a Setting by its key as an integer, if the setting doesn't exist or is an invalid integer the the test calling this will be marked as failing with an appropriate error message
-        /// </summary>
-        /// <param name="key">Setting Key</param>
-        /// <returns></returns>
-        public static int GetSettingAsInt(String key)
-        {
-            var value = GetSetting(key);
-            if (_failed) return 0;
-            int i;
-            if (Int32.TryParse(value, out i))
-            {
-                return i;
-            }
             else
             {
-                Assert.True(false,
-                    "Configuration setting '" + key +
-                    "' in your UnitTestConfig.properties file is not a valid integer");
-                return 0;
+                return value;
             }
-
         }
-
-        /// <summary>
-        /// Gets a Setting by its key, if the setting doesn't exist or is an invalid boolean the the test calling this will be marked as failing with an appropriate error message
-        /// </summary>
-        /// <param name="key">Setting Key</param>
-        /// <returns></returns>
-        public static bool GetSettingAsBoolean(String key)
+        else
         {
-            var value = GetSetting(key);
-            if (_failed) return false;
-            bool b;
-            if (Boolean.TryParse(value, out b))
-            {
-                return b;
-            }
-            else
-            {
-                Assert.True(false,
-                    "Configuration setting '" + key +
-                    "' in your UnitTestConfig.properties file is not a valid boolean");
-                return false;
-            }
-
+            Assert.Fail(
+                "Required configuration setting '" + key +
+                "' not found in your UnitTestConfig.properties file");
+            return null;
         }
+
+    }
+
+    /// <summary>
+    /// Gets a Setting by its key as an integer, if the setting doesn't exist or is an invalid integer the the test calling this will be marked as failing with an appropriate error message
+    /// </summary>
+    /// <param name="key">Setting Key</param>
+    /// <returns></returns>
+    public static int GetSettingAsInt(String key)
+    {
+        var value = GetSetting(key);
+        if (_failed) return 0;
+        int i;
+        if (Int32.TryParse(value, out i))
+        {
+            return i;
+        }
+        else
+        {
+            Assert.Fail(
+                "Configuration setting '" + key +
+                "' in your UnitTestConfig.properties file is not a valid integer");
+            return 0;
+        }
+
+    }
+
+    /// <summary>
+    /// Gets a Setting by its key, if the setting doesn't exist or is an invalid boolean the the test calling this will be marked as failing with an appropriate error message
+    /// </summary>
+    /// <param name="key">Setting Key</param>
+    /// <returns></returns>
+    public static bool GetSettingAsBoolean(String key)
+    {
+        var value = GetSetting(key);
+        if (_failed) return false;
+        bool b;
+        if (Boolean.TryParse(value, out b))
+        {
+            return b;
+        }
+        else
+        {
+            Assert.Fail(
+                "Configuration setting '" + key +
+                "' in your UnitTestConfig.properties file is not a valid boolean");
+            return false;
+        }
+
     }
 }

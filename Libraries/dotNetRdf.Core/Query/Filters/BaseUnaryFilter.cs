@@ -27,60 +27,59 @@
 using System.Collections.Generic;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Filters
+namespace VDS.RDF.Query.Filters;
+
+/// <summary>
+/// Abstract Base class for Unary Filters that operate on a single Expression.
+/// </summary>
+public abstract class BaseUnaryFilter 
+    : ISparqlFilter 
 {
     /// <summary>
-    /// Abstract Base class for Unary Filters that operate on a single Expression.
+    /// Expression which is the Argument to the Filter.
     /// </summary>
-    public abstract class BaseUnaryFilter 
-        : ISparqlFilter 
+    protected ISparqlExpression _arg;
+
+    /// <summary>
+    /// Creates a new Base Unary Filter.
+    /// </summary>
+    /// <param name="arg">Argument to the Filter.</param>
+    protected BaseUnaryFilter(ISparqlExpression arg)
     {
-        /// <summary>
-        /// Expression which is the Argument to the Filter.
-        /// </summary>
-        protected ISparqlExpression _arg;
+        _arg = arg;
+    }
 
-        /// <summary>
-        /// Creates a new Base Unary Filter.
-        /// </summary>
-        /// <param name="arg">Argument to the Filter.</param>
-        protected BaseUnaryFilter(ISparqlExpression arg)
+    /// <summary>
+    /// Gets the String representation of the Filter.
+    /// </summary>
+    /// <returns></returns>
+    public abstract override string ToString();
+
+    /// <inheritdoc />
+    public abstract TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context);
+
+    /// <inheritdoc />
+    public abstract T Accept<T>(ISparqlAlgebraVisitor<T> visitor);
+
+    /// <summary>
+    /// Gets the enumeration of Variables used in the Filter.
+    /// </summary>
+    public virtual IEnumerable<string> Variables
+    {
+        get
         {
-            _arg = arg;
+            return _arg.Variables;
         }
+    }
 
-        /// <summary>
-        /// Gets the String representation of the Filter.
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
-
-        /// <inheritdoc />
-        public abstract TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context);
-
-        /// <inheritdoc />
-        public abstract T Accept<T>(ISparqlAlgebraVisitor<T> visitor);
-
-        /// <summary>
-        /// Gets the enumeration of Variables used in the Filter.
-        /// </summary>
-        public virtual IEnumerable<string> Variables
+    /// <summary>
+    /// Gets the inner expression this Filter uses.
+    /// </summary>
+    public virtual ISparqlExpression Expression
+    {
+        get
         {
-            get
-            {
-                return _arg.Variables;
-            }
-        }
-
-        /// <summary>
-        /// Gets the inner expression this Filter uses.
-        /// </summary>
-        public virtual ISparqlExpression Expression
-        {
-            get
-            {
-                return _arg;
-            }
+            return _arg;
         }
     }
 }

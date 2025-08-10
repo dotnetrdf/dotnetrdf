@@ -28,38 +28,37 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Utils.Describe
+namespace VDS.RDF.Utils.Describe;
+
+/// <summary>
+/// Computes a Simple Subject Description for all Values resulting from the Query.
+/// </summary>
+/// <remarks>
+/// <para>
+/// The Description returned is all the Triples for which a Value is the Subject - this description does not expand any Blank Nodes.
+/// </para>
+/// </remarks>
+public class SimpleSubjectDescription 
+    : BaseDescribeAlgorithm
 {
     /// <summary>
-    /// Computes a Simple Subject Description for all Values resulting from the Query.
+    /// Generates the Description for each of the Nodes to be described.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// The Description returned is all the Triples for which a Value is the Subject - this description does not expand any Blank Nodes.
-    /// </para>
-    /// </remarks>
-    public class SimpleSubjectDescription 
-        : BaseDescribeAlgorithm
+    /// <param name="handler">RDF Handler.</param>
+    /// <param name="dataset">Dataset to extract descriptions from.</param>
+    /// <param name="nodes">Nodes to be described.</param>
+    protected override void DescribeInternal(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes)
     {
-        /// <summary>
-        /// Generates the Description for each of the Nodes to be described.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="dataset">Dataset to extract descriptions from.</param>
-        /// <param name="nodes">Nodes to be described.</param>
-        protected override void DescribeInternal(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes)
-        {
-            // Rewrite Blank Node IDs for DESCRIBE Results
-            var bnodeMapping = new Dictionary<string, INode>();
+        // Rewrite Blank Node IDs for DESCRIBE Results
+        var bnodeMapping = new Dictionary<string, INode>();
 
-            // Get Triples for this Subject
-            foreach (INode subj in nodes)
+        // Get Triples for this Subject
+        foreach (INode subj in nodes)
+        {
+            // Get Triples where the Node is the Subject
+            foreach (Triple t in dataset.GetTriplesWithSubject(subj).ToList())
             {
-                // Get Triples where the Node is the Subject
-                foreach (Triple t in dataset.GetTriplesWithSubject(subj).ToList())
-                {
-                    if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
-                }
+                if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
             }
         }
     }

@@ -24,12 +24,11 @@
 // </copyright>
 */
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// A marker interface shared by nodes that act as references to resources.
+/// </summary>
+public interface IRefNode : INode
 {
-    /// <summary>
-    /// A marker interface shared by nodes that act as references to resources.
-    /// </summary>
-    public interface IRefNode : INode
-    {
-    }
 }

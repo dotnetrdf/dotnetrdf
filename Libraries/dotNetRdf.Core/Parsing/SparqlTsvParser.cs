@@ -32,362 +32,361 @@ using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Parsing;
+
+/// <summary>
+/// Parser for reading SPARQL Results that have been serialized in the SPARQL Results TSV format.
+/// </summary>
+public class SparqlTsvParser
+    : BaseSparqlResultsReader
 {
     /// <summary>
-    /// Parser for reading SPARQL Results that have been serialized in the SPARQL Results TSV format.
+    /// Loads a Result Set from an Input Stream.
     /// </summary>
-    public class SparqlTsvParser
-        : BaseSparqlResultsReader
+    /// <param name="results">Result Set to load into.</param>
+    /// <param name="input">Input Stream to read from.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public override void Load(SparqlResultSet results, StreamReader input, IUriFactory uriFactory)
     {
-        /// <summary>
-        /// Loads a Result Set from an Input Stream.
-        /// </summary>
-        /// <param name="results">Result Set to load into.</param>
-        /// <param name="input">Input Stream to read from.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public override void Load(SparqlResultSet results, StreamReader input, IUriFactory uriFactory)
+        if (input == null) throw new RdfParseException("Cannot parse SPARQL Results from a null input stream");
+        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+        
+        // Check Encoding
+        if (!Equals(input.CurrentEncoding, Encoding.UTF8))
         {
-            if (input == null) throw new RdfParseException("Cannot parse SPARQL Results from a null input stream");
-            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-            
-            // Check Encoding
-            if (!Equals(input.CurrentEncoding, Encoding.UTF8))
-            {
-                RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-            }
-
-            Load(results, (TextReader)input, uriFactory);
+            RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
         }
 
+        Load(results, (TextReader)input, uriFactory);
+    }
 
-        /// <summary>
-        /// Loads a Result Set from a File.
-        /// </summary>
-        /// <param name="results">Result Set to load into.</param>
-        /// <param name="filename">File to load from.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public override void Load(SparqlResultSet results, string filename, IUriFactory uriFactory)
+
+    /// <summary>
+    /// Loads a Result Set from a File.
+    /// </summary>
+    /// <param name="results">Result Set to load into.</param>
+    /// <param name="filename">File to load from.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public override void Load(SparqlResultSet results, string filename, IUriFactory uriFactory)
+    {
+        if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
+        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+        Load(results, new StreamReader(File.OpenRead(filename)), uriFactory);
+    }
+
+    /// <summary>
+    /// Loads a Result Set from an Input.
+    /// </summary>
+    /// <param name="results">Result Set to load into.</param>
+    /// <param name="input">Input to read from.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public override void Load(SparqlResultSet results, TextReader input, IUriFactory uriFactory)
+    {
+        if (results == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Set");
+        if (input == null) throw new RdfParseException("Cannot parse SPARQL Results from a null input stream");
+        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+        Load(new ResultSetHandler(results), input, uriFactory);
+    }
+
+    /// <summary>
+    /// Loads a Result Set from an Input Stream using a Results Handler.
+    /// </summary>
+    /// <param name="handler">Results Handler to use.</param>
+    /// <param name="input">Input Stream to read from.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public override void Load(ISparqlResultsHandler handler, StreamReader input, IUriFactory uriFactory)
+    {
+        if (input == null) throw new RdfParseException("Cannot parser SPARQL Results from a null input stream");
+        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+
+        // Check Encoding
+        if (input.CurrentEncoding != Encoding.UTF8)
         {
-            if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
-            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-            Load(results, new StreamReader(File.OpenRead(filename)), uriFactory);
+            RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
         }
 
-        /// <summary>
-        /// Loads a Result Set from an Input.
-        /// </summary>
-        /// <param name="results">Result Set to load into.</param>
-        /// <param name="input">Input to read from.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public override void Load(SparqlResultSet results, TextReader input, IUriFactory uriFactory)
+        Load(handler, (TextReader)input, uriFactory);
+    }
+
+    /// <summary>
+    /// Loads a Result Set from a File using a Results Handler.
+    /// </summary>
+    /// <param name="handler">Results Handler to use.</param>
+    /// <param name="filename">Filename to load from.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public override void Load(ISparqlResultsHandler handler, string filename, IUriFactory uriFactory)
+    {
+        if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
+        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+        Load(handler, new StreamReader(File.OpenRead(filename)), uriFactory);
+    }
+
+    /// <summary>
+    /// Loads a Result Set from an Input using a Results Handler.
+    /// </summary>
+    /// <param name="handler">Results Handler to use.</param>
+    /// <param name="input">Input to read from.</param>
+    /// <param name="uriFactory">URI Factory to use.</param>
+    public override void Load(ISparqlResultsHandler handler, TextReader input, IUriFactory uriFactory)
+    {
+        if (handler == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Handler");
+        if (input == null) throw new RdfParseException("Cannot parse SPARQL Results from a null input stream");
+
+        try
         {
-            if (results == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Set");
-            if (input == null) throw new RdfParseException("Cannot parse SPARQL Results from a null input stream");
-            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-            Load(new ResultSetHandler(results), input, uriFactory);
+            var context = new TokenisingResultParserContext(handler, new TsvTokeniser(ParsingTextReader.Create(input)), uriFactory);
+            TryParseResults(context);
+            input.Close();
         }
-
-        /// <summary>
-        /// Loads a Result Set from an Input Stream using a Results Handler.
-        /// </summary>
-        /// <param name="handler">Results Handler to use.</param>
-        /// <param name="input">Input Stream to read from.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public override void Load(ISparqlResultsHandler handler, StreamReader input, IUriFactory uriFactory)
+        catch
         {
-            if (input == null) throw new RdfParseException("Cannot parser SPARQL Results from a null input stream");
-            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-
-            // Check Encoding
-            if (input.CurrentEncoding != Encoding.UTF8)
-            {
-                RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-            }
-
-            Load(handler, (TextReader)input, uriFactory);
-        }
-
-        /// <summary>
-        /// Loads a Result Set from a File using a Results Handler.
-        /// </summary>
-        /// <param name="handler">Results Handler to use.</param>
-        /// <param name="filename">Filename to load from.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public override void Load(ISparqlResultsHandler handler, string filename, IUriFactory uriFactory)
-        {
-            if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
-            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-            Load(handler, new StreamReader(File.OpenRead(filename)), uriFactory);
-        }
-
-        /// <summary>
-        /// Loads a Result Set from an Input using a Results Handler.
-        /// </summary>
-        /// <param name="handler">Results Handler to use.</param>
-        /// <param name="input">Input to read from.</param>
-        /// <param name="uriFactory">URI Factory to use.</param>
-        public override void Load(ISparqlResultsHandler handler, TextReader input, IUriFactory uriFactory)
-        {
-            if (handler == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Handler");
-            if (input == null) throw new RdfParseException("Cannot parse SPARQL Results from a null input stream");
-
             try
             {
-                var context = new TokenisingResultParserContext(handler, new TsvTokeniser(ParsingTextReader.Create(input)), uriFactory);
-                TryParseResults(context);
                 input.Close();
             }
             catch
             {
-                try
-                {
-                    input.Close();
-                }
-                catch
-                {
-                    // No catch actions just trying to clean up
-                }
-                throw;
+                // No catch actions just trying to clean up
             }
+            throw;
         }
+    }
 
-        private void TryParseResults(TokenisingResultParserContext context)
+    private void TryParseResults(TokenisingResultParserContext context)
+    {
+        try
         {
-            try
-            {
-                context.Handler.StartResults();
-                context.Tokens.InitialiseBuffer();
+            context.Handler.StartResults();
+            context.Tokens.InitialiseBuffer();
 
-                // Thrown away the BOF if present
-                if (context.Tokens.Peek().TokenType == Token.BOF) context.Tokens.Dequeue();
+            // Thrown away the BOF if present
+            if (context.Tokens.Peek().TokenType == Token.BOF) context.Tokens.Dequeue();
 
-                // Firstly parse the Header Row
-                TryParseHeaderRow(context);
+            // Firstly parse the Header Row
+            TryParseHeaderRow(context);
 
-                // Then while not EOF try parse result rows
-                IToken next = context.Tokens.Peek();
-                while (next.TokenType != Token.EOF)
-                {
-                    TryParseResultRow(context);
-                    if (context.Tokens.LastTokenType == Token.EOF) break;
-                }
-
-                context.Handler.EndResults(true);
-            }
-            catch (RdfParsingTerminatedException)
-            {
-                context.Handler.EndResults(true);
-            }
-            catch
-            {
-                // Some Other Error
-                context.Handler.EndResults(false);
-                throw;
-            }
-        }
-
-        private void TryParseHeaderRow(TokenisingResultParserContext context)
-        {
+            // Then while not EOF try parse result rows
             IToken next = context.Tokens.Peek();
-            bool allowEOL = true, expectTab = false;
-            while (true)
+            while (next.TokenType != Token.EOF)
             {
-                next = context.Tokens.Dequeue();
-                switch (next.TokenType)
-                {
-                    case Token.EOL:
-                        if (allowEOL)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            throw ParserHelper.Error("Unexpected End of Line, expected a Variable Token", next);
-                        }
-
-                    case Token.VARIABLE:
-                        if (expectTab) throw ParserHelper.Error("Unexpected Variable, expected a Tab between each Variable", next);
-                        context.Variables.Add(next.Value.Substring(1));
-                        if (!context.Handler.HandleVariable(next.Value.Substring(1))) ParserHelper.Stop();
-                        allowEOL = true;
-                        expectTab = true;
-                        break;
-
-                    case Token.TAB:
-                        expectTab = false;
-                        allowEOL = false;
-                        break;
-
-                    case Token.EOF:
-                        if (!allowEOL) throw ParserHelper.Error("Unexpected EOF, expected another Variable for the Header Row", next);
-                        break;
-
-                    default:
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered", next);
-                }
-
-                // Stop when we've hit the End of the Line/File
-                if (next.TokenType == Token.EOL || next.TokenType == Token.EOF) break;
+                TryParseResultRow(context);
+                if (context.Tokens.LastTokenType == Token.EOF) break;
             }
+
+            context.Handler.EndResults(true);
+        }
+        catch (RdfParsingTerminatedException)
+        {
+            context.Handler.EndResults(true);
+        }
+        catch
+        {
+            // Some Other Error
+            context.Handler.EndResults(false);
+            throw;
+        }
+    }
+
+    private void TryParseHeaderRow(TokenisingResultParserContext context)
+    {
+        IToken next = context.Tokens.Peek();
+        bool allowEOL = true, expectTab = false;
+        while (true)
+        {
+            next = context.Tokens.Dequeue();
+            switch (next.TokenType)
+            {
+                case Token.EOL:
+                    if (allowEOL)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        throw ParserHelper.Error("Unexpected End of Line, expected a Variable Token", next);
+                    }
+
+                case Token.VARIABLE:
+                    if (expectTab) throw ParserHelper.Error("Unexpected Variable, expected a Tab between each Variable", next);
+                    context.Variables.Add(next.Value.Substring(1));
+                    if (!context.Handler.HandleVariable(next.Value.Substring(1))) ParserHelper.Stop();
+                    allowEOL = true;
+                    expectTab = true;
+                    break;
+
+                case Token.TAB:
+                    expectTab = false;
+                    allowEOL = false;
+                    break;
+
+                case Token.EOF:
+                    if (!allowEOL) throw ParserHelper.Error("Unexpected EOF, expected another Variable for the Header Row", next);
+                    break;
+
+                default:
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered", next);
+            }
+
+            // Stop when we've hit the End of the Line/File
+            if (next.TokenType == Token.EOL || next.TokenType == Token.EOF) break;
+        }
+    }
+
+    private void TryParseResultRow(TokenisingResultParserContext context)
+    {
+        IToken next = context.Tokens.Peek();
+        if (next.TokenType == Token.EOF)
+        {
+            context.Tokens.Dequeue();
+            return;
         }
 
-        private void TryParseResultRow(TokenisingResultParserContext context)
+        bool allowEOL = true, expectTab = false;
+        var v = 0;
+        var result = new SparqlResult();
+        while (true)
         {
-            IToken next = context.Tokens.Peek();
-            if (next.TokenType == Token.EOF)
+            next = context.Tokens.Dequeue();
+            switch (next.TokenType)
             {
-                context.Tokens.Dequeue();
-                return;
-            }
+                case Token.URI:
+                    if (expectTab) throw ParserHelper.Error("Unexpected URI, expected a Tab between RDF Terms", next);
+                    if (v >= context.Variables.Count) throw ParserHelper.Error("Too many RDF Terms, only expecting " + context.Variables.Count + " terms", next);
+                    INode uri = ParserHelper.TryResolveUri(context, next);
+                    result.SetValue(context.Variables[v], uri);
+                    v++;
+                    allowEOL = true;
+                    expectTab = true;
+                    break;
 
-            bool allowEOL = true, expectTab = false;
-            var v = 0;
-            var result = new SparqlResult();
-            while (true)
-            {
-                next = context.Tokens.Dequeue();
-                switch (next.TokenType)
-                {
-                    case Token.URI:
-                        if (expectTab) throw ParserHelper.Error("Unexpected URI, expected a Tab between RDF Terms", next);
-                        if (v >= context.Variables.Count) throw ParserHelper.Error("Too many RDF Terms, only expecting " + context.Variables.Count + " terms", next);
-                        INode uri = ParserHelper.TryResolveUri(context, next);
-                        result.SetValue(context.Variables[v], uri);
-                        v++;
-                        allowEOL = true;
-                        expectTab = true;
+                case Token.BLANKNODEWITHID:
+                    if (expectTab) throw ParserHelper.Error("Unexpected Blank Node, expected a Tab between RDF Terms", next);
+                    if (v >= context.Variables.Count) throw ParserHelper.Error("Too many RDF Terms, only expecting " + context.Variables.Count + " terms", next);
+                    INode blank = context.Handler.CreateBlankNode(next.Value.Substring(2));
+                    result.SetValue(context.Variables[v], blank);
+                    v++;
+                    allowEOL = true;
+                    expectTab = true;
+                    break;
+
+                case Token.LITERAL:
+                case Token.LONGLITERAL:
+                case Token.PLAINLITERAL:
+                    if (expectTab) throw ParserHelper.Error("Unexpected Blank Node, expected a Tab between RDF Terms", next);
+                    if (v >= context.Variables.Count) throw ParserHelper.Error("Too many RDF Terms, only expecting " + context.Variables.Count + " terms", next);
+                    INode lit = TryParseLiteral(context, next);
+                    result.SetValue(context.Variables[v], lit);
+                    v++;
+                    allowEOL = true;
+                    expectTab = true;
+                    break;
+
+                case Token.EOL:
+                    if (allowEOL)
+                    {
                         break;
-
-                    case Token.BLANKNODEWITHID:
-                        if (expectTab) throw ParserHelper.Error("Unexpected Blank Node, expected a Tab between RDF Terms", next);
-                        if (v >= context.Variables.Count) throw ParserHelper.Error("Too many RDF Terms, only expecting " + context.Variables.Count + " terms", next);
-                        INode blank = context.Handler.CreateBlankNode(next.Value.Substring(2));
-                        result.SetValue(context.Variables[v], blank);
-                        v++;
-                        allowEOL = true;
-                        expectTab = true;
-                        break;
-
-                    case Token.LITERAL:
-                    case Token.LONGLITERAL:
-                    case Token.PLAINLITERAL:
-                        if (expectTab) throw ParserHelper.Error("Unexpected Blank Node, expected a Tab between RDF Terms", next);
-                        if (v >= context.Variables.Count) throw ParserHelper.Error("Too many RDF Terms, only expecting " + context.Variables.Count + " terms", next);
-                        INode lit = TryParseLiteral(context, next);
-                        result.SetValue(context.Variables[v], lit);
-                        v++;
-                        allowEOL = true;
-                        expectTab = true;
-                        break;
-
-                    case Token.EOL:
-                        if (allowEOL)
+                    }
+                    else
+                    {
+                        if (v == context.Variables.Count - 1)
                         {
-                            break;
-                        }
-                        else
-                        {
-                            if (v == context.Variables.Count - 1)
-                            {
-                                // If this is the last expected term then this must be an empty term
-                                v++;
-                                break;
-                            }
-                            throw ParserHelper.Error("Unexpected End of Line, expected a RDF Term Token", next);
-                        }
-
-                    case Token.TAB:
-                        if (!expectTab)
-                        {
-                            // This is an empty field
-                            if (v >= context.Variables.Count) throw ParserHelper.Error("Too many RDF Terms, only expecting " + context.Variables.Count + " terms", next);
+                            // If this is the last expected term then this must be an empty term
                             v++;
+                            break;
                         }
-                        expectTab = false;
-                        allowEOL = false;
-                        break;
+                        throw ParserHelper.Error("Unexpected End of Line, expected a RDF Term Token", next);
+                    }
 
-                    case Token.EOF:
-                        if (!allowEOL) throw ParserHelper.Error("Unexpected EOF, expected another RDF Term for the Result Row", next);
-                        break;
+                case Token.TAB:
+                    if (!expectTab)
+                    {
+                        // This is an empty field
+                        if (v >= context.Variables.Count) throw ParserHelper.Error("Too many RDF Terms, only expecting " + context.Variables.Count + " terms", next);
+                        v++;
+                    }
+                    expectTab = false;
+                    allowEOL = false;
+                    break;
 
-                    default:
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered", next);
-                 }
+                case Token.EOF:
+                    if (!allowEOL) throw ParserHelper.Error("Unexpected EOF, expected another RDF Term for the Result Row", next);
+                    break;
 
-                // Stop when we've hit the End of the Line/File
-                if (next.TokenType == Token.EOL || next.TokenType == Token.EOF) break;
-            }
+                default:
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered", next);
+             }
 
-            if (v < context.Variables.Count) throw ParserHelper.Error("Too few RDF Terms, got " + v + " but expected " + context.Variables.Count, next);
-
-            result.SetVariableOrdering(context.Variables);
-            if (!context.Handler.HandleResult(result)) ParserHelper.Stop();
+            // Stop when we've hit the End of the Line/File
+            if (next.TokenType == Token.EOL || next.TokenType == Token.EOF) break;
         }
 
-        private INode TryParseLiteral(TokenisingResultParserContext context, IToken t)
+        if (v < context.Variables.Count) throw ParserHelper.Error("Too few RDF Terms, got " + v + " but expected " + context.Variables.Count, next);
+
+        result.SetVariableOrdering(context.Variables);
+        if (!context.Handler.HandleResult(result)) ParserHelper.Stop();
+    }
+
+    private INode TryParseLiteral(TokenisingResultParserContext context, IToken t)
+    {
+        string value;
+        if (t.TokenType == Token.LITERAL)
         {
-            string value;
-            if (t.TokenType == Token.LITERAL)
+            value = t.Value;
+        }
+        else if (t.TokenType == Token.LONGLITERAL)
+        {
+            value = t.Value;
+        }
+        else
+        {
+            value = t.Value;
+            if (value.Equals("true") || value.Equals("false"))
             {
-                value = t.Value;
-            }
-            else if (t.TokenType == Token.LONGLITERAL)
-            {
-                value = t.Value;
+                return context.Handler.CreateLiteralNode(value, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
             }
             else
             {
-                value = t.Value;
-                if (value.Equals("true") || value.Equals("false"))
-                {
-                    return context.Handler.CreateLiteralNode(value, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
-                }
-                else
-                {
-                    Uri plUri = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)t, TurtleSyntax.Original);
-                    return context.Handler.CreateLiteralNode(value, plUri);
-                }
-            }
-
-            // Check for DataType/Language Specifier
-            IToken next = context.Tokens.Peek();
-            if (next.TokenType == Token.DATATYPE)
-            {
-                next = context.Tokens.Dequeue();
-                Uri dtUri = context.UriFactory.Create(next.Value.Substring(1, next.Length - 2));
-                return context.Handler.CreateLiteralNode(value, dtUri);
-            }
-            else if (next.TokenType == Token.LANGSPEC)
-            {
-                next = context.Tokens.Dequeue();
-                return context.Handler.CreateLiteralNode(value, next.Value);
-            }
-            else
-            {
-                return context.Handler.CreateLiteralNode(value);
+                Uri plUri = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)t, TurtleSyntax.Original);
+                return context.Handler.CreateLiteralNode(value, plUri);
             }
         }
 
-        /// <summary>
-        /// Event which is raised when the parser encounters a non-fatal issue with the syntax being parsed
-        /// </summary>
-        public override event SparqlWarning Warning;
-
-        private void RaiseWarning(string message)
+        // Check for DataType/Language Specifier
+        IToken next = context.Tokens.Peek();
+        if (next.TokenType == Token.DATATYPE)
         {
-            SparqlWarning d = Warning;
-            if (d != null) d(message);
+            next = context.Tokens.Dequeue();
+            Uri dtUri = context.UriFactory.Create(next.Value.Substring(1, next.Length - 2));
+            return context.Handler.CreateLiteralNode(value, dtUri);
         }
-
-        /// <summary>
-        /// Gets the String representation of the Parser.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        else if (next.TokenType == Token.LANGSPEC)
         {
-            return "SPARQL TSV Results";
+            next = context.Tokens.Dequeue();
+            return context.Handler.CreateLiteralNode(value, next.Value);
         }
+        else
+        {
+            return context.Handler.CreateLiteralNode(value);
+        }
+    }
+
+    /// <summary>
+    /// Event which is raised when the parser encounters a non-fatal issue with the syntax being parsed
+    /// </summary>
+    public override event SparqlWarning Warning;
+
+    private void RaiseWarning(string message)
+    {
+        SparqlWarning d = Warning;
+        if (d != null) d(message);
+    }
+
+    /// <summary>
+    /// Gets the String representation of the Parser.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "SPARQL TSV Results";
     }
 }

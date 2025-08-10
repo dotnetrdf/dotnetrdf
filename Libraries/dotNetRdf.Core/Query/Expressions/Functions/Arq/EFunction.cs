@@ -27,99 +27,98 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Query.Expressions.Functions.Arq
+namespace VDS.RDF.Query.Expressions.Functions.Arq;
+
+/// <summary>
+/// Represents the ARQ e() function.
+/// </summary>
+public class EFunction 
+    : ISparqlExpression
 {
     /// <summary>
-    /// Represents the ARQ e() function.
+    /// Gets the String representation of the function.
     /// </summary>
-    public class EFunction 
-        : ISparqlExpression
+    /// <returns></returns>
+    public override string ToString()
     {
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.E + ">()";
-        }
+        return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.E + ">()";
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public string Functor
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public string Functor
+    {
+        get
         {
-            get
-            {
-                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.E;
-            }
+            return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.E;
         }
+    }
 
 
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
-        {
-            return processor.ProcessEFunction(this, context, binding);
-        }
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessEFunction(this, context, binding);
+    }
 
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitEFunction(this);
-        }
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitEFunction(this);
+    }
 
-        /// <summary>
-        /// Gets the Variables used.
-        /// </summary>
-        public IEnumerable<string> Variables
+    /// <summary>
+    /// Gets the Variables used.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get 
         {
-            get 
-            {
-                return Enumerable.Empty<string>();
-            }
+            return Enumerable.Empty<string>();
         }
+    }
 
-        /// <summary>
-        /// Gets the type of the expression.
-        /// </summary>
-        public SparqlExpressionType Type
+    /// <summary>
+    /// Gets the type of the expression.
+    /// </summary>
+    public SparqlExpressionType Type
+    {
+        get 
         {
-            get 
-            {
-                return SparqlExpressionType.Function; 
-            }
+            return SparqlExpressionType.Function; 
         }
+    }
 
-        /// <summary>
-        /// Gets the arguments of the expression.
-        /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+    /// <summary>
+    /// Gets the arguments of the expression.
+    /// </summary>
+    public IEnumerable<ISparqlExpression> Arguments
+    {
+        get 
         {
-            get 
-            {
-                return Enumerable.Empty<ISparqlExpression>(); 
-            }
+            return Enumerable.Empty<ISparqlExpression>(); 
         }
+    }
 
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel.
-        /// </summary>
-        public virtual bool CanParallelise
+    /// <summary>
+    /// Gets whether an expression can safely be evaluated in parallel.
+    /// </summary>
+    public virtual bool CanParallelise
+    {
+        get
         {
-            get
-            {
-                return true;
-            }
+            return true;
         }
+    }
 
-        /// <summary>
-        /// Applies a transformer to the expressions arguments.
-        /// </summary>
-        /// <param name="transformer">Transformer.</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return this;
-        }
+    /// <summary>
+    /// Applies a transformer to the expressions arguments.
+    /// </summary>
+    /// <param name="transformer">Transformer.</param>
+    /// <returns></returns>
+    public ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return this;
     }
 }

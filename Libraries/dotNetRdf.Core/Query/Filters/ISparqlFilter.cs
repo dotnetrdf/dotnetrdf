@@ -27,27 +27,26 @@
 using System.Collections.Generic;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Filters
+namespace VDS.RDF.Query.Filters;
+
+/// <summary>
+/// Interface for Classes which implement SPARQL Filter Functions.
+/// </summary>
+public interface ISparqlFilter : IVisitable, IProcessable
 {
     /// <summary>
-    /// Interface for Classes which implement SPARQL Filter Functions.
+    /// Gets the enumeration of Variables that are used in the Filter.
     /// </summary>
-    public interface ISparqlFilter : IVisitable, IProcessable
+    IEnumerable<string> Variables
     {
-        /// <summary>
-        /// Gets the enumeration of Variables that are used in the Filter.
-        /// </summary>
-        IEnumerable<string> Variables
-        {
-            get;
-        }
+        get;
+    }
 
-        /// <summary>
-        /// Gets the Expression that this Filter uses.
-        /// </summary>
-        ISparqlExpression Expression
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets the Expression that this Filter uses.
+    /// </summary>
+    ISparqlExpression Expression
+    {
+        get;
     }
 }

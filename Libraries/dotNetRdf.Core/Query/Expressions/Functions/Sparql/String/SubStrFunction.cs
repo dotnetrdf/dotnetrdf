@@ -27,141 +27,140 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.String;
+
+/// <summary>
+/// Represents the SPARQL SUBSTR Function.
+/// </summary>
+public class SubStrFunction
+    : ISparqlExpression
 {
     /// <summary>
-    /// Represents the SPARQL SUBSTR Function.
+    /// Creates a new XPath Substring function.
     /// </summary>
-    public class SubStrFunction
-        : ISparqlExpression
+    /// <param name="stringExpr">Expression.</param>
+    /// <param name="startExpr">Start.</param>
+    public SubStrFunction(ISparqlExpression stringExpr, ISparqlExpression startExpr)
+        : this(stringExpr, startExpr, null) { }
+
+    /// <summary>
+    /// Creates a new XPath Substring function.
+    /// </summary>
+    /// <param name="stringExpr">Expression.</param>
+    /// <param name="startExpr">Start.</param>
+    /// <param name="lengthExpr">Length.</param>
+    public SubStrFunction(ISparqlExpression stringExpr, ISparqlExpression startExpr, ISparqlExpression lengthExpr)
     {
-        /// <summary>
-        /// Creates a new XPath Substring function.
-        /// </summary>
-        /// <param name="stringExpr">Expression.</param>
-        /// <param name="startExpr">Start.</param>
-        public SubStrFunction(ISparqlExpression stringExpr, ISparqlExpression startExpr)
-            : this(stringExpr, startExpr, null) { }
+        StringExpression = stringExpr;
+        StartExpression = startExpr;
+        LengthExpression = lengthExpr;
+    }
 
-        /// <summary>
-        /// Creates a new XPath Substring function.
-        /// </summary>
-        /// <param name="stringExpr">Expression.</param>
-        /// <param name="startExpr">Start.</param>
-        /// <param name="lengthExpr">Length.</param>
-        public SubStrFunction(ISparqlExpression stringExpr, ISparqlExpression startExpr, ISparqlExpression lengthExpr)
+    /// <summary>
+    /// Get the expression that evaluates to the string to be processed.
+    /// </summary>
+    public ISparqlExpression StringExpression { get; }
+
+    /// <summary>
+    /// Get the expression that evaluates to the start index of the substring to be returned.
+    /// </summary>
+    public ISparqlExpression StartExpression { get; }
+
+    /// <summary>
+    /// Get the expression that evaluates to the length of the substring to be returned.
+    /// </summary>
+    public ISparqlExpression LengthExpression { get; }
+
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessSubStrFunction(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitSubStrFunction(this);
+    }
+
+    /// <summary>
+    /// Gets the Variables used in the function.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
         {
-            StringExpression = stringExpr;
-            StartExpression = startExpr;
-            LengthExpression = lengthExpr;
+            return LengthExpression != null ? StringExpression.Variables.Concat(StartExpression.Variables).Concat(LengthExpression.Variables) : StringExpression.Variables.Concat(StartExpression.Variables);
+        }
+    }
+
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        if (LengthExpression != null)
+        {
+            return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + StringExpression + "," + StartExpression + "," + LengthExpression + ")";
         }
 
-        /// <summary>
-        /// Get the expression that evaluates to the string to be processed.
-        /// </summary>
-        public ISparqlExpression StringExpression { get; }
+        return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + StringExpression + "," + StartExpression + ")";
+    }
 
-        /// <summary>
-        /// Get the expression that evaluates to the start index of the substring to be returned.
-        /// </summary>
-        public ISparqlExpression StartExpression { get; }
-
-        /// <summary>
-        /// Get the expression that evaluates to the length of the substring to be returned.
-        /// </summary>
-        public ISparqlExpression LengthExpression { get; }
-
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public SparqlExpressionType Type
+    {
+        get
         {
-            return processor.ProcessSubStrFunction(this, context, binding);
+            return SparqlExpressionType.Function;
         }
+    }
 
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public string Functor
+    {
+        get
         {
-            return visitor.VisitSubStrFunction(this);
+            return SparqlSpecsHelper.SparqlKeywordSubStr;
         }
+    }
 
-        /// <summary>
-        /// Gets the Variables used in the function.
-        /// </summary>
-        public IEnumerable<string> Variables
+    /// <summary>
+    /// Gets the Arguments of the Function.
+    /// </summary>
+    public IEnumerable<ISparqlExpression> Arguments
+    {
+        get
         {
-            get
-            {
-                return LengthExpression != null ? StringExpression.Variables.Concat(StartExpression.Variables).Concat(LengthExpression.Variables) : StringExpression.Variables.Concat(StartExpression.Variables);
-            }
+            return LengthExpression != null ? new[] { StringExpression, StartExpression, LengthExpression } : new[] { StringExpression, StartExpression };
         }
+    }
 
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets whether an expression can safely be evaluated in parallel.
+    /// </summary>
+    public virtual bool CanParallelise
+    {
+        get
         {
-            if (LengthExpression != null)
-            {
-                return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + StringExpression + "," + StartExpression + "," + LengthExpression + ")";
-            }
-
-            return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + StringExpression + "," + StartExpression + ")";
+            return StringExpression.CanParallelise && StartExpression.CanParallelise && (LengthExpression == null || LengthExpression.CanParallelise);
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordSubStr;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Function.
-        /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
-        {
-            get
-            {
-                return LengthExpression != null ? new[] { StringExpression, StartExpression, LengthExpression } : new[] { StringExpression, StartExpression };
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel.
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return StringExpression.CanParallelise && StartExpression.CanParallelise && (LengthExpression == null || LengthExpression.CanParallelise);
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return LengthExpression != null 
-                ? new SubStrFunction(transformer.Transform(StringExpression), transformer.Transform(StartExpression), transformer.Transform(LengthExpression)) 
-                : new SubStrFunction(transformer.Transform(StringExpression), transformer.Transform(StartExpression));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return LengthExpression != null 
+            ? new SubStrFunction(transformer.Transform(StringExpression), transformer.Transform(StartExpression), transformer.Transform(LengthExpression)) 
+            : new SubStrFunction(transformer.Transform(StringExpression), transformer.Transform(StartExpression));
     }
 }

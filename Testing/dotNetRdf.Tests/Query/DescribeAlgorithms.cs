@@ -31,118 +31,117 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Describe;
 using VDS.RDF.Utils.Describe;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+
+public class DescribeAlgorithms : IDisposable
 {
+    private const String DescribeQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> DESCRIBE ?x WHERE {?x foaf:name \"Dave\" }";
 
-    public class DescribeAlgorithms : IDisposable
+    private SparqlQueryParser _parser;
+    private InMemoryDataset _data;
+    private LeviathanQueryProcessor _processor;
+
+    public DescribeAlgorithms()
     {
-        private const String DescribeQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> DESCRIBE ?x WHERE {?x foaf:name \"Dave\" }";
+        _parser = new SparqlQueryParser();
+        var store = new TripleStore();
+        var g = new Graph();
+        g.LoadFromFile(Path.Combine("resources", "describe-algos.ttl"));
+        store.Add(g);
+        _data = new InMemoryDataset(store);
+        _processor = new LeviathanQueryProcessor(_data);
+    }
 
-        private SparqlQueryParser _parser;
-        private InMemoryDataset _data;
-        private LeviathanQueryProcessor _processor;
+    public void Dispose()
+    {
+        _parser = null;
+        _data = null;
+    }
 
-        public DescribeAlgorithms()
+    private SparqlQuery GetQuery()
+    {
+        return _parser.ParseFromString(DescribeQuery);
+    }
+
+    [Theory]
+    [InlineData(typeof(ConciseBoundedDescription))]
+    [InlineData(typeof(SymmetricConciseBoundedDescription))]
+    [InlineData(typeof(SimpleSubjectDescription))]
+    [InlineData(typeof(SimpleSubjectObjectDescription))]
+    [InlineData(typeof(MinimalSpanningGraph))]
+    [InlineData(typeof(LabelledDescription))]
+    public void SparqlDescribeAlgorithms(Type describerType)
+    {
+        SparqlQuery q = GetQuery();
+        var processor = new LeviathanQueryProcessor(_data,
+            options => options.Describer =
+                new SparqlDescriber((IDescribeAlgorithm)Activator.CreateInstance(describerType)));
+        var results = processor.ProcessQuery(q);
+        Assert.IsType<Graph>(results, exactMatch: false);
+        if (results is Graph)
         {
-            _parser = new SparqlQueryParser();
-            var store = new TripleStore();
-            var g = new Graph();
-            g.LoadFromFile(Path.Combine("resources", "describe-algos.ttl"));
-            store.Add(g);
-            _data = new InMemoryDataset(store);
-            _processor = new LeviathanQueryProcessor(_data);
+            TestTools.ShowResults(results);
         }
+    }
 
-        public void Dispose()
-        {
-            _parser = null;
-            _data = null;
-        }
+    [Fact]
+    public void SparqlDescribeDefaultGraphHandling1()
+    {
+        var dataset = new InMemoryDataset();
 
-        private SparqlQuery GetQuery()
-        {
-            return _parser.ParseFromString(DescribeQuery);
-        }
+        IGraph g = new Graph(new UriNode(new Uri("http://graph")));
+        g.Assert(g.CreateUriNode(UriFactory.Root.Create("http://subject")), g.CreateUriNode(UriFactory.Root.Create("http://predicate")), g.CreateUriNode(UriFactory.Root.Create("http://object")));
+        dataset.AddGraph(g);
 
-        [Theory]
-        [InlineData(typeof(ConciseBoundedDescription))]
-        [InlineData(typeof(SymmetricConciseBoundedDescription))]
-        [InlineData(typeof(SimpleSubjectDescription))]
-        [InlineData(typeof(SimpleSubjectObjectDescription))]
-        [InlineData(typeof(MinimalSpanningGraph))]
-        [InlineData(typeof(LabelledDescription))]
-        public void SparqlDescribeAlgorithms(Type describerType)
-        {
-            SparqlQuery q = GetQuery();
-            var processor = new LeviathanQueryProcessor(_data,
-                options => options.Describer =
-                    new SparqlDescriber((IDescribeAlgorithm)Activator.CreateInstance(describerType)));
-            var results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<Graph>(results);
-            if (results is Graph)
-            {
-                TestTools.ShowResults(results);
-            }
-        }
+        var processor = new LeviathanQueryProcessor(dataset);
+        var description = processor.ProcessQuery(_parser.ParseFromString("DESCRIBE ?s FROM <http://graph> WHERE { ?s ?p ?o }")) as IGraph;
+        Assert.NotNull(description);
+        Assert.False(description.IsEmpty);
+    }
 
-        [Fact]
-        public void SparqlDescribeDefaultGraphHandling1()
-        {
-            var dataset = new InMemoryDataset();
+    [Fact]
+    public void SparqlDescribeDefaultGraphHandling2()
+    {
+        var dataset = new InMemoryDataset();
 
-            IGraph g = new Graph(new UriNode(new Uri("http://graph")));
-            g.Assert(g.CreateUriNode(UriFactory.Root.Create("http://subject")), g.CreateUriNode(UriFactory.Root.Create("http://predicate")), g.CreateUriNode(UriFactory.Root.Create("http://object")));
-            dataset.AddGraph(g);
+        IGraph g = new Graph(new UriNode(UriFactory.Root.Create("http://graph")));
+        g.Assert(g.CreateUriNode(UriFactory.Root.Create("http://subject")), g.CreateUriNode(UriFactory.Root.Create("http://predicate")), g.CreateUriNode(UriFactory.Root.Create("http://object")));
+        dataset.AddGraph(g);
 
-            var processor = new LeviathanQueryProcessor(dataset);
-            var description = processor.ProcessQuery(_parser.ParseFromString("DESCRIBE ?s FROM <http://graph> WHERE { ?s ?p ?o }")) as IGraph;
-            Assert.NotNull(description);
-            Assert.False(description.IsEmpty);
-        }
+        var processor = new LeviathanQueryProcessor(dataset);
+        var description = processor.ProcessQuery(_parser.ParseFromString("DESCRIBE ?s WHERE { GRAPH <http://graph> { ?s ?p ?o } }")) as IGraph;
+        Assert.NotNull(description);
+        Assert.True(description.IsEmpty);
+    }
 
-        [Fact]
-        public void SparqlDescribeDefaultGraphHandling2()
-        {
-            var dataset = new InMemoryDataset();
+    [Fact]
+    public void SparqlDescribeDefaultGraphHandling3()
+    {
+        var dataset = new InMemoryDataset();
 
-            IGraph g = new Graph(new UriNode(UriFactory.Root.Create("http://graph")));
-            g.Assert(g.CreateUriNode(UriFactory.Root.Create("http://subject")), g.CreateUriNode(UriFactory.Root.Create("http://predicate")), g.CreateUriNode(UriFactory.Root.Create("http://object")));
-            dataset.AddGraph(g);
+        IGraph g = new Graph(new UriNode(UriFactory.Root.Create("http://graph")));
+        g.Assert(g.CreateUriNode(UriFactory.Root.Create("http://subject")), g.CreateUriNode(UriFactory.Root.Create("http://predicate")), g.CreateUriNode(UriFactory.Root.Create("http://object")));
+        dataset.AddGraph(g);
 
-            var processor = new LeviathanQueryProcessor(dataset);
-            var description = processor.ProcessQuery(_parser.ParseFromString("DESCRIBE ?s WHERE { GRAPH <http://graph> { ?s ?p ?o } }")) as IGraph;
-            Assert.NotNull(description);
-            Assert.True(description.IsEmpty);
-        }
+        var processor = new LeviathanQueryProcessor(dataset);
+        var description = processor.ProcessQuery(_parser.ParseFromString("DESCRIBE ?s FROM <http://graph> WHERE { GRAPH <http://graph> { ?s ?p ?o } }")) as IGraph;
+        Assert.NotNull(description);
+        Assert.True(description.IsEmpty);
+    }
 
-        [Fact]
-        public void SparqlDescribeDefaultGraphHandling3()
-        {
-            var dataset = new InMemoryDataset();
+    [Fact]
+    public void SparqlDescribeDefaultGraphHandling4()
+    {
+        var dataset = new InMemoryDataset();
 
-            IGraph g = new Graph(new UriNode(UriFactory.Root.Create("http://graph")));
-            g.Assert(g.CreateUriNode(UriFactory.Root.Create("http://subject")), g.CreateUriNode(UriFactory.Root.Create("http://predicate")), g.CreateUriNode(UriFactory.Root.Create("http://object")));
-            dataset.AddGraph(g);
+        IGraph g = new Graph(new UriNode(UriFactory.Root.Create("http://graph")));
+        g.Assert(g.CreateUriNode(UriFactory.Root.Create("http://subject")), g.CreateUriNode(UriFactory.Root.Create("http://predicate")), g.CreateUriNode(UriFactory.Root.Create("http://object")));
+        dataset.AddGraph(g);
 
-            var processor = new LeviathanQueryProcessor(dataset);
-            var description = processor.ProcessQuery(_parser.ParseFromString("DESCRIBE ?s FROM <http://graph> WHERE { GRAPH <http://graph> { ?s ?p ?o } }")) as IGraph;
-            Assert.NotNull(description);
-            Assert.True(description.IsEmpty);
-        }
-
-        [Fact]
-        public void SparqlDescribeDefaultGraphHandling4()
-        {
-            var dataset = new InMemoryDataset();
-
-            IGraph g = new Graph(new UriNode(UriFactory.Root.Create("http://graph")));
-            g.Assert(g.CreateUriNode(UriFactory.Root.Create("http://subject")), g.CreateUriNode(UriFactory.Root.Create("http://predicate")), g.CreateUriNode(UriFactory.Root.Create("http://object")));
-            dataset.AddGraph(g);
-
-            var processor = new LeviathanQueryProcessor(dataset);
-            var description = processor.ProcessQuery(_parser.ParseFromString("DESCRIBE ?s FROM <http://graph> FROM NAMED <http://graph> WHERE { GRAPH <http://graph> { ?s ?p ?o } }")) as IGraph;
-            Assert.NotNull(description);
-            Assert.False(description.IsEmpty);
-        }
+        var processor = new LeviathanQueryProcessor(dataset);
+        var description = processor.ProcessQuery(_parser.ParseFromString("DESCRIBE ?s FROM <http://graph> FROM NAMED <http://graph> WHERE { GRAPH <http://graph> { ?s ?p ?o } }")) as IGraph;
+        Assert.NotNull(description);
+        Assert.False(description.IsEmpty);
     }
 }

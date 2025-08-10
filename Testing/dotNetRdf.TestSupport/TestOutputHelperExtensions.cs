@@ -1,12 +1,11 @@
-﻿using Xunit.Abstractions;
+﻿using Xunit;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+public static class TestOutputHelperExtensions
 {
-    public static class TestOutputHelperExtensions
+    public static void WriteLine(this ITestOutputHelper output)
     {
-        public static void WriteLine(this ITestOutputHelper output)
-        {
-            output.WriteLine(string.Empty);
-        }
+        output.WriteLine(string.Empty);
     }
 }

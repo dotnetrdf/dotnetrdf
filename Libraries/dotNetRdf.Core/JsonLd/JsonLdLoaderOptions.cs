@@ -24,27 +24,26 @@
 // </copyright>
 */
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd;
+
+/// <summary>
+/// Options to apply when attempting to load a JSON-LD document.
+/// </summary>
+public class JsonLdLoaderOptions
 {
     /// <summary>
-    /// Options to apply when attempting to load a JSON-LD document.
+    /// If set to true, when extracting JSON-LD script elements from HTML, unless a specific fragment identifier is targeted,
+    /// extracts all encountered JSON-LD script elements using an array form, if necessary.
     /// </summary>
-    public class JsonLdLoaderOptions
-    {
-        /// <summary>
-        /// If set to true, when extracting JSON-LD script elements from HTML, unless a specific fragment identifier is targeted,
-        /// extracts all encountered JSON-LD script elements using an array form, if necessary.
-        /// </summary>
-        public bool ExtractAllScripts { get; set; }
+    public bool ExtractAllScripts { get; set; }
 
-        /// <summary>
-        /// When the resulting contentType is text/html or application/xhtml+xml, this option determines the profile to use for selecting JSON-LD script elements.
-        /// </summary>
-        public string Profile { get; set; }
+    /// <summary>
+    /// When the resulting contentType is text/html or application/xhtml+xml, this option determines the profile to use for selecting JSON-LD script elements.
+    /// </summary>
+    public string Profile { get; set; }
 
-        /// <summary>
-        /// One or more IRIs to use in the request as a profile parameter. (See IANA Considerations in [JSON-LD11]).
-        /// </summary>
-        public string RequestProfile { get; set; }
-    }
+    /// <summary>
+    /// One or more IRIs to use in the request as a profile parameter. (See IANA Considerations in [JSON-LD11]).
+    /// </summary>
+    public string RequestProfile { get; set; }
 }

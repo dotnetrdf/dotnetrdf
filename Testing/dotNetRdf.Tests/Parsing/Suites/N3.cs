@@ -25,38 +25,36 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System.IO;
 using Xunit;
-using Xunit.Abstractions;
 
-namespace VDS.RDF.Parsing.Suites
+namespace VDS.RDF.Parsing.Suites;
+
+
+
+public class N3
+    : BaseRdfParserSuite
 {
-   
+    private readonly ITestOutputHelper _testOutputHelper;
 
-    public class N3
-        : BaseRdfParserSuite
+    public N3(ITestOutputHelper testOutputHelper)
+        : base(new Notation3Parser(), new NTriplesParser(), "n3")
     {
-        private readonly ITestOutputHelper _testOutputHelper;
+        _testOutputHelper = testOutputHelper;
+        CheckResults = false;
+    }
 
-        public N3(ITestOutputHelper testOutputHelper)
-            : base(new Notation3Parser(), new NTriplesParser(), "n3")
-        {
-            _testOutputHelper = testOutputHelper;
-            CheckResults = false;
-        }
+    [Fact]
+    public void ParsingSuiteN3()
+    {
+        //Run manifests
+        RunDirectory(f => Path.GetExtension(f).Equals(".n3") && !f.Contains("bad"), true);
+        RunDirectory(f => Path.GetExtension(f).Equals(".n3") && f.Contains("bad"), false);
 
-        [Fact]
-        public void ParsingSuiteN3()
-        {
-            //Run manifests
-            RunDirectory(f => Path.GetExtension(f).Equals(".n3") && !f.Contains("bad"), true);
-            RunDirectory(f => Path.GetExtension(f).Equals(".n3") && f.Contains("bad"), false);
+        if (Count == 0) Assert.Fail("No tests found");
 
-            if (Count == 0) Assert.True(false, "No tests found");
+        _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
+        _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
-            _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
-            _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
-
-            if (Failed > 0) Assert.True(false, Failed + " Tests failed");
-            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
-        }
+        if (Failed > 0) Assert.Fail(Failed + " Tests failed");
+        Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
     }
 }

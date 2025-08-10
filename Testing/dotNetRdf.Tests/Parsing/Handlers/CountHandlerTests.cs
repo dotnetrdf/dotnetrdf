@@ -26,60 +26,59 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using Xunit;
 
-namespace VDS.RDF.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers;
+
+public class CountHandlerTests
 {
-    public class CountHandlerTests
+    private void ParsingUsingCountHandler(String tempFile, IRdfReader parser)
     {
-        private void ParsingUsingCountHandler(String tempFile, IRdfReader parser)
-        {
-            var g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-            g.SaveToFile(tempFile);
+        var g = new Graph();
+        EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+        g.SaveToFile(tempFile);
 
-            var handler = new CountHandler();
-            parser.Load(handler, tempFile);
+        var handler = new CountHandler();
+        parser.Load(handler, tempFile);
 
-            Console.WriteLine("Counted " + handler.Count + " Triples");
-            Assert.Equal(g.Triples.Count, handler.Count);
-        }
+        Console.WriteLine("Counted " + handler.Count + " Triples");
+        Assert.Equal(g.Triples.Count, handler.Count);
+    }
 
-        [Fact]
-        public void ParsingCountHandlerNTriples()
-        {
-            ParsingUsingCountHandler("test.nt", new NTriplesParser());
-        }
+    [Fact]
+    public void ParsingCountHandlerNTriples()
+    {
+        ParsingUsingCountHandler("test.nt", new NTriplesParser());
+    }
 
-        [Fact]
-        public void ParsingCountHandlerTurtle()
-        {
-            ParsingUsingCountHandler("test.ttl", new TurtleParser());
-        }
+    [Fact]
+    public void ParsingCountHandlerTurtle()
+    {
+        ParsingUsingCountHandler("test.ttl", new TurtleParser());
+    }
 
-        [Fact]
-        public void ParsingCountHandlerNotation3()
-        {
-            ParsingUsingCountHandler("temp.n3", new Notation3Parser());
-        }
+    [Fact]
+    public void ParsingCountHandlerNotation3()
+    {
+        ParsingUsingCountHandler("temp.n3", new Notation3Parser());
+    }
 
-        [Fact]
-        public void ParsingCountHandlerRdfA()
-        {
-            ParsingUsingCountHandler("test.html", new RdfAParser(
-                // The property copying handler can't be used with the mock node factory of the count handler
-                new RdfAParserOptions{PropertyCopyEnabled = false}
-                ));
-        }
+    [Fact]
+    public void ParsingCountHandlerRdfA()
+    {
+        ParsingUsingCountHandler("test.html", new RdfAParser(
+            // The property copying handler can't be used with the mock node factory of the count handler
+            new RdfAParserOptions{PropertyCopyEnabled = false}
+            ));
+    }
 
-        [Fact]
-        public void ParsingCountHandlerRdfJson()
-        {
-            ParsingUsingCountHandler("test.json", new RdfJsonParser());
-        }
+    [Fact]
+    public void ParsingCountHandlerRdfJson()
+    {
+        ParsingUsingCountHandler("test.json", new RdfJsonParser());
+    }
 
-        [Fact]
-        public void ParsingCountHandlerRdfXml()
-        {
-            ParsingUsingCountHandler("test.rdf", new RdfXmlParser());
-        }
+    [Fact]
+    public void ParsingCountHandlerRdfXml()
+    {
+        ParsingUsingCountHandler("test.rdf", new RdfXmlParser());
     }
 }

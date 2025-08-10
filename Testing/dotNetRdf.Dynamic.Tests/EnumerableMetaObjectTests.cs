@@ -29,119 +29,118 @@ using System.Linq;
 using VDS.RDF;
 using Xunit;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+public class EnumerableMetaObjectTests
 {
-    public class EnumerableMetaObjectTests
+    [Fact]
+    public void Fails_no_generic_type_arguments()
     {
-        [Fact]
-        public void Fails_no_generic_type_arguments()
-        {
-            var g = new Graph();
-            var s = g.CreateBlankNode();
-            var p = g.CreateBlankNode();
-            var d = new DynamicNode(s, g);
-            dynamic objects = new DynamicObjectCollection(d, p);
+        var g = new Graph();
+        var s = g.CreateBlankNode();
+        var p = g.CreateBlankNode();
+        var d = new DynamicNode(s, g);
+        dynamic objects = new DynamicObjectCollection(d, p);
 
 #if NET7_0_OR_GREATER
-            Assert.Throws<ArgumentException>(() => objects.Average());
+        Assert.Throws<ArgumentException>(() => objects.Average());
 #else
-            Assert.Throws<InvalidOperationException>(() =>
-                objects.Average());
+        Assert.Throws<InvalidOperationException>(() =>
+            objects.Average());
 #endif
-        }
+    }
 
-        [Fact]
-        public void Handles_one_generic_type_argument()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Handles_one_generic_type_argument()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
-            var d = new DynamicNode(s, g);
-            dynamic objects = new DynamicObjectCollection(d, p);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
+        var d = new DynamicNode(s, g);
+        dynamic objects = new DynamicObjectCollection(d, p);
 
-            Assert.Equal(o, objects.Single());
-        }
+        Assert.Equal(o, objects.Single());
+    }
 
-        [Fact]
-        public void Handles_two_generic_type_arguments()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Handles_two_generic_type_arguments()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var d = new DynamicNode(s, g);
-            dynamic objects = new DynamicObjectCollection(d, p);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var d = new DynamicNode(s, g);
+        dynamic objects = new DynamicObjectCollection(d, p);
 
-            Func<object, object> selector = n => n.ToString();
+        Func<object, object> selector = n => n.ToString();
 
-            Assert.Equal(new[] { "urn:o" }, objects.Select(selector));
-        }
+        Assert.Equal(new[] { "urn:o" }, objects.Select(selector));
+    }
 
-        [Fact]
-        public void Handles_three_generic_type_arguments()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Handles_three_generic_type_arguments()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> ""a""@en .
 <urn:s> <urn:p> ""b""@en .
 <urn:s> <urn:p> ""c""@fr .
 <urn:s> <urn:p> ""d""@fr .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var d = new DynamicNode(s, g);
-            dynamic objects = new DynamicObjectCollection(d, p);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var d = new DynamicNode(s, g);
+        dynamic objects = new DynamicObjectCollection(d, p);
 
-            Func<object, string> keySelector = n => ((ILiteralNode)n).Language;
-            Func<object, string> elementSelector = n => ((ILiteralNode)n).Value;
+        Func<object, string> keySelector = n => ((ILiteralNode)n).Language;
+        Func<object, string> elementSelector = n => ((ILiteralNode)n).Value;
 
-            var result = objects.GroupBy(keySelector, elementSelector);
+        var result = objects.GroupBy(keySelector, elementSelector);
 
-            Assert.Collection(
-                (IEnumerable<IGrouping<object, object>>)result,
-                group =>
-                {
-                    Assert.Equal("en", group.Key);
-                    Assert.Equal(new[] { "a", "b" }, group);
-                },
-                group =>
-                {
-                    Assert.Equal("fr", group.Key);
-                    Assert.Equal(new[] { "c", "d" }, group);
-                });
-        }
+        Assert.Collection(
+            (IEnumerable<IGrouping<object, object>>)result,
+            group =>
+            {
+                Assert.Equal("en", group.Key);
+                Assert.Equal(new[] { "a", "b" }, group);
+            },
+            group =>
+            {
+                Assert.Equal("fr", group.Key);
+                Assert.Equal(new[] { "c", "d" }, group);
+            });
+    }
 
-        [Fact]
-        public void Existing_methods_pass_through()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
+    [Fact]
+    public void Existing_methods_pass_through()
+    {
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s> <urn:s> <urn:o> .
 ");
 
-            var g = new Graph();
-            g.LoadFromString(@"
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 <urn:s> <urn:s> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var d = new DynamicNode(s, g);
-            dynamic objects = new DynamicObjectCollection(d, p);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var d = new DynamicNode(s, g);
+        dynamic objects = new DynamicObjectCollection(d, p);
 
-            objects.Clear();
+        objects.Clear();
 
-            Assert.Equal(expected, g);
-        }
+        Assert.Equal(expected, g);
     }
 }

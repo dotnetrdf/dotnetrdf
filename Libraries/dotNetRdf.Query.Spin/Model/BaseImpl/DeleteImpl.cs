@@ -28,28 +28,27 @@ using System;
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.LibraryOntology;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+[Obsolete()]
+internal class DeleteImpl : UpdateImpl, IDelete
 {
-    [Obsolete()]
-    internal class DeleteImpl : UpdateImpl, IDelete
+
+    public DeleteImpl(INode node, IGraph graph, SpinProcessor processor)
+        : base(node, graph, processor)
     {
-
-        public DeleteImpl(INode node, IGraph graph, SpinProcessor processor)
-            : base(node, graph, processor)
-        {
-            
-        }
+        
+    }
 
 
-        public override void printSPINRDF(ISparqlPrinter p)
-        {
-            printComment(p);
-            printPrefixes(p);
-            p.printIndentation(p.getIndentation());
-            p.printKeyword("DELETE");
-            printGraphIRIs(p, "FROM");
-            printTemplates(p, SP.PropertyDeletePattern, null, true, null);
-            printWhere(p);
-        }
+    public override void printSPINRDF(ISparqlPrinter p)
+    {
+        printComment(p);
+        printPrefixes(p);
+        p.printIndentation(p.getIndentation());
+        p.printKeyword("DELETE");
+        printGraphIRIs(p, "FROM");
+        printTemplates(p, SP.PropertyDeletePattern, null, true, null);
+        printWhere(p);
     }
 }

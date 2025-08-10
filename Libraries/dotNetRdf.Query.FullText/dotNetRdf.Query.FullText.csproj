@@ -29,10 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lucene.Net" Version="4.8.*-*" />
-    <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.*-*" />
-    <PackageReference Include="SharpZipLib" Version="1.4.2" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+    <PackageReference Include="Lucene.Net" />
+    <PackageReference Include="Lucene.Net.QueryParser" />
+    <PackageReference Include="SharpZipLib" />
+    <PackageReference Include="StyleCop.Analyzers" >
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>

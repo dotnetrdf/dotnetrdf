@@ -27,54 +27,53 @@
 using System.Collections.Generic;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Aggregates.Sparql
+namespace VDS.RDF.Query.Aggregates.Sparql;
+
+/// <summary>
+/// Class representing the SAMPLE aggregate.
+/// </summary>
+public class SampleAggregate
+    : BaseAggregate
 {
     /// <summary>
-    /// Class representing the SAMPLE aggregate.
+    /// Creates a new SAMPLE Aggregate.
     /// </summary>
-    public class SampleAggregate
-        : BaseAggregate
+    /// <param name="expr">Expression.</param>
+    public SampleAggregate(ISparqlExpression expr)
+        : base(expr) { }
+
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+        IEnumerable<TBinding> bindings)
     {
-        /// <summary>
-        /// Creates a new SAMPLE Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public SampleAggregate(ISparqlExpression expr)
-            : base(expr) { }
+        return processor.ProcessSample(this, context, bindings);
+    }
 
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
-            IEnumerable<TBinding> bindings)
+    /// <summary>
+    /// Gets the String representation.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        if (_distinct)
         {
-            return processor.ProcessSample(this, context, bindings);
+            return "SAMPLE(DISTINCT " + _expr + ")";
         }
-
-        /// <summary>
-        /// Gets the String representation.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        else
         {
-            if (_distinct)
-            {
-                return "SAMPLE(DISTINCT " + _expr + ")";
-            }
-            else
-            {
-                return "SAMPLE(" + _expr + ")";
-            }
+            return "SAMPLE(" + _expr + ")";
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Aggregate.
-        /// </summary>
-        public override string Functor
+    /// <summary>
+    /// Gets the Functor of the Aggregate.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordSample;
-            }
+            return SparqlSpecsHelper.SparqlKeywordSample;
         }
     }
 }

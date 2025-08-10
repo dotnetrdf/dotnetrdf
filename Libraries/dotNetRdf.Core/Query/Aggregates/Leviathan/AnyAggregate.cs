@@ -28,63 +28,62 @@ using System.Collections.Generic;
 using System.Text;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Aggregates.Leviathan
+namespace VDS.RDF.Query.Aggregates.Leviathan;
+
+/// <summary>
+/// A Custom aggregate which requires the Expression to evaluate to true for at least one of the Sets in the Group.
+/// </summary>
+public class AnyAggregate
+    : BaseAggregate
 {
     /// <summary>
-    /// A Custom aggregate which requires the Expression to evaluate to true for at least one of the Sets in the Group.
+    /// Creates a new Any Aggregate.
     /// </summary>
-    public class AnyAggregate
-        : BaseAggregate
+    /// <param name="expr">Expression.</param>
+    public AnyAggregate(ISparqlExpression expr)
+        : this(expr, false) { }
+
+    /// <summary>
+    /// Creates a new Any Aggregate.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <param name="distinct">Whether a DISTINCT modifer applies.</param>
+    public AnyAggregate(ISparqlExpression expr, bool distinct)
+        : base(expr, distinct) { }
+
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+        IEnumerable<TBinding> bindings)
     {
-        /// <summary>
-        /// Creates a new Any Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public AnyAggregate(ISparqlExpression expr)
-            : this(expr, false) { }
+        return processor.ProcessAny(this, context, bindings);
+    }
 
-        /// <summary>
-        /// Creates a new Any Aggregate.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <param name="distinct">Whether a DISTINCT modifer applies.</param>
-        public AnyAggregate(ISparqlExpression expr, bool distinct)
-            : base(expr, distinct) { }
+    /// <summary>
+    /// Gets the String Representation of the Aggregate.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append('<');
+        output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
+        output.Append(LeviathanFunctionFactory.Any);
+        output.Append(">(");
+        if (_distinct) output.Append("DISTINCT ");
+        output.Append(_expr);
+        output.Append(')');
+        return output.ToString();
+    }
 
-
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
-            IEnumerable<TBinding> bindings)
+    /// <summary>
+    /// Gets the Functor of the Aggregate.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return processor.ProcessAny(this, context, bindings);
-        }
-
-        /// <summary>
-        /// Gets the String Representation of the Aggregate.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            output.Append('<');
-            output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
-            output.Append(LeviathanFunctionFactory.Any);
-            output.Append(">(");
-            if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr);
-            output.Append(')');
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Aggregate.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Any;
-            }
+            return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Any;
         }
     }
 }

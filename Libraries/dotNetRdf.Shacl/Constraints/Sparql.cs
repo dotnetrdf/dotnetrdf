@@ -34,118 +34,117 @@ using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Shacl.Validation;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Shacl.Constraints;
+
+internal abstract class Sparql : Constraint
 {
-    internal abstract class Sparql : Constraint
+    [DebuggerStepThrough]
+    protected Sparql(Shape shape, INode value)
+        : this(shape, value, Enumerable.Empty<KeyValuePair<string, INode>>())
     {
-        [DebuggerStepThrough]
-        protected Sparql(Shape shape, INode value)
-            : this(shape, value, Enumerable.Empty<KeyValuePair<string, INode>>())
+    }
+
+    [DebuggerStepThrough]
+    protected Sparql(Shape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
+        : base(shape, value)
+    {
+        Parameters = parameters;
+    }
+
+    internal override INode ConstraintComponent
+    {
+        get
         {
+            return Vocabulary.SparqlConstraintComponent;
+        }
+    }
+
+    protected abstract string Query { get; }
+
+    protected ILiteralNode Message
+    {
+        get
+        {
+            return (ILiteralNode)Vocabulary.Message.ObjectsOf(this).SingleOrDefault();
+        }
+    }
+
+    private IEnumerable<KeyValuePair<string, INode>> Parameters { get; set; }
+
+    private IEnumerable<PrefixDeclaration> Prefixes
+    {
+        get
+        {
+            return Vocabulary.Prefixes.ObjectsOf(this).Select(p => new Prefixes(p, Graph)).SingleOrDefault() ?? Enumerable.Empty<PrefixDeclaration>();
+        }
+    }
+
+    internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+    {
+        var queryString = new SparqlParameterizedString(Query);
+
+        foreach (PrefixDeclaration item in Prefixes)
+        {
+            queryString.Namespaces.AddNamespace(item.Prefix, item.Namespace);
         }
 
-        [DebuggerStepThrough]
-        protected Sparql(Shape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
-            : base(shape, value)
+        SparqlQuery query = new SparqlQueryParser().ParseFromString(queryString);
+
+        Validate(query.RootGraphPattern);
+
+        BindFocusNode(query.RootGraphPattern, focusNode);
+        query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("currentShape", new ConstantTerm(Shape)));
+
+        if (Shape.Graph.Name != null)
         {
-            Parameters = parameters;
+            query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("shapesGraph", new ConstantTerm(Shape.Graph.Name)));
         }
 
-        internal override INode ConstraintComponent
+        foreach (KeyValuePair<string, INode> parameter in Parameters)
         {
-            get
-            {
-                return Vocabulary.SparqlConstraintComponent;
-            }
+            query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern(parameter.Key, new ConstantTerm(parameter.Value)));
         }
 
-        protected abstract string Query { get; }
+        return ValidateInternal(dataGraph, focusNode, valueNodes, report, query);
+    }
 
-        protected ILiteralNode Message
+    protected abstract bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report, SparqlQuery query);
+
+    private static void BindFocusNode(GraphPattern pattern, INode focusNode)
+    {
+        pattern.TriplePatterns.Insert(0, new BindPattern("this", new ConstantTerm(focusNode)));
+
+        foreach (GraphPattern subPattern in pattern.ChildGraphPatterns)
         {
-            get
-            {
-                return (ILiteralNode)Vocabulary.Message.ObjectsOf(this).SingleOrDefault();
-            }
+            BindFocusNode(subPattern, focusNode);
         }
 
-        private IEnumerable<KeyValuePair<string, INode>> Parameters { get; set; }
-
-        private IEnumerable<PrefixDeclaration> Prefixes
+        foreach (SubQueryPattern subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
         {
-            get
-            {
-                return Vocabulary.Prefixes.ObjectsOf(this).Select(p => new Prefixes(p, Graph)).SingleOrDefault() ?? Enumerable.Empty<PrefixDeclaration>();
-            }
+            BindFocusNode(subQueryPattern.SubQuery.RootGraphPattern, focusNode);
+        }
+    }
+
+    private void Validate(GraphPattern pattern)
+    {
+        if (pattern.IsMinus || pattern.InlineData != null || pattern.IsService)
+        {
+            throw new Exception("illegal clauses");
         }
 
-        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
+        foreach (GraphPattern subPattern in pattern.ChildGraphPatterns)
         {
-            var queryString = new SparqlParameterizedString(Query);
-
-            foreach (PrefixDeclaration item in Prefixes)
-            {
-                queryString.Namespaces.AddNamespace(item.Prefix, item.Namespace);
-            }
-
-            SparqlQuery query = new SparqlQueryParser().ParseFromString(queryString);
-
-            Validate(query.RootGraphPattern);
-
-            BindFocusNode(query.RootGraphPattern, focusNode);
-            query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("currentShape", new ConstantTerm(Shape)));
-
-            if (Shape.Graph.Name != null)
-            {
-                query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("shapesGraph", new ConstantTerm(Shape.Graph.Name)));
-            }
-
-            foreach (KeyValuePair<string, INode> parameter in Parameters)
-            {
-                query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern(parameter.Key, new ConstantTerm(parameter.Value)));
-            }
-
-            return ValidateInternal(dataGraph, focusNode, valueNodes, report, query);
+            Validate(subPattern);
         }
 
-        protected abstract bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report, SparqlQuery query);
-
-        private static void BindFocusNode(GraphPattern pattern, INode focusNode)
+        foreach (SubQueryPattern subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
         {
-            pattern.TriplePatterns.Insert(0, new BindPattern("this", new ConstantTerm(focusNode)));
-
-            foreach (GraphPattern subPattern in pattern.ChildGraphPatterns)
+            if (!subQueryPattern.Variables.Contains("this"))
             {
-                BindFocusNode(subPattern, focusNode);
+                throw new Exception("missing projection");
             }
 
-            foreach (SubQueryPattern subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
-            {
-                BindFocusNode(subQueryPattern.SubQuery.RootGraphPattern, focusNode);
-            }
-        }
-
-        private void Validate(GraphPattern pattern)
-        {
-            if (pattern.IsMinus || pattern.InlineData != null || pattern.IsService)
-            {
-                throw new Exception("illegal clauses");
-            }
-
-            foreach (GraphPattern subPattern in pattern.ChildGraphPatterns)
-            {
-                Validate(subPattern);
-            }
-
-            foreach (SubQueryPattern subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
-            {
-                if (!subQueryPattern.Variables.Contains("this"))
-                {
-                    throw new Exception("missing projection");
-                }
-
-                Validate(subQueryPattern.SubQuery.RootGraphPattern);
-            }
+            Validate(subQueryPattern.SubQuery.RootGraphPattern);
         }
     }
 }

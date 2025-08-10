@@ -1,10 +1,9 @@
-﻿namespace VDS.RDF
+﻿namespace VDS.RDF;
+
+public class SubTreeIndexedTripleCollectionTests : AbstractTripleCollectionTests
 {
-    public class SubTreeIndexedTripleCollectionTests : AbstractTripleCollectionTests
+    protected override BaseTripleCollection GetInstance()
     {
-        protected override BaseTripleCollection GetInstance()
-        {
-            return new SubTreeIndexedTripleCollection();
-        }
+        return new SubTreeIndexedTripleCollection();
     }
 }

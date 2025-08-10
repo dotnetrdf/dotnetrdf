@@ -1,52 +1,45 @@
 ﻿using System.Collections.Generic;
 using VDS.RDF.Parsing;
 using Xunit;
-using Xunit.Abstractions;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+public abstract class RdfStarStoreWriterTests
 {
-    public abstract class RdfStarStoreWriterTests
+    protected ITestOutputHelper Output { get; }
+
+    protected RdfStarStoreWriterTests(ITestOutputHelper output)
     {
-        protected ITestOutputHelper Output { get; }
+        Output = output;
+    }
 
-        protected RdfStarStoreWriterTests(ITestOutputHelper output)
-        {
-            Output = output;
-        }
+    public abstract IStoreWriter GetWriter();
+    public abstract IStoreReader GetReader();
 
-        public abstract IStoreWriter GetWriter();
-        public abstract IStoreReader GetReader();
-
-        public static IEnumerable<object[]> RoundTripTestData = new[]
-        {
-            new object[]
-            {
-                "Triple Node Subject",
-                "<< <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o> <http://example.org/g> ."
-            },
-            new object[]
-            {
-                "Triple Node Object",
-                "<http://example.org/s> <http://example.org/p> << <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/g> ."
-            },
-            new object[]
-            {
-                "Annotated Triple",
-                @"<< <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o> <http://example.org/g> .
+    public static IEnumerable<TheoryDataRow<string, string>> RoundTripTestData = [
+        new(
+            "Triple Node Subject",
+            "<< <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o> <http://example.org/g> ."
+        ),
+        new(
+            "Triple Node Object",
+            "<http://example.org/s> <http://example.org/p> << <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/g> ."
+        ),
+        new(
+            "Annotated Triple",
+            @"<< <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o> <http://example.org/g> .
                   <http://example.org/s> <http://example.org/p> <http://example.org/o> <http://example.org/g> ."
-            },
-            new object[]
-            {
-                "Multiple Triple Annotations",
-                @"<< <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o> <http://example.org/g> .
+        ),
+        new(
+            "Multiple Triple Annotations",
+            @"<< <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o> <http://example.org/g> .
                 << <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o2> <http://example.org/g> .
                 << <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p2> <http://example.org/o> <http://example.org/g> .
                 <http://example.org/s> <http://example.org/p> <http://example.org/o> <http://example.org/g> ."
-            },
-            new object[]
-            {
-                "Multiple Graphs",
-                @"<< <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o> <http://example.org/g1> .
+        ),
+        new(
+            "Multiple Graphs",
+            @"<< <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o> <http://example.org/g1> .
                   <http://example.org/s> <http://example.org/p> << <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/g2> .
                   << <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o> <http://example.org/g3> .
                   <http://example.org/s> <http://example.org/p> <http://example.org/o> <http://example.org/g3> .
@@ -54,137 +47,136 @@ namespace VDS.RDF.Writing
                   << <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p> <http://example.org/o2> <http://example.org/g4> .
                   << <http://example.org/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/p2> <http://example.org/o> <http://example.org/g4> .
                   <http://example.org/s> <http://example.org/p> <http://example.org/o> <http://example.org/g4> ."
-            }
+        )
+    ];
+
+    protected void RoundTrip(string input)
+    {
+        var store = new TripleStore();
+        var stringWriter = new System.IO.StringWriter();
+        IStoreWriter writer = GetWriter();
+        IStoreReader reader = GetReader();
+
+        store.LoadFromString(input, new NQuadsParser(NQuadsSyntax.Rdf11Star));
+        writer.Save(store, stringWriter);
+
+        var loadStore = new TripleStore();
+        loadStore.LoadFromString(stringWriter.ToString(), reader);
+        TestTools.AssertEqual(store, loadStore, Output);
+    }
+}
+
+public class TriGMinimalCompressionWriterTests : RdfStarStoreWriterTests
+{
+    public TriGMinimalCompressionWriterTests(ITestOutputHelper output):base(output){}
+
+    public override IStoreReader GetReader()
+    {
+        return new TriGParser(TriGSyntax.Rdf11Star);
+    }
+
+    public override IStoreWriter GetWriter()
+    {
+        return new TriGWriter()
+        {
+            CompressionLevel = WriterCompressionLevel.None, Syntax = TriGSyntax.Rdf11Star
         };
-
-        protected void RoundTrip(string input)
-        {
-            var store = new TripleStore();
-            var stringWriter = new System.IO.StringWriter();
-            IStoreWriter writer = GetWriter();
-            IStoreReader reader = GetReader();
-
-            store.LoadFromString(input, new NQuadsParser(NQuadsSyntax.Rdf11Star));
-            writer.Save(store, stringWriter);
-
-            var loadStore = new TripleStore();
-            loadStore.LoadFromString(stringWriter.ToString(), reader);
-            TestTools.AssertEqual(store, loadStore, Output);
-        }
     }
 
-    public class TriGMinimalCompressionWriterTests : RdfStarStoreWriterTests
+    [Theory]
+    [MemberData(nameof(RoundTripTestData))]
+    public void TestRoundTrip(string _, string input)
     {
-        public TriGMinimalCompressionWriterTests(ITestOutputHelper output):base(output){}
-
-        public override IStoreReader GetReader()
-        {
-            return new TriGParser(TriGSyntax.Rdf11Star);
-        }
-
-        public override IStoreWriter GetWriter()
-        {
-            return new TriGWriter()
-            {
-                CompressionLevel = WriterCompressionLevel.None, Syntax = TriGSyntax.Rdf11Star
-            };
-        }
-
-        [Theory]
-        [MemberData(nameof(RoundTripTestData))]
-        public void TestRoundTrip(string testName, string input)
-        {
-            RoundTrip(input);
-        }
-
+        RoundTrip(input);
     }
 
-    public class TriGThreadedMinimalCompressionWriterTests : RdfStarStoreWriterTests
+}
+
+public class TriGThreadedMinimalCompressionWriterTests : RdfStarStoreWriterTests
+{
+    public TriGThreadedMinimalCompressionWriterTests(ITestOutputHelper output) : base(output) { }
+
+    public override IStoreReader GetReader()
     {
-        public TriGThreadedMinimalCompressionWriterTests(ITestOutputHelper output) : base(output) { }
-
-        public override IStoreReader GetReader()
-        {
-            return new TriGParser(TriGSyntax.Rdf11Star);
-        }
-
-        public override IStoreWriter GetWriter()
-        {
-            return new TriGWriter()
-            {
-                CompressionLevel = WriterCompressionLevel.None,
-                UseMultiThreadedWriting = true,
-                Syntax = TriGSyntax.Rdf11Star
-            };
-        }
-
-        [Theory]
-        [MemberData(nameof(RoundTripTestData))]
-        public void TestRoundTrip(string testName, string input)
-        {
-            RoundTrip(input);
-        }
-
+        return new TriGParser(TriGSyntax.Rdf11Star);
     }
 
-    public class TriGHighCompressionWriterTests : RdfStarStoreWriterTests
+    public override IStoreWriter GetWriter()
     {
-        public TriGHighCompressionWriterTests(ITestOutputHelper output) : base(output)
+        return new TriGWriter()
         {
-        }
-
-        public override IStoreWriter GetWriter()
-        {
-            return new TriGWriter
-            {
-                CompressionLevel = WriterCompressionLevel.High,
-                HighSpeedModePermitted = false,
-                Syntax = TriGSyntax.Rdf11Star,
-            };
-        }
-
-        public override IStoreReader GetReader()
-        {
-            return new TriGParser(TriGSyntax.Rdf11Star);
-        }
-
-        [Theory]
-        [MemberData(nameof(RoundTripTestData))]
-        public void TestRoundTrip(string testName, string input)
-        {
-            RoundTrip(input);
-        }
-
+            CompressionLevel = WriterCompressionLevel.None,
+            UseMultiThreadedWriting = true,
+            Syntax = TriGSyntax.Rdf11Star
+        };
     }
 
-    public class TriGThreadedHighCompressionWriterTests : RdfStarStoreWriterTests
+    [Theory]
+    [MemberData(nameof(RoundTripTestData))]
+    public void TestRoundTrip(string _, string input)
     {
-        public TriGThreadedHighCompressionWriterTests(ITestOutputHelper output) : base(output)
-        {
-        }
-
-        public override IStoreWriter GetWriter()
-        {
-            return new TriGWriter
-            {
-                CompressionLevel = WriterCompressionLevel.High,
-                UseMultiThreadedWriting = true,
-                HighSpeedModePermitted = false,
-                Syntax = TriGSyntax.Rdf11Star,
-            };
-        }
-
-        public override IStoreReader GetReader()
-        {
-            return new TriGParser(TriGSyntax.Rdf11Star);
-        }
-
-        [Theory]
-        [MemberData(nameof(RoundTripTestData))]
-        public void TestRoundTrip(string testName, string input)
-        {
-            RoundTrip(input);
-        }
-
+        RoundTrip(input);
     }
+
+}
+
+public class TriGHighCompressionWriterTests : RdfStarStoreWriterTests
+{
+    public TriGHighCompressionWriterTests(ITestOutputHelper output) : base(output)
+    {
+    }
+
+    public override IStoreWriter GetWriter()
+    {
+        return new TriGWriter
+        {
+            CompressionLevel = WriterCompressionLevel.High,
+            HighSpeedModePermitted = false,
+            Syntax = TriGSyntax.Rdf11Star,
+        };
+    }
+
+    public override IStoreReader GetReader()
+    {
+        return new TriGParser(TriGSyntax.Rdf11Star);
+    }
+
+    [Theory]
+    [MemberData(nameof(RoundTripTestData))]
+    public void TestRoundTrip(string _, string input)
+    {
+        RoundTrip(input);
+    }
+
+}
+
+public class TriGThreadedHighCompressionWriterTests : RdfStarStoreWriterTests
+{
+    public TriGThreadedHighCompressionWriterTests(ITestOutputHelper output) : base(output)
+    {
+    }
+
+    public override IStoreWriter GetWriter()
+    {
+        return new TriGWriter
+        {
+            CompressionLevel = WriterCompressionLevel.High,
+            UseMultiThreadedWriting = true,
+            HighSpeedModePermitted = false,
+            Syntax = TriGSyntax.Rdf11Star,
+        };
+    }
+
+    public override IStoreReader GetReader()
+    {
+        return new TriGParser(TriGSyntax.Rdf11Star);
+    }
+
+    [Theory]
+    [MemberData(nameof(RoundTripTestData))]
+    public void TestRoundTrip(string _, string input)
+    {
+        RoundTrip(input);
+    }
+
 }

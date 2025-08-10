@@ -24,22 +24,21 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+
+
+/**
+ * A SPARQL Update LOAD operation.
+ * 
+ * @author Holger Knublauch
+ */
+internal interface ILoad : IUpdate
 {
 
-
     /**
-     * A SPARQL Update LOAD operation.
-     * 
-     * @author Holger Knublauch
+     * Checks if this Update operation has been marked to be SILENT.
+     * @return true if SILENT
      */
-    internal interface ILoad : IUpdate
-    {
-
-        /**
-         * Checks if this Update operation has been marked to be SILENT.
-         * @return true if SILENT
-         */
-        bool isSilent();
-    }
+    bool isSilent();
 }

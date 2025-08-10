@@ -26,56 +26,54 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System.Collections.Generic;
 using Xunit;
 using VDS.RDF.Parsing;
-using Xunit.Abstractions;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+public abstract class CompressionTests
 {
-    public abstract class CompressionTests
+    protected ITestOutputHelper _output;
+
+    protected CompressionTests(ITestOutputHelper output)
     {
-        protected ITestOutputHelper _output;
+        _output = output;
+    }
 
-        protected CompressionTests(ITestOutputHelper output)
-        {
-            _output = output;
-        }
+    readonly List<KeyValuePair<IRdfWriter, IRdfReader>> _compressers = new List<KeyValuePair<IRdfWriter, IRdfReader>>()
+    {
+        new KeyValuePair<IRdfWriter, IRdfReader>(new CompressingTurtleWriter(), new TurtleParser()),
+        new KeyValuePair<IRdfWriter, IRdfReader>(new CompressingTurtleWriter(TurtleSyntax.W3C), new TurtleParser(TurtleSyntax.W3C, false)),
+        new KeyValuePair<IRdfWriter, IRdfReader>(new Notation3Writer(), new Notation3Parser()),
+        new KeyValuePair<IRdfWriter, IRdfReader>(new RdfXmlWriter(), new RdfXmlParser()),
+        new KeyValuePair<IRdfWriter, IRdfReader>(new PrettyRdfXmlWriter(), new RdfXmlParser())
+    };
 
-        readonly List<KeyValuePair<IRdfWriter, IRdfReader>> _compressers = new List<KeyValuePair<IRdfWriter, IRdfReader>>()
+    protected void CheckCompressionRoundTrip(IGraph g)
+    {
+        foreach (KeyValuePair<IRdfWriter, IRdfReader> kvp in _compressers)
         {
-            new KeyValuePair<IRdfWriter, IRdfReader>(new CompressingTurtleWriter(), new TurtleParser()),
-            new KeyValuePair<IRdfWriter, IRdfReader>(new CompressingTurtleWriter(TurtleSyntax.W3C), new TurtleParser(TurtleSyntax.W3C, false)),
-            new KeyValuePair<IRdfWriter, IRdfReader>(new Notation3Writer(), new Notation3Parser()),
-            new KeyValuePair<IRdfWriter, IRdfReader>(new RdfXmlWriter(), new RdfXmlParser()),
-            new KeyValuePair<IRdfWriter, IRdfReader>(new PrettyRdfXmlWriter(), new RdfXmlParser())
-        };
 
-        protected void CheckCompressionRoundTrip(IGraph g)
-        {
-            foreach (KeyValuePair<IRdfWriter, IRdfReader> kvp in _compressers)
+            IRdfWriter writer = kvp.Key;
+            if (writer is ICompressingWriter)
             {
-
-                IRdfWriter writer = kvp.Key;
-                if (writer is ICompressingWriter)
-                {
-                    ((ICompressingWriter)writer).CompressionLevel = WriterCompressionLevel.High;
-                }
-                if (writer is IHighSpeedWriter)
-                {
-                    ((IHighSpeedWriter)writer).HighSpeedModePermitted = false;
-                }
-                var strWriter = new System.IO.StringWriter();
-                writer.Save(g, strWriter);
-
-                _output.WriteLine("Compressed Output using " + kvp.Key.GetType().Name);
-                _output.WriteLine(strWriter.ToString());
-                _output.WriteLine("");
-
-                var h = new Graph();
-                StringParser.Parse(h, strWriter.ToString(), kvp.Value);
-
-                GraphDiffReport report = g.Difference(h);
-                if (!report.AreEqual) TestTools.ShowDifferences(report);
-                Assert.Equal(g, h);
+                ((ICompressingWriter)writer).CompressionLevel = WriterCompressionLevel.High;
             }
+            if (writer is IHighSpeedWriter)
+            {
+                ((IHighSpeedWriter)writer).HighSpeedModePermitted = false;
+            }
+            var strWriter = new System.IO.StringWriter();
+            writer.Save(g, strWriter);
+
+            _output.WriteLine("Compressed Output using " + kvp.Key.GetType().Name);
+            _output.WriteLine(strWriter.ToString());
+            _output.WriteLine("");
+
+            var h = new Graph();
+            StringParser.Parse(h, strWriter.ToString(), kvp.Value);
+
+            GraphDiffReport report = g.Difference(h);
+            if (!report.AreEqual) TestTools.ShowDifferences(report);
+            Assert.Equal(g, h);
         }
     }
 }

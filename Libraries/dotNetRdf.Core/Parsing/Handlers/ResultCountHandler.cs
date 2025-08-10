@@ -26,75 +26,74 @@
 
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers;
+
+/// <summary>
+/// A SPARQL Results Handler which just counts Results.
+/// </summary>
+/// <remarks>
+/// <strong>Note: </strong> For a Boolean Result Set the counter will either be 1 for true or 0 for false.
+/// </remarks>
+public class ResultCountHandler
+    : BaseResultsHandler
 {
+    private int _counter = 0;
+
     /// <summary>
-    /// A SPARQL Results Handler which just counts Results.
+    /// Creates a new Result Count Handler.
+    /// </summary>
+    public ResultCountHandler()
+        : base(new MockNodeFactory()) { }
+
+    /// <summary>
+    /// Starts Results Handling and resets the counter to zero.
+    /// </summary>
+    protected override void StartResultsInternal()
+    {
+        _counter = 0;
+    }
+
+    /// <summary>
+    /// Handles a Boolean Result.
+    /// </summary>
+    /// <param name="result">Result.</param>
+    protected override void HandleBooleanResultInternal(bool result)
+    {
+        _counter = result ? 1 : 0;
+    }
+
+    /// <summary>
+    /// Handles a Variable Declaration.
+    /// </summary>
+    /// <param name="var">Variable Name.</param>
+    /// <returns></returns>
+    protected override bool HandleVariableInternal(string var)
+    {
+        return true;
+    }
+
+    /// <summary>
+    /// Handles a SPARQL Result by incrementing the counter.
+    /// </summary>
+    /// <param name="result">Result.</param>
+    /// <returns></returns>
+    protected override bool HandleResultInternal(ISparqlResult result)
+    {
+        _counter++;
+        return true;
+    }
+
+    /// <summary>
+    /// Gets the Count of Results. 
     /// </summary>
     /// <remarks>
-    /// <strong>Note: </strong> For a Boolean Result Set the counter will either be 1 for true or 0 for false.
+    /// For Boolean Results counter will be either 1 or 0 depending on whether the result was True/False.
     /// </remarks>
-    public class ResultCountHandler
-        : BaseResultsHandler
+    public int Count
     {
-        private int _counter = 0;
-
-        /// <summary>
-        /// Creates a new Result Count Handler.
-        /// </summary>
-        public ResultCountHandler()
-            : base(new MockNodeFactory()) { }
-
-        /// <summary>
-        /// Starts Results Handling and resets the counter to zero.
-        /// </summary>
-        protected override void StartResultsInternal()
+        get
         {
-            _counter = 0;
-        }
-
-        /// <summary>
-        /// Handles a Boolean Result.
-        /// </summary>
-        /// <param name="result">Result.</param>
-        protected override void HandleBooleanResultInternal(bool result)
-        {
-            _counter = result ? 1 : 0;
-        }
-
-        /// <summary>
-        /// Handles a Variable Declaration.
-        /// </summary>
-        /// <param name="var">Variable Name.</param>
-        /// <returns></returns>
-        protected override bool HandleVariableInternal(string var)
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// Handles a SPARQL Result by incrementing the counter.
-        /// </summary>
-        /// <param name="result">Result.</param>
-        /// <returns></returns>
-        protected override bool HandleResultInternal(ISparqlResult result)
-        {
-            _counter++;
-            return true;
-        }
-
-        /// <summary>
-        /// Gets the Count of Results. 
-        /// </summary>
-        /// <remarks>
-        /// For Boolean Results counter will be either 1 or 0 depending on whether the result was True/False.
-        /// </remarks>
-        public int Count
-        {
-            get
-            {
-                return _counter;
-            }
+            return _counter;
         }
     }
 }

@@ -24,106 +24,105 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Writing;
+
+/// <summary>
+/// A helper class containing GraphML name and URI constants.
+/// </summary>
+public static class GraphMLSpecsHelper
 {
     /// <summary>
-    /// A helper class containing GraphML name and URI constants.
+    /// The namespace URI for GraphML XML elements.
     /// </summary>
-    public static class GraphMLSpecsHelper
-    {
-        /// <summary>
-        /// The namespace URI for GraphML XML elements.
-        /// </summary>
-        public const string NS = "http://graphml.graphdrawing.org/xmlns";
+    public const string NS = "http://graphml.graphdrawing.org/xmlns";
 
-        /// <summary>
-        /// The URL of the GraphML XML schema.
-        /// </summary>
-        public const string XsdUri = "http://graphml.graphdrawing.org/xmlns/1.1/graphml.xsd";
+    /// <summary>
+    /// The URL of the GraphML XML schema.
+    /// </summary>
+    public const string XsdUri = "http://graphml.graphdrawing.org/xmlns/1.1/graphml.xsd";
 
-        /// <summary>
-        /// The name of the GraphML XML root element.
-        /// </summary>
-        public const string GraphML = "graphml";
+    /// <summary>
+    /// The name of the GraphML XML root element.
+    /// </summary>
+    public const string GraphML = "graphml";
 
-        /// <summary>
-        /// The name of the GraphML XML element representing a graph.
-        /// </summary>
-        public const string Graph = "graph";
+    /// <summary>
+    /// The name of the GraphML XML element representing a graph.
+    /// </summary>
+    public const string Graph = "graph";
 
-        /// <summary>
-        /// The name of the GraphML XML attribute representing the default directedness of and edge.
-        /// </summary>
-        public const string Edgedefault = "edgedefault";
+    /// <summary>
+    /// The name of the GraphML XML attribute representing the default directedness of and edge.
+    /// </summary>
+    public const string Edgedefault = "edgedefault";
 
-        /// <summary>
-        /// The value representing a directed edge.
-        /// </summary>
-        public const string Directed = "directed";
+    /// <summary>
+    /// The value representing a directed edge.
+    /// </summary>
+    public const string Directed = "directed";
 
-        /// <summary>
-        /// The name of the GraphML XML element representing an edge.
-        /// </summary>
-        public const string Edge = "edge";
+    /// <summary>
+    /// The name of the GraphML XML element representing an edge.
+    /// </summary>
+    public const string Edge = "edge";
 
-        /// <summary>
-        /// The name of the GraphML attribute representing the source of an edge.
-        /// </summary>
-        public const string Source = "source";
+    /// <summary>
+    /// The name of the GraphML attribute representing the source of an edge.
+    /// </summary>
+    public const string Source = "source";
 
-        /// <summary>
-        /// The name of the GraphML attribute representing the target of an edge.
-        /// </summary>
-        public const string Target = "target";
+    /// <summary>
+    /// The name of the GraphML attribute representing the target of an edge.
+    /// </summary>
+    public const string Target = "target";
 
-        /// <summary>
-        /// The name of the GraphML element representing the source of a node.
-        /// </summary>
-        public const string Node = "node";
+    /// <summary>
+    /// The name of the GraphML element representing the source of a node.
+    /// </summary>
+    public const string Node = "node";
 
-        /// <summary>
-        /// The name of the GraphML element representing custom attributes for nodes and edges.
-        /// </summary>
-        public const string Data = "data";
+    /// <summary>
+    /// The name of the GraphML element representing custom attributes for nodes and edges.
+    /// </summary>
+    public const string Data = "data";
 
-        /// <summary>
-        /// The name of the GraphML attribute representing the domain of a key.
-        /// </summary>
-        public const string Domain = "for";
+    /// <summary>
+    /// The name of the GraphML attribute representing the domain of a key.
+    /// </summary>
+    public const string Domain = "for";
 
-        /// <summary>
-        /// The name of the GraphML attribute representing the type of an attribute.
-        /// </summary>
-        public const string AttributeTyte = "attr.type";
+    /// <summary>
+    /// The name of the GraphML attribute representing the type of an attribute.
+    /// </summary>
+    public const string AttributeTyte = "attr.type";
 
-        /// <summary>
-        /// The value representing the string type.
-        /// </summary>
-        public const string String = "string";
+    /// <summary>
+    /// The value representing the string type.
+    /// </summary>
+    public const string String = "string";
 
-        /// <summary>
-        /// The value representing a node label attribute id.
-        /// </summary>
-        public const string NodeLabel = "label";
+    /// <summary>
+    /// The value representing a node label attribute id.
+    /// </summary>
+    public const string NodeLabel = "label";
 
-        /// <summary>
-        /// The value representing an edge label attribute id.
-        /// </summary>
-        public const string EdgeLabel = "edgelabel";
+    /// <summary>
+    /// The value representing an edge label attribute id.
+    /// </summary>
+    public const string EdgeLabel = "edgelabel";
 
-        /// <summary>
-        /// The value representing a graph label attribute id.
-        /// </summary>
-        public const string GraphLabel = "graphlabel";
+    /// <summary>
+    /// The value representing a graph label attribute id.
+    /// </summary>
+    public const string GraphLabel = "graphlabel";
 
-        /// <summary>
-        /// The name of the GraphML attribute representing the id of a node or edge.
-        /// </summary>
-        public const string Id = "id";
+    /// <summary>
+    /// The name of the GraphML attribute representing the id of a node or edge.
+    /// </summary>
+    public const string Id = "id";
 
-        /// <summary>
-        /// The name of the GraphML element representing a key.
-        /// </summary>
-        public const string Key = "key";
-    }
+    /// <summary>
+    /// The name of the GraphML element representing a key.
+    /// </summary>
+    public const string Key = "key";
 }

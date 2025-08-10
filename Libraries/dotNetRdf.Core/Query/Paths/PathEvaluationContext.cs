@@ -27,131 +27,130 @@
 using System.Collections.Generic;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Paths
+namespace VDS.RDF.Query.Paths;
+
+/// <summary>
+/// Evaluation Context for evaluating complex property paths in SPARQL.
+/// </summary>
+public class PathEvaluationContext
 {
     /// <summary>
-    /// Evaluation Context for evaluating complex property paths in SPARQL.
+    /// Creates a new Path Evaluation Context.
     /// </summary>
-    public class PathEvaluationContext
+    /// <param name="context">SPARQL Evaluation Context.</param>
+    /// <param name="end">Start point of the Path.</param>
+    /// <param name="start">End point of the Path.</param>
+    public PathEvaluationContext(SparqlEvaluationContext context, PatternItem start, PatternItem end)
     {
-        /// <summary>
-        /// Creates a new Path Evaluation Context.
-        /// </summary>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        /// <param name="end">Start point of the Path.</param>
-        /// <param name="start">End point of the Path.</param>
-        public PathEvaluationContext(SparqlEvaluationContext context, PatternItem start, PatternItem end)
+        SparqlContext = context;
+        PathStart = start;
+        PathEnd = end;
+        if (PathStart.IsFixed && PathEnd.IsFixed) CanAbortEarly = true;
+        PathStart.RigorousEvaluation = true;
+        PathEnd.RigorousEvaluation = true;
+    }
+
+    /// <summary>
+    /// Creates a new Path Evaluation Context copied from the given Context.
+    /// </summary>
+    /// <param name="context">Path Evaluation Context.</param>
+    public PathEvaluationContext(PathEvaluationContext context)
+        : this(context.SparqlContext, context.PathStart, context.PathEnd)
+    {
+        foreach (PotentialPath p in context.Paths)
         {
-            SparqlContext = context;
-            PathStart = start;
-            PathEnd = end;
-            if (PathStart.IsFixed && PathEnd.IsFixed) CanAbortEarly = true;
-            PathStart.RigorousEvaluation = true;
-            PathEnd.RigorousEvaluation = true;
+            Paths.Add(new PotentialPath(p));
         }
+        CompletePaths.UnionWith(context.CompletePaths);
+        IsFirst = context.IsFirst;
+        IsLast = context.IsLast;
+        IsReversed = context.IsReversed;
+    }
 
-        /// <summary>
-        /// Creates a new Path Evaluation Context copied from the given Context.
-        /// </summary>
-        /// <param name="context">Path Evaluation Context.</param>
-        public PathEvaluationContext(PathEvaluationContext context)
-            : this(context.SparqlContext, context.PathStart, context.PathEnd)
+    /// <summary>
+    /// Gets the SPARQL Evaluation Context.
+    /// </summary>
+    public SparqlEvaluationContext SparqlContext { get; }
+
+    /// <summary>
+    /// Gets/Sets whether this is the first part of the Path to be evaluated.
+    /// </summary>
+    public bool IsFirst { get; set; } = true;
+
+    /// <summary>
+    /// Gets/Sets whether this is the last part of the Path to be evaluated.
+    /// </summary>
+    public bool IsLast { get; set; } = true;
+
+    /// <summary>
+    /// Gets/Sets whether the Path is currently reversed.
+    /// </summary>
+    public bool IsReversed { get; set; }
+
+    /// <summary>
+    /// Gets the hash set of incomplete paths generated so far.
+    /// </summary>
+    public HashSet<PotentialPath> Paths { get; } = new HashSet<PotentialPath>();
+
+    /// <summary>
+    /// Gets the hash set of complete paths generated so far.
+    /// </summary>
+    public HashSet<PotentialPath> CompletePaths { get; } = new HashSet<PotentialPath>();
+
+    /// <summary>
+    /// Gets the pattern which is the start of the path.
+    /// </summary>
+    public PatternItem PathStart { get; }
+
+    /// <summary>
+    /// Gets the pattern which is the end of the path.
+    /// </summary>
+    public PatternItem PathEnd { get; }
+
+    /// <summary>
+    /// Gets whether pattern evaluation can be aborted early.
+    /// </summary>
+    /// <remarks>
+    /// Useful when both the start and end of the path are fixed (non-variables) which means that we can stop evaluating once we find the path (if it exists).
+    /// </remarks>
+    public bool CanAbortEarly { get; }
+
+    /// <summary>
+    /// Gets/Sets whether new paths can be introduced when not evaluating the first part of the path.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This is required when we have a path like ?x foaf:knows* /foaf:knows ?y and ?x is not bound prior to the path being executed.  Since we permit zero-length paths we should return the names of everyone even if they don't know anyone.
+    /// </para>
+    /// <para>
+    /// The cases where ?x is already bound are handled elsewhere as we can just introduce zero-length paths for every existing binding for ?x.
+    /// </para>
+    /// </remarks>
+    public bool PermitsNewPaths { get; set; } = false;
+
+    /// <summary>
+    /// Adds a new path to the list of current incomplete paths.
+    /// </summary>
+    /// <param name="p">Path.</param>
+    public void AddPath(PotentialPath p)
+    {
+        if (!Paths.Contains(p))
         {
-            foreach (PotentialPath p in context.Paths)
-            {
-                Paths.Add(new PotentialPath(p));
-            }
-            CompletePaths.UnionWith(context.CompletePaths);
-            IsFirst = context.IsFirst;
-            IsLast = context.IsLast;
-            IsReversed = context.IsReversed;
+            Paths.Add(p);
         }
+    }
 
-        /// <summary>
-        /// Gets the SPARQL Evaluation Context.
-        /// </summary>
-        public SparqlEvaluationContext SparqlContext { get; }
-
-        /// <summary>
-        /// Gets/Sets whether this is the first part of the Path to be evaluated.
-        /// </summary>
-        public bool IsFirst { get; set; } = true;
-
-        /// <summary>
-        /// Gets/Sets whether this is the last part of the Path to be evaluated.
-        /// </summary>
-        public bool IsLast { get; set; } = true;
-
-        /// <summary>
-        /// Gets/Sets whether the Path is currently reversed.
-        /// </summary>
-        public bool IsReversed { get; set; }
-
-        /// <summary>
-        /// Gets the hash set of incomplete paths generated so far.
-        /// </summary>
-        public HashSet<PotentialPath> Paths { get; } = new HashSet<PotentialPath>();
-
-        /// <summary>
-        /// Gets the hash set of complete paths generated so far.
-        /// </summary>
-        public HashSet<PotentialPath> CompletePaths { get; } = new HashSet<PotentialPath>();
-
-        /// <summary>
-        /// Gets the pattern which is the start of the path.
-        /// </summary>
-        public PatternItem PathStart { get; }
-
-        /// <summary>
-        /// Gets the pattern which is the end of the path.
-        /// </summary>
-        public PatternItem PathEnd { get; }
-
-        /// <summary>
-        /// Gets whether pattern evaluation can be aborted early.
-        /// </summary>
-        /// <remarks>
-        /// Useful when both the start and end of the path are fixed (non-variables) which means that we can stop evaluating once we find the path (if it exists).
-        /// </remarks>
-        public bool CanAbortEarly { get; }
-
-        /// <summary>
-        /// Gets/Sets whether new paths can be introduced when not evaluating the first part of the path.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This is required when we have a path like ?x foaf:knows* /foaf:knows ?y and ?x is not bound prior to the path being executed.  Since we permit zero-length paths we should return the names of everyone even if they don't know anyone.
-        /// </para>
-        /// <para>
-        /// The cases where ?x is already bound are handled elsewhere as we can just introduce zero-length paths for every existing binding for ?x.
-        /// </para>
-        /// </remarks>
-        public bool PermitsNewPaths { get; set; } = false;
-
-        /// <summary>
-        /// Adds a new path to the list of current incomplete paths.
-        /// </summary>
-        /// <param name="p">Path.</param>
-        public void AddPath(PotentialPath p)
+    /// <summary>
+    /// Adds a new path to the list of complete paths.
+    /// </summary>
+    /// <param name="p">Path.</param>
+    public void AddCompletePath(PotentialPath p)
+    {
+        if (p.IsComplete && !p.IsPartial)
         {
-            if (!Paths.Contains(p))
+            if (!CompletePaths.Contains(p))
             {
-                Paths.Add(p);
-            }
-        }
-
-        /// <summary>
-        /// Adds a new path to the list of complete paths.
-        /// </summary>
-        /// <param name="p">Path.</param>
-        public void AddCompletePath(PotentialPath p)
-        {
-            if (p.IsComplete && !p.IsPartial)
-            {
-                if (!CompletePaths.Contains(p))
-                {
-                    CompletePaths.Add(p);
-                }
+                CompletePaths.Add(p);
             }
         }
     }

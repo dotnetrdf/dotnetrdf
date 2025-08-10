@@ -26,32 +26,31 @@
 
 using System;
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Interface for Formatters which can format Namespace Information.
+/// </summary>
+public interface INamespaceFormatter
 {
     /// <summary>
-    /// Interface for Formatters which can format Namespace Information.
+    /// Formats Namespace Information as a String.
     /// </summary>
-    public interface INamespaceFormatter
-    {
-        /// <summary>
-        /// Formats Namespace Information as a String.
-        /// </summary>
-        /// <param name="prefix">Namespae Prefix.</param>
-        /// <param name="namespaceUri">Namespace URI.</param>
-        /// <returns></returns>
-        string FormatNamespace(string prefix, Uri namespaceUri);
-    }
+    /// <param name="prefix">Namespae Prefix.</param>
+    /// <param name="namespaceUri">Namespace URI.</param>
+    /// <returns></returns>
+    string FormatNamespace(string prefix, Uri namespaceUri);
+}
 
+/// <summary>
+/// Interface for Formatters which can format Base URI Information.
+/// </summary>
+public interface IBaseUriFormatter
+{
     /// <summary>
-    /// Interface for Formatters which can format Base URI Information.
+    /// Formats Base URI Information as a String.
     /// </summary>
-    public interface IBaseUriFormatter
-    {
-        /// <summary>
-        /// Formats Base URI Information as a String.
-        /// </summary>
-        /// <param name="u">Base URI.</param>
-        /// <returns></returns>
-        string FormatBaseUri(Uri u);
-    }
+    /// <param name="u">Base URI.</param>
+    /// <returns></returns>
+    string FormatBaseUri(Uri u);
 }

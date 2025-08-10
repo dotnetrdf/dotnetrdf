@@ -28,49 +28,47 @@ using System.Collections.Generic;
 using System.IO;
 using VDS.RDF.Parsing;
 using Xunit;
-using Xunit.Abstractions;
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+
+public class NativeStoreTests
+    : BaseTest
 {
-
-    public class NativeStoreTests
-        : BaseTest
+    public NativeStoreTests(ITestOutputHelper output) : base(output)
     {
-        public NativeStoreTests(ITestOutputHelper output) : base(output)
+    }
+
+    [Fact]
+    public void StorageNativeGraph()
+    {
+        //Load in our Test Graph
+        var ttlparser = new TurtleParser();
+        var testGraphName  =new UriNode(new Uri("http://example.org/testGraph"));
+        var g = new Graph(testGraphName);
+        ttlparser.Load(g, Path.Combine("resources", "Turtle.ttl"));
+
+        Assert.False(g.IsEmpty, "Test Graph should be non-empty");
+
+        //Create our Native Managers
+        var managers = new List<IStorageProvider>
         {
+            new InMemoryManager()
+        };
+
+        //Save the Graph to each Manager
+        foreach (IStorageProvider manager in managers)
+        {
+            manager.SaveGraph(g);
         }
 
-        [SkippableFact]
-        public void StorageNativeGraph()
+        //Load Back from each Manager
+        foreach (IStorageProvider manager in managers)
         {
-            //Load in our Test Graph
-            var ttlparser = new TurtleParser();
-            var testGraphName  =new UriNode(new Uri("http://example.org/testGraph"));
-            var g = new Graph(testGraphName);
-            ttlparser.Load(g, Path.Combine("resources", "Turtle.ttl"));
-
-            Assert.False(g.IsEmpty, "Test Graph should be non-empty");
-
-            //Create our Native Managers
-            var managers = new List<IStorageProvider>
-            {
-                new InMemoryManager()
-            };
-
-            //Save the Graph to each Manager
-            foreach (IStorageProvider manager in managers)
-            {
-                manager.SaveGraph(g);
-            }
-
-            //Load Back from each Manager
-            foreach (IStorageProvider manager in managers)
-            {
-                var native = new StoreGraphPersistenceWrapper(manager, g.Name);
-                Assert.False(native.IsEmpty, "Retrieved Graph should contain Triples");
-                Assert.Equal(g.Triples.Count, native.Triples.Count);
-                native.Dispose();
-            }
+            var native = new StoreGraphPersistenceWrapper(manager, g.Name);
+            Assert.False(native.IsEmpty, "Retrieved Graph should contain Triples");
+            Assert.Equal(g.Triples.Count, native.Triples.Count);
+            native.Dispose();
         }
     }
 }

@@ -29,136 +29,135 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.JsonLd.Syntax;
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd;
+
+/// <summary>
+/// Represents a term definition in a context.
+/// </summary>
+public class JsonLdTermDefinition
 {
     /// <summary>
-    /// Represents a term definition in a context.
+    /// Create a new term definition.
     /// </summary>
-    public class JsonLdTermDefinition
+    public JsonLdTermDefinition()
     {
-        /// <summary>
-        /// Create a new term definition.
-        /// </summary>
-        public JsonLdTermDefinition()
+        ContainerMapping = new HashSet<JsonLdContainer>();
+    }
+
+    /// <summary>
+    /// Get or set the IRI mapping for the term.
+    /// </summary>
+    public string IriMapping { get; set; }
+
+    /// <summary>
+    /// Get or set the prefix flag for the term.
+    /// </summary>
+    public bool Prefix { get; set; }
+
+    /// <summary>
+    /// Get or set the protected flag for the term.
+    /// </summary>
+    public bool Protected { get; set; }
+
+    /// <summary>
+    /// Get or set the base URL for the term.
+    /// </summary>
+    public Uri BaseUrl { get; set; }
+
+    /// <summary>
+    /// Indicates if this term represents a reverse property.
+    /// </summary>
+    public bool Reverse { get; set; }
+
+    /// <summary>
+    /// Get or set the container mapping for this term definition.
+    /// </summary>
+    public ISet<JsonLdContainer> ContainerMapping { get; }
+
+    /// <summary>
+    /// Get or set the text direction mapping for this term definition.
+    /// </summary>
+    public LanguageDirection? DirectionMapping { get; set; }
+
+    /// <summary>
+    /// Get or set the type mapping for this term definition.
+    /// </summary>
+    /// <remarks>May be null. MUST be null if LanguageMapping is not null.</remarks>
+    public string TypeMapping { get; set; }
+
+    /// <summary>
+    /// Get or set the index mapping for this term definition.
+    /// </summary>
+    public string IndexMapping { get; set; }
+
+    private string _languageMapping;
+    /// <summary>
+    /// Get or set the language mapping for this term definition.
+    /// </summary>
+    /// <remarks>May be null. MUST be null if TypeMapping is not null.</remarks>
+    public string LanguageMapping {
+        get => _languageMapping;
+        set { _languageMapping = value; HasLanguageMapping = true; }
+    }
+
+    /// <summary>
+    /// Boolean flag indicating if this term definition specifies a language mapping.
+    /// </summary>
+    public bool HasLanguageMapping { get; private set; }
+
+    /// <summary>
+    /// Get or set the context specified for this term definition.
+    /// </summary>
+    public JToken LocalContext { get; set; }
+
+    /// <summary>
+    /// Get or set the nest property for this term definition.
+    /// </summary>
+    public string Nest { get; set; }
+
+    /// <summary>
+    /// Create a clone of this term definition.
+    /// </summary>
+    /// <returns></returns>
+    public JsonLdTermDefinition Clone()
+    {
+        var clone = new JsonLdTermDefinition()
         {
-            ContainerMapping = new HashSet<JsonLdContainer>();
-        }
+            IriMapping = IriMapping,
+            Prefix = Prefix,
+            Protected = Protected,
+            BaseUrl =  BaseUrl,
+            Reverse = Reverse,
+            DirectionMapping = DirectionMapping,
+            TypeMapping = TypeMapping,
+            IndexMapping = IndexMapping,
+            LanguageMapping = LanguageMapping,
+            HasLanguageMapping = HasLanguageMapping,
+            Nest = Nest,
+            LocalContext = LocalContext?.DeepClone(), // TODO: Check if it correct to just directly clone the local context
+        };
+        clone.ContainerMapping.UnionWith(ContainerMapping);
+        return clone;
+    }
 
-        /// <summary>
-        /// Get or set the IRI mapping for the term.
-        /// </summary>
-        public string IriMapping { get; set; }
-
-        /// <summary>
-        /// Get or set the prefix flag for the term.
-        /// </summary>
-        public bool Prefix { get; set; }
-
-        /// <summary>
-        /// Get or set the protected flag for the term.
-        /// </summary>
-        public bool Protected { get; set; }
-
-        /// <summary>
-        /// Get or set the base URL for the term.
-        /// </summary>
-        public Uri BaseUrl { get; set; }
-
-        /// <summary>
-        /// Indicates if this term represents a reverse property.
-        /// </summary>
-        public bool Reverse { get; set; }
-
-        /// <summary>
-        /// Get or set the container mapping for this term definition.
-        /// </summary>
-        public ISet<JsonLdContainer> ContainerMapping { get; }
-
-        /// <summary>
-        /// Get or set the text direction mapping for this term definition.
-        /// </summary>
-        public LanguageDirection? DirectionMapping { get; set; }
-
-        /// <summary>
-        /// Get or set the type mapping for this term definition.
-        /// </summary>
-        /// <remarks>May be null. MUST be null if LanguageMapping is not null.</remarks>
-        public string TypeMapping { get; set; }
-
-        /// <summary>
-        /// Get or set the index mapping for this term definition.
-        /// </summary>
-        public string IndexMapping { get; set; }
-
-        private string _languageMapping;
-        /// <summary>
-        /// Get or set the language mapping for this term definition.
-        /// </summary>
-        /// <remarks>May be null. MUST be null if TypeMapping is not null.</remarks>
-        public string LanguageMapping {
-            get => _languageMapping;
-            set { _languageMapping = value; HasLanguageMapping = true; }
-        }
-
-        /// <summary>
-        /// Boolean flag indicating if this term definition specifies a language mapping.
-        /// </summary>
-        public bool HasLanguageMapping { get; private set; }
-
-        /// <summary>
-        /// Get or set the context specified for this term definition.
-        /// </summary>
-        public JToken LocalContext { get; set; }
-
-        /// <summary>
-        /// Get or set the nest property for this term definition.
-        /// </summary>
-        public string Nest { get; set; }
-
-        /// <summary>
-        /// Create a clone of this term definition.
-        /// </summary>
-        /// <returns></returns>
-        public JsonLdTermDefinition Clone()
-        {
-            var clone = new JsonLdTermDefinition()
-            {
-                IriMapping = IriMapping,
-                Prefix = Prefix,
-                Protected = Protected,
-                BaseUrl =  BaseUrl,
-                Reverse = Reverse,
-                DirectionMapping = DirectionMapping,
-                TypeMapping = TypeMapping,
-                IndexMapping = IndexMapping,
-                LanguageMapping = LanguageMapping,
-                HasLanguageMapping = HasLanguageMapping,
-                Nest = Nest,
-                LocalContext = LocalContext?.DeepClone(), // TODO: Check if it correct to just directly clone the local context
-            };
-            clone.ContainerMapping.UnionWith(ContainerMapping);
-            return clone;
-        }
-
-        /// <summary>
-        /// Determines whether this term definition is the same as another term definition in all respects other than its <see cref="Protected"/> attribute value.
-        /// </summary>
-        /// <param name="other"></param>
-        /// <returns>True if the term definitions are the same in all respects other than the value of <see cref="Protected"/>, false otherwise.</returns>
-        public bool EquivalentTo(JsonLdTermDefinition other)
-        {
-            return IriMapping == other.IriMapping &&
-                   Prefix == other.Prefix &&
-                   BaseUrl == other.BaseUrl &&
-                   Reverse == other.Reverse &&
-                   DirectionMapping == other.DirectionMapping &&
-                   TypeMapping == other.TypeMapping &&
-                   IndexMapping == other.IndexMapping &&
-                   HasLanguageMapping == other.HasLanguageMapping &&
-                   Nest == other.Nest &&
-                   (ContainerMapping == null && other.ContainerMapping == null ||
-                    ContainerMapping != null && other.ContainerMapping != null &&
-                    ContainerMapping.SetEquals(other.ContainerMapping));
-        }
+    /// <summary>
+    /// Determines whether this term definition is the same as another term definition in all respects other than its <see cref="Protected"/> attribute value.
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns>True if the term definitions are the same in all respects other than the value of <see cref="Protected"/>, false otherwise.</returns>
+    public bool EquivalentTo(JsonLdTermDefinition other)
+    {
+        return IriMapping == other.IriMapping &&
+               Prefix == other.Prefix &&
+               BaseUrl == other.BaseUrl &&
+               Reverse == other.Reverse &&
+               DirectionMapping == other.DirectionMapping &&
+               TypeMapping == other.TypeMapping &&
+               IndexMapping == other.IndexMapping &&
+               HasLanguageMapping == other.HasLanguageMapping &&
+               Nest == other.Nest &&
+               (ContainerMapping == null && other.ContainerMapping == null ||
+                ContainerMapping != null && other.ContainerMapping != null &&
+                ContainerMapping.SetEquals(other.ContainerMapping));
     }
 }

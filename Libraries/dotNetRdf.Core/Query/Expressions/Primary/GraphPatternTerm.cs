@@ -28,104 +28,103 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Expressions.Primary
+namespace VDS.RDF.Query.Expressions.Primary;
+
+/// <summary>
+/// Class for representing Graph Pattern Terms (as used in EXISTS/NOT EXISTS).
+/// </summary>
+public class GraphPatternTerm
+    : ISparqlExpression
 {
     /// <summary>
-    /// Class for representing Graph Pattern Terms (as used in EXISTS/NOT EXISTS).
+    /// Creates a new Graph Pattern Term.
     /// </summary>
-    public class GraphPatternTerm
-        : ISparqlExpression
+    /// <param name="pattern">Graph Pattern.</param>
+    public GraphPatternTerm(GraphPattern pattern)
     {
-        /// <summary>
-        /// Creates a new Graph Pattern Term.
-        /// </summary>
-        /// <param name="pattern">Graph Pattern.</param>
-        public GraphPatternTerm(GraphPattern pattern)
+        Pattern = pattern;
+    }
+
+
+    /// <summary>
+    /// Gets the Graph Pattern this term represents.
+    /// </summary>
+    public GraphPattern Pattern { get; }
+
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessGraphPatternTerm(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitGraphPatternTerm(this);
+    }
+
+    /// <summary>
+    /// Gets the Variables used in the Expression.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
         {
-            Pattern = pattern;
+            return Pattern.Variables;
         }
+    }
 
-
-        /// <summary>
-        /// Gets the Graph Pattern this term represents.
-        /// </summary>
-        public GraphPattern Pattern { get; }
-
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public SparqlExpressionType Type
+    {
+        get
         {
-            return processor.ProcessGraphPatternTerm(this, context, binding);
+            return SparqlExpressionType.Primary;
         }
+    }
 
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public string Functor
+    {
+        get
         {
-            return visitor.VisitGraphPatternTerm(this);
+            return string.Empty;
         }
+    }
 
-        /// <summary>
-        /// Gets the Variables used in the Expression.
-        /// </summary>
-        public IEnumerable<string> Variables
+    /// <summary>
+    /// Gets the Arguments of the Expression.
+    /// </summary>
+    public IEnumerable<ISparqlExpression> Arguments
+    {
+        get
         {
-            get
-            {
-                return Pattern.Variables;
-            }
+            return Enumerable.Empty<ISparqlExpression>();
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public SparqlExpressionType Type
+    /// <summary>
+    /// Gets whether an expression can safely be evaluated in parallel.
+    /// </summary>
+    public virtual bool CanParallelise
+    {
+        get
         {
-            get
-            {
-                return SparqlExpressionType.Primary;
-            }
+            return true;
         }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public string Functor
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression.
-        /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
-        {
-            get
-            {
-                return Enumerable.Empty<ISparqlExpression>();
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel.
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return this;
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return this;
     }
 }

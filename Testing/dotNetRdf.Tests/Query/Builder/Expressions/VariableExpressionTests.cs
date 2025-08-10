@@ -27,319 +27,318 @@ using System;
 using Xunit;
 using VDS.RDF.Query.Expressions.Arithmetic;
 
-namespace VDS.RDF.Query.Builder.Expressions
-{
+namespace VDS.RDF.Query.Builder.Expressions;
 
-    public class VariableExpressionTests : SparqlExpressionTestsBase
-    { 
-        public VariableExpressionTests()
-        {
-            Left = 10.ToConstantTerm();
-            Right = 15.ToConstantTerm();
-        }
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndInteger()
-        {
-            // given
-            const int operandValue = 10;
-            var right = new VariableExpression("var"); Right = right.Expression;
+public class VariableExpressionTests : SparqlExpressionTestsBase
+{ 
+    public VariableExpressionTests()
+    {
+        Left = 10.ToConstantTerm();
+        Right = 15.ToConstantTerm();
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndInteger()
+    {
+        // given
+        const int operandValue = 10;
+        var right = new VariableExpression("var"); Right = right.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithIntegerAndVariableExpression()
-        {
-            // given
-            const int operandValue = 10;
-            var left = new VariableExpression("var"); Left = left.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithIntegerAndVariableExpression()
+    {
+        // given
+        const int operandValue = 10;
+        var left = new VariableExpression("var"); Left = left.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndShortInteger()
-        {
-            // given
-            const short operandValue = 10;
-            var right = new VariableExpression("var"); Right = right.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndShortInteger()
+    {
+        // given
+        const short operandValue = 10;
+        var right = new VariableExpression("var"); Right = right.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithShortIntegerAndVariableExpression()
-        {
-            // given
-            const short operandValue = 10;
-            var left = new VariableExpression("var"); Left = left.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithShortIntegerAndVariableExpression()
+    {
+        // given
+        const short operandValue = 10;
+        var left = new VariableExpression("var"); Left = left.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndLongInteger()
-        {
-            // given
-            const long operandValue = 10;
-            var right = new VariableExpression("var"); Right = right.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndLongInteger()
+    {
+        // given
+        const long operandValue = 10;
+        var right = new VariableExpression("var"); Right = right.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithLongIntegerAndVariableExpression()
-        {
-            // given
-            const long operandValue = 10;
-            var left = new VariableExpression("var"); Left = left.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithLongIntegerAndVariableExpression()
+    {
+        // given
+        const long operandValue = 10;
+        var left = new VariableExpression("var"); Left = left.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndByte()
-        {
-            // given
-            const byte operandValue = 10;
-            var right = new VariableExpression("var"); Right = right.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndByte()
+    {
+        // given
+        const byte operandValue = 10;
+        var right = new VariableExpression("var"); Right = right.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithByteAndVariableExpression()
-        {
-            // given
-            const byte operandValue = 10;
-            var left = new VariableExpression("var"); Left = left.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithByteAndVariableExpression()
+    {
+        // given
+        const byte operandValue = 10;
+        var left = new VariableExpression("var"); Left = left.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndSignedByte()
-        {
-            // given
-            const sbyte operandValue = 10;
-            var right = new VariableExpression("var"); Right = right.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndSignedByte()
+    {
+        // given
+        const sbyte operandValue = 10;
+        var right = new VariableExpression("var"); Right = right.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithSignedByteAndVariableExpression()
-        {
-            // given
-            const sbyte operandValue = 10;
-            var left = new VariableExpression("var"); Left = left.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithSignedByteAndVariableExpression()
+    {
+        // given
+        const sbyte operandValue = 10;
+        var left = new VariableExpression("var"); Left = left.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndDecimal()
-        {
-            // given
-            const Decimal operandValue = 10;
-            var right = new VariableExpression("var"); Right = right.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndDecimal()
+    {
+        // given
+        const Decimal operandValue = 10;
+        var right = new VariableExpression("var"); Right = right.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithDecimalAndVariableExpression()
-        {
-            // given
-            const Decimal operandValue = 10;
-            var left = new VariableExpression("var"); Left = left.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithDecimalAndVariableExpression()
+    {
+        // given
+        const Decimal operandValue = 10;
+        var left = new VariableExpression("var"); Left = left.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndFloat()
-        {
-            // given
-            const float operandValue = 10;
-            var right = new VariableExpression("var"); Right = right.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndFloat()
+    {
+        // given
+        const float operandValue = 10;
+        var right = new VariableExpression("var"); Right = right.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithFloatAndVariableExpression()
-        {
-            // given
-            const float operandValue = 10;
-            var left = new VariableExpression("var"); Left = left.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithFloatAndVariableExpression()
+    {
+        // given
+        const float operandValue = 10;
+        var left = new VariableExpression("var"); Left = left.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndDouble()
-        {
-            // given
-            const Double operandValue = 10;
-            var right = new VariableExpression("var"); Right = right.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
-                assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndDouble()
+    {
+        // given
+        const Double operandValue = 10;
+        var right = new VariableExpression("var"); Right = right.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsWithDoubleAndVariableExpression()
-        {
-            // given
-            const Double operandValue = 10;
-            var left = new VariableExpression("var"); Left = left.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(operandValue / right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(operandValue + right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(operandValue - right,
+            assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
-                assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsWithDoubleAndVariableExpression()
+    {
+        // given
+        const Double operandValue = 10;
+        var left = new VariableExpression("var"); Left = left.Expression;
 
-        [Fact]
-        public void ShouldAllowUsingArithmeticOperatorsBetweenVariableExpressions()
-        {
-            // given
-            var left = new VariableExpression("left");
-            Left = left.Expression;
-            var right = new VariableExpression("right");
-            Right = right.Expression;
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
+            assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
+    }
 
-            // then
-            AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);
-            AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / right);
-            AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + right);
-            AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - right);
-        }
+    [Fact]
+    public void ShouldAllowUsingArithmeticOperatorsBetweenVariableExpressions()
+    {
+        // given
+        var left = new VariableExpression("left");
+        Left = left.Expression;
+        var right = new VariableExpression("right");
+        Right = right.Expression;
+
+        // then
+        AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);
+        AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / right);
+        AssertExpressionTypeAndCorrectArguments<AdditionExpression>(left + right);
+        AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - right);
     }
 }

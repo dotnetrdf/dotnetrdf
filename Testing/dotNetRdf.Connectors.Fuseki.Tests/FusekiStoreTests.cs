@@ -25,17 +25,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Xunit;
 
-namespace VDS.RDF.Storage
-{
-    [Collection("RdfServer")]
-    public class FusekiStoreTests : BasePersistentTripleStoreTests
-    {
-        public FusekiStoreTests(RdfServerFixture serverFixture) : base(serverFixture){}
+namespace VDS.RDF.Storage;
 
-        protected override IStorageProvider GetConnection()
-        {
-            return FusekiTests.GetConnection();
-        }
+[Collection("RdfServer")]
+public class FusekiStoreTests : BasePersistentTripleStoreTests
+{
+    public FusekiStoreTests(RdfServerFixture serverFixture) : base(serverFixture){}
+
+    protected override IStorageProvider GetConnection()
+    {
+        return FusekiTests.GetConnection();
     }
 }
 

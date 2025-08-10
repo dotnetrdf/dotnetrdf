@@ -30,147 +30,146 @@ using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Util;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class ModuleImpl : AbstractSPINResource, IModule
 {
-    internal class ModuleImpl : AbstractSPINResource, IModule
+
+
+    public ModuleImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
+    }
 
 
-        public ModuleImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
+    public List<IArgument> getArguments(bool ordered)
+    {
+        var results = new List<IArgument>();
+        IEnumerator<Triple> it = null;
+        //JenaUtil.setGraphReadOptimization(true);
+        try
         {
+            IEnumerable<IResource> classes = getModel().GetAllSuperClasses(this, true);
+            foreach (IResource cls in classes)
+            {
+                it =cls.listProperties(SPIN.PropertyConstraint).GetEnumerator();
+                while (it.MoveNext())
+                {
+                    Triple s = it.Current;
+                    addArgumentFromConstraint(s, results);
+                }
+            }
+        }
+        finally
+        {
+            if (it != null)
+            {
+                it.Dispose();
+            }
+            //JenaUtil.setGraphReadOptimization(false);
         }
 
-
-        public List<IArgument> getArguments(bool ordered)
+        if (ordered)
         {
-            var results = new List<IArgument>();
-            IEnumerator<Triple> it = null;
-            //JenaUtil.setGraphReadOptimization(true);
-            try
+            results.Sort(delegate(IArgument o1, IArgument o2)
             {
-                IEnumerable<IResource> classes = getModel().GetAllSuperClasses(this, true);
-                foreach (IResource cls in classes)
+                IResource p1 = o1.getPredicate();
+                IResource p2 = o2.getPredicate();
+                if (p1 != null && p2 != null)
                 {
-                    it =cls.listProperties(SPIN.PropertyConstraint).GetEnumerator();
-                    while (it.MoveNext())
-                    {
-                        Triple s = it.Current;
-                        addArgumentFromConstraint(s, results);
-                    }
+                    return RDFUtil.uriComparer.Compare(p1.Uri, p2.Uri);
+                }
+                else
+                {
+                    return 0;
                 }
             }
-            finally
-            {
-                if (it != null)
-                {
-                    it.Dispose();
-                }
-                //JenaUtil.setGraphReadOptimization(false);
-            }
-
-            if (ordered)
-            {
-                results.Sort(delegate(IArgument o1, IArgument o2)
-                {
-                    IResource p1 = o1.getPredicate();
-                    IResource p2 = o2.getPredicate();
-                    if (p1 != null && p2 != null)
-                    {
-                        return RDFUtil.uriComparer.Compare(p1.Uri, p2.Uri);
-                    }
-                    else
-                    {
-                        return 0;
-                    }
-                }
-                );
-            }
-
-            return results;
+            );
         }
 
-        /**
-         * 
-         * @param constaint is a statement whose subject is a class, and whose predicate is SPIN.constraint
-         * @param results
-         */
-        private void addArgumentFromConstraint(Triple constraint, List<IArgument> results)
+        return results;
+    }
+
+    /**
+     * 
+     * @param constaint is a statement whose subject is a class, and whose predicate is SPIN.constraint
+     * @param results
+     */
+    private void addArgumentFromConstraint(Triple constraint, List<IArgument> results)
+    {
+        if (constraint.Object is IBlankNode)
         {
-            if (constraint.Object is IBlankNode)
+            // Optimized case to avoid walking up class hierarchy
+            IEnumerator<Triple> types = Resource.Get(constraint.Object, Graph, getModel()).listProperties(RDF.PropertyType).GetEnumerator();
+            while (types.MoveNext())
             {
-                // Optimized case to avoid walking up class hierarchy
-                IEnumerator<Triple> types = Resource.Get(constraint.Object, Graph, getModel()).listProperties(RDF.PropertyType).GetEnumerator();
-                while (types.MoveNext())
+                Triple typeS = types.Current;
+                if (typeS.Object is IUriNode)
                 {
-                    Triple typeS = types.Current;
-                    if (typeS.Object is IUriNode)
+                    if (RDFUtil.sameTerm(SPL.ClassArgument, typeS.Object))
                     {
-                        if (RDFUtil.sameTerm(SPL.ClassArgument, typeS.Object))
+                        results.Add(SPINFactory.asArgument(Resource.Get(constraint.Object, Graph, getModel())));
+                    }
+                    else if (!RDFUtil.sameTerm(SPL.ClassAttribute,typeS.Object))
+                    {
+                        if (Resource.Get(typeS.Object, Graph, getModel()).hasProperty(RDFS.PropertySubClassOf, SPL.ClassArgument))
                         {
                             results.Add(SPINFactory.asArgument(Resource.Get(constraint.Object, Graph, getModel())));
                         }
-                        else if (!RDFUtil.sameTerm(SPL.ClassAttribute,typeS.Object))
-                        {
-                            if (Resource.Get(typeS.Object, Graph, getModel()).hasProperty(RDFS.PropertySubClassOf, SPL.ClassArgument))
-                            {
-                                results.Add(SPINFactory.asArgument(Resource.Get(constraint.Object, Graph, getModel())));
-                            }
-                        }
                     }
                 }
             }
-            else if (constraint.Object is IUriNode && Resource.Get(constraint.Object, Graph, getModel()).hasProperty(RDFS.PropertySubClassOf, SPL.ClassArgument))
+        }
+        else if (constraint.Object is IUriNode && Resource.Get(constraint.Object, Graph, getModel()).hasProperty(RDFS.PropertySubClassOf, SPL.ClassArgument))
+        {
+            results.Add(SPINFactory.asArgument(Resource.Get(constraint.Object, Graph, getModel())));
+        }
+    }
+
+
+    public Dictionary<String, IArgument> getArgumentsMap()
+    {
+        var results = new Dictionary<String, IArgument>();
+        foreach (IArgument argument in getArguments(false))
+        {
+            IResource property = argument.getPredicate();
+            if (property != null)
             {
-                results.Add(SPINFactory.asArgument(Resource.Get(constraint.Object, Graph, getModel())));
+                results[property.Uri.ToString().Replace(SP.BASE_URI, "")] = argument;
             }
         }
+        return results;
+    }
 
 
-        public Dictionary<String, IArgument> getArgumentsMap()
+    public ICommand getBody()
+    {
+        IResource node = null; //ModulesUtil.getBody(this);
+        if (node is IResource)
         {
-            var results = new Dictionary<String, IArgument>();
-            foreach (IArgument argument in getArguments(false))
-            {
-                IResource property = argument.getPredicate();
-                if (property != null)
-                {
-                    results[property.Uri.ToString().Replace(SP.BASE_URI, "")] = argument;
-                }
-            }
-            return results;
+            return SPINFactory.asCommand(node);
         }
-
-
-        public ICommand getBody()
+        else
         {
-            IResource node = null; //ModulesUtil.getBody(this);
-            if (node is IResource)
-            {
-                return SPINFactory.asCommand(node);
-            }
-            else
-            {
-                return null;
-            }
+            return null;
         }
+    }
 
 
-        public new String getComment()
-        {
-            return getString(RDFS.PropertyComment);
-        }
+    public new String getComment()
+    {
+        return getString(RDFS.PropertyComment);
+    }
 
 
-        public bool isAbstract()
-        {
-            return SPINFactory.isAbstract(this);
-        }
+    public bool isAbstract()
+    {
+        return SPINFactory.isAbstract(this);
+    }
 
 
-        override public void Print(ISparqlPrinter p)
-        {
-            // TODO Auto-generated method stub
-        }
+    override public void Print(ISparqlPrinter p)
+    {
+        // TODO Auto-generated method stub
     }
 }

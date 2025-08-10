@@ -25,46 +25,45 @@
 */
 
 using System;
-namespace VDS.RDF.Query.Spin.Progress
+namespace VDS.RDF.Query.Spin.Progress;
+
+/// <summary>
+/// A ProgressMonitor that doesn't "do" anything.
+/// Support for canceling is provided via <code>setCanceled</code>.
+/// </summary>
+/// <author>Holger Knublauch</author>
+internal class NullProgressMonitor : IProgressMonitor
 {
-    /// <summary>
-    /// A ProgressMonitor that doesn't "do" anything.
-    /// Support for canceling is provided via <code>setCanceled</code>.
-    /// </summary>
-    /// <author>Holger Knublauch</author>
-    internal class NullProgressMonitor : IProgressMonitor
+
+    private bool canceled;
+
+    public bool isCanceled()
     {
+        return canceled;
+    }
 
-        private bool canceled;
+    public void beginTask(String label, int totalWork)
+    {
+    }
 
-        public bool isCanceled()
-        {
-            return canceled;
-        }
+    public void done()
+    {
+    }
 
-        public void beginTask(String label, int totalWork)
-        {
-        }
+    public void setCanceled(bool value)
+    {
+        canceled = value;
+    }
 
-        public void done()
-        {
-        }
+    public void setTaskName(String value)
+    {
+    }
 
-        public void setCanceled(bool value)
-        {
-            canceled = value;
-        }
+    public void subTask(String label)
+    {
+    }
 
-        public void setTaskName(String value)
-        {
-        }
-
-        public void subTask(String label)
-        {
-        }
-
-        public void worked(int amount)
-        {
-        }
+    public void worked(int amount)
+    {
     }
 }

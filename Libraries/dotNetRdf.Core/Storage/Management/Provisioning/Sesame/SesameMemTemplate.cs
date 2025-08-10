@@ -26,124 +26,123 @@
 
 using System.ComponentModel;
 
-namespace VDS.RDF.Storage.Management.Provisioning.Sesame
+namespace VDS.RDF.Storage.Management.Provisioning.Sesame;
+
+/// <summary>
+/// Template for creating Sesame memory stores.
+/// </summary>
+/// <remarks>
+/// <para>
+/// This template generates a Sesame repository config graph like the following, depending on exact options the graph may differ:
+/// </para>
+/// <code>
+/// @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
+/// @prefix rep: &lt;http://www.openrdf.org/config/repository#&gt;.
+/// @prefix sr: &lt;http://www.openrdf.org/config/repository/sail#&gt;.
+/// @prefix sail: &lt;http://www.openrdf.org/config/sail#&gt;.
+/// @prefix ms: &lt;http://www.openrdf.org/config/sail/memory#&gt;.
+/// 
+/// [] a rep:Repository ;
+/// rep:repositoryID "{this.ID}" ;
+/// rdfs:label "{this.Label}" ;    
+///    rep:repositoryImpl [
+///       rep:repositoryType "openrdf:SailRepository" ;
+///       sr:sailImpl [
+///          sail:sailType "openrdf:MemoryStore" ;
+///          ms:persist {this.Persist} ;
+///          ms:syncDelay {this.SyncDelay}
+///       ]
+///   ].
+/// </code>
+/// <para>
+/// The placeholders of the form <strong>{this.Property}</strong> represent properties of this class whose values will be inserted into the repository config graph and used to create a new store in Sesame.
+/// </para>
+/// </remarks>
+public class SesameMemTemplate
+    : BaseSesameTemplate
 {
     /// <summary>
-    /// Template for creating Sesame memory stores.
+    /// Creates a new memory store template.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This template generates a Sesame repository config graph like the following, depending on exact options the graph may differ:
-    /// </para>
-    /// <code>
-    /// @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
-    /// @prefix rep: &lt;http://www.openrdf.org/config/repository#&gt;.
-    /// @prefix sr: &lt;http://www.openrdf.org/config/repository/sail#&gt;.
-    /// @prefix sail: &lt;http://www.openrdf.org/config/sail#&gt;.
-    /// @prefix ms: &lt;http://www.openrdf.org/config/sail/memory#&gt;.
-    /// 
-    /// [] a rep:Repository ;
-    /// rep:repositoryID "{this.ID}" ;
-    /// rdfs:label "{this.Label}" ;    
-    ///    rep:repositoryImpl [
-    ///       rep:repositoryType "openrdf:SailRepository" ;
-    ///       sr:sailImpl [
-    ///          sail:sailType "openrdf:MemoryStore" ;
-    ///          ms:persist {this.Persist} ;
-    ///          ms:syncDelay {this.SyncDelay}
-    ///       ]
-    ///   ].
-    /// </code>
-    /// <para>
-    /// The placeholders of the form <strong>{this.Property}</strong> represent properties of this class whose values will be inserted into the repository config graph and used to create a new store in Sesame.
-    /// </para>
-    /// </remarks>
-    public class SesameMemTemplate
-        : BaseSesameTemplate
+    /// <param name="id">Store ID.</param>
+    public SesameMemTemplate(string id)
+        : base(id, "Sesame Memory", "A Sesame memory store is stored fully in-memory and may be persisted to/from disk") 
     {
-        /// <summary>
-        /// Creates a new memory store template.
-        /// </summary>
-        /// <param name="id">Store ID.</param>
-        public SesameMemTemplate(string id)
-            : base(id, "Sesame Memory", "A Sesame memory store is stored fully in-memory and may be persisted to/from disk") 
+        Persist = true;
+        SyncDelay = 0;
+    }
+
+    /// <summary>
+    /// Gets the template graph used to create the store.
+    /// </summary>
+    /// <returns></returns>
+    public override IGraph GetTemplateGraph()
+    {
+        IGraph g = GetBaseTemplateGraph();
+        INode impl = g.CreateBlankNode();
+        g.Assert(ContextNode, g.CreateUriNode("rep:repositoryImpl"), impl);
+        g.Assert(impl, g.CreateUriNode("rep:repositoryType"), g.CreateLiteralNode("openrdf:SailRepository"));
+        INode sailImpl = g.CreateBlankNode();
+        g.Assert(impl, g.CreateUriNode("sr:sailImpl"), sailImpl);
+
+        if (DirectTypeHierarchyInferencing)
         {
-            Persist = true;
-            SyncDelay = 0;
+            INode sailDelegate = g.CreateBlankNode();
+            g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:DirectTypeHierarchyInferencer"));
+            g.Assert(sailImpl, g.CreateUriNode("sail:delegate"), sailDelegate);
+            sailImpl = sailDelegate;
         }
-
-        /// <summary>
-        /// Gets the template graph used to create the store.
-        /// </summary>
-        /// <returns></returns>
-        public override IGraph GetTemplateGraph()
+        if (RdfSchemaInferencing)
         {
-            IGraph g = GetBaseTemplateGraph();
-            INode impl = g.CreateBlankNode();
-            g.Assert(ContextNode, g.CreateUriNode("rep:repositoryImpl"), impl);
-            g.Assert(impl, g.CreateUriNode("rep:repositoryType"), g.CreateLiteralNode("openrdf:SailRepository"));
-            INode sailImpl = g.CreateBlankNode();
-            g.Assert(impl, g.CreateUriNode("sr:sailImpl"), sailImpl);
-
-            if (DirectTypeHierarchyInferencing)
-            {
-                INode sailDelegate = g.CreateBlankNode();
-                g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:DirectTypeHierarchyInferencer"));
-                g.Assert(sailImpl, g.CreateUriNode("sail:delegate"), sailDelegate);
-                sailImpl = sailDelegate;
-            }
-            if (RdfSchemaInferencing)
-            {
-                INode sailDelegate = g.CreateBlankNode();
-                g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:ForwardChainingRDFSInferencer"));
-                g.Assert(sailImpl, g.CreateUriNode("sail:delegate"), sailDelegate);
-                sailImpl = sailDelegate;
-            }
-            g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:MemoryStore"));
-            g.Assert(sailImpl, g.CreateUriNode("ms:persist"), Persist.ToLiteral(g));
-            g.Assert(sailImpl, g.CreateUriNode("ms:syncDelay"), SyncDelay.ToLiteral(g));
-
-            return g;
+            INode sailDelegate = g.CreateBlankNode();
+            g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:ForwardChainingRDFSInferencer"));
+            g.Assert(sailImpl, g.CreateUriNode("sail:delegate"), sailDelegate);
+            sailImpl = sailDelegate;
         }
+        g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:MemoryStore"));
+        g.Assert(sailImpl, g.CreateUriNode("ms:persist"), Persist.ToLiteral(g));
+        g.Assert(sailImpl, g.CreateUriNode("ms:syncDelay"), SyncDelay.ToLiteral(g));
 
-        /// <summary>
-        /// Gets/Sets whether to persist the store.
-        /// </summary>
-        [Category("Sesame Configuration"), Description("Whether the store is persisted"), DefaultValue(true)]
-        public bool Persist
-        {
-            get;
-            set;
-        }
+        return g;
+    }
 
-        /// <summary>
-        /// Gets/Sets the sync delay.
-        /// </summary>
-        [Category("Sesame Configuration"), DisplayName("Sync Delay"), Description("Sets the sync delay for the store"), DefaultValue(0)]
-        public int SyncDelay
-        {
-            get;
-            set;
-        }
+    /// <summary>
+    /// Gets/Sets whether to persist the store.
+    /// </summary>
+    [Category("Sesame Configuration"), Description("Whether the store is persisted"), DefaultValue(true)]
+    public bool Persist
+    {
+        get;
+        set;
+    }
 
-        /// <summary>
-        /// Gets/Sets whether to enable direct type hierarchy inferencing.
-        /// </summary>
-        [Category("Sesame Reasoning"), DisplayName("Direct Type Hierarchy Inference"), Description("Enables/Disables Direct Type Hierarchy Inference"), DefaultValue(false)]
-        public bool DirectTypeHierarchyInferencing
-        {
-            get;
-            set;
-        }
+    /// <summary>
+    /// Gets/Sets the sync delay.
+    /// </summary>
+    [Category("Sesame Configuration"), DisplayName("Sync Delay"), Description("Sets the sync delay for the store"), DefaultValue(0)]
+    public int SyncDelay
+    {
+        get;
+        set;
+    }
 
-        /// <summary>
-        /// Gets/Sets whether to enable RDF Schema Inferencing.
-        /// </summary>
-        [Category("Sesame Reasoning"), DisplayName("RDF Schema Inference"), Description("Enables/Disables RDF Schema inferencing"), DefaultValue(false)]
-        public bool RdfSchemaInferencing
-        {
-            get;
-            set;
-        }
+    /// <summary>
+    /// Gets/Sets whether to enable direct type hierarchy inferencing.
+    /// </summary>
+    [Category("Sesame Reasoning"), DisplayName("Direct Type Hierarchy Inference"), Description("Enables/Disables Direct Type Hierarchy Inference"), DefaultValue(false)]
+    public bool DirectTypeHierarchyInferencing
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Gets/Sets whether to enable RDF Schema Inferencing.
+    /// </summary>
+    [Category("Sesame Reasoning"), DisplayName("RDF Schema Inference"), Description("Enables/Disables RDF Schema inferencing"), DefaultValue(false)]
+    public bool RdfSchemaInferencing
+    {
+        get;
+        set;
     }
 }

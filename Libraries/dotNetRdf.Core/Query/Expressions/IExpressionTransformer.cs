@@ -24,49 +24,48 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions
+namespace VDS.RDF.Query.Expressions;
+
+/// <summary>
+/// An Expression Transformer is a class that can traverse a SPARQL Expression tree and apply transformations to it.
+/// </summary>
+public interface IExpressionTransformer
 {
     /// <summary>
-    /// An Expression Transformer is a class that can traverse a SPARQL Expression tree and apply transformations to it.
+    /// Transforms the expression using this transformer.
     /// </summary>
-    public interface IExpressionTransformer
+    /// <param name="expr">Expression.</param>
+    /// <returns></returns>
+    ISparqlExpression Transform(ISparqlExpression expr);
+}
+
+/// <summary>
+/// Abstract implementation of an Expression Transformer which substitutes primary expressions.
+/// </summary>
+public abstract class PrimaryExpressionSubstituter 
+    : IExpressionTransformer
+{
+    /// <summary>
+    /// Transforms an expression into a form where primary expressions may be substituted.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    /// <returns></returns>
+    public ISparqlExpression Transform(ISparqlExpression expr)
     {
-        /// <summary>
-        /// Transforms the expression using this transformer.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <returns></returns>
-        ISparqlExpression Transform(ISparqlExpression expr);
+        if (expr.Type == SparqlExpressionType.Primary)
+        {
+            return SubstitutePrimaryExpression(expr);
+        }
+        else
+        {
+            return expr.Transform(this);
+        }
     }
 
     /// <summary>
-    /// Abstract implementation of an Expression Transformer which substitutes primary expressions.
+    /// Returns the substitution for a given primary expression.
     /// </summary>
-    public abstract class PrimaryExpressionSubstituter 
-        : IExpressionTransformer
-    {
-        /// <summary>
-        /// Transforms an expression into a form where primary expressions may be substituted.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(ISparqlExpression expr)
-        {
-            if (expr.Type == SparqlExpressionType.Primary)
-            {
-                return SubstitutePrimaryExpression(expr);
-            }
-            else
-            {
-                return expr.Transform(this);
-            }
-        }
-
-        /// <summary>
-        /// Returns the substitution for a given primary expression.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        /// <returns></returns>
-        protected abstract ISparqlExpression SubstitutePrimaryExpression(ISparqlExpression expr);
-    }
+    /// <param name="expr">Expression.</param>
+    /// <returns></returns>
+    protected abstract ISparqlExpression SubstitutePrimaryExpression(ISparqlExpression expr);
 }

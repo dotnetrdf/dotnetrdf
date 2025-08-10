@@ -28,125 +28,124 @@ using System.Collections.Generic;
 using VDS.RDF;
 using Xunit;
 
-namespace VDS.RDF.Dynamic
+namespace VDS.RDF.Dynamic;
+
+public class DynamicSubjectCollectionTTests
 {
-    public class DynamicSubjectCollectionTTests
+    [Fact]
+    public void Add_asserts_with_predicate_object_and_argument_subject()
     {
-        [Fact]
-        public void Add_asserts_with_predicate_object_and_argument_subject()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var g = new Graph();
-            var s = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:s")), g);
-            var o = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:o")), g);
+        var g = new Graph();
+        var s = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:s")), g);
+        var o = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:o")), g);
 
-            o.P.Add(s);
+        o.P.Add(s);
 
-            Assert.Equal(expected, g);
-        }
+        Assert.Equal(expected, g);
+    }
 
-        [Fact]
-        public void Contains_reports_by_predicate_object_and_argument_subject()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Contains_reports_by_predicate_object_and_argument_subject()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 <urn:p> <urn:p> <urn:o> .
 <urn:o> <urn:p> <urn:o> .
 ");
 
-            var s = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:s")), g);
-            var p = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:p")), g);
-            var o = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:o")), g);
+        var s = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:s")), g);
+        var p = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:p")), g);
+        var o = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:o")), g);
 
-            Assert.Contains(s, o.P);
-            Assert.Contains(p, o.P);
-            Assert.Contains(o, o.P);
-        }
+        Assert.True(o.P.Contains(s));
+        Assert.True(o.P.Contains(p));
+        Assert.True(o.P.Contains(o));
+    }
 
-        [Fact]
-        public void Copies_subjects_by_predicate_and_object()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Copies_subjects_by_predicate_and_object()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 <urn:p> <urn:p> <urn:o> .
 <urn:o> <urn:p> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
-            var testO = new Test(o, g);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+        var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
+        var testO = new Test(o, g);
 
-            var subjects = new Test[5]; // +2 for padding on each side
-            testO.P.CopyTo(subjects, 1); // start at the second item at destination
+        var subjects = new Test[5]; // +2 for padding on each side
+        testO.P.CopyTo(subjects, 1); // start at the second item at destination
 
-            Assert.Equal(
-                new[] { null, s, p, o, null },
-                subjects);
-        }
+        Assert.Equal(
+            new[] { null, s, p, o, null },
+            subjects);
+    }
 
-        [Fact]
-        public void Enumerates_subjects_by_predicate_and_object()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
+    [Fact]
+    public void Enumerates_subjects_by_predicate_and_object()
+    {
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:s> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
-            var test = new Test(s, g);
+        var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var test = new Test(s, g);
 
-            var expected = new[] { s }.GetEnumerator();
-            using (var actual = test.P.GetEnumerator())
+        var expected = new[] { s }.GetEnumerator();
+        using (var actual = test.P.GetEnumerator())
+        {
+            while (expected.MoveNext() | actual.MoveNext())
             {
-                while (expected.MoveNext() | actual.MoveNext())
-                {
-                    Assert.Equal(
-                        expected.Current,
-                        actual.Current);
-                }
+                Assert.Equal(
+                    expected.Current,
+                    actual.Current);
             }
         }
+    }
 
-        [Fact]
-        public void Remove_retracts_by_predicate_object_and_argument_subject()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
+    [Fact]
+    public void Remove_retracts_by_predicate_object_and_argument_subject()
+    {
+        var expected = new Graph();
+        expected.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 <urn:p> <urn:p> <urn:o> .
 ");
 
-            var g = new Graph();
-            g.LoadFromString(@"
+        var g = new Graph();
+        g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 <urn:p> <urn:p> <urn:o> .
 <urn:o> <urn:p> <urn:o> .
 ");
 
-            var o = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:o")), g);
+        var o = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:o")), g);
 
-            o.P.Remove(o);
+        o.P.Remove(o);
 
-            Assert.Equal(
-                expected,
-                g);
-        }
+        Assert.Equal(
+            expected,
+            g);
+    }
 
-        internal class Test : DynamicNode
+    internal class Test : DynamicNode
+    {
+        public Test(INode node, IGraph graph)
+            : base(node, graph, new Uri("urn:"))
         {
-            public Test(INode node, IGraph graph)
-                : base(node, graph, new Uri("urn:"))
-            {
-            }
-
-            public ICollection<Test> P => new DynamicSubjectCollection<Test>("p", this);
         }
+
+        public ICollection<Test> P => new DynamicSubjectCollection<Test>("p", this);
     }
 }

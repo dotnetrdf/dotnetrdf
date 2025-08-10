@@ -26,14 +26,13 @@
 
 using System;
 
-namespace VDS.RDF.Query.Spin
-{
-    internal class SpinException : RdfQueryException
-    {
-        public SpinException(String message)
-            : base(message) { }
+namespace VDS.RDF.Query.Spin;
 
-        public SpinException(String message, Exception cause)
-            : base(message, cause) { }
-    }
+internal class SpinException : RdfQueryException
+{
+    public SpinException(String message)
+        : base(message) { }
+
+    public SpinException(String message, Exception cause)
+        : base(message, cause) { }
 }

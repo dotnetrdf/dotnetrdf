@@ -24,63 +24,62 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Expressions.Functions.XPath.String
+namespace VDS.RDF.Query.Expressions.Functions.XPath.String;
+
+/// <summary>
+/// Represents the XPath fn:ends-with() function.
+/// </summary>
+public class EndsWithFunction
+    : BaseBinaryStringFunction
 {
     /// <summary>
-    /// Represents the XPath fn:ends-with() function.
+    /// Creates a new XPath Ends With function.
     /// </summary>
-    public class EndsWithFunction
-        : BaseBinaryStringFunction
+    /// <param name="stringExpr">Expression.</param>
+    /// <param name="suffixExpr">Suffix Expression.</param>
+    public EndsWithFunction(ISparqlExpression stringExpr, ISparqlExpression suffixExpr)
+        : base(stringExpr, suffixExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
+
+
+    /// <inheritdoc />
+    public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
     {
-        /// <summary>
-        /// Creates a new XPath Ends With function.
-        /// </summary>
-        /// <param name="stringExpr">Expression.</param>
-        /// <param name="suffixExpr">Suffix Expression.</param>
-        public EndsWithFunction(ISparqlExpression stringExpr, ISparqlExpression suffixExpr)
-            : base(stringExpr, suffixExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
+        return processor.ProcessEndsWithFunction(this, context, binding);
+    }
 
+    /// <inheritdoc />
+    public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitEndsWithFunction(this);
+    }
 
-        /// <inheritdoc />
-        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the String representation of the function.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EndsWith + ">(" + _expr + "," + _arg + ")";
+    }
+
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public override string Functor
+    {
+        get
         {
-            return processor.ProcessEndsWithFunction(this, context, binding);
+            return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EndsWith;
         }
+    }
 
-        /// <inheritdoc />
-        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitEndsWithFunction(this);
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EndsWith + ">(" + _expr + "," + _arg + ")";
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EndsWith;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new EndsWithFunction(transformer.Transform(_expr), transformer.Transform(_arg));
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public override ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return new EndsWithFunction(transformer.Transform(_expr), transformer.Transform(_arg));
     }
 }

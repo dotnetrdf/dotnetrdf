@@ -29,51 +29,49 @@ using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
-using Xunit.Abstractions;
 
-namespace VDS.RDF.Web
+namespace VDS.RDF.Web;
+
+public class ETagTests
 {
-    public class ETagTests
+    private readonly ITestOutputHelper _output;
+    public ETagTests(ITestOutputHelper output)
     {
-        private readonly ITestOutputHelper _output;
-        public ETagTests(ITestOutputHelper output)
-        {
-            _output = output;
-        }
+        _output = output;
+    }
 
-        [Fact]
-        public void WebETagComputation()
-        {
-            var g = new Graph();
-            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
-            var timer = new Stopwatch();
-            timer.Start();
-            var etag = g.GetETag();
-            timer.Stop();
-            _output.WriteLine("ETag 1 took " + timer.Elapsed + " to calculate");
+    [Fact]
+    public void WebETagComputation()
+    {
+        var g = new Graph();
+        FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
+        var timer = new Stopwatch();
+        timer.Start();
+        var etag = g.GetETag();
+        timer.Stop();
+        _output.WriteLine("ETag 1 took " + timer.Elapsed + " to calculate");
 
-            Assert.False(String.IsNullOrEmpty(etag));
-            Assert.Equal(40, etag.Length);
+        Assert.False(String.IsNullOrEmpty(etag));
+        Assert.Equal(40, etag.Length);
 
-            timer.Reset();
-            timer.Start();
-            var etag2 = g.GetETag();
-            timer.Stop();
-            _output.WriteLine("ETag 2 took " + timer.Elapsed + " to calculate after no graph modifications");
+        timer.Reset();
+        timer.Start();
+        var etag2 = g.GetETag();
+        timer.Stop();
+        _output.WriteLine("ETag 2 took " + timer.Elapsed + " to calculate after no graph modifications");
 
-            Assert.Equal(etag, etag2);
-            Assert.Equal(40, etag2.Length);
+        Assert.Equal(etag, etag2);
+        Assert.Equal(40, etag2.Length);
 
-            g.Retract(g.Triples.First());
-            timer.Reset();
-            timer.Start();
-            var etag3 = g.GetETag();
-            timer.Stop();
-            _output.WriteLine("ETag 3 took " + timer.Elapsed + " to calculate after triple retraction");
+        g.Retract(g.Triples.First());
+        timer.Reset();
+        timer.Start();
+        var etag3 = g.GetETag();
+        timer.Stop();
+        _output.WriteLine("ETag 3 took " + timer.Elapsed + " to calculate after triple retraction");
 
-            Assert.NotEqual(etag, etag3);
-            Assert.NotEqual(etag2, etag3);
-            Assert.Equal(40, etag3.Length);
-        }
+        Assert.NotEqual(etag, etag3);
+        Assert.NotEqual(etag2, etag3);
+        Assert.Equal(40, etag3.Length);
     }
 }

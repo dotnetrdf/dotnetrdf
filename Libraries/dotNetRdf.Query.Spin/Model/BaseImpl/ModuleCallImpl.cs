@@ -24,16 +24,15 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal abstract class ModuleCallImpl : AbstractSPINResource, IModuleCall
 {
-    internal abstract class ModuleCallImpl : AbstractSPINResource, IModuleCall
+
+    public ModuleCallImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
-
-        public ModuleCallImpl(INode node, IGraph graph, SpinProcessor spinModel)
-            : base(node, graph, spinModel)
-        {
-        }
-
-        public abstract IModule getModule();
     }
+
+    public abstract IModule getModule();
 }

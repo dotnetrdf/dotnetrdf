@@ -26,59 +26,58 @@
 
 using System;
 using VDS.RDF.Query.Spin.Util;
-namespace VDS.RDF.Query.Spin.LibraryOntology
+namespace VDS.RDF.Query.Spin.LibraryOntology;
+
+
+/// <summary>
+/// Vocabulary for http://spinrdf.org/spr 
+/// @author Holger Knublauch
+/// </summary>
+internal class SPR
 {
 
-    /// <summary>
-    /// Vocabulary for http://spinrdf.org/spr 
-    /// @author Holger Knublauch
-    /// </summary>
-    internal class SPR
-    {
+    public const String BASE_URI = "http://spinrdf.org/spr";
 
-        public const String BASE_URI = "http://spinrdf.org/spr";
+    public const String NS_URI = BASE_URI + "#";
 
-        public const String NS_URI = BASE_URI + "#";
-
-        public const String PREFIX = "spr";
+    public const String PREFIX = "spr";
 
 
-        public static readonly IUriNode ClassTable = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "Table"));
+    public static readonly IUriNode ClassTable = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "Table"));
 
-        public static readonly IUriNode ClassTableClass = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "TableClass"));
+    public static readonly IUriNode ClassTableClass = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "TableClass"));
 
-        public static readonly IUriNode PropertyCell = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "cell"));
+    public static readonly IUriNode PropertyCell = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "cell"));
 
-        public static readonly IUriNode PropertyCellFunction = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "cellFunction"));
+    public static readonly IUriNode PropertyCellFunction = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "cellFunction"));
 
-        public static readonly IUriNode PropertyColCount = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colCount"));
+    public static readonly IUriNode PropertyColCount = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colCount"));
 
-        public static readonly IUriNode PropertyColCountFunction = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colCountFunction"));
+    public static readonly IUriNode PropertyColCountFunction = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colCountFunction"));
 
-        public static readonly IUriNode PropertyColName = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colName"));
+    public static readonly IUriNode PropertyColName = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colName"));
 
-        public static readonly IUriNode PropertyColNameFunction = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colNameFunction"));
+    public static readonly IUriNode PropertyColNameFunction = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colNameFunction"));
 
-        public static readonly IUriNode PropertyColTypeFunction = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colTypeFunction"));
+    public static readonly IUriNode PropertyColTypeFunction = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colTypeFunction"));
 
-        public static readonly IUriNode PropertyColWidthFunction = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colWidthFunction"));
+    public static readonly IUriNode PropertyColWidthFunction = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colWidthFunction"));
 
-        public static readonly IUriNode PropertyColType = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colType"));
+    public static readonly IUriNode PropertyColType = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colType"));
 
-        public static readonly IUriNode PropertyColWidth = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colWidth"));
+    public static readonly IUriNode PropertyColWidth = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "colWidth"));
 
-        public static readonly IUriNode PropertyHasCell = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "hasCell"));
+    public static readonly IUriNode PropertyHasCell = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "hasCell"));
 
-        public static readonly IUriNode PropertyHasCellFunction = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "hasCellFunction"));
+    public static readonly IUriNode PropertyHasCellFunction = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "hasCellFunction"));
 
-        public static readonly IUriNode PropertyRowCount = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "rowCount"));
+    public static readonly IUriNode PropertyRowCount = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "rowCount"));
 
-        public static readonly IUriNode PropertyRowCountFunction = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "rowCountFunction"));
+    public static readonly IUriNode PropertyRowCountFunction = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "rowCountFunction"));
 
 /*
-    public static bool exists(Model model) {
-    	return model.Contains(SPR.Table, RDF.type, (INode)null);
-    }
+public static bool exists(Model model) {
+	return model.Contains(SPR.Table, RDF.type, (INode)null);
+}
 */
-    }
 }

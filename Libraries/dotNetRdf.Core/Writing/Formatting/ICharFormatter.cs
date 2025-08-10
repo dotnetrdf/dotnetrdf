@@ -26,26 +26,25 @@
 
 using System;
 
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF.Writing.Formatting;
+
+/// <summary>
+/// Interface for Character Formatters.
+/// </summary>
+public interface ICharFormatter
 {
     /// <summary>
-    /// Interface for Character Formatters.
+    /// Formats a Character as a String.
     /// </summary>
-    public interface ICharFormatter
-    {
-        /// <summary>
-        /// Formats a Character as a String.
-        /// </summary>
-        /// <param name="c">Character.</param>
-        /// <returns></returns>
-        [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", true)]
-        string FormatChar(char c);
+    /// <param name="c">Character.</param>
+    /// <returns></returns>
+    [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", true)]
+    string FormatChar(char c);
 
-        /// <summary>
-        /// Formats a sequence of characters as a String.
-        /// </summary>
-        /// <param name="cs">Characters.</param>
-        /// <returns>String.</returns>
-        string FormatChar(char[] cs);
-    }
+    /// <summary>
+    /// Formats a sequence of characters as a String.
+    /// </summary>
+    /// <param name="cs">Characters.</param>
+    /// <returns>String.</returns>
+    string FormatChar(char[] cs);
 }

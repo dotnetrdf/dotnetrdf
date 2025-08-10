@@ -24,31 +24,29 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Parsing.Events
+namespace VDS.RDF.Parsing.Events;
+
+/// <summary>
+/// Interface for parser events.
+/// </summary>
+public interface IEvent
 {
     /// <summary>
-    /// Interface for parser events.
+    /// Gives some Integer representing the Event Type as understood by a specific Parser implementation.
     /// </summary>
-    public interface IEvent
+    int EventType
     {
-        /// <summary>
-        /// Gives some Integer representing the Event Type as understood by a specific Parser implementation.
-        /// </summary>
-        int EventType
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Position Information (if any).
-        /// </summary>
-        /// <remarks>
-        /// Availability of Position Information depends on the how the source document was parsed.
-        /// </remarks>
-        PositionInfo Position
-        {
-            get;
-        }
+        get;
     }
 
+    /// <summary>
+    /// Gets the Position Information (if any).
+    /// </summary>
+    /// <remarks>
+    /// Availability of Position Information depends on the how the source document was parsed.
+    /// </remarks>
+    PositionInfo Position
+    {
+        get;
+    }
 }

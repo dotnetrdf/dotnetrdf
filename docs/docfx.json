@@ -4,7 +4,7 @@
       "src": [
         {
           "files": ["**/*.csproj"],
-          "exclude": [ "**/bin/**", "**/obj/**"],
+          "exclude": [ "dotNetRdf.Query.Pull/**" ],
           "src": "../Libraries"
         }
       ],

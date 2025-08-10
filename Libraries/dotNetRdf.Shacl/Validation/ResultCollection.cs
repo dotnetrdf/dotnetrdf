@@ -29,85 +29,84 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace VDS.RDF.Shacl.Validation
+namespace VDS.RDF.Shacl.Validation;
+
+/// <summary>
+/// Represents a collection of SHACL validation results.
+/// </summary>
+public class ResultCollection : ICollection<Result>
 {
-    /// <summary>
-    /// Represents a collection of SHACL validation results.
-    /// </summary>
-    public class ResultCollection : ICollection<Result>
+    private readonly Report report;
+
+    [DebuggerStepThrough]
+    internal ResultCollection(Report shaclValidationReport)
     {
-        private readonly Report report;
+        report = shaclValidationReport;
+    }
 
-        [DebuggerStepThrough]
-        internal ResultCollection(Report shaclValidationReport)
+    int ICollection<Result>.Count
+    {
+        get
         {
-            report = shaclValidationReport;
+            return Results.Count();
         }
+    }
 
-        int ICollection<Result>.Count
+    bool ICollection<Result>.IsReadOnly
+    {
+        get
         {
-            get
-            {
-                return Results.Count();
-            }
+            return false;
         }
+    }
 
-        bool ICollection<Result>.IsReadOnly
+    private IEnumerable<Result> Results
+    {
+        get
         {
-            get
-            {
-                return false;
-            }
+            return
+                from result in Vocabulary.Result.ObjectsOf(report, report.Graph)
+                select Result.Parse(report.Graph, result);
         }
+    }
 
-        private IEnumerable<Result> Results
-        {
-            get
-            {
-                return
-                    from result in Vocabulary.Result.ObjectsOf(report, report.Graph)
-                    select Result.Parse(report.Graph, result);
-            }
-        }
+    void ICollection<Result>.Add(Result item)
+    {
+        report.Graph.Assert(report, Vocabulary.Result, item);
+    }
 
-        void ICollection<Result>.Add(Result item)
+    void ICollection<Result>.Clear()
+    {
+        foreach (Result result in Results.ToList())
         {
-            report.Graph.Assert(report, Vocabulary.Result, item);
+            ((ICollection<Result>)this).Remove(result);
         }
+    }
 
-        void ICollection<Result>.Clear()
-        {
-            foreach (Result result in Results.ToList())
-            {
-                ((ICollection<Result>)this).Remove(result);
-            }
-        }
+    bool ICollection<Result>.Contains(Result item)
+    {
+        return Results.Contains(item);
+    }
 
-        bool ICollection<Result>.Contains(Result item)
-        {
-            return Results.Contains(item);
-        }
+    void ICollection<Result>.CopyTo(Result[] array, int arrayIndex)
+    {
+        Results.ToList().CopyTo(array, arrayIndex);
+    }
 
-        void ICollection<Result>.CopyTo(Result[] array, int arrayIndex)
-        {
-            Results.ToList().CopyTo(array, arrayIndex);
-        }
+    IEnumerator<Result> IEnumerable<Result>.GetEnumerator()
+    {
+        return Results.GetEnumerator();
+    }
 
-        IEnumerator<Result> IEnumerable<Result>.GetEnumerator()
-        {
-            return Results.GetEnumerator();
-        }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable<Result>)this).GetEnumerator();
+    }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable<Result>)this).GetEnumerator();
-        }
-
-        bool ICollection<Result>.Remove(Result result)
-        {
-            var contained = ((ICollection<Result>)this).Contains(result);
-            report.Graph.Retract(report, Vocabulary.Result, result);
-            return contained;
-        }
+    bool ICollection<Result>.Remove(Result result)
+    {
+        var contained = ((ICollection<Result>)this).Contains(result);
+        report.Graph.Retract(report, Vocabulary.Result, result);
+        return contained;
     }
 }

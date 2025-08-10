@@ -32,122 +32,121 @@ using System.Net.Http;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Configuration
+namespace VDS.RDF.Configuration;
+
+/// <summary>
+/// Factory class for producing SPARQL endpoints from configuration graphs.
+/// </summary>
+public class SparqlClientFactory : IObjectFactory
 {
-    /// <summary>
-    /// Factory class for producing SPARQL endpoints from configuration graphs.
-    /// </summary>
-    public class SparqlClientFactory : IObjectFactory
+    private const string SparqlQueryClient = "VDS.RDF.Query.SparqlQueryClient",
+        SparqlUpdateClient = "VDS.RDF.Update.SparqlUpdateClient",
+        FederatedSparqlQueryClient = "VDS.RDF.Query.FederatedSparqlQueryClient";
+
+    /// <inheritdoc />
+    public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
     {
-        private const string SparqlQueryClient = "VDS.RDF.Query.SparqlQueryClient",
-            SparqlUpdateClient = "VDS.RDF.Update.SparqlUpdateClient",
-            FederatedSparqlQueryClient = "VDS.RDF.Query.FederatedSparqlQueryClient";
-
-        /// <inheritdoc />
-        public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
+        obj = null;
+        HttpClient httpClient = CreateClient(g, objNode);
+        switch (targetType.FullName)
         {
-            obj = null;
-            HttpClient httpClient = CreateClient(g, objNode);
-            switch (targetType.FullName)
-            {
-                case SparqlQueryClient:
-                    var queryEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
-                    if (queryEndpointUri == null) return false;
+            case SparqlQueryClient:
+                var queryEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+                if (queryEndpointUri == null) return false;
 
-                    // Get Default/Named Graphs if specified
-                    IEnumerable<string> defaultGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
-                        select n.ToString();
-                    IEnumerable<string> namedGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
-                        select n.ToString();
-                    var client = new SparqlQueryClient(httpClient, new Uri(queryEndpointUri));
-                    client.DefaultGraphs.AddRange(defaultGraphs);
-                    client.NamedGraphs.AddRange(namedGraphs);
-                    obj = client;
-                    break;
-                case SparqlUpdateClient:
-                    var updateEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
-                    if (updateEndpointUri == null) return false;
-                    var updateClient = new SparqlUpdateClient(httpClient, new Uri(updateEndpointUri));
-                    obj = updateClient;
-                    break;
-                case FederatedSparqlQueryClient:
-                    IEnumerable<INode> endpoints = ConfigurationLoader.GetConfigurationData(g, objNode,
-                            g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)))
-                        .Concat(
-                            ConfigurationLoader.GetConfigurationData(g, objNode,
-                                g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri))));
-                    var federatedClient =
-                        new FederatedSparqlQueryClient(httpClient);
-                    foreach (INode endpointConfigurationNode in endpoints)
-                    {
-                        object temp = ConfigurationLoader.LoadObject(g, endpointConfigurationNode);
-                        switch (temp)
-                        {
-                            case SparqlQueryClient queryClient:
-                                federatedClient.AddEndpoint(queryClient);
-                                break;
-                            case Uri endpointUri:
-                                federatedClient.AddEndpoint(new SparqlQueryClient(httpClient, endpointUri));
-                                break;
-                        }
-                    }
-                    obj = federatedClient;
-                    break;
-            }
-
-            return obj != null;
-        }
-
-        private static HttpClient CreateClient(IGraph g, INode objNode)
-        {
-            ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out var user, out var pwd);
-            INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
-                g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyProxy)));
-            IWebProxy webProxy = null;
-            var useCredentialsForProxy = ConfigurationLoader.GetConfigurationBoolean(g, objNode,
-                g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy)), false);
-
-            if (proxyNode != null)
-            {
-                object proxy = ConfigurationLoader.LoadObject(g, proxyNode);
-                webProxy = proxy as IWebProxy;
-            }
-
-            if ((user != null && pwd != null) || webProxy != null)
-            {
-                var messageHandler = new HttpClientHandler();
-                if (user != null && pwd != null)
+                // Get Default/Named Graphs if specified
+                IEnumerable<string> defaultGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
+                    select n.ToString();
+                IEnumerable<string> namedGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
+                    select n.ToString();
+                var client = new SparqlQueryClient(httpClient, new Uri(queryEndpointUri));
+                client.DefaultGraphs.AddRange(defaultGraphs);
+                client.NamedGraphs.AddRange(namedGraphs);
+                obj = client;
+                break;
+            case SparqlUpdateClient:
+                var updateEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+                if (updateEndpointUri == null) return false;
+                var updateClient = new SparqlUpdateClient(httpClient, new Uri(updateEndpointUri));
+                obj = updateClient;
+                break;
+            case FederatedSparqlQueryClient:
+                IEnumerable<INode> endpoints = ConfigurationLoader.GetConfigurationData(g, objNode,
+                        g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)))
+                    .Concat(
+                        ConfigurationLoader.GetConfigurationData(g, objNode,
+                            g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri))));
+                var federatedClient =
+                    new FederatedSparqlQueryClient(httpClient);
+                foreach (INode endpointConfigurationNode in endpoints)
                 {
-                    var credentials = new NetworkCredential(user, pwd);
-                    if (useCredentialsForProxy)
+                    object temp = ConfigurationLoader.LoadObject(g, endpointConfigurationNode);
+                    switch (temp)
                     {
-                        if (webProxy != null) webProxy.Credentials = credentials;
-                    }
-                    else
-                    {
-                        messageHandler.Credentials = credentials;
+                        case SparqlQueryClient queryClient:
+                            federatedClient.AddEndpoint(queryClient);
+                            break;
+                        case Uri endpointUri:
+                            federatedClient.AddEndpoint(new SparqlQueryClient(httpClient, endpointUri));
+                            break;
                     }
                 }
-
-                if (webProxy != null) messageHandler.Proxy = webProxy;
-                return new HttpClient(messageHandler);
-            }
-
-            return new HttpClient();
+                obj = federatedClient;
+                break;
         }
 
-        /// <inheritdoc/>
-        public bool CanLoadObject(Type t)
+        return obj != null;
+    }
+
+    private static HttpClient CreateClient(IGraph g, INode objNode)
+    {
+        ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out var user, out var pwd);
+        INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
+            g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyProxy)));
+        IWebProxy webProxy = null;
+        var useCredentialsForProxy = ConfigurationLoader.GetConfigurationBoolean(g, objNode,
+            g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy)), false);
+
+        if (proxyNode != null)
         {
-            switch (t.FullName)
+            object proxy = ConfigurationLoader.LoadObject(g, proxyNode);
+            webProxy = proxy as IWebProxy;
+        }
+
+        if ((user != null && pwd != null) || webProxy != null)
+        {
+            var messageHandler = new HttpClientHandler();
+            if (user != null && pwd != null)
             {
-                case SparqlQueryClient:
-                case SparqlUpdateClient:
-                case FederatedSparqlQueryClient:
-                    return true;
-                default:
-                    return false;
+                var credentials = new NetworkCredential(user, pwd);
+                if (useCredentialsForProxy)
+                {
+                    if (webProxy != null) webProxy.Credentials = credentials;
+                }
+                else
+                {
+                    messageHandler.Credentials = credentials;
+                }
             }
+
+            if (webProxy != null) messageHandler.Proxy = webProxy;
+            return new HttpClient(messageHandler);
+        }
+
+        return new HttpClient();
+    }
+
+    /// <inheritdoc/>
+    public bool CanLoadObject(Type t)
+    {
+        switch (t.FullName)
+        {
+            case SparqlQueryClient:
+            case SparqlUpdateClient:
+            case FederatedSparqlQueryClient:
+                return true;
+            default:
+                return false;
         }
     }
 }

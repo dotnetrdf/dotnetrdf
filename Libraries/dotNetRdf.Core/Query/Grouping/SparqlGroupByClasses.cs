@@ -31,261 +31,260 @@ using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Grouping
+namespace VDS.RDF.Query.Grouping;
+
+/// <summary>
+/// Abstract Base Class for classes representing Sparql GROUP BY clauses.
+/// </summary>
+public abstract class BaseGroupBy
+    : ISparqlGroupBy
 {
     /// <summary>
-    /// Abstract Base Class for classes representing Sparql GROUP BY clauses.
+    /// Child Grouping.
     /// </summary>
-    public abstract class BaseGroupBy
-        : ISparqlGroupBy
+    protected ISparqlGroupBy _child = null;
+
+    private string _assignVariable;
+
+    /// <summary>
+    /// Gets/Sets the Child GROUP BY Clause.
+    /// </summary>
+    public ISparqlGroupBy Child
     {
-        /// <summary>
-        /// Child Grouping.
-        /// </summary>
-        protected ISparqlGroupBy _child = null;
-
-        private string _assignVariable;
-
-        /// <summary>
-        /// Gets/Sets the Child GROUP BY Clause.
-        /// </summary>
-        public ISparqlGroupBy Child
+        get
         {
-            get
+            return _child;
+        }
+        set
+        {
+            _child = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets the Variables involved in this Group By.
+    /// </summary>
+    public abstract IEnumerable<string> Variables
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
+    /// </summary>
+    public abstract IEnumerable<string> ProjectableVariables
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the Expression used to GROUP BY.
+    /// </summary>
+    public abstract ISparqlExpression Expression
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets/Sets the Variable that the grouped upon value should be assigned to.
+    /// </summary>
+    public string AssignVariable
+    {
+        get
+        {
+            return _assignVariable;
+        }
+        set
+        {
+            _assignVariable = value;
+        }
+    }
+}
+
+/// <summary>
+/// Represents a Grouping on a given Variable.
+/// </summary>
+public class GroupByVariable
+    : BaseGroupBy
+{
+    private string _name;
+
+    /// <summary>
+    /// Creates a new Group By which groups by a given Variable.
+    /// </summary>
+    /// <param name="name">Variable Name.</param>
+    public GroupByVariable(string name)
+    {
+        _name = name;
+    }
+
+    /// <summary>
+    /// Creates a new Group By which groups by a given Variable and assigns to another variable.
+    /// </summary>
+    /// <param name="name">Variable Name.</param>
+    /// <param name="assignVariable">Assign Variable.</param>
+    public GroupByVariable(string name, string assignVariable)
+        : this(name)
+    {
+        AssignVariable = assignVariable;
+    }
+
+
+    /// <summary>
+    /// Gets the Variables used in the GROUP BY.
+    /// </summary>
+    public override IEnumerable<string> Variables
+    {
+        get 
+        {
+            if (_child == null)
             {
-                return _child;
+                return _name.AsEnumerable<String>();
             }
-            set
+            else
             {
-                _child = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Variables involved in this Group By.
-        /// </summary>
-        public abstract IEnumerable<string> Variables
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
-        /// </summary>
-        public abstract IEnumerable<string> ProjectableVariables
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Expression used to GROUP BY.
-        /// </summary>
-        public abstract ISparqlExpression Expression
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets/Sets the Variable that the grouped upon value should be assigned to.
-        /// </summary>
-        public string AssignVariable
-        {
-            get
-            {
-                return _assignVariable;
-            }
-            set
-            {
-                _assignVariable = value;
+                return _child.Variables.Concat(_name.AsEnumerable<String>());
             }
         }
     }
 
     /// <summary>
-    /// Represents a Grouping on a given Variable.
+    /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
     /// </summary>
-    public class GroupByVariable
-        : BaseGroupBy
+    public override IEnumerable<string> ProjectableVariables
     {
-        private string _name;
-
-        /// <summary>
-        /// Creates a new Group By which groups by a given Variable.
-        /// </summary>
-        /// <param name="name">Variable Name.</param>
-        public GroupByVariable(string name)
+        get
         {
-            _name = name;
-        }
+            var vars = new List<string>();
+            if (AssignVariable != null) vars.Add(AssignVariable);
+            vars.Add(_name);
 
-        /// <summary>
-        /// Creates a new Group By which groups by a given Variable and assigns to another variable.
-        /// </summary>
-        /// <param name="name">Variable Name.</param>
-        /// <param name="assignVariable">Assign Variable.</param>
-        public GroupByVariable(string name, string assignVariable)
-            : this(name)
-        {
-            AssignVariable = assignVariable;
-        }
-
-
-        /// <summary>
-        /// Gets the Variables used in the GROUP BY.
-        /// </summary>
-        public override IEnumerable<string> Variables
-        {
-            get 
-            {
-                if (_child == null)
-                {
-                    return _name.AsEnumerable<String>();
-                }
-                else
-                {
-                    return _child.Variables.Concat(_name.AsEnumerable<String>());
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
-        /// </summary>
-        public override IEnumerable<string> ProjectableVariables
-        {
-            get
-            {
-                var vars = new List<string>();
-                if (AssignVariable != null) vars.Add(AssignVariable);
-                vars.Add(_name);
-
-                if (_child != null) vars.AddRange(_child.ProjectableVariables);
-                return vars.Distinct();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Variable Expression Term used by this GROUP BY.
-        /// </summary>
-        public override ISparqlExpression Expression
-        {
-            get 
-            {
-                return new VariableTerm(_name); 
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the GROUP BY.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
-            if (AssignVariable != null && !AssignVariable.Equals(_name))
-            {
-                output.Append('(');
-            }
-            output.Append('?');
-            output.Append(_name);
-            if (AssignVariable != null && !AssignVariable.Equals(_name))
-            {
-                output.Append(" AS ?");
-                output.Append(AssignVariable);
-                output.Append(')');
-            }
-
-            if (_child != null)
-            {
-                output.Append(' ');
-                output.Append(_child);
-            }
-
-            return output.ToString();
+            if (_child != null) vars.AddRange(_child.ProjectableVariables);
+            return vars.Distinct();
         }
     }
 
     /// <summary>
-    /// Represents a Grouping on a given Expression.
+    /// Gets the Variable Expression Term used by this GROUP BY.
     /// </summary>
-    public class GroupByExpression
-        : BaseGroupBy
+    public override ISparqlExpression Expression
     {
-        private ISparqlExpression _expr;
-
-        /// <summary>
-        /// Creates a new Group By which groups by a given Expression.
-        /// </summary>
-        /// <param name="expr">Expression.</param>
-        public GroupByExpression(ISparqlExpression expr)
+        get 
         {
-            _expr = expr;
+            return new VariableTerm(_name); 
         }
+    }
 
-        /// <summary>
-        /// Gets the Fixed Variables used in the Grouping.
-        /// </summary>
-        public override IEnumerable<string> Variables
+    /// <summary>
+    /// Gets the String representation of the GROUP BY.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        if (AssignVariable != null && !AssignVariable.Equals(_name))
         {
-            get
-            {
-                return _child == null ? _expr.Variables : _expr.Variables.Concat(_child.Variables);
-            }
-        }
-
-        /// <summary>
-        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
-        /// </summary>
-        public override IEnumerable<string> ProjectableVariables
-        {
-            get
-            {
-                var vars = new List<string>();
-                if (AssignVariable != null) vars.Add(AssignVariable);
-                if (_expr is VariableTerm)
-                {
-                    vars.AddRange(_expr.Variables);
-                }
-
-                if (_child != null) vars.AddRange(_child.ProjectableVariables);
-                return vars.Distinct();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Expression used to GROUP BY.
-        /// </summary>
-        public override ISparqlExpression Expression
-        {
-            get 
-            {
-                return _expr;
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the GROUP BY.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var output = new StringBuilder();
             output.Append('(');
-            output.Append(_expr);
-            if (AssignVariable != null)
-            {
-                output.Append(" AS ?");
-                output.Append(AssignVariable);
-            }
-            output.Append(')');
-
-            if (_child != null)
-            {
-                output.Append(' ');
-                output.Append(_child);
-            }
-
-            return output.ToString();
         }
+        output.Append('?');
+        output.Append(_name);
+        if (AssignVariable != null && !AssignVariable.Equals(_name))
+        {
+            output.Append(" AS ?");
+            output.Append(AssignVariable);
+            output.Append(')');
+        }
+
+        if (_child != null)
+        {
+            output.Append(' ');
+            output.Append(_child);
+        }
+
+        return output.ToString();
+    }
+}
+
+/// <summary>
+/// Represents a Grouping on a given Expression.
+/// </summary>
+public class GroupByExpression
+    : BaseGroupBy
+{
+    private ISparqlExpression _expr;
+
+    /// <summary>
+    /// Creates a new Group By which groups by a given Expression.
+    /// </summary>
+    /// <param name="expr">Expression.</param>
+    public GroupByExpression(ISparqlExpression expr)
+    {
+        _expr = expr;
+    }
+
+    /// <summary>
+    /// Gets the Fixed Variables used in the Grouping.
+    /// </summary>
+    public override IEnumerable<string> Variables
+    {
+        get
+        {
+            return _child == null ? _expr.Variables : _expr.Variables.Concat(_child.Variables);
+        }
+    }
+
+    /// <summary>
+    /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
+    /// </summary>
+    public override IEnumerable<string> ProjectableVariables
+    {
+        get
+        {
+            var vars = new List<string>();
+            if (AssignVariable != null) vars.Add(AssignVariable);
+            if (_expr is VariableTerm)
+            {
+                vars.AddRange(_expr.Variables);
+            }
+
+            if (_child != null) vars.AddRange(_child.ProjectableVariables);
+            return vars.Distinct();
+        }
+    }
+
+    /// <summary>
+    /// Gets the Expression used to GROUP BY.
+    /// </summary>
+    public override ISparqlExpression Expression
+    {
+        get 
+        {
+            return _expr;
+        }
+    }
+
+    /// <summary>
+    /// Gets the String representation of the GROUP BY.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        var output = new StringBuilder();
+        output.Append('(');
+        output.Append(_expr);
+        if (AssignVariable != null)
+        {
+            output.Append(" AS ?");
+            output.Append(AssignVariable);
+        }
+        output.Append(')');
+
+        if (_child != null)
+        {
+            output.Append(' ');
+            output.Append(_child);
+        }
+
+        return output.ToString();
     }
 }

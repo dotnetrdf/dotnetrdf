@@ -27,51 +27,50 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+/// <summary>
+/// Interface to be implemented by classes that provide a client for accessing a remote SPARQL query service.
+/// </summary>
+public interface ISparqlQueryClient
 {
     /// <summary>
-    /// Interface to be implemented by classes that provide a client for accessing a remote SPARQL query service.
+    /// Execute a SPARQL query that is intended to return a SPARQL results set.
     /// </summary>
-    public interface ISparqlQueryClient
-    {
-        /// <summary>
-        /// Execute a SPARQL query that is intended to return a SPARQL results set.
-        /// </summary>
-        /// <param name="sparqlQuery">The query to be executed.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>The query results.</returns>
-        /// <remarks>This method should be  used when processing SPARQL SELECT or ASK queries.</remarks>
-        Task<SparqlResultSet> QueryWithResultSetAsync(string sparqlQuery, CancellationToken cancellationToken);
+    /// <param name="sparqlQuery">The query to be executed.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+    /// <returns>The query results.</returns>
+    /// <remarks>This method should be  used when processing SPARQL SELECT or ASK queries.</remarks>
+    Task<SparqlResultSet> QueryWithResultSetAsync(string sparqlQuery, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Execute a SPARQL query that is intended to return a SPARQL results set.
-        /// </summary>
-        /// <param name="sparqlQuery">The query to be executed.</param>
-        /// <param name="resultsHandler">The handler to use when parsing the results returned by the server.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>The query results.</returns>
-        /// <remarks>This method should be  used when processing SPARQL SELECT or ASK queries.</remarks>
-        Task QueryWithResultSetAsync(
-            string sparqlQuery, ISparqlResultsHandler resultsHandler, CancellationToken cancellationToken);
+    /// <summary>
+    /// Execute a SPARQL query that is intended to return a SPARQL results set.
+    /// </summary>
+    /// <param name="sparqlQuery">The query to be executed.</param>
+    /// <param name="resultsHandler">The handler to use when parsing the results returned by the server.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+    /// <returns>The query results.</returns>
+    /// <remarks>This method should be  used when processing SPARQL SELECT or ASK queries.</remarks>
+    Task QueryWithResultSetAsync(
+        string sparqlQuery, ISparqlResultsHandler resultsHandler, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Execute a SPARQL query that is intended to return an RDF Graph.
-        /// </summary>
-        /// <param name="sparqlQuery">The query to be executed.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>An RDF Graph.</returns>
-        /// <remarks>This method should be used when processing SPARQL CONSTRUCT or DESCRIBE queries.</remarks>
-        Task<IGraph> QueryWithResultGraphAsync(string sparqlQuery, CancellationToken cancellationToken);
+    /// <summary>
+    /// Execute a SPARQL query that is intended to return an RDF Graph.
+    /// </summary>
+    /// <param name="sparqlQuery">The query to be executed.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+    /// <returns>An RDF Graph.</returns>
+    /// <remarks>This method should be used when processing SPARQL CONSTRUCT or DESCRIBE queries.</remarks>
+    Task<IGraph> QueryWithResultGraphAsync(string sparqlQuery, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Execute a SPARQL query that is intended to return an RDF Graph.
-        /// </summary>
-        /// <param name="sparqlQuery">The query to be executed.</param>
-        /// <param name="handler">The handler to use when parsing the graph data returned by the server.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>An RDF Graph.</returns>
-        /// <remarks>This method should be used when processing SPARQL CONSTRUCT or DESCRIBE queries.</remarks>
-        Task QueryWithResultGraphAsync(string sparqlQuery, IRdfHandler handler,
-            CancellationToken cancellationToken);
-    }
+    /// <summary>
+    /// Execute a SPARQL query that is intended to return an RDF Graph.
+    /// </summary>
+    /// <param name="sparqlQuery">The query to be executed.</param>
+    /// <param name="handler">The handler to use when parsing the graph data returned by the server.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+    /// <returns>An RDF Graph.</returns>
+    /// <remarks>This method should be used when processing SPARQL CONSTRUCT or DESCRIBE queries.</remarks>
+    Task QueryWithResultGraphAsync(string sparqlQuery, IRdfHandler handler,
+        CancellationToken cancellationToken);
 }

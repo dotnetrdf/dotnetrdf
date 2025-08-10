@@ -29,30 +29,29 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Query.Paths;
 
-namespace VDS.RDF.Shacl.Paths
+namespace VDS.RDF.Shacl.Paths;
+
+internal class Predicate : Path
 {
-    internal class Predicate : Path
+    [DebuggerStepThrough]
+    internal Predicate(INode node, IGraph graph)
+        : base(node, graph)
     {
-        [DebuggerStepThrough]
-        internal Predicate(INode node, IGraph graph)
-            : base(node, graph)
-        {
-        }
+    }
 
-        internal override ISparqlPath SparqlPath
+    internal override ISparqlPath SparqlPath
+    {
+        get
         {
-            get
-            {
-                return new Property(this);
-            }
+            return new Property(this);
         }
+    }
 
-        internal override IEnumerable<Triple> AsTriples
+    internal override IEnumerable<Triple> AsTriples
+    {
+        get
         {
-            get
-            {
-                return Enumerable.Empty<Triple>();
-            }
+            return Enumerable.Empty<Triple>();
         }
     }
 }

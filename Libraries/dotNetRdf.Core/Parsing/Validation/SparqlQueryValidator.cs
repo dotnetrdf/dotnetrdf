@@ -27,71 +27,70 @@
 using System;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Parsing.Validation
+namespace VDS.RDF.Parsing.Validation;
+
+/// <summary>
+/// Syntax Validator for SPARQL Queries.
+/// </summary>
+public class SparqlQueryValidator : ISyntaxValidator
 {
+    private SparqlQueryParser _parser;
+
     /// <summary>
-    /// Syntax Validator for SPARQL Queries.
+    /// Creates a new SPARQL Query Validator.
     /// </summary>
-    public class SparqlQueryValidator : ISyntaxValidator
+    public SparqlQueryValidator()
     {
-        private SparqlQueryParser _parser;
+        _parser = new SparqlQueryParser();
+    }
 
-        /// <summary>
-        /// Creates a new SPARQL Query Validator.
-        /// </summary>
-        public SparqlQueryValidator()
+    /// <summary>
+    /// Creates a new SPARQL Query Validator using the given Syntax.
+    /// </summary>
+    /// <param name="syntax">Query Syntax.</param>
+    public SparqlQueryValidator(SparqlQuerySyntax syntax)
+    {
+        _parser = new SparqlQueryParser(syntax);
+    }
+
+    /// <summary>
+    /// Creates a new SPARQL Query Validator using the given Query Parser.
+    /// </summary>
+    /// <param name="parser">Query Parser.</param>
+    public SparqlQueryValidator(SparqlQueryParser parser)
+    {
+        _parser = parser;
+    }
+
+    /// <summary>
+    /// Validates whether the given Data is a valid SPARQL Query.
+    /// </summary>
+    /// <param name="data">Data.</param>
+    /// <returns></returns>
+    public ISyntaxValidationResults Validate(string data)
+    {
+        string message;
+        try
         {
-            _parser = new SparqlQueryParser();
+            SparqlQuery q = _parser.ParseFromString(data);
+            message = "Valid SPARQL Query";
+
+            return new SyntaxValidationResults(true, message, q);
         }
-
-        /// <summary>
-        /// Creates a new SPARQL Query Validator using the given Syntax.
-        /// </summary>
-        /// <param name="syntax">Query Syntax.</param>
-        public SparqlQueryValidator(SparqlQuerySyntax syntax)
+        catch (RdfParseException parseEx)
         {
-            _parser = new SparqlQueryParser(syntax);
+            message = "Invalid SPARQL Query - Parsing Error - " + parseEx.Message;
+            return new SyntaxValidationResults(message, parseEx);
         }
-
-        /// <summary>
-        /// Creates a new SPARQL Query Validator using the given Query Parser.
-        /// </summary>
-        /// <param name="parser">Query Parser.</param>
-        public SparqlQueryValidator(SparqlQueryParser parser)
+        catch (RdfException rdfEx)
         {
-            _parser = parser;
+            message = "Invalid SPARQL Query - RDF Error - " + rdfEx.Message;
+            return new SyntaxValidationResults(message, rdfEx);
         }
-
-        /// <summary>
-        /// Validates whether the given Data is a valid SPARQL Query.
-        /// </summary>
-        /// <param name="data">Data.</param>
-        /// <returns></returns>
-        public ISyntaxValidationResults Validate(string data)
+        catch (Exception ex)
         {
-            string message;
-            try
-            {
-                SparqlQuery q = _parser.ParseFromString(data);
-                message = "Valid SPARQL Query";
-
-                return new SyntaxValidationResults(true, message, q);
-            }
-            catch (RdfParseException parseEx)
-            {
-                message = "Invalid SPARQL Query - Parsing Error - " + parseEx.Message;
-                return new SyntaxValidationResults(message, parseEx);
-            }
-            catch (RdfException rdfEx)
-            {
-                message = "Invalid SPARQL Query - RDF Error - " + rdfEx.Message;
-                return new SyntaxValidationResults(message, rdfEx);
-            }
-            catch (Exception ex)
-            {
-                message = "Invalid SPARQL Query - Error - " + ex.Message;
-                return new SyntaxValidationResults(message, ex);
-            }
+            message = "Invalid SPARQL Query - Error - " + ex.Message;
+            return new SyntaxValidationResults(message, ex);
         }
     }
 }

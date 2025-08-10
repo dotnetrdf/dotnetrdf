@@ -28,180 +28,179 @@ using System.Collections.Generic;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Paths
+namespace VDS.RDF.Query.Paths;
+
+/// <summary>
+/// Transform Context class that is used in the Path to Algebra Transformation process.
+/// </summary>
+public class PathTransformContext
 {
+    private List<ITriplePattern> _patterns = new List<ITriplePattern>();
+    private int _nextID = 0;
+    private PatternItem _currSubj, _currObj, _start, _end;
+    private bool _top = true;
+
     /// <summary>
-    /// Transform Context class that is used in the Path to Algebra Transformation process.
+    /// Creates a new Path Transform Context.
     /// </summary>
-    public class PathTransformContext
+    /// <param name="start">Subject that is the start of the Path.</param>
+    /// <param name="end">Object that is the end of the Path.</param>
+    public PathTransformContext(PatternItem start, PatternItem end)
     {
-        private List<ITriplePattern> _patterns = new List<ITriplePattern>();
-        private int _nextID = 0;
-        private PatternItem _currSubj, _currObj, _start, _end;
-        private bool _top = true;
+        _start = start;
+        _currSubj = start;
+        _end = end;
+        _currObj = end;
+    }
 
-        /// <summary>
-        /// Creates a new Path Transform Context.
-        /// </summary>
-        /// <param name="start">Subject that is the start of the Path.</param>
-        /// <param name="end">Object that is the end of the Path.</param>
-        public PathTransformContext(PatternItem start, PatternItem end)
+    /// <summary>
+    /// Creates a new Path Transform Context from an existing context.
+    /// </summary>
+    /// <param name="context">Context.</param>
+    public PathTransformContext(PathTransformContext context)
+    {
+        _start = context._start;
+        _end = context._end;
+        _currSubj = context._currSubj;
+        _currObj = context._currObj;
+        _nextID = context._nextID;
+    }
+
+    /// <summary>
+    /// Returns the BGP that the Path Transform produces.
+    /// </summary>
+    /// <returns></returns>
+    public ISparqlAlgebra ToAlgebra()
+    {
+        if (_patterns.Count > 0)
         {
-            _start = start;
-            _currSubj = start;
-            _end = end;
-            _currObj = end;
+            return new Bgp(_patterns);
         }
-
-        /// <summary>
-        /// Creates a new Path Transform Context from an existing context.
-        /// </summary>
-        /// <param name="context">Context.</param>
-        public PathTransformContext(PathTransformContext context)
+        else
         {
-            _start = context._start;
-            _end = context._end;
-            _currSubj = context._currSubj;
-            _currObj = context._currObj;
-            _nextID = context._nextID;
+            throw new RdfQueryException("Unexpected Error: Path Transform returned no Patterns");
         }
+    }
 
-        /// <summary>
-        /// Returns the BGP that the Path Transform produces.
-        /// </summary>
-        /// <returns></returns>
-        public ISparqlAlgebra ToAlgebra()
+    /// <summary>
+    /// Gets the next available temporary variable.
+    /// </summary>
+    /// <returns></returns>
+    public BlankNodePattern GetNextTemporaryVariable()
+    {
+        _nextID++;
+        return new BlankNodePattern("sparql-path-autos-" + _nextID);
+    }
+
+    /// <summary>
+    /// Adds a Triple Pattern to the Path Transform.
+    /// </summary>
+    /// <param name="p">Triple Pattern.</param>
+    public void AddTriplePattern(ITriplePattern p)
+    {
+        _patterns.Add(p);
+    }
+
+    /// <summary>
+    /// Gets the Next ID to be used.
+    /// </summary>
+    public int NextID
+    {
+        get
         {
-            if (_patterns.Count > 0)
-            {
-                return new Bgp(_patterns);
-            }
-            else
-            {
-                throw new RdfQueryException("Unexpected Error: Path Transform returned no Patterns");
-            }
+            return _nextID;
         }
-
-        /// <summary>
-        /// Gets the next available temporary variable.
-        /// </summary>
-        /// <returns></returns>
-        public BlankNodePattern GetNextTemporaryVariable()
+        set
         {
-            _nextID++;
-            return new BlankNodePattern("sparql-path-autos-" + _nextID);
+            _nextID = value;
         }
+    }
 
-        /// <summary>
-        /// Adds a Triple Pattern to the Path Transform.
-        /// </summary>
-        /// <param name="p">Triple Pattern.</param>
-        public void AddTriplePattern(ITriplePattern p)
+    /// <summary>
+    /// Gets/Sets the Subject of the Triple Pattern at this point in the Path Transformation.
+    /// </summary>
+    public PatternItem Subject
+    {
+        get
         {
-            _patterns.Add(p);
+            return _currSubj;
         }
-
-        /// <summary>
-        /// Gets the Next ID to be used.
-        /// </summary>
-        public int NextID
+        set
         {
-            get
-            {
-                return _nextID;
-            }
-            set
-            {
-                _nextID = value;
-            }
+            _currSubj = value;
         }
+    }
 
-        /// <summary>
-        /// Gets/Sets the Subject of the Triple Pattern at this point in the Path Transformation.
-        /// </summary>
-        public PatternItem Subject
+    /// <summary>
+    /// Gets/Sets the Object of the Triple Pattern at this point in the Path Transformation.
+    /// </summary>
+    public PatternItem Object
+    {
+        get
         {
-            get
-            {
-                return _currSubj;
-            }
-            set
-            {
-                _currSubj = value;
-            }
+            return _currObj;
         }
-
-        /// <summary>
-        /// Gets/Sets the Object of the Triple Pattern at this point in the Path Transformation.
-        /// </summary>
-        public PatternItem Object
+        set
         {
-            get
-            {
-                return _currObj;
-            }
-            set
-            {
-                _currObj = value;
-            }
+            _currObj = value;
         }
+    }
 
-        /// <summary>
-        /// Gets/Sets the Object at the end of the Pattern.
-        /// </summary>
-        public PatternItem End
+    /// <summary>
+    /// Gets/Sets the Object at the end of the Pattern.
+    /// </summary>
+    public PatternItem End
+    {
+        get
         {
-            get
-            {
-                return _end;
-            }
-            set
-            {
-                _end = value;
-            }
+            return _end;
         }
-
-        /// <summary>
-        /// Resets the current Object to be the end Object of the Path.
-        /// </summary>
-        public void ResetObject()
+        set
         {
-            _currObj = _end;
+            _end = value;
         }
+    }
 
-        /// <summary>
-        /// Gets/Sets whether this is the Top Level Pattern.
-        /// </summary>
-        public bool Top
+    /// <summary>
+    /// Resets the current Object to be the end Object of the Path.
+    /// </summary>
+    public void ResetObject()
+    {
+        _currObj = _end;
+    }
+
+    /// <summary>
+    /// Gets/Sets whether this is the Top Level Pattern.
+    /// </summary>
+    public bool Top
+    {
+        get
         {
-            get
-            {
-                return _top;
-            }
-            set
-            {
-                _top = value;
-            }
+            return _top;
         }
-
-        /// <summary>
-        /// Creates a Triple Pattern.
-        /// </summary>
-        /// <param name="subj">Subject.</param>
-        /// <param name="path">Property Path.</param>
-        /// <param name="obj">Object.</param>
-        /// <returns></returns>
-        public ITriplePattern GetTriplePattern(PatternItem subj, ISparqlPath path, PatternItem obj)
+        set
         {
-            if (path is Property)
-            {
-                var nodeMatch = new NodeMatchPattern(((Property)path).Predicate, true);
-                return new TriplePattern(subj, nodeMatch, obj);
-            }
-            else
-            {
-                return new PropertyPathPattern(subj, path, obj);
-            }
+            _top = value;
+        }
+    }
+
+    /// <summary>
+    /// Creates a Triple Pattern.
+    /// </summary>
+    /// <param name="subj">Subject.</param>
+    /// <param name="path">Property Path.</param>
+    /// <param name="obj">Object.</param>
+    /// <returns></returns>
+    public ITriplePattern GetTriplePattern(PatternItem subj, ISparqlPath path, PatternItem obj)
+    {
+        if (path is Property)
+        {
+            var nodeMatch = new NodeMatchPattern(((Property)path).Predicate, true);
+            return new TriplePattern(subj, nodeMatch, obj);
+        }
+        else
+        {
+            return new PropertyPathPattern(subj, path, obj);
         }
     }
 }

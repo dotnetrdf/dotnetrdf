@@ -26,86 +26,85 @@
 
 using System;
 
-namespace VDS.RDF.Query.FullText.Indexing
+namespace VDS.RDF.Query.FullText.Indexing;
+
+/// <summary>
+/// Abstract Implementation of a simple Full Text Indexer which simply indexes the full text of literal objects and associates a specific Node with that full text.
+/// </summary>
+public abstract class BaseSimpleFullTextIndexer
+    : BaseFullTextIndexer
 {
     /// <summary>
-    /// Abstract Implementation of a simple Full Text Indexer which simply indexes the full text of literal objects and associates a specific Node with that full text.
+    /// Indexes a Triple.
     /// </summary>
-    public abstract class BaseSimpleFullTextIndexer
-        : BaseFullTextIndexer
+    /// <param name="graphUri">Graph URI.</param>
+    /// <param name="t">Triple.</param>
+    protected override void Index(String graphUri, Triple t)
     {
-        /// <summary>
-        /// Indexes a Triple.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <param name="t">Triple.</param>
-        protected override void Index(String graphUri, Triple t)
+        if (IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Index(String graphUri, Triple t) method");
+
+        if (t.Object.NodeType == NodeType.Literal)
         {
-            if (IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Index(String graphUri, Triple t) method");
-
-            if (t.Object.NodeType == NodeType.Literal)
+            switch (IndexingMode)
             {
-                switch (IndexingMode)
-                {
-                    case IndexingMode.Predicates:
-                        Index(graphUri, t.Predicate, ((ILiteralNode)t.Object).Value);
-                        break;
-                    case IndexingMode.Objects:
-                        Index(graphUri, t.Object, ((ILiteralNode)t.Object).Value);
-                        break;
-                    case IndexingMode.Subjects:
-                        Index(graphUri, t.Subject, ((ILiteralNode)t.Object).Value);
-                        break;
+                case IndexingMode.Predicates:
+                    Index(graphUri, t.Predicate, ((ILiteralNode)t.Object).Value);
+                    break;
+                case IndexingMode.Objects:
+                    Index(graphUri, t.Object, ((ILiteralNode)t.Object).Value);
+                    break;
+                case IndexingMode.Subjects:
+                    Index(graphUri, t.Subject, ((ILiteralNode)t.Object).Value);
+                    break;
 
-                    default:
-                        throw new FullTextQueryException("Indexers deriving from BaseSimpleFullTextIndexer can only use Subjects, Predicates or Objects indexing mode");
-                }
+                default:
+                    throw new FullTextQueryException("Indexers deriving from BaseSimpleFullTextIndexer can only use Subjects, Predicates or Objects indexing mode");
             }
         }
-
-        /// <summary>
-        /// Abstract method that derived classes must implement to do the actual indexing of full text and node pairs.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <param name="n">Node.</param>
-        /// <param name="text">Full Text.</param>
-        protected abstract void Index(String graphUri, INode n, String text);
-
-        /// <summary>
-        /// Unindexes a Triple.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <param name="t">Triple.</param>
-        protected override void Unindex(String graphUri, Triple t)
-        {
-            if (IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Unindex(String graphUri, Triple t) method");
-
-            if (t.Object.NodeType == NodeType.Literal)
-            {
-                switch (IndexingMode)
-                {
-                    case IndexingMode.Predicates:
-                        Unindex(graphUri, t.Predicate, ((ILiteralNode)t.Object).Value);
-                        break;
-                    case IndexingMode.Objects:
-                        Unindex(graphUri, t.Object, ((ILiteralNode)t.Object).Value);
-                        break;
-                    case IndexingMode.Subjects:
-                        Unindex(graphUri, t.Subject, ((ILiteralNode)t.Object).Value);
-                        break;
-
-                    default:
-                        throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer can only use Subjects, Predicates or Objects indexing mode");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Abstract method that derived classes must implement to do the actual unindexing of full text and nodes.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <param name="n">Node to index.</param>
-        /// <param name="text">Full Text to associate with the Node.</param>
-        protected abstract void Unindex(String graphUri, INode n, String text);
     }
+
+    /// <summary>
+    /// Abstract method that derived classes must implement to do the actual indexing of full text and node pairs.
+    /// </summary>
+    /// <param name="graphUri">Graph URI.</param>
+    /// <param name="n">Node.</param>
+    /// <param name="text">Full Text.</param>
+    protected abstract void Index(String graphUri, INode n, String text);
+
+    /// <summary>
+    /// Unindexes a Triple.
+    /// </summary>
+    /// <param name="graphUri">Graph URI.</param>
+    /// <param name="t">Triple.</param>
+    protected override void Unindex(String graphUri, Triple t)
+    {
+        if (IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Unindex(String graphUri, Triple t) method");
+
+        if (t.Object.NodeType == NodeType.Literal)
+        {
+            switch (IndexingMode)
+            {
+                case IndexingMode.Predicates:
+                    Unindex(graphUri, t.Predicate, ((ILiteralNode)t.Object).Value);
+                    break;
+                case IndexingMode.Objects:
+                    Unindex(graphUri, t.Object, ((ILiteralNode)t.Object).Value);
+                    break;
+                case IndexingMode.Subjects:
+                    Unindex(graphUri, t.Subject, ((ILiteralNode)t.Object).Value);
+                    break;
+
+                default:
+                    throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer can only use Subjects, Predicates or Objects indexing mode");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Abstract method that derived classes must implement to do the actual unindexing of full text and nodes.
+    /// </summary>
+    /// <param name="graphUri">Graph URI.</param>
+    /// <param name="n">Node to index.</param>
+    /// <param name="text">Full Text to associate with the Node.</param>
+    protected abstract void Unindex(String graphUri, INode n, String text);
 }

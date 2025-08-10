@@ -24,75 +24,74 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF.Storage;
+
+
+/// <summary>
+/// Structure for representing Triples that are waiting to be Batch written to the Database.
+/// </summary>
+public struct BatchTriple
 {
+    private Triple _t;
+    private string _graphID;
 
     /// <summary>
-    /// Structure for representing Triples that are waiting to be Batch written to the Database.
+    /// Creates a new Batch Triple.
     /// </summary>
-    public struct BatchTriple
+    /// <param name="t">Triple.</param>
+    /// <param name="graphID">Graph ID to store Triple for.</param>
+    public BatchTriple(Triple t, string graphID)
     {
-        private Triple _t;
-        private string _graphID;
+        _t = t;
+        _graphID = graphID;
+    }
 
-        /// <summary>
-        /// Creates a new Batch Triple.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <param name="graphID">Graph ID to store Triple for.</param>
-        public BatchTriple(Triple t, string graphID)
+    /// <summary>
+    /// Triple.
+    /// </summary>
+    public Triple Triple
+    {
+        get
         {
-            _t = t;
-            _graphID = graphID;
+            return _t;
         }
+    }
 
-        /// <summary>
-        /// Triple.
-        /// </summary>
-        public Triple Triple
+    /// <summary>
+    /// Graph ID.
+    /// </summary>
+    public string GraphID
+    {
+        get
         {
-            get
-            {
-                return _t;
-            }
+            return _graphID;
         }
+    }
 
-        /// <summary>
-        /// Graph ID.
-        /// </summary>
-        public string GraphID
+    /// <summary>
+    /// Equality for Batch Triples.
+    /// </summary>
+    /// <param name="obj">Object to test.</param>
+    /// <returns></returns>
+    public override bool Equals(object obj)
+    {
+        if (obj is BatchTriple)
         {
-            get
-            {
-                return _graphID;
-            }
+            var other = (BatchTriple)obj;
+            return _graphID == other.GraphID && _t.Equals(other.Triple);
         }
+        else
+        {
+            return false;
+        }
+    }
 
-        /// <summary>
-        /// Equality for Batch Triples.
-        /// </summary>
-        /// <param name="obj">Object to test.</param>
-        /// <returns></returns>
-        public override bool Equals(object obj)
-        {
-            if (obj is BatchTriple)
-            {
-                var other = (BatchTriple)obj;
-                return _graphID == other.GraphID && _t.Equals(other.Triple);
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Hash Code for Batch Triples.
-        /// </summary>
-        /// <returns></returns>
-        public override int GetHashCode()
-        {
-            return (_graphID + _t.GetHashCode()).GetHashCode();
-        }
+    /// <summary>
+    /// Hash Code for Batch Triples.
+    /// </summary>
+    /// <returns></returns>
+    public override int GetHashCode()
+    {
+        return (_graphID + _t.GetHashCode()).GetHashCode();
     }
 }

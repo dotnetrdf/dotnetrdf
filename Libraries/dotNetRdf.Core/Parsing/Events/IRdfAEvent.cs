@@ -26,37 +26,36 @@
 
 using System.Collections.Generic;
 
-namespace VDS.RDF.Parsing.Events
+namespace VDS.RDF.Parsing.Events;
+
+
+/// <summary>
+/// Interface for RDFa events.
+/// </summary>
+public interface IRdfAEvent : IEvent
 {
+    /// <summary>
+    /// Gets the attributes of the event i.e. the attributes of the source element.
+    /// </summary>
+    IEnumerable<KeyValuePair<string, string>> Attributes
+    {
+        get;
+    }
 
     /// <summary>
-    /// Interface for RDFa events.
+    /// Gets whether the Event has a given attribute.
     /// </summary>
-    public interface IRdfAEvent : IEvent
+    /// <param name="name">Attribute Name.</param>
+    /// <returns></returns>
+    bool HasAttribute(string name);
+
+    /// <summary>
+    /// Gets the value of a specific attribute.
+    /// </summary>
+    /// <param name="name">Attribute Name.</param>
+    /// <returns></returns>
+    string this[string name]
     {
-        /// <summary>
-        /// Gets the attributes of the event i.e. the attributes of the source element.
-        /// </summary>
-        IEnumerable<KeyValuePair<string, string>> Attributes
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets whether the Event has a given attribute.
-        /// </summary>
-        /// <param name="name">Attribute Name.</param>
-        /// <returns></returns>
-        bool HasAttribute(string name);
-
-        /// <summary>
-        /// Gets the value of a specific attribute.
-        /// </summary>
-        /// <param name="name">Attribute Name.</param>
-        /// <returns></returns>
-        string this[string name]
-        {
-            get;
-        }
+        get;
     }
 }

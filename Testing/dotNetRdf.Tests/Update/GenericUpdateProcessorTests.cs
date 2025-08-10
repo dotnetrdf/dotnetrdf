@@ -26,66 +26,64 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
-using Xunit.Abstractions;
 
-namespace VDS.RDF.Update
+namespace VDS.RDF.Update;
+
+
+public abstract class GenericUpdateProcessorTests : BaseTest
 {
+    private readonly SparqlUpdateParser _parser = new SparqlUpdateParser();
 
-    public abstract class GenericUpdateProcessorTests : BaseTest
+    protected GenericUpdateProcessorTests(ITestOutputHelper output) : base(output)
     {
-        private readonly SparqlUpdateParser _parser = new SparqlUpdateParser();
 
-        protected GenericUpdateProcessorTests(ITestOutputHelper output) : base(output)
-        {
+    }
 
-        }
+    protected abstract IStorageProvider GetManager();
 
-        protected abstract IStorageProvider GetManager();
+    [Fact]
+    public void SparqlUpdateGenericCreateAndInsertData()
+    {
+        IStorageProvider manager = GetManager();
+        var processor = new GenericUpdateProcessor(manager);
+        SparqlUpdateCommandSet cmds = _parser.ParseFromString("CREATE SILENT GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
 
-        [SkippableFact]
-        public void SparqlUpdateGenericCreateAndInsertData()
-        {
-            IStorageProvider manager = GetManager();
-            var processor = new GenericUpdateProcessor(manager);
-            SparqlUpdateCommandSet cmds = _parser.ParseFromString("CREATE SILENT GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
+        processor.ProcessCommandSet(cmds);
 
-            processor.ProcessCommandSet(cmds);
+        var g = new Graph();
+        manager.LoadGraph(g, "http://example.org/sparqlUpdate/created");
 
-            var g = new Graph();
-            manager.LoadGraph(g, "http://example.org/sparqlUpdate/created");
+        TestTools.ShowGraph(g);
 
-            TestTools.ShowGraph(g);
+        Assert.False(g.IsEmpty, "[" + manager.ToString() + "] Graph should not be empty");
+        Assert.Equal(1, g.Triples.Count);
+    }
 
-            Assert.False(g.IsEmpty, "[" + manager.ToString() + "] Graph should not be empty");
-            Assert.Equal(1, g.Triples.Count);
-        }
+    [Fact]
+    public void SparqlUpdateGenericCreateInsertDeleteData()
+    {
+        IStorageProvider manager = GetManager();
+        var processor = new GenericUpdateProcessor(manager);
+        SparqlUpdateCommandSet cmds = _parser.ParseFromString("CREATE SILENT GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
 
-        [SkippableFact]
-        public void SparqlUpdateGenericCreateInsertDeleteData()
-        {
-            IStorageProvider manager = GetManager();
-            var processor = new GenericUpdateProcessor(manager);
-            SparqlUpdateCommandSet cmds = _parser.ParseFromString("CREATE SILENT GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
+        processor.ProcessCommandSet(cmds);
 
-            processor.ProcessCommandSet(cmds);
+        var g = new Graph();
+        manager.LoadGraph(g, "http://example.org/sparqlUpdate/created");
 
-            var g = new Graph();
-            manager.LoadGraph(g, "http://example.org/sparqlUpdate/created");
+        TestTools.ShowGraph(g);
 
-            TestTools.ShowGraph(g);
+        Assert.False(g.IsEmpty, "[" + manager.ToString() + "] Graph should not be empty");
+        Assert.Equal(1, g.Triples.Count);
 
-            Assert.False(g.IsEmpty, "[" + manager.ToString() + "] Graph should not be empty");
-            Assert.Equal(1, g.Triples.Count);
+        cmds = _parser.ParseFromString("DELETE DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
+        processor.ProcessCommandSet(cmds);
 
-            cmds = _parser.ParseFromString("DELETE DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
-            processor.ProcessCommandSet(cmds);
+        var h = new Graph();
+        manager.LoadGraph(h, "http://example.org/sparqlUpdate/created");
 
-            var h = new Graph();
-            manager.LoadGraph(h, "http://example.org/sparqlUpdate/created");
+        TestTools.ShowGraph(h);
 
-            TestTools.ShowGraph(h);
-
-            Assert.True(h.IsEmpty, "[" + manager.ToString() + "] Graph should be empty");
-        }
+        Assert.True(h.IsEmpty, "[" + manager.ToString() + "] Graph should be empty");
     }
 }

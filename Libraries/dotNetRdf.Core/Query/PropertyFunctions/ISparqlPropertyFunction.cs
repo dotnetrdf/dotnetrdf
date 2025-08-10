@@ -27,29 +27,28 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Query.PropertyFunctions
+namespace VDS.RDF.Query.PropertyFunctions;
+
+/// <summary>
+/// Interface for SPARQL property functions.
+/// </summary>
+public interface ISparqlPropertyFunction
 {
     /// <summary>
-    /// Interface for SPARQL property functions.
+    /// Gets the Function URI.
     /// </summary>
-    public interface ISparqlPropertyFunction
+    Uri FunctionUri
     {
-        /// <summary>
-        /// Gets the Function URI.
-        /// </summary>
-        Uri FunctionUri
-        {
-            get;
-        }
+        get;
+    }
 
-        
+    
 
-        /// <summary>
-        /// Gets the variables used in the function.
-        /// </summary>
-        IEnumerable<string> Variables
-        {
-            get;
-        }
+    /// <summary>
+    /// Gets the variables used in the function.
+    /// </summary>
+    IEnumerable<string> Variables
+    {
+        get;
     }
 }

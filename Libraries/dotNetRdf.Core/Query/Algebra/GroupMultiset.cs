@@ -26,91 +26,90 @@
 
 using System.Collections.Generic;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Algebra;
+
+/// <summary>
+/// Multiset which represents a Grouping of Sets from another Multiset.
+/// </summary>
+public class GroupMultiset 
+    : Multiset
 {
+    private BaseMultiset _contents;
+    private Dictionary<int, BindingGroup> _groups = new Dictionary<int, BindingGroup>();
+
     /// <summary>
-    /// Multiset which represents a Grouping of Sets from another Multiset.
+    /// Creates a new Group Multiset.
     /// </summary>
-    public class GroupMultiset 
-        : Multiset
+    /// <param name="contents">Multiset which contains the sets that are being grouped.</param>
+    public GroupMultiset(BaseMultiset contents)
     {
-        private BaseMultiset _contents;
-        private Dictionary<int, BindingGroup> _groups = new Dictionary<int, BindingGroup>();
+        _contents = contents;
+    }
 
-        /// <summary>
-        /// Creates a new Group Multiset.
-        /// </summary>
-        /// <param name="contents">Multiset which contains the sets that are being grouped.</param>
-        public GroupMultiset(BaseMultiset contents)
+    /// <summary>
+    /// Gets the enumeration of the Groups in the Multiset.
+    /// </summary>
+    public IEnumerable<BindingGroup> Groups
+    {
+        get
         {
-            _contents = contents;
+            return _groups.Values;
         }
+    }
 
-        /// <summary>
-        /// Gets the enumeration of the Groups in the Multiset.
-        /// </summary>
-        public IEnumerable<BindingGroup> Groups
+    /// <summary>
+    /// Gets the enumeration of the IDs of Sets in the group with the given ID.
+    /// </summary>
+    /// <param name="id">Group ID.</param>
+    /// <returns></returns>
+    public IEnumerable<int> GroupSetIDs(int id)
+    {
+        return _groups[id].BindingIDs;
+    }
+
+    /// <summary>
+    /// Gets the Group with the given ID.
+    /// </summary>
+    /// <param name="id">Group ID.</param>
+    /// <returns></returns>
+    public BindingGroup Group(int id)
+    {
+        return _groups[id];
+    }
+
+    /// <summary>
+    /// Adds a Group to the Multiset.
+    /// </summary>
+    /// <param name="group"></param>
+    public void AddGroup(BindingGroup group)
+    {
+        var s = new Set();
+        foreach (KeyValuePair<string, INode> assignment in group.Assignments)
         {
-            get
-            {
-                return _groups.Values;
-            }
+            s.Add(assignment.Key, assignment.Value);
         }
+        base.Add(s);
+        _groups.Add(s.ID, group);
+    }
 
-        /// <summary>
-        /// Gets the enumeration of the IDs of Sets in the group with the given ID.
-        /// </summary>
-        /// <param name="id">Group ID.</param>
-        /// <returns></returns>
-        public IEnumerable<int> GroupSetIDs(int id)
-        {
-            return _groups[id].BindingIDs;
-        }
+    /// <summary>
+    /// Adds a Set to the Group Multiset.
+    /// </summary>
+    /// <param name="s">Set.</param>
+    /// <exception cref="RdfQueryException">Thrown since this action is invalid on a Group Multiset.</exception>
+    public override void Add(ISet s)
+    {
+        throw new RdfQueryException("Cannot add a Set to a Group Multiset");
+    }
 
-        /// <summary>
-        /// Gets the Group with the given ID.
-        /// </summary>
-        /// <param name="id">Group ID.</param>
-        /// <returns></returns>
-        public BindingGroup Group(int id)
+    /// <summary>
+    /// Gets the Multiset which contains the Sets who are the members of the Groups this Multiset represents.
+    /// </summary>
+    public BaseMultiset Contents
+    {
+        get
         {
-            return _groups[id];
-        }
-
-        /// <summary>
-        /// Adds a Group to the Multiset.
-        /// </summary>
-        /// <param name="group"></param>
-        public void AddGroup(BindingGroup group)
-        {
-            var s = new Set();
-            foreach (KeyValuePair<string, INode> assignment in group.Assignments)
-            {
-                s.Add(assignment.Key, assignment.Value);
-            }
-            base.Add(s);
-            _groups.Add(s.ID, group);
-        }
-
-        /// <summary>
-        /// Adds a Set to the Group Multiset.
-        /// </summary>
-        /// <param name="s">Set.</param>
-        /// <exception cref="RdfQueryException">Thrown since this action is invalid on a Group Multiset.</exception>
-        public override void Add(ISet s)
-        {
-            throw new RdfQueryException("Cannot add a Set to a Group Multiset");
-        }
-
-        /// <summary>
-        /// Gets the Multiset which contains the Sets who are the members of the Groups this Multiset represents.
-        /// </summary>
-        public BaseMultiset Contents
-        {
-            get
-            {
-                return _contents;
-            }
+            return _contents;
         }
     }
 }

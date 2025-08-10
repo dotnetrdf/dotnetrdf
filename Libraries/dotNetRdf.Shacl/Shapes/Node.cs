@@ -26,14 +26,13 @@
 
 using System.Diagnostics;
 
-namespace VDS.RDF.Shacl.Shapes
+namespace VDS.RDF.Shacl.Shapes;
+
+internal class Node : Shape
 {
-    internal class Node : Shape
+    [DebuggerStepThrough]
+    internal Node(INode node, IGraph graph)
+        : base(node, graph)
     {
-        [DebuggerStepThrough]
-        internal Node(INode node, IGraph graph)
-            : base(node, graph)
-        {
-        }
     }
 }

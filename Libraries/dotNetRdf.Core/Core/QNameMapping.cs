@@ -26,63 +26,62 @@
 
 using System;
 
-namespace VDS.RDF
+namespace VDS.RDF;
+
+/// <summary>
+/// Represents a mapping from a URI to a QName.
+/// </summary>
+public class QNameMapping 
 {
     /// <summary>
-    /// Represents a mapping from a URI to a QName.
+    /// Creates a new QName Mapping.
     /// </summary>
-    public class QNameMapping 
+    /// <param name="u">URI.</param>
+    public QNameMapping(string u)
     {
-        /// <summary>
-        /// Creates a new QName Mapping.
-        /// </summary>
-        /// <param name="u">URI.</param>
-        public QNameMapping(string u)
+        Uri = u;
+    }
+
+    /// <summary>
+    /// URI this is a mapping for.
+    /// </summary>
+    public string Uri { get; }
+
+    /// <summary>
+    /// QName this URI maps to.
+    /// </summary>
+    public string QName { get; set; }
+
+    /// <summary>
+    /// Gets the String representation of the URI.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return Uri;
+    }
+
+    /// <summary>
+    /// Checks whether this is equal to another Object.
+    /// </summary>
+    /// <param name="obj">Object to test against.</param>
+    /// <returns></returns>
+    public override bool Equals(object obj)
+    {
+        if (obj == null) return false;
+        if (obj is QNameMapping)
         {
-            Uri = u;
+            return ToString().Equals(obj.ToString(), StringComparison.Ordinal);
         }
-
-        /// <summary>
-        /// URI this is a mapping for.
-        /// </summary>
-        public string Uri { get; }
-
-        /// <summary>
-        /// QName this URI maps to.
-        /// </summary>
-        public string QName { get; set; }
-
-        /// <summary>
-        /// Gets the String representation of the URI.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        else
         {
-            return Uri;
+            return false;
         }
+    }
 
-        /// <summary>
-        /// Checks whether this is equal to another Object.
-        /// </summary>
-        /// <param name="obj">Object to test against.</param>
-        /// <returns></returns>
-        public override bool Equals(object obj)
-        {
-            if (obj == null) return false;
-            if (obj is QNameMapping)
-            {
-                return ToString().Equals(obj.ToString(), StringComparison.Ordinal);
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            return Uri.GetHashCode();
-        }
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        return Uri.GetHashCode();
     }
 }

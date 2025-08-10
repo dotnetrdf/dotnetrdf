@@ -28,47 +28,46 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd;
+
+/// <summary>
+/// Interface for a blank node identifier generator that generates a unique blank node identifier
+/// for a given input identifier.
+/// </summary>
+public interface IBlankNodeGenerator
 {
     /// <summary>
-    /// Interface for a blank node identifier generator that generates a unique blank node identifier
-    /// for a given input identifier.
+    /// Return a unique blank node identifier for the specified input identifier.
     /// </summary>
-    public interface IBlankNodeGenerator
-    {
-        /// <summary>
-        /// Return a unique blank node identifier for the specified input identifier.
-        /// </summary>
-        /// <param name="identifier"></param>
-        /// <returns>A blank node identifier string (using standard Turtle notation for blank node identifiers).</returns>
-        /// <remarks>An implementation MUST guarantee to return the same blank node identifier when called multiple times with the same input identifier.</remarks>
-        string GenerateBlankNodeIdentifier(string identifier);
+    /// <param name="identifier"></param>
+    /// <returns>A blank node identifier string (using standard Turtle notation for blank node identifiers).</returns>
+    /// <remarks>An implementation MUST guarantee to return the same blank node identifier when called multiple times with the same input identifier.</remarks>
+    string GenerateBlankNodeIdentifier(string identifier);
 
 
-        /// <summary>
-        /// Returns the mapped identifier for the specified input identifier, or null if no mapping exists.
-        /// </summary>
-        /// <param name="identifier"></param>
-        /// <returns></returns>
-        public string GetMappedIdentifier(string identifier);
-        
-        /// <summary>
-        /// Returns all input identifiers mapped by this issuer.
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<string> GetMappedIdentifiers();
+    /// <summary>
+    /// Returns the mapped identifier for the specified input identifier, or null if no mapping exists.
+    /// </summary>
+    /// <param name="identifier"></param>
+    /// <returns></returns>
+    public string GetMappedIdentifier(string identifier);
+    
+    /// <summary>
+    /// Returns all input identifiers mapped by this issuer.
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable<string> GetMappedIdentifiers();
 
-        /// <summary>
-        /// Returns a copy of the object.
-        /// </summary>
-        /// <returns></returns>
-        public IBlankNodeGenerator Clone();
+    /// <summary>
+    /// Returns a copy of the object.
+    /// </summary>
+    /// <returns></returns>
+    public IBlankNodeGenerator Clone();
 
 
-        /// <summary>
-        /// Returns the mapping dictionary. Only useful for unit tests.
-        /// </summary>
-        /// <returns></returns>
-        public IDictionary<string, string> GetDictionary();
-    }
+    /// <summary>
+    /// Returns the mapping dictionary. Only useful for unit tests.
+    /// </summary>
+    /// <returns></returns>
+    public IDictionary<string, string> GetDictionary();
 }

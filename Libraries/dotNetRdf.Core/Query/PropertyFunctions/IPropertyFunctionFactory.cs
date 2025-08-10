@@ -27,26 +27,25 @@
 using System;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.PropertyFunctions
+namespace VDS.RDF.Query.PropertyFunctions;
+
+/// <summary>
+/// Interface for Property Function factories.
+/// </summary>
+public interface IPropertyFunctionFactory
 {
     /// <summary>
-    /// Interface for Property Function factories.
+    /// Gets whether the factory considers the given URI as representing a property function.
     /// </summary>
-    public interface IPropertyFunctionFactory
-    {
-        /// <summary>
-        /// Gets whether the factory considers the given URI as representing a property function.
-        /// </summary>
-        /// <param name="u">URI.</param>
-        /// <returns></returns>
-        bool IsPropertyFunction(Uri u);
+    /// <param name="u">URI.</param>
+    /// <returns></returns>
+    bool IsPropertyFunction(Uri u);
 
-        /// <summary>
-        /// Tries to create a property function pattern with the given information.
-        /// </summary>
-        /// <param name="info">Function information.</param>
-        /// <param name="function">Property Function pattern.</param>
-        /// <returns></returns>
-        bool TryCreatePropertyFunction(PropertyFunctionInfo info, out IPropertyFunctionPattern function);
-    }
+    /// <summary>
+    /// Tries to create a property function pattern with the given information.
+    /// </summary>
+    /// <param name="info">Function information.</param>
+    /// <param name="function">Property Function pattern.</param>
+    /// <returns></returns>
+    bool TryCreatePropertyFunction(PropertyFunctionInfo info, out IPropertyFunctionPattern function);
 }

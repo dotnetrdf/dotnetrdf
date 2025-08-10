@@ -28,85 +28,84 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Skos
+namespace VDS.RDF.Skos;
+
+/// <summary>
+/// Represents a wrapper around a SKOS graph providing convenient access to concepts, schemes, and collections.
+/// </summary>
+public class SkosGraph : WrapperGraph
 {
     /// <summary>
-    /// Represents a wrapper around a SKOS graph providing convenient access to concepts, schemes, and collections.
+    /// Creates a new SKOS graph.
     /// </summary>
-    public class SkosGraph : WrapperGraph
+    /// <param name="name">The name to assign to the SKOS graph.</param>
+    public SkosGraph(IRefNode name = null) : base(new Graph(name)) { }
+
+    /// <summary>
+    /// Creates a new SKOS graph for the given graph.
+    /// </summary>
+    /// <param name="g">The graph this SKOS graph wraps.</param>
+    public SkosGraph(IGraph g) : base(g) { }
+
+    /// <summary>
+    /// Gets concept schemes contained in the graph.
+    /// </summary>
+    public IEnumerable<SkosConceptScheme> ConceptSchemes
     {
-        /// <summary>
-        /// Creates a new SKOS graph.
-        /// </summary>
-        /// <param name="name">The name to assign to the SKOS graph.</param>
-        public SkosGraph(IRefNode name = null) : base(new Graph(name)) { }
-
-        /// <summary>
-        /// Creates a new SKOS graph for the given graph.
-        /// </summary>
-        /// <param name="g">The graph this SKOS graph wraps.</param>
-        public SkosGraph(IGraph g) : base(g) { }
-
-        /// <summary>
-        /// Gets concept schemes contained in the graph.
-        /// </summary>
-        public IEnumerable<SkosConceptScheme> ConceptSchemes
+        get
         {
-            get
-            {
-                return 
-                    GetInstances(SkosHelper.ConceptScheme)
-                    .Select(node => new SkosConceptScheme(node, this));
-            }
-        }
-
-        /// <summary>
-        /// Gets concepts contained in the graph.
-        /// </summary>
-        public IEnumerable<SkosConcept> Concepts
-        {
-            get
-            {
-                return 
-                    GetInstances(SkosHelper.Concept)
-                    .Select(node => new SkosConcept(node, this));
-            }
-        }
-
-        /// <summary>
-        /// Gets collections contained in the graph.
-        /// </summary>
-        public IEnumerable<SkosCollection> Collections
-        {
-            get
-            {
-                return 
-                    GetInstances(SkosHelper.Collection)
-                    .Select(node => new SkosCollection(node, this));
-            }
-        }
-
-        /// <summary>
-        /// Gets ordered collections contained in the graph.
-        /// </summary>
-        public IEnumerable<SkosOrderedCollection> OrderedCollections
-        {
-            get
-            {
-                return 
-                    GetInstances(SkosHelper.OrderedCollection)
-                    .Select(node => new SkosOrderedCollection(node, this));
-            }
-        }
-
-        private IEnumerable<INode> GetInstances(string typeUri)
-        {
-            IUriNode a = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            IUriNode type = CreateUriNode(UriFactory.Create(typeUri));
-
             return 
-                GetTriplesWithPredicateObject(a, type)
-                .Select(t => t.Subject);
+                GetInstances(SkosHelper.ConceptScheme)
+                .Select(node => new SkosConceptScheme(node, this));
         }
+    }
+
+    /// <summary>
+    /// Gets concepts contained in the graph.
+    /// </summary>
+    public IEnumerable<SkosConcept> Concepts
+    {
+        get
+        {
+            return 
+                GetInstances(SkosHelper.Concept)
+                .Select(node => new SkosConcept(node, this));
+        }
+    }
+
+    /// <summary>
+    /// Gets collections contained in the graph.
+    /// </summary>
+    public IEnumerable<SkosCollection> Collections
+    {
+        get
+        {
+            return 
+                GetInstances(SkosHelper.Collection)
+                .Select(node => new SkosCollection(node, this));
+        }
+    }
+
+    /// <summary>
+    /// Gets ordered collections contained in the graph.
+    /// </summary>
+    public IEnumerable<SkosOrderedCollection> OrderedCollections
+    {
+        get
+        {
+            return 
+                GetInstances(SkosHelper.OrderedCollection)
+                .Select(node => new SkosOrderedCollection(node, this));
+        }
+    }
+
+    private IEnumerable<INode> GetInstances(string typeUri)
+    {
+        IUriNode a = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+        IUriNode type = CreateUriNode(UriFactory.Create(typeUri));
+
+        return 
+            GetTriplesWithPredicateObject(a, type)
+            .Select(t => t.Subject);
     }
 }

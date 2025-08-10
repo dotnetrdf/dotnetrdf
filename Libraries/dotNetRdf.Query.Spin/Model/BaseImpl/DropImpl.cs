@@ -26,24 +26,23 @@
 
 using VDS.RDF.Query.Spin.SparqlUtil;
 
-namespace VDS.RDF.Query.Spin.Model
+namespace VDS.RDF.Query.Spin.Model;
+
+internal class DropImpl : UpdateImpl, IDrop
 {
-    internal class DropImpl : UpdateImpl, IDrop
+
+    public DropImpl(INode node, IGraph graph, SpinProcessor processor)
+        : base(node, graph, processor)
     {
 
-        public DropImpl(INode node, IGraph graph, SpinProcessor processor)
-            : base(node, graph, processor)
-        {
-
-        }
+    }
 
 
-        override public void printSPINRDF(ISparqlPrinter p)
-        {
-            p.printKeyword("DROP");
-            p.print(" ");
-            printSilent(p);
-            printGraphDefaultNamedOrAll(p);
-        }
+    override public void printSPINRDF(ISparqlPrinter p)
+    {
+        p.printKeyword("DROP");
+        p.print(" ");
+        printSilent(p);
+        printGraphDefaultNamedOrAll(p);
     }
 }

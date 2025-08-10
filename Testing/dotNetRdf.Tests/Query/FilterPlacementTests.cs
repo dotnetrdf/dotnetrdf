@@ -28,35 +28,34 @@ using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query;
+
+
+public class FilterPlacementTests
 {
-
-    public class FilterPlacementTests
+    [Fact]
+    public void SparqlFilterOptionalNotBound()
     {
-        [Fact]
-        public void SparqlFilterOptionalNotBound()
+        var g = new Graph();
+        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+
+        var query = new SparqlParameterizedString();
+        query.Namespaces.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
+        query.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
+        query.CommandText = "SELECT * WHERE { ?property a rdf:Property . OPTIONAL { ?property rdfs:range ?range } FILTER (!BOUND(?range)) }";
+
+        var parser = new SparqlQueryParser();
+        SparqlQuery q = parser.ParseFromString(query);
+        var results = g.ExecuteQuery(q) as SparqlResultSet;
+        if (results != null)
         {
-            var g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            TestTools.ShowResults(results);
 
-            var query = new SparqlParameterizedString();
-            query.Namespaces.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
-            query.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
-            query.CommandText = "SELECT * WHERE { ?property a rdf:Property . OPTIONAL { ?property rdfs:range ?range } FILTER (!BOUND(?range)) }";
-
-            var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
-            var results = g.ExecuteQuery(q) as SparqlResultSet;
-            if (results != null)
-            {
-                TestTools.ShowResults(results);
-
-                Assert.True(results.All(r => !r.HasValue("range") || r["range"] == null), "There should be no values for ?range returned");
-            }
-            else
-            {
-                Assert.True(false, "Did not get a SparqlResultSet as expected");
-            }
+            Assert.True(results.All(r => !r.HasValue("range") || r["range"] == null), "There should be no values for ?range returned");
+        }
+        else
+        {
+            Assert.Fail("Did not get a SparqlResultSet as expected");
         }
     }
 }

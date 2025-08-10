@@ -29,72 +29,72 @@ using VDS.RDF.Shacl.Validation;
 using VDS.RDF.Writing.Formatting;
 using static VDS.RDF.Shacl.TestSuiteData;
 
-namespace VDS.RDF.Shacl
+namespace VDS.RDF.Shacl;
+
+internal static class ImplementationReport
 {
-    internal static class ImplementationReport
+    internal static IGraph Generate()
     {
-        internal static IGraph Generate()
+        var testSubject = GenerateTestSubjectGraph(DateTime.UtcNow);
+
+        foreach (var test in CoreFullTests.Concat(SparqlTests).Select(testNames => testNames.Data).ToList())
         {
-            var testSubject = GenerateTestSubjectGraph(DateTime.UtcNow);
+            ExtractTestData(test, out var testGraph, out var shouldFail, out var dataGraph, out var shapesGraph);
 
-            foreach (var test in CoreFullTests.Concat(SparqlTests).Select(testNames => (string)testNames[0]).ToList())
+            bool conforms()
             {
-                ExtractTestData(test, out var testGraph, out var shouldFail, out var dataGraph, out var shapesGraph);
+                var report = new ShapesGraph(shapesGraph).Validate(dataGraph);
 
-                bool conforms()
-                {
-                    var report = new ShapesGraph(shapesGraph).Validate(dataGraph);
+                var actual = report.Normalised;
+                var expected = Report.Parse(testGraph).Normalised;
 
-                    var actual = report.Normalised;
-                    var expected = Report.Parse(testGraph).Normalised;
+                RemoveUnnecessaryResultMessages(actual, expected);
 
-                    RemoveUnnecessaryResultMessages(actual, expected);
-
-                    return expected.Equals(actual);
-                }
-
-                var success = false;
-                if (shouldFail)
-                {
-                    try
-                    {
-                        conforms();
-                    }
-                    catch
-                    {
-                        success = true;
-                    }
-                }
-                else
-                {
-                    success = conforms();
-                }
-
-                if (success)
-                {
-                    testSubject.Merge(GenerateAssertionGraph(test, "automatic"));
-                }
-                else
-                {
-                    throw new Exception();
-                }
+                return expected.Equals(actual);
             }
 
-            // These test fail validation report graph equality chacking but otherwise pass.
-            testSubject.Merge(GenerateAssertionGraph("core/path/path-complex-002", "semiAuto"));
-            testSubject.Merge(GenerateAssertionGraph("core/property/nodeKind-001", "semiAuto"));
+            var success = false;
+            if (shouldFail)
+            {
+                try
+                {
+                    conforms();
+                }
+                catch
+                {
+                    success = true;
+                }
+            }
+            else
+            {
+                success = conforms();
+            }
 
-            // These tests contain the URI node <a:b> but otherwise pass.
-            testSubject.Merge(GenerateAssertionGraph("core/node/minLength-001", "semiAuto"));
-            testSubject.Merge(GenerateAssertionGraph("core/node/maxLength-001", "semiAuto"));
-
-            return testSubject;
+            if (success)
+            {
+                testSubject.Merge(GenerateAssertionGraph(test, "automatic"));
+            }
+            else
+            {
+                throw new Exception();
+            }
         }
 
-        private static IGraph GenerateTestSubjectGraph(DateTime date)
-        {
-            var g = new Graph();
-            g.LoadFromString($@"
+        // These test fail validation report graph equality chacking but otherwise pass.
+        testSubject.Merge(GenerateAssertionGraph("core/path/path-complex-002", "semiAuto"));
+        testSubject.Merge(GenerateAssertionGraph("core/property/nodeKind-001", "semiAuto"));
+
+        // These tests contain the URI node <a:b> but otherwise pass.
+        testSubject.Merge(GenerateAssertionGraph("core/node/minLength-001", "semiAuto"));
+        testSubject.Merge(GenerateAssertionGraph("core/node/maxLength-001", "semiAuto"));
+
+        return testSubject;
+    }
+
+    private static IGraph GenerateTestSubjectGraph(DateTime date)
+    {
+        var g = new Graph();
+        g.LoadFromString($@"
 @prefix doap: <http://usefulinc.com/ns/doap#> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -110,13 +110,13 @@ namespace VDS.RDF.Shacl
 .
 ");
 
-            return g;
-        }
+        return g;
+    }
 
-        private static IGraph GenerateAssertionGraph(string test, string mode)
-        {
-            var g = new Graph();
-            g.LoadFromString($@"
+    private static IGraph GenerateAssertionGraph(string test, string mode)
+    {
+        var g = new Graph();
+        g.LoadFromString($@"
 @prefix earl: <http://www.w3.org/ns/earl#> .
 
 [
@@ -132,7 +132,6 @@ namespace VDS.RDF.Shacl
 ] .
 ");
 
-            return g;
-        }
+        return g;
     }
 }

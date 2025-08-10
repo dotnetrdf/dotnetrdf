@@ -29,129 +29,128 @@ using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Query.Expressions.Primary
+namespace VDS.RDF.Query.Expressions.Primary;
+
+/// <summary>
+/// Class for representing constant terms.
+/// </summary>
+public class ConstantTerm
+    : ISparqlExpression
 {
+    private static readonly SparqlFormatter Formatter = new SparqlFormatter();
     /// <summary>
-    /// Class for representing constant terms.
+    /// Node this Term represents.
     /// </summary>
-    public class ConstantTerm
-        : ISparqlExpression
+    protected IValuedNode _node;
+
+    /// <summary>
+    /// Creates a new Constant.
+    /// </summary>
+    /// <param name="n">Valued Node.</param>
+    public ConstantTerm(IValuedNode n)
     {
-        private static readonly SparqlFormatter Formatter = new SparqlFormatter();
-        /// <summary>
-        /// Node this Term represents.
-        /// </summary>
-        protected IValuedNode _node;
+        _node = n;
+    }
 
-        /// <summary>
-        /// Creates a new Constant.
-        /// </summary>
-        /// <param name="n">Valued Node.</param>
-        public ConstantTerm(IValuedNode n)
+    /// <summary>
+    /// Creates a new Constant.
+    /// </summary>
+    /// <param name="n">Node.</param>
+    public ConstantTerm(INode n)
+        : this(n.AsValuedNode()) { }
+
+
+    /// <summary>
+    /// Gets the String representation of this Expression.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return Formatter.Format(_node);
+    }
+
+    /// <inheritdoc />
+    public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    {
+        return processor.ProcessConstantTerm(this, context, binding);
+    }
+
+    /// <inheritdoc />
+    public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    {
+        return visitor.VisitConstantTerm(this);
+    }
+
+    /// <summary>
+    /// Gets an Empty Enumerable since a Node Term does not use variables.
+    /// </summary>
+    public IEnumerable<string> Variables
+    {
+        get
         {
-            _node = n;
+            return Enumerable.Empty<string>();
         }
+    }
 
-        /// <summary>
-        /// Creates a new Constant.
-        /// </summary>
-        /// <param name="n">Node.</param>
-        public ConstantTerm(INode n)
-            : this(n.AsValuedNode()) { }
-
-
-        /// <summary>
-        /// Gets the String representation of this Expression.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+    /// <summary>
+    /// Gets the Type of the Expression.
+    /// </summary>
+    public SparqlExpressionType Type
+    {
+        get
         {
-            return Formatter.Format(_node);
+            return SparqlExpressionType.Primary;
         }
+    }
 
-        /// <inheritdoc />
-        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+    /// <summary>
+    /// Gets the Functor of the Expression.
+    /// </summary>
+    public string Functor
+    {
+        get
         {
-            return processor.ProcessConstantTerm(this, context, binding);
+            return string.Empty;
         }
+    }
 
-        /// <inheritdoc />
-        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+    /// <summary>
+    /// Gets the Arguments of the Expression.
+    /// </summary>
+    public IEnumerable<ISparqlExpression> Arguments
+    {
+        get
         {
-            return visitor.VisitConstantTerm(this);
+            return Enumerable.Empty<ISparqlExpression>();
         }
+    }
 
-        /// <summary>
-        /// Gets an Empty Enumerable since a Node Term does not use variables.
-        /// </summary>
-        public IEnumerable<string> Variables
+    /// <summary>
+    /// Gets whether an expression can safely be evaluated in parallel.
+    /// </summary>
+    public virtual bool CanParallelise
+    {
+        get
         {
-            get
-            {
-                return Enumerable.Empty<string>();
-            }
+            return true;
         }
+    }
 
-        /// <summary>
-        /// Gets the Type of the Expression.
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Primary;
-            }
-        }
+    /// <summary>
+    /// Node this Term represents.
+    /// </summary>
+    public IValuedNode Node
+    {
+        get { return _node; }
+    }
 
-        /// <summary>
-        /// Gets the Functor of the Expression.
-        /// </summary>
-        public string Functor
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression.
-        /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
-        {
-            get
-            {
-                return Enumerable.Empty<ISparqlExpression>();
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel.
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Node this Term represents.
-        /// </summary>
-        public IValuedNode Node
-        {
-            get { return _node; }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer.
-        /// </summary>
-        /// <param name="transformer">Expression Transformer.</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return this;
-        }
+    /// <summary>
+    /// Transforms the Expression using the given Transformer.
+    /// </summary>
+    /// <param name="transformer">Expression Transformer.</param>
+    /// <returns></returns>
+    public ISparqlExpression Transform(IExpressionTransformer transformer)
+    {
+        return this;
     }
 }
