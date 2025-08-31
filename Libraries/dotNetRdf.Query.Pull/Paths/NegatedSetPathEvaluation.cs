@@ -39,15 +39,6 @@ internal class NegatedSetPathEvaluation(NegatedSet algebra, PatternItem pathStar
         return GetMatches(stepStart, context, input, activeGraph, cancellationToken);
     }
 
-    public async IAsyncEnumerable<PathResult> EvaluateAsync(PatternItem stepStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
-        [EnumeratorCancellation] CancellationToken cancellationToken)
-    {
-        foreach (PathResult match in GetMatches(stepStart, context, input, activeGraph, cancellationToken).Distinct())
-        {
-            yield return match;
-        }
-    }
-
     IEnumerable<PathResult> GetMatches(PatternItem stepStart, PullEvaluationContext context, ISet? input,
         IRefNode? activeGraph, CancellationToken cancellationToken)
     {

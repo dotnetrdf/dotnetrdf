@@ -39,15 +39,4 @@ internal class PropertyPathEvaluation(INode predicate, PatternItem pathStart, Pa
             .GetTriples(new TriplePattern(stepStart, new NodeMatchPattern(predicate), pathEnd), input, activeGraph)
             .Select(t => new PathResult(t.Subject, t.Object));
     }
-
-    public async IAsyncEnumerable<PathResult> EvaluateAsync(PatternItem stepStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
-        [EnumeratorCancellation] CancellationToken cancellationToken)
-    {
-        foreach (Triple t in context.GetTriples(new TriplePattern(stepStart, new NodeMatchPattern(predicate), pathEnd),
-                     input, activeGraph))
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            yield return new PathResult(t.Subject, t.Object);
-        }
-    }
 }

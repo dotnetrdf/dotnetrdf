@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace VDS.RDF.Query.Pull.Paths;
 
 internal class PathResult
@@ -38,17 +36,17 @@ internal class PathResult
     {
         StartNode = startNode;
         EndNode = endNode;
-        PathNodes = new HashSet<INode>();
+        PathNodes = [];
     }
 
     private PathResult(PathResult previous, INode stepEndNode)
     {
         StartNode = previous.StartNode;
         EndNode = stepEndNode;
-        PathNodes = new HashSet<INode>(previous.PathNodes) { stepEndNode };
+        PathNodes = [..previous.PathNodes, stepEndNode];
     }
 
-    public bool TryExtend(IPatternEvaluationContext context, INode stepEnd, [NotNullWhen(returnValue:true)] out PathResult? extended)
+    public bool TryExtend(IPatternEvaluationContext context, INode stepEnd, out PathResult? extended)
     {
         if (PathNodes.Contains(stepEnd))
         {
@@ -71,7 +69,7 @@ internal class PathResult
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(StartNode, EndNode, PathNodes);
+        return Tools.CombineHashCodes(StartNode.GetHashCode(), EndNode.GetHashCode(), PathNodes.GetHashCode());
     }
 
     public bool Equals(PathResult other)

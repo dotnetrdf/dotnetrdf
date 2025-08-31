@@ -24,35 +24,31 @@
 // </copyright>
 */
 
-using System.Runtime.CompilerServices;
 using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Pull.Algebra;
 
-internal abstract class AbstractAsyncJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs) : IAsyncEvaluation
+internal abstract class AbstractJoinEvaluation(IEnumerableEvaluation lhs, IEnumerableEvaluation rhs) : IEnumerableEvaluation
 {
-    [Obsolete("Replaced by EvaluateBatch()")]
-    public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public IEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph = null, CancellationToken cancellationToken = default)
     {
         var lhsHasMore = true;
         var rhsHasMore = true;
-        IAsyncEnumerator<ISet> lhsResults = lhs.Evaluate(context, input, activeGraph, cancellationToken).GetAsyncEnumerator(cancellationToken);
-        IAsyncEnumerator<ISet> rhsResults = rhs.Evaluate(context, input, activeGraph, cancellationToken).GetAsyncEnumerator(cancellationToken);
-        Task<bool> lhsMoveNext = lhsResults.MoveNextAsync().AsTask();
-        Task<bool> rhsMoveNext = rhsResults.MoveNextAsync().AsTask();
-        IAsyncEnumerable<ISet>? joinEnumerator = null;
+        using IEnumerator<ISet> lhsResults = lhs.Evaluate(context, input, activeGraph, cancellationToken).GetEnumerator();
+        using IEnumerator<ISet> rhsResults = rhs.Evaluate(context, input, activeGraph, cancellationToken).GetEnumerator();
+        IEnumerable<ISet>? joinEnumerator = null;
+        var pullLeft = true;
         do
         {
             if (joinEnumerator != null)
             {
-                await foreach (ISet? joinResult in joinEnumerator)
+                foreach (ISet? joinResult in joinEnumerator)
                 {
                     if (joinResult != null)
                     {
                         yield return joinResult;
                     }
                 }
-
                 joinEnumerator = null;
             }
 
@@ -60,39 +56,38 @@ internal abstract class AbstractAsyncJoinEvaluation(IAsyncEvaluation lhs, IAsync
             {
                 if (rhsHasMore)
                 {
-                    var completed = Task.WaitAny(lhsMoveNext, rhsMoveNext);
-                    if (completed == 0)
+                    if (pullLeft)
                     {
-                        lhsHasMore = lhsMoveNext.Result;
-                        if (lhsHasMore)
+                        lhsHasMore = lhsResults.MoveNext();
+                        if (lhsHasMore && lhsResults.Current != null)
                         {
                             foreach (ISet p in ProcessLhs(context, lhsResults.Current, activeGraph, lhsHasMore, rhsHasMore))
                             {
                                 yield return p;
                             }
-
-                            lhsMoveNext = lhsResults.MoveNextAsync().AsTask();
                         }
                         else
                         {
                             IEnumerable<ISet>? moreResults =  OnLhsDone(context);
                             if (moreResults != null)
                             {
-                                foreach (ISet r in moreResults) { yield return r; }
+                                foreach (ISet r in moreResults)
+                                {
+                                    yield return r;
+                                }
                             }
                         }
+                        pullLeft = false;
                     }
                     else
                     {
-                        rhsHasMore = rhsMoveNext.Result;
-                        if (rhsHasMore)
+                        rhsHasMore = rhsResults.MoveNext();
+                        if (rhsHasMore && rhsResults.Current != null )
                         {
                             foreach (ISet p in ProcessRhs(context, rhsResults.Current, activeGraph, lhsHasMore, rhsHasMore))
                             {
                                 yield return p;
                             }
-
-                            rhsMoveNext = rhsResults.MoveNextAsync().AsTask();
                         }
                         else
                         {
@@ -102,19 +97,18 @@ internal abstract class AbstractAsyncJoinEvaluation(IAsyncEvaluation lhs, IAsync
                                 foreach (ISet r in moreResults) { yield return r; }
                             }
                         }
+                        pullLeft = true;
                     }
                 }
                 else
                 {
-                    lhsHasMore = await lhsMoveNext;
-                    if (lhsHasMore)
+                    lhsHasMore = lhsResults.MoveNext();
+                    if (lhsHasMore && lhsResults.Current != null)
                     {
                         foreach (ISet p in ProcessLhs(context, lhsResults.Current, activeGraph, lhsHasMore, rhsHasMore))
                         {
                             yield return p;
                         }
-
-                        lhsMoveNext = lhsResults.MoveNextAsync().AsTask();
                     }
                     else
                     {
@@ -128,15 +122,13 @@ internal abstract class AbstractAsyncJoinEvaluation(IAsyncEvaluation lhs, IAsync
             }
             else if (rhsHasMore)
             {
-                rhsHasMore = await rhsMoveNext;
-                if (rhsHasMore)
+                rhsHasMore = rhsResults.MoveNext();
+                if (rhsHasMore && rhsResults.Current != null)
                 {
                     foreach (ISet p in ProcessRhs(context, rhsResults.Current, activeGraph, lhsHasMore, rhsHasMore))
                     {
                         yield return p;
                     }
-
-                    rhsMoveNext = rhsResults.MoveNextAsync().AsTask();
                 }
                 else
                 {
@@ -150,117 +142,9 @@ internal abstract class AbstractAsyncJoinEvaluation(IAsyncEvaluation lhs, IAsync
         } while (lhsHasMore || rhsHasMore);
     }
 
-    public async IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(
-        PullEvaluationContext context,
-        IEnumerable<ISet?> input,
-        IRefNode? activeGraph = null,
-        [EnumeratorCancellation]
-        CancellationToken cancellationToken = default)
-    {
-        var lhsHasMore = true;
-        var rhsHasMore = true;
-        IList<ISet?> inputBatch = input.ToList();
-        IAsyncEnumerator<IEnumerable<ISet>> lhsBatches = lhs.EvaluateBatch(context, inputBatch, activeGraph, cancellationToken).GetAsyncEnumerator(cancellationToken);
-        IAsyncEnumerator<IEnumerable<ISet>> rhsBatches = rhs.EvaluateBatch(context, inputBatch, activeGraph, cancellationToken).GetAsyncEnumerator(cancellationToken);
-        Task<bool> lhsMoveNext = lhsBatches.MoveNextAsync().AsTask();
-        Task<bool> rhsMoveNext = rhsBatches.MoveNextAsync().AsTask();
-        do
-        {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                break;
-            }
-            if (lhsHasMore)
-            {
-                if (rhsHasMore)
-                {
-                    var completed = Task.WaitAny(lhsMoveNext, rhsMoveNext);
-                    if (completed == 0)
-                    {
-                        lhsHasMore = lhsMoveNext.Result;
-                        if (lhsHasMore)
-                        {
-                            yield return ProcessLhs(context, lhsBatches.Current, activeGraph, lhsHasMore, rhsHasMore);
-                            lhsMoveNext = lhsBatches.MoveNextAsync().AsTask();
-                        }
-                        else
-                        {
-                            IEnumerable<ISet>? moreResults = OnLhsDone(context);
-                            if (moreResults != null)
-                            {
-                                yield return moreResults;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        rhsHasMore = rhsMoveNext.Result;
-                        if (rhsHasMore)
-                        {
-                            yield return ProcessRhs(context, rhsBatches.Current, activeGraph, lhsHasMore, rhsHasMore);
-                            rhsMoveNext = rhsBatches.MoveNextAsync().AsTask();
-                        }
-                        else
-                        {
-                            IEnumerable<ISet>? moreResults = OnRhsDone(context);
-                            if (moreResults != null)
-                            {
-                                yield return moreResults;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    lhsHasMore = await lhsMoveNext;
-                    if (lhsHasMore)
-                    {
-                        yield return ProcessLhs(context, lhsBatches.Current, activeGraph, lhsHasMore, rhsHasMore);
-                        lhsMoveNext = lhsBatches.MoveNextAsync().AsTask();
-                    }
-                    else
-                    {
-                        IEnumerable<ISet>? moreResults = OnLhsDone(context);
-                        if (moreResults != null)
-                        {
-                            yield return moreResults;
-                        }
-                    }
-                }
-            } else if (rhsHasMore)
-            {
-                rhsHasMore = await rhsMoveNext;
-                if (rhsHasMore)
-                {
-                    yield return ProcessRhs(context, rhsBatches.Current, activeGraph, lhsHasMore, rhsHasMore);
-                    rhsMoveNext = rhsBatches.MoveNextAsync().AsTask();
-                }
-                else
-                {
-                    IEnumerable<ISet>? moreResults = OnRhsDone(context);
-                    if (moreResults != null)
-                    {
-                        yield return moreResults;
-                    }
-                }
-            }
-        } while(lhsHasMore || rhsHasMore);
-    }
 
     protected abstract IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhSolution, IRefNode? activeGraph, bool lhsHaMore, bool rhsHaMore);
     protected abstract IEnumerable<ISet> ProcessRhs(PullEvaluationContext context, ISet rhSolution, IRefNode? activeGraph, bool lhsHaMore, bool rhsHaMore);
     protected abstract IEnumerable<ISet>? OnLhsDone(PullEvaluationContext context);
     protected abstract IEnumerable<ISet>? OnRhsDone(PullEvaluationContext context);
-
-    protected virtual IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, IEnumerable<ISet> batch,
-        IRefNode? activeGraph, bool lhsHaMore, bool rhsHaMore)
-    {
-        return batch.SelectMany(s=>ProcessLhs(context, s, activeGraph, lhsHaMore, rhsHaMore));
-    }
-
-    protected virtual IEnumerable<ISet> ProcessRhs(PullEvaluationContext context, IEnumerable<ISet> batch,
-        IRefNode? activeGraph, bool lhsHaMore, bool rhsHaMore)
-    {
-        return batch.SelectMany(s=>ProcessRhs(context, s, activeGraph, lhsHaMore, rhsHaMore));
-    }
 }

@@ -30,14 +30,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Pull.Paths;
 
 internal class InversePathEvaluation(IPathEvaluation inner, PatternItem pathStart, PatternItem pathEnd) : IPathEvaluation
-{
-    public IAsyncEnumerable<PathResult> EvaluateAsync(PatternItem stepStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
-        CancellationToken cancellationToken)
-    {
-        return inner.EvaluateAsync(pathEnd, context, input, activeGraph, cancellationToken)
-            .Select(r => new PathResult(r.EndNode, r.StartNode));
-    }
-
+{ 
     IEnumerable<PathResult> IPathEvaluation.Evaluate(PatternItem stepStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         CancellationToken cancellationToken)
     {

@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <AssemblyTitle>dotNetRDF Asynchronous Pull Evaluation SPARQL Engine</AssemblyTitle>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>VDS.RDF.Query.PullAsync</RootNamespace>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <PackageId>dotNetRdf.Query.PullAsync</PackageId>
+        <Title>dotNetRDF EXPERIMENTAL Asynchronous Pull Evaluation SPARQL Engine</Title>
+        <Description>Provides an alterante SPARQL query engine which uses asynchronous pull-based evaluation. This package is experimental and may be signficantly altered or even withdrawn in a future dotNetRDF release.</Description>
+        <PackageTags>RDF;SPARQL;Query</PackageTags>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="../../README.md" Pack="true" PackagePath="/" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\dotNetRdf.Core\dotNetRdf.Core.csproj" />
+      <ProjectReference Include="..\dotNetRdf.Query.Pull\dotNetRdf.Query.Pull.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="System.Interactive.Async" />
+      <PackageReference Include="System.Linq.Async" />
+      <PackageReference Include="System.Threading.Channels" />
+    </ItemGroup>
+
+</Project>

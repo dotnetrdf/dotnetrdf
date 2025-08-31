@@ -40,12 +40,12 @@ public class AlgebraEvaluationTests
     }
 
     [Fact]
-    public async Task SingleTriplePatternMatch()
+    public void SingleTriplePatternMatch()
     {
         var algebra = new Bgp(new TriplePattern(new NodeMatchPattern(_alice), new NodeMatchPattern(_foafKnows), new VariablePattern("x")));
         var p = new PullQueryProcessor(_dataset);
         var results = new List<ISet>();
-        await foreach (ISet result in p.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
+        foreach (ISet result in p.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
         {
             results.Add(result);
         }
@@ -53,7 +53,7 @@ public class AlgebraEvaluationTests
         Assert.Single(results);
     }
     [Fact]
-    public async Task SingleVarTriplePatternJoin()
+    public void SingleVarTriplePatternJoin()
     {
         var algebra = new Bgp(new[]
         {
@@ -68,7 +68,7 @@ public class AlgebraEvaluationTests
         });
         var processor = new PullQueryProcessor(_dataset);
         var results = new List<ISet>();
-        await foreach (ISet result in processor.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
+        foreach (ISet result in processor.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
         {
             results.Add(result);
         }
@@ -79,7 +79,7 @@ public class AlgebraEvaluationTests
     }
 
     [Fact]
-    public async Task SingleVarTriplePatternExtend()
+    public void SingleVarTriplePatternExtend()
     {
         var algebra = new Bgp(new[]
         {
@@ -98,7 +98,7 @@ public class AlgebraEvaluationTests
         });
         var processor = new PullQueryProcessor(_dataset);
         var results = new List<ISet>();
-        await foreach (ISet result in processor.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
+        foreach (ISet result in processor.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
         {
             results.Add(result);
         }
@@ -110,7 +110,7 @@ public class AlgebraEvaluationTests
     }
 
     [Fact]
-    public async Task TestOptional()
+    public void TestOptional()
     {
         var algebra = new LeftJoin(
             new Bgp(
@@ -127,7 +127,7 @@ public class AlgebraEvaluationTests
                     new VariablePattern("xname")))
         );
         var processor =  new PullQueryProcessor(_dataset);
-        IList<ISet> results = await processor.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken).ToListAsync(cancellationToken: TestContext.Current.CancellationToken);
+        IList<ISet> results = processor.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken).ToList();
         Assert.Equal(2, results.Count);
         var expectResult1 = new Set();
         expectResult1.Add("x", _carol);

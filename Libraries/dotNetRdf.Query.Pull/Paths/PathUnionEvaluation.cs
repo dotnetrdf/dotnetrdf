@@ -38,14 +38,5 @@ internal class PathUnionEvaluation(IPathEvaluation lhs, IPathEvaluation rhs) : I
         return lhs.Evaluate(stepStart, context, input, activeGraph, cancellationToken)
             .Concat(rhs.Evaluate(stepStart, context, input, activeGraph, cancellationToken));
     }
-
-    public IAsyncEnumerable<PathResult> EvaluateAsync(PatternItem stepStart, PullEvaluationContext context, ISet? input,
-        IRefNode? activeGraph,
-        CancellationToken cancellationToken)
-    {
-        return AsyncEnumerableEx.Merge(
-            lhs.EvaluateAsync(stepStart, context, input, activeGraph, cancellationToken),
-            rhs.EvaluateAsync(stepStart, context, input, activeGraph, cancellationToken));
-    }
 }
  

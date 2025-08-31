@@ -28,6 +28,6 @@
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' != 'net472' ">
-        <ProjectReference Include="..\..\Libraries\dotNetRdf.Query.Pull\dotNetRdf.Query.Pull.csproj" />
+        <ProjectReference Include="..\..\Libraries\dotNetRdf.Query.PullAsync\dotNetRdf.Query.PullAsync.csproj" />
     </ItemGroup>
 </Project>

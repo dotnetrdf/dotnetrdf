@@ -7,8 +7,4 @@ internal interface IPathEvaluation
 {
     internal IEnumerable<PathResult> Evaluate(PatternItem stepStart, PullEvaluationContext context, ISet? input,
         IRefNode? activeGraph, CancellationToken cancellationToken);
-
-    internal IAsyncEnumerable<PathResult> EvaluateAsync(PatternItem stepStart, PullEvaluationContext context,
-        ISet? input,
-        IRefNode? activeGraph, CancellationToken cancellationToken);
 }

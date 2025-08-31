@@ -31,7 +31,7 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Pull;
 
-internal class PullEvaluationContext : IPatternEvaluationContext
+public class PullEvaluationContext : IPatternEvaluationContext
 {
     internal readonly BaseTripleCollection _defaultGraph;
     private readonly IDictionary<IRefNode, BaseTripleCollection> _namedGraphs;
@@ -42,7 +42,7 @@ internal class PullEvaluationContext : IPatternEvaluationContext
 
     public SparqlOrderingComparer OrderingComparer { get; private set; }
     internal IEnumerable<IRefNode> NamedGraphNames => _namedGraphs.Keys;
-    public VariableFactory AutoVarFactory { get; private set; }
+    internal VariableFactory AutoVarFactory { get; private set; }
     internal ISparqlExpressionProcessor<IValuedNode, PullEvaluationContext, ExpressionContext> ExpressionProcessor { get; }
 
     /// <summary>

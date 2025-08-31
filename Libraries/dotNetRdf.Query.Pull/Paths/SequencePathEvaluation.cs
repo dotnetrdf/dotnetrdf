@@ -45,17 +45,4 @@ internal class SequencePathEvaluation(IPathEvaluation lhs, IPathEvaluation rhs, 
             }
         }
     }
-
-    public async IAsyncEnumerable<PathResult> EvaluateAsync(PatternItem pathStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
-        [EnumeratorCancellation] CancellationToken cancellationToken)
-    {
-        await foreach (PathResult leftResult in lhs.EvaluateAsync(pathStart, context, input, activeGraph, cancellationToken))
-        {
-            await foreach (PathResult rightResult in rhs.EvaluateAsync(new NodeMatchPattern(leftResult.EndNode), context,
-                               input, activeGraph, cancellationToken))
-            {
-                yield return new PathResult(leftResult.StartNode, rightResult.EndNode);
-            }
-        }
-    }
 }

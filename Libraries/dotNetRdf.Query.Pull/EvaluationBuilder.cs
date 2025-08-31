@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System.Runtime.CompilerServices;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Algebra;
@@ -38,7 +37,7 @@ namespace VDS.RDF.Query.Pull;
 
 internal class EvaluationBuilder
 {
-    public IAsyncEvaluation Build(ISparqlAlgebra algebra, PullEvaluationContext context)
+    public IEnumerableEvaluation Build(ISparqlAlgebra algebra, PullEvaluationContext context)
     {
         return algebra switch
         {
@@ -65,13 +64,13 @@ internal class EvaluationBuilder
         };
     }
 
-    private IAsyncEvaluation BuildLeftJoin(ILeftJoin leftJoin, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildLeftJoin(ILeftJoin leftJoin, PullEvaluationContext context)
     {
-        IAsyncEvaluation lhs = Build(leftJoin.Lhs, context);
-        IAsyncEvaluation rhs = Build(leftJoin.Rhs, context);
+        IEnumerableEvaluation lhs = Build(leftJoin.Lhs, context);
+        IEnumerableEvaluation rhs = Build(leftJoin.Rhs, context);
         var joinVars = new HashSet<string>(leftJoin.Lhs.Variables);
         joinVars.IntersectWith(new HashSet<string>(leftJoin.Rhs.Variables));
-        var joinEval = new AsyncLeftJoinEvaluation(
+        var joinEval = new LeftJoinEvaluation(
             lhs,
             rhs,
             joinVars.ToArray(),
@@ -81,11 +80,11 @@ internal class EvaluationBuilder
         return joinEval;
     }
     
-    private IAsyncEvaluation BuildTriplePattern(ITriplePattern triplePattern, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildTriplePattern(ITriplePattern triplePattern, PullEvaluationContext context)
     {
         if (triplePattern is IMatchTriplePattern matchTriplePattern)
         {
-            return new AsyncTriplePatternEvaluation(matchTriplePattern);
+            return new TriplePatternEvaluation(matchTriplePattern);
         }
 
         if (triplePattern is BindPattern bindPattern)
@@ -95,7 +94,7 @@ internal class EvaluationBuilder
                 throw new RdfQueryException("Cannot process BIND with variables as first triple pattern");
             }
 
-            return new AsyncBindPatternEvaluation(bindPattern, null);
+            return new BindPatternEvaluation(bindPattern, null);
         }
 
         if (triplePattern is SubQueryPattern subQueryPattern)
@@ -110,21 +109,21 @@ internal class EvaluationBuilder
         throw new RdfQueryException($"Unsupported triple pattern algebra ({triplePattern.GetType()}): {triplePattern}");
     }
 
-    private IAsyncEvaluation BuildJoin(Join join, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildJoin(Join join, PullEvaluationContext context)
     {
         ISet<string> joinVars = new HashSet<string>(join.Lhs.Variables);
         joinVars.IntersectWith(join.Rhs.Variables);
-        return new AsyncJoinEvaluation(Build(join.Lhs, context), Build(join.Rhs, context), joinVars.ToArray());
+        return new JoinEvaluation(Build(join.Lhs, context), Build(join.Rhs, context), joinVars.ToArray());
     }
 
-    private IAsyncEvaluation BuildBgp(IBgp bgp, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildBgp(IBgp bgp, PullEvaluationContext context)
     {
         if (bgp.TriplePatterns.Count == 0)
         {
             return new IdentityEvaluation();
         }
         ISet<string> boundVars = new HashSet<string>(bgp.TriplePatterns[0].Variables);
-        IAsyncEvaluation result = BuildTriplePattern(bgp.TriplePatterns[0], context);
+        IEnumerableEvaluation result = BuildTriplePattern(bgp.TriplePatterns[0], context);
         for (var i = 1; i < bgp.TriplePatterns.Count; i++)
         {
             ITriplePattern tp = bgp.TriplePatterns[i];
@@ -133,68 +132,68 @@ internal class EvaluationBuilder
             boundVars.UnionWith(bgp.Variables);
             result = tp switch
             {
-                FilterPattern fp => new AsyncSparqlFilterEvaluation(fp.Filter, result, true),
-                BindPattern bp => new AsyncBindPatternEvaluation(bp, result),
-                _ => new AsyncJoinEvaluation(result, BuildTriplePattern(tp, context), joinVars.ToArray())
+                FilterPattern fp => new SparqlFilterEvaluation(fp.Filter, result, true),
+                BindPattern bp => new BindPatternEvaluation(bp, result),
+                _ => new JoinEvaluation(result, BuildTriplePattern(tp, context), joinVars.ToArray())
             };
         }
         return result;
     }
 
-    private IAsyncEvaluation BuildSelect(Select select, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildSelect(Select select, PullEvaluationContext context)
     {
         if (select.IsSelectAll) { return Build(select.InnerAlgebra, context); }
 
-        return new AsyncSelectEvaluation(select, Build(select.InnerAlgebra, context));
+        return new SelectEvaluation(select, Build(select.InnerAlgebra, context));
     }
 
-    private IAsyncEvaluation BuildFilter(Filter filter, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildFilter(Filter filter, PullEvaluationContext context)
     {
-        return new AsyncFilterEvaluation(filter, Build(filter.InnerAlgebra, context));
+        return new FilterEvaluation(filter, Build(filter.InnerAlgebra, context));
     }
 
-    private IAsyncEvaluation BuildUnion(Union union, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildUnion(Union union, PullEvaluationContext context)
     {
-        return new AsyncUnionEvaluation(Build(union.Lhs, context), Build(union.Rhs, context));
+        return new UnionEvaluation(Build(union.Lhs, context), Build(union.Rhs, context));
     }
 
-    private IAsyncEvaluation BuildGraph(Query.Algebra.Graph graph, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildGraph(Query.Algebra.Graph graph, PullEvaluationContext context)
     {
         if (graph.GraphSpecifier.TokenType == Token.VARIABLE)
         {
-            return new AsyncGraphEvaluation(graph.GraphSpecifier.Value.TrimStart('?'), Build(graph.InnerAlgebra, context));
+            return new GraphEvaluation(graph.GraphSpecifier.Value.TrimStart('?'), Build(graph.InnerAlgebra, context));
         }
 
         if (graph.GraphSpecifier.TokenType == Token.URI)
         {
             // TODO: Use URI factory and node factory from context
             var graphName = new UriNode(new Uri(graph.GraphSpecifier.Value));
-            return new AsyncGraphEvaluation(graphName, Build(graph.InnerAlgebra, context));
+            return new GraphEvaluation(graphName, Build(graph.InnerAlgebra, context));
         }
         throw new RdfQueryException($"Unsupported graph specifier token {graph.GraphSpecifier}");
     }
 
-    private IAsyncEvaluation BuildAsk(Ask ask, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildAsk(Ask ask, PullEvaluationContext context)
     {
-        return new AsyncAskEvaluation(Build(ask.InnerAlgebra, context));
+        return new AskEvaluation(Build(ask.InnerAlgebra, context));
     }
 
-    private IAsyncEvaluation BuildAskAnyTriples()
+    private IEnumerableEvaluation BuildAskAnyTriples()
     {
-        return new AsyncAskAnyTriplesEvaluation();
+        return new AskAnyTriplesEvaluation();
     }
 
-    private IAsyncEvaluation BuildDistinct(Distinct distinct, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildDistinct(Distinct distinct, PullEvaluationContext context)
     {
-        return new AsyncDistinctEvaluation(Build(distinct.InnerAlgebra, context));
+        return new DistinctEvaluation(Build(distinct.InnerAlgebra, context));
     }
 
-    private IAsyncEvaluation BuildOrderBy(OrderBy orderBy, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildOrderBy(OrderBy orderBy, PullEvaluationContext context)
     {
-        return new AsyncOrderByEvaluation(orderBy, Build(orderBy.InnerAlgebra, context));
+        return new OrderByEvaluation(orderBy, Build(orderBy.InnerAlgebra, context));
     }
 
-    private IAsyncEvaluation BuildSlice(Slice slice, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildSlice(Slice slice, PullEvaluationContext context)
     {
         if (slice.Limit > 0)
         {
@@ -202,27 +201,27 @@ internal class EvaluationBuilder
             if (slice.Offset > 0) context.SliceLength += slice.Offset;
         }
 
-        return new AsyncSliceEvaluation(slice, Build(slice.InnerAlgebra, context));
+        return new SliceEvaluation(slice, Build(slice.InnerAlgebra, context));
     }
 
-    private IAsyncEvaluation BuildExtend(Extend extend, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildExtend(Extend extend, PullEvaluationContext context)
     {
-        return new AsyncExtendEvaluation(extend, context, Build(extend.InnerAlgebra, context));
+        return new ExtendEvaluation(extend, Build(extend.InnerAlgebra, context));
     }
 
-    private IAsyncEvaluation BuildReduced(Reduced reduced, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildReduced(Reduced reduced, PullEvaluationContext context)
     {
-        return new AsyncReducedEvaluation(Build(reduced.InnerAlgebra, context));
+        return new ReducedEvaluation(Build(reduced.InnerAlgebra, context));
     }
 
-    private IAsyncEvaluation BuildBindings(Bindings bindings)
+    private IEnumerableEvaluation BuildBindings(Bindings bindings)
     {
-        return new AsyncBindingsEvaluation(bindings);
+        return new BindingsEvaluation(bindings);
     }
 
-    private IAsyncEvaluation BuildGroupBy(GroupBy groupBy, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildGroupBy(GroupBy groupBy, PullEvaluationContext context)
     {
-        var ret = new AsyncGroupByEvaluation(groupBy, Build(groupBy.InnerAlgebra, context));
+        var ret = new GroupByEvaluation(groupBy, Build(groupBy.InnerAlgebra, context));
         foreach (SparqlVariable? aggregate in groupBy.Aggregates)
         {
             if (aggregate != null)
@@ -233,12 +232,12 @@ internal class EvaluationBuilder
         return ret;
     }
 
-    private IAsyncEvaluation BuildHaving(Having having, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildHaving(Having having, PullEvaluationContext context)
     {
-        return new AsyncHavingEvaluation(having, Build(having.InnerAlgebra, context));
+        return new HavingEvaluation(having, Build(having.InnerAlgebra, context));
     }
 
-    private Func<IAsyncAggregation> Build(SparqlVariable aggregateVariable, PullEvaluationContext context)
+    private Func<IAggregateEvaluation> Build(SparqlVariable aggregateVariable, PullEvaluationContext context)
     {
         if (!aggregateVariable.IsAggregate)
         {
@@ -247,19 +246,19 @@ internal class EvaluationBuilder
 
         return aggregateVariable.Aggregate switch
         {
-            CountAggregate count => () => new AsyncCountAggregate(count.Expression, count.Variable, aggregateVariable.Name, context),
-            CountAllAggregate countAll => () => new AsyncCountAllAggregate(countAll, aggregateVariable.Name),
-            SumAggregate sum => () => new AsyncSumAggregate(sum.Expression, sum.Distinct, aggregateVariable.Name, context),
-            AverageAggregate avg => () => new AsyncAverageAggregate(avg.Expression, avg.Distinct, aggregateVariable.Name, context),
-            MaxAggregate max => () => new AsyncMaxAggregate(max.Expression, max.Variable, aggregateVariable.Name, context),
-            MinAggregate min => () => new AsyncMinAggregate(min.Expression, min.Variable, aggregateVariable.Name, context),
-            SampleAggregate sample => () => new AsyncSampleAggregation(sample.Expression, aggregateVariable.Name, context),
-            GroupConcatAggregate groupConcat => () => new AsyncGroupConcatAggregate(groupConcat.Expression, groupConcat.SeparatorExpression, aggregateVariable.Name, context),
+            CountAggregate count => () => new CountAggregateEvaluation(count.Expression, count.Variable, aggregateVariable.Name, context),
+            CountAllAggregate countAll => () => new CountAllAggregateEvaluation(countAll, aggregateVariable.Name),
+            SumAggregate sum => () => new SumAggregateEvaluation(sum.Expression, sum.Distinct, aggregateVariable.Name, context),
+            AverageAggregate avg => () => new AverageAggregateEvaluation(avg.Expression, avg.Distinct, aggregateVariable.Name, context),
+            MaxAggregate max => () => new MaxAggregateEvaluation(max.Expression, max.Variable, aggregateVariable.Name, context),
+            MinAggregate min => () => new MinAggregateEvaluation(min.Expression, min.Variable, aggregateVariable.Name, context),
+            SampleAggregate sample => () => new SampleAggregateEvaluation(sample.Expression, aggregateVariable.Name, context),
+            GroupConcatAggregate groupConcat => () => new GroupConcatAggregateEvaluation(groupConcat.Expression, groupConcat.SeparatorExpression, aggregateVariable.Name, context),
             _ => throw new RdfQueryException($"Unsupported aggregate {aggregateVariable.Aggregate}")
         };
     }
 
-    private IAsyncEvaluation BuildSubQuery(SubQuery subQuery, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildSubQuery(SubQuery subQuery, PullEvaluationContext context)
     {
         var autoVarPrefix = "_" + context.AutoVarFactory.Prefix;
         while (subQuery.Variables.Any(v => v.StartsWith(autoVarPrefix)))
@@ -268,10 +267,10 @@ internal class EvaluationBuilder
         }
         PullEvaluationContext subContext = context.MakeSubContext(subQuery.Query.DefaultGraphNames, subQuery.Query.NamedGraphNames);
         ISparqlAlgebra? queryAlgebra = subQuery.Query.ToAlgebra(true, new[] { new PushDownAggregatesOptimiser(autoVarPrefix) });
-        return new AsyncSubQueryEvaluation(subQuery,Build(queryAlgebra, subContext), subContext);
+        return new SubQueryEvaluation(subQuery,Build(queryAlgebra, subContext), subContext);
     }
 
-    private IAsyncEvaluation BuildSubQueryPattern(SubQueryPattern subQueryPattern, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildSubQueryPattern(SubQueryPattern subQueryPattern, PullEvaluationContext context)
     {
         var autoVarPrefix = "_" + context.AutoVarFactory.Prefix;
         while (subQueryPattern.Variables.Any(v => v.StartsWith(autoVarPrefix)))
@@ -280,12 +279,12 @@ internal class EvaluationBuilder
         }
         PullEvaluationContext subContext = context.MakeSubContext(subQueryPattern.SubQuery.DefaultGraphNames, subQueryPattern.SubQuery.NamedGraphNames);
         ISparqlAlgebra? queryAlgebra = subQueryPattern.SubQuery.ToAlgebra(true, new[] { new PushDownAggregatesOptimiser(autoVarPrefix) });
-        return new AsyncSubQueryEvaluation( subQueryPattern,Build(queryAlgebra, subContext), subContext);
+        return new SubQueryEvaluation( subQueryPattern,Build(queryAlgebra, subContext), subContext);
     }
 
-    private IAsyncEvaluation BuildPropertyPathPattern(PropertyPathPattern ppPattern, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildPropertyPathPattern(PropertyPathPattern ppPattern, PullEvaluationContext context)
     {
-        return new AsyncPropertyPathPatternEvaluation(Build(ppPattern.Path, ppPattern.Subject, ppPattern.Object, context), ppPattern.Subject, ppPattern.Object);
+        return new PropertyPathPatternEvaluation(Build(ppPattern.Path, ppPattern.Subject, ppPattern.Object, context), ppPattern.Subject, ppPattern.Object);
     }
 
     private IPathEvaluation Build(ISparqlPath path, PatternItem pathStart, PatternItem pathEnd,
@@ -317,27 +316,19 @@ internal class EvaluationBuilder
             joinVar);
     }
 
-    private IAsyncEvaluation BuildMinus(Minus minus, PullEvaluationContext context)
+    private IEnumerableEvaluation BuildMinus(Minus minus, PullEvaluationContext context)
     {
-        IAsyncEvaluation lhsEval = Build(minus.Lhs, context);
-        IAsyncEvaluation rhsEval = Build(minus.Rhs, context);
-        return new AsyncMinusEvaluation(minus, lhsEval, rhsEval);
+        IEnumerableEvaluation lhsEval = Build(minus.Lhs, context);
+        IEnumerableEvaluation rhsEval = Build(minus.Rhs, context);
+        return new MinusEvaluation(minus, lhsEval, rhsEval);
     }
 }
 
-internal class IdentityEvaluation : IAsyncEvaluation
+internal class IdentityEvaluation : IEnumerableEvaluation
 {
-    [Obsolete("Replaced by EvaluateBatch()")]
-    public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public IEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
+        CancellationToken cancellationToken = default)
     {
         yield return input ?? new Set();
-    }
-
-    public async IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(PullEvaluationContext context,
-        IEnumerable<ISet?> batch, IRefNode? activeGraph,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        yield return batch.Select(input => input ?? new Set());
     }
 }

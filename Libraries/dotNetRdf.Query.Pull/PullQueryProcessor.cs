@@ -74,25 +74,13 @@ public class PullQueryProcessor : ISparqlQueryProcessor
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <remarks>Used primarily for internal test purposes.</remarks>
-    [Obsolete("Replaced by EvaluateBatch()")]
-    internal IAsyncEnumerable<ISet> Evaluate(ISparqlAlgebra algebra, PullEvaluationContext? context = null,
+    internal IEnumerable<ISet> Evaluate(ISparqlAlgebra algebra, PullEvaluationContext? context = null,
         CancellationToken cancellationToken = default)
     {
         var builder = new EvaluationBuilder();
         context ??= MakeDefaultContext();
-        IAsyncEvaluation evaluation = builder.Build(algebra, context);
+        IEnumerableEvaluation evaluation = builder.Build(algebra, context);
         return evaluation.Evaluate(context, null, null, cancellationToken);
-    }
-
-    internal IAsyncEnumerable<IEnumerable<ISet>> EvaluateBatch(
-        ISparqlAlgebra algebra,
-        PullEvaluationContext? context = null,
-        CancellationToken cancellationToken = default)
-    {
-        var builder = new EvaluationBuilder();
-        context ??= MakeDefaultContext();
-        IAsyncEvaluation evaluation = builder.Build(algebra, context);
-        return evaluation.EvaluateBatch(context, [null], null, cancellationToken);
     }
 
     private PullEvaluationContext MakeDefaultContext()
@@ -300,18 +288,18 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                     baseUri: query.BaseUri,
                     uriFactory: _options.UriFactory,
                     nodeComparer: _options.NodeComparer);
-            IAsyncEnumerable<IEnumerable<ISet>> solutionBindings = EvaluateBatch(algebra, evaluationContext, cts.Token);
+            IEnumerable<ISet> solutionBindings = Evaluate(algebra, evaluationContext, cts.Token);
             switch (query.QueryType)
             {
                 case SparqlQueryType.SelectAll:
                 case SparqlQueryType.SelectAllDistinct:
                 case SparqlQueryType.SelectAllReduced:
-                    await ProcessSelectQueryAsync(resultsHandler, algebra.Variables.ToList(), solutionBindings);
+                    ProcessSelectQuery(resultsHandler, algebra.Variables.ToList(), solutionBindings);
                     break;
                 case SparqlQueryType.Select:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    await ProcessSelectQueryAsync(resultsHandler, query.Variables.Select(v => v.Name).ToList(),
+                    ProcessSelectQuery(resultsHandler, query.Variables.Select(v => v.Name).ToList(),
                         solutionBindings);
                     break;
                 case SparqlQueryType.Ask:
@@ -321,10 +309,10 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                         throw new ArgumentNullException(nameof(resultsHandler), "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
                     }
                     resultsHandler.StartResults();
-                    await using (IAsyncEnumerator<IEnumerable<ISet>>? enumerator = solutionBindings.GetAsyncEnumerator(cts.Token))
+                    using(IEnumerator<ISet> enumerator = solutionBindings.GetEnumerator())
                     {
-                        var hasNext = await enumerator.MoveNextAsync();
-                        resultsHandler.HandleBooleanResult(hasNext && enumerator.Current.Any());
+                        var hasNext = enumerator.MoveNext();
+                        resultsHandler.HandleBooleanResult(hasNext);
                     }
                     resultsHandler.EndResults(true);
                     break;
@@ -346,9 +334,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                         }
 
                         var constructContext = new ConstructContext(rdfHandler, false);
-                        await foreach (IEnumerable<ISet>? batch in solutionBindings)
-                        {
-                            foreach (ISet s in batch)
+                            foreach (ISet s in solutionBindings)
                             {
                                 try
                                 {
@@ -376,8 +362,6 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                                     // entire solution is discarded
                                 }
                             }
-                        }
-
                         rdfHandler.EndRdf(true);
                     }
                     catch (RdfParsingTerminatedException)
@@ -411,7 +395,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
         }
     }
 
-    private async Task ProcessSelectQueryAsync(ISparqlResultsHandler? resultsHandler, List<string> projectionVars, IAsyncEnumerable<ISet> solutionBindings)
+    private void ProcessSelectQuery(ISparqlResultsHandler? resultsHandler, List<string> projectionVars, IEnumerable<ISet> solutionBindings)
     {
         if (resultsHandler == null)
         {
@@ -427,7 +411,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
         }
 
         var ok = true;
-        await foreach (ISet? solutionBinding in solutionBindings)
+        foreach (ISet? solutionBinding in solutionBindings)
         {
             ok = resultsHandler.HandleResult(this._options.SparqlResultFactory.MakeResult(solutionBinding, projectionVars));
             if (!ok) break;
@@ -436,32 +420,4 @@ public class PullQueryProcessor : ISparqlQueryProcessor
         resultsHandler.EndResults(ok);
     }
     
-    private async Task ProcessSelectQueryAsync(ISparqlResultsHandler? resultsHandler, List<string> projectionVars, IAsyncEnumerable<IEnumerable<ISet>> solutionBindings)
-    {
-        if (resultsHandler == null)
-        {
-            // Should already be handled above, but this keeps the compiler happy that we have checked the nullable argument.
-            throw new ArgumentNullException(nameof(resultsHandler),
-                "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
-        }
-
-        resultsHandler.StartResults();
-        foreach (var v in projectionVars)
-        {
-            resultsHandler.HandleVariable(v);
-        }
-
-        var ok = true;
-        await foreach (IEnumerable<ISet> batch in solutionBindings)
-        {
-            foreach (ISet? solutionBinding in batch)
-            {
-                ok = resultsHandler.HandleResult(
-                    this._options.SparqlResultFactory.MakeResult(solutionBinding, projectionVars));
-                if (!ok) break;
-            }
-        }
-
-        resultsHandler.EndResults(ok);
-    }
 }

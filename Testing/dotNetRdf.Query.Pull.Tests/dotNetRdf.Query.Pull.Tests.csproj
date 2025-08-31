@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net8.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <IsPackable>false</IsPackable>
+        <RootNamespace>dotNetRdf.Query.Pull.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Libraries\dotNetRdf.Query.Pull\dotNetRdf.Query.Pull.csproj" />
+        <ProjectReference Include="..\..\Libraries\dotNetRdf.Query.Pull\dotNetRdf.Query.Pull.csproj" />
     </ItemGroup>
 
     <ItemGroup>

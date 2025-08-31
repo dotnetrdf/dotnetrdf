@@ -32,7 +32,7 @@ namespace VDS.RDF.Query.Pull.Paths;
 
 internal static class PatternItemExtensions
 {
-    public static bool TryEvaluatePattern(this PatternItem patternItem, ISet? input, [NotNullWhen(returnValue:true)] out INode? node)
+    public static bool TryEvaluatePattern(this PatternItem patternItem, ISet? input, out INode? node)
     {
         switch (patternItem)
         {

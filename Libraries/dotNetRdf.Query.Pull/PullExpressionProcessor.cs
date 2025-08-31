@@ -64,10 +64,9 @@ internal class PullExpressionProcessor(
         ExpressionContext expressionContext)
     {
         var builder = new EvaluationBuilder();
-        IAsyncEvaluation graphPatternEvaluation = builder.Build(exists.Pattern.ToAlgebra(), context);
-        ValueTask<bool> findMatch = graphPatternEvaluation
-            .Evaluate(context, expressionContext.Bindings, expressionContext.ActiveGraph).AnyAsync();
-        var result = findMatch.IsCompleted ? findMatch.Result : findMatch.AsTask().GetAwaiter().GetResult();
+        IEnumerableEvaluation graphPatternEvaluation = builder.Build(exists.Pattern.ToAlgebra(), context);
+        var result = graphPatternEvaluation
+            .Evaluate(context, expressionContext.Bindings, expressionContext.ActiveGraph).Any();
         return exists.MustExist ? new BooleanNode(result) : new BooleanNode(!result);
     }
 
