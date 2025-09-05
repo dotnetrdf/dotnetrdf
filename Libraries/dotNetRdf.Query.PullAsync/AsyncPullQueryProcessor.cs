@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.PullAsync;
 public class AsyncPullQueryProcessor : ISparqlQueryProcessor
 {
     private readonly ITripleStore _tripleStore;
-    private readonly PullQueryOptions _options = new();
+    private readonly AsyncPullQueryProcessorOptions _options = new();
 
     /// <summary>
     /// Gets the query execution timeout (in ms) configured for this processor.
@@ -60,8 +60,8 @@ public class AsyncPullQueryProcessor : ISparqlQueryProcessor
     /// Construct a new query processor instance.
     /// </summary>
     /// <param name="tripleStore">The store to query against</param>
-    /// <param name="options">Receives a <see cref="PullQueryOptions"/> instance which may be modified to set the evaluation options for this processor.</param>
-    public AsyncPullQueryProcessor(ITripleStore tripleStore, Action<PullQueryOptions>? options = null)
+    /// <param name="options">Receives a <see cref="AsyncPullQueryProcessorOptions"/> instance which may be modified to set the evaluation options for this processor.</param>
+    public AsyncPullQueryProcessor(ITripleStore tripleStore, Action<AsyncPullQueryProcessorOptions>? options = null)
     {
         _tripleStore = tripleStore;
         options?.Invoke(_options);

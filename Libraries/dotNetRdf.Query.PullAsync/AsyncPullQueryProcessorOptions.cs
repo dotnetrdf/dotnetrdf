@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.PullAsync;
 /// <summary>
 /// A class encapsulation the runtime options that can be configured for a <see cref="AsyncPullQueryProcessor"/>.
 /// </summary>
-public class PullQueryOptions
+public class AsyncPullQueryProcessorOptions
 {
     /// <summary>
     /// The default query timeout in milliseconds.

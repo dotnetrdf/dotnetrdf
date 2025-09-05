@@ -31,7 +31,7 @@ using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Query.Pull;
+namespace VDS.RDF.Query.PullAsync;
 
 /// <summary>
 /// Transforms a query algebra for the async pull evaluation processor by ensuring that all aggregate expressions

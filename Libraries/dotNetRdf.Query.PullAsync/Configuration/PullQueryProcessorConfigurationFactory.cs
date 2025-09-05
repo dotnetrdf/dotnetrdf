@@ -63,12 +63,12 @@ public class AsyncPullQueryProcessorConfigurationFactory : IObjectFactory
         return queryProcessor != null;
     }
 
-    private void ApplyConfigurationOptions(PullQueryOptions options, IGraph g, INode objNode)
+    private void ApplyConfigurationOptions(AsyncPullQueryProcessorOptions options, IGraph g, INode objNode)
     {
         INode? timeoutNode = g.GetUriNode(UriFactory.Create(ConfigurationLoader.PropertyTimeout));
         if (timeoutNode != null)
         {
-            var timeout = ConfigurationLoader.GetConfigurationUInt64(g, objNode, timeoutNode, PullQueryOptions.DefaultQueryExecutionTimeout);
+            var timeout = ConfigurationLoader.GetConfigurationUInt64(g, objNode, timeoutNode, AsyncPullQueryProcessorOptions.DefaultQueryExecutionTimeout);
             options.QueryExecutionTimeout = timeout;
         }
         

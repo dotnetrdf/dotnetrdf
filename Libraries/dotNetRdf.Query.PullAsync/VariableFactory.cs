@@ -24,7 +24,7 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Pull;
+namespace VDS.RDF.Query.PullAsync;
 
 internal class VariableFactory(string prefix)
 {
