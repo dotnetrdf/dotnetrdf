@@ -56,3 +56,6 @@ docs/obj/
 docs/api/*.yml
 docs/api/.manifest
 docs/node_modules
+
+# VSCode
+.vscode/
