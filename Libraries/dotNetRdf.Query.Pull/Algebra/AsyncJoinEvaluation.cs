@@ -24,28 +24,40 @@
 // </copyright>
 */
 
+using VDS.Common.Collections;
 using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Pull.Algebra;
 
-internal class AsyncJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, string[] joinVars)
-    : AbstractAsyncJoinEvaluation(lhs, rhs)
+internal class AsyncJoinEvaluation : AbstractAsyncJoinEvaluation
 {
     private readonly LinkedList<ISet> _leftSolutions = new();
     private readonly LinkedList<ISet> _rightSolutions = new();
+    private readonly string[] joinVars;
+    private JoinIndex _leftIndex;
+    private JoinIndex _rightIndex;
+
+    public AsyncJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, string[] joinVars) : base(lhs, rhs)
+    {
+        this.joinVars = joinVars;
+        this._leftIndex = new JoinIndex(joinVars);
+        this._rightIndex = new JoinIndex(joinVars);
+    }
+
+
 
     protected override IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhsResult, IRefNode? activeGraph)
     {
         if (_rhsHasMore)
         {
+            // TODO: Can remove _leftSolutions and expose the list of values in the JoinIndex instead.
             _leftSolutions.AddLast(lhsResult);
+            _leftIndex.Add(lhsResult);
         }
 
-        foreach (ISet joinResult in _rightSolutions
-                     .Where(r => lhsResult.IsCompatibleWith(r, joinVars))
-                     .Select(lhsResult.Join))
+        foreach (ISet rhsResult in _rightIndex.GetMatches(lhsResult).Where(r => r.IsCompatibleWith(lhsResult, joinVars)))
         {
-            yield return joinResult;
+            yield return lhsResult.Join(rhsResult);
         }
     }
 
@@ -54,10 +66,12 @@ internal class AsyncJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, s
         if (_lhsHasMore)
         {
             _rightSolutions.AddLast(rhsResult);
+            _rightIndex.Add(rhsResult);
         }
-
-        return _leftSolutions.Where(l => l.IsCompatibleWith(rhsResult, joinVars))
-            .Select(l => l.Join(rhsResult));
+        foreach (ISet leftResult in _leftIndex.GetMatches(rhsResult).Where(l => l.IsCompatibleWith(rhsResult, joinVars)))
+        {
+            yield return leftResult.Join(rhsResult);
+        }
     }
 
     protected override IEnumerable<ISet>? OnLhsDone(PullEvaluationContext context)

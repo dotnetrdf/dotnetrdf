@@ -1,0 +1,74 @@
+using VDS.Common.Collections;
+using VDS.RDF;
+using VDS.RDF.Query.Algebra;
+
+namespace VDS.RDF.Query.Pull.Algebra;
+
+internal class JoinIndex
+{
+    private readonly string[] _joinVars;
+    private List<ISet> _indexedSets = new();
+    private readonly List<MultiDictionary<INode, HashSet<int>>> _index;
+    private readonly List<HashSet<int>> _nulls;
+
+    public JoinIndex(string[] joinVars)
+    {
+        _joinVars = joinVars;
+        _index = Enumerable.Range(0, joinVars.Length).Select(_ => new MultiDictionary<INode, HashSet<int>>()).ToList();
+        _nulls = Enumerable.Range(0, joinVars.Length).Select(_ => new HashSet<int>()).ToList();
+    }
+
+    public void Add(ISet s)
+    {
+        _indexedSets.Add(s);
+        int setIndex = _indexedSets.Count - 1;
+        for (int i = 0; i < _joinVars.Length; i++)
+        {
+            string var = _joinVars[i];
+            MultiDictionary<INode, HashSet<int>> varIndex = _index[i];
+            if (s.ContainsVariable(var))
+            {
+                INode value = s[var];
+                if (!varIndex.TryGetValue(value, out HashSet<int>? sets))
+                {
+                    sets = new HashSet<int>();
+                    varIndex.Add(value, sets);
+                }
+                sets.Add(setIndex);
+            }
+            else
+            {
+                _nulls[i].Add(setIndex);
+            }
+        }
+    }
+
+    private HashSet<int> GetMatchesForVar(int varIx, ISet s)
+    {
+        var v = _joinVars[varIx];
+        if (!s.ContainsVariable(v))
+        {
+            return [];
+        }
+        INode value = s[v];
+        if (value == null)
+        {
+            return _nulls[varIx]; 
+        }
+        if (_index[varIx].TryGetValue(value, out HashSet<int>? sets))
+        {
+            return sets;
+        }
+        return [];
+    }
+
+    public IEnumerable<ISet> GetMatches(ISet s)
+    {
+        HashSet<int> results = GetMatchesForVar(0, s);
+        for (int i = 1; i < _joinVars.Length && results.Count > 0; i++)
+        {
+            results.IntersectWith(GetMatchesForVar(i, s));
+        }
+        return results.Select(ix => _indexedSets[ix]);
+    }
+}
