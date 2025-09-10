@@ -66,11 +66,22 @@ internal class JoinIndex
 
     public IEnumerable<ISet> GetMatches(ISet s)
     {
-        HashSet<int> results = GetMatchesForVar(0, s);
-        for (var i = 1; i < _joinVars.Length && results.Count > 0; i++)
+        HashSet<int>? results = null;
+        for (var i = 0; i < _joinVars.Length; i++)
         {
-            results.IntersectWith(GetMatchesForVar(i, s));
+            if (s.ContainsVariable(_joinVars[i]))
+            {
+                if (results == null)
+                {
+                    results = GetMatchesForVar(i, s);
+                }
+                else
+                {
+                    results.IntersectWith(GetMatchesForVar(i, s));
+                }
+            }
         }
-        return results.Select(ix => _indexedSets[ix]);
+
+        return results?.Select(ix => _indexedSets[ix]) ?? [];
     }
 }
