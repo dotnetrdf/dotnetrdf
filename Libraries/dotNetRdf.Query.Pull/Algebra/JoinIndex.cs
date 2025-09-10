@@ -7,7 +7,7 @@ namespace VDS.RDF.Query.Pull.Algebra;
 internal class JoinIndex
 {
     private readonly string[] _joinVars;
-    private List<ISet> _indexedSets = new();
+    private readonly List<ISet> _indexedSets = new();
     private readonly List<MultiDictionary<INode, HashSet<int>>> _index;
     private readonly List<HashSet<int>> _nulls;
 
@@ -21,10 +21,10 @@ internal class JoinIndex
     public void Add(ISet s)
     {
         _indexedSets.Add(s);
-        int setIndex = _indexedSets.Count - 1;
-        for (int i = 0; i < _joinVars.Length; i++)
+        var setIndex = _indexedSets.Count - 1;
+        for (var i = 0; i < _joinVars.Length; i++)
         {
-            string var = _joinVars[i];
+            var var = _joinVars[i];
             MultiDictionary<INode, HashSet<int>> varIndex = _index[i];
             if (s.ContainsVariable(var))
             {
@@ -43,7 +43,7 @@ internal class JoinIndex
         }
     }
 
-    private HashSet<int> GetMatchesForVar(int varIx, ISet s)
+    private HashSet<int> GetMatchesForVar(int varIx, ISet s, bool matchNulls = false)
     {
         var v = _joinVars[varIx];
         if (!s.ContainsVariable(v))
@@ -55,17 +55,19 @@ internal class JoinIndex
         {
             return _nulls[varIx]; 
         }
+        HashSet<int> results = matchNulls ? [.._nulls[varIx]] : [];
         if (_index[varIx].TryGetValue(value, out HashSet<int>? sets))
         {
-            return sets;
+            results.UnionWith(sets);
         }
-        return [];
+
+        return results;
     }
 
     public IEnumerable<ISet> GetMatches(ISet s)
     {
         HashSet<int> results = GetMatchesForVar(0, s);
-        for (int i = 1; i < _joinVars.Length && results.Count > 0; i++)
+        for (var i = 1; i < _joinVars.Length && results.Count > 0; i++)
         {
             results.IntersectWith(GetMatchesForVar(i, s));
         }

@@ -33,13 +33,13 @@ internal class AsyncJoinEvaluation : AbstractAsyncJoinEvaluation
 {
     private readonly LinkedList<ISet> _leftSolutions = new();
     private readonly LinkedList<ISet> _rightSolutions = new();
-    private readonly string[] joinVars;
-    private JoinIndex _leftIndex;
-    private JoinIndex _rightIndex;
+    private readonly string[] _joinVars;
+    private readonly JoinIndex _leftIndex;
+    private readonly JoinIndex _rightIndex;
 
     public AsyncJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, string[] joinVars) : base(lhs, rhs)
     {
-        this.joinVars = joinVars;
+        this._joinVars = joinVars;
         this._leftIndex = new JoinIndex(joinVars);
         this._rightIndex = new JoinIndex(joinVars);
     }
@@ -55,7 +55,7 @@ internal class AsyncJoinEvaluation : AbstractAsyncJoinEvaluation
             _leftIndex.Add(lhsResult);
         }
 
-        foreach (ISet rhsResult in _rightIndex.GetMatches(lhsResult).Where(r => r.IsCompatibleWith(lhsResult, joinVars)))
+        foreach (ISet rhsResult in _rightIndex.GetMatches(lhsResult).Where(r => r.IsCompatibleWith(lhsResult, _joinVars)))
         {
             yield return lhsResult.Join(rhsResult);
         }
@@ -68,7 +68,7 @@ internal class AsyncJoinEvaluation : AbstractAsyncJoinEvaluation
             _rightSolutions.AddLast(rhsResult);
             _rightIndex.Add(rhsResult);
         }
-        foreach (ISet leftResult in _leftIndex.GetMatches(rhsResult).Where(l => l.IsCompatibleWith(rhsResult, joinVars)))
+        foreach (ISet leftResult in _leftIndex.GetMatches(rhsResult).Where(l => l.IsCompatibleWith(rhsResult, _joinVars)))
         {
             yield return leftResult.Join(rhsResult);
         }

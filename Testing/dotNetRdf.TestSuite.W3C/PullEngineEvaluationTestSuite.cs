@@ -33,7 +33,7 @@ public class PullEngineEvaluationTestSuite : BaseAsyncSparqlEvaluationTestSuite
     [Fact]
     public async Task RunSingleQueryEvaluation()
     {
-        const string testUrl = "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#offset-4";
+        const string testUrl = "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#join-combo-2";
 
         ManifestTestDataProvider provider = testUrl.Contains("data-r2") ? Sparql10QueryEvalTests : Sparql11QueryEvalTests;
         ManifestTestData t = provider.GetTestData(testUrl);
