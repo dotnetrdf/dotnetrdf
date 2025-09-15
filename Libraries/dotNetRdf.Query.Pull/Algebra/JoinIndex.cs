@@ -29,12 +29,20 @@ internal class JoinIndex
             if (s.ContainsVariable(var))
             {
                 INode value = s[var];
-                if (!varIndex.TryGetValue(value, out HashSet<int>? sets))
+                if (value == null)
                 {
-                    sets = new HashSet<int>();
-                    varIndex.Add(value, sets);
+                    _nulls[i].Add(setIndex);
                 }
-                sets.Add(setIndex);
+                else
+                {
+                    if (!varIndex.TryGetValue(value, out HashSet<int>? sets))
+                    {
+                        sets = new HashSet<int>();
+                        varIndex.Add(value, sets);
+                    }
+
+                    sets.Add(setIndex);
+                }
             }
             else
             {
@@ -71,6 +79,10 @@ internal class JoinIndex
         {
             if (s.ContainsVariable(_joinVars[i]))
             {
+                if (s[_joinVars[i]] == null)
+                {
+                    continue;
+                }
                 if (results == null)
                 {
                     results = GetMatchesForVar(i, s);
