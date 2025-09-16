@@ -51,7 +51,7 @@ internal class JoinIndex
         }
     }
 
-    private HashSet<int> GetMatchesForVar(int varIx, ISet s, bool matchNulls = false)
+    private HashSet<int> GetMatchesForVar(int varIx, ISet s, bool matchNulls = true)
     {
         var v = _joinVars[varIx];
         if (!s.ContainsVariable(v))
