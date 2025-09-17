@@ -10,18 +10,25 @@ internal class JoinIndex
     private readonly List<ISet> _indexedSets = new();
     private readonly List<MultiDictionary<INode, HashSet<int>>> _index;
     private readonly List<HashSet<int>> _nulls;
+    private readonly bool _trackJoins;
+    private HashSet<int> unjoinedSets = new();
 
-    public JoinIndex(string[] joinVars)
+    public JoinIndex(string[] joinVars, bool trackJoins = false)
     {
         _joinVars = joinVars;
         _index = Enumerable.Range(0, joinVars.Length).Select(_ => new MultiDictionary<INode, HashSet<int>>()).ToList();
         _nulls = Enumerable.Range(0, joinVars.Length).Select(_ => new HashSet<int>()).ToList();
+        _trackJoins = trackJoins;
     }
 
     public void Add(ISet s)
     {
         _indexedSets.Add(s);
         var setIndex = _indexedSets.Count - 1;
+        if (_trackJoins)
+        {
+            unjoinedSets.Add(setIndex);
+        }
         for (var i = 0; i < _joinVars.Length; i++)
         {
             var var = _joinVars[i];
@@ -61,9 +68,9 @@ internal class JoinIndex
         INode value = s[v];
         if (value == null)
         {
-            return _nulls[varIx]; 
+            return _nulls[varIx];
         }
-        HashSet<int> results = matchNulls ? [.._nulls[varIx]] : [];
+        HashSet<int> results = matchNulls ? [.. _nulls[varIx]] : [];
         if (_index[varIx].TryGetValue(value, out HashSet<int>? sets))
         {
             results.UnionWith(sets);
@@ -72,7 +79,7 @@ internal class JoinIndex
         return results;
     }
 
-    public IEnumerable<ISet> GetMatches(ISet s)
+    public IEnumerable<ISet> GetMatches(ISet s, Func<ISet, bool>? filterFunc = null)
     {
         HashSet<int>? results = null;
         for (var i = 0; i < _joinVars.Length; i++)
@@ -93,7 +100,24 @@ internal class JoinIndex
                 }
             }
         }
-
-        return results?.Select(ix => _indexedSets[ix]) ?? [];
+        if (results == null) return [];
+        if (filterFunc != null)
+        {
+            results = [.. results.Where(ix => filterFunc(_indexedSets[ix]))];
+        }
+        if (_trackJoins)
+        {
+            unjoinedSets.ExceptWith(results);
+        }
+        return results.Select(ix => _indexedSets[ix]);
+    }
+    
+    public IEnumerable<ISet> GetUnjoinedSets()
+    {
+        if (!_trackJoins)
+        {
+            throw new InvalidOperationException("Cannot get unjoined sets from a JoinIndex that is not tracking joins");
+        }
+        return unjoinedSets.Select(ix => _indexedSets[ix]);
     }
 }
