@@ -30,70 +30,79 @@ using VDS.RDF.Query.Filters;
 
 namespace VDS.RDF.Query.Pull.Algebra;
 
-internal class AsyncLeftJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, string[] joinVars, string[] rhsVars, ISparqlFilter? filter)
-    : AbstractAsyncJoinEvaluation(lhs, rhs)
+internal class AsyncLeftJoinEvaluation
+    : AbstractAsyncJoinEvaluation
 {
-    private readonly LinkedList<LhsSolution> _leftSolutions = new();
-    private readonly LinkedList<ISet> _rightSolutions = new();
-    
-    protected override  IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhSolutionSet, IRefNode? activeGraph)
+    private readonly JoinIndex _leftIndex;
+    private readonly JoinIndex _rightIndex;
+    private readonly string[] _joinVars;
+    private readonly ISet _emptyRhs;
+    private readonly ISparqlFilter? _filter;
+
+    public AsyncLeftJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, string[] joinVars, string[] rhsVars, ISparqlFilter? filter)
+        : base(lhs, rhs)
     {
-        var lhSolution = new LhsSolution(lhSolutionSet);
+        _joinVars = joinVars;
+        _leftIndex = new JoinIndex(joinVars, trackJoins: true);
+        _rightIndex = new JoinIndex(joinVars);
+        _emptyRhs = new Set();
+        _filter = filter;
+        foreach (var variable in rhsVars)
+        {
+            _emptyRhs.Add(variable, null);
+        }
+    }
+
+    protected override IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhSolution, IRefNode? activeGraph)
+    {
+        Func<ISet, bool>? filterFunc = _filter == null ? null : (s => Filter(s, context, activeGraph));
         if (_rhsHasMore)
         {
-            _leftSolutions.AddLast(lhSolution);
-            return _rightSolutions.Where((rhSolution) => lhSolution.IsCompatibleWith(rhSolution, joinVars))
-                .Select(rhSolution => lhSolution.FilterJoin(rhSolution, s => Filter(s, context, activeGraph)))
-                .WhereNotNull();
+            _leftIndex.Add(lhSolution);
+            return _rightIndex.GetMatches(lhSolution, filterFunc);
         }
 
-        var joinSolutions = _rightSolutions
-            .Where(rhSolution => lhSolution.IsCompatibleWith(rhSolution, joinVars))
-            .Select(rhSolution => lhSolution.FilterJoin(rhSolution, s=>Filter(s, context, activeGraph)))
-            .WhereNotNull()
-            .ToList();
-        return joinSolutions.Count == 0 ? lhSolutionSet.AsEnumerable() : joinSolutions;
+        var joinSolutions = _rightIndex.GetMatches(lhSolution, filterFunc)
+        .Select(s => s.Join(lhSolution))
+        .ToList();
+        if (joinSolutions.Count > 0)
+        {
+            return joinSolutions;
+        }
+        else
+        {
+            return [lhSolution.Join(_emptyRhs)];
+        }
     }
 
     protected override IEnumerable<ISet> ProcessRhs(PullEvaluationContext context, ISet rhSolution, IRefNode? activeGraph)
     {
         if (_lhsHasMore)
         {
-            _rightSolutions.AddLast(rhSolution);
+            _rightIndex.Add(rhSolution);
         }
 
-        return _leftSolutions.Where(lhSolution => lhSolution.IsCompatibleWith(rhSolution, joinVars))
-            .Select(lhSolution => lhSolution.FilterJoin(rhSolution, s => Filter(s, context, activeGraph)))
-            .WhereNotNull();
+        Func<ISet, bool>? filterFunc = _filter == null ? null : (s => Filter(s, context, activeGraph));
+        return _leftIndex.GetMatches(rhSolution, filterFunc)
+            .Select(s => s.Join(rhSolution));
     }
 
     protected override IEnumerable<ISet>? OnLhsDone(PullEvaluationContext context)
     {
-        _rightSolutions.Clear();
         return null;
     }
 
     protected override IEnumerable<ISet> OnRhsDone(PullEvaluationContext context)
     {
-        ISet emptyRhs = new Set();
-        foreach (var variable in rhsVars)
-        {
-            emptyRhs.Add(variable, null);
-        }
-        IList<ISet> addResults = 
-            _leftSolutions.Where(s => !s.Joined)
-                .Select(s=>s.Join(emptyRhs))
-                .ToList();
-        _leftSolutions.Clear();
-        return addResults;
+        return _leftIndex.GetUnjoinedSets().Select(s => s.Join(_emptyRhs));
     }
 
     private bool Filter(ISet s, PullEvaluationContext context, IRefNode? activeGraph)
     {
-        if (filter == null) return true;
+        if (_filter == null) return true;
         try
         {
-            return filter.Expression.Accept(context.ExpressionProcessor, context, new ExpressionContext(s, activeGraph)).AsSafeBoolean();
+            return _filter.Expression.Accept(context.ExpressionProcessor, context, new ExpressionContext(s, activeGraph)).AsSafeBoolean();
         }
         catch (RdfQueryException)
         {
@@ -101,6 +110,7 @@ internal class AsyncLeftJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rh
         }
     }
 
+/*
     private class LhsSolution(ISet set) : ISet
     {
         public bool Joined { get; private set; }
@@ -176,4 +186,5 @@ internal class AsyncLeftJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rh
             return set.BindsAll(vars);
         }
     }
+    */
 }

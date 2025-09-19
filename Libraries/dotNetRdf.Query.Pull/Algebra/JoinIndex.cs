@@ -103,7 +103,7 @@ internal class JoinIndex
         if (results == null) return [];
         if (filterFunc != null)
         {
-            results = [.. results.Where(ix => filterFunc(_indexedSets[ix]))];
+            results = [.. results.Where(ix => filterFunc(_indexedSets[ix].Join(s)))];
         }
         if (_trackJoins)
         {

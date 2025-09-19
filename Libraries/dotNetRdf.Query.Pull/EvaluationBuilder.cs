@@ -71,6 +71,17 @@ internal class EvaluationBuilder
         IAsyncEvaluation rhs = Build(leftJoin.Rhs, context);
         var joinVars = new HashSet<string>(leftJoin.Lhs.Variables);
         joinVars.IntersectWith(new HashSet<string>(leftJoin.Rhs.Variables));
+        if (joinVars.Count == 0)
+        {
+            if (leftJoin.Filter == null)
+            {
+                return new AsyncCrossProductJoinEvaluation(lhs, rhs);
+            }
+            else
+            {
+                return new AsyncCrossProductLeftJoinEvaluation(lhs, rhs, leftJoin.Filter);
+            }
+        }
         var joinEval = new AsyncLeftJoinEvaluation(
             lhs,
             rhs,
