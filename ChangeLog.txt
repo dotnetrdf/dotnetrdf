@@ -1,6 +1,11 @@
 ﻿Change Log
 ==========
 
+3.4.1
+-----
+
+ENHANCEMENT: Update the asynchronous pull query engine to use indexed lookups for joins.
+
 3.4
 ---
 
