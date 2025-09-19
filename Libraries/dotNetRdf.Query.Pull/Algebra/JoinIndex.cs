@@ -21,7 +21,7 @@ internal class JoinIndex
         _trackJoins = trackJoins;
     }
 
-    public void Add(ISet s)
+    public int Add(ISet s)
     {
         _indexedSets.Add(s);
         var setIndex = _indexedSets.Count - 1;
@@ -56,6 +56,7 @@ internal class JoinIndex
                 _nulls[i].Add(setIndex);
             }
         }
+        return setIndex;
     }
 
     private HashSet<int> GetMatchesForVar(int varIx, ISet s, bool matchNulls = true)
@@ -79,7 +80,41 @@ internal class JoinIndex
         return results;
     }
 
-    public IEnumerable<ISet> GetMatches(ISet s, Func<ISet, bool>? filterFunc = null)
+    public IEnumerable<int> GetMatchIndexes(ISet s)
+    {
+        HashSet<int>? results = null;
+        for (var i = 0; i < _joinVars.Length; i++)
+        {
+            if (s.ContainsVariable(_joinVars[i]))
+            {
+                if (s[_joinVars[i]] == null)
+                {
+                    continue;
+                }
+                if (results == null)
+                {
+                    results = GetMatchesForVar(i, s);
+                }
+                else
+                {
+                    results.IntersectWith(GetMatchesForVar(i, s));
+                }
+            }
+        }
+        return results ?? [];
+    }
+
+    public ISet this[int index] => _indexedSets[index];
+
+    public void MarkJoined(int index)
+    {
+        if (_trackJoins)
+        {
+            unjoinedSets.Remove(index);
+        }
+    }
+
+    public IEnumerable<ISet> GetMatches(ISet s)
     {
         HashSet<int>? results = null;
         for (var i = 0; i < _joinVars.Length; i++)
@@ -101,10 +136,6 @@ internal class JoinIndex
             }
         }
         if (results == null) return [];
-        if (filterFunc != null)
-        {
-            results = [.. results.Where(ix => filterFunc(_indexedSets[ix].Join(s)))];
-        }
         if (_trackJoins)
         {
             unjoinedSets.ExceptWith(results);

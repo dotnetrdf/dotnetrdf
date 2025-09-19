@@ -58,20 +58,33 @@ internal class AsyncLeftJoinEvaluation
         Func<ISet, bool>? filterFunc = _filter == null ? null : (s => Filter(s, context, activeGraph));
         if (_rhsHasMore)
         {
-            _leftIndex.Add(lhSolution);
-            return _rightIndex.GetMatches(lhSolution, filterFunc);
-        }
-
-        var joinSolutions = _rightIndex.GetMatches(lhSolution, filterFunc)
-        .Select(s => s.Join(lhSolution))
-        .ToList();
-        if (joinSolutions.Count > 0)
-        {
+            var lhSolutionIndex = _leftIndex.Add(lhSolution);
+            var candidates = _rightIndex.GetMatchIndexes(lhSolution);
+            var joinSolutions = candidates
+                .Select(ix => _rightIndex[ix].Join(lhSolution))
+                .Where(s => filterFunc == null || filterFunc(s))
+                .ToList();
+            if (joinSolutions.Count > 0)
+            {
+                _leftIndex.MarkJoined(lhSolutionIndex);
+            }
             return joinSolutions;
         }
         else
         {
-            return [lhSolution.Join(_emptyRhs)];
+
+            var joinSolutions = _rightIndex.GetMatchIndexes(lhSolution)
+            .Select(ix => _rightIndex[ix].Join(lhSolution))
+            .Where(s => filterFunc == null || filterFunc(s))
+            .ToList();
+            if (joinSolutions.Count > 0)
+            {
+                return joinSolutions;
+            }
+            else
+            {
+                return [lhSolution.Join(_emptyRhs)];
+            }
         }
     }
 
@@ -83,8 +96,16 @@ internal class AsyncLeftJoinEvaluation
         }
 
         Func<ISet, bool>? filterFunc = _filter == null ? null : (s => Filter(s, context, activeGraph));
-        return _leftIndex.GetMatches(rhSolution, filterFunc)
-            .Select(s => s.Join(rhSolution));
+        var candidates = _leftIndex.GetMatchIndexes(rhSolution);
+        foreach (var ix in candidates)
+        {
+            var joinedSolution = _leftIndex[ix].Join(rhSolution);
+            if (filterFunc == null || filterFunc(joinedSolution))
+            {
+                _leftIndex.MarkJoined(ix);
+                yield return joinedSolution;
+            }
+        }
     }
 
     protected override IEnumerable<ISet>? OnLhsDone(PullEvaluationContext context)
@@ -109,82 +130,4 @@ internal class AsyncLeftJoinEvaluation
             return false;
         }
     }
-
-/*
-    private class LhsSolution(ISet set) : ISet
-    {
-        public bool Joined { get; private set; }
-
-        public bool Equals(ISet? other)
-        {
-            return set.Equals(other);
-        }
-
-        public void Add(string variable, INode value)
-        {
-            set.Add(variable, value);
-        }
-
-        public bool ContainsVariable(string variable)
-        {
-            return set.ContainsVariable(variable);
-        }
-
-        public bool IsCompatibleWith(ISet s, IEnumerable<string> vars)
-        {
-            return set.IsCompatibleWith(s, vars);
-        }
-
-        public bool IsMinusCompatibleWith(ISet s, IEnumerable<string> vars)
-        {
-            return set.IsMinusCompatibleWith(s, vars);
-        }
-
-        public int ID
-        {
-            get => set.ID;
-            set => set.ID = value;
-        }
-
-        public void Remove(string variable)
-        {
-            set.Remove(variable);
-        }
-
-        public INode this[string variable] => set[variable];
-
-        public IEnumerable<INode> Values => set.Values;
-
-        public IEnumerable<string> Variables => set.Variables;
-
-        public ISet Join(ISet other)
-        {
-            return set.Join(other);
-        }
-
-        public ISet? FilterJoin(ISet other, Func<ISet, bool>? filterFunc = null)
-        {
-            ISet joinResult = set.Join(other);
-            if (filterFunc != null)
-            {
-                if (filterFunc(joinResult) == false)
-                {
-                    return null;
-                }
-            }
-            Joined = true;
-            return set.Join(other);
-        }
-
-        public ISet Copy()
-        {
-            return set.Copy();
-        }
-
-        public bool BindsAll(IEnumerable<string> vars)
-        {
-            return set.BindsAll(vars);
-        }
-    }
-    */
 }
