@@ -71,6 +71,17 @@ internal class EvaluationBuilder
         IAsyncEvaluation rhs = Build(leftJoin.Rhs, context);
         var joinVars = new HashSet<string>(leftJoin.Lhs.Variables);
         joinVars.IntersectWith(new HashSet<string>(leftJoin.Rhs.Variables));
+        if (joinVars.Count == 0)
+        {
+            if (leftJoin.Filter == null)
+            {
+                return new AsyncCrossProductJoinEvaluation(lhs, rhs);
+            }
+            else
+            {
+                return new AsyncCrossProductLeftJoinEvaluation(lhs, rhs, leftJoin.Filter);
+            }
+        }
         var joinEval = new AsyncLeftJoinEvaluation(
             lhs,
             rhs,
@@ -114,7 +125,9 @@ internal class EvaluationBuilder
     {
         ISet<string> joinVars = new HashSet<string>(join.Lhs.Variables);
         joinVars.IntersectWith(join.Rhs.Variables);
-        return new AsyncJoinEvaluation(Build(join.Lhs, context), Build(join.Rhs, context), joinVars.ToArray());
+        IAsyncEvaluation lhs = Build(join.Lhs, context);
+        IAsyncEvaluation rhs = Build(join.Rhs, context);
+        return joinVars.Count > 0 ? new AsyncJoinEvaluation(lhs, rhs, joinVars.ToArray()) : new AsyncCrossProductJoinEvaluation(lhs, rhs);
     }
 
     private IAsyncEvaluation BuildBgp(IBgp bgp, PullEvaluationContext context)
@@ -129,13 +142,15 @@ internal class EvaluationBuilder
         {
             ITriplePattern tp = bgp.TriplePatterns[i];
             ISet<string> joinVars = new HashSet<string>(boundVars);
-            joinVars.IntersectWith(bgp.Variables);
-            boundVars.UnionWith(bgp.Variables);
+            joinVars.IntersectWith(tp.Variables);
+            boundVars.UnionWith(tp.Variables);
             result = tp switch
             {
                 FilterPattern fp => new AsyncSparqlFilterEvaluation(fp.Filter, result, true),
                 BindPattern bp => new AsyncBindPatternEvaluation(bp, result),
-                _ => new AsyncJoinEvaluation(result, BuildTriplePattern(tp, context), joinVars.ToArray())
+                _ => joinVars.Count > 0
+                    ? new AsyncJoinEvaluation(result, BuildTriplePattern(tp, context), joinVars.ToArray()) 
+                    : new AsyncCrossProductJoinEvaluation(result, BuildTriplePattern(tp, context))
             };
         }
         return result;
