@@ -45,7 +45,7 @@ public class DeleteCommand : BaseModificationCommand
     /// <param name="deletions">Pattern to construct Triples to delete.</param>
     /// <param name="where">Pattern to select data which is then used in evaluating the deletions pattern.</param>
     /// <param name="graphUri">URI of the affected Graph.</param>
-    [Obsolete("Replaced by DeleteCommand(GraphPatten, GraphPatter, IRefNode")]
+    [Obsolete("Replaced by DeleteCommand(GraphPatten, GraphPattern, IRefNode")]
     public DeleteCommand(GraphPattern deletions, GraphPattern where, Uri graphUri)
         : base(SparqlUpdateCommandType.Delete)
     {
