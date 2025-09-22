@@ -57,6 +57,7 @@ public class CreateCommand : SparqlUpdateCommand
     /// </summary>
     /// <param name="graphName">Name of the graph to create.</param>
     /// <param name="silent">Whether the create should be done silently.</param>
+    /// <exception cref="ArgumentNullException">Thrown when the <paramref name="graphName"/> is null.</exception>
     public CreateCommand(IRefNode graphName, bool silent = false) : base(SparqlUpdateCommandType.Create)
     {
         TargetGraphName = graphName ?? throw new ArgumentNullException(nameof(graphName));

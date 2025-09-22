@@ -54,9 +54,10 @@ public class DeleteCommand : BaseModificationCommand
     /// <summary>
     /// Creates a new DELETE command.
     /// </summary>
-    /// <param name="deletions">REQUIRED: Pattern to construct Triples to delete.</param>
-    /// <param name="where">REQUIRED: Pattern to select data which is then used in evaluating the deletions pattern.</param>
-    /// <param name="graphName">OPTIONAL: Name of the affected Graph. If null, the operations is applied to the default graph.</param>
+    /// <param name="deletions">Pattern to construct Triples to delete.</param>
+    /// <param name="where">Pattern to select data which is then used in evaluating the deletions pattern.</param>
+    /// <param name="graphName">Name of the affected Graph. If null, the operations is applied to the default graph.</param>
+    /// <exception cref="ArgumentNullException">Thrown when the <paramref name="deletions"/> or <paramref name="where"/> is null.</exception>
     public DeleteCommand(GraphPattern deletions, GraphPattern where, IRefNode graphName)
         : base(SparqlUpdateCommandType.Delete)
     {
