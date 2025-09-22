@@ -64,13 +64,20 @@ public class ClearCommand : SparqlUpdateCommand
     /// <param name="graphName">Graph URI.</param>
     /// <param name="mode">Clear Mode.</param>
     /// <param name="silent">Whether errors should be suppressed.</param>
+    /// <remarks>
+    /// <paramref name="graphName"/> is only relevant when <paramref name="mode"/> is <see cref="ClearMode.Graph"/>.
+    /// If <paramref name="graphName"/> is null and the <paramref name="mode"/> is <see cref="ClearMode.Graph"/>,
+    /// the <paramref name="mode"/> will be changed to <see cref="ClearMode.Default"/>.
+    /// </remarks>
     public ClearCommand(IRefNode graphName, ClearMode mode, bool silent)
         : base(SparqlUpdateCommandType.Clear)
     {
         TargetGraphName = graphName;
         Mode = mode;
         if (TargetGraphName == null && Mode == ClearMode.Graph) Mode = ClearMode.Default;
-        if (Mode == ClearMode.Default) TargetGraphName = null;
+        if (Mode == ClearMode.Default) {
+            TargetGraphName = null;
+        }
         Silent = silent;
     }
 
@@ -81,10 +88,8 @@ public class ClearCommand : SparqlUpdateCommand
     /// <param name="mode">Clear Mode.</param>
     /// <param name="silent">Whether errors should be suppressed.</param>
     [Obsolete("Replaced by ClearCommand(IRefNode, ClearMode, bool)")]
-    public ClearCommand(Uri graphName, ClearMode mode, bool silent) : this(graphName == null ? null : new UriNode(graphName), mode, silent)
-    {
-
-    }
+    public ClearCommand(Uri graphName, ClearMode mode, bool silent) 
+        : this(graphName == null ? null : new UriNode(graphName), mode, silent) { }
 
     /// <summary>
     /// Creates a Command which clears the given Graph.
@@ -100,9 +105,7 @@ public class ClearCommand : SparqlUpdateCommand
     /// <param name="graphUri">URI of the Graph to clear.</param>
     [Obsolete("Replaced by ClearCommand(IRefNode)")]
     public ClearCommand(Uri graphUri)
-        : this(graphUri == null ? null : new UriNode(graphUri), ClearMode.Graph, false)
-    {
-    }
+        : this(graphUri == null ? null : new UriNode(graphUri), ClearMode.Graph, false) { }
 
 
     /// <summary>
@@ -116,6 +119,9 @@ public class ClearCommand : SparqlUpdateCommand
     /// </summary>
     /// <param name="mode">Clear Mode.</param>
     /// <param name="silent">Whether errors should be suppressed.</param>
+    /// <remarks>
+    /// If <paramref name="mode"/> is <see cref="ClearMode.Graph"/>, the Command will operate on the Default Graph.
+    /// </remarks>
     public ClearCommand(ClearMode mode, bool silent)
         : this((IRefNode)null, mode, silent) { }
 
@@ -123,6 +129,9 @@ public class ClearCommand : SparqlUpdateCommand
     /// Creates a Command which performs the specified type of clear.
     /// </summary>
     /// <param name="mode">Clear Mode.</param>
+    /// <remarks>
+    /// If <paramref name="mode"/> is <see cref="ClearMode.Graph"/>, the Command will operate on the Default Graph.
+    /// </remarks>
     public ClearCommand(ClearMode mode)
         : this(mode, false) { }
 

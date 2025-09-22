@@ -52,8 +52,13 @@ public class ModifyCommand
     public ModifyCommand(GraphPattern deletions, GraphPattern insertions, GraphPattern where,
         IRefNode graphName = null) : base(SparqlUpdateCommandType.Modify)
     {
-        if (!IsValidDeletePattern(deletions, true)) throw new SparqlUpdateException("Cannot create a DELETE command where any of the Triple Patterns are not constructable triple patterns (Blank Node Variables are not permitted) or a GRAPH clause has nested Graph Patterns");
-
+        if (deletions == null) throw new ArgumentNullException(nameof(deletions));
+        if (insertions == null) throw new ArgumentNullException(nameof(insertions));
+        if (where == null) throw new ArgumentNullException(nameof(where));
+        if (!IsValidDeletePattern(deletions, true))
+        {
+            throw new SparqlUpdateException("Cannot create a DELETE command where any of the Triple Patterns are not constructable triple patterns (Blank Node Variables are not permitted) or a GRAPH clause has nested Graph Patterns");
+        }
         _deletePattern = deletions;
         _insertPattern = insertions;
         _wherePattern = where;

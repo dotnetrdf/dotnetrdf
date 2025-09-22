@@ -40,15 +40,15 @@ public class CreateCommand : SparqlUpdateCommand
     /// </summary>
     /// <param name="graphUri">URI of the Graph to create.</param>
     /// <param name="silent">Whether the create should be done silently.</param>
+    [Obsolete("Replaced by CreateCommand(IRefNode, bool)")]
     public CreateCommand(Uri graphUri, bool silent)
-        : this(graphUri == null ? null : new UriNode(graphUri), silent) 
-    {
-    }
+        : this(graphUri == null ? null : new UriNode(graphUri), silent) { }
 
     /// <summary>
     /// Creates a new CREATE command.
     /// </summary>
     /// <param name="graphUri">URI of the Graph to create.</param>
+    [Obsolete("Replaced by CreateCommand(IRefNode, bool)")]
     public CreateCommand(Uri graphUri)
         : this(graphUri == null ? null : new UriNode(graphUri), false) { }
 

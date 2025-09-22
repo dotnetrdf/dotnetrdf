@@ -49,6 +49,8 @@ public class InsertCommand
     public InsertCommand(GraphPattern insertions, GraphPattern where, IRefNode graphName) : base(
         SparqlUpdateCommandType.Insert)
     {
+        if (insertions == null) throw new ArgumentNullException(nameof(insertions));
+        if (where == null) throw new ArgumentNullException(nameof(where));
         InsertPattern = insertions;
         WherePattern = where;
         WithGraphName = graphName;
@@ -62,9 +64,7 @@ public class InsertCommand
     /// <param name="graphUri">URI of the affected Graph.</param>
     [Obsolete("Replaced by InsertCommand(GraphPattern, GraphPattern, IRefNode)")]
     public InsertCommand(GraphPattern insertions, GraphPattern where, Uri graphUri)
-        : this(insertions, where, graphUri == null ? null : new UriNode(graphUri))
-    {
-    }
+        : this(insertions, where, graphUri == null ? null : new UriNode(graphUri)) { }
 
     /// <summary>
     /// Creates a new INSERT command which operates on the Default Graph.

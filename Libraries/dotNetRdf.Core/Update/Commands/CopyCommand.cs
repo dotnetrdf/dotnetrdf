@@ -56,8 +56,8 @@ public class CopyCommand
     /// <summary>
     /// Creates a Command which Copies the contents of one Graph to another overwriting the destination Graph.
     /// </summary>
-    /// <param name="sourceName">Source Graph name.</param>
-    /// <param name="destName">Destination Graph name.</param>
+    /// <param name="sourceName">Source Graph name, or null if the source graph is the default graph.</param>
+    /// <param name="destName">Destination Graph name, or null if the destination graph is the default graph.</param>
     /// <param name="silent">Whether errors should be suppressed.</param>
     public CopyCommand(IRefNode sourceName, IRefNode destName, bool silent = false)
         : base(SparqlUpdateCommandType.Copy, sourceName, destName, silent) { }

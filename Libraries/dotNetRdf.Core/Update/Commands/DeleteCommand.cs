@@ -47,25 +47,26 @@ public class DeleteCommand : BaseModificationCommand
     /// <param name="graphUri">URI of the affected Graph.</param>
     [Obsolete("Replaced by DeleteCommand(GraphPatten, GraphPattern, IRefNode")]
     public DeleteCommand(GraphPattern deletions, GraphPattern where, Uri graphUri)
-        : base(SparqlUpdateCommandType.Delete)
+        : this(deletions, where, graphUri == null ? null : new UriNode(graphUri))
     {
-        if (!IsValidDeletePattern(deletions, true)) throw new SparqlUpdateException("Cannot create a DELETE command where any of the Triple Patterns are not constructable triple patterns (Blank Node Variables are not permitted) or a GRAPH clause has nested Graph Patterns");
-
-        DeletePattern = deletions;
-        WherePattern = where;
-        WithGraphName = graphUri == null ? null : new UriNode(graphUri);
     }
 
     /// <summary>
     /// Creates a new DELETE command.
     /// </summary>
-    /// <param name="deletions">Pattern to construct Triples to delete.</param>
-    /// <param name="where">Pattern to select data which is then used in evaluating the deletions pattern.</param>
-    /// <param name="graphName">Name of the affected Graph.</param>
+    /// <param name="deletions">REQUIRED: Pattern to construct Triples to delete.</param>
+    /// <param name="where">REQUIRED: Pattern to select data which is then used in evaluating the deletions pattern.</param>
+    /// <param name="graphName">OPTIONAL: Name of the affected Graph. If null, the operations is applied to the default graph.</param>
     public DeleteCommand(GraphPattern deletions, GraphPattern where, IRefNode graphName)
         : base(SparqlUpdateCommandType.Delete)
     {
-        if (!IsValidDeletePattern(deletions, true)) throw new SparqlUpdateException("Cannot create a DELETE command where any of the Triple Patterns are not constructable triple patterns (Blank Node Variables are not permitted) or a GRAPH clause has nested Graph Patterns");
+        if (deletions == null) throw new ArgumentNullException(nameof(deletions));
+        if (where == null) throw new ArgumentNullException(nameof(where));
+
+        if (!IsValidDeletePattern(deletions, true))
+        {
+            throw new SparqlUpdateException("Cannot create a DELETE command where any of the Triple Patterns are not constructable triple patterns (Blank Node Variables are not permitted) or a GRAPH clause has nested Graph Patterns");
+        }
 
         DeletePattern = deletions;
         WherePattern = where;
@@ -77,13 +78,7 @@ public class DeleteCommand : BaseModificationCommand
     /// <param name="deletions">Pattern to construct Triples to delete.</param>
     /// <param name="where">Pattern to select data which is then used in evaluating the deletions pattern.</param>
     public DeleteCommand(GraphPattern deletions, GraphPattern where)
-        : base(SparqlUpdateCommandType.Delete)
-    {
-        if (!IsValidDeletePattern(deletions, true)) throw new SparqlUpdateException("Cannot create a DELETE command where any of the Triple Patterns are not constructable triple patterns (Blank Node Variables are not permitted) or a GRAPH clause has nested Graph Patterns");
-
-        DeletePattern = deletions;
-        WherePattern = where;
-    }
+        : this(deletions, where, (IRefNode)null) { }
 
     /// <summary>
     /// Creates a new DELETE command. 
@@ -100,12 +95,10 @@ public class DeleteCommand : BaseModificationCommand
     /// <param name="where">Pattern to construct Triples to delete.</param>
     /// <param name="graphName">Name of the affected Graph.</param>
     public DeleteCommand(GraphPattern where, IRefNode graphName)
-        : this(where, where, graphName)
-    {
-    }
+        : this(where, where, graphName) { }
 
     /// <summary>
-    /// Createa a new DELETE command which operates on the Default Graph.
+    /// Creates a new DELETE command which operates on the Default Graph.
     /// </summary>
     /// <param name="where">Pattern to construct Triples to delete.</param>
     public DeleteCommand(GraphPattern where)

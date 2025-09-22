@@ -53,8 +53,8 @@ public class UpdateTests2
         Console.WriteLine("Store has " + store.Graphs.Count + " Graphs");
 
         //Create a couple of Graphs using Create Commands
-        var create1 = new CreateCommand(new Uri("http://example.org/1"));
-        var create2 = new CreateCommand(new Uri("http://example.org/2"));
+        var create1 = new CreateCommand(new UriNode(new Uri("http://example.org/1")));
+        var create2 = new CreateCommand(new UriNode(new Uri("http://example.org/2")));
         var nodeFactory = new NodeFactory();
         IUriNode g1 = nodeFactory.CreateUriNode(new Uri("http://example.org/1"));
         IUriNode g2 = nodeFactory.CreateUriNode(new Uri("http://example.org/2"));
@@ -77,7 +77,7 @@ public class UpdateTests2
         }
 
         //Equivalent Create with SILENT should not error
-        var create3 = new CreateCommand(new Uri("http://example.org/1"), true);
+        var create3 = new CreateCommand(new UriNode(new Uri("http://example.org/1")), true);
         try
         {
             store.ExecuteUpdate(create3);
