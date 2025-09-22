@@ -46,9 +46,12 @@ public class InsertCommand
     /// <param name="insertions">Pattern to construct Triples to insert.</param>
     /// <param name="where">Pattern to select data which is then used in evaluating the insertions.</param>
     /// <param name="graphName">Name of the affected Graph.</param>
+    /// <exception cref="ArgumentNullException">Thrown when the <paramref name="insertions"/> or <paramref name="where"/> is null.</exception>
     public InsertCommand(GraphPattern insertions, GraphPattern where, IRefNode graphName) : base(
         SparqlUpdateCommandType.Insert)
     {
+        if (insertions == null) throw new ArgumentNullException(nameof(insertions));
+        if (where == null) throw new ArgumentNullException(nameof(where));
         InsertPattern = insertions;
         WherePattern = where;
         WithGraphName = graphName;
@@ -62,9 +65,7 @@ public class InsertCommand
     /// <param name="graphUri">URI of the affected Graph.</param>
     [Obsolete("Replaced by InsertCommand(GraphPattern, GraphPattern, IRefNode)")]
     public InsertCommand(GraphPattern insertions, GraphPattern where, Uri graphUri)
-        : this(insertions, where, graphUri == null ? null : new UriNode(graphUri))
-    {
-    }
+        : this(insertions, where, graphUri == null ? null : new UriNode(graphUri)) { }
 
     /// <summary>
     /// Creates a new INSERT command which operates on the Default Graph.

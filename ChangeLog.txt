@@ -5,6 +5,7 @@
 -----
 
 ENHANCEMENT: Update the asynchronous pull query engine to use indexed lookups for joins.
+FIX: Constructors for SPARQL update commands now validate inputs to guard against null values for required parameters. Documentation has been updated for the affected classes.
 
 3.4
 ---

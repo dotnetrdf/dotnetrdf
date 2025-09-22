@@ -36,10 +36,11 @@ public class MoveCommand : BaseTransferCommand
     /// <summary>
     /// Creates a command which moves data from one graph to another, overwriting the destination graph and deleting the source graph.
     /// </summary>
-    /// <param name="sourceGraphName">Name of the source graph.</param>
-    /// <param name="destinationGraphName">Name of the destination graph.</param>
+    /// <param name="sourceGraphName">Name of the source graph. If null, the default graph will be used as the source graph.</param>
+    /// <param name="destinationGraphName">Name of the destination graph. If null, the default graph will be used as the destination graph.</param>
     /// <param name="silent">Whether errors should be suppressed.</param>
-    public MoveCommand(IRefNode sourceGraphName, IRefNode destinationGraphName, bool silent = false):base(SparqlUpdateCommandType.Move, sourceGraphName, destinationGraphName, silent){}
+    public MoveCommand(IRefNode sourceGraphName, IRefNode destinationGraphName, bool silent = false)
+        : base(SparqlUpdateCommandType.Move, sourceGraphName, destinationGraphName, silent) { }
 
     /// <summary>
     /// Creates a Command which Moves data from one Graph to another overwriting the destination Graph and deleting the source Graph.

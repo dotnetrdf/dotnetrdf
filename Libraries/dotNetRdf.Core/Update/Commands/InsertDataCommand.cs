@@ -42,10 +42,19 @@ public class InsertDataCommand
     /// Creates a new INSERT DATA command.
     /// </summary>
     /// <param name="pattern">Pattern containing concrete Triples to insert.</param>
+    /// <exception cref="ArgumentNullException">Thrown when the pattern is null.</exception>
+    /// <exception cref="SparqlUpdateException">Thrown when the pattern is not valid for use in an INSERT DATA command.</exception>
     public InsertDataCommand(GraphPattern pattern)
         : base(SparqlUpdateCommandType.InsertData) 
     {
-        if (!IsValidDataPattern(pattern, true)) throw new SparqlUpdateException("Cannot create a INSERT DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or a GRAPH clause has nested Graph Patterns");
+        if (pattern == null)
+        {
+            throw new ArgumentNullException(nameof(pattern));
+        }
+        if (!IsValidDataPattern(pattern, true))
+        {
+            throw new SparqlUpdateException("Cannot create a INSERT DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or a GRAPH clause has nested Graph Patterns");
+        }
         DataPattern = pattern;
     }
 

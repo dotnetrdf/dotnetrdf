@@ -42,10 +42,13 @@ public class LoadCommand : SparqlUpdateCommand
     /// <param name="graphName">Name of the graph to store data in. If null or omitted, the target is the default graph.</param>
     /// <param name="silent">Whether errors loading should be suppressed.</param>
     /// <param name="loader">The loader to use for retrieving and parsing data.</param>
+    /// <exception cref="ArgumentNullException">Thrown when the source URI is null.</exception>
     public LoadCommand(Uri sourceUri, IRefNode graphName = null, bool silent = false, Loader loader = null)
         : base(SparqlUpdateCommandType.Load)
     {
-        if (sourceUri == null) throw new ArgumentNullException(nameof(sourceUri));
+        if (sourceUri == null) {
+            throw new ArgumentNullException(nameof(sourceUri));
+        }
         SourceUri = sourceUri;
         TargetGraphName = graphName;
         Silent = silent;

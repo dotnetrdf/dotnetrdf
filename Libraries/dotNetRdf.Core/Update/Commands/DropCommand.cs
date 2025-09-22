@@ -41,12 +41,23 @@ public class DropCommand : SparqlUpdateCommand
     /// <param name="graphName">Name of the Graph to DROP.</param>
     /// <param name="mode">DROP Mode to use.</param>
     /// <param name="silent">Whether the DROP should be done silently.</param>
-    public DropCommand(IRefNode graphName = null, ClearMode mode = ClearMode.Graph, bool silent = false) : base(SparqlUpdateCommandType.Drop)
+    /// <remarks>
+    /// If <paramref name="graphName"/> is null and <paramref name="mode"/> is <see cref="ClearMode.Graph"/>, the Command will operate on the Default Graph.
+    /// If <paramref name="mode"/> is <see cref="ClearMode.Default"/>, <paramref name="graphName"/> is ignored and <see cref="TargetGraphName"/> will be set to null.
+    /// </remarks>
+    public DropCommand(IRefNode graphName = null, ClearMode mode = ClearMode.Graph, bool silent = false) 
+        : base(SparqlUpdateCommandType.Drop)
     {
         TargetGraphName = graphName;
         Mode = mode;
-        if (TargetGraphName == null && Mode == ClearMode.Graph) Mode = ClearMode.Default;
-        if (Mode == ClearMode.Default) TargetGraphName = null;
+        if (TargetGraphName == null && Mode == ClearMode.Graph)
+        {
+            Mode = ClearMode.Default;
+        }
+        if (Mode == ClearMode.Default)
+            {
+                TargetGraphName = null;
+            }
         Silent = silent;
     }
 
@@ -99,6 +110,9 @@ public class DropCommand : SparqlUpdateCommand
     /// </summary>
     /// <param name="mode">Clear Mode.</param>
     /// <param name="silent">Whether errors should be suppressed.</param>
+    /// <remarks>
+    /// If <paramref name="mode"/> is <see cref="ClearMode.Graph"/>, the Command will operate on the Default Graph.
+    /// </remarks>
     public DropCommand(ClearMode mode, bool silent)
         : this((IRefNode)null, mode, silent) { }
 

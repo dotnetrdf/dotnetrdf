@@ -37,10 +37,11 @@ public class AddCommand
     /// <summary>
     /// Creates a command which merges the data from the source graph into the destination graph.
     /// </summary>
-    /// <param name="sourceGraphName">Name of the source graph.</param>
-    /// <param name="destinationGraphName">Name of the destination graph.</param>
-    /// <param name="silent">Whether errors should be suppressed.</param>
-    public AddCommand(IRefNode sourceGraphName, IRefNode destinationGraphName, bool silent = false):base(SparqlUpdateCommandType.Add, sourceGraphName, destinationGraphName, silent){}
+    /// <param name="sourceGraphName">Name of the source graph. If null, the source graph is the default graph.</param>
+    /// <param name="destinationGraphName">Name of the destination graph. If null, the destination graph is the default graph.</param>
+    /// <param name="silent">Whether errors should be suppressed. Defaults to `false`.</param>
+    public AddCommand(IRefNode sourceGraphName, IRefNode destinationGraphName, bool silent = false)
+        :base(SparqlUpdateCommandType.Add, sourceGraphName, destinationGraphName, silent){}
 
     /// <summary>
     /// Creates a Command which merges the data from the Source Graph into the Destination Graph.

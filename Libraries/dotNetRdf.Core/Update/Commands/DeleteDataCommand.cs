@@ -42,11 +42,20 @@ public class DeleteDataCommand : SparqlUpdateCommand
     /// <summary>
     /// Creates a new DELETE DATA command.
     /// </summary>
-    /// <param name="pattern">Pattern composed of concrete Triples to delete.</param>
+    /// <param name="pattern">Pattern composed of concrete Triples to delete. Must not be null.</param>
+    /// <throws cref="ArgumentNullException">Thrown if the given pattern is null.</throws>
+    /// <throws cref="SparqlUpdateException">Thrown if the given pattern is not valid for use in a DELETE DATA command.</throws>
     public DeleteDataCommand(GraphPattern pattern)
         : base(SparqlUpdateCommandType.DeleteData) 
     {
-        if (!IsValidDataPattern(pattern, true)) throw new SparqlUpdateException("Cannot create a DELETE DATA command where any of the Triple Patterns are not concrete triples (Variables/Blank Nodes are not permitted) or a GRAPH clause has nested Graph Patterns");
+        if (pattern == null)
+        {
+            throw new ArgumentNullException(nameof(pattern));
+        }
+        if (!IsValidDataPattern(pattern, true))
+        {
+            throw new SparqlUpdateException("Cannot create a DELETE DATA command where any of the Triple Patterns are not concrete triples (Variables/Blank Nodes are not permitted) or a GRAPH clause has nested Graph Patterns");
+        }
         _pattern = pattern;
     }
 
