@@ -117,7 +117,7 @@ jobs:
     - name: Download coverage artifacts
       uses: actions/download-artifact@v5
     - name: Generate coverage report
-      uses: danielpalme/ReportGenerator-GitHub-Action@5.4.13
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.4.14
       with:
         reports: '*\*\*.xml'
         targetdir: 'coveragereport'
