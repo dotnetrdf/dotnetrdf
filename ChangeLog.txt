@@ -6,6 +6,7 @@
 
 ENHANCEMENT: Update the asynchronous pull query engine to use indexed lookups for joins.
 FIX: Constructors for SPARQL update commands now validate inputs to guard against null values for required parameters. Documentation has been updated for the affected classes.
+FIX: Fixed the logic for determining the base URI specified by custom RDF handlers when parsing. Thanks to @rorlic for the report. (#758)
 
 3.4
 ---
