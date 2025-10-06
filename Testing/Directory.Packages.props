@@ -2,7 +2,7 @@
 	<Import Project="$([MSBuild]::GetPathOfFileAbove(Directory.Packages.props, $(MSBuildThisFileDirectory)..))" />
 	<ItemGroup>
 		<PackageVersion Include="FluentAssertions" Version="8.7.0" />
-		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
 		<PackageVersion Include="Moq" Version="4.20.72" />
 		<PackageVersion Include="WireMock.Net" Version="1.12.0" />
 		<PackageVersion Include="xunit.v3" Version="3.0.1" />
