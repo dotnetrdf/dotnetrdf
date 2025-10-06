@@ -43,26 +43,15 @@ public static class HandlerExtensions
     /// <returns></returns>
     internal static Uri GetBaseUri(this IRdfHandler handler)
     {
-        if (handler is GraphHandler)
+        if (handler is IWrappingRdfHandler wrappingRdfHandler)
         {
-            return ((GraphHandler)handler).BaseUri;
+            return wrappingRdfHandler.InnerHandlers.Select(h => GetBaseUri(h)).FirstOrDefault(h => h != null);
         }
-        else if (handler is IWrappingRdfHandler)
+        if (handler is BaseHandler baseHandler)
         {
-            IRdfHandler temp = ((IWrappingRdfHandler)handler).InnerHandlers.FirstOrDefault(h => h.GetBaseUri() != null);
-            if (temp == null)
-            {
-                return null;
-            }
-            else 
-            {
-               return temp.GetBaseUri();
-            }
+            return baseHandler.BaseUri;
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     /// <summary>
