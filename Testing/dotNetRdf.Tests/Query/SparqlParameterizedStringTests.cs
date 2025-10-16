@@ -49,4 +49,21 @@ public class SparqlParameterizedStringTests
         Assert.Equal("SELECT * WHERE { ?s a \"test\" }", sut.ToString());
     }
 
+    [Fact]
+    public void SetParameterShouldIgnoreLiteralInComments()
+    {
+        var sut = new SparqlParameterizedString("# Comment that has a ' char in it\nSELECT * WHERE { ?s a @o }");
+        sut.SetParameter("@o", new NodeFactory().CreateLiteralNode("test"));
+
+        Assert.Equal("# Comment that has a ' char in it\nSELECT * WHERE { ?s a \"test\" }", sut.ToString());
+    }
+
+    [Fact]
+    public void SetParameterShouldIgnoreParametersInComments()
+    {
+        var sut = new SparqlParameterizedString("# Comment with @o reference\nSELECT * WHERE { ?s a @o }");
+        sut.SetParameter("@o", new NodeFactory().CreateLiteralNode("test"));
+
+        Assert.Equal("# Comment with @o reference\nSELECT * WHERE { ?s a \"test\" }", sut.ToString());
+    }
 }

@@ -604,6 +604,7 @@ public class SparqlParameterizedString
         var inLiteral = false;
         var inLongLiteral = false;
         var escaping = false;
+        var inComment = false;
 
         var currentSegment = new StringBuilder();
         for (int i = 0, l = value.Length; i < l; i++)
@@ -611,6 +612,19 @@ public class SparqlParameterizedString
             var c = value[i];
             switch (c)
             {
+                case '#':
+                    if (!inLiteral && !inIri)
+                    {
+                        inComment = true;
+                    }
+                    break;
+                case '\n':
+                case '\r':
+                    if (inComment)
+                    {
+                        inComment = false;
+                    }
+                    break;
                 case '\\':
                     if (inLiteral)
                     {
@@ -619,7 +633,7 @@ public class SparqlParameterizedString
                     break;
                 case '\'':
                 case '"':
-                    if (!inLiteral)
+                    if (!inComment && !inLiteral)
                     {
                         literalOpeningChar = c;
                         inLiteral = true;
@@ -630,7 +644,7 @@ public class SparqlParameterizedString
                             i += 2;
                         }
                     }
-                    else if (!escaping && c == literalOpeningChar)
+                    else if (!inComment && !escaping && c == literalOpeningChar)
                     {
                         if (!inLongLiteral)
                         {
@@ -645,13 +659,16 @@ public class SparqlParameterizedString
                     }
                     break;
                 case '<':
-                    // toggle whether me may start a Iri or break one
-                    inIri = !inIri;
+                    if (!inComment)
+                    {
+                        // toggle whether me may start a Iri or break one
+                        inIri = !inIri;
+                    }
                     break;
                 case '@':
                 case '$':
                 case '?':
-                    if (!inLiteral && !inIri)
+                    if (!inLiteral && !inIri && !inComment)
                     {
                         if (c == '@' && i > 0 && value[i - 1] == '"')
                         {
