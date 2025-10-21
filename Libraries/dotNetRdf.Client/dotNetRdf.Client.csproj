@@ -30,7 +30,6 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <PackageReference Include="HtmlAgilityPack" />
     <PackageReference Include="Microsoft.Extensions.Configuration" />
-  <PackageReference Include="System.Configuration.ConfigurationManager" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
   </ItemGroup>
