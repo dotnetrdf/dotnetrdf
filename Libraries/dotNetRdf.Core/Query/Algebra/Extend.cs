@@ -145,7 +145,7 @@ public class Extend
     /// <returns></returns>
     public override string ToString()
     {
-        return "Extend(" + InnerAlgebra.ToSafeString() + ", " + AssignExpression + " AS ?" + VariableName + ")";
+        return $"Extend({InnerAlgebra}, " + AssignExpression + " AS ?" + VariableName + ")";
     }
 
     /// <inheritdoc />

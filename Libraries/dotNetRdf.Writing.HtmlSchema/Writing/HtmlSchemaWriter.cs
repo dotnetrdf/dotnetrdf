@@ -139,7 +139,7 @@ public class HtmlSchemaWriter
         context.HtmlWriter.WriteEncodedText("Schema");
         if (ontoNode != null && ontoLabel != null)
         {
-            context.HtmlWriter.WriteEncodedText(" - " + ontoLabel.ToSafeString());
+            context.HtmlWriter.WriteEncodedText(" - " + ontoLabel.ToString());
         }
         else if (context.Graph.BaseUri != null)
         {
@@ -165,7 +165,7 @@ public class HtmlSchemaWriter
         context.HtmlWriter.WriteEncodedText("Schema");
         if (ontoNode != null && ontoLabel != null)
         {
-            context.HtmlWriter.WriteEncodedText(" - " + ontoLabel.ToSafeString());
+            context.HtmlWriter.WriteEncodedText(" - " + ontoLabel.ToString());
         }
         else if (context.Graph.BaseUri != null)
         {

@@ -700,16 +700,6 @@ public static class Extensions
 #region String related Extensions
 
     /// <summary>
-    /// Gets either the String representation of the Object or the Empty String if the object is null.
-    /// </summary>
-    /// <param name="obj">Object.</param>
-    /// <returns></returns>
-    public static string ToSafeString(this object obj)
-    {
-        return (obj == null) ? string.Empty : obj.ToString();
-    }
-
-    /// <summary>
     /// Gets either the String representation of the URI or the Empty String if the URI is null.
     /// </summary>
     /// <param name="u">URI.</param>

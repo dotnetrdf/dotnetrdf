@@ -72,7 +72,7 @@ public class StoreCountHandler : BaseRdfHandler
     protected override bool HandleQuadInternal(Triple t, IRefNode graph)
     {
         TripleCount++;
-        _graphs.Add(graph.ToSafeString());
+        _graphs.Add($"{graph}");
         return true;
     }
 

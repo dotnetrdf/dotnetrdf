@@ -182,7 +182,7 @@ public class DeleteDataCommand : SparqlUpdateCommand
 
         if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
 
-        return affectedUris.Contains(graphName.ToSafeString());
+        return affectedUris.Contains($"{graphName}");
     }
 
 
