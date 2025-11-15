@@ -281,7 +281,7 @@ public abstract class BaseSet
         var count = 0;
         foreach (var var in Variables.OrderBy(v => v))
         {
-            output.Append("?" + var + " = " + this[var].ToSafeString());
+            output.Append("?" + var + $" = {this[var]}");
             output.Append(" , ");
             count++;
         }

@@ -60,7 +60,7 @@ class PersistentGraphCollection
             if (_manager.UpdateSupported)
             {
                 AttachHandlers(g);
-                if (_removedGraphs.Contains(g.Name.ToSafeString()) || !ContainsInternal(g.Name))
+                if (_removedGraphs.Contains($"{g.Name}") || !ContainsInternal(g.Name))
                 {
                     // When a new graph is introduced that does not exist in the underlying store
                     // be sure to persist the initial triples
@@ -83,7 +83,7 @@ class PersistentGraphCollection
     {
         if (!_persisting)
         {
-            var uri = g.Name.ToSafeString();
+            var uri = $"{g.Name}";
             _removedGraphs.Add(uri);
             if (_manager.UpdateSupported)
             {
@@ -117,7 +117,7 @@ class PersistentGraphCollection
     /// <returns></returns>
     public override bool Contains(IRefNode graphName)
     {
-        var uri = graphName.ToSafeString();
+        var uri = $"{graphName}";
         if (base.Contains(graphName))
         {
             return true;
@@ -128,7 +128,7 @@ class PersistentGraphCollection
             var g = new Graph(graphName);
             try
             {
-                _manager.LoadGraph(g, graphName.ToSafeString());
+                _manager.LoadGraph(g, $"{graphName}");
                 if (g.Triples.Count > 0)
                 {
                     // If we're going to return true we must also store the Graph in the collection
@@ -259,7 +259,7 @@ class PersistentGraphCollection
         var handler = new AnyHandler();
         try
         {
-            _manager.LoadGraph(handler, graphName.ToSafeString());
+            _manager.LoadGraph(handler, $"{graphName}");
             return handler.Any;
         }
         catch

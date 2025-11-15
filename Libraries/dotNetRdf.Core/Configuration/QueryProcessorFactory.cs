@@ -104,7 +104,7 @@ public class QueryProcessorFactory : IObjectFactory
                 }
                 else
                 {
-                    throw new DotNetRdfConfigurationException("Unable to load the Remote Query Processor identified by the Node '" + objNode.ToSafeString() + "' as the value given for the dnr:endpoint property points to an Object that cannot be loaded as an object which is a SparqlRemoteEndpoint");
+                    throw new DotNetRdfConfigurationException($"Unable to load the Remote Query Processor identified by the Node '{objNode}' as the value given for the dnr:endpoint property points to an Object that cannot be loaded as an object which is a SparqlRemoteEndpoint");
                 }
                 break;
 
