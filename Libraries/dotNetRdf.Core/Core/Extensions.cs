@@ -678,14 +678,6 @@ public static class Extensions
         return string.IsNullOrEmpty(str) ? null : (uriFactory ?? UriFactory.Root).Create(str);
     }
 
-    internal static string ToSafeString(IRefNode refNode)
-    {
-        if (refNode == null) return string.Empty;
-        if (refNode.NodeType == NodeType.Uri) return ((IUriNode)refNode).Uri.AbsoluteUri;
-        if (refNode.NodeType == NodeType.Blank) return $"_:{((IBlankNode)refNode).InternalID}";
-        throw new RdfException("Unexpected node type in ToSafeString(IRefNode). Expected Either Uri or Blank but got " + refNode.NodeType);
-    }
-
     /// <summary>
     /// Gets the String representation of the URI formatted using the given Formatter.
     /// </summary>
