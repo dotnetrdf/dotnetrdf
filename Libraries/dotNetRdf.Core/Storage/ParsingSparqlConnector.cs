@@ -199,7 +199,7 @@ public class ParsingSparqlConnector
         {
             g.BaseUri = g.UriFactory.Create(graphUri);
         }
-        LoadGraph(new GraphHandler(g), graphUri.ToSafeString());
+        LoadGraph(new GraphHandler(g), graphUri ?? "");
     }
 
     /// <summary>

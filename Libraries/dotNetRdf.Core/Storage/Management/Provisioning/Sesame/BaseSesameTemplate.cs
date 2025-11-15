@@ -102,7 +102,7 @@ public abstract class BaseSesameTemplate
         // Assert basic triples
         g.Assert(ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:Repository"));
         g.Assert(ContextNode, g.CreateUriNode("rep:repositoryID"), g.CreateLiteralNode(ID));
-        g.Assert(ContextNode, g.CreateUriNode("rdfs:label"), g.CreateLiteralNode(Label.ToSafeString()));
+        g.Assert(ContextNode, g.CreateUriNode("rdfs:label"), g.CreateLiteralNode(Label ?? ""));
         return g;
     }
 

@@ -293,7 +293,7 @@ public class ExplainQueryProcessor
                     {
                         // Query specifies one/more named Graphs
                         PrintExplanations("Graph clause uses variable ?" + gvar + " which is restricted to graphs specified by the queries FROM NAMED clause(s)");
-                        activeGraphs.AddRange(context.Query.NamedGraphNames.Select(u => u.ToSafeString()));
+                        activeGraphs.AddRange(context.Query.NamedGraphNames.Select(u => $"{u}"));
                     }
                     else if (context.Query != null && context.Query.DefaultGraphNames.Any() && !context.Query.NamedGraphNames.Any())
                     {
@@ -305,7 +305,7 @@ public class ExplainQueryProcessor
                     {
                         // Query is over entire dataset/default Graph since no named Graphs are explicitly specified
                         PrintExplanations("Graph clause uses variable ?" + gvar + " which accesses all named graphs provided by the dataset");
-                        activeGraphs.AddRange(context.Data.GraphNames.Select(u => u.ToSafeString()));
+                        activeGraphs.AddRange(context.Data.GraphNames.Select(u => $"{u}"));
                     }
                 }
 

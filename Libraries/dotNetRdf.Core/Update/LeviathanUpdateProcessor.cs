@@ -1068,7 +1068,7 @@ public class LeviathanUpdateProcessor
                                         }
                                         if (temp.NodeType == NodeType.Uri)
                                         {
-                                            graphUri = temp.ToSafeString();
+                                            graphUri = $"{temp}";
                                         }
                                         else
                                         {
@@ -1441,7 +1441,7 @@ public class LeviathanUpdateProcessor
                                     }
                                     else if (temp.NodeType == NodeType.Uri)
                                     {
-                                        graphUri = temp.ToSafeString();
+                                        graphUri = $"{temp}";
                                     }
                                     else
                                     {
@@ -1547,7 +1547,7 @@ public class LeviathanUpdateProcessor
                                     }
                                     else if (temp.NodeType == NodeType.Uri)
                                     {
-                                        graphUri = temp.ToSafeString();
+                                        graphUri = $"{temp}";
                                     }
                                     else
                                     {
