@@ -143,7 +143,7 @@ public class ModifyCommand
         }
         if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
 
-        return affectedUris.Contains(graphUri.ToSafeString());
+        return affectedUris.Contains(graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>

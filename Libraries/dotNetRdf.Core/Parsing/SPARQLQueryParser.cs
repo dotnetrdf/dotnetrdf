@@ -3827,7 +3827,7 @@ public class SparqlQueryParser
                 }
                 else
                 {
-                    var uri = Tools.ResolveUri(t.Value, context.Query.BaseUri.ToSafeString());
+                    var uri = Tools.ResolveUri(t.Value, context.Query.BaseUri?.AbsoluteUri ?? "");
                     u = UriFactory.Create(uri);
                     return new NodeMatchPattern(new UriNode(u));
                 }
