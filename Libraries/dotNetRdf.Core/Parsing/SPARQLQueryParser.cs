@@ -2916,7 +2916,7 @@ public class SparqlQueryParser
                 case Token.MIN:
                 case Token.SUM:
                 case Token.SAMPLE:
-                    if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToSafeString() + "' encountered, aggregates are not permitted in an ORDER BY in SPARQL 1.0", next);
+                    if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw ParserHelper.Error($"Unexpected Token '{next.GetType()}' encountered, aggregates are not permitted in an ORDER BY in SPARQL 1.0", next);
 
                     // Built-in/Extension Function Call Order By
                     ISparqlExpression aggExpr = TryParseFunctionExpression(context);

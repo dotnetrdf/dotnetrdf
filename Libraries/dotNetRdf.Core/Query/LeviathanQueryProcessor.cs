@@ -836,7 +836,7 @@ public class LeviathanQueryProcessor
                                 // OR there were no Default/Named Graphs (hence any Graph URI is permitted) 
                                 // OR the specified URI was a Named Graph URI
                                 // In any case we can go ahead and set the active Graph
-                                activeGraphs.Add(activeGraphName.ToSafeString());
+                                activeGraphs.Add($"{activeGraphName}");
                             }
                             else
                             {
@@ -881,7 +881,7 @@ public class LeviathanQueryProcessor
                     if (context.Query != null && context.Query.NamedGraphNames.Any())
                     {
                         // Query specifies one/more named Graphs
-                        activeGraphs.AddRange(context.Query.NamedGraphNames.Select(u => u.ToSafeString()));
+                        activeGraphs.AddRange(context.Query.NamedGraphNames.Select(u => $"{u}"));
                     }
                     else if (context.Query != null && context.Query.DefaultGraphNames.Any() && !context.Query.NamedGraphNames.Any())
                     {
@@ -892,7 +892,7 @@ public class LeviathanQueryProcessor
                     else
                     {
                         // Query is over entire dataset/default Graph since no named Graphs are explicitly specified
-                        activeGraphs.AddRange(context.Data.GraphNames.Select(u => u.ToSafeString()));
+                        activeGraphs.AddRange(context.Data.GraphNames.Select(u => $"{u}"));
                     }
                 }
             }

@@ -571,7 +571,7 @@ public abstract class BaseSesameHttpProtocolConnector
     /// <inheritdoc />
     public virtual void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
     {
-        UpdateGraph(graphName.ToSafeString(), additions, removals);
+        UpdateGraph($"{graphName}", additions, removals);
     }
 
     /// <summary>
