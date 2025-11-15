@@ -87,7 +87,7 @@ public class SparqlHttpProtocolConnector
     /// </summary>
     /// <param name="serviceUri">URI of the Protocol Server.</param>
     public SparqlHttpProtocolConnector(Uri serviceUri)
-        : this(serviceUri.ToSafeString()) { }
+        : this(serviceUri?.AbsoluteUri ?? "") { }
 
     /// <summary>
     /// Creates a new SPARQL Graph Store HTTP Protocol Connector.
@@ -106,7 +106,7 @@ public class SparqlHttpProtocolConnector
     /// <param name="serviceUri">URI of the Protocol Server.</param>
     /// <param name="proxy">Proxy Server.</param>
     public SparqlHttpProtocolConnector(Uri serviceUri, IWebProxy proxy)
-        : this(serviceUri.ToSafeString(), proxy) { }
+        : this(serviceUri?.AbsoluteUri ?? "", proxy) { }
 
     /// <summary>
     /// Gets the IO Behaviour of SPARQL Graph Store protocol based stores.
@@ -181,7 +181,7 @@ public class SparqlHttpProtocolConnector
     /// <param name="graphUri">URI of the Graph to load.</param>
     public virtual void LoadGraph(IGraph g, Uri graphUri)
     {
-        LoadGraph(g, graphUri.ToSafeString());
+        LoadGraph(g, graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -191,7 +191,7 @@ public class SparqlHttpProtocolConnector
     /// <param name="graphUri">URI of the Graph to load.</param>
     public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
     {
-        LoadGraph(handler, graphUri.ToSafeString());
+        LoadGraph(handler, graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -257,7 +257,7 @@ public class SparqlHttpProtocolConnector
     /// <param name="graphUri">URI of the Graph to check for.</param>
     public virtual bool HasGraph(Uri graphUri)
     {
-        return HasGraph(graphUri.ToSafeString());
+        return HasGraph(graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -337,7 +337,7 @@ public class SparqlHttpProtocolConnector
     /// </remarks>
     public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
     {
-        UpdateGraph(graphUri.ToSafeString(), additions, removals);
+        UpdateGraph(graphUri?.AbsoluteUri ?? "", additions, removals);
     }
 
     /// <summary>
@@ -394,7 +394,7 @@ public class SparqlHttpProtocolConnector
     /// <param name="graphUri">URI of the Graph to delete.</param>
     public virtual void DeleteGraph(Uri graphUri)
     {
-        DeleteGraph(graphUri.ToSafeString());
+        DeleteGraph(graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>

@@ -89,7 +89,7 @@ public class DatasetGraphCollection
             }
             else
             {
-                throw new RdfException("Cannot add this Graph as a Graph with the URI '" + g.BaseUri.ToSafeString() + "' already exists in the Collection and mergeIfExists was set to false");
+                throw new RdfException($"Cannot add this Graph as a Graph with the URI '{g.BaseUri}' already exists in the Collection and mergeIfExists was set to false");
             }
         }
         else

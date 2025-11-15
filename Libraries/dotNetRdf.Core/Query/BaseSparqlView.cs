@@ -194,7 +194,7 @@ public abstract class BaseSparqlView
                 else
                 {
                     // If specific Graphs only invalidate when those Graphs change
-                    if (_graphs.Contains(g.BaseUri.ToSafeString()))
+                    if (_graphs.Contains(g.BaseUri?.AbsoluteUri ?? ""))
                     {
                         InvalidateView();
                     }
@@ -221,7 +221,7 @@ public abstract class BaseSparqlView
                 else
                 {
                     // If specific Graphs only invalidate when those Graphs change
-                    if (_graphs.Contains(g.BaseUri.ToSafeString()))
+                    if (_graphs.Contains(g.BaseUri?.AbsoluteUri ?? ""))
                     {
                         InvalidateView();
                     }
@@ -248,7 +248,7 @@ public abstract class BaseSparqlView
                 else
                 {
                     // If specific Graphs only invalidate when those Graphs change
-                    if (_graphs.Contains(g.BaseUri.ToSafeString()))
+                    if (_graphs.Contains(g.BaseUri?.AbsoluteUri ?? ""))
                     {
                         InvalidateView();
                     }
@@ -275,7 +275,7 @@ public abstract class BaseSparqlView
                 else
                 {
                     // If specific Graphs only invalidate when those Graphs change
-                    if (_graphs.Contains(g.BaseUri.ToSafeString()))
+                    if (_graphs.Contains(g.BaseUri?.AbsoluteUri ?? ""))
                     {
                         InvalidateView();
                     }

@@ -469,7 +469,7 @@ public abstract class BaseStardogConnector
     /// </remarks>
     public virtual void LoadGraph(IGraph g, Uri graphUri)
     {
-        LoadGraph(g, graphUri.ToSafeString());
+        LoadGraph(g, graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -482,7 +482,7 @@ public abstract class BaseStardogConnector
     /// </remarks>
     public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
     {
-        LoadGraph(handler, graphUri.ToSafeString());
+        LoadGraph(handler, graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -738,7 +738,7 @@ public abstract class BaseStardogConnector
     /// <param name="graphUri">URI of the Graph to delete.</param>
     public virtual void DeleteGraph(Uri graphUri)
     {
-        DeleteGraph(graphUri.ToSafeString());
+        DeleteGraph(graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>

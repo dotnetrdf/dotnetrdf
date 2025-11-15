@@ -98,7 +98,7 @@ public class RdfXmlParserContext : BaseParserContext, IEventParserContext<IRdfXm
     public RdfXmlParserContext(IGraph g, Stream stream)
         : base(g)
     {
-        _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, g.BaseUri.ToSafeString()));
+        _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, g.BaseUri?.AbsoluteUri ?? ""));
     }
 
     /// <summary>
@@ -109,7 +109,7 @@ public class RdfXmlParserContext : BaseParserContext, IEventParserContext<IRdfXm
     public RdfXmlParserContext(IRdfHandler handler, Stream stream)
         : base(handler)
     {
-        _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, handler.GetBaseUri().ToSafeString()));
+        _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, handler.GetBaseUri()?.AbsoluteUri ?? ""));
     }
 
     /// <summary>
@@ -120,7 +120,7 @@ public class RdfXmlParserContext : BaseParserContext, IEventParserContext<IRdfXm
     public RdfXmlParserContext(IGraph g, TextReader input)
         : base(g)
     {
-        _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, g.BaseUri.ToSafeString()));
+        _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, g.BaseUri?.AbsoluteUri ?? ""));
     }
 
     /// <summary>
@@ -133,7 +133,7 @@ public class RdfXmlParserContext : BaseParserContext, IEventParserContext<IRdfXm
     public RdfXmlParserContext(IRdfHandler handler, TextReader input, IUriFactory uriFactory= null, XmlReaderSettings xmlReaderSettings = null)
         : base(handler, false, uriFactory ?? RDF.UriFactory.Root)
     {
-        _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, handler.GetBaseUri().ToSafeString(), xmlReaderSettings));
+        _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, handler.GetBaseUri()?.AbsoluteUri ?? "", xmlReaderSettings));
     }
 
     /// <summary>
