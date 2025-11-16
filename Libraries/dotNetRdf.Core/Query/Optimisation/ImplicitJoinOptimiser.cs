@@ -234,7 +234,7 @@ public class ImplicitJoinOptimiser
                 {
                     case TriplePatternType.Match:
                     case TriplePatternType.SubQuery:
-                        if (vars.Count > 0 && vars.IsDisjoint(p.Variables))
+                        if (vars.Count > 0 && !vars.Intersect(p.Variables).Any())
                         {
                             // May be a filterable product if we've seen only one variable so far and have hit a point where a product occurs
                             if (vars.Contains(lhsVar) && !vars.Contains(rhsVar))
@@ -275,7 +275,7 @@ public class ImplicitJoinOptimiser
         else if (algebra is IJoin)
         {
             var join = (IJoin)algebra;
-            if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
+            if (!join.Lhs.Variables.Intersect(join.Rhs.Variables).Any())
             {
                 // There a product between the two sides of the join but are the two variables on different sides of that join
                 return !(join.Lhs.Variables.Contains(lhsVar) && join.Lhs.Variables.Contains(rhsVar)) && !(join.Rhs.Variables.Contains(lhsVar) && join.Rhs.Variables.Contains(rhsVar));

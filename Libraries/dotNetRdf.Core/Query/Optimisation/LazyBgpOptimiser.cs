@@ -26,6 +26,7 @@
 
 // unset
 
+using System.Linq;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Update;
 
@@ -69,7 +70,7 @@ public class LazyBgpOptimiser
             else if (algebra is IJoin)
             {
                 var join = (IJoin)algebra;
-                if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
+                if (!join.Lhs.Variables.Intersect(join.Rhs.Variables).Any())
                 {
                     // If the sides of the Join are disjoint then can fully transform the join since we only need to find the requisite number of
                     // solutions on either side to guarantee a product which meets/exceeds the required results
