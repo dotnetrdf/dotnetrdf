@@ -95,14 +95,14 @@ public class Extend
     {
         get 
         {
-            return InnerAlgebra.Variables.Concat(VariableName.AsEnumerable()); 
+            return [.. InnerAlgebra.Variables, VariableName]; 
         }
     }
 
     /// <summary>
     /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
     /// </summary>
-    public IEnumerable<string> FloatingVariables { get { return InnerAlgebra.FloatingVariables.Concat(VariableName.AsEnumerable()); } }
+    public IEnumerable<string> FloatingVariables { get { return [.. InnerAlgebra.FloatingVariables, VariableName]; } }
 
     /// <summary>
     /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.

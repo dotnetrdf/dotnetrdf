@@ -52,7 +52,7 @@ internal class Inverse : Unary
         get
         {
             return
-                new Triple(this, Vocabulary.InversePath, Argument).AsEnumerable()
+                ((IEnumerable<Triple>)[new Triple(this, Vocabulary.InversePath, Argument)])
                 .Union(
                 Argument.AsTriples);
         }

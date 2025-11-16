@@ -50,7 +50,7 @@ internal class ZeroOrMore : Unary
     {
         get
         {
-            return new Triple(this, Vocabulary.ZeroOrMorePath, Argument).AsEnumerable();
+            return [new Triple(this, Vocabulary.ZeroOrMorePath, Argument)];
         }
     }
 }

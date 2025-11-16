@@ -112,7 +112,7 @@ public class BNodeFunction
     {
         get
         {
-            return InnerExpression.AsEnumerable();
+            return [InnerExpression];
         }
     }
 

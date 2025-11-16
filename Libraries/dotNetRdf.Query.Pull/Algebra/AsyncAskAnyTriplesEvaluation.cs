@@ -35,7 +35,7 @@ internal class AsyncAskAnyTriplesEvaluation : IAsyncEvaluation
     {
         if (context.HasAnyTriples(activeGraph))
         {
-            return (input ?? new Set()).AsEnumerable().ToAsyncEnumerable();
+            return ((IEnumerable<ISet>)[input ?? new Set()]).ToAsyncEnumerable();
         }
         return AsyncEnumerable.Empty<ISet>();
     }

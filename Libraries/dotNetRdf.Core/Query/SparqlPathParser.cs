@@ -503,11 +503,11 @@ class SparqlPathParser
                 p = TryParsePathOneInPropertySet(context, tokens, out inverse);
                 if (inverse)
                 {
-                    return new NegatedSet(Enumerable.Empty<Property>(), p.AsEnumerable());
+                    return new NegatedSet(Enumerable.Empty<Property>(), [p]);
                 }
                 else
                 {
-                    return new NegatedSet(p.AsEnumerable(), Enumerable.Empty<Property>());
+                    return new NegatedSet([p], Enumerable.Empty<Property>());
                 }
 
             case Token.LEFTBRACKET:

@@ -102,7 +102,7 @@ public abstract class BaseCast
     {
         get
         {
-            return _expr.AsEnumerable();
+            return [_expr];
         }
     }
 

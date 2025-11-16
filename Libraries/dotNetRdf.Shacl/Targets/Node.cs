@@ -39,6 +39,6 @@ internal class Node : Target
 
     internal override IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
     {
-        return this.AsEnumerable();
+        return [this];
     }
 }

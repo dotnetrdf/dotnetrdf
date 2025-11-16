@@ -95,7 +95,7 @@ public abstract class BaseUnaryExpression
     {
         get
         {
-            return InnerExpression.AsEnumerable();
+            return [InnerExpression];
         }
     }
 

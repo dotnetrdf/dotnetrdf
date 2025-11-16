@@ -1475,7 +1475,7 @@ public class LeviathanQueryProcessor
             // OR if there is no Ending Term or Bound Variable work forwards regardless
             if (!subjVars.Any())
             {
-                paths.Add(((NodeMatchPattern)oneOrMorePath.PathStart).Node.AsEnumerable().ToList());
+                paths.Add([((NodeMatchPattern)oneOrMorePath.PathStart).Node]);
             }
             else
             {
@@ -1483,7 +1483,7 @@ public class LeviathanQueryProcessor
                     .Where(s=>s.BindsAll(subjVars))
                     .Select(s => oneOrMorePath.PathStart.Bind(s))
                     .Distinct()
-                    .Select(n => n.AsEnumerable().ToList()));
+                    .Select(n => new List<INode> { n }));
             }
         }
         else if (context.InputMultiset.ContainsVariables(objVars))
@@ -1491,7 +1491,7 @@ public class LeviathanQueryProcessor
             // Work Backwards from Ending Term or Bound Variable
             if (!objVars.Any())
             {
-                paths.Add(((NodeMatchPattern)oneOrMorePath.PathEnd).Node.AsEnumerable().ToList());
+                paths.Add([((NodeMatchPattern)oneOrMorePath.PathEnd).Node]);
             }
             else
             {
@@ -1499,7 +1499,7 @@ public class LeviathanQueryProcessor
                     .Where(s => s.BindsAll(objVars))
                     .Select(s => oneOrMorePath.PathEnd.Bind(s))
                     .Distinct()
-                    .Select(n => n.AsEnumerable().ToList()));
+                    .Select(n => new List<INode> { n }));
             }
             reverse = true;
         }
@@ -2700,13 +2700,13 @@ public class LeviathanQueryProcessor
             // OR if there is no Ending Term or Bound Variable work forwards regardless
             if (zeroOrMorePath.PathStart.IsFixed)
             {
-                paths.Add(zeroOrMorePath.PathStart.Bind(new Set()).AsEnumerable().ToList());
+                paths.Add([zeroOrMorePath.PathStart.Bind(new Set())]);
             }
             else
             {
                 paths.AddRange((from s in context.InputMultiset.Sets
                                 where s.BindsAll(subjVars)
-                                select zeroOrMorePath.PathStart.Bind(s)).Distinct().Select(n => n.AsEnumerable().ToList()));
+                                select zeroOrMorePath.PathStart.Bind(s)).Distinct().Select(n => new List<INode> { n }));
             }
         }
         else if (zeroOrMorePath.PathEnd.IsFixed || (context.InputMultiset.ContainsVariables(objVars)))
@@ -2714,13 +2714,13 @@ public class LeviathanQueryProcessor
             // Work Backwards from Ending Term or Bound Variable
             if (zeroOrMorePath.PathEnd.IsFixed)
             {
-                paths.Add(zeroOrMorePath.PathEnd.Bind(new Set()).AsEnumerable().ToList());
+                paths.Add([zeroOrMorePath.PathEnd.Bind(new Set())]);
             }
             else
             {
                 paths.AddRange((from s in context.InputMultiset.Sets
                                 where s.BindsAll(objVars)
-                                select zeroOrMorePath.PathEnd.Bind(s)).Distinct().Select(n => n.AsEnumerable().ToList()));
+                                select zeroOrMorePath.PathEnd.Bind(s)).Distinct().Select(n => new List<INode> { n }));
             }
             reverse = true;
         }

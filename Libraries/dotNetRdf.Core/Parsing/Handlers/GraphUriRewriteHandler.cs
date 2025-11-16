@@ -68,7 +68,7 @@ public class GraphUriRewriteHandler
     {
         get
         {
-            return _handler.AsEnumerable();
+            return [_handler];
         }
     }
 

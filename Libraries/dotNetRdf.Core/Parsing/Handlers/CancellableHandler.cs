@@ -53,7 +53,7 @@ public class CancellableHandler : BaseRdfHandler, IWrappingRdfHandler
     {
         get
         {
-            return _handler.AsEnumerable();
+            return [_handler];
         }
     }
 

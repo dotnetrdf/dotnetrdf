@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -55,7 +56,7 @@ internal class EnumerableMetaObject : DynamicMetaObject
         {
             try
             {
-                Expression[] arguments = Expression.Convert(Expression, RuntimeType).AsEnumerable().Union(args.Select(arg => arg.Expression)).ToArray();
+                Expression[] arguments = ((IEnumerable<Expression>)[Expression.Convert(Expression, RuntimeType)]).Union(args.Select(arg => arg.Expression)).ToArray();
                 Type[] typeArguments = Enumerable.Repeat(typeof(object), i).ToArray();
                 MethodCallExpression expression = Expression.Call(typeof(Enumerable), binder.Name, typeArguments, arguments);
 
