@@ -1,6 +1,11 @@
 ﻿Change Log
 ==========
 
+3.4.2
+-----
+
+FIX: Deprecated several globally scoped extension methods. They are now marked obsolete usable.
+
 3.4.1
 -----
 
