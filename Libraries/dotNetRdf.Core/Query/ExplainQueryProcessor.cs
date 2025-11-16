@@ -175,7 +175,7 @@ public class ExplainQueryProcessor
                 // Print the type of Join to be performed
                 if (i > 0 && (ps[i].PatternType == TriplePatternType.Match || ps[i].PatternType == TriplePatternType.SubQuery || ps[i].PatternType == TriplePatternType.Path))
                 {
-                    if (vars.IsDisjoint(ps[i].Variables))
+                    if (!vars.Overlaps(ps[i].Variables))
                     {
                         output.Append("Cross Product with ");
                     }

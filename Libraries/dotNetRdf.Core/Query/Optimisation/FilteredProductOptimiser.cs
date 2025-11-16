@@ -119,7 +119,7 @@ public class FilteredProductOptimiser
                 ITriplePattern p = ps[i];
                 if (p.PatternType == TriplePatternType.Match || p.PatternType == TriplePatternType.SubQuery)
                 {
-                    if (vars.Count > 0 && vars.IsDisjoint(p.Variables))
+                    if (vars.Count > 0 && !vars.Intersect(p.Variables).Any())
                     {
                         // Is a filterable product if we've not seen all the variables so far and have hit a point where a product occurs
                         // and all the variables are not in the RHS
@@ -151,7 +151,7 @@ public class FilteredProductOptimiser
         else if (algebra is IJoin)
         {
             var join = (IJoin)algebra;
-            if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
+            if (!join.Lhs.Variables.Intersect(join.Rhs.Variables).Any())
             {
                 // There a product between the two sides of the join but are the variables spead over different sides of that join?
                 // If all variables occur on one side then this is not a filtered product

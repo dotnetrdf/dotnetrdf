@@ -43,7 +43,7 @@ public class ParallelJoin : IJoin
     /// <param name="rhs">Right Hand Side.</param>
     public ParallelJoin(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
     {
-        if (!lhs.Variables.IsDisjoint(rhs.Variables)) throw new RdfQueryException("Cannot create a ParallelJoin between two algebra operators which are not distinct");
+        if (lhs.Variables.Intersect(rhs.Variables).Any()) throw new RdfQueryException("Cannot create a ParallelJoin between two algebra operators which are not distinct");
         Lhs = lhs;
         Rhs = rhs;
     }

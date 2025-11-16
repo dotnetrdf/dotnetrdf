@@ -1316,7 +1316,7 @@ public class LeviathanQueryProcessor
 
     private static bool IsCrossProduct(IAbstractJoin join)
     {
-        return join.Lhs.Variables.IsDisjoint(join.Rhs.Variables);
+        return !join.Lhs.Variables.Intersect(join.Rhs.Variables).Any();
     }
 
     /// <summary>
@@ -1339,7 +1339,7 @@ public class LeviathanQueryProcessor
         {
             context.OutputMultiset = new NullMultiset();
         }
-        else if (minus.Lhs.Variables.IsDisjoint(minus.Rhs.Variables))
+        else if (!minus.Lhs.Variables.Intersect(minus.Rhs.Variables).Any())
         {
             // If the RHS is disjoint then there is no need to evaluate the RHS
             context.OutputMultiset = lhsResult;
@@ -2173,7 +2173,7 @@ public class LeviathanQueryProcessor
         {
             // Build the set of possible bindings
 
-            if (context.Query.Bindings != null && !pattern.Variables.IsDisjoint(context.Query.Bindings.Variables))
+            if (context.Query.Bindings != null && pattern.Variables.Intersect(context.Query.Bindings.Variables).Any())
             {
                 // Possible Bindings comes from BINDINGS clause
                 // In this case each possibility is a distinct binding tuple defined in the BINDINGS clause
@@ -4032,7 +4032,7 @@ public class LeviathanQueryProcessor
             var filter = (IFilterPattern)temp;
             ISparqlExpression filterExpr = filter.Filter.Expression;
 
-            if (filter.Variables.IsDisjoint(context.InputMultiset.Variables))
+            if (!filter.Variables.Intersect(context.InputMultiset.Variables).Any())
             {
                 // Filter is Disjoint so determine whether it has any affect or not
                 if (filter.Variables.Any())
