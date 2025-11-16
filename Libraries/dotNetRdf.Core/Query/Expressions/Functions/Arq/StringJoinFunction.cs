@@ -155,7 +155,7 @@ public class StringJoinFunction
     {
         get
         {
-            return SeparatorExpression.AsEnumerable().Concat(_exprs);
+            return [SeparatorExpression, .. _exprs];
         }
     }
 

@@ -52,7 +52,7 @@ internal class HasValue : Constraint
     internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
     {
         IEnumerable<INode> invalidValues =
-            from value in focusNode.AsEnumerable()
+            from value in (IEnumerable<INode>)[focusNode]
             where !valueNodes.Contains(this)
             select value;
 

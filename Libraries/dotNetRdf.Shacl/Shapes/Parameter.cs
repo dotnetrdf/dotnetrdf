@@ -48,6 +48,6 @@ internal class Parameter : Property
 
     internal bool Matches(Shape shape)
     {
-        return !Equals((INode)shape) && ValidateInternal(Graph, shape, shape.AsEnumerable(), null);
+        return !Equals((INode)shape) && ValidateInternal(Graph, shape, [shape], null);
     }
 }

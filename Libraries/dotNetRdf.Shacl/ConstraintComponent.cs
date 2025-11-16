@@ -82,6 +82,6 @@ internal class ConstraintComponent : GraphWrapperNode
             (accumulator, sequence) =>
                 from accseq in accumulator
                 from item in sequence
-                select accseq.Concat(item.AsEnumerable()));
+                select accseq.Concat([item]));
     }
 }

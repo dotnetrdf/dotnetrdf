@@ -102,7 +102,7 @@ public abstract class BaseUnaryStringFunction
     {
         get
         {
-            return _expr.AsEnumerable();
+            return [_expr];
         }
     }
 
