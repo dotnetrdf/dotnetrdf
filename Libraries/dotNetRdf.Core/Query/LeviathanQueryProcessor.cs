@@ -2216,7 +2216,7 @@ public class LeviathanQueryProcessor
         else
         {
             // Split bindings in chunks and inject them
-            foreach (ISet[] chunk in bindings.ChunkBy(100))
+            foreach (ISet[] chunk in ChunkBy(bindings, 100))
             {
                 IEnumerable<string> vars = chunk.SelectMany(x => x.Variables).Distinct();
                 var data = new BindingsPattern(vars);
@@ -4529,4 +4529,23 @@ public class LeviathanQueryProcessor
         }
     }
     #endregion
+
+    public static IEnumerable<T[]> ChunkBy<T>(IEnumerable<T> source, int size)
+    {
+        var buffer = new List<T>();
+        foreach (var item in source)
+        {
+            buffer.Add(item);
+            if (buffer.Count == size)
+            {
+                yield return buffer.ToArray();
+                buffer.Clear();
+            }
+        }
+        if (buffer.Count > 0)
+        {
+            yield return buffer.ToArray();
+            buffer.Clear();
+        }
+    }
 }
