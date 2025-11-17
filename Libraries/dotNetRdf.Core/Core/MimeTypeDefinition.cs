@@ -409,11 +409,7 @@ public sealed class MimeTypeDefinition
         var ok = false;
         foreach (Type i in t.GetInterfaces())
         {
-#if NETCORE
-            if(i.IsGenericType())
-#else
             if (i.IsGenericType)
-#endif
             {
                 if (i.GetGenericArguments().First().Equals(obj))
                 {

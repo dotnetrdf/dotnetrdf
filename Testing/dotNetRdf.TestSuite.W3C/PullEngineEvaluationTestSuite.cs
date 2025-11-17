@@ -1,4 +1,3 @@
-#if NET6_0_OR_GREATER
 using System.Threading.Tasks;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Pull;
@@ -46,4 +45,3 @@ public class PullEngineEvaluationTestSuite : BaseAsyncSparqlEvaluationTestSuite
             return await queryEngine.ProcessQueryAsync(query);
     }
 }
-#endif

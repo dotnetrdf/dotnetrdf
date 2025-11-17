@@ -2081,14 +2081,9 @@ public abstract class BaseStardogConnector
     [Obsolete("This method is obsolete and will be removed in a future release. Replaced by AddStardogHeaders(HttpRequestMessage).")]
     protected virtual void AddStardogHeaders(HttpWebRequest request)
     {
-#if !NETCORE
         request.Headers.Add("SD-Connection-String", "kb=" + _kb + ";" + GetReasoningParameter());
         // removed persist=sync, no longer needed in latest stardog versions?
         request.Headers.Add("SD-Protocol", "1.0");
-#else
-        request.Headers["SD-Connection-String"] = "kb=" + this._kb + ";" + this.GetReasoningParameter();
-        request.Headers["SD-Protocol"] = "1.0";
-#endif
     }
 
     /// <summary>

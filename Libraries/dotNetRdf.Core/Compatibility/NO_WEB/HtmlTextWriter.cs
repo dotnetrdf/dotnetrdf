@@ -213,17 +213,10 @@ public class HtmlTextWriter : TextWriter, IDisposable
         _styles.Add(new KeyValuePair<string, string>(GetStyleName(key), value));
     }
 
-#if NETCORE
-    /// <summary>
-    /// Close the writer
-    /// </summary>
-    public void Close()
-#else
     /// <summary>
     /// Close the writer.
     /// </summary>
     public override void Close()
-#endif
     {
         _writer.Close();
     }

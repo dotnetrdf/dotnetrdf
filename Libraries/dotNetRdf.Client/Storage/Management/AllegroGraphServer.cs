@@ -72,11 +72,7 @@ public class AllegroGraphServer
     {
         _baseUri = baseUri;
         if (!_baseUri.EndsWith("/")) _baseUri += "/";
-#if NETCORE
-        this._agraphBase = this._baseUri.Copy();
-#else
         _agraphBase = string.Copy(_baseUri);
-#endif
         if (catalogID != null)
         {
             _baseUri += "catalogs/" + catalogID + "/";
