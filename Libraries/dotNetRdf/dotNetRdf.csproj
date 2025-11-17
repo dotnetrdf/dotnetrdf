@@ -38,8 +38,4 @@
     <ProjectReference Include="..\dotNetRdf.Ldf\dotNetRdf.Ldf.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
-    <ProjectReference Include="..\dotNetRdf.AspNet\dotNetRdf.AspNet.csproj" />
-  </ItemGroup>
-
 </Project>
