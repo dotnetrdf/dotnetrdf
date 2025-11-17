@@ -86,7 +86,7 @@ public class DynamicSubjectCollectionTTests
         var subjects = new Test[5]; // +2 for padding on each side
         testO.P.CopyTo(subjects, 1); // start at the second item at destination
 
-        Assert.Equal(
+        Assert.Equal<INode[]>(
             new[] { null, s, p, o, null },
             subjects);
     }
