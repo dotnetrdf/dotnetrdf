@@ -16,7 +16,7 @@
 		<PackageVersion Include="System.Threading.Channels" Version="9.0.10" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-		<PackageVersion Include="AngleSharp" Version="1.3.0" />
+		<PackageVersion Include="AngleSharp" Version="1.4.0" />
 		<PackageVersion Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
 		<PackageVersion Include="System.Configuration.ConfigurationManager" Version="9.0.10" />
 		<PackageVersion Include="System.Globalization.Extensions" Version="4.3.0" />
