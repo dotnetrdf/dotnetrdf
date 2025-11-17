@@ -587,11 +587,7 @@ public abstract class WrapperDataset
             INode usingDataset = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset));
             INode innerDataset = context.Graph.CreateBlankNode();
 
-#if NETCORE
-            String assm = typeof(WrapperDataset).GetTypeInfo().Assembly.FullName;
-#else
             var assm = Assembly.GetAssembly(GetType()).FullName;
-#endif
             if (assm.Contains(",")) assm = assm.Substring(0, assm.IndexOf(','));
             var effectiveType = GetType().FullName + (assm.Equals("dotNetRDF") ? string.Empty : ", " + assm);
 

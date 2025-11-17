@@ -156,12 +156,8 @@ public class StardogV2Connector
     protected override void AddStardogHeaders(HttpWebRequest request)
     {
         var reasoning = GetReasoningParameter();
-#if !NETCORE
         request.Headers.Add("SD-Connection-String", reasoning);
         // Only reasoning parameter needed in Stardog 2.0, but < 2.2
-#else
-        request.Headers["SD-Connection-String"] = reasoning;
-#endif
     }
 
     /// <summary>

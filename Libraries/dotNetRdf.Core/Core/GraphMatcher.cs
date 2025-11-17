@@ -862,30 +862,22 @@ public class GraphMatcher
                 var partialMappings = new List<Dictionary<INode, INode>>();
                 var partialMappingSources = new List<IGraph>();
                 Debug.WriteLine("Dividing and conquering on isolated sub-graph with " + lhs.Triples.Count + " triples...");
-#if !NETCORE
                 Debug.Indent();
-#endif
                 var i = 1;
                 foreach (IGraph rhs in possibles)
                 {
                     Debug.WriteLine("Testing possiblity " + i + " of " + possibles.Count);
-#if !NETCORE
                     Debug.Indent();
-#endif
                     Dictionary<INode, INode> partialMapping;
                     if (lhs.Equals(rhs, out partialMapping))
                     {
                         partialMappings.Add(partialMapping);
                         partialMappingSources.Add(rhs);
                     }
-#if !NETCORE
                     Debug.Unindent();
-#endif
                     i++;
                 }
-#if !NETCORE
                 Debug.Unindent();
-#endif
                 Debug.WriteLine("Dividing and conquering done");
 
                 // Did we find a possible mapping for the sub-graph?
