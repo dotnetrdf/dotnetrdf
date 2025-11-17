@@ -29,7 +29,7 @@
     <ProjectReference Include="..\dotNetRdf.Core\dotNetRdf.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+  <ItemGroup>
     <PackageReference Include="System.Runtime" />
   </ItemGroup>
 </Project>

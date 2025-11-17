@@ -12,8 +12,6 @@
 		<PackageVersion Include="coverlet.collector" Version="6.0.4" />
 		<PackageVersion Include="CommandLineParser" Version="2.9.1" />
         <PackageVersion Include="System.Configuration.ConfigurationManager" Version="10.0.0" />
-	</ItemGroup>
-	<ItemGroup Condition=" '$(TargetFramework)' != 'net472' ">
 		<PackageVersion Include="System.Data.Common" Version="4.3.0" />
 	</ItemGroup>
 </Project>
