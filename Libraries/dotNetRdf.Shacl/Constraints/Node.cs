@@ -54,7 +54,7 @@ internal class Node : Constraint
         IEnumerable<INode> invalidValues =
             from valueNode in valueNodes
             let shape = new Shapes.Node(this, this.Graph)
-            where !shape.Validate(dataGraph, valueNode, valueNode.AsEnumerable())
+            where !shape.Validate(dataGraph, valueNode, [valueNode])
             select valueNode;
 
         return ReportValueNodes(focusNode, invalidValues, report);

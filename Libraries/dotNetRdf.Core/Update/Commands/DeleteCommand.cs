@@ -155,7 +155,7 @@ public class DeleteCommand : BaseModificationCommand
         }
         if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
 
-        return affectedUris.Contains(graphUri.ToSafeString());
+        return affectedUris.Contains(graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -165,7 +165,7 @@ public class DeleteCommand : BaseModificationCommand
     /// <returns></returns>
     public override bool AffectsGraph(IRefNode graphName)
     {
-        var affectedUris = new List<string> {TargetGraph.ToSafeString()};
+        var affectedUris = new List<string> {$"{TargetGraph}"};
 
         if (DeletePattern.IsGraph)
         {
@@ -179,7 +179,7 @@ public class DeleteCommand : BaseModificationCommand
         }
         if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
 
-        return affectedUris.Contains(graphName.ToSafeString());
+        return affectedUris.Contains($"{graphName}");
     }
 
     /// <summary>

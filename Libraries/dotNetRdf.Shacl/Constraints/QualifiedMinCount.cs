@@ -58,7 +58,7 @@ internal class QualifiedMinCount : Qualified
         }
 
         IEnumerable<INode> invalidValues =
-            from valueNode in focusNode.AsEnumerable()
+            from valueNode in (IEnumerable<INode>)[focusNode]
             where !QualifiedValueNodes(dataGraph, focusNode, valueNodes).Skip(NumericValue - 1).Any()
             select valueNode;
 

@@ -151,7 +151,7 @@ public class AllegroGraphServer
     /// <returns></returns>
     public override IEnumerable<IStoreTemplate> GetAvailableTemplates(string id)
     {
-        return GetDefaultTemplate(id).AsEnumerable();
+        return [GetDefaultTemplate(id)];
     }
 
     /// <summary>

@@ -96,7 +96,7 @@ public class ModifyCommand
             var affectedUris = new List<string>();
             if (TargetGraph != null)
             {
-                affectedUris.Add(TargetGraph.ToSafeString());
+                affectedUris.Add(TargetGraph.ToString());
             }
             if (_deletePattern.IsGraph) affectedUris.Add(_deletePattern.GraphSpecifier.Value);
             if (_deletePattern.HasChildGraphPatterns)
@@ -143,7 +143,7 @@ public class ModifyCommand
         }
         if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
 
-        return affectedUris.Contains(graphUri.ToSafeString());
+        return affectedUris.Contains(graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -153,7 +153,7 @@ public class ModifyCommand
     /// <returns></returns>
     public override bool AffectsGraph(IRefNode graphName)
     {
-        var affectedUris = new List<string>() {TargetGraph.ToSafeString()};
+        var affectedUris = new List<string>() {$"{TargetGraph}" };
         if (_deletePattern.IsGraph) affectedUris.Add(_deletePattern.GraphSpecifier.Value);
         if (_deletePattern.HasChildGraphPatterns)
         {
@@ -170,7 +170,7 @@ public class ModifyCommand
         }
         if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
 
-        return affectedUris.Contains(graphName.ToSafeString());
+        return affectedUris.Contains($"{graphName}");
     }
 
     /// <summary>

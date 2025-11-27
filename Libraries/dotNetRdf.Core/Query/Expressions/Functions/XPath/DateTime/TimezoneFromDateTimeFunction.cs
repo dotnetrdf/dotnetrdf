@@ -115,7 +115,7 @@ public class TimezoneFromDateTimeFunction
     {
         get
         {
-            return _expr.AsEnumerable();
+            return  [_expr];
         }
     }
 

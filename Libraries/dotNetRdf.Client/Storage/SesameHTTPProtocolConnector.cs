@@ -444,7 +444,7 @@ public abstract class BaseSesameHttpProtocolConnector
     /// <remarks>If a Null Uri is specified then the default graph (statements with no context in Sesame parlance) will be loaded.</remarks>
     public virtual void LoadGraph(IGraph g, Uri graphUri)
     {
-        LoadGraph(g, graphUri.ToSafeString());
+        LoadGraph(g, graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -455,7 +455,7 @@ public abstract class BaseSesameHttpProtocolConnector
     /// <remarks>If a Null Uri is specified then the default graph (statements with no context in Sesame parlance) will be loaded.</remarks>
     public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
     {
-        LoadGraph(handler, graphUri.ToSafeString());
+        LoadGraph(handler, graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -565,13 +565,13 @@ public abstract class BaseSesameHttpProtocolConnector
     /// <param name="removals">Triples to be removed.</param>
     public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
     {
-        UpdateGraph(graphUri.ToSafeString(), additions, removals);
+        UpdateGraph(graphUri?.AbsoluteUri ?? "", additions, removals);
     }
 
     /// <inheritdoc />
     public virtual void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
     {
-        UpdateGraph(graphName.ToSafeString(), additions, removals);
+        UpdateGraph($"{graphName}", additions, removals);
     }
 
     /// <summary>
@@ -669,7 +669,7 @@ public abstract class BaseSesameHttpProtocolConnector
     /// <param name="graphUri">URI of the Graph to delete.</param>
     public virtual void DeleteGraph(Uri graphUri)
     {
-        DeleteGraph(graphUri.ToSafeString());
+        DeleteGraph(graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>

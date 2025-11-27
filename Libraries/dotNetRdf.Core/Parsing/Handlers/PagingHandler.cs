@@ -78,7 +78,7 @@ public class PagingHandler
     {
         get
         {
-            return _handler.AsEnumerable();
+            return [_handler];
         }
     }
 

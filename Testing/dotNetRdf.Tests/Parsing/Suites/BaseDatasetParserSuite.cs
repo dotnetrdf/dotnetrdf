@@ -73,13 +73,13 @@ public abstract class BaseDatasetParserSuite : BaseParserSuite<IStoreReader, Tri
         {
             if (!actual.HasGraph(expectGraphName))
             {
-                Console.WriteLine("Expected Graph {0} missing", expectGraphName.ToSafeString());
+                Console.WriteLine("Expected Graph {0} missing", expectGraphName);
                 return false;
             }
             GraphDiffReport diff = expected[expectGraphName].Difference(actual[expectGraphName]);
             if (!diff.AreEqual)
             {
-                Console.WriteLine("Expected Graph {0} not as expected", expectGraphName.ToSafeString());
+                Console.WriteLine("Expected Graph {0} not as expected", expectGraphName);
                 TestTools.ShowDifferences(diff);
                 return false;
             }

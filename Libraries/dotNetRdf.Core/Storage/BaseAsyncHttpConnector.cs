@@ -78,7 +78,7 @@ public abstract class BaseAsyncHttpConnector
     /// <param name="state">State to pass to the callback.</param>
     public virtual void LoadGraph(IGraph g, Uri graphUri, AsyncStorageCallback callback, object state)
     {
-        LoadGraph(g, graphUri.ToSafeString(), callback, state);
+        LoadGraph(g, graphUri?.AbsoluteUri ?? "", callback, state);
     }
 
     /// <summary>
@@ -102,7 +102,7 @@ public abstract class BaseAsyncHttpConnector
     /// <param name="state">State to pass to the callback.</param>
     public virtual void LoadGraph(IRdfHandler handler, Uri graphUri, AsyncStorageCallback callback, object state)
     {
-        LoadGraph(handler, graphUri.ToSafeString(), callback, state);
+        LoadGraph(handler, graphUri?.AbsoluteUri ?? "", callback, state);
     }
 
     /// <summary>
@@ -391,7 +391,7 @@ public abstract class BaseAsyncHttpConnector
     /// <param name="state">State to pass to the callback.</param>
     public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
     {
-        UpdateGraph(graphUri.ToSafeString(), additions, removals, callback, state);
+        UpdateGraph(graphUri?.AbsoluteUri ?? "", additions, removals, callback, state);
     }
 
     /// <summary>
@@ -535,7 +535,7 @@ public abstract class BaseAsyncHttpConnector
     /// <param name="state">State to pass to the callback.</param>
     public virtual void DeleteGraph(Uri graphUri, AsyncStorageCallback callback, object state)
     {
-        DeleteGraph(graphUri.ToSafeString(), callback, state);
+        DeleteGraph(graphUri?.AbsoluteUri ?? "", callback, state);
     }
 
     /// <summary>

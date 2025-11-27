@@ -110,7 +110,7 @@ public abstract class BaseSetFunction
     {
         get
         {
-            return _expr.AsEnumerable<ISparqlExpression>().Concat(_expressions);
+            return [_expr, .. _expressions];
         }
     }
 

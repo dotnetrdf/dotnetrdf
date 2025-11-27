@@ -398,7 +398,7 @@ public class ConfigurationLoader : IConfigurationLoader
     /// <returns></returns>
     private static IGraph LoadCommon(IGraph g, INode source, bool autoConfigure)
     {
-        return LoadCommon(g, source.AsEnumerable(), autoConfigure);
+        return LoadCommon(g, [source], autoConfigure);
     }
 
     /// <summary>

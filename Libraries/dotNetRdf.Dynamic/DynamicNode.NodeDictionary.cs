@@ -252,7 +252,7 @@ public partial class DynamicNode : IDictionary<INode, object>
         // Strings are enumerable but not for our case
         if (value is string || value is DynamicNode || !(value is IEnumerable enumerable))
         {
-            enumerable = value.AsEnumerable(); // When they're not enumerable, wrap them in an enumerable of one
+            enumerable = (IEnumerable<object>)[value]; // When they're not enumerable, wrap them in an enumerable of one
         }
 
         foreach (var @object in enumerable)

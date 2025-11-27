@@ -883,7 +883,7 @@ class SparqlExpressionParser
         }
         else
         {
-            u = UriFactory.Create(Tools.ResolveUri(first.Value, _baseUri.ToSafeString()));
+            u = UriFactory.Create(Tools.ResolveUri(first.Value, _baseUri?.AbsoluteUri ?? ""));
         }
         
         // Get the Argument List (if any)
@@ -1018,7 +1018,7 @@ class SparqlExpressionParser
         {
             case Token.URI:
                 tokens.Dequeue();
-                Uri u = UriFactory.Create(Tools.ResolveUri(next.Value, _baseUri.ToSafeString()));
+                Uri u = UriFactory.Create(Tools.ResolveUri(next.Value, _baseUri?.AbsoluteUri ?? ""));
                 return new UriNode(u);
 
             case Token.QNAME:
@@ -1055,7 +1055,7 @@ class SparqlExpressionParser
         {
             case Token.URI:
                 tokens.Dequeue();
-                Uri u = UriFactory.Create(Tools.ResolveUri(next.Value, _baseUri.ToSafeString()));
+                Uri u = UriFactory.Create(Tools.ResolveUri(next.Value, _baseUri?.AbsoluteUri ?? ""));
                 return new UriNode(u);
 
             case Token.QNAME:
@@ -1497,7 +1497,7 @@ class SparqlExpressionParser
                     }
                     else
                     {
-                        argName = Tools.ResolveUri(next.Value, _baseUri.ToSafeString());
+                        argName = Tools.ResolveUri(next.Value, _baseUri?.AbsoluteUri ?? "");
                     }
                     break;
 

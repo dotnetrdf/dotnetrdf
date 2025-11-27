@@ -105,7 +105,7 @@ public class BlankNodePattern
     /// <summary>
     /// Gets the Temporary Variable Name of this Pattern.
     /// </summary>
-    public override IEnumerable<string> Variables => ID.AsEnumerable();
+    public override IEnumerable<string> Variables => [ID];
 
     /// <inheritdoc />
     public override void AddBindings(INode forNode, ISet toSet)

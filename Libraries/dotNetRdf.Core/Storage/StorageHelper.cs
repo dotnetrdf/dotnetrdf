@@ -174,7 +174,7 @@ public static class StorageHelper
             {
                 return "(HTTP " + (int)httpResponse.StatusCode + " " + httpResponse.StatusDescription + ")";
             }
-            return webEx.Status.ToSafeString();
+            return webEx.Status.ToString();
         }
         return string.Empty;
     }

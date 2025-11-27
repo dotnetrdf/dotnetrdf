@@ -118,7 +118,7 @@ public class BNodeFunction
     /// <returns></returns>
     public override string ToString()
     {
-        return SparqlSpecsHelper.SparqlKeywordBNode + "(" + InnerExpression.ToSafeString() + ")";
+        return SparqlSpecsHelper.SparqlKeywordBNode + $"({InnerExpression})";
     }
 
     /// <inheritdoc />

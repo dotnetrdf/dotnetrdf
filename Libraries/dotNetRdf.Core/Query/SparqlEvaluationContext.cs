@@ -541,7 +541,7 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
                 o = ((NodeMatchPattern)triplePattern.Object).Node;
                 if (Data.ContainsTriple(new Triple(s, p, o)))
                 {
-                    return new Triple(s, p, o).AsEnumerable();
+                    return [new Triple(s, p, o)];
                 }
                 else
                 {

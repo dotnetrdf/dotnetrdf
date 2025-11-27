@@ -61,7 +61,7 @@ public class UniqueBlankNodesHandler
     {
         get
         {
-            return _handler.AsEnumerable();
+            return [_handler];
         }
     }
 
