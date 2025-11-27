@@ -26,9 +26,6 @@
 
 using System;
 using System.Linq;
-#if NETCORE
-using System.Reflection;
-#endif
 
 namespace VDS.RDF.Configuration;
 

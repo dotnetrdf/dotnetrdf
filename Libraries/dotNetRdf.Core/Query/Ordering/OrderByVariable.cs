@@ -102,8 +102,8 @@ public class OrderByVariable
         get
         {
             return Child != null
-                ? Variable.AsEnumerable().Concat(Child.Variables).Distinct()
-                : Variable.AsEnumerable();
+                ? ((IList<string>)[Variable, .. Child.Variables]).Distinct()
+                : [Variable];
         }
     }
 

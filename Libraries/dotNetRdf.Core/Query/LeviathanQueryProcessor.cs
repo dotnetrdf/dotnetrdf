@@ -836,7 +836,7 @@ public class LeviathanQueryProcessor
                                 // OR there were no Default/Named Graphs (hence any Graph URI is permitted) 
                                 // OR the specified URI was a Named Graph URI
                                 // In any case we can go ahead and set the active Graph
-                                activeGraphs.Add(activeGraphName.ToSafeString());
+                                activeGraphs.Add($"{activeGraphName}");
                             }
                             else
                             {
@@ -881,7 +881,7 @@ public class LeviathanQueryProcessor
                     if (context.Query != null && context.Query.NamedGraphNames.Any())
                     {
                         // Query specifies one/more named Graphs
-                        activeGraphs.AddRange(context.Query.NamedGraphNames.Select(u => u.ToSafeString()));
+                        activeGraphs.AddRange(context.Query.NamedGraphNames.Select(u => $"{u}"));
                     }
                     else if (context.Query != null && context.Query.DefaultGraphNames.Any() && !context.Query.NamedGraphNames.Any())
                     {
@@ -892,7 +892,7 @@ public class LeviathanQueryProcessor
                     else
                     {
                         // Query is over entire dataset/default Graph since no named Graphs are explicitly specified
-                        activeGraphs.AddRange(context.Data.GraphNames.Select(u => u.ToSafeString()));
+                        activeGraphs.AddRange(context.Data.GraphNames.Select(u => $"{u}"));
                     }
                 }
             }
@@ -1316,7 +1316,7 @@ public class LeviathanQueryProcessor
 
     private static bool IsCrossProduct(IAbstractJoin join)
     {
-        return join.Lhs.Variables.IsDisjoint(join.Rhs.Variables);
+        return !join.Lhs.Variables.Intersect(join.Rhs.Variables).Any();
     }
 
     /// <summary>
@@ -1339,7 +1339,7 @@ public class LeviathanQueryProcessor
         {
             context.OutputMultiset = new NullMultiset();
         }
-        else if (minus.Lhs.Variables.IsDisjoint(minus.Rhs.Variables))
+        else if (!minus.Lhs.Variables.Intersect(minus.Rhs.Variables).Any())
         {
             // If the RHS is disjoint then there is no need to evaluate the RHS
             context.OutputMultiset = lhsResult;
@@ -1475,7 +1475,7 @@ public class LeviathanQueryProcessor
             // OR if there is no Ending Term or Bound Variable work forwards regardless
             if (!subjVars.Any())
             {
-                paths.Add(((NodeMatchPattern)oneOrMorePath.PathStart).Node.AsEnumerable().ToList());
+                paths.Add([((NodeMatchPattern)oneOrMorePath.PathStart).Node]);
             }
             else
             {
@@ -1483,7 +1483,7 @@ public class LeviathanQueryProcessor
                     .Where(s=>s.BindsAll(subjVars))
                     .Select(s => oneOrMorePath.PathStart.Bind(s))
                     .Distinct()
-                    .Select(n => n.AsEnumerable().ToList()));
+                    .Select(n => new List<INode> { n }));
             }
         }
         else if (context.InputMultiset.ContainsVariables(objVars))
@@ -1491,7 +1491,7 @@ public class LeviathanQueryProcessor
             // Work Backwards from Ending Term or Bound Variable
             if (!objVars.Any())
             {
-                paths.Add(((NodeMatchPattern)oneOrMorePath.PathEnd).Node.AsEnumerable().ToList());
+                paths.Add([((NodeMatchPattern)oneOrMorePath.PathEnd).Node]);
             }
             else
             {
@@ -1499,7 +1499,7 @@ public class LeviathanQueryProcessor
                     .Where(s => s.BindsAll(objVars))
                     .Select(s => oneOrMorePath.PathEnd.Bind(s))
                     .Distinct()
-                    .Select(n => n.AsEnumerable().ToList()));
+                    .Select(n => new List<INode> { n }));
             }
             reverse = true;
         }
@@ -2173,7 +2173,7 @@ public class LeviathanQueryProcessor
         {
             // Build the set of possible bindings
 
-            if (context.Query.Bindings != null && !pattern.Variables.IsDisjoint(context.Query.Bindings.Variables))
+            if (context.Query.Bindings != null && pattern.Variables.Intersect(context.Query.Bindings.Variables).Any())
             {
                 // Possible Bindings comes from BINDINGS clause
                 // In this case each possibility is a distinct binding tuple defined in the BINDINGS clause
@@ -2216,7 +2216,7 @@ public class LeviathanQueryProcessor
         else
         {
             // Split bindings in chunks and inject them
-            foreach (ISet[] chunk in bindings.ChunkBy(100))
+            foreach (ISet[] chunk in ChunkBy(bindings, 100))
             {
                 IEnumerable<string> vars = chunk.SelectMany(x => x.Variables).Distinct();
                 var data = new BindingsPattern(vars);
@@ -2700,13 +2700,13 @@ public class LeviathanQueryProcessor
             // OR if there is no Ending Term or Bound Variable work forwards regardless
             if (zeroOrMorePath.PathStart.IsFixed)
             {
-                paths.Add(zeroOrMorePath.PathStart.Bind(new Set()).AsEnumerable().ToList());
+                paths.Add([zeroOrMorePath.PathStart.Bind(new Set())]);
             }
             else
             {
                 paths.AddRange((from s in context.InputMultiset.Sets
                                 where s.BindsAll(subjVars)
-                                select zeroOrMorePath.PathStart.Bind(s)).Distinct().Select(n => n.AsEnumerable().ToList()));
+                                select zeroOrMorePath.PathStart.Bind(s)).Distinct().Select(n => new List<INode> { n }));
             }
         }
         else if (zeroOrMorePath.PathEnd.IsFixed || (context.InputMultiset.ContainsVariables(objVars)))
@@ -2714,13 +2714,13 @@ public class LeviathanQueryProcessor
             // Work Backwards from Ending Term or Bound Variable
             if (zeroOrMorePath.PathEnd.IsFixed)
             {
-                paths.Add(zeroOrMorePath.PathEnd.Bind(new Set()).AsEnumerable().ToList());
+                paths.Add([zeroOrMorePath.PathEnd.Bind(new Set())]);
             }
             else
             {
                 paths.AddRange((from s in context.InputMultiset.Sets
                                 where s.BindsAll(objVars)
-                                select zeroOrMorePath.PathEnd.Bind(s)).Distinct().Select(n => n.AsEnumerable().ToList()));
+                                select zeroOrMorePath.PathEnd.Bind(s)).Distinct().Select(n => new List<INode> { n }));
             }
             reverse = true;
         }
@@ -4032,7 +4032,7 @@ public class LeviathanQueryProcessor
             var filter = (IFilterPattern)temp;
             ISparqlExpression filterExpr = filter.Filter.Expression;
 
-            if (filter.Variables.IsDisjoint(context.InputMultiset.Variables))
+            if (!filter.Variables.Intersect(context.InputMultiset.Variables).Any())
             {
                 // Filter is Disjoint so determine whether it has any affect or not
                 if (filter.Variables.Any())
@@ -4529,4 +4529,23 @@ public class LeviathanQueryProcessor
         }
     }
     #endregion
+
+    public static IEnumerable<T[]> ChunkBy<T>(IEnumerable<T> source, int size)
+    {
+        var buffer = new List<T>();
+        foreach (var item in source)
+        {
+            buffer.Add(item);
+            if (buffer.Count == size)
+            {
+                yield return buffer.ToArray();
+                buffer.Clear();
+            }
+        }
+        if (buffer.Count > 0)
+        {
+            yield return buffer.ToArray();
+            buffer.Clear();
+        }
+    }
 }

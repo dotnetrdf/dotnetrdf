@@ -82,7 +82,7 @@ public abstract class BaseQueryOptimiser
                                 gp.TriplePatterns[i].Variables.ForEach(v => currVariables.Add(v));
                                 continue;
                             }
-                            else if (currVariables.IsDisjoint(gp.TriplePatterns[i].Variables))
+                            else if (!currVariables.Overlaps(gp.TriplePatterns[i].Variables))
                             {
                                 TryReorderPatterns(gp, currVariables.ToList(), i + 1, i);
                                 gp.TriplePatterns[i].Variables.ForEach(v => currVariables.Add(v));

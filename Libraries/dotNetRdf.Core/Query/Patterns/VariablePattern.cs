@@ -126,7 +126,7 @@ public class VariablePattern
     /// <summary>
     /// Gets the Name of the Variable this Pattern matches.
     /// </summary>
-    public override IEnumerable<string> Variables => VariableName.AsEnumerable();
+    public override IEnumerable<string> Variables => [VariableName];
 
     /// <inheritdoc />
     public override bool IsFixed => false;

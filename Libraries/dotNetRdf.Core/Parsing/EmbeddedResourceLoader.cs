@@ -37,11 +37,7 @@ namespace VDS.RDF.Parsing;
 /// </summary>
 public static class EmbeddedResourceLoader
 {
-#if NETCORE
-    private static string _currAsmName = GetAssemblyName(typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly);
-#else
     private static string _currAsmName = GetAssemblyName(Assembly.GetExecutingAssembly());
-#endif
 
     /// <summary>
     /// Loads a Graph from an Embedded Resource.
@@ -77,13 +73,7 @@ public static class EmbeddedResourceLoader
                 resourceName = resourceName.Substring(0, resource.IndexOf(',')).TrimEnd();
 
                 // Try to load this assembly
-#if NETCORE
-                Assembly asm = assemblyName.Equals(_currAsmName)
-                    ? typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly
-                    : Assembly.Load(new AssemblyName(assemblyName));
-#else
                 Assembly asm = assemblyName.Equals(_currAsmName) ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName);
-#endif
                 if (asm != null)
                 {
                     // Resource is in the loaded assembly
@@ -97,11 +87,7 @@ public static class EmbeddedResourceLoader
             else
             {
                 // Resource is in dotNetRDF
-#if NETCORE
-                LoadGraphInternal(handler, typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly, resourceName, parser);
-#else
                 LoadGraphInternal(handler, Assembly.GetExecutingAssembly(), resourceName, parser);
-#endif
             }
         }
         catch (RdfParseException)
@@ -239,13 +225,7 @@ public static class EmbeddedResourceLoader
                 resourceName = resourceName.Substring(0, resource.IndexOf(',')).TrimEnd();
 
                 // Try to load this assembly
-#if NETCORE
-                Assembly asm = assemblyName.Equals(_currAsmName)
-                    ? typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly
-                    : Assembly.Load(new AssemblyName(assemblyName));
-#else
                 var asm = (assemblyName.Equals(_currAsmName) ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName)) as Assembly;
-#endif
                 if (asm != null)
                 {
                     // Resource is in the loaded assembly
@@ -259,12 +239,7 @@ public static class EmbeddedResourceLoader
             else
             {
                 // Resource is in dotNetRDF
-#if NETCORE
-                LoadDatasetInternal(handler,
-                    typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly, resourceName, parser);
-#else
                 LoadDatasetInternal(handler, Assembly.GetExecutingAssembly(), resourceName, parser);
-#endif
             }
         }
         catch (RdfParseException)

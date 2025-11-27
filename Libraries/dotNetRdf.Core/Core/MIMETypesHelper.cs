@@ -1382,7 +1382,7 @@ public static class MimeTypesHelper
     /// <returns></returns>
     public static IRdfReader GetParser(string contentType, TokenQueueMode tokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing)
     {
-        return GetParser(contentType.AsEnumerable(), tokenQueueMode);
+        return GetParser([contentType], tokenQueueMode);
     }
 
     /// <summary>
@@ -1444,7 +1444,7 @@ public static class MimeTypesHelper
     /// <returns></returns>
     public static ISparqlResultsReader GetSparqlParser(string contentType)
     {
-        return GetSparqlParser(contentType.AsEnumerable(), false);
+        return GetSparqlParser([contentType], false);
     }
 
     /// <summary>
@@ -1455,7 +1455,7 @@ public static class MimeTypesHelper
     /// <returns></returns>
     public static ISparqlResultsReader GetSparqlParser(string contentType, bool allowPlainTextResults)
     {
-        return GetSparqlParser(contentType.AsEnumerable(), allowPlainTextResults);
+        return GetSparqlParser([contentType], allowPlainTextResults);
     }
 
     /// <summary>
@@ -1642,7 +1642,7 @@ public static class MimeTypesHelper
     /// <returns></returns>
     public static IStoreReader GetStoreParser(string contentType, TokenQueueMode tokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing)
     {
-        return GetStoreParser(contentType.AsEnumerable(), tokenQueueMode);
+        return GetStoreParser([contentType], tokenQueueMode);
     }
 
     /// <summary>

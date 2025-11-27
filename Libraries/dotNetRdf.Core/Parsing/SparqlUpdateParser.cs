@@ -813,7 +813,7 @@ public class SparqlUpdateParser
     private void TryParseLoadCommand(SparqlUpdateParserContext context)
     {
         LoadCommand cmd;
-        var baseUri = context.BaseUri.ToSafeString();
+        var baseUri = context.BaseUri?.AbsoluteUri ?? "";
 
         // May optionally have a SILENT keyword
         var silent = false;
@@ -1092,7 +1092,7 @@ public class SparqlUpdateParser
         switch (next.TokenType)
         {
             case Token.URI:
-                return UriFactory.Create(Tools.ResolveUri(next.Value, context.BaseUri.ToSafeString()));
+                return UriFactory.Create(Tools.ResolveUri(next.Value, context.BaseUri?.AbsoluteUri ?? ""));
             case Token.QNAME:
                 return UriFactory.Create(Tools.ResolveQName(next.Value, context.NamespaceMap, context.BaseUri));
             default:

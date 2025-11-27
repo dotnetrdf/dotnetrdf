@@ -139,11 +139,11 @@ public class GroupByVariable
         {
             if (_child == null)
             {
-                return _name.AsEnumerable<String>();
+                return [_name];
             }
             else
             {
-                return _child.Variables.Concat(_name.AsEnumerable<String>());
+                return [.. _child.Variables, _name];
             }
         }
     }

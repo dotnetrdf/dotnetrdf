@@ -87,7 +87,7 @@ internal abstract class Qualified : Numeric
             from qualified in Vocabulary.QualifiedValueShape.ObjectsOf(Shape)
             let qualifiedShape = Shape.Parse(qualified, Graph)
             from valueNode in valueNodes
-            let v = valueNode.AsEnumerable()
+            let v = (IEnumerable<INode>)[valueNode]
             let conformsToQualifiedShape = qualifiedShape.Validate(dataGraph, focusNode, v)
             let doesNotConformToSiblingShapes = !siblingShapes.Any(siblingShape => siblingShape.Validate(dataGraph, focusNode, v))
             where conformsToQualifiedShape && doesNotConformToSiblingShapes

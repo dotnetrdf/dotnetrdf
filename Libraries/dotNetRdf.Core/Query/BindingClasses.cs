@@ -150,7 +150,7 @@ public class BindingGroup
             builder.Append(" {");
             foreach (var var in _assignments.Keys)
             {
-                builder.Append("?" + var + " = " + _assignments[var].ToSafeString());
+                builder.Append("?" + var + $" = {_assignments[var]}");
             }
             builder.Append('}');
         }

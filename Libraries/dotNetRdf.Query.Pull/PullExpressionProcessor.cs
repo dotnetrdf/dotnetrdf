@@ -122,7 +122,7 @@ internal class PullExpressionProcessor(
             var baseUri = string.Empty;
             if (context.BaseUri != null)
             {
-                baseUri = context.BaseUri.ToSafeString();
+                baseUri = context.BaseUri.AbsoluteUri;
             }
 
             if (lit.DataType == null ||

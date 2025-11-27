@@ -85,7 +85,7 @@ public class InsertCommand
             var affectedUris = new List<string>();
             if (TargetGraph != null)
             {
-                affectedUris.Add(TargetGraph.ToSafeString());
+                affectedUris.Add(TargetGraph.ToString());
             }
             if (InsertPattern.IsGraph) affectedUris.Add(InsertPattern.GraphSpecifier.Value);
             if (InsertPattern.HasChildGraphPatterns)
@@ -125,7 +125,7 @@ public class InsertCommand
         }
         if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
 
-        return affectedUris.Contains(graphUri.ToSafeString());
+        return affectedUris.Contains($"{graphUri}");
     }
 
     /// <summary>
@@ -135,7 +135,7 @@ public class InsertCommand
     /// <returns></returns>
     public override bool AffectsGraph(IRefNode graphName)
     {
-        var affectedUris = new List<string> {TargetGraph.ToSafeString()};
+        var affectedUris = new List<string> {$"{TargetGraph}" };
         if (InsertPattern.IsGraph) affectedUris.Add(InsertPattern.GraphSpecifier.Value);
         if (InsertPattern.HasChildGraphPatterns)
         {
@@ -144,7 +144,7 @@ public class InsertCommand
                 select p.GraphSpecifier.Value);
         }
         if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
-        return affectedUris.Contains(graphName.ToSafeString());
+        return affectedUris.Contains($"{graphName}");
     }
 
     /// <summary>

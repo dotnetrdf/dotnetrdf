@@ -217,7 +217,7 @@ public class SesameServer
             var repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"),
                 g.CreateUriNode("rep:RepositoryContext"));
             EnsureSystemConnection();
-            _sysConnection.UpdateGraph(string.Empty, repoType.AsEnumerable(), null);
+            _sysConnection.UpdateGraph(string.Empty, [repoType], null);
 
             return true;
         }
@@ -397,7 +397,7 @@ public class SesameServer
                 {
                     // Then we need to declare that said Context is of type rep:RepositoryContext
                     var repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
-                    _sysConnection.UpdateGraph(string.Empty, repoType.AsEnumerable(), null, (sender2, args2, st2) =>
+                    _sysConnection.UpdateGraph(string.Empty, [repoType], null, (sender2, args2, st2) =>
                     {
                         if (args.WasSuccessful)
                         {
@@ -446,7 +446,7 @@ public class SesameServer
             await _sysConnection.SaveGraphAsync(request, cancellationToken);
             var repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"),
                 g.CreateUriNode("rep:RepositoryContext"));
-            await _sysConnection.UpdateGraphAsync(string.Empty, repoType.AsEnumerable(), null, cancellationToken);
+            await _sysConnection.UpdateGraphAsync(string.Empty, [repoType], null, cancellationToken);
             return template.ID;
         }
         catch (Exception ex)

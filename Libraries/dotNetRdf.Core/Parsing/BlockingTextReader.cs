@@ -353,15 +353,6 @@ public abstract class BufferedTextReader
         }
     }
 
-#if NETCORE
-    /// <summary>
-    /// Closes the reader and the underlying reader
-    /// </summary>
-    public void Close()
-    {
-        // No-op as .NET Standard library version of TextReader has no Close() method
-    }
-#else
     /// <summary>
     /// Closes the reader and the underlying reader.
     /// </summary>
@@ -369,7 +360,6 @@ public abstract class BufferedTextReader
     {
         _reader.Close();
     }
-#endif
 
     /// <summary>
     /// Disposes of the reader and the underlying reader.

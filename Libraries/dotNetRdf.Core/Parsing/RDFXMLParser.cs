@@ -1818,7 +1818,7 @@ public class RdfXmlParser
         context.Namespaces.IncrementNesting();
         if (!evt.BaseUri.Equals(string.Empty))
         {
-            Uri baseUri = context.UriFactory.Create(Tools.ResolveUri(evt.BaseUri, context.BaseUri.ToSafeString()));
+            Uri baseUri = context.UriFactory.Create(Tools.ResolveUri(evt.BaseUri, context.BaseUri?.AbsoluteUri ?? ""));
             context.BaseUri = baseUri;
             if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
         }
@@ -1848,9 +1848,9 @@ public class RdfXmlParser
     {
         try
         {
-            if (baseUri.Equals(string.Empty)) baseUri = context.BaseUri.ToSafeString();
+            if (baseUri.Equals(string.Empty)) baseUri = context.BaseUri?.AbsoluteUri ?? "";
             if (string.Empty.Equals(uriref.Identifier))
-                baseUri = Tools.StripUriFragment(context.UriFactory.Create(baseUri)).ToSafeString();
+                baseUri = Tools.StripUriFragment(context.UriFactory.Create(baseUri))?.AbsoluteUri ?? "";
             IUriNode u = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(uriref.Identifier, baseUri)));
             return u;
         }

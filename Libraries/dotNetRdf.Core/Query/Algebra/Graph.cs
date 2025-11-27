@@ -63,7 +63,7 @@ public class Graph
 
             // Include graph variable
             var graphVar = ((VariableToken) _graphSpecifier).Value.Substring(1);
-            return _pattern.Variables.Concat(graphVar.AsEnumerable()).Distinct();
+            return _pattern.Variables.Concat([graphVar]).Distinct();
         }
     }
 
@@ -78,7 +78,7 @@ public class Graph
             // Strictly speaking the graph variable should always be fixed but non-standard implementations may treat the default graph as a named graph with a null URI
             var graphVar = ((VariableToken) _graphSpecifier).Value.Substring(1);
             var fixedVars = new HashSet<string>(FixedVariables);
-            return fixedVars.Contains(graphVar) ? _pattern.FloatingVariables : _pattern.FloatingVariables.Concat(graphVar.AsEnumerable()).Distinct();
+            return fixedVars.Contains(graphVar) ? _pattern.FloatingVariables : _pattern.FloatingVariables.Concat([graphVar]).Distinct();
         }
     }
 

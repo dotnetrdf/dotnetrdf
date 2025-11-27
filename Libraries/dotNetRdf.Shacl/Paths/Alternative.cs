@@ -56,9 +56,8 @@ internal class Alternative : Unary
         get
         {
             return
-                new Triple(this, Vocabulary.AlternativePath, Argument).AsEnumerable()
-                .Concat(
-                Graph.GetListAsTriples(Argument));
+                [new Triple(this, Vocabulary.AlternativePath, Argument), 
+                .. Graph.GetListAsTriples(Argument)];
         }
     }
 }

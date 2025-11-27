@@ -364,7 +364,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
                     case NodeType.Literal:
                         var lit = (ILiteralNode)result;
                         var baseUri = string.Empty;
-                        if (context.Query != null) baseUri = context.Query.BaseUri.ToSafeString();
+                        if (context.Query != null) baseUri = context.Query.BaseUri?.AbsoluteUri ?? "";
                         string uri;
                         if (lit.DataType == null)
                         {

@@ -86,7 +86,7 @@ internal class Component : Constraint
 
         IEnumerable<INode> invalidValues =
             from valueNode in valueNodes
-            where !validator.Validate(dataGraph, focusNode, valueNode.AsEnumerable(), null)
+            where !validator.Validate(dataGraph, focusNode, [valueNode], null)
             select valueNode;
 
         return ReportValueNodes(focusNode, invalidValues, report);

@@ -193,16 +193,10 @@ public static partial class UriLoader
 
             // Use HTTP GET
             request.Method = "GET";
-#if !NETCORE
             request.Timeout = Timeout;
-#endif
             if (_userAgent != null && !_userAgent.Equals(string.Empty))
             {
-#if NETCORE
-                request.Headers[HttpRequestHeader.UserAgent] = _userAgent;
-#else
                 request.UserAgent = _userAgent;
-#endif
             }
 
             try
@@ -398,16 +392,10 @@ public static partial class UriLoader
 
             // Use HTTP GET
             request.Method = "GET";
-#if !NETCORE
             request.Timeout = Timeout;
-#endif
             if (_userAgent != null && !_userAgent.Equals(string.Empty))
             {
-#if NETCORE
-                request.Headers[HttpRequestHeader.UserAgent] = _userAgent;
-#else
                 request.UserAgent = _userAgent;
-#endif
             }
 
             try

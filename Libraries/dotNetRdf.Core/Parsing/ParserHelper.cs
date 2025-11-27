@@ -89,7 +89,7 @@ public static class ParserHelper
             case Token.URI:
                 try
                 {
-                    var uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString(), context.UriFactory);
+                    var uri = Tools.ResolveUri(t.Value, context.BaseUri?.AbsoluteUri ?? "", context.UriFactory);
                     return context.Handler.CreateUriNode(context.UriFactory.Create(uri));
                 }
                 catch (UriFormatException formatEx)
@@ -133,7 +133,7 @@ public static class ParserHelper
             case Token.URI:
                 try
                 {
-                    var uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString(), context.UriFactory);
+                    var uri = Tools.ResolveUri(t.Value, context.BaseUri?.AbsoluteUri ?? "", context.UriFactory);
                     return context.Handler.CreateUriNode(context.UriFactory.Create(uri));
                 }
                 catch (UriFormatException formatEx)
@@ -262,7 +262,7 @@ public static class ParserHelper
             case Token.URI:
                 try
                 {
-                    var uri = Tools.ResolveUri(t.Value, g.BaseUri.ToSafeString(), g.UriFactory);
+                    var uri = Tools.ResolveUri(t.Value, g.BaseUri?.AbsoluteUri ?? "", g.UriFactory);
                     return g.CreateUriNode(g.UriFactory.Create(uri));
                 }
                 catch (UriFormatException formatEx)

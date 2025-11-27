@@ -440,7 +440,7 @@ public class Examples
     {
         var g = new Graph();
         g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-        IEnumerable<string> expected = "o".AsEnumerable();
+        IEnumerable<string> expected = ["o"];
         dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
         dynamic s = d.s;
 
@@ -455,7 +455,7 @@ public class Examples
     {
         var g = new Graph();
         g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-        IEnumerable<string> expected = "o".AsEnumerable();
+        IEnumerable<string> expected = ["o"];
         dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
         dynamic s = d.s;
 

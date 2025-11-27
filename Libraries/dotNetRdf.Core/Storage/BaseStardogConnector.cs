@@ -469,7 +469,7 @@ public abstract class BaseStardogConnector
     /// </remarks>
     public virtual void LoadGraph(IGraph g, Uri graphUri)
     {
-        LoadGraph(g, graphUri.ToSafeString());
+        LoadGraph(g, graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -482,7 +482,7 @@ public abstract class BaseStardogConnector
     /// </remarks>
     public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
     {
-        LoadGraph(handler, graphUri.ToSafeString());
+        LoadGraph(handler, graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -738,7 +738,7 @@ public abstract class BaseStardogConnector
     /// <param name="graphUri">URI of the Graph to delete.</param>
     public virtual void DeleteGraph(Uri graphUri)
     {
-        DeleteGraph(graphUri.ToSafeString());
+        DeleteGraph(graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -2081,14 +2081,9 @@ public abstract class BaseStardogConnector
     [Obsolete("This method is obsolete and will be removed in a future release. Replaced by AddStardogHeaders(HttpRequestMessage).")]
     protected virtual void AddStardogHeaders(HttpWebRequest request)
     {
-#if !NETCORE
         request.Headers.Add("SD-Connection-String", "kb=" + _kb + ";" + GetReasoningParameter());
         // removed persist=sync, no longer needed in latest stardog versions?
         request.Headers.Add("SD-Protocol", "1.0");
-#else
-        request.Headers["SD-Connection-String"] = "kb=" + this._kb + ";" + this.GetReasoningParameter();
-        request.Headers["SD-Protocol"] = "1.0";
-#endif
     }
 
     /// <summary>

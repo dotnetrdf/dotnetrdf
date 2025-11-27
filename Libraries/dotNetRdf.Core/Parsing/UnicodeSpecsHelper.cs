@@ -74,11 +74,7 @@ public class UnicodeSpecsHelper
 
     private static UnicodeCategory GetUnicodeCategory(char c)
     {
-#if NETCORE
-        return CharUnicodeInfo.GetUnicodeCategory(c);
-#else
         return char.GetUnicodeCategory(c);
-#endif
     }
     /// <summary>
     /// Checks whether a given Character is considered a Letter or Digit.

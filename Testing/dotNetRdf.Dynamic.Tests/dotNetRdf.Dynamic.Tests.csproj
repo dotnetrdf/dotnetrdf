@@ -18,10 +18,6 @@
     <ProjectReference Include="..\dotNetRdf.TestSupport\dotNetRdf.TestSupport.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
   <ItemGroup>
     <None Update="resources\**\*.*;resources\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

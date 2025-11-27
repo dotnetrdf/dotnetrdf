@@ -385,7 +385,7 @@ public class TriGParser
             {
                 try
                 {
-                    var newBase = new Uri(Tools.ResolveUri(baseUri.Value, context.BaseUri.ToSafeString()));
+                    var newBase = new Uri(Tools.ResolveUri(baseUri.Value, context.BaseUri?.AbsoluteUri ?? ""));
                     context.BaseUri = newBase;
                     RaiseWarning("The @base directive is not valid in all versions of the TriG specification, your data may not be compatible with some older tools which do not support this version of TriG");
                     if (!context.Handler.HandleBaseUri(newBase)) ParserHelper.Stop();
@@ -412,7 +412,7 @@ public class TriGParser
                     // Ensure the Uri is absolute
                     try
                     {
-                        var u = new Uri(Tools.ResolveUri(uri.Value, context.BaseUri.ToSafeString()));
+                        var u = new Uri(Tools.ResolveUri(uri.Value, context.BaseUri?.AbsoluteUri ?? ""));
                         var pre = (prefix.Value.Equals(":")) ? string.Empty : prefix.Value.Substring(0, prefix.Value.Length-1);
                         context.Namespaces.AddNamespace(pre, u);
                         if (!context.Handler.HandleNamespace(pre, u)) ParserHelper.Stop();
@@ -1350,7 +1350,7 @@ public class TriGParser
                         if (next.Value.StartsWith("<"))
                         {
                             dturi = next.Value.Substring(1, next.Value.Length - 2);
-                            return context.Handler.CreateLiteralNode(lit.Value, context.UriFactory.Create(Tools.ResolveUri(dturi, context.BaseUri.ToSafeString())));
+                            return context.Handler.CreateLiteralNode(lit.Value, context.UriFactory.Create(Tools.ResolveUri(dturi, context.BaseUri?.AbsoluteUri ?? "")));
                         }
                         else
                         {
@@ -1376,7 +1376,7 @@ public class TriGParser
                     if (litdt.DataType.StartsWith("<"))
                     {
                         dturi = litdt.DataType.Substring(1, litdt.DataType.Length - 2);
-                        return context.Handler.CreateLiteralNode(litdt.Value, context.UriFactory.Create(Tools.ResolveUri(dturi, context.BaseUri.ToSafeString())));
+                        return context.Handler.CreateLiteralNode(litdt.Value, context.UriFactory.Create(Tools.ResolveUri(dturi, context.BaseUri?.AbsoluteUri ?? "")));
                     }
                     else
                     {

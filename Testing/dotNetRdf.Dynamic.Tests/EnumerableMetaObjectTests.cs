@@ -42,12 +42,7 @@ public class EnumerableMetaObjectTests
         var d = new DynamicNode(s, g);
         dynamic objects = new DynamicObjectCollection(d, p);
 
-#if NET7_0_OR_GREATER
         Assert.Throws<ArgumentException>(() => objects.Average());
-#else
-        Assert.Throws<InvalidOperationException>(() =>
-            objects.Average());
-#endif
     }
 
     [Fact]

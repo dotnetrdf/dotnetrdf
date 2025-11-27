@@ -56,7 +56,21 @@ public static class Extensions
     /// <returns></returns>
     /// <remarks>
     /// This method taken from Stack Overflow - see. <a href="http://stackoverflow.com/questions/1577822/passing-a-single-item-as-ienumerablet">here</a>
+    /// <para>This method is deprecated and will be removed in a future version. To work around this, consider using one of the following alternatives.
+    /// <list type="bullet">
+    ///     <item>
+    ///         <code><see langword="yield"/> <see langword="return"/> <paramref name="item"/></code>
+    ///     </item>
+    ///     <item>
+    ///         <code>[<paramref name="item"/>]</code>
+    ///     </item>
+    ///     <item>
+    ///         <code>(<see cref="IEnumerable{T}">IEnumerable</see>&lt;<typeparamref name="T"/>>)[<paramref name="item"/>]</code>
+    ///     </item>
+    /// </list>
+    /// </para>
     /// </remarks>
+    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.")]
     public static IEnumerable<T> AsEnumerable<T>(this T item)
     {
         yield return item;
@@ -69,6 +83,17 @@ public static class Extensions
     /// <param name="x">An Enumerable.</param>
     /// <param name="y">Another Enumerable.</param>
     /// <returns></returns>
+    /// <remarks>This method is deprecated and will be removed in a future version. To work around this, consider using one of the following alternatives.
+    /// <list type="bullet">
+    ///     <item>
+    ///         <code>!<paramref name="x"/>.<see cref="ISet{T}.Overlaps(IEnumerable{T})">Overlaps</see>(<paramref name="y"/>) // for <see cref="ISet{T}">sets</see></code>
+    ///     </item>
+    ///     <item>
+    ///         <code>!<paramref name="x"/>.<see cref="Enumerable.Intersect{TSource}(IEnumerable{TSource}, IEnumerable{TSource})">Intersects</see>(<paramref name="y"/>).<see cref="Enumerable.Any{TSource}(IEnumerable{TSource})">Any()</see></code>
+    ///     </item>
+    /// </list>
+    /// </remarks>
+    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.")]
     public static bool IsDisjoint<T>(this IEnumerable<T> x, IEnumerable<T> y)
     {
         return x.All(item => !y.Contains(item));
@@ -81,6 +106,14 @@ public static class Extensions
     /// <param name="source">An Enumerable.</param>
     /// <param name="size">Max Chunk Size.</param>
     /// <returns></returns>
+    /// <remarks>This method is deprecated and will be removed in a future version. To work around this, consider using one of the following alternatives.
+    /// <list type="bullet">
+    ///     <item>
+    ///         <code><paramref name="source"/>.Chunk(<paramref name="size"/>) // from .NET 6</code>
+    ///     </item>
+    /// </list>
+    /// </remarks>
+    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.")]
     public static IEnumerable<T[]> ChunkBy<T>(this IEnumerable<T> source, int size)
     {
         var buffer = new List<T>();
@@ -215,57 +248,6 @@ public static class Extensions
         return u.AbsoluteUri.GetHashCode();
     }
 
-#if NETCORE
-    private static SHA256 _sha256 = null;
-    /// <summary>
-    /// Gets an SHA256 Hash for a URI
-    /// </summary>
-    /// <param name="u">URI to get Hash Code for</param>
-    /// <returns></returns>
-    public static String GetSha256Hash(this Uri u)
-    {
-        if (u == null) throw new ArgumentNullException("u");
-
-        // Only instantiate the SHA256 class when we first use it
-        if (_sha256 == null) _sha256 = SHA256.Create();
-
-        Byte[] input = Encoding.UTF8.GetBytes(u.AbsoluteUri);
-        Byte[] output = _sha256.ComputeHash(input);
-
-        StringBuilder hash = new StringBuilder();
-        foreach (Byte b in output)
-        {
-            hash.Append(b.ToString("x2"));
-        }
-
-        return hash.ToString();
-    }
-
-
-    /// <summary>
-    /// Gets a SHA256 Hash for a String
-    /// </summary>
-    /// <param name="s">String to hash</param>
-    /// <returns></returns>
-    internal static String GetSha256Hash(this String s)
-    {
-        if (s == null) throw new ArgumentNullException("s");
-
-        // Only instantiate the SHA256 class when we first use it
-        if (_sha256 == null) _sha256 = SHA256.Create();
-
-        Byte[] input = Encoding.UTF8.GetBytes(s);
-        Byte[] output = _sha256.ComputeHash(input);
-
-        StringBuilder hash = new StringBuilder();
-        foreach (Byte b in output)
-        {
-            hash.Append(b.ToString("x2"));
-        }
-
-        return hash.ToString();
-    }
-#else
     private static SHA256Managed _sha256;
 
     /// <summary>
@@ -316,7 +298,6 @@ public static class Extensions
 
         return hash.ToString();
     }
-#endif
 
     #endregion
 
@@ -704,6 +685,23 @@ public static class Extensions
     /// </summary>
     /// <param name="obj">Object.</param>
     /// <returns></returns>
+    /// <remarks>This method is deprecated and will be removed in a future version. To work around this, consider using one of the following alternatives.
+    /// <list type="bullet">
+    ///     <item>
+    ///         <code>$"{<paramref name="obj"/>}"</code>
+    ///     </item>
+    ///     <item>
+    ///         <code><paramref name="obj"/>?.<see cref="object.ToString">ToString()</see> ?? ""</code>
+    ///     </item>
+    ///     <item>
+    ///         <code><paramref name="obj"/> <see langword="is"/> <see langword="not"/> <see langword="null"/> ? <paramref name="obj"/>.<see cref="object.ToString">ToString()</see> : ""</code>
+    ///     </item>
+    ///     <item>
+    ///         <code><paramref name="obj"/> <see langword="switch"/> { <see langword="not"/> <see langword="null"/> => <paramref name="obj"/>.<see cref="object.ToString">ToString()</see>, _ => "" }</code>
+    ///     </item>
+    /// </list>
+    /// </remarks>
+    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.")]
     public static string ToSafeString(this object obj)
     {
         return (obj == null) ? string.Empty : obj.ToString();
@@ -714,6 +712,20 @@ public static class Extensions
     /// </summary>
     /// <param name="u">URI.</param>
     /// <returns></returns>
+    /// <remarks>This method is deprecated and will be removed in a future version. To work around this, consider using one of the following alternatives.
+    /// <list type="bullet">
+    ///     <item>
+    ///         <code><paramref name="u"/>?.<see cref="Uri.AbsoluteUri">AbsoluteUri</see> ?? ""</code>
+    ///     </item>
+    ///     <item>
+    ///         <code><paramref name="u"/> <see langword="is"/> <see langword="not"/> <see langword="null"/> ? <paramref name="u"/>.<see cref="Uri.AbsoluteUri">AbsoluteUri()</see> : ""</code>
+    ///     </item>
+    ///     <item>
+    ///         <code><paramref name="u"/> <see langword="switch"/> { <see langword="not"/> <see langword="null"/> => <paramref name="u"/>.<see cref="Uri.AbsoluteUri">AbsoluteUri()</see>, _ => "" }</code>
+    ///     </item>
+    /// </list>
+    /// </remarks>
+    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.")]
     public static string ToSafeString(this Uri u)
     {
         return (u == null) ? string.Empty : u.AbsoluteUri;
@@ -730,20 +742,20 @@ public static class Extensions
         return string.IsNullOrEmpty(str) ? null : (uriFactory ?? UriFactory.Root).Create(str);
     }
 
-    internal static string ToSafeString(IRefNode refNode)
-    {
-        if (refNode == null) return string.Empty;
-        if (refNode.NodeType == NodeType.Uri) return ((IUriNode)refNode).Uri.AbsoluteUri;
-        if (refNode.NodeType == NodeType.Blank) return $"_:{((IBlankNode)refNode).InternalID}";
-        throw new RdfException("Unexpected node type in ToSafeString(IRefNode). Expected Either Uri or Blank but got " + refNode.NodeType);
-    }
-
     /// <summary>
     /// Gets the String representation of the URI formatted using the given Formatter.
     /// </summary>
     /// <param name="u">URI.</param>
     /// <param name="formatter">URI Formatter.</param>
     /// <returns></returns>
+    /// <remarks>This method is deprecated and will be removed in a future version. To work around this, consider using one of the following alternatives.
+    /// <list type="bullet">
+    ///     <item>
+    ///         <code><paramref name="formatter"/>.<see cref="IUriFormatter.FormatUri(Uri)">FormatUri</see>(<paramref name="u"/>)</code>
+    ///     </item>
+    /// </list>
+    /// </remarks>
+    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.")]
     public static string ToString(this Uri u, IUriFormatter formatter)
     {
         return formatter.FormatUri(u);

@@ -74,7 +74,7 @@ public class Service
             if (EndpointSpecifier.TokenType == Token.VARIABLE)
             {
                 var serviceVar = ((VariableToken)EndpointSpecifier).Value.Substring(1);
-                return Pattern.Variables.Concat(serviceVar.AsEnumerable()).Distinct();
+                return Pattern.Variables.Concat([serviceVar]).Distinct();
             }
             else
             {

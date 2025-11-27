@@ -52,13 +52,13 @@ public class SelectDistinctGraphs : ISparqlAlgebra
     /// </summary>
     public IEnumerable<string> Variables
     {
-        get { return _graphVar.AsEnumerable(); }
+        get { return [_graphVar]; }
     }
 
     /// <summary>
     /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
     /// </summary>
-    public IEnumerable<string> FloatingVariables { get { return _graphVar.AsEnumerable(); } }
+    public IEnumerable<string> FloatingVariables { get { return [_graphVar]; } }
 
     /// <summary>
     /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.

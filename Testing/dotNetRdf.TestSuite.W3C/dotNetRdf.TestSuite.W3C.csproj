@@ -22,12 +22,10 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Libraries\dotNetRdf.Core\dotNetRdf.Core.csproj" />
         <ProjectReference Include="..\dotNetRdf.TestSupport\dotNetRdf.TestSupport.csproj" />
+        <ProjectReference Include="..\..\Libraries\dotNetRdf.Query.Pull\dotNetRdf.Query.Pull.csproj" />
         <None Update="resources\**\*.*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' != 'net472' ">
-        <ProjectReference Include="..\..\Libraries\dotNetRdf.Query.Pull\dotNetRdf.Query.Pull.csproj" />
-    </ItemGroup>
 </Project>

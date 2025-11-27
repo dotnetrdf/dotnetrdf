@@ -320,7 +320,7 @@ public abstract class BaseTripleStore
         }
 
         var t = new Triple(s, p, o);
-        return graph.ContainsTriple(t) ? t.AsEnumerable() : Enumerable.Empty<Triple>();
+        return graph.ContainsTriple(t) ? [t] : Enumerable.Empty<Triple>();
     }
 
     /// <summary>

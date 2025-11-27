@@ -215,7 +215,7 @@ public class FourStoreConnector
     /// <param name="graphUri">Uri of the Graph to load.</param>
     public void LoadGraph(IGraph g, Uri graphUri)
     {
-        LoadGraph(g, graphUri.ToSafeString());
+        LoadGraph(g, graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -225,7 +225,7 @@ public class FourStoreConnector
     /// <param name="graphUri">URI of the Graph to load.</param>
     public void LoadGraph(IRdfHandler handler, Uri graphUri)
     {
-        LoadGraph(handler, graphUri.ToSafeString());
+        LoadGraph(handler, graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -279,7 +279,7 @@ public class FourStoreConnector
             throw new RdfStorageException("Cannot save a Graph without a Base URI to a 4store Server");
         }
 
-        var requestUri = new Uri(_baseUri + "data/" + Uri.EscapeUriString(g.Name.ToSafeString()));
+        var requestUri = new Uri(_baseUri + "data/" + Uri.EscapeUriString($"{g.Name}"));
         var request = new HttpRequestMessage(HttpMethod.Put, requestUri)
         {
             Content = new GraphContent(g, new CompressingTurtleWriter(WriterCompressionLevel.High))
@@ -306,7 +306,7 @@ public class FourStoreConnector
     /// </remarks>
     public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
     {
-        UpdateGraph(graphUri.ToSafeString(), additions, removals);
+        UpdateGraph(graphUri?.AbsoluteUri ?? "", additions, removals);
     }
 
     /// <summary>
@@ -320,7 +320,7 @@ public class FourStoreConnector
     /// </remarks>
     public void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
     {
-        UpdateGraph(graphName.ToSafeString(), additions, removals);
+        UpdateGraph($"{graphName}", additions, removals);
     }
 
     /// <summary>

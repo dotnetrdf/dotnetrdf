@@ -33,28 +33,10 @@
     </PackageReference>
  </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Data" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Net.Http" />
-  </ItemGroup>
-
   <ItemGroup>
     <None Update="resources\**\*.*;resources\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
-    <DefineConstants>$(DefineConstants);NET40</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-    <DefineConstants>$(DefineConstants);NO_VIRTUOSO</DefineConstants>
-  </PropertyGroup>
-
 </Project>
