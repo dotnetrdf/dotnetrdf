@@ -248,57 +248,6 @@ public static class Extensions
         return u.AbsoluteUri.GetHashCode();
     }
 
-#if NETCORE
-    private static SHA256 _sha256 = null;
-    /// <summary>
-    /// Gets an SHA256 Hash for a URI
-    /// </summary>
-    /// <param name="u">URI to get Hash Code for</param>
-    /// <returns></returns>
-    public static String GetSha256Hash(this Uri u)
-    {
-        if (u == null) throw new ArgumentNullException("u");
-
-        // Only instantiate the SHA256 class when we first use it
-        if (_sha256 == null) _sha256 = SHA256.Create();
-
-        Byte[] input = Encoding.UTF8.GetBytes(u.AbsoluteUri);
-        Byte[] output = _sha256.ComputeHash(input);
-
-        StringBuilder hash = new StringBuilder();
-        foreach (Byte b in output)
-        {
-            hash.Append(b.ToString("x2"));
-        }
-
-        return hash.ToString();
-    }
-
-
-    /// <summary>
-    /// Gets a SHA256 Hash for a String
-    /// </summary>
-    /// <param name="s">String to hash</param>
-    /// <returns></returns>
-    internal static String GetSha256Hash(this String s)
-    {
-        if (s == null) throw new ArgumentNullException("s");
-
-        // Only instantiate the SHA256 class when we first use it
-        if (_sha256 == null) _sha256 = SHA256.Create();
-
-        Byte[] input = Encoding.UTF8.GetBytes(s);
-        Byte[] output = _sha256.ComputeHash(input);
-
-        StringBuilder hash = new StringBuilder();
-        foreach (Byte b in output)
-        {
-            hash.Append(b.ToString("x2"));
-        }
-
-        return hash.ToString();
-    }
-#else
     private static SHA256Managed _sha256;
 
     /// <summary>
@@ -349,7 +298,6 @@ public static class Extensions
 
         return hash.ToString();
     }
-#endif
 
     #endregion
 

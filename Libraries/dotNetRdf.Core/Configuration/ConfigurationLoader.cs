@@ -311,13 +311,6 @@ public class ConfigurationLoader : IConfigurationLoader
 
     #endregion
 
-    static ConfigurationLoader()
-    {
-#if NET40
-        SettingsProvider = new ConfigurationManagerSettingsProvider();
-#endif
-    }
-
     #region Graph Loading and Auto-Configuration
 
     /// <summary>
@@ -577,11 +570,7 @@ public class ConfigurationLoader : IConfigurationLoader
                             Uri uriValue = (value.NodeType == NodeType.Uri ? ((IUriNode)value).Uri : g.UriFactory.Create(valueNode.AsString()));
                             property.SetValue(null, uriValue, null);
                         }
-#if NETCORE
-                        else if (valueType.IsEnum())
-#else
                         else if (valueType.IsEnum)
-#endif
                         {
                             if (value.NodeType != NodeType.Literal) throw new DotNetRdfConfigurationException("Malformed dnf:configure triple - " + t + " - the object must be a literal when the property being set has a enumeration type");
                             var enumVal = Enum.Parse(valueType, valueNode.AsString(), true);

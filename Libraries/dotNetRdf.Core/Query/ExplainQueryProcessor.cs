@@ -356,13 +356,11 @@ public class ExplainQueryProcessor
             System.Diagnostics.Debug.Write(indent);
             System.Diagnostics.Debug.WriteLine(output);
         }
-#if !NETCORE
         if (HasFlag(ExplanationLevel.OutputToTrace))
         {
             System.Diagnostics.Trace.Write(indent);
             System.Diagnostics.Trace.WriteLine(output);
         }
-#endif
     }
 
     /// <summary>

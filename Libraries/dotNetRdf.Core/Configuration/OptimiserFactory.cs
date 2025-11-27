@@ -27,9 +27,6 @@
 using System;
 using System.Linq;
 using VDS.RDF.Query.Optimisation;
-#if NETCORE
-using System.Reflection;
-#endif
 
 namespace VDS.RDF.Configuration;
 

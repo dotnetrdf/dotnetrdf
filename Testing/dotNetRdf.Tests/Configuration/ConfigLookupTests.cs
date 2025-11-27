@@ -465,10 +465,6 @@ _:a dnr:type <appsetting:ConfigurationLookupString3> .";
     public void Dispose()
     {
         // revert the default value to not interfere with other tests
-#if NET40
-        ConfigurationLoader.SettingsProvider = new ConfigurationManagerSettingsProvider();
-#else
         ConfigurationLoader.SettingsProvider = null;
-#endif
     }
 }
