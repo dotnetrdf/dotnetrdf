@@ -52,7 +52,7 @@ internal class OneOrMore : Unary
         get
         {
             return
-                new Triple(this, Vocabulary.OneOrMorePath, Argument).AsEnumerable()
+                ((IEnumerable<Triple>)[new Triple(this, Vocabulary.OneOrMorePath, Argument)])
                 .Union(
                 Argument.AsTriples);
         }

@@ -62,7 +62,7 @@ public class FusekiConnector
     /// <param name="serviceUri">The /data URI of the Fuseki Server.</param>
     /// <param name="writerMimeTypeDefinition">The MIME type of the syntax to use when sending RDF data to the server. Defaults to RDF/XML.</param>
     public FusekiConnector(Uri serviceUri, MimeTypeDefinition writerMimeTypeDefinition = null)
-        : this(serviceUri.ToSafeString(), writerMimeTypeDefinition) { }
+        : this(serviceUri?.AbsoluteUri ?? "", writerMimeTypeDefinition) { }
 
     /// <summary>
     /// Creates a new connection to a Fuseki Server.
@@ -84,7 +84,7 @@ public class FusekiConnector
     /// <param name="serviceUri">The /data URI of the Fuseki Server.</param>
     /// <param name="proxy">Proxy Server.</param>
     public FusekiConnector(Uri serviceUri, IWebProxy proxy)
-        : this(serviceUri.ToSafeString(), proxy) { }
+        : this(serviceUri?.AbsoluteUri ?? "", proxy) { }
 
     /// <summary>
     /// Creates a new connection to a Fuseki Server.
@@ -307,7 +307,7 @@ public class FusekiConnector
     /// <param name="removals">Triples to be removed.</param>
     public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
     {
-        UpdateGraph(graphUri.ToSafeString(), additions, removals);
+        UpdateGraph(graphUri?.AbsoluteUri ?? "", additions, removals);
     }
 
     /// <summary>

@@ -192,7 +192,7 @@ internal class PullEvaluationContext : IPatternEvaluationContext
                 {
                     // Return if the triple exists
                     var t = new Triple(subj, pred, obj);
-                    return ContainsTriple(t, activeGraph) ? t.AsEnumerable() : Enumerable.Empty<Triple>();
+                    return ContainsTriple(t, activeGraph) ? [t] : Enumerable.Empty<Triple>();
                 }
             }
         }

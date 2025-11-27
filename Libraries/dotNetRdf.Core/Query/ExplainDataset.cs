@@ -46,7 +46,7 @@ class ExplainDataset
         {
             if (Processor.HasFlag(ExplanationLevel.AnalyseNamedGraphs))
             {
-                Processor.PrintExplanations("Switching to named graph " + graphUri.ToSafeString());
+                Processor.PrintExplanations($"Switching to named graph {graphUri}");
             }
         }
         base.SetActiveGraph(graphUri);
@@ -63,7 +63,7 @@ class ExplainDataset
                 Processor.PrintExplanations("Switching to named graph as merge of the following graphs:");
                 foreach (Uri graphUri in gs)
                 {
-                    Processor.PrintExplanations(graphUri.ToSafeString());
+                    Processor.PrintExplanations(graphUri?.AbsoluteUri ?? "");
                     
                 }
             }

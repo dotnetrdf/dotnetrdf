@@ -275,7 +275,7 @@ public class SparqlConnector
     /// <param name="graphUri">URI of the Graph to load.</param>
     public virtual void LoadGraph(IGraph g, Uri graphUri)
     {
-        LoadGraph(g, graphUri.ToSafeString());
+        LoadGraph(g, graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -285,7 +285,7 @@ public class SparqlConnector
     /// <param name="graphUri">URI of the Graph to load.</param>
     public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
     {
-        LoadGraph(handler, graphUri.ToSafeString());
+        LoadGraph(handler, graphUri?.AbsoluteUri ?? "");
     }
 
     /// <summary>
@@ -299,7 +299,7 @@ public class SparqlConnector
         {
             g.BaseUri = g.UriFactory.Create(graphUri);
         }
-        LoadGraph(new GraphHandler(g), graphUri.ToSafeString());
+        LoadGraph(new GraphHandler(g), graphUri ?? "");
     }
 
     /// <summary>

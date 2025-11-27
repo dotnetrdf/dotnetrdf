@@ -84,7 +84,7 @@ public class VariableTerm
     {
         get
         {
-            return Name.AsEnumerable();
+            return [Name];
         }
     }
 

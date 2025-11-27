@@ -125,7 +125,7 @@ public abstract class BaseTripleCollection
             try
             {
                 Triple t = this[new Triple(pattern.s, pattern.p, pattern.o)];
-                return t.AsEnumerable();
+                return [t];
             }
             catch (KeyNotFoundException)
             {

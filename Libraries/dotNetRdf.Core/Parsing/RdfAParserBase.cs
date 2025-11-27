@@ -1451,7 +1451,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
             }
 
             // URI
-            return context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(uriRef, evalContext.BaseUri.ToSafeString())));
+            return context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(uriRef, evalContext.BaseUri?.AbsoluteUri ?? "")));
         }
         catch (RdfException)
         {

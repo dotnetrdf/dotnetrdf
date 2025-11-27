@@ -105,7 +105,7 @@ internal abstract class Shape : GraphWrapperNode
             IEnumerable<Target> targets = Vocabulary.Targets.SelectMany(selectTargets);
 
             IEnumerable<Target> implicitClassTargets =
-                from shape in this.AsEnumerable()
+                from shape in (IEnumerable<GraphWrapperNode>)[this]
                 where isClass(shape) && isShape(shape)
                 select Target.Parse(Vocabulary.TargetClass, shape);
 
@@ -133,13 +133,13 @@ internal abstract class Shape : GraphWrapperNode
     internal bool Validate(IGraph dataGraph, Report report)
     {
         return SelectFocusNodes(dataGraph)
-            .Select(focusNode => Validate(dataGraph, focusNode, focusNode.AsEnumerable(), report))
+            .Select(focusNode => Validate(dataGraph, focusNode, [focusNode], report))
             .Aggregate(true, (a, b) => a && b);
     }
 
     internal bool Validate(IGraph dataGraph, INode focusNode)
     {
-        return Validate(dataGraph, focusNode, focusNode.AsEnumerable());
+        return Validate(dataGraph, focusNode, [focusNode]);
     }
 
     internal bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report = null)

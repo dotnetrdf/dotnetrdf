@@ -47,7 +47,7 @@ public class LetPattern
     {
         VariableName = var;
         AssignExpression = expr;
-        _vars = VariableName.AsEnumerable().Concat(AssignExpression.Variables).Distinct().ToList();
+        _vars = ((IEnumerable<string>)[VariableName, .. AssignExpression.Variables]).Distinct().ToList();
         _vars.Sort();
     }
 
@@ -108,7 +108,7 @@ public class LetPattern
     /// </summary>
     public override IEnumerable<string> FloatingVariables
     {
-        get { return VariableName.AsEnumerable(); }
+        get { return [VariableName]; }
     }
 
     /// <summary>

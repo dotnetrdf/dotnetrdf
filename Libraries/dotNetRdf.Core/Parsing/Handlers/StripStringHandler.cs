@@ -78,7 +78,7 @@ public class StripStringHandler : BaseRdfHandler, IWrappingRdfHandler
     /// <summary>
     /// Gets the handler wrapped by this handler.
     /// </summary>
-    public IEnumerable<IRdfHandler> InnerHandlers => _handler.AsEnumerable();
+    public IEnumerable<IRdfHandler> InnerHandlers => [_handler];
 
     /// <summary>
     /// Starts inner handler.

@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System.Linq;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Update;
 
@@ -73,7 +74,7 @@ public class AskBgpOptimiser
             else if (algebra is IJoin)
             {
                 var join = (IJoin)algebra;
-                if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
+                if (!join.Lhs.Variables.Intersect(join.Rhs.Variables).Any())
                 {
                     // If the sides of the Join are disjoint then can fully transform the join since we only need to find at least
                     // one solution on either side in order for the query to match

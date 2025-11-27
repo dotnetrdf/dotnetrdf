@@ -150,20 +150,21 @@ public class TurtleSpecsHelper
     /// <returns></returns>
     public static bool IsValidPlainLiteral(string value, Uri dt, TurtleSyntax syntax)
     {
+        var dtUri = dt?.AbsoluteUri ?? "";
         StringComparison comparison = (syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
-        if ((value.Equals("true", comparison) || value.Equals("false", comparison)) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
+        if ((value.Equals("true", comparison) || value.Equals("false", comparison)) && dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
         {
             return true;
         }
-        else if (_validDecimal.IsMatch(value) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDecimal))
+        else if (_validDecimal.IsMatch(value) && dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDecimal))
         {
             return true;
         }
-        else if (_validInteger.IsMatch(value) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeInteger))
+        else if (_validInteger.IsMatch(value) && dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeInteger))
         {
             return true;
         }
-        else if (_validDouble.IsMatch(value) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
+        else if (_validDouble.IsMatch(value) && dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
         {
             return true;
         }

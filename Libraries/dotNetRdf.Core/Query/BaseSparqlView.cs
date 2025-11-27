@@ -112,11 +112,11 @@ public abstract class BaseSparqlView
             _graphs = new HashSet<string>();
             foreach (IRefNode graphName in _q.DefaultGraphNames)
             {
-                _graphs.Add(graphName.ToSafeString());
+                _graphs.Add($"{graphName}");
             }
             foreach (IRefNode graphName in _q.NamedGraphNames)
             {
-                _graphs.Add(graphName.ToSafeString());
+                _graphs.Add($"{graphName}");
             }
         }
 
@@ -194,7 +194,7 @@ public abstract class BaseSparqlView
                 else
                 {
                     // If specific Graphs only invalidate when those Graphs change
-                    if (_graphs.Contains(g.BaseUri.ToSafeString()))
+                    if (_graphs.Contains(g.BaseUri?.AbsoluteUri ?? ""))
                     {
                         InvalidateView();
                     }
@@ -221,7 +221,7 @@ public abstract class BaseSparqlView
                 else
                 {
                     // If specific Graphs only invalidate when those Graphs change
-                    if (_graphs.Contains(g.BaseUri.ToSafeString()))
+                    if (_graphs.Contains(g.BaseUri?.AbsoluteUri ?? ""))
                     {
                         InvalidateView();
                     }
@@ -248,7 +248,7 @@ public abstract class BaseSparqlView
                 else
                 {
                     // If specific Graphs only invalidate when those Graphs change
-                    if (_graphs.Contains(g.BaseUri.ToSafeString()))
+                    if (_graphs.Contains(g.BaseUri?.AbsoluteUri ?? ""))
                     {
                         InvalidateView();
                     }
@@ -275,7 +275,7 @@ public abstract class BaseSparqlView
                 else
                 {
                     // If specific Graphs only invalidate when those Graphs change
-                    if (_graphs.Contains(g.BaseUri.ToSafeString()))
+                    if (_graphs.Contains(g.BaseUri?.AbsoluteUri ?? ""))
                     {
                         InvalidateView();
                     }

@@ -97,7 +97,7 @@ public class SetDistinctnessComparer
             var output = new StringBuilder();
             foreach (var var in _vars)
             {
-                output.Append("?" + var + " = " + obj[var].ToSafeString());
+                output.Append("?" + var + $" = {obj[var]}");
                 output.Append(" , ");
             }
             output.Remove(output.Length - 3, 3);

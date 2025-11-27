@@ -47,7 +47,7 @@ public class BindPattern
     {
         Variable = var;
         InnerExpression = expr;
-        _vars = Variable.AsEnumerable().Concat(InnerExpression.Variables).Distinct().ToList();
+        _vars = [.. ((IList<string>)[Variable, .. InnerExpression.Variables]).Distinct()];
         _vars.Sort();
     }
 
@@ -131,7 +131,7 @@ public class BindPattern
     /// </summary>
     public override IEnumerable<string> FloatingVariables
     {
-        get { return Variable.AsEnumerable(); }
+        get { return [Variable]; }
     }
 
     /// <summary>

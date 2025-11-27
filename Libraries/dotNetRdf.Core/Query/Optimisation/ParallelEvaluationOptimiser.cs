@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System.Linq;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Update;
 
@@ -61,7 +62,7 @@ public class ParallelEvaluationOptimiser
             if (algebra is Join)
             {
                 var join = (Join)algebra;
-                if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
+                if (!join.Lhs.Variables.Intersect(join.Rhs.Variables).Any())
                 {
                     return new ParallelJoin(Optimise(join.Lhs), Optimise(join.Rhs));
                 }

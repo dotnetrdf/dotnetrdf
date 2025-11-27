@@ -98,7 +98,7 @@ public class GraphMLWriter : BaseStoreWriter, ICollapseLiteralsWriter
         if (graph.Name != null)
         {
             //writer.WriteAttributeString(GraphMLSpecsHelper.Id, graph.BaseUri.AbsoluteUri);
-            WriteData(writer, GraphMLSpecsHelper.GraphLabel, graph.Name.ToSafeString());
+            WriteData(writer, GraphMLSpecsHelper.GraphLabel, $"{graph.Name}");
         }
 
         WriteTriples(writer, graph, collapseLiterals);

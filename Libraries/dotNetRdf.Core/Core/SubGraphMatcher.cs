@@ -530,7 +530,7 @@ class SubGraphMatcher
         // Populate existing Mappings
         foreach (KeyValuePair<INode,INode> fixedMapping in _mapping) 
         {
-            possibleMappings.Add(fixedMapping.Key, new List<INode>(fixedMapping.Value.AsEnumerable<INode>()));
+            possibleMappings.Add(fixedMapping.Key, [fixedMapping.Value]);
         }
 
         // Populate possibilities for each Node
