@@ -163,7 +163,10 @@ public abstract class BaseGraphCollection
     /// <param name="g">Graph.</param>
     protected virtual void RaiseGraphAdded(IGraph g)
     {
-        GraphAdded?.Invoke(this, new GraphEventArgs(g));
+        if (g != null)
+        {
+            GraphAdded?.Invoke(this, new GraphEventArgs(g));
+        }
     }
 
     /// <summary>
@@ -172,6 +175,9 @@ public abstract class BaseGraphCollection
     /// <param name="g">Graph.</param>
     protected virtual void RaiseGraphRemoved(IGraph g)
     {
-        GraphRemoved?.Invoke(this, new GraphEventArgs(g));
+        if (g != null)
+        {
+            GraphRemoved?.Invoke(this, new GraphEventArgs(g));
+        }
     }
 }
