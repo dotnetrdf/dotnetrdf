@@ -55,7 +55,7 @@ class PersistentGraphCollection
 
     protected override void RaiseGraphAdded(IGraph g)
     {
-        if (!_persisting)
+        if (!_persisting  && g != null)
         {
             if (_manager.UpdateSupported)
             {
@@ -81,7 +81,7 @@ class PersistentGraphCollection
 
     protected override void RaiseGraphRemoved(IGraph g)
     {
-        if (!_persisting)
+        if (!_persisting && g != null)
         {
             var uri = $"{g.Name}";
             _removedGraphs.Add(uri);
@@ -122,7 +122,8 @@ class PersistentGraphCollection
         {
             return true;
         }
-        else if (!_removedGraphs.Contains(uri))
+
+        if (!_removedGraphs.Contains(uri))
         {
             // Try and load the Graph and return true if anything is returned
             var g = new Graph(graphName);
@@ -136,10 +137,8 @@ class PersistentGraphCollection
                     Add(g, true);
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+
+                return false;
             }
             catch
             {
@@ -147,10 +146,8 @@ class PersistentGraphCollection
                 return false;
             }
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     [Obsolete("Replaced by Remove(IRefNode)")]
