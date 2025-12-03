@@ -49,7 +49,14 @@ internal class Ask : Sparql
     {
         get
         {
-            return Vocabulary.Ask.ObjectsOf(this).Single().AsValuedNode().AsString();
+            try
+            {
+                return Vocabulary.Ask.ObjectsOf(this).Single().AsValuedNode().AsString();
+            }
+            catch (System.InvalidOperationException)
+            {
+                throw new ShaclProcessorException("A sh:SPARQLAskValidator must have exactly one sh:ask property.");
+            }
         }
     }
 

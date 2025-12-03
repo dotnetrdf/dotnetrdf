@@ -24,41 +24,19 @@
 // </copyright>
 */
 
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using VDS.RDF.Shacl.Validation;
+namespace VDS.RDF.Shacl;
 
-namespace VDS.RDF.Shacl.Shapes;
-
-internal class Property : Shape
-{
-    [DebuggerStepThrough]
-    internal Property(INode node, IGraph graph)
-        : base(node, graph)
-    {
-    }
-
-    internal Path Path
-    {
-        get
-        {
-            var paths = Vocabulary.Path.ObjectsOf(this).Select(x=>Path.Parse(x, Graph)).ToList();
-            if (paths.Count != 1)
-            {
-                throw new ShaclProcessorException("A sh:PropertyShape must have exactly one sh:path property.");
-            }
-            return paths[0];
-        }
-    }
-
-    internal IEnumerable<INode> SelectValueNodes(IGraph dataGraph, INode focusNode)
-    {
-        return Path.SelectValueNodes(dataGraph, focusNode);
-    }
-
-    protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
-    {
-        return valueNodes.All(valueNode => base.ValidateInternal(dataGraph, valueNode, SelectValueNodes(dataGraph, valueNode), report));
-    }
-}
+/// <summary>
+/// Exception thrown by the SHACL Processor.
+/// </summary>
+/// <remarks>
+/// This exception is thrown when there is an error in processing SHACL shapes or data, such as malformed shapes or invalid constraints.
+/// It indicates issues that prevent successful validation rather than validation failures themselves.
+/// </remarks>
+public class ShaclProcessorException : RdfException
+ {
+     internal ShaclProcessorException(string message)
+         : base(message)
+     {
+     }
+ }
