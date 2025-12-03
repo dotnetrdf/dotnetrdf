@@ -54,7 +54,7 @@ internal abstract class Shape : GraphWrapperNode
     {
         get
         {
-            return (ILiteralNode)Vocabulary.Message.ObjectsOf(this).SingleOrDefault();
+            return (ILiteralNode)Vocabulary.Message.ObjectsOf(this).FirstOrDefault();
         }
     }
 

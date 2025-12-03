@@ -42,7 +42,11 @@ internal class Parameter : Property
     {
         get
         {
-            return Vocabulary.Optional.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsBoolean() ?? false;
+            var optionalNodes = Vocabulary.Optional.ObjectsOf(this).ToList();
+            if (optionalNodes.Count > 1) {
+                throw new ShaclProcessorException("A sh:Parameter must not have multiple sh:optional properties.");
+            }
+            return optionalNodes.SingleOrDefault()?.AsValuedNode().AsBoolean() ?? false;
         }
     }
 

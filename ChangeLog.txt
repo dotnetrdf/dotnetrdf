@@ -4,7 +4,8 @@
 3.4.2
 -----
 
-FIX: Deprecated several globally scoped extension methods. They are now marked obsolete usable.
+FIX: Deprecated several globally scoped extension methods. They are now marked obsolete usable. Thanks to @langsamu for the PR.
+NEW: Added VDS.RDF.Shacl.ShaclProcessorException exception type. Exceptions of this type will be thrown by the SHACL processor when an invalid shape or constraint component is encountered that prevents validation from completing. These exceptions DO NOT indicate SHACL validation errors. Thanks to @ssulyok for the report. (#797)
 
 3.4.1
 -----
