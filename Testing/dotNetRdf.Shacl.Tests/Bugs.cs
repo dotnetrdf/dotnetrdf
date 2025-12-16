@@ -23,6 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System;
+using System.Linq;
 using Xunit;
 
 namespace VDS.RDF.Shacl;
@@ -158,5 +160,108 @@ foaf:firstName ""Carol"" .");
         var shaclGraph = new ShapesGraph(shapesGraph);
 
         Assert.False(shaclGraph.Validate(dataGraph).Conforms);
+    }
+
+    [Fact]
+    public void Issue797_AllowMultipleMessages()
+    {
+        var shapesGraph = new Graph();
+        shapesGraph.LoadFromString(@"
+            @prefix : <urn:> .
+            @prefix sh: <http://www.w3.org/ns/shacl#> .
+
+            [
+                sh:targetNode :s ;
+                sh:property [
+                    sh:path :p ;
+                    sh:class :C ;
+                    sh:message ""test message""@en ;
+                    sh:message ""message de test""@fr ;
+                ]
+            ] .
+        ");
+        var dataGraph = new Graph();
+        dataGraph.LoadFromString(@"
+            @prefix : <urn:> .
+            :s :p :o .
+        ");
+        var shaclGraph = new ShapesGraph(shapesGraph);
+        
+        // 797 Validate throws an InvalidOperationException when a constraint has multiple messages.
+        var report = shaclGraph.Validate(dataGraph);
+        Assert.False(report.Conforms);
+        var message = report.Results.First().Message;
+        Assert.True(message.Language.Equals("en") || message.Language.Equals("fr"));
+    }
+
+    [Fact]
+    public void Issue797_RejectMultiplePaths()
+    {
+        var shapesGraph = new Graph();
+        shapesGraph.LoadFromString(@"
+            @prefix : <urn:> .
+            @prefix sh: <http://www.w3.org/ns/shacl#> .
+
+            [
+                sh:targetNode :s ;
+                sh:property [
+                    sh:path :p1, :p2 ;
+                    sh:class :C ;
+                ]
+            ] .
+            ");
+            var dataGraph = new Graph();
+            dataGraph.LoadFromString(@"
+            @prefix : <urn:> .
+            :s :p1 :o1 .
+            ");
+            var shaclGraph = new ShapesGraph(shapesGraph);
+            // 797 Validate throws an ShaclProcessorException when a constraint has multiple paths.
+            Assert.Throws<ShaclProcessorException>(() => shaclGraph.Validate(dataGraph));
+    }
+
+    [Fact]
+    public void Issue797_RejectNoPath()
+    {
+        var shapesGraph = new Graph();
+        shapesGraph.LoadFromString(@"
+            @prefix : <urn:> .
+            @prefix sh: <http://www.w3.org/ns/shacl#> .
+
+            [
+                sh:targetNode :s ;
+                sh:property [
+                    sh:class :C ;
+                ]
+            ] .
+            ");
+            var dataGraph = new Graph();
+            dataGraph.LoadFromString(@"
+            @prefix : <urn:> .
+            :s :p1 :o1 .
+            ");
+            var shaclGraph = new ShapesGraph(shapesGraph);
+            // 797 Validate throws an ShaclProcessorException when a constraint has multiple paths.
+            Assert.Throws<ShaclProcessorException>(() => shaclGraph.Validate(dataGraph));
+    }
+
+    [Fact]
+    public void Issue797_RejectMultipleOptional()
+    {
+        var shapesGraph = new Graph();
+        shapesGraph.LoadFromString(@"
+        @prefix : <urn:> .
+        @prefix sh: <http://www.w3.org/ns/shacl#> .
+        @prefix shimpl: <urn:shimpl#> .
+        sh:PatternConstraintComponent
+            a sh:ConstraintComponent ;
+            sh:parameter [
+                sh:path sh:flags ;
+                sh:optional true ;
+                sh:optional false ;
+            ] .");
+        var shaclGraph = new ShapesGraph(shapesGraph);
+        // 797 Validate throws an ShaclProcessorException when a constraint has multiple optional parameters.
+        Assert.Throws<ShaclProcessorException>(() => shaclGraph.ConstraintComponents.First().Parameters.First().Optional);
     }
 }

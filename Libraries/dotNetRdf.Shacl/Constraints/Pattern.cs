@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -55,7 +56,14 @@ internal class Pattern : Constraint
     {
         get
         {
-            return Vocabulary.Flags.ObjectsOf(Shape).SingleOrDefault();
+            try 
+            {
+                return Vocabulary.Flags.ObjectsOf(Shape).SingleOrDefault();
+            }
+            catch (InvalidOperationException)
+            {
+                throw new ShaclProcessorException("A sh:PatternConstraintComponent must have at most one sh:flags property.");
+            }
         }
     }
 
