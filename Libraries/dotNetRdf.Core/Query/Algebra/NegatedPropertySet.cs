@@ -108,7 +108,7 @@ public class NegatedPropertySet : ISparqlAlgebra
     /// </summary>
     public IEnumerable<string> FloatingVariables
     {
-        get { return Enumerable.Empty<string>(); }
+        get { return []; }
     }
 
     /// <summary>
@@ -130,11 +130,11 @@ public class NegatedPropertySet : ISparqlAlgebra
         PropertyPathPattern pp;
         if (Inverse)
         {
-            pp = new PropertyPathPattern(PathStart, new NegatedSet(Enumerable.Empty<Property>(), _properties.Select(p => new Property(p))), PathEnd);
+            pp = new PropertyPathPattern(PathStart, new NegatedSet([], _properties.Select(p => new Property(p))), PathEnd);
         }
         else
         {
-            pp = new PropertyPathPattern(PathStart, new NegatedSet(_properties.Select(p => new Property(p)), Enumerable.Empty<Property>()), PathEnd);
+            pp = new PropertyPathPattern(PathStart, new NegatedSet(_properties.Select(p => new Property(p)), []), PathEnd);
         }
         gp.AddTriplePattern(pp);
         return gp;

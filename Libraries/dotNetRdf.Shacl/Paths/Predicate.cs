@@ -26,7 +26,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using VDS.RDF.Query.Paths;
 
 namespace VDS.RDF.Shacl.Paths;
@@ -51,7 +50,7 @@ internal class Predicate : Path
     {
         get
         {
-            return Enumerable.Empty<Triple>();
+            return [];
         }
     }
 }

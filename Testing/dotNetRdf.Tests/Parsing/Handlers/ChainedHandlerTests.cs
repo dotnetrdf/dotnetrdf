@@ -45,7 +45,7 @@ public class ChainedHandlerTests
     [Fact]
     public void ParsingChainedHandlerBadInstantiation()
     {
-        Assert.Throws<ArgumentException>(() => new ChainedHandler(Enumerable.Empty<IRdfHandler>()));
+        Assert.Throws<ArgumentException>(() => new ChainedHandler([]));
     }
 
     [Fact]

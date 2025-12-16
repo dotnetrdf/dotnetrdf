@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Patterns;
 
@@ -63,7 +62,7 @@ public class SelectDistinctGraphs : ISparqlAlgebra
     /// <summary>
     /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
     /// </summary>
-    public IEnumerable<string> FixedVariables { get { return Enumerable.Empty<string>(); } }
+    public IEnumerable<string> FixedVariables { get { return []; } }
 
     /// <summary>
     /// Gets the Graph Variable to which Graph URIs are bound.
@@ -142,19 +141,19 @@ public class AskAnyTriples : ISparqlAlgebra
     {
         get
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
     }
 
     /// <summary>
     /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
     /// </summary>
-    public IEnumerable<string> FloatingVariables { get { return Enumerable.Empty<string>(); } }
+    public IEnumerable<string> FloatingVariables { get { return []; } }
 
     /// <summary>
     /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
     /// </summary>
-    public IEnumerable<string> FixedVariables { get { return Enumerable.Empty<string>(); } }
+    public IEnumerable<string> FixedVariables { get { return []; } }
 
     /// <summary>
     /// Gets the String representation of the Algebra.

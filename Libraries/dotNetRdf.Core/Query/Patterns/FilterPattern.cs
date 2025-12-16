@@ -104,13 +104,13 @@ public class FilterPattern
     /// </summary>
     public override IEnumerable<string> FixedVariables
     {
-        get { return Enumerable.Empty<string>(); }
+        get { return []; }
     }
 
     /// <summary>
     /// Returns the empty enumerable as don't know which variables will be bound.
     /// </summary>
-    public override IEnumerable<string> FloatingVariables { get { return Enumerable.Empty<string>(); } }
+    public override IEnumerable<string> FloatingVariables { get { return []; } }
 
     /// <summary>
     /// Gets whether the Pattern uses the Default Dataset.

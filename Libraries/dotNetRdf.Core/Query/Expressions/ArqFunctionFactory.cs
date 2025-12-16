@@ -264,7 +264,7 @@ public class ArqFunctionFactory : ISparqlCustomExpressionFactory
     {
         get
         {
-            return Enumerable.Empty<Uri>();
+            return [];
         }
     }
 }

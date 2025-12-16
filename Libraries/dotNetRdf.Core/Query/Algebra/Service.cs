@@ -98,7 +98,7 @@ public class Service
     /// <summary>
     /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
     /// </summary>
-    public IEnumerable<string> FixedVariables { get { return Enumerable.Empty<string>(); } }
+    public IEnumerable<string> FixedVariables { get { return []; } }
 
     /// <summary>
     /// Gets the Endpoint Specifier.

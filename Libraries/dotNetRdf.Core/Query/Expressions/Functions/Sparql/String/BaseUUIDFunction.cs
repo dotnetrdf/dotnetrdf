@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String;
@@ -58,7 +57,7 @@ public abstract class BaseUUIDFunction
     {
         get
         {
-            return Enumerable.Empty<string>(); 
+            return []; 
         }
     }
 
@@ -88,7 +87,7 @@ public abstract class BaseUUIDFunction
     {
         get 
         { 
-            return Enumerable.Empty<ISparqlExpression>();
+            return [];
         }
     }
 

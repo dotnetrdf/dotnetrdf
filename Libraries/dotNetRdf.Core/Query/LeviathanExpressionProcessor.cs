@@ -212,7 +212,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
                     }
                     else
                     {
-                        possMatches = Enumerable.Empty<int>();
+                        possMatches = [];
                         break;
                     }
                 }

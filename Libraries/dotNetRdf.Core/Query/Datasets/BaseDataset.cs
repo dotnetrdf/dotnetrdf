@@ -188,7 +188,7 @@ public abstract class BaseDataset
         else
         {
             SetDefaultGraphInternal(new Graph());
-            _defaultGraphUris.Value.Push(Enumerable.Empty<IRefNode>());
+            _defaultGraphUris.Value.Push([]);
         }
     }
 
@@ -211,7 +211,7 @@ public abstract class BaseDataset
         if (!graphNames.Any())
         {
             SetDefaultGraphInternal(new Graph());
-            _defaultGraphUris.Value.Push(Enumerable.Empty<IRefNode>());
+            _defaultGraphUris.Value.Push([]);
         }
         else if (graphNames.Count == 1)
         {
@@ -269,7 +269,7 @@ public abstract class BaseDataset
             // If the default graph is null then it operates over the entire dataset
             _activeGraphs.Value.Push(_activeGraph.Value);
             _activeGraph.Value = _defaultGraph.Value;
-            _activeGraphUris.Value.Push(_defaultGraphUris.Value.Count > 0 ? _defaultGraphUris.Value.Peek() : Enumerable.Empty<IRefNode>());
+            _activeGraphUris.Value.Push(_defaultGraphUris.Value.Count > 0 ? _defaultGraphUris.Value.Peek() : []);
         }
         else if (HasGraph(graphName))
         {
@@ -280,7 +280,7 @@ public abstract class BaseDataset
         {
             // Active Graph is an empty Graph in the case where the Graph is not present in the Dataset
             SetActiveGraphInternal(new Graph());
-            _activeGraphUris.Value.Push(Enumerable.Empty<IRefNode>());
+            _activeGraphUris.Value.Push([]);
         }
     }
 
@@ -387,7 +387,7 @@ public abstract class BaseDataset
         {
             return _defaultGraphUris.Value.Count > 0
                 ? _defaultGraphUris.Value.Peek()
-                : Enumerable.Empty<IRefNode>();
+                : [];
         }
     }
 
@@ -416,7 +416,7 @@ public abstract class BaseDataset
         {
             return _activeGraphUris.Value.Count > 0
                 ? _activeGraphUris.Value.Peek()
-                : Enumerable.Empty<IRefNode>();
+                : [];
         }
     }
 

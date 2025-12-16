@@ -54,7 +54,7 @@ public class SparqlQueryParser
     : ITraceableTokeniser, IObjectParser<SparqlQuery>
 {
     private readonly TokenQueueMode _queuemode;
-    private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
+    private IEnumerable<ISparqlCustomExpressionFactory> _factories = [];
 
     #region Constructors and Properties
 
@@ -139,7 +139,7 @@ public class SparqlQueryParser
     public IEnumerable<ISparqlCustomExpressionFactory> ExpressionFactories
     {
         get => _factories;
-        set => _factories = value ?? Enumerable.Empty<ISparqlCustomExpressionFactory>();
+        set => _factories = value ?? [];
     }
 
     /// <summary>
@@ -505,7 +505,7 @@ public class SparqlQueryParser
                 case SparqlQueryType.Describe:
                     // Check Variable Usage
                     var projectedSoFar = new List<string>();
-                    var mainBodyVars = (context.Query.RootGraphPattern != null ? context.Query.RootGraphPattern.Variables : Enumerable.Empty<string>()).Distinct().ToList();
+                    var mainBodyVars = (context.Query.RootGraphPattern != null ? context.Query.RootGraphPattern.Variables : []).Distinct().ToList();
                     foreach (SparqlVariable var in context.Query.Variables)
                     {
                         if (!var.IsResultVariable) continue;

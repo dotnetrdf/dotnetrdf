@@ -76,7 +76,7 @@ public static class SparqlExpressionFactory
     /// </remarks>
     public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, bool allowUnknownFunctions)
     {
-        return CreateExpression(u, args, Enumerable.Empty<ISparqlCustomExpressionFactory>(), allowUnknownFunctions);
+        return CreateExpression(u, args, [], allowUnknownFunctions);
     }
 
     /// <summary>

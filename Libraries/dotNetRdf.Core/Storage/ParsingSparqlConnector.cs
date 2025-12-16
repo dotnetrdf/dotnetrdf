@@ -365,7 +365,7 @@ public class ParsingSparqlConnector
             }
             else
             {
-                return Enumerable.Empty<Uri>();
+                return [];
             }
         }
         catch (Exception ex)
@@ -403,7 +403,7 @@ public class ParsingSparqlConnector
                 return graphs;
             }
 
-            return Enumerable.Empty<string>();
+            return [];
         }
         catch (Exception ex)
         {

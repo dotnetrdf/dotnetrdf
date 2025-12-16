@@ -60,7 +60,7 @@ class SparqlExpressionParser
     private INamespaceMapper _nsmapper;
     private Uri _baseUri;
     private SparqlQueryParser _parser;
-    private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
+    private IEnumerable<ISparqlCustomExpressionFactory> _factories = [];
 
     /// <summary>
     /// Creates a new SPARQL Expression Parser.

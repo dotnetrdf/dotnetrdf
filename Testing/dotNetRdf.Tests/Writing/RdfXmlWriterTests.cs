@@ -101,7 +101,7 @@ public class RdfXmlWriterTests
 
     private void CheckRoundTrip(IGraph g)
     {
-        CheckRoundTrip(g, Enumerable.Empty<Type>());
+        CheckRoundTrip(g, []);
     }
 
     private void CheckFailure(IGraph g)

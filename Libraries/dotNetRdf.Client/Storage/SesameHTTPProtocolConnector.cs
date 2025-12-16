@@ -721,7 +721,7 @@ public abstract class BaseSesameHttpProtocolConnector
                 return graphs;
             }
 
-            return Enumerable.Empty<Uri>();
+            return [];
         }
         catch (Exception ex)
         {
@@ -762,7 +762,7 @@ public abstract class BaseSesameHttpProtocolConnector
                 return graphs;
             }
 
-            return Enumerable.Empty<string>();
+            return [];
         }
         catch (Exception ex)
         {
@@ -797,7 +797,7 @@ public abstract class BaseSesameHttpProtocolConnector
                 return graphs;
             }
 
-            return Enumerable.Empty<string>();
+            return [];
         }
         catch (RdfStorageException)
         {

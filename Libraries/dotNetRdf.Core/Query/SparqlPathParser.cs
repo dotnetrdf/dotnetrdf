@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Paths;
@@ -503,11 +502,11 @@ class SparqlPathParser
                 p = TryParsePathOneInPropertySet(context, tokens, out inverse);
                 if (inverse)
                 {
-                    return new NegatedSet(Enumerable.Empty<Property>(), [p]);
+                    return new NegatedSet([], [p]);
                 }
                 else
                 {
-                    return new NegatedSet([p], Enumerable.Empty<Property>());
+                    return new NegatedSet([p], []);
                 }
 
             case Token.LEFTBRACKET:

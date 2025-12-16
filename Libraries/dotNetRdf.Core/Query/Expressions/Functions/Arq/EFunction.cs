@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq;
 
@@ -75,7 +74,7 @@ public class EFunction
     {
         get 
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
     }
 
@@ -97,7 +96,7 @@ public class EFunction
     {
         get 
         {
-            return Enumerable.Empty<ISparqlExpression>(); 
+            return []; 
         }
     }
 

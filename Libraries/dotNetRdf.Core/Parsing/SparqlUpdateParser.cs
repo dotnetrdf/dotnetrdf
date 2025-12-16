@@ -46,7 +46,7 @@ namespace VDS.RDF.Parsing;
 public class SparqlUpdateParser
     : ITraceableTokeniser, IObjectParser<SparqlUpdateCommandSet>
 {
-    private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
+    private IEnumerable<ISparqlCustomExpressionFactory> _factories = [];
 
     /// <summary>
     /// Creates a new parser instance that parses SPARQL 1.1 syntax and uses the default (root) URI Factory.
