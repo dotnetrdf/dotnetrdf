@@ -62,7 +62,7 @@ public abstract class BaseModificationCommand
         {
             if (_usingUris == null)
             {
-                return Enumerable.Empty<Uri>();
+                return [];
             }
             else
             {
@@ -80,7 +80,7 @@ public abstract class BaseModificationCommand
         {
             if (_usingNamedUris == null)
             {
-                return Enumerable.Empty<Uri>();
+                return [];
             }
             else
             {

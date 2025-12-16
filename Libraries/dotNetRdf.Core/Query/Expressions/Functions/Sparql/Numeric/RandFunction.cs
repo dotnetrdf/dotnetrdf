@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
 
@@ -54,7 +53,7 @@ public class RandFunction
     {
         get
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
     }
 
@@ -76,7 +75,7 @@ public class RandFunction
     {
         get
         {
-            return Enumerable.Empty<ISparqlExpression>();
+            return [];
         }
     }
 

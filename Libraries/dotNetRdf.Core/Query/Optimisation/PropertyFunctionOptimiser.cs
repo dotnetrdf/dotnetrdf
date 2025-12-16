@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Optimisation;
 public class PropertyFunctionOptimiser
     : IAlgebraOptimiser
 {
-    private readonly ThreadIsolatedReference<IEnumerable<IPropertyFunctionFactory>> _factories = new ThreadIsolatedReference<IEnumerable<IPropertyFunctionFactory>>(() => Enumerable.Empty<IPropertyFunctionFactory>());
+    private readonly ThreadIsolatedReference<IEnumerable<IPropertyFunctionFactory>> _factories = new ThreadIsolatedReference<IEnumerable<IPropertyFunctionFactory>>(() => []);
 
     /// <inheritdoc/>
     public bool UnsafeOptimisation { get; set; }

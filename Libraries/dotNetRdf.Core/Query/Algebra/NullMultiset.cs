@@ -213,7 +213,7 @@ public class NullMultiset
     {
         get 
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
     }
 
@@ -224,7 +224,7 @@ public class NullMultiset
     {
         get 
         {
-            return Enumerable.Empty<ISet>();
+            return [];
         }
     }
 
@@ -235,7 +235,7 @@ public class NullMultiset
     {
         get 
         {
-            return Enumerable.Empty<int>();
+            return [];
         }
     }
 

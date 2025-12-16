@@ -207,7 +207,7 @@ public class RdfAContext: IRdfAContext
         if (prefix == null || uri == null)
         {
             // Graph contains no mappings
-            return Enumerable.Empty<KeyValuePair<string, string>>();
+            return [];
         }
         return GetMappings(prefix, uri, g);
     }
@@ -219,7 +219,7 @@ public class RdfAContext: IRdfAContext
         if (term == null || uri == null)
         {
             // Graph contains no mappings
-            return Enumerable.Empty<KeyValuePair<string, string>>();
+            return [];
         }
         return GetMappings(term, uri, g);
     }

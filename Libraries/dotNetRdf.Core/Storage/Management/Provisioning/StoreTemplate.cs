@@ -26,7 +26,6 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace VDS.RDF.Storage.Management.Provisioning;
 
@@ -95,7 +94,7 @@ public class StoreTemplate
     /// </remarks>
     public virtual IEnumerable<string> Validate()
     {
-        return Enumerable.Empty<string>();
+        return [];
     }
 
     /// <summary>

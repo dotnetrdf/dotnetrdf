@@ -545,7 +545,7 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
                 }
                 else
                 {
-                    return Enumerable.Empty<Triple>();
+                    return [];
                 }
 
             case TripleIndexType.None:
@@ -659,13 +659,13 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
                 }
                 else
                 {
-                    return Enumerable.Empty<ITripleNode>();
+                    return [];
                 }
             case TripleIndexType.None:
                 return Data.QuotedTriples.Select(t => new TripleNode(t));
 
         }
-        return Enumerable.Empty<ITripleNode>();
+        return [];
     }
 
     /// <summary>

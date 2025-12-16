@@ -88,7 +88,7 @@ public abstract class SparqlResultBinder
             }
             else
             {
-                return Enumerable.Empty<BindingGroup>();
+                return [];
             }
         }
     }

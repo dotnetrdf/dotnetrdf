@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Expressions.Primary;
@@ -103,7 +102,7 @@ public class GraphPatternTerm
     {
         get
         {
-            return Enumerable.Empty<ISparqlExpression>();
+            return [];
         }
     }
 

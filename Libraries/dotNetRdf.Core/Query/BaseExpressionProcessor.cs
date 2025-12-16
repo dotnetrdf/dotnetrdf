@@ -2148,7 +2148,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
             {
                 // Try to create the function and cache it - remember to respect the queries Expression Factories if present
                 func = SparqlExpressionFactory.CreateExpression(funcUri, call.Arguments.Skip(1).ToList(),
-                    GetExpressionFactories(context) ?? Enumerable.Empty<ISparqlCustomExpressionFactory>(), false);
+                    GetExpressionFactories(context) ?? [], false);
                 _functionCache.Add(funcUri.AbsoluteUri, func);
             }
             catch

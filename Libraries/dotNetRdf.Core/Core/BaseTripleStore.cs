@@ -287,7 +287,7 @@ public abstract class BaseTripleStore
         {
             return Graphs.SelectMany(g => GetTriplesFromGraph(g, s, p, o).Select(t => new Quad(t, g.Name)));
         }
-        return !HasGraph(g) ? Enumerable.Empty<Quad>() : GetTriplesFromGraph(Graphs[g], s, p, o).Select(t => new Quad(t, g));
+        return !HasGraph(g) ? [] : GetTriplesFromGraph(Graphs[g], s, p, o).Select(t => new Quad(t, g));
     }
 
     /// <summary>
@@ -320,7 +320,7 @@ public abstract class BaseTripleStore
         }
 
         var t = new Triple(s, p, o);
-        return graph.ContainsTriple(t) ? [t] : Enumerable.Empty<Triple>();
+        return graph.ContainsTriple(t) ? [t] : [];
     }
 
     /// <summary>

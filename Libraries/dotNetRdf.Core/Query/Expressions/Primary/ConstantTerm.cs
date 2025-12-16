@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Writing.Formatting;
 
@@ -88,7 +87,7 @@ public class ConstantTerm
     {
         get
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
     }
 
@@ -121,7 +120,7 @@ public class ConstantTerm
     {
         get
         {
-            return Enumerable.Empty<ISparqlExpression>();
+            return [];
         }
     }
 

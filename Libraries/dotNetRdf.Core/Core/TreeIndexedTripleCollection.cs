@@ -350,7 +350,7 @@ public class TreeIndexedTripleCollection
                 return ts ?? Enumerable.Empty<Triple>();
             }
 
-            return Enumerable.Empty<Triple>();
+            return [];
         }
 
         return AssertedTriples(t => t.Object.Equals(obj));
@@ -369,7 +369,7 @@ public class TreeIndexedTripleCollection
                 return ts ?? Enumerable.Empty<Triple>();
             }
 
-            return Enumerable.Empty<Triple>();
+            return [];
         }
 
         return AssertedTriples(t => t.Predicate.Equals(pred));
@@ -388,7 +388,7 @@ public class TreeIndexedTripleCollection
                 return ts ?? Enumerable.Empty<Triple>();
             }
 
-            return Enumerable.Empty<Triple>();
+            return [];
         }
 
         return AssertedTriples(t => t.Subject.Equals(subj));
@@ -408,7 +408,7 @@ public class TreeIndexedTripleCollection
                 return ts ?? Enumerable.Empty<Triple>();
             }
 
-            return Enumerable.Empty<Triple>();
+            return [];
         }
 
         return WithPredicate(pred).Where(t => t.Object.Equals(obj));
@@ -428,7 +428,7 @@ public class TreeIndexedTripleCollection
                 return ts ?? Enumerable.Empty<Triple>();
             }
 
-            return Enumerable.Empty<Triple>();
+            return [];
         }
 
         return WithSubject(subj).Where(t => t.Object.Equals(obj));
@@ -448,7 +448,7 @@ public class TreeIndexedTripleCollection
                 return ts ?? Enumerable.Empty<Triple>();
             }
 
-            return Enumerable.Empty<Triple>();
+            return [];
         }
 
         return WithSubject(subj).Where(t => t.Predicate.Equals(pred));
@@ -485,7 +485,7 @@ public class TreeIndexedTripleCollection
             return ts ?? Enumerable.Empty<Triple>();
         }
 
-        return Enumerable.Empty<Triple>();
+        return [];
 
     }
 
@@ -504,7 +504,7 @@ public class TreeIndexedTripleCollection
             return ts ?? Enumerable.Empty<Triple>();
         }
 
-        return Enumerable.Empty<Triple>();
+        return [];
 
     }
 
@@ -524,7 +524,7 @@ public class TreeIndexedTripleCollection
             return ts ?? Enumerable.Empty<Triple>();
         }
 
-        return Enumerable.Empty<Triple>();
+        return [];
 
     }
 
@@ -545,7 +545,7 @@ public class TreeIndexedTripleCollection
             return ts ?? Enumerable.Empty<Triple>();
         }
 
-        return Enumerable.Empty<Triple>();
+        return [];
 
     }
 
@@ -566,7 +566,7 @@ public class TreeIndexedTripleCollection
             return ts ?? Enumerable.Empty<Triple>();
         }
 
-        return Enumerable.Empty<Triple>();
+        return [];
 
     }
 
@@ -587,7 +587,7 @@ public class TreeIndexedTripleCollection
             return ts ?? Enumerable.Empty<Triple>();
         }
 
-        return Enumerable.Empty<Triple>();
+        return [];
 
     }
 

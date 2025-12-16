@@ -222,7 +222,7 @@ public class IdentityMultiset
     {
         get 
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
     }
     
@@ -233,7 +233,7 @@ public class IdentityMultiset
     {
         get 
         {
-            return Enumerable.Empty<ISet>(); 
+            return []; 
         }
     }
 
@@ -244,7 +244,7 @@ public class IdentityMultiset
     {
         get 
         {
-            return Enumerable.Empty<int>();
+            return [];
         }
     }
 

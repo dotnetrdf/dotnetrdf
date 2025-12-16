@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Storage;
@@ -109,7 +108,7 @@ public class QueryableReadOnlyConnector
                 return graphs;
             }
 
-            return Enumerable.Empty<Uri>();
+            return [];
         }
         catch (Exception ex)
         {
@@ -157,7 +156,7 @@ public class QueryableReadOnlyConnector
                     return graphs;
                 }
 
-                return Enumerable.Empty<string>();
+                return [];
             }
             catch (Exception ex)
             {

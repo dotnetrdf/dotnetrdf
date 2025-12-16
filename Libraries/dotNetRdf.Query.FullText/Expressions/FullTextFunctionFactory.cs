@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace VDS.RDF.Query.Expressions;
 
@@ -65,7 +64,7 @@ public class FullTextFunctionFactory
     {
         get 
         {
-            return Enumerable.Empty<Uri>(); 
+            return []; 
         }
     }
 
@@ -76,7 +75,7 @@ public class FullTextFunctionFactory
     {
         get 
         {
-            return Enumerable.Empty<Uri>();
+            return [];
         }
     }
 }

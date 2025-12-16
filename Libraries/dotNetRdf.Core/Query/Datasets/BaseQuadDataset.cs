@@ -242,7 +242,7 @@ public abstract class BaseQuadDataset
             }
             else
             {
-                return Enumerable.Empty<IRefNode>();
+                return [];
             }
         }
     }

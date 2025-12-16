@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq;
 
@@ -74,7 +73,7 @@ public class PiFunction
     {
         get
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
     }
 
@@ -107,7 +106,7 @@ public class PiFunction
     {
         get
         {
-            return Enumerable.Empty<ISparqlExpression>();
+            return [];
         }
     }
 

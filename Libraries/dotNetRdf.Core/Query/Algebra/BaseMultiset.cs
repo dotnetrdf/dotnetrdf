@@ -159,7 +159,7 @@ public abstract class BaseMultiset
                 }
                 else
                 {
-                    possMatches = Enumerable.Empty<int>();
+                    possMatches = [];
                     break;
                 }
             }
@@ -355,7 +355,7 @@ public abstract class BaseMultiset
                 }
                 else
                 {
-                    possMatches = Enumerable.Empty<int>();
+                    possMatches = [];
                     break;
                 }
             }
@@ -502,7 +502,7 @@ public abstract class BaseMultiset
                     }
                     else
                     {
-                        possMatches = Enumerable.Empty<int>();
+                        possMatches = [];
                         break;
                     }
                 }
@@ -638,7 +638,7 @@ public abstract class BaseMultiset
                     }
                     else
                     {
-                        possMatches = Enumerable.Empty<int>();
+                        possMatches = [];
                         break;
                     }
                 }

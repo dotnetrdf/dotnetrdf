@@ -106,7 +106,7 @@ public static class PropertyFunctionFactory
     /// <returns></returns>
     public static bool IsPropertyFunction(Uri u)
     {
-        return IsPropertyFunction(u, Enumerable.Empty<IPropertyFunctionFactory>());
+        return IsPropertyFunction(u, []);
     }
 
     /// <summary>
@@ -128,7 +128,7 @@ public static class PropertyFunctionFactory
     /// <returns></returns>
     public static bool TryCreatePropertyFunction(PropertyFunctionInfo info, out IPropertyFunctionPattern function)
     {
-        return TryCreatePropertyFunction(info, Enumerable.Empty<IPropertyFunctionFactory>(), out function);
+        return TryCreatePropertyFunction(info, [], out function);
     }
 
     /// <summary>

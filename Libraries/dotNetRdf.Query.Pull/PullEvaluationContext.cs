@@ -192,7 +192,7 @@ internal class PullEvaluationContext : IPatternEvaluationContext
                 {
                     // Return if the triple exists
                     var t = new Triple(subj, pred, obj);
-                    return ContainsTriple(t, activeGraph) ? [t] : Enumerable.Empty<Triple>();
+                    return ContainsTriple(t, activeGraph) ? [t] : [];
                 }
             }
         }
@@ -249,12 +249,12 @@ internal class PullEvaluationContext : IPatternEvaluationContext
                 {
                     return new[] { new TripleNode(t) };
                 }
-                return Enumerable.Empty<ITripleNode>();
+                return [];
             case TripleIndexType.None:
                 return tripleCollection.Quoted.Select(t => new TripleNode(t));
         }
 
-        return Enumerable.Empty<ITripleNode>();
+        return [];
     }
 
     public bool ContainsVariable(string varName)
