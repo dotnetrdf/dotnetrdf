@@ -57,7 +57,7 @@ internal class DescriberContext(
                 _query.DescribeVariables.Where(v=>v.TokenType == Token.VARIABLE).Select(t=>t.Value.Substring(1)).ToList();
         if (descVars.Any())
         {
-            foreach (ISet? solution in solutionBindings.ToEnumerable())
+            foreach (ISet? solution in solutionBindings.ToEnumerable()) // TODO: Eliminate sync over async
             {
                 if (solution != null)
                 {
