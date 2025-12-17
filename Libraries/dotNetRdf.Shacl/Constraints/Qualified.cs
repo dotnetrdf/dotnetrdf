@@ -81,7 +81,7 @@ internal abstract class Qualified : Numeric
             select disjoint)
             .Any();
 
-        IEnumerable<Shape> siblingShapes = isDisjoint ? selectSiblingShapes() : Enumerable.Empty<Shape>();
+        IEnumerable<Shape> siblingShapes = isDisjoint ? selectSiblingShapes() : [];
 
         return
             from qualified in Vocabulary.QualifiedValueShape.ObjectsOf(Shape)

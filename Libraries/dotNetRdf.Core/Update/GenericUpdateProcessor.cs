@@ -571,10 +571,10 @@ public class GenericUpdateProcessor
                     // Now decide how to apply the update
                     if (_manager.UpdateSupported)
                     {
-                        _manager.UpdateGraph(cmd.WithGraphName, Enumerable.Empty<Triple>(), deletedTriples);
+                        _manager.UpdateGraph(cmd.WithGraphName, [], deletedTriples);
                         foreach (KeyValuePair<IUriNode, List<Triple>> graphDeletion in deletedGraphTriples)
                         {
-                            _manager.UpdateGraph(graphDeletion.Key, Enumerable.Empty<Triple>(), graphDeletion.Value);
+                            _manager.UpdateGraph(graphDeletion.Key, [], graphDeletion.Value);
                         }
                     }
                     else
@@ -711,7 +711,7 @@ public class GenericUpdateProcessor
 
                 if (_manager.UpdateSupported)
                 {
-                    _manager.UpdateGraph(graphUri, Enumerable.Empty<Triple>(), g.Triples);
+                    _manager.UpdateGraph(graphUri, [], g.Triples);
                 }
                 else
                 {
@@ -961,10 +961,10 @@ public class GenericUpdateProcessor
                     // Now decide how to apply the update
                     if (queryableStorage.UpdateSupported)
                     {
-                        queryableStorage.UpdateGraph(cmd.WithGraphName, insertedTriples, Enumerable.Empty<Triple>());
+                        queryableStorage.UpdateGraph(cmd.WithGraphName, insertedTriples, []);
                         foreach (KeyValuePair<IUriNode, List<Triple>> graphInsertion in insertedGraphTriples)
                         {
-                            queryableStorage.UpdateGraph(graphInsertion.Key, graphInsertion.Value, Enumerable.Empty<Triple>());
+                            queryableStorage.UpdateGraph(graphInsertion.Key, graphInsertion.Value, []);
                         }
                     }
                     else
@@ -1082,7 +1082,7 @@ public class GenericUpdateProcessor
 
                 if (_manager.UpdateSupported)
                 {
-                    _manager.UpdateGraph(graphUri, g.Triples, Enumerable.Empty<Triple>());
+                    _manager.UpdateGraph(graphUri, g.Triples, []);
                 }
                 else
                 {
@@ -1128,7 +1128,7 @@ public class GenericUpdateProcessor
                 Loader.LoadGraph(g, cmd.SourceUri);
                 if (_manager.UpdateSupported)
                 {
-                    _manager.UpdateGraph(cmd.TargetGraphName, g.Triples, Enumerable.Empty<Triple>());
+                    _manager.UpdateGraph(cmd.TargetGraphName, g.Triples, []);
                 }
                 else
                 {
@@ -1399,11 +1399,11 @@ public class GenericUpdateProcessor
                         // e.g. ignoring Triples which are both asserted and retracted in one update
                         foreach (KeyValuePair<IUriNode, List<Triple>> graphDeletion in deletedGraphTriples)
                         {
-                            queryableStorage.UpdateGraph(graphDeletion.Key, Enumerable.Empty<Triple>(), graphDeletion.Value);
+                            queryableStorage.UpdateGraph(graphDeletion.Key, [], graphDeletion.Value);
                         }
                         foreach (KeyValuePair<IUriNode, List<Triple>> graphInsertion in insertedGraphTriples)
                         {
-                            queryableStorage.UpdateGraph(graphInsertion.Key, graphInsertion.Value, Enumerable.Empty<Triple>());
+                            queryableStorage.UpdateGraph(graphInsertion.Key, graphInsertion.Value, []);
                         }
                     }
                     else

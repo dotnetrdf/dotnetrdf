@@ -85,7 +85,7 @@ public class BNodeFunction
     {
         get
         {
-            return InnerExpression == null ? Enumerable.Empty<string>() : base.Variables;
+            return InnerExpression == null ? [] : base.Variables;
         }
     }
 
@@ -96,7 +96,7 @@ public class BNodeFunction
     {
         get
         {
-            if (InnerExpression == null) return Enumerable.Empty<ISparqlExpression>();
+            if (InnerExpression == null) return [];
             return base.Arguments;
         }
     }

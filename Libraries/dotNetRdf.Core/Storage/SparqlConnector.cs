@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -466,7 +465,7 @@ public class SparqlConnector
             }
             else
             {
-                return Enumerable.Empty<Uri>();
+                return [];
             }
         }
         catch (Exception ex)
@@ -504,7 +503,7 @@ public class SparqlConnector
                 return graphs;
             }
 
-            return Enumerable.Empty<string>();
+            return [];
         }
         catch (Exception ex)
         {

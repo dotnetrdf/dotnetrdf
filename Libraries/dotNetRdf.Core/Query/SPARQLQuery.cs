@@ -69,9 +69,9 @@ public sealed class SparqlQuery
     private long _timeout;
     private TimeSpan? _executionTime;
     private bool? _optimisableOrdering;
-    private IEnumerable<IAlgebraOptimiser> _optimisers = Enumerable.Empty<IAlgebraOptimiser>();
-    private IEnumerable<ISparqlCustomExpressionFactory> _exprFactories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
-    private IEnumerable<IPropertyFunctionFactory> _propFuncFactories = Enumerable.Empty<IPropertyFunctionFactory>();
+    private IEnumerable<IAlgebraOptimiser> _optimisers = [];
+    private IEnumerable<ISparqlCustomExpressionFactory> _exprFactories = [];
+    private IEnumerable<IPropertyFunctionFactory> _propFuncFactories = [];
 
     /// <summary>
     /// Creates a new SPARQL Query.
@@ -274,7 +274,7 @@ public sealed class SparqlQuery
         get => _optimisers;
         set
         {
-            _optimisers = value ?? Enumerable.Empty<IAlgebraOptimiser>();
+            _optimisers = value ?? [];
         }
     }
 
@@ -286,7 +286,7 @@ public sealed class SparqlQuery
         get => _exprFactories;
         set
         {
-            _exprFactories = value ?? Enumerable.Empty<ISparqlCustomExpressionFactory>();
+            _exprFactories = value ?? [];
         }
     }
 
@@ -298,7 +298,7 @@ public sealed class SparqlQuery
         get => _propFuncFactories;
         set
         {
-            _propFuncFactories = value ?? Enumerable.Empty<IPropertyFunctionFactory>();
+            _propFuncFactories = value ?? [];
         }
     }
 
@@ -573,7 +573,7 @@ public sealed class SparqlQuery
         if (optimiser == null) throw new ArgumentNullException(nameof(optimiser), "Cannot optimise a Query using a null optimiser");
         if (RootGraphPattern != null)
         {
-            optimiser.Optimise(RootGraphPattern, Enumerable.Empty<string>());
+            optimiser.Optimise(RootGraphPattern, []);
         }
 
         IsOptimised = true;

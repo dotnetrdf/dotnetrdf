@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using FluentAssertions;
 using System;
 using System.IO;
-using System.Linq;
 using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
@@ -197,7 +196,7 @@ public class PropertyPathEvaluationTests
         var path =
             new NegatedSet(
                 new Property[] {new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))},
-                Enumerable.Empty<Property>());
+                []);
         var algebra = GetAlgebra(path);
         var context = new SparqlEvaluationContext(null, _data, new LeviathanQueryOptions());
         var results = algebra.Accept(_processor, context);
@@ -212,7 +211,7 @@ public class PropertyPathEvaluationTests
     {
         EnsureTestData();
 
-        var path = new NegatedSet(Enumerable.Empty<Property>(),
+        var path = new NegatedSet([],
                                          new Property[]
                                              {
                                                  new Property(

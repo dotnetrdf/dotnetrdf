@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
@@ -92,8 +91,8 @@ public class NegatedSet : ISparqlPath
         {
             var lhsContext = new PathTransformContext(context);
             var rhsContext = new PathTransformContext(context);
-            lhsContext.AddTriplePattern(new PropertyPathPattern(lhsContext.Subject, new NegatedSet(_properties, Enumerable.Empty<Property>()), lhsContext.Object));
-            rhsContext.AddTriplePattern(new PropertyPathPattern(rhsContext.Subject, new NegatedSet(Enumerable.Empty<Property>(), _inverseProperties), rhsContext.Object));
+            lhsContext.AddTriplePattern(new PropertyPathPattern(lhsContext.Subject, new NegatedSet(_properties, []), lhsContext.Object));
+            rhsContext.AddTriplePattern(new PropertyPathPattern(rhsContext.Subject, new NegatedSet([], _inverseProperties), rhsContext.Object));
             ISparqlAlgebra lhs = lhsContext.ToAlgebra();
             ISparqlAlgebra rhs = rhsContext.ToAlgebra();
             return new Union(lhs, rhs);

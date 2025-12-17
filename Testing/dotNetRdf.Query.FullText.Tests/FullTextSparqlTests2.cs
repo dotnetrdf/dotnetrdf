@@ -122,7 +122,7 @@ public class FullTextSparqlTests2
     [Fact]
     public void FullTextSparqlComplexLuceneSubjects1()
     {
-        RunTest(new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a <http://example.org/noSuchThing> }", Enumerable.Empty<INode>());
+        RunTest(new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a <http://example.org/noSuchThing> }", []);
     }
 
     [Fact]

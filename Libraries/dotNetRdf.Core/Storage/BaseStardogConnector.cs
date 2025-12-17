@@ -828,7 +828,7 @@ public abstract class BaseStardogConnector
             }
             else
             {
-                return Enumerable.Empty<Uri>();
+                return [];
             }
         }
         catch (Exception ex)
@@ -871,7 +871,7 @@ public abstract class BaseStardogConnector
                 return graphs;
             }
 
-            return Enumerable.Empty<string>();
+            return [];
         }
         catch (Exception ex)
         {

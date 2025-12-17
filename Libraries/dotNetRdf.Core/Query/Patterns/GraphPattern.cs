@@ -607,7 +607,7 @@ public class GraphPattern
     public void Optimise(IQueryOptimiser optimiser)
     {
         if (_isOptimised) return;
-        optimiser.Optimise(this, Enumerable.Empty<string>());
+        optimiser.Optimise(this, []);
     }
 
     /// <summary>

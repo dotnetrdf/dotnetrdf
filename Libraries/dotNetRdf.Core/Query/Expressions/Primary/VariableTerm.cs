@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace VDS.RDF.Query.Expressions.Primary;
 
@@ -117,7 +116,7 @@ public class VariableTerm
     {
         get
         {
-            return Enumerable.Empty<ISparqlExpression>();
+            return [];
         }
     }
 
