@@ -377,7 +377,7 @@ public static class MimeTypesHelper
                 _mimeTypes.Add(new MimeTypeDefinition("GZipped SPARQL Results JSON", SparqlResultsJson, new string[] { DefaultSparqlJsonExtension + "." + DefaultGZipExtension, DefaultJsonExtension + "." + DefaultGZipExtension }, null, null, typeof(GZippedSparqlJsonParser), null, null, typeof(GZippedSparqlJsonWriter)));
 
                 // Define SPARQL Boolean
-                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Boolean Result", SparqlResultsBoolean, Enumerable.Empty<string>(), null, null, typeof(SparqlBooleanParser), null, null, null));
+                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Boolean Result", SparqlResultsBoolean, [], null, null, typeof(SparqlBooleanParser), null, null, null));
 
                 // Define RDF/XML - include SPARQL Parsers to support servers that send back incorrect MIME Type for SPARQL XML Results
                 // We define this after SPARQL Results XML to ensure we favour the correct MIME type for it
@@ -694,7 +694,7 @@ public static class MimeTypesHelper
     /// <returns></returns>
     public static IEnumerable<MimeTypeDefinition> GetDefinitions(string mimeType)
     {
-        if (mimeType == null) return Enumerable.Empty<MimeTypeDefinition>();
+        if (mimeType == null) return [];
 
         if (!_init) Init();
 
@@ -711,7 +711,7 @@ public static class MimeTypesHelper
     /// <returns></returns>
     public static IEnumerable<MimeTypeDefinition> GetDefinitions(IEnumerable<string> mimeTypes)
     {
-        if (mimeTypes == null) return Enumerable.Empty<MimeTypeDefinition>();
+        if (mimeTypes == null) return [];
 
         if (!_init) Init();
 
@@ -729,7 +729,7 @@ public static class MimeTypesHelper
     /// <returns></returns>
     public static IEnumerable<MimeTypeDefinition> GetDefinitionsByFileExtension(string fileExt)
     {
-        if (fileExt == null) return Enumerable.Empty<MimeTypeDefinition>();
+        if (fileExt == null) return [];
 
         if (!_init) Init();
 

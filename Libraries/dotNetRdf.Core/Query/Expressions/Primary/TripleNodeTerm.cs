@@ -77,7 +77,7 @@ public class TripleNodeTerm : ISparqlExpression
     public string Functor => string.Empty;
 
     /// <inheritdoc />
-    public IEnumerable<ISparqlExpression> Arguments => Enumerable.Empty<ISparqlExpression>();
+    public IEnumerable<ISparqlExpression> Arguments => [];
 
     /// <inheritdoc />
     public ISparqlExpression Transform(IExpressionTransformer transformer)

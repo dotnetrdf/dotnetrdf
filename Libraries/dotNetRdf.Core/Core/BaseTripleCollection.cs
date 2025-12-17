@@ -129,7 +129,7 @@ public abstract class BaseTripleCollection
             }
             catch (KeyNotFoundException)
             {
-                return Enumerable.Empty<Triple>();
+                return [];
             }
         }
     }

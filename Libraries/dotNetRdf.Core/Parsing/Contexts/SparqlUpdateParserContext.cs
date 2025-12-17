@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
@@ -40,7 +39,7 @@ namespace VDS.RDF.Parsing.Contexts;
 public class SparqlUpdateParserContext
     : TokenisingParserContext
 {
-    private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
+    private IEnumerable<ISparqlCustomExpressionFactory> _factories = [];
 
     /// <summary>
     /// Creates a new SPARQL Update Parser Context.

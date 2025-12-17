@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra;
@@ -67,7 +66,7 @@ public class NullOperator
     /// </summary>
     public IEnumerable<string> FixedVariables
     {
-        get { return Enumerable.Empty<string>(); }
+        get { return []; }
     }
 
     /// <summary>
@@ -75,7 +74,7 @@ public class NullOperator
     /// </summary>
     public IEnumerable<string> FloatingVariables
     {
-        get { return Enumerable.Empty<string>(); }
+        get { return []; }
     }
 
     /// <summary>

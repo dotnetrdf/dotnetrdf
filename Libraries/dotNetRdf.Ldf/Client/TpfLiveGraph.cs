@@ -152,7 +152,7 @@ public class TpfLiveGraph : Graph
     /// <summary>
     /// This graph returns no quoted nodes because Linked Data Fragments does not support RDF*.
     /// </summary>
-    public override IEnumerable<INode> AllQuotedNodes => Enumerable.Empty<INode>();
+    public override IEnumerable<INode> AllQuotedNodes => [];
 
     /// <summary>
     /// This graph does not contain any quoted triples because Linked Data Fragments does not support RDF*.
@@ -173,64 +173,56 @@ public class TpfLiveGraph : Graph
     /// </summary>
     /// <param name="_">Ignored.</param>
     /// <returns>Empty.</returns>
-    public override IEnumerable<Triple> GetQuoted(INode _) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> GetQuoted(INode _) => [];
 
     /// <summary>
     /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
     /// </summary>
     /// <param name="_">Ignored.</param>
     /// <returns>Empty.</returns>
-    public override IEnumerable<Triple> GetQuoted(Uri _) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> GetQuoted(Uri _) => [];
 
     /// <summary>
     /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
     /// </summary>
     /// <param name="_">Ignored.</param>
     /// <returns>Empty.</returns>
-    public override IEnumerable<Triple> GetQuotedWithObject(Uri _) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> GetQuotedWithObject(Uri _) => [];
 
     /// <summary>
     /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
     /// </summary>
     /// <param name="_">Ignored.</param>
     /// <returns>Empty.</returns>
-    public override IEnumerable<Triple> GetQuotedWithObject(INode _) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> GetQuotedWithObject(INode _) => [];
 
     /// <summary>
     /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
     /// </summary>
     /// <param name="_">Ignored.</param>
     /// <returns>Empty.</returns>
-    public override IEnumerable<Triple> GetQuotedWithPredicate(Uri _) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> GetQuotedWithPredicate(Uri _) => [];
 
     /// <summary>
     /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
     /// </summary>
     /// <param name="_">Ignored.</param>
     /// <returns>Empty.</returns>
-    public override IEnumerable<Triple> GetQuotedWithPredicate(INode _) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> GetQuotedWithPredicate(INode _) => [];
 
     /// <summary>
     /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
     /// </summary>
     /// <param name="_">Ignored.</param>
     /// <returns>Empty.</returns>
-    public override IEnumerable<Triple> GetQuotedWithSubject(Uri _) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> GetQuotedWithSubject(Uri _) => [];
 
     /// <summary>
     /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
     /// </summary>
     /// <param name="_">Ignored.</param>
     /// <returns>Empty.</returns>
-    public override IEnumerable<Triple> GetQuotedWithSubject(INode _) => Enumerable.Empty<Triple>();
-
-    /// <summary>
-    /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
-    /// </summary>
-    /// <param name="_">Ignored.</param>
-    /// <param name="__">Ignored.</param>
-    /// <returns>Empty.</returns>
-    public override IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode _, INode __) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> GetQuotedWithSubject(INode _) => [];
 
     /// <summary>
     /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
@@ -238,7 +230,7 @@ public class TpfLiveGraph : Graph
     /// <param name="_">Ignored.</param>
     /// <param name="__">Ignored.</param>
     /// <returns>Empty.</returns>
-    public override IEnumerable<Triple> GetQuotedWithSubjectObject(INode _, INode __) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode _, INode __) => [];
 
     /// <summary>
     /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
@@ -246,17 +238,25 @@ public class TpfLiveGraph : Graph
     /// <param name="_">Ignored.</param>
     /// <param name="__">Ignored.</param>
     /// <returns>Empty.</returns>
-    public override IEnumerable<Triple> GetQuotedWithPredicateObject(INode _, INode __) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> GetQuotedWithSubjectObject(INode _, INode __) => [];
+
+    /// <summary>
+    /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <param name="__">Ignored.</param>
+    /// <returns>Empty.</returns>
+    public override IEnumerable<Triple> GetQuotedWithPredicateObject(INode _, INode __) => [];
 
     /// <summary>
     /// This graph returns no quoted nodes because Linked Data Fragments does not support RDF*.
     /// </summary>
-    public override IEnumerable<INode> QuotedNodes => Enumerable.Empty<INode>();
+    public override IEnumerable<INode> QuotedNodes => [];
 
     /// <summary>
     /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
     /// </summary>
-    public override IEnumerable<Triple> QuotedTriples => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> QuotedTriples => [];
 
     #endregion
 

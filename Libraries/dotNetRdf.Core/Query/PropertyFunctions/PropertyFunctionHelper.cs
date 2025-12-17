@@ -43,7 +43,7 @@ public static class PropertyFunctionHelper
     /// <returns></returns>
     public static List<IPropertyFunctionPattern> ExtractPatterns(IEnumerable<ITriplePattern> patterns)
     {
-        return ExtractPatterns(patterns, Enumerable.Empty<IPropertyFunctionFactory>());
+        return ExtractPatterns(patterns, []);
     }
 
     /// <summary>

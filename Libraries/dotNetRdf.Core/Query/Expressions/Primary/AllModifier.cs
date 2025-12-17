@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace VDS.RDF.Query.Expressions.Primary;
 
@@ -54,7 +53,7 @@ public class AllModifier
     {
         get
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
     }
 
@@ -87,7 +86,7 @@ public class AllModifier
     {
         get
         {
-            return Enumerable.Empty<ISparqlExpression>();
+            return [];
         }
     }
 

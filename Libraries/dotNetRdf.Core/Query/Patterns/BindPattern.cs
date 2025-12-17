@@ -123,7 +123,7 @@ public class BindPattern
     /// </summary>
     public override IEnumerable<string> FixedVariables
     {
-        get { return Enumerable.Empty<string>(); }
+        get { return []; }
     }
 
     /// <summary>

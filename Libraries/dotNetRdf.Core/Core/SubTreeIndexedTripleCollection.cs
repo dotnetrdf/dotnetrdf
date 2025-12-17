@@ -186,7 +186,7 @@ public class SubTreeIndexedTripleCollection
                     from t in ts
                     select t);
         }
-        return Enumerable.Empty<Triple>();
+        return [];
     }
 
     private IEnumerable<Triple> WithNodeAndTriple(INode key, Triple subkey, MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>> index)
@@ -198,7 +198,7 @@ public class SubTreeIndexedTripleCollection
                 return triples ?? Enumerable.Empty<Triple>();
             }
         }
-        return Enumerable.Empty<Triple>();
+        return [];
     }
 
     /// <summary>

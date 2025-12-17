@@ -102,27 +102,27 @@ internal class TpfTripleCollection : BaseTripleCollection
 
     public override bool ContainsQuoted(Triple t) => default;
 
-    public override IEnumerable<Triple> Quoted => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> Quoted => [];
 
     public override int QuotedCount => default;
 
-    public override IEnumerable<INode> QuotedObjectNodes => Enumerable.Empty<INode>();
+    public override IEnumerable<INode> QuotedObjectNodes => [];
 
-    public override IEnumerable<INode> QuotedPredicateNodes => Enumerable.Empty<INode>();
+    public override IEnumerable<INode> QuotedPredicateNodes => [];
 
-    public override IEnumerable<INode> QuotedSubjectNodes => Enumerable.Empty<INode>();
+    public override IEnumerable<INode> QuotedSubjectNodes => [];
 
-    public override IEnumerable<Triple> QuotedWithObject(INode obj) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> QuotedWithObject(INode obj) => [];
 
-    public override IEnumerable<Triple> QuotedWithPredicate(INode pred) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> QuotedWithPredicate(INode pred) => [];
 
-    public override IEnumerable<Triple> QuotedWithPredicateObject(INode pred, INode obj) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> QuotedWithPredicateObject(INode pred, INode obj) => [];
 
-    public override IEnumerable<Triple> QuotedWithSubject(INode subj) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> QuotedWithSubject(INode subj) => [];
 
-    public override IEnumerable<Triple> QuotedWithSubjectObject(INode subj, INode obj) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> QuotedWithSubjectObject(INode subj, INode obj) => [];
 
-    public override IEnumerable<Triple> QuotedWithSubjectPredicate(INode subj, INode pred) => Enumerable.Empty<Triple>();
+    public override IEnumerable<Triple> QuotedWithSubjectPredicate(INode subj, INode pred) => [];
 
     #endregion
 }

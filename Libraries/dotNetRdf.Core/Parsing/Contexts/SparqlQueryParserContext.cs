@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
@@ -45,7 +44,7 @@ public class SparqlQueryParserContext : TokenisingParserContext
     private Uri _defaultBaseUri = null;
     private SparqlQuerySyntax _syntax = SparqlQuerySyntax.Sparql_1_1;
     private int _nextAliasID = 0;
-    private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
+    private IEnumerable<ISparqlCustomExpressionFactory> _factories = [];
     private bool _checkBNodeScope = true;
 
     /// <summary>

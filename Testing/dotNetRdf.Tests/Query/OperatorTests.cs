@@ -123,7 +123,7 @@ public class OperatorTests
     [Fact]
     public void SparqlOperatorLookup1()
     {
-        TestLookup(SparqlOperatorType.Add, false, null, Enumerable.Empty<IValuedNode>(), false);
+        TestLookup(SparqlOperatorType.Add, false, null, [], false);
         TestLookup(SparqlOperatorType.Add, false, null, _someNullArgs, false);
         TestLookup(SparqlOperatorType.Add, false, typeof(AdditionOperator), _numArgs, true);
     }
@@ -131,7 +131,7 @@ public class OperatorTests
     [Fact]
     public void SparqlOperatorLookup2()
     {
-        TestLookup(SparqlOperatorType.Subtract, false, null, Enumerable.Empty<IValuedNode>(), false);
+        TestLookup(SparqlOperatorType.Subtract, false, null, [], false);
         TestLookup(SparqlOperatorType.Subtract, false, null, _someNullArgs, false);
         TestLookup(SparqlOperatorType.Subtract, false, typeof(SubtractionOperator), _numArgs, true);
     }
@@ -139,7 +139,7 @@ public class OperatorTests
     [Fact]
     public void SparqlOperatorLookup3()
     {
-        TestLookup(SparqlOperatorType.Divide, false, null, Enumerable.Empty<IValuedNode>(), false);
+        TestLookup(SparqlOperatorType.Divide, false, null, [], false);
         TestLookup(SparqlOperatorType.Divide, false, null, _someNullArgs, false);
         TestLookup(SparqlOperatorType.Divide, false, typeof(DivisionOperator), _numArgs, true);
     }
@@ -147,7 +147,7 @@ public class OperatorTests
     [Fact]
     public void SparqlOperatorLookup4()
     {
-        TestLookup(SparqlOperatorType.Multiply, false, null, Enumerable.Empty<IValuedNode>(), false);
+        TestLookup(SparqlOperatorType.Multiply, false, null, [], false);
         TestLookup(SparqlOperatorType.Multiply, false, null, _someNullArgs, false);
         TestLookup(SparqlOperatorType.Multiply, false, typeof(MultiplicationOperator), _numArgs, true);
     }

@@ -40,7 +40,7 @@ internal abstract class Sparql : Constraint
 {
     [DebuggerStepThrough]
     protected Sparql(Shape shape, INode value)
-        : this(shape, value, Enumerable.Empty<KeyValuePair<string, INode>>())
+        : this(shape, value, [])
     {
     }
 

@@ -494,7 +494,7 @@ public class FourStoreConnector
                 return graphs;
             }
 
-            return Enumerable.Empty<Uri>();
+            return [];
         }
         catch (Exception ex)
         {
@@ -533,7 +533,7 @@ public class FourStoreConnector
                 return graphs;
             }
 
-            return Enumerable.Empty<string>();
+            return [];
         }
         catch (Exception ex)
         {

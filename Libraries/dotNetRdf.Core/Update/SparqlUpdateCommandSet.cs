@@ -43,7 +43,7 @@ public class SparqlUpdateCommandSet
     private Uri _baseUri;
     private long _timeout = 0;
     private TimeSpan? _executionTime = null;
-    private IEnumerable<IAlgebraOptimiser> _optimisers = Enumerable.Empty<IAlgebraOptimiser>();
+    private IEnumerable<IAlgebraOptimiser> _optimisers = [];
 
     /// <summary>
     /// Creates a new empty Command Set.
@@ -194,7 +194,7 @@ public class SparqlUpdateCommandSet
         {
             if (value == null)
             {
-                _optimisers = Enumerable.Empty<IAlgebraOptimiser>();
+                _optimisers = [];
             }
             else
             {

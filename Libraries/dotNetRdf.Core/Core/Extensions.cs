@@ -428,7 +428,7 @@ public static class Extensions
         INode rdfRest = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListRest));
         INode rdfNil = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListNil));
 
-        if (listRoot.Equals(rdfNil)) return Enumerable.Empty<Triple>();
+        if (listRoot.Equals(rdfNil)) return [];
 
         var ts = new List<Triple>();
         var currCount = 0;

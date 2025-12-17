@@ -124,7 +124,7 @@ public class ListTests
     public void GraphLists4()
     {
         var g = new Graph();
-        g.AddToList(g.CreateBlankNode(), Enumerable.Empty<INode>());
+        g.AddToList(g.CreateBlankNode(), []);
     }
 
     [Fact]

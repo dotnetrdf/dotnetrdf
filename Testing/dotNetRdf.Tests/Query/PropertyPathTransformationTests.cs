@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
@@ -194,14 +193,14 @@ public class PropertyPathTransformationTests
     [Fact]
     public void SparqlPropertyPathTransformationNegatedPropertySet()
     {
-        var path = new NegatedSet(new Property[] { new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) }, Enumerable.Empty<Property>());
+        var path = new NegatedSet(new Property[] { new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) }, []);
         RunTest(path, new String[] { "NegatedPropertySet" });
     }
 
     [Fact]
     public void SparqlPropertyPathTransformationNegatedPropertyInverseSet()
     {
-        var path = new NegatedSet(Enumerable.Empty<Property>(), new Property[] { new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) });
+        var path = new NegatedSet([], new Property[] { new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) });
         RunTest(path, new String[] { "NegatedPropertySet" });
     }
 

@@ -24,7 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Linq;
 using Xunit;
 
 namespace VDS.RDF.Parsing.Handlers;
@@ -45,7 +44,7 @@ public class MultiHandlerTests
     [Fact]
     public void ParsingMultiHandlerBadInstantiation()
     {
-        Assert.Throws<ArgumentException>(() => new MultiHandler(Enumerable.Empty<IRdfHandler>()));
+        Assert.Throws<ArgumentException>(() => new MultiHandler([]));
     }
 
     [Fact]

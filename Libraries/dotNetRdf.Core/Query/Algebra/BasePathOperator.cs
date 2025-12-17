@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 
@@ -91,7 +90,7 @@ public abstract class BasePathOperator
     /// </summary>
     public IEnumerable<string> FloatingVariables
     {
-        get { return Enumerable.Empty<string>(); }
+        get { return []; }
     }
 
     /// <summary>
