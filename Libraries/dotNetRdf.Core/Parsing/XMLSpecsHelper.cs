@@ -176,7 +176,7 @@ public static class XmlSpecsHelper
     /// <summary>
     /// Array of Constants for Data Types that are supported by the Literal Node CompareTo method.
     /// </summary>
-    public static string[] SupportedTypes = new string[] {
+    public static string[] SupportedTypes = [
         XmlSchemaDataTypeAnyUri,
         XmlSchemaDataTypeBase64Binary,
         XmlSchemaDataTypeBoolean,
@@ -204,7 +204,7 @@ public static class XmlSpecsHelper
         XmlSchemaDataTypeUnsignedShort,
         RdfSpecsHelper.RdfLangString,
         /*XmlSchemaDataTypeXmlLiteral*/
-    };
+    ];
 
     #region Name Validation
 

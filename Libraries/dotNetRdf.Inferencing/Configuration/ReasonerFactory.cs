@@ -119,7 +119,7 @@ public class ReasonerFactory : IObjectFactory
         // We can load any object which implements IInferenceEngine and has a public unparameterized constructor
         if (t.GetInterfaces().Any(i => i.Equals(ireasoner)))
         {
-            ConstructorInfo c = t.GetConstructor(new Type[0]);
+            ConstructorInfo c = t.GetConstructor([]);
             if (c != null)
             {
                 if (c.IsPublic) return true;

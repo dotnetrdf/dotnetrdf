@@ -78,7 +78,7 @@ public class ArqFunctionFactory : ISparqlCustomExpressionFactory
     /// <summary>
     /// Array of Extension Function URIs.
     /// </summary>
-    private string[] FunctionUris = {
+    private string[] FunctionUris = [
                                         Max,
                                         Min,
                                         Pi,
@@ -91,7 +91,7 @@ public class ArqFunctionFactory : ISparqlCustomExpressionFactory
                                         StrJoin,
                                         Sha1Sum,
                                         Now,
-                                    };
+                                    ];
 
     /// <summary>
     /// Tries to create an ARQ Function expression if the function Uri correseponds to a supported ARQ Function.

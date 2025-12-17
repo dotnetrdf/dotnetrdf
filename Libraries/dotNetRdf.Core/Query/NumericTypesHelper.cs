@@ -39,7 +39,7 @@ public static class NumericTypesHelper
     /// <summary>
     /// Set of XML Schema Data Types which are derived from Integer and can be treated as Integers by SPARQL.
     /// </summary>
-    public static string[] IntegerDataTypes = {
+    public static string[] IntegerDataTypes = [
         XmlSpecsHelper.XmlSchemaDataTypeByte,
         XmlSpecsHelper.XmlSchemaDataTypeInt,
         XmlSpecsHelper.XmlSchemaDataTypeInteger,
@@ -53,7 +53,7 @@ public static class NumericTypesHelper
         XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt,
         XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong,
         XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort,
-    };
+    ];
 
     #region Numeric Type determination
 

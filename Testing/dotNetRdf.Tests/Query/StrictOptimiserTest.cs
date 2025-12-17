@@ -62,48 +62,48 @@ public class StrictOptimiserTest
     [Fact]
     public void SparqlAlgebraOptimiserStrict1()
     {
-        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o }", new String[] { "BGP" });
+        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o }", ["BGP"]);
     }
 
     [Fact]
     public void SparqlAlgebraOptimiserStrict2()
     {
-        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) }", new String[] { "BGP", "Filter", "Filter(BGP(" });
+        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) }", ["BGP", "Filter", "Filter(BGP("]);
     }
 
     [Fact]
     public void SparqlAlgebraOptimiserStrict3()
     {
-        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . FILTER(ISURI(?type)) . ?s a ?type }", new String[] { "BGP", "Filter", "Filter(BGP(", "Join" });
+        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . FILTER(ISURI(?type)) . ?s a ?type }", ["BGP", "Filter", "Filter(BGP(", "Join"]);
     }
 
     [Fact]
     public void SparqlAlgebraOptimiserStrict4()
     {
-        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . BIND(ISLITERAL(?o) AS ?hasLiteralObject) }", new String[] { "BGP", "Extend", "Extend(BGP(" });
+        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . BIND(ISLITERAL(?o) AS ?hasLiteralObject) }", ["BGP", "Extend", "Extend(BGP("]);
     }
 
     [Fact]
     public void SparqlAlgebraOptimiserStrict5()
     {
-        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . BIND(ISURI(?type) AS ?hasNamedType) . ?s a ?type }", new String[] { "BGP", "Extend", "Extend(BGP(", "Join" });
+        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . BIND(ISURI(?type) AS ?hasNamedType) . ?s a ?type }", ["BGP", "Extend", "Extend(BGP(", "Join"]);
     }
 
     [Fact]
     public void SparqlAlgebraOptimiserStrict6()
     {
-        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) . BIND(ISURI(?s) AS ?Named) }", new String[] { "BGP", "Extend", "Filter", "Filter(BGP(", "Extend(Filter(" });
+        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) . BIND(ISURI(?s) AS ?Named) }", ["BGP", "Extend", "Filter", "Filter(BGP(", "Extend(Filter("]);
     }
 
     [Fact]
     public void SparqlAlgebraOptimiserStrict7()
     {
-        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . FILTER(ISURI(?type)) . ?s a ?type . BIND(ISURI(?s) AS ?Named) }", new String[] { "BGP", "Extend", "Filter", "Filter(BGP(", "Extend(Filter(" });
+        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . FILTER(ISURI(?type)) . ?s a ?type . BIND(ISURI(?s) AS ?Named) }", ["BGP", "Extend", "Filter", "Filter(BGP(", "Extend(Filter("]);
     }
 
     [Fact]
     public void SparqlAlgebraOptimiserStrict8()
     {
-        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . FILTER(?Named) . ?s a ?type . BIND(ISURI(?s) AS ?Named) }", new String[] { "BGP", "Extend", "Filter", "Extend(BGP(", "Filter(Extend(" });
+        TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . FILTER(?Named) . ?s a ?type . BIND(ISURI(?s) AS ?Named) }", ["BGP", "Extend", "Filter", "Extend(BGP(", "Filter(Extend("]);
     }
 }

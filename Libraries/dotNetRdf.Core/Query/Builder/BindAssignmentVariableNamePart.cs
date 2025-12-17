@@ -53,14 +53,14 @@ sealed class BindAssignmentVariableNamePart :
 
     IGraphPatternBuilder IAssignmentVariableNamePart<IGraphPatternBuilder>.As(string variableName)
     {
-        _graphPatternBuilder.Where(mapper => new ITriplePattern[] { new BindPattern(variableName, BuildAssignmentExpression(mapper)) });
+        _graphPatternBuilder.Where(mapper => [new BindPattern(variableName, BuildAssignmentExpression(mapper))]);
 
         return _graphPatternBuilder;
     }
 
     IQueryBuilder IAssignmentVariableNamePart<IQueryBuilder>.As(string variableName)
     {
-        _queryBuilder.RootGraphPatternBuilder.Where(mapper => new ITriplePattern[] { new BindPattern(variableName, BuildAssignmentExpression(mapper)) });
+        _queryBuilder.RootGraphPatternBuilder.Where(mapper => [new BindPattern(variableName, BuildAssignmentExpression(mapper))]);
 
         return _queryBuilder;
     }

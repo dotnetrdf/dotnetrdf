@@ -25,7 +25,7 @@ public class JoinEnumeratorTests : EnumeratorTestBase
     {
         var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3);
         var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5, wait:100);
-        var join = new AsyncJoinEvaluation(lhs, rhs, new[] { "x" });
+        var join = new AsyncJoinEvaluation(lhs, rhs, ["x"]);
         List<ISet> results = await join.Evaluate(null, null, cancellationToken: TestContext.Current.CancellationToken).ToListAsync(cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(5, results.Count);
         var resultValues = results.Select(r => r["x"]).OfType<ILiteralNode>().Select(n => n.Value).ToArray();
@@ -38,7 +38,7 @@ public class JoinEnumeratorTests : EnumeratorTestBase
     {
         var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3, wait:100);
         var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5);
-        var join = new AsyncJoinEvaluation(lhs, rhs, new[] { "x" });
+        var join = new AsyncJoinEvaluation(lhs, rhs, ["x"]);
         List<ISet> results = await join.Evaluate(null, null, cancellationToken: TestContext.Current.CancellationToken).ToListAsync(cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(5, results.Count);
         var resultValues = results.Select(r => r["x"]).OfType<ILiteralNode>().Select(n => n.Value).ToArray();
@@ -51,7 +51,7 @@ public class JoinEnumeratorTests : EnumeratorTestBase
     {
         var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3);
         var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5);
-        var join = new AsyncJoinEvaluation(lhs, rhs, new[] { "x" });
+        var join = new AsyncJoinEvaluation(lhs, rhs, ["x"]);
         List<ISet> results = await join.Evaluate(null, null, cancellationToken: TestContext.Current.CancellationToken).ToListAsync(cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(5, results.Count);
         var resultValues = results.Select(r => r["x"]).OfType<ILiteralNode>().Select(n => n.Value).ToArray();

@@ -1406,7 +1406,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
     private static string ResolveQName(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext,
         string curie)
     {
-        var parts = curie.Split(new[] { ':' }, 2);
+        var parts = curie.Split([':'], 2);
         if (parts.Length == 1) return evalContext.BaseUri + parts[0];
         if (evalContext.NamespaceMap.HasNamespace(parts[0]))
         {

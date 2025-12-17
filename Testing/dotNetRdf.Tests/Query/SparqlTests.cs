@@ -441,7 +441,7 @@ WHERE
     }
 
     private readonly string[] _langSpecCaseQueries =
-            {
+            [
                 @"SELECT * WHERE { ?s ?p 'example'@en-gb }",
                 @"SELECT * WHERE { ?s ?p 'example'@en-GB }",
                 @"SELECT * WHERE { ?s ?p 'example'@EN-GB }",
@@ -454,7 +454,7 @@ WHERE
                 @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'en')) }",
                 @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'EN')) }",
                 @"SELECT * WHERE { ?s ?p ?o . FILTER(LANG(?o) = 'en-gb') }"
-            };
+            ];
 
     private void TestLanguageSpecifierCase(IGraph g)
     {

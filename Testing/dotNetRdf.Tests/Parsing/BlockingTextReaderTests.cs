@@ -397,7 +397,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         var loader = new Loader(_serverFixture.Client);
         var g = new Graph();
-        var parser = parserType.GetConstructor(new Type []{}).Invoke(new object []{}) as IRdfReader;
+        var parser = parserType.GetConstructor([]).Invoke([]) as IRdfReader;
         Uri uri = _serverFixture.UriFor("/doap#");
         loader.LoadGraph(g, uri, parser);
         g.Triples.Count.Should().BeGreaterThan(0);

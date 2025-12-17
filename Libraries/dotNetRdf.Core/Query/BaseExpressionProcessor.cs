@@ -112,11 +112,11 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
     private IValuedNode ApplyBinaryOperator(BaseBinaryExpression expr, SparqlOperatorType operatorType,
         TContext context, TBinding binding)
     {
-        IValuedNode[] inputs = new[]
-        {
+        IValuedNode[] inputs =
+        [
             expr.LeftExpression.Accept(this, context, binding),
             expr.RightExpression.Accept(this, context, binding),
-        };
+        ];
         if (!SparqlOperators.TryGetOperator(operatorType, UseStrictOperators, out ISparqlOperator op, inputs))
         {
             throw new RdfQueryException($"Cannot apply operator {operatorType} to the given inputs.");

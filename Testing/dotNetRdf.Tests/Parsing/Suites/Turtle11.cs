@@ -80,7 +80,7 @@ public class Turtle11
         INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
 
         //Run manifests
-        RunManifest(Path.Combine("resources", "turtle11", "manifest.ttl"), new[] { posSyntaxTest }, new[] { negSyntaxTest, negEvalTest });
+        RunManifest(Path.Combine("resources", "turtle11", "manifest.ttl"), [posSyntaxTest], [negSyntaxTest, negEvalTest]);
 
         if (Count == 0) Assert.Fail("No tests found");
 
@@ -457,7 +457,7 @@ public class TurtleStar11 : BaseRdfParserSuite
         INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
 
         //Run manifests
-        RunManifest(Path.Combine("resources", "turtle11", "manifest.ttl"), new[] { posSyntaxTest }, new[] { negSyntaxTest, negEvalTest });
+        RunManifest(Path.Combine("resources", "turtle11", "manifest.ttl"), [posSyntaxTest], [negSyntaxTest, negEvalTest]);
 
         if (Count == 0) Assert.Fail("No tests found");
 

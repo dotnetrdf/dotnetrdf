@@ -280,7 +280,7 @@ public class WriterTests
     {
         var g = new Graph();
         var writer = new System.IO.StringWriter();
-        var rdfWriter = writerType.GetConstructor(new Type[0]).Invoke(new object[0]) as IRdfWriter;
+        var rdfWriter = writerType.GetConstructor([]).Invoke([]) as IRdfWriter;
         rdfWriter.Save(g, writer, true);
         writer.Write("\n"); // This should not throw because the writer is still open
         rdfWriter.Save(g, writer);

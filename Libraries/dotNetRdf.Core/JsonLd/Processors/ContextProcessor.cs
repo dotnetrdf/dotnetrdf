@@ -39,7 +39,7 @@ namespace VDS.RDF.JsonLd.Processors;
 internal class ContextProcessor : ProcessorBase
 {
     private static readonly char[] GenDelimChars =
-    {
+    [
         ':',
         '/',
         '?',
@@ -47,7 +47,7 @@ internal class ContextProcessor : ProcessorBase
         '[',
         ']',
         '@',
-    };
+    ];
 
     private readonly IRemoteContextProvider _contextProvider;
 

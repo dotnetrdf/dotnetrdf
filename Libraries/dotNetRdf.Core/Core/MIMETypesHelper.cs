@@ -30,7 +30,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Mime;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
@@ -75,67 +74,67 @@ public static class MimeTypesHelper
     /// <summary>
     /// MIME Types for Turtle.
     /// </summary>
-    public static readonly string[] Turtle = { "text/turtle", "application/x-turtle", "application/turtle" };
+    public static readonly string[] Turtle = ["text/turtle", "application/x-turtle", "application/turtle"];
 
     /// <summary>
     /// MIME Types for RDF/XML.
     /// </summary>
-    public static readonly string[] RdfXml = { "application/rdf+xml", "text/xml", "application/xml" };
+    public static readonly string[] RdfXml = ["application/rdf+xml", "text/xml", "application/xml"];
 
     /// <summary>
     /// MIME Types for Notation 3.
     /// </summary>
-    public static readonly string[] Notation3 = { "text/n3", "text/rdf+n3" };
+    public static readonly string[] Notation3 = ["text/n3", "text/rdf+n3"];
 
     /// <summary>
     /// MIME Types for NTriples.
     /// </summary>
-    public static readonly string[] NTriples = { "application/n-triples", "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples", "application/ntriples" };
+    public static readonly string[] NTriples = ["application/n-triples", "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples", "application/ntriples"];
 
     /// <summary>
     /// MIME Types for NQuads.
     /// </summary>
-    public static readonly string[] NQuads = { "application/n-quads", "text/x-nquads" };
+    public static readonly string[] NQuads = ["application/n-quads", "text/x-nquads"];
 
     /// <summary>
     /// MIME Types for TriG.
     /// </summary>
-    public static readonly string[] TriG = { "application/trig", "application/x-trig" };
+    public static readonly string[] TriG = ["application/trig", "application/x-trig"];
 
     /// <summary>
     /// MIME Types for TriX.
     /// </summary>
-    public static readonly string[] TriX = { "application/trix" };
+    public static readonly string[] TriX = ["application/trix"];
 
     /// <summary>
     /// MIME Types for RDF/JSON.
     /// </summary>
-    public static readonly string[] Json = { "application/json", "text/json", "application/rdf+json" };
+    public static readonly string[] Json = ["application/json", "text/json", "application/rdf+json"];
 
     /// <summary>
     /// MIME types for JSON-LD.
     /// </summary>
-    public static readonly string[] JsonLd = {"application/ld+json"};
+    public static readonly string[] JsonLd = ["application/ld+json"];
 
     /// <summary>
     /// MIME Types for SPARQL Result Sets.
     /// </summary>
-    public static readonly string[] SparqlResults = { "application/sparql-results+xml", "application/sparql-results+json" };
+    public static readonly string[] SparqlResults = ["application/sparql-results+xml", "application/sparql-results+json"];
 
     /// <summary>
     /// MIME Types for SPARQL Results XML.
     /// </summary>
-    public static string[] SparqlResultsXml = { "application/sparql-results+xml" };
+    public static string[] SparqlResultsXml = ["application/sparql-results+xml"];
 
     /// <summary>
     /// MIME Types for SPARQL Results JSON.
     /// </summary>
-    public static readonly string[] SparqlResultsJson = { "application/sparql-results+json" };
+    public static readonly string[] SparqlResultsJson = ["application/sparql-results+json"];
 
     /// <summary>
     /// MIME Types for SPARQL Boolean Result.
     /// </summary>
-    public static readonly string[] SparqlResultsBoolean = { "text/boolean" };
+    public static readonly string[] SparqlResultsBoolean = ["text/boolean"];
 
     /// <summary>
     /// MIME Type for SPARQL Queries.
@@ -150,17 +149,17 @@ public static class MimeTypesHelper
     /// <summary>
     /// MIME Types for CSV.
     /// </summary>
-    public static readonly string[] Csv = { "text/csv", "text/comma-separated-values" };
+    public static readonly string[] Csv = ["text/csv", "text/comma-separated-values"];
 
     /// <summary>
     /// MIME Types for TSV.
     /// </summary>
-    public static readonly string[] Tsv = { "text/tab-separated-values" };
+    public static readonly string[] Tsv = ["text/tab-separated-values"];
 
     /// <summary>
     /// MIME Types for HTML.
     /// </summary>
-    public static readonly string[] Html = { "text/html", "application/xhtml+xml" };
+    public static readonly string[] Html = ["text/html", "application/xhtml+xml"];
 
     /// <summary>
     /// Default File Extension for Turtle Files.
@@ -243,7 +242,7 @@ public static class MimeTypesHelper
     /// <summary>
     /// Extensions which are considered stackable.
     /// </summary>
-    private static readonly string[] AllowedStackableExtensions = { DefaultGZipExtension };
+    private static readonly string[] AllowedStackableExtensions = [DefaultGZipExtension];
 
     /// <summary>
     /// Charset constants.
@@ -1266,12 +1265,12 @@ public static class MimeTypesHelper
             }
             else
             {
-                ctypes = new string[] { acceptHeader };
+                ctypes = [acceptHeader];
             }
         }
         else
         {
-            ctypes = new string[] { };
+            ctypes = [];
         }
 
         return GetWriter(ctypes, out contentType, compressionLevel, useDtd, useMultipleThreads);
@@ -1553,7 +1552,7 @@ public static class MimeTypesHelper
         }
         else
         {
-            ctypes = new string[] { acceptHeader };
+            ctypes = [acceptHeader];
         }
 
         return GetSparqlWriter(ctypes, out contentType);
@@ -1740,7 +1739,7 @@ public static class MimeTypesHelper
         }
         else
         {
-            ctypes = new string[] { acceptHeader };
+            ctypes = [acceptHeader];
         }
 
         return GetStoreWriter(ctypes, out contentType, compressionLevel, useDtd);

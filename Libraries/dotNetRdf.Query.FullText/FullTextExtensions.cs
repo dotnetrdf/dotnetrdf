@@ -229,7 +229,7 @@ static class FullTextExtensions
         INode analyzerObj = context.NextSubject;
 
         Type t = analyzer.GetType();
-        if (t.GetConstructor(Type.EmptyTypes) != null || t.GetConstructor(new[] { typeof(Lucene.Net.Util.LuceneVersion) }) != null)
+        if (t.GetConstructor(Type.EmptyTypes) != null || t.GetConstructor([typeof(Lucene.Net.Util.LuceneVersion)]) != null)
         {
             context.Graph.Assert(analyzerObj, rdfType, analyzerClass);
             context.Graph.Assert(analyzerObj, dnrType, context.Graph.CreateLiteralNode(t.AssemblyQualifiedName));

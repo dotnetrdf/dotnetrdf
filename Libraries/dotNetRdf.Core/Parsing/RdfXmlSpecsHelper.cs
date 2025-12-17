@@ -56,38 +56,38 @@ public static class RdfXmlSpecsHelper
     /// <summary>
     /// Array containing the Core Syntax Terms.
     /// </summary>
-    private static string[] coreSyntaxTerms = { "rdf:RDF", "rdf:ID", "rdf:about", "rdf:parseType", "rdf:resource", "rdf:nodeID", "rdf:datatype" };
+    private static string[] coreSyntaxTerms = ["rdf:RDF", "rdf:ID", "rdf:about", "rdf:parseType", "rdf:resource", "rdf:nodeID", "rdf:datatype"];
 
     /// <summary>
     /// The local name part of core syntax terms.
     /// </summary>
-    private static readonly string[] CoreSyntaxLocalNames = { "RDF", "ID", "about", "parseType", "resource", "nodeID", "datatype" };
+    private static readonly string[] CoreSyntaxLocalNames = ["RDF", "ID", "about", "parseType", "resource", "nodeID", "datatype"];
 
     /// <summary>
     /// Array containing the other Syntax Terms.
     /// </summary>
-    private static string[] syntaxTerms = { "rdf:Description", "rdf:li" };
+    private static string[] syntaxTerms = ["rdf:Description", "rdf:li"];
 
     /// <summary>
     /// The local name part of all syntax terms.
     /// </summary>
     private static readonly string[] SyntaxLocalNames =
-        {"RDF", "ID", "about", "parseType", "resource", "nodeID", "datatype", "Description", "li"};
+        ["RDF", "ID", "about", "parseType", "resource", "nodeID", "datatype", "Description", "li"];
 
     /// <summary>
     /// Array containing the Old Syntax Terms.
     /// </summary>
-    private static string[] oldTerms = { "rdf:aboutEach", "rdf:aboutEachPrefix", "rdf:bagID" };
+    private static string[] oldTerms = ["rdf:aboutEach", "rdf:aboutEachPrefix", "rdf:bagID"];
 
     /// <summary>
     /// The local name part of old syntax terms.
     /// </summary>
-    private static readonly string[] OldLocalNames = {"aboutEach", "aboutEachPrefix", "bagID"};
+    private static readonly string[] OldLocalNames = ["aboutEach", "aboutEachPrefix", "bagID"];
 
     /// <summary>
     /// Array containing Syntax Terms where the rdf: Prefix is mandated.
     /// </summary>
-    private static string[] requiresRdfPrefix = { "about", "aboutEach", "ID", "bagID", "type", "resource", "parseType" };
+    private static string[] requiresRdfPrefix = ["about", "aboutEach", "ID", "bagID", "type", "resource", "parseType"];
 
     /// <summary>
     /// Checks whether a given QName is a Core Syntax Term.

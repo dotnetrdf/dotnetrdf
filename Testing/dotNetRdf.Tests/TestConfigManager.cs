@@ -111,7 +111,7 @@ public static class TestConfigManager
                     if (line.TrimStart().StartsWith("#")) continue;
                     if (line.Equals("")) continue;
 
-                    var parts = line.Split(new char[] { '=' }, 2);
+                    var parts = line.Split(['='], 2);
                     if (parts.Length == 2)
                     {
                         if (_settings.ContainsKey(parts[0]))

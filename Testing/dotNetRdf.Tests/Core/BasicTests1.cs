@@ -205,7 +205,7 @@ public class BasicTests1 : BaseTest
     [Fact]
     public void UriResolution()
     {
-        String[] baseUris = { "http://www.bbc.co.uk",
+        String[] baseUris = [ "http://www.bbc.co.uk",
                               "http://www.bbc.co.uk/",
                               "http://www.bbc.co.uk/test.txt",
                               "http://www.bbc.co.uk/test",
@@ -214,25 +214,25 @@ public class BasicTests1 : BaseTest
                               "http://www.bbc.co.uk/really/really/long/path",
                               "http://www.bbc.co.uk#fragment",
                               "http://www.bbc.co.uk/test.txt#fragment"//,
-                            };
-        String[] uriRefs = { "test2.txt",
+                            ];
+        String[] uriRefs = [ "test2.txt",
                              "test2",
                              "/test2",
                              "test2/subdir",
                              "/test2/subdir",
                              "../test2",
                              "#fragment2"
-                            };
-        String[][] expected = { new String[] {"http://www.bbc.co.uk/test2.txt","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/#fragment2"},
-                                new String[] {"http://www.bbc.co.uk/test2.txt","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/#fragment2"},
-                                new String[] {"http://www.bbc.co.uk/test2.txt","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test.txt#fragment2"},
-                                new String[] {"http://www.bbc.co.uk/test2.txt","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test#fragment2"},
-                                new String[] {"http://www.bbc.co.uk/test/test2.txt","http://www.bbc.co.uk/test/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test/#fragment2"},
-                                new String[] {"http://www.bbc.co.uk/test/test2.txt","http://www.bbc.co.uk/test/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test/subdir#fragment2"},
-                                new String[] {"http://www.bbc.co.uk/really/really/long/test2.txt","http://www.bbc.co.uk/really/really/long/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/really/really/long/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/really/really/test2","http://www.bbc.co.uk/really/really/long/path#fragment2"},
-                                new String[] {"http://www.bbc.co.uk/test2.txt","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/#fragment2"},
-                                new String[] {"http://www.bbc.co.uk/test2.txt","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test.txt#fragment2"}
-                              };
+                            ];
+        String[][] expected = [ ["http://www.bbc.co.uk/test2.txt","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/#fragment2"],
+                                ["http://www.bbc.co.uk/test2.txt","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/#fragment2"],
+                                ["http://www.bbc.co.uk/test2.txt","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test.txt#fragment2"],
+                                ["http://www.bbc.co.uk/test2.txt","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test#fragment2"],
+                                ["http://www.bbc.co.uk/test/test2.txt","http://www.bbc.co.uk/test/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test/#fragment2"],
+                                ["http://www.bbc.co.uk/test/test2.txt","http://www.bbc.co.uk/test/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test/subdir#fragment2"],
+                                ["http://www.bbc.co.uk/really/really/long/test2.txt","http://www.bbc.co.uk/really/really/long/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/really/really/long/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/really/really/test2","http://www.bbc.co.uk/really/really/long/path#fragment2"],
+                                ["http://www.bbc.co.uk/test2.txt","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/#fragment2"],
+                                ["http://www.bbc.co.uk/test2.txt","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test.txt#fragment2"]
+                              ];
 
         for (var i = 0; i < baseUris.Length; i++)
         {

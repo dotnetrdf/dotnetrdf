@@ -206,7 +206,7 @@ public class UnicodeSpecsHelper
             else
             {
                 // Within single character range
-                return new char[] { (char)i };
+                return [(char)i];
             }
         }
         catch (Exception ex)
