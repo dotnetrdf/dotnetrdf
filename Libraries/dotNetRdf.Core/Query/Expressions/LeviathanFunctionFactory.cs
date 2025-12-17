@@ -107,7 +107,7 @@ public class LeviathanFunctionFactory
     /// <summary>
     /// Array of Extension Function URIs.
     /// </summary>
-    private string[] FunctionUris = {
+    private string[] FunctionUris = [
                                         MD5Hash,
                                         Sha256Hash,
                                         Random,
@@ -137,12 +137,12 @@ public class LeviathanFunctionFactory
                                         Pythagoras,
                                         Cartesian,
                                         Factorial,
-                                    };
+                                    ];
 
     /// <summary>
     /// Array of Extension Aggregate URIs.
     /// </summary>
-    private string[] AggregateUris = {
+    private string[] AggregateUris = [
                                          All,
                                          Any,
                                          None,
@@ -150,7 +150,7 @@ public class LeviathanFunctionFactory
                                          NumericMin,
                                          Mode,
                                          Median,
-                                     };
+                                     ];
 
 
     /// <summary>

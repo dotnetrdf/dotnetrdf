@@ -322,7 +322,7 @@ public class SparqlFormatter
                 if (cgp.HasModifier)
                 {
                     var formatted = Format(cgp);
-                    formatted = formatted.TrimEnd(new char[] { '\n', '\r' });
+                    formatted = formatted.TrimEnd(['\n', '\r']);
                     if (formatted.Contains("\n"))
                     {
                         output.AppendLine("{");

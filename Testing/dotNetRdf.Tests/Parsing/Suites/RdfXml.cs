@@ -35,11 +35,11 @@ public class RdfXmlDomParser
 {
     private readonly ITestOutputHelper _testOutputHelper;
     private static readonly string[] SkipTests =
-    {
+    [
         // Path.Combine("amp-in-url", "test001.rdf"), // Uses entities in DTD - not supported in .NET Core RDF/XML parser
         Path.Combine("rdf-containers-syntax-vs-schema", "test005.rdf"), // Obsoleted test file with no root element
         Path.Combine("xmlbase", "test012.rdf"), // Obsoleted test file with no root element
-    };
+    ];
 
     public RdfXmlDomParser(ITestOutputHelper testOutputHelper)
         : base(new RdfXmlParser(RdfXmlParserMode.DOM), new NTriplesParser(), "rdfxml")
@@ -88,11 +88,11 @@ public class RdfXmlStreamingParser
     private readonly ITestOutputHelper _testOutputHelper;
 
     private static readonly string[] SkipTests =
-    {
+    [
         Path.Combine("amp-in-url", "test001.rdf"), // Uses entities in DTD - not supported in .NET Core RDF/XML parser
         Path.Combine("rdf-containers-syntax-vs-schema", "test005.rdf"), // Obsoleted test file with no root element
         Path.Combine("xmlbase", "test012.rdf"), // Obsoleted test file with no root element
-    };
+    ];
 
     public RdfXmlStreamingParser(ITestOutputHelper testOutputHelper)
         : base(new RdfXmlParser(RdfXmlParserMode.Streaming), new NTriplesParser(), "rdfxml")

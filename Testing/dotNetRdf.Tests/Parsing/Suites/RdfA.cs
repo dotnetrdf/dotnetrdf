@@ -52,9 +52,9 @@ public class RdfA
     [Fact]
     public void ParsingSuiteRdfA10()
     {
-        String[] wantOutput = {  };
+        String[] wantOutput = [];
         var outputAll = false;
-        String[] skipTests = { 
+        String[] skipTests = [ 
                                "0002.xhtml",
                                "0003.xhtml", 
                                "0004.xhtml",
@@ -75,9 +75,9 @@ public class RdfA
                                "0124.xhtml",
                                "0125.xhtml",
                                "0126.xhtml"
-                             };
+                             ];
 
-        String[] skipCheck = {
+        String[] skipCheck = [
                                  "0011.xhtml",
                                  "0092.xhtml",
                                  "0094.xhtml",
@@ -85,9 +85,9 @@ public class RdfA
                                  "0101.xhtml",
                                  "0102.xhtml",
                                  "0103.xhtml"
-                             };
+                             ];
 
-        String[] falseTests = {
+        String[] falseTests = [
                                 "0042.xhtml",
                                 "0086.xhtml",
                                 "0095.xhtml",
@@ -97,7 +97,7 @@ public class RdfA
                                 "0116.xhtml",
                                 "0122.xhtml",
                                 "0125.xhtml"
-                              };
+                              ];
 
         try
         {

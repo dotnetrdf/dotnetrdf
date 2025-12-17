@@ -43,7 +43,7 @@ internal class WebLink
         var mediaTypes = new List<string>();
         foreach (var field in fields)
         {
-            var split = field.Split(new char[] { '=' }, 2);
+            var split = field.Split(['='], 2);
             if (split.Length == 2)
             {
                 var key = split[0].Trim();

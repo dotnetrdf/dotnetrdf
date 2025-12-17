@@ -211,7 +211,7 @@ WHERE
     /// <param name="file">Manifest file</param>
     protected void RunManifest(string file, INode positiveSyntaxTest, INode negativeSyntaxTest)
     {
-        RunManifest(file, new[] { positiveSyntaxTest }, new[] { negativeSyntaxTest });
+        RunManifest(file, [positiveSyntaxTest], [negativeSyntaxTest]);
     }
 
     protected void RunManifest(string file, INode[] positiveSyntaxTests, INode[] negativeSyntaxTests)

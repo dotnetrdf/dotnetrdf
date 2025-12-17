@@ -39,8 +39,8 @@ public class LanguageTag
     /// Tags that do not match the general langtag production and which would not otherwise be considered well-formed,
     /// but which are valid although deprecated in most cases.
     /// </summary>
-    public static readonly string[] IrregularGrandfatheredTags = new[]
-    {
+    public static readonly string[] IrregularGrandfatheredTags =
+    [
         "en-GB-oed",
         "i-ami",
         "i-bnn",
@@ -58,14 +58,14 @@ public class LanguageTag
         "sgn-BE-FR",
         "sgn-BE-NL",
         "sgn-CH-DE",
-    };
+    ];
 
     /// <summary>
     /// Tags that do match the general langtag production but their subtags are not semantically valid. These are
     /// also considered valid tags although all are deprecated.
     /// </summary>
-    public static readonly string[] RegularGrandfatheredTags = new[]
-    {
+    public static readonly string[] RegularGrandfatheredTags =
+    [
 
         "art-lojban",
         "cel-gaulish",
@@ -76,7 +76,7 @@ public class LanguageTag
         "zh-min",
         "zh-min-nan",
         "zh-xiang",
-    };
+    ];
 
     private static readonly Dictionary<string, bool> GrandfatheredTagsLookup =
         IrregularGrandfatheredTags.Concat(RegularGrandfatheredTags)

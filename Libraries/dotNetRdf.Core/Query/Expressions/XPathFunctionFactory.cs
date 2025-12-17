@@ -115,7 +115,7 @@ public class XPathFunctionFactory
                         XPathUnicodeNormalizationFormKD = "NFKD",
                         XPathUnicodeNormalizationFormFull = "FULLY-NORMALIZED";
 
-    private string[] FunctionUris = {
+    private string[] FunctionUris = [
                                         Not,
                                         Boolean,
                                         True,
@@ -148,9 +148,9 @@ public class XPathFunctionFactory
                                         MinutesFromDateTime,
                                         SecondsFromDateTime,
                                         TimezoneFromDateTime,
-                                    };
+                                    ];
 
-    private string[] AggregateUris = {StringJoin};
+    private string[] AggregateUris = [StringJoin];
 
     /// <summary>
     /// Argument Type Validator for validating that a Literal either has no datatype or is a String or langString.

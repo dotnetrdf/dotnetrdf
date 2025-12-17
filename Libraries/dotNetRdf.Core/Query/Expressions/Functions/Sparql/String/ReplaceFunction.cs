@@ -313,8 +313,8 @@ public class ReplaceFunction
         get
         {
             return OptionsExpression != null 
-                ? new[] { TextExpression, FindExpression, ReplaceExpression, OptionsExpression } 
-                : new[] { TextExpression, FindExpression, ReplaceExpression };
+                ? [TextExpression, FindExpression, ReplaceExpression, OptionsExpression]
+                : [TextExpression, FindExpression, ReplaceExpression];
         }
     }
 

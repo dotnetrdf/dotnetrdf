@@ -146,11 +146,11 @@ public class StorageFactory
                 ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
                 if (user != null && pwd != null)
                 {
-                    storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, new object[] {server, store, user, pwd});
+                    storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, [server, store, user, pwd]);
                 }
                 else
                 {
-                    storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, new object[] {server, store});
+                    storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, [server, store]);
                 }
                 break;
 

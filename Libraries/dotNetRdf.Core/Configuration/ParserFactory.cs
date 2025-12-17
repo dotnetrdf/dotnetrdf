@@ -75,7 +75,7 @@ public class ParserFactory
         // We can load any object which implements any parser interface and has a public unparameterized constructor
         if (t.GetInterfaces().Any(i => _parserTypes.Contains(i)))
         {
-            ConstructorInfo c = t.GetConstructor(new Type[0]);
+            ConstructorInfo c = t.GetConstructor([]);
             if (c != null)
             {
                 return c.IsPublic;
@@ -133,7 +133,7 @@ public class WriterFactory : IObjectFactory
         // We can load any object which implements any writer interface and has a public unparameterized constructor
         if (t.GetInterfaces().Any(i => _writerTypes.Contains(i)))
         {
-            ConstructorInfo c = t.GetConstructor(new Type[0]);
+            ConstructorInfo c = t.GetConstructor([]);
             if (c != null)
             {
                 return c.IsPublic;

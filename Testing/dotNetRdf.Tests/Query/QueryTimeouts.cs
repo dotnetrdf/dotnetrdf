@@ -34,7 +34,7 @@ namespace VDS.RDF.Query;
 
 public class QueryTimeouts
 {
-    private readonly long[] _timeouts = { 50, 100, 250, 500, 1000 };
+    private readonly long[] _timeouts = [50, 100, 250, 500, 1000];
     private readonly SparqlQueryParser _parser = new SparqlQueryParser();
     private readonly ITestOutputHelper _output;
 
