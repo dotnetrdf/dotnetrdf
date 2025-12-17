@@ -248,9 +248,9 @@ public class FullTextObjectFactory
                     {
                         //Create an Analyzer
                         //Try to create passing Lucene Version wherever possible
-                        if (targetType.GetConstructor(new Type[] { typeof(LuceneVersion) }) != null)
+                        if (targetType.GetConstructor([typeof(LuceneVersion)]) != null)
                         {
-                            obj = Activator.CreateInstance(targetType, new Object[] { GetLuceneVersion(ver) });
+                            obj = Activator.CreateInstance(targetType, [GetLuceneVersion(ver)]);
                         }
                         else
                         {
@@ -265,14 +265,14 @@ public class FullTextObjectFactory
                         {
                             try
                             {
-                                obj = Activator.CreateInstance(targetType, new Object[] { dir });
+                                obj = Activator.CreateInstance(targetType, [dir]);
                             }
                             catch
                             {
-                                MethodInfo method = targetType.GetMethod("Open", new Type[] { typeof(DirInfo) });
+                                MethodInfo method = targetType.GetMethod("Open", [typeof(DirInfo)]);
                                 if (method != null)
                                 {
-                                    obj = method.Invoke(null, new Object[] { new DirInfo(ConfigurationLoader.ResolvePath(dir)) });
+                                    obj = method.Invoke(null, [new DirInfo(ConfigurationLoader.ResolvePath(dir))]);
                                 }
                             }
                         }

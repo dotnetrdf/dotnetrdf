@@ -114,7 +114,7 @@ internal class Resource : WrapperNode, IResource, IComparable<IResource>, IEquat
         }
         else
         {
-            constructor = cls.GetConstructor(new[] { typeof(INode), typeof(IGraph), typeof(SpinProcessor) });
+            constructor = cls.GetConstructor([typeof(INode), typeof(IGraph), typeof(SpinProcessor)]);
             constructors[cls] = constructor;
         }
 
@@ -122,7 +122,7 @@ internal class Resource : WrapperNode, IResource, IComparable<IResource>, IEquat
         {
             throw new SpinException("Unable to locate a usable constructor for type " + cls.FullName);
         }
-        return (IResource)constructor.Invoke(new object[] { Node, Graph, _model });
+        return (IResource)constructor.Invoke([Node, Graph, _model]);
     }
 
     public IEnumerable<IResource> getObjects(INode property)

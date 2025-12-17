@@ -137,7 +137,7 @@ public class SubStrFunction
     {
         get
         {
-            return LengthExpression != null ? new[] { StringExpression, StartExpression, LengthExpression } : new[] { StringExpression, StartExpression };
+            return LengthExpression != null ? [StringExpression, StartExpression, LengthExpression] : [StringExpression, StartExpression];
         }
     }
 

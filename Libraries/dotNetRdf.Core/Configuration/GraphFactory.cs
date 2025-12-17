@@ -332,7 +332,7 @@ public class GraphFactory
         // We can load any object which implements IGraph and has a public unparameterized constructor
         if (t.GetInterfaces().Any(i => i.Equals(igraph)))
         {
-            ConstructorInfo c = t.GetConstructor(new Type[0]);
+            ConstructorInfo c = t.GetConstructor([]);
             if (c != null)
             {
                 return c.IsPublic;

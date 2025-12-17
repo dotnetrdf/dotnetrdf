@@ -66,7 +66,7 @@ public class UriFactoryFactory : IObjectFactory
         Type iUriFactory = typeof(IUriFactory);
         if (t.GetInterfaces().Any(i => i == iUriFactory))
         {
-            ConstructorInfo ctor = t.GetConstructor(new[] { typeof(IUriFactory) });
+            ConstructorInfo ctor = t.GetConstructor([typeof(IUriFactory)]);
             return ctor != null && ctor.IsPublic;
         }
 

@@ -4506,7 +4506,7 @@ public class LeviathanQueryProcessor
 
         Task<BaseMultiset> lhsTask = Task.Factory.StartNew(() => ParallelEvaluate(union.Lhs, context, activeGraphs, defaultGraphs));
         Task<BaseMultiset> rhsTask = Task.Factory.StartNew(() => ParallelEvaluate(union.Rhs, context2, activeGraphs, defaultGraphs));
-        Task[] evaluationTasks = { lhsTask, rhsTask };
+        Task[] evaluationTasks = [lhsTask, rhsTask];
         try
         {
             Task.WaitAll(evaluationTasks);

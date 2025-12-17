@@ -119,11 +119,11 @@ public class ResultWriteThroughHandler
                     {
                         if (ps[0].ParameterType == qNameMapperType)
                         {
-                            _formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper }) as IResultFormatter;
+                            _formatter = Activator.CreateInstance(_formatterType, [_formattingMapper]) as IResultFormatter;
                         }
                         else if (ps[0].ParameterType == nsMapperType)
                         {
-                            _formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper }) as IResultFormatter;
+                            _formatter = Activator.CreateInstance(_formatterType, [_formattingMapper]) as IResultFormatter;
                         }
                     }
                     else if (ps.Length == 0)

@@ -127,7 +127,7 @@ public class DatasetTests
         //GRAPH clause with URI of an existing graph which is in the FROM NAMED list
 
         //Yields triples from <ex:named>
-        RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH <ex:named> { ?s ?p ?o } }", new string[] { "ex:named" }, 1);
+        RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH <ex:named> { ?s ?p ?o } }", ["ex:named"], 1);
     }
 
     [Fact]
@@ -138,7 +138,7 @@ public class DatasetTests
         //GRAPH clause with URI of an existing graph which is NOT in the FROM NAMED list
 
         //Yields no triples, tries to access a named graph not in the named graph list
-        RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH <ex:other> { ?s ?p ?o } }", new string[] { }, 0);
+        RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH <ex:other> { ?s ?p ?o } }", [], 0);
     }
 
     [Fact]
@@ -149,7 +149,7 @@ public class DatasetTests
         //GRAPH clause with URI of an existing graph which is in the FROM NAMED list
 
         //Yields no triples
-        RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH <ex:missing> { ?s ?p ?o } }", new string[] { }, 0);
+        RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH <ex:missing> { ?s ?p ?o } }", [], 0);
     }
 
     [Fact]
@@ -160,7 +160,7 @@ public class DatasetTests
         //GRAPH clause with variable
 
         //Yields triples from <ex:named>
-        RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH ?g { ?s ?p ?o } }", new string[] { "ex:named" }, 1);
+        RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH ?g { ?s ?p ?o } }", ["ex:named"], 1);
     }
 
     [Fact]
@@ -171,7 +171,7 @@ public class DatasetTests
         //GRAPH clause with variable
 
         //Yields triples from <ex:named>
-        RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> FROM NAMED <ex:other> { GRAPH ?g { ?s ?p ?o } }", new string[] { "ex:named", "ex:other" }, 2);
+        RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> FROM NAMED <ex:other> { GRAPH ?g { ?s ?p ?o } }", ["ex:named", "ex:other"], 2);
     }
 
     /*
@@ -186,7 +186,7 @@ public class DatasetTests
         //GRAPH clause with URI of an existing graph
 
         //Yields no triples
-        RunTest("SELECT * FROM <ex:from> { GRAPH <ex:named> { ?s ?p ?o } }", new string[] { }, 0);
+        RunTest("SELECT * FROM <ex:from> { GRAPH <ex:named> { ?s ?p ?o } }", [], 0);
     }
 
     [Fact]
@@ -197,7 +197,7 @@ public class DatasetTests
         //GRAPH clause with URI of an existing graph
 
         //Yields no triples
-        RunTest("SELECT * FROM <ex:from> { GRAPH <ex:missing> { ?s ?p ?o } }", new string[] { }, 0);
+        RunTest("SELECT * FROM <ex:from> { GRAPH <ex:missing> { ?s ?p ?o } }", [], 0);
     }
 
     [Fact]
@@ -208,7 +208,7 @@ public class DatasetTests
         //GRAPH clause with variable
 
         //Yields no triples
-        RunTest("SELECT * FROM <ex:from> { GRAPH ?g { ?s ?p ?o } }", new string[] { }, 0);
+        RunTest("SELECT * FROM <ex:from> { GRAPH ?g { ?s ?p ?o } }", [], 0);
     }
 
     /**
@@ -223,7 +223,7 @@ public class DatasetTests
         //GRAPH clause with variable
 
         //Yields triples in <ex:named>
-        RunTest("SELECT * FROM NAMED <ex:named> WHERE { GRAPH ?g { ?s ?p ?o } }", new string[] { "ex:named" }, 1);
+        RunTest("SELECT * FROM NAMED <ex:named> WHERE { GRAPH ?g { ?s ?p ?o } }", ["ex:named"], 1);
     }
 
     [Fact]
@@ -234,7 +234,7 @@ public class DatasetTests
         //GRAPH clause with variable
 
         //Yields triples in <ex:named> and <ex:other>
-        RunTest("SELECT * FROM NAMED <ex:named> FROM NAMED <ex:other> WHERE { GRAPH ?g { ?s ?p ?o } }", new string[] { "ex:named", "ex:other" }, 2);
+        RunTest("SELECT * FROM NAMED <ex:named> FROM NAMED <ex:other> WHERE { GRAPH ?g { ?s ?p ?o } }", ["ex:named", "ex:other"], 2);
     }
 
     [Fact]
@@ -245,7 +245,7 @@ public class DatasetTests
         //GRAPH clause with URI of existing graph
 
         //Yields triples in <ex:named>
-        RunTest("SELECT * FROM NAMED <ex:named> WHERE { GRAPH <ex:named> { ?s ?p ?o } }", new string[] { "ex:named" }, 1);
+        RunTest("SELECT * FROM NAMED <ex:named> WHERE { GRAPH <ex:named> { ?s ?p ?o } }", ["ex:named"], 1);
     }
 
     [Fact]
@@ -256,7 +256,7 @@ public class DatasetTests
         //GRAPH clause with URI of non-existent graph
 
         //Yields triples in <ex:named>
-        RunTest("SELECT * FROM NAMED <ex:named> WHERE { GRAPH <ex:missing> { ?s ?p ?o } }", new string[] { }, 0);
+        RunTest("SELECT * FROM NAMED <ex:named> WHERE { GRAPH <ex:missing> { ?s ?p ?o } }", [], 0);
     }
 
     /**
@@ -271,7 +271,7 @@ public class DatasetTests
         //No GRAPH clause
 
         //Yields triples from <ex:from>
-        RunTest("SELECT * FROM <ex:from> WHERE { ?s ?p ?o }", new string[] { "ex:from" }, 1);
+        RunTest("SELECT * FROM <ex:from> WHERE { ?s ?p ?o }", ["ex:from"], 1);
     }
 
     /**
@@ -286,7 +286,7 @@ public class DatasetTests
         //GRAPH clause with variable
 
         //Yields triples in all named graphs
-        RunTest("SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }", new string[] { "ex:from", "ex:named", "ex:other" }, 3);
+        RunTest("SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }", ["ex:from", "ex:named", "ex:other"], 3);
     }
 
     [Fact]
@@ -297,7 +297,7 @@ public class DatasetTests
         //GRAPH clause with URI of an existing graph
 
         //Yields triples in the specific named graph
-        RunTest("SELECT * WHERE { GRAPH <ex:named> { ?s ?p ?o } }", new string[] { "ex:named" }, 1);
+        RunTest("SELECT * WHERE { GRAPH <ex:named> { ?s ?p ?o } }", ["ex:named"], 1);
     }
 
     [Fact]
@@ -308,7 +308,7 @@ public class DatasetTests
         //GRAPH clause with URI of a non-existent graph
 
         //Yields no triples
-        RunTest("SELECT * WHERE { GRAPH <ex:missing> { ?s ?p ?o } }", new string[] { }, 0);
+        RunTest("SELECT * WHERE { GRAPH <ex:missing> { ?s ?p ?o } }", [], 0);
     }
 
     /**
@@ -323,6 +323,6 @@ public class DatasetTests
         //No GRAPH clause
 
         //Yields only triples in the default graph
-        RunTest("SELECT * WHERE { ?s ?p ?o }", new string[] { "ex:default" }, 1);
+        RunTest("SELECT * WHERE { ?s ?p ?o }", ["ex:default"], 1);
     }
 }

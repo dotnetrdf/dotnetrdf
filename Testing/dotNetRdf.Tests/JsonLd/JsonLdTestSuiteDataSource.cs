@@ -139,7 +139,7 @@ public static class JsonLdTestSuiteDataSource
     private static JsonLdErrorCode? GetErrorCode(string errorCodeString)
     {
         if (string.IsNullOrEmpty(errorCodeString)) return null;
-        var errorCodeName = string.Join("", errorCodeString.Split(new [] {' ', '@', '-'}, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Capitalize()));
+        var errorCodeName = string.Join("", errorCodeString.Split([' ', '@', '-'], StringSplitOptions.RemoveEmptyEntries).Select(s => s.Capitalize()));
         if (Enum.IsDefined(typeof(JsonLdErrorCode), errorCodeName))
         {
             return (JsonLdErrorCode)Enum.Parse(typeof(JsonLdErrorCode), errorCodeName);

@@ -8,7 +8,7 @@ namespace dotNetRdf.TestSuite.Rdfa;
 public class RdfaTestSuite : RdfTestSuite
 {
     private readonly ITestOutputHelper _output;
-    private readonly string[] _testHostLanguages = { "html5", "html5-invalid", "html4", "xhtml5", "xhtml5-invalid", "xml" };
+    private readonly string[] _testHostLanguages = ["html5", "html5-invalid", "html4", "xhtml5", "xhtml5-invalid", "xml"];
 
     public static RdfaTestDataProvider RdfaTests = new RdfaTestDataProvider(
         new Uri("http://rdfa.info/test-suite/manifest.jsonld"),
@@ -113,6 +113,6 @@ public class RdfaTestSuite : RdfTestSuite
         RdfaTestData? testData = RdfaTests.Select(testParams => testParams[0]).OfType<RdfaTestData>()
             .FirstOrDefault(testData => testData.Id.EndsWith(testCase));
         Assert.NotNull(testData);
-        RunTestInternal(testData, new []{"html5"});
+        RunTestInternal(testData, ["html5"]);
     }
 }

@@ -73,7 +73,7 @@ public class CollectionFactory
                 if (wrappedCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Triple Collection identified by the Node '" + objNode.ToString() + "' as the dnr:usingTripleCollection points to an object which cannot be loaded as an instance of the required type BaseTripleCollection for this collection to wrap");
                 try
                 {
-                    obj = (BaseTripleCollection)Activator.CreateInstance(targetType, new object[] { wrappedCollection });
+                    obj = (BaseTripleCollection)Activator.CreateInstance(targetType, [wrappedCollection]);
                 }
                 catch
                 {
@@ -103,7 +103,7 @@ public class CollectionFactory
                 if (wrappedCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Graph Collection identified by the Node '" + objNode.ToString() + "' as the dnr:usingGraphCollection points to an object which cannot be loaded as an instance of the required type BaseGraphCollection for this collection to wrap");
                 try
                 {
-                    obj = (BaseGraphCollection)Activator.CreateInstance(targetType, new object[] { wrappedCollection });
+                    obj = (BaseGraphCollection)Activator.CreateInstance(targetType, [wrappedCollection]);
                 }
                 catch
                 {

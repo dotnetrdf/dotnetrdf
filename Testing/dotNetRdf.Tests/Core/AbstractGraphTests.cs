@@ -127,7 +127,7 @@ public abstract class AbstractGraphTests
     {
         IGraph g = GetInstance();
         g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create("http://example/"));
-        INode[] quotedNodes = { g.CreateUriNode(":a"), g.CreateUriNode(":b"), g.CreateUriNode(":c") };
+        INode[] quotedNodes = [g.CreateUriNode(":a"), g.CreateUriNode(":b"), g.CreateUriNode(":c")];
         g.Assert(new Triple(g.CreateUriNode(":s"),
             g.CreateUriNode(":p"),
             g.CreateTripleNode(new Triple(quotedNodes[0], quotedNodes[1], quotedNodes[2]))));
@@ -148,7 +148,7 @@ public abstract class AbstractGraphTests
     {
         IGraph g = GetInstance();
         g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create("http://example/"));
-        INode[] quotedNodes = { g.CreateUriNode(":a"), g.CreateUriNode(":b"), g.CreateUriNode(":c") };
+        INode[] quotedNodes = [g.CreateUriNode(":a"), g.CreateUriNode(":b"), g.CreateUriNode(":c")];
         g.Assert(new Triple(g.CreateUriNode(":s"),
             g.CreateUriNode(":p"),
             g.CreateTripleNode(new Triple(quotedNodes[0], quotedNodes[1], quotedNodes[2]))));

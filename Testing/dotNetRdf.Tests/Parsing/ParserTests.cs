@@ -39,16 +39,16 @@ public class ParserTests
     [Fact]
     public void ParsingStringParser()
     {
-            String[] someRDF = { "<http://example.org/subject> <http://example.org/predicate> <http://example.org/object>.",
+            String[] someRDF = [ "<http://example.org/subject> <http://example.org/predicate> <http://example.org/object>.",
                                  "@prefix : <http://example.org/>.:subject :predicate :object.",
                                  "@prefix : <http://example.org/>.@keywords.subject predicate object.",
                                  "@prefix : <http://example.org/>. {:subject :predicate :object}.",
                                  "<?xml version=\"1.0\"?><rdf:RDF xmlns=\"http://example.org/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"><rdf:Description rdf:about=\"http://example.org/subject\"><predicate rdf:resource=\"http://example.org/object\" /></rdf:Description></rdf:RDF>",
                                  "{ \"http://example.org/subject\" : { \"http://example.org/predicate\" : [ { \"type\" : \"uri\", \"value\" : \"http://example.org/object\" } ] } }",
                                  "some random junk which isn't RDF at all",
-                               };
+                               ];
 
-            bool[] parseExpected = { true, true, true, false, true, true, false };
+            bool[] parseExpected = [true, true, true, false, true, true, false];
 
             Console.WriteLine("Testing the StringParser with a bunch of strings which are either invalid RDF or all express the one same simple Triple");
             Console.WriteLine();

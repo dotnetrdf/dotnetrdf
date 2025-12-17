@@ -209,7 +209,7 @@ internal class JsonLdUtils
         if (parsed.IsAbsoluteUri) { return parsed.IsWellFormedOriginalString(); }
         if (!value.Contains('#')) { return parsed.IsWellFormedOriginalString() || Uri.EscapeUriString(value).Equals(value); }
         if (value.StartsWith("#")) return false;
-        var split = value.Split(new[] { '#' }, 2);
+        var split = value.Split(['#'], 2);
         return Uri.IsWellFormedUriString(split[0], UriKind.Relative) && FragmentRegex.IsMatch(split[1]);
     }
 

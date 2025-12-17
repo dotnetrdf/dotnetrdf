@@ -412,14 +412,13 @@ WHERE {
         d.CopyTo(objects, 1); // start at the second item at destination
 
         Assert.Equal(
-            new[]
-            {
+            [
                 default,
                 new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:s")),
                 new KeyValuePair<string, object>("p", UriFactory.Root.Create("urn:p")),
                 new KeyValuePair<string, object>("o", UriFactory.Root.Create("urn:o")),
                 default
-            },
+            ],
             objects);
     }
 

@@ -184,8 +184,8 @@ public class CartesianFunction
         get
         {
             return Is3D 
-                ? new[] { X1, Y1, Z1, X2, Y2, Z2 } 
-                : new[] { X1, Y1, X2, Y2 };
+                ? [X1, Y1, Z1, X2, Y2, Z2]
+                : [X1, Y1, X2, Y2];
         }
     }
 

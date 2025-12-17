@@ -190,7 +190,7 @@ public static class SparqlSpecsHelper
     /// <summary>
     /// Set of SPARQL Keywords that are Non-Query Keywords.
     /// </summary>
-    public static string[] NonQueryKeywords = {   
+    public static string[] NonQueryKeywords = [   
                                                   SparqlKeywordOrder, 
                                                   SparqlKeywordBy, 
                                                   SparqlKeywordLimit, 
@@ -220,11 +220,11 @@ public static class SparqlSpecsHelper
                                                   SparqlKeywordValues,
                                                   SparqlKeywordUndef,
                                                   SparqlKeywordDefault,
-                                              };
+                                              ];
     /// <summary>
     /// Set of SPARQL Keywords that are Function Keywords.
     /// </summary>
-    public static string[] FunctionKeywords = {   
+    public static string[] FunctionKeywords = [   
                                                   SparqlKeywordAbs,
                                                   SparqlKeywordBNode,
                                                   SparqlKeywordBound,
@@ -285,7 +285,7 @@ public static class SparqlSpecsHelper
                                                   SparqlKeywordUri,
                                                   SparqlKeywordUUID,
                                                   SparqlKeywordYear,
-                                              };
+                                              ];
 
     /// <summary>
     /// Set of SPARQL Keywords that are Aggregate Keywords.
@@ -293,7 +293,7 @@ public static class SparqlSpecsHelper
     /// <remarks>
     /// Unlike <see cref="SparqlSpecsHelper.AggregateFunctionKeywords">AggregateFunctionKeywords[]</see> this includes keywords related to aggregates (like DISTINCT) and those for Leviathan extension aggregates which are not standard SPARQL 1.1 syntax.
     /// </remarks>
-    public static string[] AggregateKeywords = {   
+    public static string[] AggregateKeywords = [   
                                                    SparqlKeywordAll,
                                                    SparqlKeywordAny,
                                                    SparqlKeywordAvg, 
@@ -311,12 +311,12 @@ public static class SparqlSpecsHelper
                                                    SparqlKeywordGroupConcat,
                                                    SparqlKeywordSample,
                                                    SparqlKeywordSeparator,
-                                               };
+                                               ];
 
     /// <summary>
     /// Set of SPARQL Keywords that are built in SPARQL Aggregate Functions.
     /// </summary>
-    public static string[] AggregateFunctionKeywords = {
+    public static string[] AggregateFunctionKeywords = [
                                                             SparqlKeywordAvg,
                                                             SparqlKeywordCount,
                                                             SparqlKeywordGroupConcat,
@@ -324,13 +324,13 @@ public static class SparqlSpecsHelper
                                                             SparqlKeywordMin,
                                                             SparqlKeywordSum,
                                                             SparqlKeywordSample,
-                                                       };
+                                                       ];
 
 
     /// <summary>
     /// Set of IRIs for supported Cast Functions.
     /// </summary>
-    public static string[] SupportedCastFunctions = {   
+    public static string[] SupportedCastFunctions = [   
                                                         XmlSpecsHelper.XmlSchemaDataTypeBoolean, 
                                                         XmlSpecsHelper.XmlSchemaDataTypeDateTime, 
                                                         XmlSpecsHelper.XmlSchemaDataTypeDecimal, 
@@ -338,12 +338,12 @@ public static class SparqlSpecsHelper
                                                         XmlSpecsHelper.XmlSchemaDataTypeFloat, 
                                                         XmlSpecsHelper.XmlSchemaDataTypeInteger, 
                                                         XmlSpecsHelper.XmlSchemaDataTypeString,
-                                                    };
+                                                    ];
 
     /// <summary>
     /// Set of Keywords for SPARQL Query 1.0.
     /// </summary>
-    public static string[] SparqlQuery10Keywords = {
+    public static string[] SparqlQuery10Keywords = [
                                                     SparqlKeywordAsc,
                                                     SparqlKeywordAsk,
                                                     SparqlKeywordBase,
@@ -378,12 +378,12 @@ public static class SparqlSpecsHelper
                                                     SparqlKeywordStr,
                                                     SparqlKeywordUnion,
                                                     SparqlKeywordWhere,
-                                                   };
+                                                   ];
 
     /// <summary>
     /// Set of additional Keywords for SPARQL Query 1.1.
     /// </summary>
-    public static string[] SparqlQuery11Keywords = {
+    public static string[] SparqlQuery11Keywords = [
                                                     SparqlKeywordAbs,
                                                     SparqlKeywordAs,
                                                     SparqlKeywordAvg,
@@ -446,12 +446,12 @@ public static class SparqlSpecsHelper
                                                     SparqlKeywordUUID,
                                                     SparqlKeywordValues,
                                                     SparqlKeywordYear,
-                                                   };
+                                                   ];
 
     /// <summary>
     /// Set of SPARQL Keywords that are Update Keywords.
     /// </summary>
-    public static string[] UpdateKeywords = {   
+    public static string[] UpdateKeywords = [   
                                                 SparqlKeywordAdd,
                                                 SparqlKeywordAll,
                                                 SparqlKeywordClear,
@@ -469,12 +469,12 @@ public static class SparqlSpecsHelper
                                                 SparqlKeywordTo,
                                                 SparqlKeywordUsing,
                                                 SparqlKeywordWith,
-                                            };
+                                            ];
 
     /// <summary>
     /// Set of Keywords for SPARQL Update 1.1.
     /// </summary>
-    public static string[] SparqlUpdate11Keywords = {
+    public static string[] SparqlUpdate11Keywords = [
                                                       SparqlKeywordAdd,
                                                       SparqlKeywordAll,
                                                       SparqlKeywordBase,
@@ -496,7 +496,7 @@ public static class SparqlSpecsHelper
                                                       SparqlKeywordUsing,
                                                       SparqlKeywordWhere,
                                                       SparqlKeywordWith,                                                   
-                                                   };
+                                                   ];
                                                 
 
     /// <summary>

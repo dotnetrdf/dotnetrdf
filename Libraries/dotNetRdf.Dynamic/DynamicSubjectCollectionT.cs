@@ -106,8 +106,8 @@ public class DynamicSubjectCollection<T> : DynamicSubjectCollection, ICollection
         if (type.IsSubclassOf(typeof(DynamicNode)))
         {
             // TODO: Exception handling
-            ConstructorInfo ctor = type.GetConstructor(new[] { typeof(INode), typeof(IGraph) });
-            value = (DynamicNode)ctor.Invoke(new object[] { value, _graph });
+            ConstructorInfo ctor = type.GetConstructor([typeof(INode), typeof(IGraph)]);
+            value = (DynamicNode)ctor.Invoke([value, _graph]);
         }
 
         return (T)value;

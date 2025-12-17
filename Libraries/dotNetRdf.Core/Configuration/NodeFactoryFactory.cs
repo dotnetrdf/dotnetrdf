@@ -64,7 +64,7 @@ public class NodeFactoryFactory : IObjectFactory
         Type nodeFactoryType = typeof(INodeFactory);
         if (t.GetInterfaces().Any(i => i == nodeFactoryType))
         {
-            ConstructorInfo c = t.GetConstructor(new Type[]{});
+            ConstructorInfo c = t.GetConstructor([]);
             return c != null && c.IsPublic;
         }
         return false;
