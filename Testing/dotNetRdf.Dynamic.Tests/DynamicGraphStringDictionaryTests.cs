@@ -339,7 +339,7 @@ public class DynamicGraphStringDictionaryTests
 
         void isEmpty(KeyValuePair<string, object> expected)
         {
-            Assert.Equal(default(KeyValuePair<string, object>), expected);
+            Assert.Equal(default, expected);
         }
 
         Action<KeyValuePair<string, object>> isKVWith(string expected)
