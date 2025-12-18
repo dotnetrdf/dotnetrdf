@@ -54,13 +54,13 @@ public static class SparqlExpressionFactory
     /// <remarks>
     /// All the standard function libraries (XPath, Leviathan and ARQ) included in dotNetRDF are automatically registered.
     /// </remarks>
-    private static readonly List<ISparqlCustomExpressionFactory> CustomFactories = new List<ISparqlCustomExpressionFactory>() 
-    {
+    private static readonly List<ISparqlCustomExpressionFactory> CustomFactories =
+    [
         new SparqlBuiltInFunctionFactory(),
         new XPathFunctionFactory(),
         new LeviathanFunctionFactory(),
         new ArqFunctionFactory(),
-    };
+    ];
 
     /// <summary>
     /// Tries to create an Expression from the given function Uri and list of argument expressions.
@@ -94,7 +94,7 @@ public static class SparqlExpressionFactory
     /// </remarks>
     public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, IEnumerable<ISparqlCustomExpressionFactory> factories, bool allowUnknownFunctions)
     {
-        return CreateExpression(u, args, new Dictionary<string, ISparqlExpression>(), factories, allowUnknownFunctions);
+        return CreateExpression(u, args, [], factories, allowUnknownFunctions);
     }
 
     /// <summary>

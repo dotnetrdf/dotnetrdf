@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Algebra;
 /// </summary>
 public class NegatedPropertySet : ISparqlAlgebra
 {
-    private readonly List<INode> _properties = new List<INode>();
+    private readonly List<INode> _properties = [];
 
     /// <summary>
     /// Creates a new Negated Property Set.

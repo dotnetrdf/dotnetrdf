@@ -78,7 +78,7 @@ internal class ContextProcessor : ProcessorBase
     public JsonLdContext ProcessContext(JsonLdContext activeContext, JToken localContext, Uri baseUrl,
         List<Uri> remoteContexts = null, bool overrideProtected = false, bool propagate = true, bool validateScopedContext = true)
     {
-        if (remoteContexts == null) remoteContexts = new List<Uri>();
+        if (remoteContexts == null) remoteContexts = [];
 
         // 1. Initialize result to the result of cloning active context
         JsonLdContext result = activeContext.Clone();
@@ -405,8 +405,8 @@ Dictionary<string, bool> defined = null,
 Uri baseUrl = null, bool @protected = false, bool overrideProtected = false,
 List<Uri> remoteContexts = null, bool validateScopedContexts = true)
     {
-        if (defined == null) defined = new Dictionary<string, bool>();
-        if (remoteContexts == null) remoteContexts = new List<Uri>();
+        if (defined == null) defined = [];
+        if (remoteContexts == null) remoteContexts = [];
 
         // 1 - If defined contains the entry term and the associated value is true (indicating that the term definition has already been created), return.
         // Otherwise, if the value is false, a cyclic IRI mapping error has been detected and processing is aborted.
@@ -943,7 +943,7 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
     /// <returns></returns>
     public string ExpandIri(JsonLdContext activeContext, string value, bool vocab = false, bool documentRelative = false, JObject localContext = null, Dictionary<string, bool> defined = null)
     {
-        if (defined == null) defined = new Dictionary<string, bool>();
+        if (defined == null) defined = [];
 
         // 1. If value is a keyword or null, return value as is.
         if (value == null || JsonLdUtils.IsKeyword(value)) return value;

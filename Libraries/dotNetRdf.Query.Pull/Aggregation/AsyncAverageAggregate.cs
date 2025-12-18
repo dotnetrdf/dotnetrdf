@@ -50,7 +50,7 @@ internal class AsyncAverageAggregate : IAsyncAggregation
         _distinct = distinct;
         VariableName = variableName;
         _context = context;
-        if (_distinct) _values = new HashSet<INode>();
+        if (_distinct) _values = [];
     }
     public string VariableName { get; }
 

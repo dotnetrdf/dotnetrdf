@@ -109,7 +109,7 @@ public abstract class BaseSparqlView
         // Does this Query operate over specific Graphs?
         if (_q.DefaultGraphNames.Any() || _q.NamedGraphNames.Any())
         {
-            _graphs = new HashSet<string>();
+            _graphs = [];
             foreach (IRefNode graphName in _q.DefaultGraphNames)
             {
                 _graphs.Add($"{graphName}");

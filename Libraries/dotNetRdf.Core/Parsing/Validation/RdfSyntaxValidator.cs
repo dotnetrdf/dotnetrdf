@@ -90,7 +90,7 @@ public class RdfSyntaxValidator : ISyntaxValidator
 public class RdfStrictSyntaxValidator : RdfSyntaxValidator
 {
     private bool _gotWarning = false;
-    private List<string> _messages = new List<string>();
+    private List<string> _messages = [];
 
     /// <summary>
     /// Creates a new Strict RDF Syntax Validator.

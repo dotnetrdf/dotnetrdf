@@ -8,9 +8,9 @@ using VDS.RDF.Query.Pull.Algebra;
 
 internal class AsyncCrossProductLeftJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, ISparqlFilter filter) : AbstractAsyncJoinEvaluation(lhs, rhs)
 {
-    private readonly List<ISet> _leftSolutions = new();
-    private readonly List<ISet> _rightSolutions = new();
-    private readonly HashSet<int> _unjoinedLeftSolutions = new();
+    private readonly List<ISet> _leftSolutions = [];
+    private readonly List<ISet> _rightSolutions = [];
+    private readonly HashSet<int> _unjoinedLeftSolutions = [];
 
     protected override IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhSolution, IRefNode? activeGraph)
     {

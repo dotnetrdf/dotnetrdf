@@ -15,7 +15,7 @@ public class Manifest
 
     private readonly INode _mfInclude;
 
-    private readonly List<Manifest> _childManifests = new List<Manifest>();
+    private readonly List<Manifest> _childManifests = [];
 
     private readonly Func<IGraph, INode, bool> _testNodeFilter;
 

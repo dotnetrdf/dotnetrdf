@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.PropertyFunctions;
 /// </summary>
 public static class PropertyFunctionFactory
 {
-    private static List<IPropertyFunctionFactory> _factories = new List<IPropertyFunctionFactory>();
+    private static List<IPropertyFunctionFactory> _factories = [];
 
     /// <summary>
     /// Gets the number of globally registered factories.

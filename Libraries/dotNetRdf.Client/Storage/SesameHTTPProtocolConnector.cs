@@ -951,7 +951,7 @@ public abstract class BaseSesameHttpProtocolConnector
                 foreach (Triple t in removals.Distinct())
                 {
                     // Prep Service Params
-                    serviceParams = new Dictionary<string, string>();
+                    serviceParams = [];
                     if (!graphUri.Equals(string.Empty))
                     {
                         serviceParams.Add("context", "<" + graphUri + ">");
@@ -985,7 +985,7 @@ public abstract class BaseSesameHttpProtocolConnector
                                 if (additions.Any())
                                 {
                                     // Prep Service Params
-                                    serviceParams = new Dictionary<string, string>();
+                                    serviceParams = [];
                                     if (!graphUri.Equals(string.Empty))
                                     {
                                         serviceParams.Add("context", "<" + graphUri + ">");
@@ -1022,7 +1022,7 @@ public abstract class BaseSesameHttpProtocolConnector
             if (additions.Any())
             {
                 // Prep Service Params
-                serviceParams = new Dictionary<string, string>();
+                serviceParams = [];
                 if (!graphUri.Equals(string.Empty))
                 {
                     serviceParams.Add("context", "<" + graphUri + ">");
@@ -1574,7 +1574,7 @@ public class SesameHttpProtocolVersion6Connector
         {
             // Create the Request
             HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _updatePath,
-                MimeTypesHelper.Any, HttpMethod.Post, new Dictionary<string, string>());
+                MimeTypesHelper.Any, HttpMethod.Post, []);
 
             // Build the Post Data and add to the Request Body
             request.Content =
@@ -1605,7 +1605,7 @@ public class SesameHttpProtocolVersion6Connector
         {
             // Create the Request
             HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _updatePath,
-                MimeTypesHelper.Any, HttpMethod.Post, new Dictionary<string, string>());
+                MimeTypesHelper.Any, HttpMethod.Post, []);
 
             // Build the Post Data and add to the Request Body
             request.Content =

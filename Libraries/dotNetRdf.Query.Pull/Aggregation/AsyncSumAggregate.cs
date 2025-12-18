@@ -50,7 +50,7 @@ internal class AsyncSumAggregate : IAsyncAggregation
         VariableName = varName;
         _expression = valueExpression;
         _context = context;
-        if (distinct) _values = new HashSet<INode>();
+        if (distinct) _values = [];
         _distinct = distinct;
     }
     public string VariableName { get; }

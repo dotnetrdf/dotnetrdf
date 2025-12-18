@@ -200,9 +200,9 @@ class SubGraphMatcher
     private bool TryRulesBasedMapping(IGraph subgraph, IGraph parent, Dictionary<INode, int> subNodes, Dictionary<INode, int> parentNodes, Dictionary<int, int> subDegrees, Dictionary<int, int> parentDegrees)
     {
         // Start with new lists and dictionaries each time in case we get reused
-        _unbound = new List<INode>();
-        _bound = new List<INode>();
-        _mapping = new Dictionary<INode, INode>();
+        _unbound = [];
+        _bound = [];
+        _mapping = [];
         _subTriples = subgraph.Triples.Where(t => !t.IsGroundTriple).ToList();
 
         // First thing consider the trivial mapping
@@ -538,7 +538,7 @@ class SubGraphMatcher
         {
             if (!_mapping.ContainsKey(gPair.Key))
             {
-                possibleMappings.Add(gPair.Key, new List<INode>());
+                possibleMappings.Add(gPair.Key, []);
                 foreach (KeyValuePair<INode, int> hPair in parentNodes.Where(p => p.Value == gPair.Value && !_bound.Contains(p.Key)))
                 {
                     possibleMappings[gPair.Key].Add(hPair.Key);
@@ -574,9 +574,7 @@ class SubGraphMatcher
     /// <returns></returns>
     private List<Dictionary<INode, INode>> GenerateMappings(Dictionary<INode, List<INode>> possibleMappings, List<MappingPair> subDependencies, List<MappingPair> parentDependencies, IGraph target)
     {
-        var mappings = new List<Dictionary<INode, INode>>();
-
-        mappings.Add(new Dictionary<INode, INode>());
+        List<Dictionary<INode, INode>> mappings = [[]];
         foreach (INode x in possibleMappings.Keys)
         {
             if (possibleMappings[x].Count == 1)
@@ -598,8 +596,10 @@ class SubGraphMatcher
                     foreach (Dictionary<INode, INode> m in mappings)
                     {
                         if (m.ContainsValue(y)) continue;
-                        var n = new Dictionary<INode, INode>(m);
-                        n.Add(x, y);
+                        var n = new Dictionary<INode, INode>(m)
+                        {
+                            [x] = y,
+                        };
                         if (dependent)
                         {
                             foreach (MappingPair dependency in subDependencies)

@@ -41,7 +41,7 @@ namespace VDS.RDF;
 public class UnionTripleCollection 
     : BaseTripleCollection
 {
-    private List<BaseTripleCollection> _collections = new List<BaseTripleCollection>();
+    private List<BaseTripleCollection> _collections = [];
     private BaseTripleCollection _baseCollection;
 
     /// <summary>

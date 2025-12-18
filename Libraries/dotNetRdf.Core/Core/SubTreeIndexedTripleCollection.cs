@@ -102,7 +102,7 @@ public class SubTreeIndexedTripleCollection
             {
                 if (ts == null)
                 {
-                    subtree[t] = new HashSet<Triple> { t };
+                    subtree[t] = [t];
                 }
                 else
                 {
@@ -111,13 +111,15 @@ public class SubTreeIndexedTripleCollection
             }
             else
             {
-                subtree.Add(t, new HashSet<Triple> { t });
+                subtree.Add(t, [t]);
             }
         }
         else
         {
-            subtree = new MultiDictionary<Triple, HashSet<Triple>>(hashFunc, false, comparer, MultiDictionaryMode.Avl);
-            subtree.Add(t, new HashSet<Triple> { t });
+            subtree = new MultiDictionary<Triple, HashSet<Triple>>(hashFunc, false, comparer, MultiDictionaryMode.Avl)
+            {
+                [t] = [t],
+            };
             index.Add(n, subtree);
         }
     }

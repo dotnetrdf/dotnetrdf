@@ -66,9 +66,9 @@ public abstract class BaseParserSuite<TParser, TResult> where TParser : class
         Parser = testParser ?? throw new ArgumentNullException(nameof(testParser));
         ResultsParser = resultsParser ?? throw new ArgumentNullException(nameof(resultsParser));
         _baseDir = Path.Combine("resources", baseDir);
-        _passedTests = new List<string>();
-        _failedTests = new List<TestFailure>();
-        _indeterminateTests = new List<string>();
+        _passedTests = [];
+        _failedTests = [];
+        _indeterminateTests = [];
     }
 
     /// <summary>

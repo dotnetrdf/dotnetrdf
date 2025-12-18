@@ -66,7 +66,7 @@ public class ExpressionContext(ISet bindings, IRefNode? activeGraph)
      */
     public void MapBlankNode(string key, IBlankNode bNode)
     {
-        _blankNodeMap ??= new Dictionary<string, IBlankNode>();
+        _blankNodeMap ??= [];
         _blankNodeMap.Add(key, bNode);
     }
 }

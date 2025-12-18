@@ -39,7 +39,7 @@ class DocCollector
 {
     private Scorer _scorer;
     private int _currBase;
-    private readonly List<KeyValuePair<int,double>> _docs = new();
+    private readonly List<KeyValuePair<int,double>> _docs = [];
     private readonly double _scoreThreshold = Double.NaN;
 
     /// <summary>

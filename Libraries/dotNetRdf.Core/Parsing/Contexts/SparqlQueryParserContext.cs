@@ -39,7 +39,7 @@ namespace VDS.RDF.Parsing.Contexts;
 public class SparqlQueryParserContext : TokenisingParserContext
 {
     private bool _verbSeen = false;
-    private Dictionary<string, int> _bnodeLabelUsages = new Dictionary<string, int>();
+    private Dictionary<string, int> _bnodeLabelUsages = [];
     private int _blankNodeID = 1;
     private Uri _defaultBaseUri = null;
     private SparqlQuerySyntax _syntax = SparqlQuerySyntax.Sparql_1_1;

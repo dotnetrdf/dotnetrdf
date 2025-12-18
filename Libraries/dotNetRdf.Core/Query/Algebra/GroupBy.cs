@@ -41,7 +41,7 @@ public class GroupBy
 {
     private readonly ISparqlAlgebra _pattern;
     private readonly ISparqlGroupBy _grouping;
-    private readonly List<SparqlVariable> _aggregates = new List<SparqlVariable>();
+    private readonly List<SparqlVariable> _aggregates = [];
 
     /// <summary>
     /// Creates a new Group By.

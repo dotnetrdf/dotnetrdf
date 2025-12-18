@@ -46,7 +46,7 @@ public class ResultWriteThroughHandler
     private readonly bool _closeOnEnd;
     private INamespaceMapper _formattingMapper = new QNameOutputMapper();
     private SparqlResultsType _currentType = SparqlResultsType.Boolean;
-    private List<string> _currVariables = new();
+    private List<string> _currVariables = [];
     private bool _headerWritten;
 
     /// <summary>

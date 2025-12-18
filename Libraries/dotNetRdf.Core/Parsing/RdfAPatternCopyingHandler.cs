@@ -48,8 +48,8 @@ public class RdfAPatternCopyingHandler : IWrappingRdfHandler
     public RdfAPatternCopyingHandler(IRdfHandler inner)
     {
         _innerHandler = inner;
-        _patternTriples = new Dictionary<INode, List<Triple>>();
-        _patternRefs = new Dictionary<INode, List<INode>>();
+        _patternTriples = [];
+        _patternRefs = [];
         _rdfType = _innerHandler.CreateUriNode(_innerHandler.UriFactory.Create(RdfSpecsHelper.RdfType));
         _rdfaPattern = _innerHandler.CreateUriNode(_innerHandler.UriFactory.Create(RdfASpecsHelper.RdfAPattern));
         _rdfaCopy = _innerHandler.CreateUriNode(_innerHandler.UriFactory.Create(RdfASpecsHelper.RdfACopy));
@@ -219,7 +219,7 @@ public class RdfAPatternCopyingHandler : IWrappingRdfHandler
             // Record a new (initially empty) list of pattern triples
             if (!_patternTriples.ContainsKey(t.Subject))
             {
-                _patternTriples[t.Subject] = new List<Triple>();
+                _patternTriples[t.Subject] = [];
             }
             // Return without passing to the inner handler
             return true;
@@ -230,7 +230,7 @@ public class RdfAPatternCopyingHandler : IWrappingRdfHandler
             // Create a new empty pattern if we haven't encountered this pattern before
             if (!_patternTriples.ContainsKey(t.Object))
             {
-                _patternTriples[t.Object] = new List<Triple>();
+                _patternTriples[t.Object] = [];
             }
 
             // Record a reference from t.Subject to the pattern defined by t.Object
@@ -240,7 +240,7 @@ public class RdfAPatternCopyingHandler : IWrappingRdfHandler
             }
             else
             {
-                _patternRefs[t.Subject] = new List<INode> { t.Object };
+                _patternRefs[t.Subject] = [t.Object];
             }
             // Return without passing to the inner handler
             return true;

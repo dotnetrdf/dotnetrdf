@@ -178,7 +178,7 @@ public class ResultAccessTests
         SparqlQuery q = CreateQuery(query);
         SparqlResultSet results = GetResults(q);
 
-        TestVariableOrder(results, new List<String>() { "comment", "type" });
+        TestVariableOrder(results, ["comment", "type"]);
     }
 
     [Fact]
@@ -196,7 +196,7 @@ public class ResultAccessTests
         var results = new SparqlResultSet();
         StringParser.ParseResultSet(results, data, new SparqlXmlParser());
 
-        TestVariableOrder(results, new List<string>() { "a", "b" });
+        TestVariableOrder(results, ["a", "b"]);
     }
 
     [Fact]
@@ -214,7 +214,7 @@ public class ResultAccessTests
         var results = new SparqlResultSet();
         StringParser.ParseResultSet(results, data, new SparqlXmlParser());
 
-        TestVariableOrder(results, new List<string>() { "b", "a" });
+        TestVariableOrder(results, ["b", "a"]);
     }
 
     [Fact]
@@ -247,7 +247,7 @@ public class ResultAccessTests
         var results = new SparqlResultSet();
         StringParser.ParseResultSet(results, data, new SparqlXmlParser());
 
-        TestVariableOrder(results, new List<string>() { "b", "a" });
+        TestVariableOrder(results, ["b", "a"]);
     }
 
     private void TestVariableOrder(SparqlResultSet results, List<String> expected)

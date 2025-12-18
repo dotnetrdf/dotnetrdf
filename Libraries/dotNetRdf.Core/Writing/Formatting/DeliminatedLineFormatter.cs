@@ -69,11 +69,13 @@ public abstract class DeliminatedLineFormatter
         _lineEndChar = lineEndChar;
         _fullLiteralOutput = fullLiteralOutput;
 
-        _delimEscapes = new List<string[]>();
-        _delimEscapes.Add([new string([_deliminatorChar]), new string([_escapeChar, _deliminatorChar])]);
-        _delimEscapes.Add([new string(['\n']), new string([_escapeChar, 'n'])]);
-        _delimEscapes.Add([new string(['\r']), new string([_escapeChar, 'r'])]);
-        _delimEscapes.Add([new string(['\t']), new string([_escapeChar, 't'])]);
+        _delimEscapes =
+        [
+            [new string([_deliminatorChar]), new string([_escapeChar, _deliminatorChar])],
+            [new string(['\n']), new string([_escapeChar, 'n'])],
+            [new string(['\r']), new string([_escapeChar, 'r'])],
+            [new string(['\t']), new string([_escapeChar, 't'])],
+        ];
 
         // TODO: Need to handle difference between standard and long literals better
         if (_literalWrapperChar.HasValue)

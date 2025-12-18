@@ -32,7 +32,7 @@ namespace VDS.RDF.Query.Builder;
 
 internal sealed class DescribeBuilder : QueryBuilder, IDescribeBuilder
 {
-    readonly List<IToken> _describeVariables = new List<IToken>();
+    readonly List<IToken> _describeVariables = [];
 
     internal DescribeBuilder(SparqlQueryType sparqlQueryType) : base(sparqlQueryType)
     {

@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.Builder;
 /// </summary>
 public class TriplePatternBuilder : ITriplePatternBuilderInternal
 {
-    private readonly IList<ITriplePattern> _patterns = new List<ITriplePattern>();
+    private readonly IList<ITriplePattern> _patterns = [];
     private readonly PatternItemFactory _patternItemFactory;
 
     /// <summary>

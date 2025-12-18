@@ -98,7 +98,7 @@ public abstract class BaseMultiset
         {
             joinedSet.AddVariable(var);
             values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
-            nulls.Add(new List<int>());
+            nulls.Add([]);
         }
 
         // First do a pass over the LHS Result to find all possible values for joined variables
@@ -116,7 +116,7 @@ public abstract class BaseMultiset
                     }
                     else
                     {
-                        values[i].Add(value, new List<int> { x.ID });
+                        values[i].Add(value, [x.ID]);
                     }
                 }
                 else
@@ -255,7 +255,7 @@ public abstract class BaseMultiset
             {
                 joinedSet.AddVariable(var);
                 values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
-                nulls.Add(new List<int>());
+                nulls.Add([]);
             }
 
             // First do a pass over the RHS Result to find all possible values for joined variables
@@ -273,7 +273,7 @@ public abstract class BaseMultiset
                         }
                         else
                         {
-                            values[i].Add(value, new List<int> { y.ID });
+                            values[i].Add(value, [y.ID]);
                         }
                     }
                     else
@@ -456,7 +456,7 @@ public abstract class BaseMultiset
         {
             joinedSet.AddVariable(var);
             values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
-            nulls.Add(new List<int>());
+            nulls.Add([]);
         }
 
         // First do a pass over the LHS Result to find all possible values for joined variables
@@ -474,7 +474,7 @@ public abstract class BaseMultiset
                     }
                     else
                     {
-                        values[i].Add(value, new List<int> { x.ID });
+                        values[i].Add(value, [x.ID]);
                     }
                 }
                 else
@@ -592,7 +592,7 @@ public abstract class BaseMultiset
         foreach (var var in joinVars)
         {
             values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
-            nulls.Add(new List<int>());
+            nulls.Add([]);
         }
 
         // First do a pass over the LHS Result to find all possible values for joined variables
@@ -610,7 +610,7 @@ public abstract class BaseMultiset
                     }
                     else
                     {
-                        values[i].Add(value, new List<int> { x.ID });
+                        values[i].Add(value, [x.ID]);
                     }
                 }
                 else

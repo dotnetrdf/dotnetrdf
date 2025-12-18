@@ -41,31 +41,31 @@ public class OperatorTests
 
     public OperatorTests()
     {
-        _numArgs = new List<IValuedNode>()
-        {
+        _numArgs =
+        [
             new LongNode(12345),
             new DecimalNode(123.45m),
             new FloatNode(123.45f),
             new DoubleNode(123.45d)
-        };
-        _someNullArgs = new List<IValuedNode>()
-        {
+        ];
+        _someNullArgs =
+        [
             new LongNode(12345),
             null,
             new BooleanNode(false),
             null
-        };
-        _dtArgs = new List<IValuedNode>()
-        {
+        ];
+        _dtArgs =
+        [
             new DateTimeNode(DateTimeOffset.Now),
             new TimeSpanNode(new TimeSpan(0, 1, 30))
-        };
-        _tsArgs = new List<IValuedNode>()
-        {
+        ];
+        _tsArgs =
+        [
             new TimeSpanNode(new TimeSpan(1, 0, 0)),
             new TimeSpanNode(new TimeSpan(0, 30, 0)),
             new TimeSpanNode(new TimeSpan(0, 0, 15))
-        };
+        ];
     }
 
     private void TestLookup(SparqlOperatorType opType, bool strict, Type returnedOpInstanceType,

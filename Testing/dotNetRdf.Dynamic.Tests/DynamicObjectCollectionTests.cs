@@ -120,9 +120,10 @@ public class DynamicObjectCollectionTests
         var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
         var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
         var d = new DynamicNode(s, g);
-        var c = new DynamicObjectCollection(d, p);
-
-        c.Add(o);
+        var c = new DynamicObjectCollection(d, p)
+        {
+            o,
+        };
 
         Assert.Equal(expected, g);
     }

@@ -36,8 +36,8 @@ namespace VDS.RDF.Query.Patterns;
 /// </summary>
 public class BindingsPattern
 {
-    private readonly List<string> _vars = new List<string>();
-    private readonly List<BindingTuple> _tuples = new List<BindingTuple>();
+    private readonly List<string> _vars = [];
+    private readonly List<BindingTuple> _tuples = [];
 
     /// <summary>
     /// Creates a new Empty Bindings Pattern.
@@ -125,7 +125,7 @@ public class BindingsPattern
 /// </summary>
 public class BindingTuple
 {
-    private readonly Dictionary<string, PatternItem> _values = new Dictionary<string, PatternItem>();
+    private readonly Dictionary<string, PatternItem> _values = [];
 
     /// <summary>
     /// Creates a new Binding Tuple.

@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String;
 public class ConcatFunction
     : ISparqlExpression
 {
-    private readonly List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
+    private readonly List<ISparqlExpression> _exprs = [];
 
     /// <summary>
     /// Creates a new SPARQL Concatenation function.

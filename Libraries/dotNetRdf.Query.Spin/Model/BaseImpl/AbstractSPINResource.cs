@@ -85,7 +85,7 @@ internal abstract class AbstractSPINResource : Resource, IPrintable
         {
             return rawList.AsList();
         }
-        return new List<IResource>();
+        return [];
     }
 
     private String getPrefix(Uri ns, ISparqlPrinter context)

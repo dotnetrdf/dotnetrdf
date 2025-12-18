@@ -40,7 +40,7 @@ namespace VDS.RDF.Parsing.Handlers;
 /// </remarks>
 public class MultiHandler : BaseRdfHandler, IWrappingRdfHandler
 {
-    private List<IRdfHandler> _handlers = new List<IRdfHandler>();
+    private List<IRdfHandler> _handlers = [];
 
     /// <summary>
     /// Creates a new Multi Handler.

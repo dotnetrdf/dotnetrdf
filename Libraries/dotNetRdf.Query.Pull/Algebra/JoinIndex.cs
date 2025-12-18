@@ -7,11 +7,11 @@ namespace VDS.RDF.Query.Pull.Algebra;
 internal class JoinIndex
 {
     private readonly string[] _joinVars;
-    private readonly List<ISet> _indexedSets = new();
+    private readonly List<ISet> _indexedSets = [];
     private readonly List<MultiDictionary<INode, HashSet<int>>> _index;
     private readonly List<HashSet<int>> _nulls;
     private readonly bool _trackJoins;
-    private HashSet<int> unjoinedSets = new();
+    private HashSet<int> unjoinedSets = [];
 
     public JoinIndex(string[] joinVars, bool trackJoins = false)
     {
@@ -44,7 +44,7 @@ internal class JoinIndex
                 {
                     if (!varIndex.TryGetValue(value, out HashSet<int>? sets))
                     {
-                        sets = new HashSet<int>();
+                        sets = [];
                         varIndex.Add(value, sets);
                     }
 

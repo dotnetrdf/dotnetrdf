@@ -42,7 +42,7 @@ public abstract class BaseSetFunction
     /// <summary>
     /// Set that is used in the function.
     /// </summary>
-    protected List<ISparqlExpression> _expressions = new List<ISparqlExpression>();
+    protected List<ISparqlExpression> _expressions = [];
 
     /// <summary>
     /// Creates a new SPARQL Set function.

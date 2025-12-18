@@ -565,7 +565,7 @@ public abstract class BaseStardogConnector
             transactionId = _activeTrans ?? BeginTransaction();
 
             HttpRequestMessage request = CreateRequest(_kb + "/" + transactionId + "/add", MimeTypesHelper.Any,
-                HttpMethod.Post, new Dictionary<string, string>());
+                HttpMethod.Post, []);
             request.Content = new DatasetContent(g, _writer);
 
             using (HttpResponseMessage response = HttpClient.SendAsync(request).Result)
@@ -650,7 +650,7 @@ public abstract class BaseStardogConnector
                 if (removals.Any())
                 {
                     HttpRequestMessage request = CreateRequest(_kb + "/" + tID + "/remove",
-                        MimeTypesHelper.Any, HttpMethod.Post, new Dictionary<string, string>());
+                        MimeTypesHelper.Any, HttpMethod.Post, []);
 
                     // Save the Data to be removed as TriG to the Request Stream
                     var g = new Graph(graphUri);
@@ -667,7 +667,7 @@ public abstract class BaseStardogConnector
                 if (additions.Any())
                 {
                     HttpRequestMessage request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any,
-                        HttpMethod.Post, new Dictionary<string, string>());
+                        HttpMethod.Post, []);
 
                     // Save the Data to be added as TriG to the Request Stream
                     var g = new Graph(graphUri);
@@ -1035,7 +1035,7 @@ public abstract class BaseStardogConnector
     private HttpRequestMessage MakeSaveGraphRequestMessage(string tID, IGraph g)
     {
         HttpRequestMessage request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any, HttpMethod.Post,
-            new Dictionary<string, string>());
+            []);
         request.Content = new DatasetContent(g, _writer);
         return request;
     }
@@ -1560,7 +1560,7 @@ public abstract class BaseStardogConnector
     {
         HttpRequestMessage addRequest = CreateRequest(_kb + "/" + transactionId + "/add",
             MimeTypesHelper.Any,
-            HttpMethod.Post, new Dictionary<string, string>());
+            HttpMethod.Post, []);
         var g = new Graph(graphName.ToSafeUri());
         g.Assert(additions);
         addRequest.Content = new DatasetContent(g, _writer);
@@ -1577,7 +1577,7 @@ public abstract class BaseStardogConnector
     protected virtual HttpRequestMessage MakeRemoveTriplesRequestMessage(string transactionId, string graphName, IEnumerable<Triple> removals)
     {
         HttpRequestMessage request = CreateRequest(_kb + "/" + transactionId + "/remove", MimeTypesHelper.Any,
-            HttpMethod.Post, new Dictionary<string, string>());
+            HttpMethod.Post, []);
         var g = new Graph(graphName.ToSafeUri());
         g.Assert(removals);
         request.Content = new DatasetContent(g, _writer);
@@ -2162,7 +2162,7 @@ public abstract class BaseStardogConnector
     protected virtual void CommitTransaction(string transactionId)
     {
         HttpRequestMessage request = CreateRequest(_kb + "/transaction/commit/" + transactionId, "text/plain",
-            HttpMethod.Post, new Dictionary<string, string>());
+            HttpMethod.Post, []);
         request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
 
         using (HttpResponseMessage response = HttpClient.SendAsync(request).Result)
@@ -2187,7 +2187,7 @@ public abstract class BaseStardogConnector
     protected virtual void RollbackTransaction(string transactionId)
     {
         HttpRequestMessage request = CreateRequest(_kb + "/transaction/rollback/" + transactionId,
-            MimeTypesHelper.Any, HttpMethod.Post, new Dictionary<string, string>());
+            MimeTypesHelper.Any, HttpMethod.Post, []);
         request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
         using (HttpResponseMessage response = HttpClient.SendAsync(request).Result)
         {
@@ -2306,7 +2306,7 @@ public abstract class BaseStardogConnector
         else
         {
             HttpRequestMessage request = CreateRequest(_kb + "/transaction/begin", "text/plain",
-                HttpMethod.Post, new Dictionary<string, string>());
+                HttpMethod.Post, []);
             request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
@@ -2384,7 +2384,7 @@ public abstract class BaseStardogConnector
         try
         {
             HttpRequestMessage request = CreateRequest(_kb + "/transaction/begin", "text/plain",
-                HttpMethod.Post, new Dictionary<string, string>());
+                HttpMethod.Post, []);
             request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
             HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
@@ -2431,7 +2431,7 @@ public abstract class BaseStardogConnector
         else
         {
             HttpRequestMessage request = CreateRequest(_kb + "/transaction/commit/" + _activeTrans,
-                "text/plain", HttpMethod.Post, new Dictionary<string, string>());
+                "text/plain", HttpMethod.Post, []);
             request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
@@ -2484,7 +2484,7 @@ public abstract class BaseStardogConnector
         try
         {
             HttpRequestMessage request = CreateRequest(_kb + "/transaction/commit/" + _activeTrans,
-                "text/plain", HttpMethod.Post, new Dictionary<string, string>());
+                "text/plain", HttpMethod.Post, []);
             request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
             HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
@@ -2526,7 +2526,7 @@ public abstract class BaseStardogConnector
         else
         {
             HttpRequestMessage request = CreateRequest(_kb + "/transaction/rollback/" + _activeTrans,
-                MimeTypesHelper.Any, HttpMethod.Post, new Dictionary<string, string>());
+                MimeTypesHelper.Any, HttpMethod.Post, []);
             request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
@@ -2578,7 +2578,7 @@ public abstract class BaseStardogConnector
         try
         {
             HttpRequestMessage request = CreateRequest(_kb + "/transaction/rollback/" + _activeTrans,
-                MimeTypesHelper.Any, HttpMethod.Post, new Dictionary<string, string>());
+                MimeTypesHelper.Any, HttpMethod.Post, []);
             request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
             HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)

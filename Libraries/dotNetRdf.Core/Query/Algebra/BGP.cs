@@ -40,7 +40,7 @@ public class Bgp
     /// <summary>
     /// The ordered list of triple patterns that are contained in this BGP.
     /// </summary>
-    protected readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
+    protected readonly List<ITriplePattern> _triplePatterns = [];
 
     /// <summary>
     /// Creates a new empty BGP.

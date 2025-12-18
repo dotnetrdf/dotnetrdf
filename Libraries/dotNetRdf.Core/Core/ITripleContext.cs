@@ -68,7 +68,7 @@ public class BasicTripleContext : ITripleContext
     /// </summary>
     public BasicTripleContext()
     {
-        _properties = new Dictionary<string, object>();
+        _properties = [];
     }
 
     /// <summary>

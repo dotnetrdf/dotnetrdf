@@ -87,7 +87,7 @@ public class RdfAEvaluationContext
     /// <summary>
     /// Gets the list of incomplete Triples.
     /// </summary>
-    public List<IncompleteTriple> IncompleteTriples { get; } = new List<IncompleteTriple>();
+    public List<IncompleteTriple> IncompleteTriples { get; } = [];
 
     /// <summary>
     /// Gets/Sets the Local Vocabulary.
@@ -97,5 +97,5 @@ public class RdfAEvaluationContext
     /// <summary>
     /// Get the list mapping.
     /// </summary>
-    public Dictionary<INode, List<INode>> ListMapping { get; set; } = new();
+    public Dictionary<INode, List<INode>> ListMapping { get; set; } = [];
 }

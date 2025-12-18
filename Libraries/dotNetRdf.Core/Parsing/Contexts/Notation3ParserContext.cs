@@ -36,7 +36,7 @@ namespace VDS.RDF.Parsing.Contexts;
 public class Notation3ParserContext : TokenisingParserContext
 {
     private bool _keywordsMode = false;
-    private List<string> _keywords = new List<string>();
+    private List<string> _keywords = [];
     private Stack<IGraph> _subgraphs = new Stack<IGraph>();
     private IGraph _g;
     private Stack<IRdfHandler> _handlers = new Stack<IRdfHandler>();

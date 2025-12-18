@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Datasets;
 public abstract class BaseTransactionalQuadDataset
     : BaseQuadDataset
 {
-    private List<GraphPersistenceAction> _actions = new List<GraphPersistenceAction>();
+    private List<GraphPersistenceAction> _actions = [];
     private TripleStore _modifiableGraphs = new TripleStore();
 
     /// <summary>

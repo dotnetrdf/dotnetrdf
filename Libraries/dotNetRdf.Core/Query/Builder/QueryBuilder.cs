@@ -48,9 +48,9 @@ namespace VDS.RDF.Query.Builder;
 public class QueryBuilder : IQueryBuilder
 {
     private readonly GraphPatternBuilder _rootGraphPatternBuilder = new GraphPatternBuilder();
-    private readonly IList<Func<INamespaceMapper, ISparqlOrderBy>> _buildOrderings = new List<Func<INamespaceMapper, ISparqlOrderBy>>();
-    private readonly IList<Func<INamespaceMapper, ISparqlGroupBy>> _buildGroups = new List<Func<INamespaceMapper, ISparqlGroupBy>>();
-    private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _buildHavings = new List<Func<INamespaceMapper, ISparqlExpression>>();
+    private readonly IList<Func<INamespaceMapper, ISparqlOrderBy>> _buildOrderings = [];
+    private readonly IList<Func<INamespaceMapper, ISparqlGroupBy>> _buildGroups = [];
+    private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _buildHavings = [];
     private SparqlQueryType _sparqlQueryType;
     private int _queryLimit = -1;
     private int _queryOffset;
