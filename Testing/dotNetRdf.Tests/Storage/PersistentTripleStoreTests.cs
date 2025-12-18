@@ -73,32 +73,6 @@ public class PersistentTripleStoreTests
 
     #region Contains Tests
 
-    [Obsolete]
-    private void TestContainsObsolete(IStorageProvider manager)
-    {
-        EnsureTestDataset(manager);
-
-        var store = new PersistentTripleStore(manager);
-        try
-        {
-            Assert.True(store.HasGraph(new Uri(TestGraphUri1)), "URI 1 should return true for HasGraph()");
-            Assert.True(store.Graphs.Contains(new Uri(TestGraphUri1)), "URI 1 should return true for Graphs.Contains()");
-            Assert.True(store.HasGraph(new Uri(TestGraphUri2)), "URI 2 should return true for HasGraph()");
-            Assert.True(store.Graphs.Contains(new Uri(TestGraphUri2)), "URI 2 should return true for Graphs.Contains()");
-            Assert.True(store.HasGraph(new Uri(TestGraphUri3)), "URI 3 should return true for HasGraph()");
-            Assert.True(store.Graphs.Contains(new Uri(TestGraphUri3)), "URI 3 should return true for Graphs.Contains()");
-
-            var noSuchThing = new Uri("http://example.org/persistence/graphs/noSuchGraph");
-            Assert.False(store.HasGraph(noSuchThing), "Bad URI should return false for HasGraph()");
-            Assert.False(store.Graphs.Contains(noSuchThing), "Bad URI should return false for Graphs.Contains()");
-
-        }
-        finally
-        {
-            store.Dispose();
-        }
-    }
-
     private void TestContains(IStorageProvider manager)
     {
         EnsureTestDataset(manager);
@@ -132,7 +106,6 @@ public class PersistentTripleStoreTests
     {
         var manager = new InMemoryManager();
         TestContains(manager);
-        TestContainsObsolete(manager);
     }
 
     #endregion
