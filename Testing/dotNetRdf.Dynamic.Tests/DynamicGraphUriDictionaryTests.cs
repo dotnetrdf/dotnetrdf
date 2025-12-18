@@ -342,7 +342,7 @@ public class DynamicGraphUriDictionaryTests
 
         void isEmpty(KeyValuePair<Uri, object> expected)
         {
-            Assert.Equal(default(KeyValuePair<Uri, object>), expected);
+            Assert.Equal(default, expected);
         }
 
         Action<KeyValuePair<Uri, object>> isKVWith(Uri expectedKey)

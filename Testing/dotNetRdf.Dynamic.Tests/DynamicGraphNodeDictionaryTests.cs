@@ -551,7 +551,7 @@ public class DynamicGraphNodeDictionaryTests
 
         void isEmpty(KeyValuePair<INode, object> actual)
         {
-            Assert.Equal(default(KeyValuePair<INode, object>), actual);
+            Assert.Equal(default, actual);
         }
 
         Action<KeyValuePair<INode, object>> isKVWith(INode expected)

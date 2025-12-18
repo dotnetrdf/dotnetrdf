@@ -418,7 +418,7 @@ public class DynamicNodeNodeDictionaryTests
         var spo = new[] { s, p, o };
         void isEmpty(KeyValuePair<INode, object> actual)
         {
-            Assert.Equal(default(KeyValuePair<INode, object>), actual);
+            Assert.Equal(default, actual);
         }
 
         Action<KeyValuePair<INode, object>> isSPOWith(INode expected)
