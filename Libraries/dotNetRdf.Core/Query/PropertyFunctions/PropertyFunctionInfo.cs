@@ -36,9 +36,9 @@ namespace VDS.RDF.Query.PropertyFunctions;
 public class PropertyFunctionInfo
 {
     private Uri _funcUri;
-    private List<IMatchTriplePattern> _patterns = new List<IMatchTriplePattern>();
-    private List<PatternItem> _subjArgs = new List<PatternItem>();
-    private List<PatternItem> _objArgs = new List<PatternItem>();
+    private List<IMatchTriplePattern> _patterns = [];
+    private List<PatternItem> _subjArgs = [];
+    private List<PatternItem> _objArgs = [];
 
     /// <summary>
     /// Creates new function information.

@@ -36,8 +36,8 @@ namespace VDS.RDF.Query.Paths;
 /// </summary>
 public class NegatedSet : ISparqlPath
 {
-    private List<Property> _properties = new List<Property>();
-    private List<Property> _inverseProperties = new List<Property>();
+    private List<Property> _properties = [];
+    private List<Property> _inverseProperties = [];
 
     /// <summary>
     /// Creates a new Negated Property Set.

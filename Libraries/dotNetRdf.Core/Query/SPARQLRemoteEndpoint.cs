@@ -45,8 +45,8 @@ namespace VDS.RDF.Query;
 public class SparqlRemoteEndpoint 
     : BaseEndpoint
 {
-    private readonly List<string> _defaultGraphUris = new List<string>();
-    private readonly List<string> _namedGraphUris = new List<string>();
+    private readonly List<string> _defaultGraphUris = [];
+    private readonly List<string> _namedGraphUris = [];
     private string _resultsAccept, _rdfAccept;
 
     const int LongQueryLength = 2048;

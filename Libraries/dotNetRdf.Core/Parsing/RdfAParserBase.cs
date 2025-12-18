@@ -540,7 +540,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
             var prefix = GetAttributeName(attr).Substring(GetAttributeName(attr).IndexOf(':') + 1);
             if (evalContext.NamespaceMap.HasNamespace(prefix))
             {
-                hiddenPrefixes ??= new Dictionary<string, Uri>();
+                hiddenPrefixes ??= [];
                 hiddenPrefixes.Add(prefix, evalContext.NamespaceMap.GetNamespaceUri(prefix));
             }
             evalContext.NamespaceMap.AddNamespace(prefix, context.UriFactory.Create(uri));
@@ -651,7 +651,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
                                 var uri = Tools.ResolveUri(evalContext.NamespaceMap.GetNamespaceUri(prefix).ToString(), baseUri);
                                 if (evalContext.NamespaceMap.HasNamespace(prefix))
                                 {
-                                    hiddenPrefixes ??= new Dictionary<string, Uri>();
+                                    hiddenPrefixes ??= [];
                                     hiddenPrefixes.Add(prefix, evalContext.NamespaceMap.GetNamespaceUri(prefix));
                                 }
                                 evalContext.NamespaceMap.AddNamespace(prefix, context.UriFactory.Create(uri));
@@ -905,7 +905,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
         #region Step 8
         if (newSubj != null && !newSubj.Equals(evalContext.ParentSubject))
         {
-            listMapping = new Dictionary<INode, List<INode>>();
+            listMapping = [];
         }
         #endregion
 
@@ -929,7 +929,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
                         {
                             if (!listMapping.ContainsKey(predicateNode))
                             {
-                                listMapping[predicateNode] = new List<INode>();
+                                listMapping[predicateNode] = [];
                             }
 
                             listMapping[predicateNode].Add(currentObj);
@@ -965,7 +965,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
                     {
                         if (!listMapping.ContainsKey(predicateNode))
                         {
-                            listMapping[predicateNode] = new List<INode>();
+                            listMapping[predicateNode] = [];
                         }
                         incomplete.Add(new IncompleteTriple(listMapping[predicateNode], IncompleteTripleDirection.None));
                     }
@@ -1090,7 +1090,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
                     {
                         if (!listMapping.ContainsKey(predicateNode))
                         {
-                            listMapping[predicateNode] = new List<INode>();
+                            listMapping[predicateNode] = [];
                         }
                         listMapping[predicateNode].Add(currentPropertyValue);
                     }
@@ -1635,7 +1635,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
             var uri = Tools.ResolveUri(u, baseUri);
             if (evalContext.NamespaceMap.HasNamespace(prefix))
             {
-                hiddenPrefixes ??= new Dictionary<string, Uri>();
+                hiddenPrefixes ??= [];
                 if (!hiddenPrefixes.ContainsKey(prefix))
                 {
                     // If hiddenPrefixes already has a mapping, leave it intact as it records the original prefix mapping before processing xmlns: attributes on this element

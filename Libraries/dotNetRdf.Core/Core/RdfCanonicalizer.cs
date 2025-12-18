@@ -337,7 +337,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
     private class MultiValueDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, List<TValue>>>
         where TKey : notnull
     {
-        private readonly Dictionary<TKey, List<TValue>> _dictionary = new();
+        private readonly Dictionary<TKey, List<TValue>> _dictionary = [];
 
         public void Add(TKey key, TValue value)
         {

@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.Algebra;
 public abstract class BasePathOperator
     : IPathOperator
 {
-    private readonly HashSet<string> _vars = new();
+    private readonly HashSet<string> _vars = [];
 
     /// <summary>
     /// Creates a new Path Operator.

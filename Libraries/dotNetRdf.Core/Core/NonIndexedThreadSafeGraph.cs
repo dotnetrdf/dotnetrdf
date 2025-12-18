@@ -49,7 +49,7 @@ public class NonIndexedThreadSafeGraph
     /// </summary>
     /// <param name="graphName">The name to assign to the new graph.</param>
     public NonIndexedThreadSafeGraph(IRefNode graphName = null)
-        : base(graphName, new ThreadSafeTripleCollection())
+        : base(graphName, [])
     {
     }
 }

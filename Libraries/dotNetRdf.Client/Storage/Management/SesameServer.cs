@@ -81,12 +81,12 @@ public class SesameServer
     /// <summary>
     /// Available Sesame template types.
     /// </summary>
-    protected List<Type> TemplateTypes = new List<Type>
-    {
+    protected List<Type> TemplateTypes =
+    [
         typeof(SesameMemTemplate),
         typeof(SesameNativeTemplate),
         typeof(SesameHttpTemplate),
-    };
+    ];
 
     /// <summary>
     /// Creates a new connection to a Sesame HTTP Protocol supporting Store.
@@ -255,7 +255,7 @@ public class SesameServer
     {
         try
         {
-            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, HttpMethod.Delete, new Dictionary<string, string>());
+            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, HttpMethod.Delete, []);
 
             using (var response = HttpClient.SendAsync(request).Result)
             {
@@ -274,7 +274,7 @@ public class SesameServer
     /// <inheritdoc />
     public virtual async Task DeleteStoreAsync(string storeId, CancellationToken cancellationToken)
     {
-        HttpRequestMessage request = CreateRequest(_repositoriesPrefix + storeId, MimeTypesHelper.Any, HttpMethod.Delete, new Dictionary<string, string>());
+        HttpRequestMessage request = CreateRequest(_repositoriesPrefix + storeId, MimeTypesHelper.Any, HttpMethod.Delete, []);
 
         using HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
@@ -291,7 +291,7 @@ public class SesameServer
     {
         try
         {
-            HttpRequestMessage request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], HttpMethod.Get, new Dictionary<string, string>());
+            HttpRequestMessage request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], HttpMethod.Get, []);
 
             var handler = new ListStringsHandler("id");
             using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
@@ -494,7 +494,7 @@ public class SesameServer
     {
         try
         {
-            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, HttpMethod.Delete, new Dictionary<string, string>());
+            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, HttpMethod.Delete, []);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
                 if (requestTask.IsCanceled || requestTask.IsFaulted)
@@ -537,7 +537,7 @@ public class SesameServer
         try
         {
             HttpRequestMessage request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0],
-                HttpMethod.Get, new Dictionary<string, string>());
+                HttpMethod.Get, []);
             var handler = new ListStringsHandler("id");
             HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
@@ -564,7 +564,7 @@ public class SesameServer
     [Obsolete("This method is obsolete and will be removed in a future release. Replaced by ListStoresAsync")]
     public virtual void ListStores(AsyncStorageCallback callback, object state)
     {
-        HttpRequestMessage request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], HttpMethod.Get, new Dictionary<string, string>());
+        HttpRequestMessage request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], HttpMethod.Get, []);
         var handler = new ListStringsHandler("id");
         try
         {

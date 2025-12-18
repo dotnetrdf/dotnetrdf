@@ -40,7 +40,7 @@ namespace VDS.RDF.Parsing.Handlers;
 /// </remarks>
 public class ChainedHandler : BaseRdfHandler, IWrappingRdfHandler
 {
-    private readonly List<IRdfHandler> _handlers = new();
+    private readonly List<IRdfHandler> _handlers = [];
 
     /// <summary>
     /// Creates a new Chained Handler.

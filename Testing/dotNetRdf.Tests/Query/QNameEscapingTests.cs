@@ -34,8 +34,8 @@ namespace VDS.RDF.Query;
 
 public class QNameEscapingTests
 {
-    List<char> _cs = new List<char>()
-        {
+    List<char> _cs =
+        [
              '_',
              '~',
              '-',
@@ -57,7 +57,7 @@ public class QNameEscapingTests
              '#',
              '@',
              '%'
-        };
+        ];
 
     private void TestQNameUnescaping(String input, String expected)
     {

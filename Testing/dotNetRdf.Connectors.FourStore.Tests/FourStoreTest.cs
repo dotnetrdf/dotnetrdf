@@ -96,8 +96,10 @@ public class FourStoreTest
         StorageFourStoreSaveGraph();
 
         var g = new Graph();
-        var ts = new List<Triple>();
-        ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
+        var ts = new List<Triple>
+        {
+            new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))),
+        };
 
         FourStoreConnector fourstore = GetConnection();
         fourstore.UpdateGraph("http://example.org/4storeTest", ts, null);

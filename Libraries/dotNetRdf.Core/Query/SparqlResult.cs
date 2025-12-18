@@ -39,8 +39,8 @@ namespace VDS.RDF.Query;
 public sealed class SparqlResult 
     : ISparqlResult
 {
-    private List<string> _variables = new ();
-    private readonly Dictionary<string, INode> _resultValues = new();
+    private List<string> _variables = [];
+    private readonly Dictionary<string, INode> _resultValues = [];
 
     /// <summary>
     /// Creates a new empty SPARQL Result which can only be filled by methods internal to the dotNetRDF Library.

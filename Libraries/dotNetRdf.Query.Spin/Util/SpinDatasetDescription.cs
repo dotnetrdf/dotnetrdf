@@ -43,7 +43,7 @@ internal class SpinDatasetDescription : ThreadSafeGraph
 
     private Uri _sourceUri;
 
-    private readonly Dictionary<IRefNode, SpinWrappedGraph> _modificableGraphs = new Dictionary<IRefNode, SpinWrappedGraph>();
+    private readonly Dictionary<IRefNode, SpinWrappedGraph> _modificableGraphs = [];
 
     #region Static methods
 

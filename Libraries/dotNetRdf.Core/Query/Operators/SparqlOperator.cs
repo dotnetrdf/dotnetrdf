@@ -38,7 +38,7 @@ namespace VDS.RDF.Query.Operators;
 /// </summary>
 public static class SparqlOperators
 {
-    private static Dictionary<SparqlOperatorType, List<ISparqlOperator>> _operators = new Dictionary<SparqlOperatorType, List<ISparqlOperator>>();
+    private static Dictionary<SparqlOperatorType, List<ISparqlOperator>> _operators = [];
     private static bool _init = false;
 
     /// <summary>
@@ -54,7 +54,7 @@ public static class SparqlOperators
             // Set up empty registry for each operator type
             foreach (SparqlOperatorType type in Enum.GetValues(typeof(SparqlOperatorType)).OfType<SparqlOperatorType>())
             {
-                _operators.Add(type, new List<ISparqlOperator>());
+                _operators.Add(type, []);
             }
  
             // Register default operators
@@ -123,7 +123,7 @@ public static class SparqlOperators
             lock (_operators)
             {
                 _init = false;
-                _operators = new Dictionary<SparqlOperatorType, List<ISparqlOperator>>();
+                _operators = [];
                 Init();
             }
         }

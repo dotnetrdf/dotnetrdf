@@ -103,8 +103,8 @@ public class SparqlQueryClient : ISparqlQueryClient, IConfigurationSerializable
     {
         _httpClient = httpClient;
         EndpointUri = endpointUri;
-        DefaultGraphs = new List<string>();
-        NamedGraphs = new List<string>();
+        DefaultGraphs = [];
+        NamedGraphs = [];
     }
 
     /// <summary>

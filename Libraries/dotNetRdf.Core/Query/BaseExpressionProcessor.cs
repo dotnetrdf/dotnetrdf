@@ -87,7 +87,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
     private readonly IValuedNode _eNode = new DoubleNode(Math.E);
     private readonly IValuedNode _piNode = new DoubleNode(Math.PI);
     private readonly Random _rnd = new Random();
-    private readonly Dictionary<string, ISparqlExpression> _functionCache = new Dictionary<string, ISparqlExpression>();
+    private readonly Dictionary<string, ISparqlExpression> _functionCache = [];
 
 
     protected BaseExpressionProcessor(ISparqlNodeComparer nodeComparer, IUriFactory uriFactory, bool useStrictOperators)

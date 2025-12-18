@@ -37,7 +37,7 @@ public class ListUrisHandler
     : BaseResultsHandler
 {
     private List<Uri> _uris;
-    private HashSet<string> _vars = new HashSet<string>();
+    private HashSet<string> _vars = [];
 
     /// <summary>
     /// Creates a new List URIs Handler.
@@ -76,7 +76,7 @@ public class ListUrisHandler
     /// </summary>
     protected override void StartResultsInternal()
     {
-        _uris = new List<Uri>();
+        _uris = [];
     }
 
     /// <summary>
@@ -128,7 +128,7 @@ public class ListStringsHandler
     : BaseResultsHandler
 {
     private List<string> _values;
-    private HashSet<string> _vars = new HashSet<string>();
+    private HashSet<string> _vars = [];
 
     /// <summary>
     /// Creates a new List Strings handler.
@@ -167,7 +167,7 @@ public class ListStringsHandler
     /// </summary>
     protected override void StartResultsInternal()
     {
-        _values = new List<string>();
+        _values = [];
     }
 
     /// <summary>

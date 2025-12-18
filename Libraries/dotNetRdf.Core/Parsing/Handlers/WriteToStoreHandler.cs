@@ -67,8 +67,8 @@ public class WriteToStoreHandler
 
         // Make the Actions Queue one larger than the Batch Size
         _actions = new List<Triple>(_batchSize + 1);
-        _bnodeActions = new List<Tuple<Triple, IRefNode>>();
-        _bnodeUris = new HashSet<IRefNode>();
+        _bnodeActions = [];
+        _bnodeUris = [];
     }
 
     /// <summary>

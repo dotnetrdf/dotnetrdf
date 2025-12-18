@@ -43,7 +43,7 @@ public class UnknownFunction
     : ISparqlExpression
 {
     private readonly Uri _funcUri;
-    private readonly List<ISparqlExpression> _args = new();
+    private readonly List<ISparqlExpression> _args = [];
 
     /// <summary>
     /// Creates a new Unknown Function that has no Arguments.

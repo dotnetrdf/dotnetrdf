@@ -360,9 +360,9 @@ public class GraphMatcher
         Debug.WriteLine("Attempting rules based equality mapping");
 
         // Start with new lists and dictionaries each time in case we get reused
-        _unbound = new List<INode>();
-        _bound = new List<INode>();
-        _mapping = new Dictionary<INode, INode>();
+        _unbound = [];
+        _bound = [];
+        _mapping = [];
 
         // Initialise the Source Triples list
         _sourceTriples = new HashSet<Triple>(g.Triples.Where(t=>!t.IsGroundTriple));
@@ -976,7 +976,7 @@ public class GraphMatcher
         {
             if (!_mapping.ContainsKey(gPair.Key))
             {
-                possibleMappings.Add(gPair.Key, new List<INode>());
+                possibleMappings.Add(gPair.Key, []);
                 foreach (KeyValuePair<INode, int> hPair in hNodes)
                 {
                     if (hPair.Value == gPair.Value && !_bound.Contains(hPair.Key))

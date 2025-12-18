@@ -45,8 +45,8 @@ public class HtmlTextWriter : TextWriter, IDisposable
     private bool _newline = true;
     private int _indent = 0;
     private Stack<string> _tags = new Stack<string>();
-    private List<KeyValuePair<string, string>> _attributes = new List<KeyValuePair<string, string>>();
-    private List<KeyValuePair<string, string>> _styles = new List<KeyValuePair<string, string>>();
+    private List<KeyValuePair<string, string>> _attributes = [];
+    private List<KeyValuePair<string, string>> _styles = [];
 
     /// <summary>
     /// Creates a new HTML Text Writer.

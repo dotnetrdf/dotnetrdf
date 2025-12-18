@@ -35,7 +35,7 @@ public class GroupMultiset
     : Multiset
 {
     private BaseMultiset _contents;
-    private Dictionary<int, BindingGroup> _groups = new Dictionary<int, BindingGroup>();
+    private Dictionary<int, BindingGroup> _groups = [];
 
     /// <summary>
     /// Creates a new Group Multiset.

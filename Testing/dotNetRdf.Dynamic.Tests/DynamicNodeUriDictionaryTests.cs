@@ -97,9 +97,10 @@ public class DynamicNodeUriDictionaryTests
 
         var s = actual.CreateUriNode(UriFactory.Root.Create("urn:s1"));
         var p = UriFactory.Root.Create("urn:p1");
-        var d = new DynamicNode(s, actual);
-
-        d[p] = null;
+        var d = new DynamicNode(s, actual)
+        {
+            [p] = null
+        };
 
         Assert.Equal(expected, actual);
     }
@@ -126,9 +127,10 @@ public class DynamicNodeUriDictionaryTests
 
         var s = actual.CreateUriNode(UriFactory.Root.Create("urn:s1"));
         var p = UriFactory.Root.Create("urn:p1");
-        var d = new DynamicNode(s, actual);
-
-        d[p] = "o";
+        var d = new DynamicNode(s, actual)
+        {
+            [p] = "o"
+        };
 
         Assert.Equal(expected, actual);
     }
@@ -191,9 +193,10 @@ public class DynamicNodeUriDictionaryTests
         var s = UriFactory.Root.Create("urn:s");
         var p = UriFactory.Root.Create("urn:p");
         var o = UriFactory.Root.Create("urn:o");
-        var d = new DynamicNode(g.CreateUriNode(s), g);
-
-        d.Add(p, new[] { s, p, o });
+        var d = new DynamicNode(g.CreateUriNode(s), g)
+        {
+            { p, new[] { s, p, o } }
+        };
 
         Assert.Equal(expected, g);
     }
@@ -209,9 +212,10 @@ public class DynamicNodeUriDictionaryTests
         var g = new Graph();
         var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
         var p = UriFactory.Root.Create("urn:p");
-        var d = new DynamicNode(s, g);
-
-        d.Add(p, "abc");
+        var d = new DynamicNode(s, g)
+        {
+            { p, "abc" }
+        };
 
         Assert.Equal(expected, g);
     }

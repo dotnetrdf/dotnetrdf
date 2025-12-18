@@ -44,11 +44,11 @@ public class OntologyResource
     /// <summary>
     /// Storage of Literal Properties.
     /// </summary>
-    protected Dictionary<string, List<ILiteralNode>> _literalProperties = new();
+    protected Dictionary<string, List<ILiteralNode>> _literalProperties = [];
     /// <summary>
     /// Storage of Resource Properties.
     /// </summary>
-    protected Dictionary<string, HashSet<INode>> _resourceProperties = new();
+    protected Dictionary<string, HashSet<INode>> _resourceProperties = [];
     /// <summary>
     /// The Node which this Resource is a wrapper around.
     /// </summary>
@@ -158,7 +158,7 @@ public class OntologyResource
         }
         else
         {
-            _literalProperties.Add(propertyUri, new List<ILiteralNode>() { value });
+            _literalProperties.Add(propertyUri, [value]);
             if (persist) _graph.Assert(new Triple(_resource, _graph.CreateUriNode(_graph.UriFactory.Create(propertyUri)), value));
             return true;
         }
@@ -199,7 +199,7 @@ public class OntologyResource
         }
         else
         {
-            _resourceProperties.Add(propertyUri, new HashSet<INode>() { value });
+            _resourceProperties.Add(propertyUri, [value]);
             if (persist) _graph.Assert(new Triple(_resource, _graph.CreateUriNode(_graph.UriFactory.Create(propertyUri)), value));
             return true;
         }

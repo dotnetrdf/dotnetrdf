@@ -37,14 +37,14 @@ internal class AsyncGroupByEvaluation : IAsyncEvaluation
     private readonly IAsyncEvaluation _inner;
     private readonly List<string?> _groupVars;
     private readonly Dictionary<GroupingKey, AsyncGroupEvaluation> _groups;
-    private readonly List<Func<IAsyncAggregation>> _aggregationProviders = new(); 
+    private readonly List<Func<IAsyncAggregation>> _aggregationProviders = []; 
 
     public AsyncGroupByEvaluation(GroupBy groupBy, IAsyncEvaluation inner)
     {
         _groupBy = groupBy;
         _inner = inner;
-        _groupVars = _groupBy.Grouping?.GroupingKeyNames().ToList() ?? new List<string?>(0);
-        _groups = new Dictionary<GroupingKey, AsyncGroupEvaluation>();
+        _groupVars = _groupBy.Grouping?.GroupingKeyNames().ToList() ?? [];
+        _groups = [];
     }
 
 
@@ -120,7 +120,7 @@ internal class AsyncGroupByEvaluation : IAsyncEvaluation
 
 internal class AsyncGroupEvaluation
 {
-    private List<IAsyncAggregation> _aggregations = new List<IAsyncAggregation>();
+    private List<IAsyncAggregation> _aggregations = [];
     public AsyncGroupEvaluation(GroupBy groupBy, PullEvaluationContext context, IEnumerable<IAsyncAggregation> aggregations)
     {
         _aggregations.AddRange(aggregations);

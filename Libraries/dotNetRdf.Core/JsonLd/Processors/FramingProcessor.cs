@@ -125,7 +125,7 @@ internal static class FramingProcessor
                 if (!frame.ContainsKey("@graph"))
                 {
                     recurse = !state.GraphName.Equals("@merged");
-                    subframe = new JObject();
+                    subframe = [];
                 }
                 // 4.5.2 - Otherwise, set subframe to the first entry for @graph in frame, or a new empty dictionary, if it does not exist, and set recurse to true, unless id is @merged or @default.
                 else
@@ -147,7 +147,7 @@ internal static class FramingProcessor
                     }
                     else
                     {
-                        subframe = new JObject();
+                        subframe = [];
                     }
 
                     recurse = !(id.Equals("@merged") || id.Equals("@default"));
@@ -235,7 +235,7 @@ internal static class FramingProcessor
                                 var oldEmbedded = state.Embedded;
                                 state.Embedded = true;
                                 ProcessFrame(state,
-                                    new List<string> {listItem["@id"].Value<string>()},
+                                    [listItem["@id"].Value<string>()],
                                     listFrame,
                                     list,
                                     "@list",
@@ -268,7 +268,7 @@ internal static class FramingProcessor
                         var oldEmbedded = state.Embedded;
                         state.Embedded = true;
                         ProcessFrame(state,
-                            new List<string> {item["@id"].Value<string>()},
+                            [item["@id"].Value<string>()],
                             newFrame,
                             output,
                             property,
@@ -358,7 +358,7 @@ internal static class FramingProcessor
                             var oldEmbedded = state.Embedded;
                             state.Embedded = true;
                             ProcessFrame(state,
-                                new List<string> {reverseId},
+                                [reverseId],
                                 subFrame,
                                 reverseDict[reverseProperty],
                                 null,
@@ -824,7 +824,7 @@ internal static class FramingProcessor
             var array = parentObject[activeProperty] as JArray;
             if (array == null)
             {
-                parent[activeProperty] = array = new JArray();
+                parent[activeProperty] = array = [];
             }
             array.Add(child);
         }

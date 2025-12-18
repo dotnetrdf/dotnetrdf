@@ -45,9 +45,9 @@ class UriLoaderCache
     private bool _canCacheGraphs = false, _canCacheETag = false;
     private string _graphDir;
     private string _etagFile;
-    private Dictionary<int, string> _etags = new Dictionary<int, string>();
+    private Dictionary<int, string> _etags = [];
     private CompressingTurtleWriter _ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.Medium);
-    private HashSet<string> _nocache = new HashSet<string>();
+    private HashSet<string> _nocache = [];
     private Type _formatterType = typeof(TurtleFormatter);
 
     /// <summary>

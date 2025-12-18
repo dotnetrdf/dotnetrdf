@@ -50,10 +50,10 @@ public class GraphPattern
     private bool _isService = false;
     private bool _isSilent = false;
     private IToken _graphSpecifier = null;
-    private readonly List<GraphPattern> _graphPatterns = new List<GraphPattern>();
-    private readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
-    private readonly List<ISparqlFilter> _unplacedFilters = new List<ISparqlFilter>();
-    private readonly List<IAssignmentPattern> _unplacedAssignments = new List<IAssignmentPattern>();
+    private readonly List<GraphPattern> _graphPatterns = [];
+    private readonly List<ITriplePattern> _triplePatterns = [];
+    private readonly List<ISparqlFilter> _unplacedFilters = [];
+    private readonly List<IAssignmentPattern> _unplacedAssignments = [];
     private ISparqlFilter _filter;
     private BindingsPattern _data;
     private bool _break = false, _broken = false;

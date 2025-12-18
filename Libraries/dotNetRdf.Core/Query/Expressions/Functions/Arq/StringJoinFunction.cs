@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq;
 public class StringJoinFunction 
     : ISparqlExpression
 {
-    private readonly List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
+    private readonly List<ISparqlExpression> _exprs = [];
 
     /// <summary>
     /// Get the fixed separator string to use.

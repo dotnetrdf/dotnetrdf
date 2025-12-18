@@ -234,14 +234,14 @@ public class ConfigurationLoader : IConfigurationLoader
     /// <summary>
     /// Cache for loaded objects.
     /// </summary>
-    private static Dictionary<CachedObjectKey, object> _cache = new Dictionary<CachedObjectKey, object>();
+    private static Dictionary<CachedObjectKey, object> _cache = [];
 
-    private static readonly List<IConfigurationExtension> _extensions = new List<IConfigurationExtension>();
+    private static readonly List<IConfigurationExtension> _extensions = [];
     /// <summary>
     /// Set of built-in object factories that are automatically registered and used.
     /// </summary>
-    private static readonly List<IObjectFactory> _factories = new List<IObjectFactory>
-    {
+    private static readonly List<IObjectFactory> _factories =
+    [
         // Default Data Factories
         new GraphFactory(),
         new StoreFactory(),
@@ -286,12 +286,12 @@ public class ConfigurationLoader : IConfigurationLoader
         // Parser and Writer Factories
         new ParserFactory(),
         new WriterFactory(),
-    };
+    ];
 
-    private static readonly List<Assembly> _factoryAssemblies = new List<Assembly>
-    {
+    private static readonly List<Assembly> _factoryAssemblies =
+    [
         Assembly.GetAssembly(typeof(ConfigurationLoader)),
-    };
+    ];
 
     /// <summary>
     /// Path resolver.

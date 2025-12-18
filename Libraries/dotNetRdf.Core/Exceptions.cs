@@ -310,7 +310,7 @@ namespace VDS.RDF.Parsing
     /// </remarks>
     public class RdfThreadedParsingException : RdfParseException
     {
-        private readonly List<Exception> _exceptions = new List<Exception>();
+        private readonly List<Exception> _exceptions = [];
 
         /// <summary>
         /// Creates a new Threaded RDF Parsing Exception.
@@ -649,7 +649,7 @@ namespace VDS.RDF.Writing
     /// </remarks>
     public class RdfThreadedOutputException : RdfOutputException
     {
-        private List<Exception> _exceptions = new List<Exception>();
+        private List<Exception> _exceptions = [];
 
         /// <summary>
         /// Creates a new Threaded RDF Output Exception.

@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Algebra;
 /// </remarks>
 public class AskBgp : IBgp
 {
-    private readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
+    private readonly List<ITriplePattern> _triplePatterns = [];
 
     /// <summary>
     /// Creates a Streamed BGP containing a single Triple Pattern.

@@ -38,7 +38,7 @@ internal class PathResult
     {
         StartNode = startNode;
         EndNode = endNode;
-        PathNodes = new HashSet<INode>();
+        PathNodes = [];
     }
 
     private PathResult(PathResult previous, INode stepEndNode)

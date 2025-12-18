@@ -36,7 +36,7 @@ namespace VDS.RDF.Writing.Contexts;
 public class CompressingTurtleWriterContext 
     : TurtleWriterContext, ICollectionCompressingWriterContext, IAnnotationCompressingWriterContext
 {
-    private readonly TripleCollection _triplesDone = new TripleCollection();
+    private readonly TripleCollection _triplesDone = [];
 
     /// <summary>
     /// Creates a new Turtle Writer Context with default settings.
@@ -103,10 +103,10 @@ public class CompressingTurtleWriterContext
     /// <summary>
     /// Represents the mapping from Blank Nodes to Collections.
     /// </summary>
-    public Dictionary<INode, OutputRdfCollection> Collections { get; } = new Dictionary<INode, OutputRdfCollection>();
+    public Dictionary<INode, OutputRdfCollection> Collections { get; } = [];
 
     /// <inheritdoc />
-    public Dictionary<Triple, List<Triple>> Annotations { get; } = new Dictionary<Triple, List<Triple>>();
+    public Dictionary<Triple, List<Triple>> Annotations { get; } = [];
 
     /// <summary>
     /// Stores the Triples that should be excluded from standard output as they are part of collections or triple annotations.

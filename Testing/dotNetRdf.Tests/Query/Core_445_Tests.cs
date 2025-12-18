@@ -58,7 +58,7 @@ WHERE {
     //private static int averageExecutionTime;
     //private static int maxExecutionTime;
 
-    private readonly HashSet<string> _variables = new HashSet<string>();
+    private readonly HashSet<string> _variables = [];
     private readonly Random _randomizer = new Random();
 
     private string BuildRandomSizeQuery()

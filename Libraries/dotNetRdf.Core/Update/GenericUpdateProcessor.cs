@@ -544,7 +544,7 @@ public class GenericUpdateProcessor
                                         // Any other Graph Specifier we have to ignore this solution
                                         continue;
                                 }
-                                if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, new List<Triple>());
+                                if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, []);
                                 var context = new ConstructContext(s, true);
                                 foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
@@ -934,7 +934,7 @@ public class GenericUpdateProcessor
                                         // Any other Graph Specifier we have to ignore this solution
                                         continue;
                                 }
-                                if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, new List<Triple>());
+                                if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, []);
                                 var context = new ConstructContext(s, true);
                                 foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
@@ -1278,7 +1278,7 @@ public class GenericUpdateProcessor
                                         // Any other Graph Specifier we have to ignore this solution
                                         continue;
                                 }
-                                if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, new List<Triple>());
+                                if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, []);
                                 var context = new ConstructContext(s, true);
                                 foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
@@ -1366,7 +1366,7 @@ public class GenericUpdateProcessor
                                         // Any other Graph Specifier we have to ignore this solution
                                         continue;
                                 }
-                                if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, new List<Triple>());
+                                if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, []);
                                 var context = new ConstructContext(s, true);
                                 foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {

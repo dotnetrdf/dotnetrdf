@@ -101,7 +101,7 @@ internal static class Extensions
     {
         if (seen is null)
         {
-            seen = new HashSet<INode>();
+            seen = [];
         }
 
         if (seen.Add(node))

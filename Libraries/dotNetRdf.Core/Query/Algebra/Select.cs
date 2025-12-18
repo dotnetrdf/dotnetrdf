@@ -42,7 +42,7 @@ public class Select
     : IUnaryOperator
 {
     private readonly ISparqlAlgebra _pattern;
-    private readonly List<SparqlVariable> _variables = new List<SparqlVariable>();
+    private readonly List<SparqlVariable> _variables = [];
 
     /// <summary>
     /// Creates a new Select.

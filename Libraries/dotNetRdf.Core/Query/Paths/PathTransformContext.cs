@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Paths;
 /// </summary>
 public class PathTransformContext
 {
-    private List<ITriplePattern> _patterns = new List<ITriplePattern>();
+    private List<ITriplePattern> _patterns = [];
     private int _nextID = 0;
     private PatternItem _currSubj, _currObj, _start, _end;
     private bool _top = true;

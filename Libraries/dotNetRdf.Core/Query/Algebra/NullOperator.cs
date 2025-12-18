@@ -38,7 +38,7 @@ namespace VDS.RDF.Query.Algebra;
 public class NullOperator 
     : ISparqlAlgebra, ITerminalOperator
 {
-    private List<string> _vars = new List<string>();
+    private List<string> _vars = [];
 
     /// <summary>
     /// Creates a new Null Operator.
