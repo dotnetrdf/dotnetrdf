@@ -35,8 +35,8 @@ namespace VDS.RDF.Query.Optimisation;
 public class SparqlOptimiser
 {
     private IQueryOptimiser _queryOpt = new DefaultOptimiser();
-    private List<IAlgebraOptimiser> _algebraOpt = new List<IAlgebraOptimiser>()
-    {
+    private List<IAlgebraOptimiser> _algebraOpt =
+    [
         // Optimise to insert Property Functions first - this is always a no-op if none registered
         new PropertyFunctionOptimiser(),
         // Optimise for Lazy Evaluation
@@ -46,7 +46,7 @@ public class SparqlOptimiser
         new OrderByDistinctOptimiser(),
         // Optimise for special filter constructs which improve performance
         new IdentityFilterOptimiser(),
-    };
+    ];
 
     /// <summary>
     /// Get a default pre-configured optimiser.
@@ -138,8 +138,8 @@ public class SparqlOptimiser
             _queryOpt = new DefaultOptimiser();
         }
 
-        _algebraOpt = new List<IAlgebraOptimiser>
-        {
+        _algebraOpt =
+        [
             // Optimise to insert Property Functions first - this is always a no-op if none registered
             new PropertyFunctionOptimiser(),
             // Optimise for Lazy Evaluation
@@ -149,6 +149,6 @@ public class SparqlOptimiser
             new OrderByDistinctOptimiser(),
             // Optimise for special filter constructs which improve performance
             new IdentityFilterOptimiser(),
-        };
+        ];
     }
 }

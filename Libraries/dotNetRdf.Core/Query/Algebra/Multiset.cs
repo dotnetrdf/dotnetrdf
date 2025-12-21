@@ -38,11 +38,11 @@ public class Multiset
     /// <summary>
     /// Variables contained in the Multiset.
     /// </summary>
-    protected List<string> _variables = new List<string>();
+    protected List<string> _variables = [];
     /// <summary>
     /// Dictionary of Sets in the Multiset.
     /// </summary>
-    protected Dictionary<int, ISet> _sets = new Dictionary<int,ISet>();
+    protected Dictionary<int, ISet> _sets = [];
     /// <summary>
     /// Counter used to assign Set IDs.
     /// </summary>
@@ -112,7 +112,7 @@ public class Multiset
             // Create the Cache if necessary and reset it when necessary
             if (_containsCache == null || _cacheInvalid)
             {
-                _containsCache = new Dictionary<string, HashSet<INode>>();
+                _containsCache = [];
                 _cacheInvalid = false;
             }
             if (!_containsCache.ContainsKey(var))

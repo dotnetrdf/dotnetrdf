@@ -36,7 +36,7 @@ public class SyntaxValidationResults : ISyntaxValidationResults
 {
     private bool _valid;
     private string _message;
-    private List<string> _warnings = new List<string>();
+    private List<string> _warnings = [];
     private Exception _error;
     private object _result;
 

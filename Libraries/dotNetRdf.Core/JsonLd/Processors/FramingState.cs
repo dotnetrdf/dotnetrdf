@@ -56,15 +56,15 @@ internal class FramingState
         GraphMap = graphMap;
         GraphName = graphName;
         GraphStack = new Stack<string>();
-        Link = new JObject();
-        _embeds = new Dictionary<string, Dictionary<string, Tuple<JToken, string>>>();
+        Link = [];
+        _embeds = [];
     }
 
     public void TrackEmbeddedNodes(bool forceNew)
     {
         if (forceNew || !_embeds.ContainsKey(GraphName))
         {
-            _embeds[GraphName] = new Dictionary<string, Tuple<JToken, string>>();
+            _embeds[GraphName] = [];
         }
     }
 
@@ -77,7 +77,7 @@ internal class FramingState
     {
         if (!_embeds.ContainsKey(GraphName))
         {
-            _embeds[GraphName] = new Dictionary<string, Tuple<JToken, string>>();
+            _embeds[GraphName] = [];
         }
 
         _embeds[GraphName][id] = new Tuple<JToken, string>(node, property);

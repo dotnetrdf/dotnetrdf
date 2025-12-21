@@ -67,7 +67,7 @@ public static class RdfXmlEvent
 public class RootEvent : BaseRdfXmlEvent
 {
     private ElementEvent _docelement;
-    private List<ElementEvent> _children = new List<ElementEvent>();
+    private List<ElementEvent> _children = [];
     private string _baseuri = string.Empty;
     private string _language = string.Empty;
 
@@ -154,11 +154,11 @@ public class RootEvent : BaseRdfXmlEvent
 /// </summary>
 public class ElementEvent : BaseRdfXmlEvent 
 {
-    private List<IRdfXmlEvent> _children = new List<IRdfXmlEvent>();
+    private List<IRdfXmlEvent> _children = [];
     private string _baseuri = string.Empty;
     private string _localname, _namespace;
-    private List<AttributeEvent> _attributes = new List<AttributeEvent>();
-    private List<NamespaceAttributeEvent> _namespaces = new List<NamespaceAttributeEvent>();
+    private List<AttributeEvent> _attributes = [];
+    private List<NamespaceAttributeEvent> _namespaces = [];
     private string _language = string.Empty;
     private int _listcounter = 1;
     private IRdfXmlEvent _subject = null;

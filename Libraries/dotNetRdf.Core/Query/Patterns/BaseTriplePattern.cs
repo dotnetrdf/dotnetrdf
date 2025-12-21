@@ -38,7 +38,7 @@ public abstract class BaseTriplePattern
     /// <summary>
     /// Stores the list of variables that are used in the Pattern.
     /// </summary>
-    protected List<string> _vars = new();
+    protected List<string> _vars = [];
 
     /// <inheritdoc />
     public abstract TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor,

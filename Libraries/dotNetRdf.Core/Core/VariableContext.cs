@@ -53,7 +53,7 @@ public enum VariableContextType
 public class VariableContext : BasicTripleContext
 {
     private VariableContextType _type;
-    private HashSet<INode> _vars = new HashSet<INode>();
+    private HashSet<INode> _vars = [];
     private VariableContext _innerContext;
 
     /// <summary>

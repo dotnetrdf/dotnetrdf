@@ -104,7 +104,7 @@ internal class Resource : WrapperNode, IResource, IComparable<IResource>, IEquat
     }
 
     // A constructor cache to optimize half of the reflection work
-    private static readonly Dictionary<Type, ConstructorInfo> constructors = new Dictionary<Type, ConstructorInfo>();
+    private static readonly Dictionary<Type, ConstructorInfo> constructors = [];
     public IResource As(Type cls)
     {
         ConstructorInfo constructor;

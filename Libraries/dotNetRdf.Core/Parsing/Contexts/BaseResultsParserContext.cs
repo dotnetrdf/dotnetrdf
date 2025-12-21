@@ -90,7 +90,7 @@ public class BaseResultsParserContext
     /// <summary>
     /// Gets the Variables that have been seen.
     /// </summary>
-    public List<string> Variables { get; } = new List<string>();
+    public List<string> Variables { get; } = [];
 
     /// <summary>
     /// Gets/Sets whether Parser Tracing is used.

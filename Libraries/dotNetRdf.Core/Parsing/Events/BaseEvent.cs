@@ -138,7 +138,7 @@ public abstract class BaseRdfAEvent
     public BaseRdfAEvent(int eventType, PositionInfo pos, IEnumerable<KeyValuePair<string, string>> attributes)
         : base(eventType, pos)
     {
-        _attributes = new Dictionary<string, string>();
+        _attributes = [];
         foreach (KeyValuePair<string, string> attr in attributes)
         {
             _attributes.Add(attr.Key, attr.Value);

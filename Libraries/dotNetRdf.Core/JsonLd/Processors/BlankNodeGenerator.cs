@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace VDS.RDF.JsonLd.Processors;
 
@@ -37,7 +36,7 @@ public class BlankNodeGenerator : IBlankNodeGenerator
 {
     private readonly string _prefix;
     private int _counter;
-    private readonly Dictionary<string, string> _identifierMap = new();
+    private readonly Dictionary<string, string> _identifierMap = [];
 
     /// <summary>
     /// Create a new generator instance.

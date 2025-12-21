@@ -125,8 +125,10 @@ public class ModifyCommand
     [Obsolete("Replaced by AffectsGraph(IRefNode)")]
     public override bool AffectsGraph(Uri graphUri)
     {
-        var affectedUris = new List<string>();
-        affectedUris.Add(TargetUri != null ? TargetUri.AbsoluteUri : string.Empty);
+        var affectedUris = new List<string>
+        {
+            TargetUri != null ? TargetUri.AbsoluteUri : string.Empty,
+        };
         if (_deletePattern.IsGraph) affectedUris.Add(_deletePattern.GraphSpecifier.Value);
         if (_deletePattern.HasChildGraphPatterns)
         {

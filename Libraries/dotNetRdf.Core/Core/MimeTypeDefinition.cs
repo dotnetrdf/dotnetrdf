@@ -41,11 +41,11 @@ public sealed class MimeTypeDefinition
 {
     private string _name, _canonicalType, _canonicalExt, _formatUri;
     private Encoding _encoding = Encoding.UTF8;
-    private List<string> _mimeTypes = new List<string>();
-    private List<string> _fileExtensions = new List<string>();
+    private List<string> _mimeTypes = [];
+    private List<string> _fileExtensions = [];
     private Type _rdfParserType, _rdfDatasetParserType, _sparqlResultsParserType;
     private Type _rdfWriterType, _rdfDatasetWriterType, _sparqlResultsWriterType;
-    private Dictionary<Type, Type> _objectParserTypes = new Dictionary<Type, Type>();
+    private Dictionary<Type, Type> _objectParserTypes = [];
     private decimal _preference = 1.0m;
 
     /// <summary>

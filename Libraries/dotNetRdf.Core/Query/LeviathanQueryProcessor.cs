@@ -1025,7 +1025,7 @@ public class LeviathanQueryProcessor
         }
         else
         {
-            groups = new List<BindingGroup> { new BindingGroup(results.SetIDs) };
+            groups = [new BindingGroup(results.SetIDs)];
         }
 
         // Add Groups to the GroupMultiset
@@ -1044,7 +1044,7 @@ public class LeviathanQueryProcessor
         // If grouping produced no groups, there are aggregates present, then an implicit group is created unless the input multiset was empty and explicit grouping was specified.
         if (groups.Count == 0 && groupBy.Aggregates.Any() && !(context.InputMultiset.IsEmpty && (groupBy.Grouping != null || context.Query.GroupBy != null)))
         {
-            groupSet.AddGroup(new BindingGroup());
+            groupSet.AddGroup([]);
         }
 
         // Apply the aggregates
@@ -1091,7 +1091,7 @@ public class LeviathanQueryProcessor
                 {
                     if (!groups.TryGetValue(value, out BindingGroup group))
                     {
-                        group = new BindingGroup();
+                        group = [];
                         if (groupBy.AssignVariable != null)
                         {
                             group.AddAssignment(groupBy.AssignVariable, value);
@@ -1180,13 +1180,13 @@ public class LeviathanQueryProcessor
             {
                 outGroups.Add(error);
                 if (groupBy.AssignVariable != null) error.AddAssignment(groupBy.AssignVariable, null);
-                error = new BindingGroup();
+                error = [];
             }
             if (nulls.BindingIDs.Any())
             {
                 outGroups.Add(nulls);
                 if (groupBy.AssignVariable != null) nulls.AddAssignment(groupBy.AssignVariable, null);
-                nulls = new BindingGroup();
+                nulls = [];
             }
         }
 

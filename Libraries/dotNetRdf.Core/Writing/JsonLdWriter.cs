@@ -571,7 +571,7 @@ public class JsonLdWriter : BaseStoreWriter
 
     private class JObjectWithUsages : JObject
     {
-        public readonly List<Usage> Usages = new List<Usage>();
+        public readonly List<Usage> Usages = [];
         public JObjectWithUsages(params object[] content) : base(content) { }
     }
 

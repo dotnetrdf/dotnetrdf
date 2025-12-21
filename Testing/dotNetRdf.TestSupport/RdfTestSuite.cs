@@ -13,7 +13,7 @@ public class RdfTestSuite
     private readonly Dictionary<string, MethodInfo> _runners;
     protected RdfTestSuite()
     {
-        _runners = new Dictionary<string, MethodInfo>();
+        _runners = [];
         foreach (MethodInfo m in GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic|BindingFlags.Public))
         {
             if (m.GetCustomAttribute(typeof(ManifestTestRunnerAttribute)) is ManifestTestRunnerAttribute runnerAttr)

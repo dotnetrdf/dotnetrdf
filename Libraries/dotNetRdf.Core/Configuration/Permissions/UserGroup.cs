@@ -35,9 +35,9 @@ namespace VDS.RDF.Configuration.Permissions;
 /// </summary>
 public class UserGroup
 {
-    private List<NetworkCredential> _users = new List<NetworkCredential>();
-    private List<IPermission> _allowedActions = new List<IPermission>();
-    private List<IPermission> _deniedActions = new List<IPermission>();
+    private List<NetworkCredential> _users = [];
+    private List<IPermission> _allowedActions = [];
+    private List<IPermission> _deniedActions = [];
     private PermissionModel _mode = PermissionModel.DenyAllow;
     private bool _guest = false;
 

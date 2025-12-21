@@ -116,7 +116,7 @@ internal class PullEvaluationContext : IPatternEvaluationContext
             }
         }
 
-        _namedGraphs = namedGraphs != null ? namedGraphs.ToDictionary(g => g, g => data.HasGraph(g) ? data[g].Triples : new TripleCollection()) : new Dictionary<IRefNode, BaseTripleCollection>();
+        _namedGraphs = namedGraphs != null ? namedGraphs.ToDictionary(g => g, g => data.HasGraph(g) ? data[g].Triples : new TripleCollection()) : [];
         if (!unionDefaultGraph && !customDefaultGraph && !_namedGraphs.Any())
         {
             _namedGraphs = data.Graphs.Where(g => g.Name != null).ToDictionary(g => g.Name, g => g.Triples);

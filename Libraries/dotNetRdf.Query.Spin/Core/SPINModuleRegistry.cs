@@ -54,7 +54,7 @@ internal class SPINModuleRegistry
     /**
      * Remembers the source object (e.g. file) that a Function has been loaded from.
      */
-    private static Dictionary<IResource, Object> sources = new Dictionary<IResource, Object>();
+    private static Dictionary<IResource, Object> sources = [];
 
     /**
      * Remembers all template definitions (in their original Model) so that they

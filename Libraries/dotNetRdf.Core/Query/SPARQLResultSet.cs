@@ -40,7 +40,7 @@ public sealed class SparqlResultSet
     /// <summary>
     /// Lists of Variables in the Result Set.
     /// </summary>
-    private readonly List<string> _variables = new List<string>();
+    private readonly List<string> _variables = [];
     /// <summary>
     /// Boolean Result.
     /// </summary>
@@ -140,7 +140,7 @@ public sealed class SparqlResultSet
     /// <summary>
     /// Gets the List of Results.
     /// </summary>
-    public List<ISparqlResult> Results { get; } = new List<ISparqlResult>();
+    public List<ISparqlResult> Results { get; } = [];
 
     /// <summary>
     /// Index directly into the Results.

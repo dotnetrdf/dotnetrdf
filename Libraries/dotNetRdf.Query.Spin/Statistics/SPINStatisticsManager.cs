@@ -56,7 +56,7 @@ internal class SPINStatisticsManager
     }
 
 
-    private HashSet<ISPINStatisticsListener> _listeners = new HashSet<ISPINStatisticsListener>();
+    private HashSet<ISPINStatisticsListener> _listeners = [];
 
     private bool _recording;
 
@@ -65,7 +65,7 @@ internal class SPINStatisticsManager
     private bool _recordingSPINFunctions;
 
     //TODO: check for thread safety and synchronization. If order is not an issue, use System.Collections.Concurrent.ConcurrentBag instead
-    private List<SPINStatistics> stats = new List<SPINStatistics>();
+    private List<SPINStatistics> stats = [];
 
 
     public void addListener(ISPINStatisticsListener listener)

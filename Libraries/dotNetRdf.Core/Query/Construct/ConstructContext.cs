@@ -115,7 +115,7 @@ public class ConstructContext
     /// </remarks>
     public INode GetBlankNode(string id)
     {
-        _bnodeMap ??= new Dictionary<string, INode>();
+        _bnodeMap ??= [];
 
         if (_bnodeMap.TryGetValue(id, out INode node)) return node;
 

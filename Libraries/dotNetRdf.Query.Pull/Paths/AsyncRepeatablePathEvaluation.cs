@@ -43,7 +43,7 @@ internal class AsyncRepeatablePathEvaluation(
         if (TryEvaluatePattern(pathStart, input, out INode? startNode))
         {
             await foreach (PathResult stepResult in EvaluateStep(context, input, activeGraph, cancellationToken, 
-                               startNode,  0, new NodeMatchPattern(startNode), new HashSet<INode>()))
+                               startNode,  0, new NodeMatchPattern(startNode), []))
             {
                 yield return stepResult;
             }
@@ -53,7 +53,7 @@ internal class AsyncRepeatablePathEvaluation(
             foreach (INode node in context.GetNodes(pathStart, activeGraph))
             {
                 await foreach (PathResult stepResult in EvaluateStep(context, input, activeGraph, cancellationToken, node, 0,
-                                   new NodeMatchPattern(node), new HashSet<INode>()))
+                                   new NodeMatchPattern(node), []))
                 {
                     yield return stepResult;
                 }

@@ -1964,7 +1964,7 @@ public class RdfXmlParser
         }
         else
         {
-            context.IDs.Add(id, new List<INode>() { subj });
+            context.IDs.Add(id, [subj]);
         }
     }
 

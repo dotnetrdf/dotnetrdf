@@ -97,7 +97,7 @@ public class Permission : IPermission
 /// </summary>
 public class PermissionSet : IPermission
 {
-    private List<string> _actions = new List<string>();
+    private List<string> _actions = [];
 
     /// <summary>
     /// Creates a new Permissions Set.

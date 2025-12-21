@@ -103,23 +103,23 @@ public class TurtleFormatter
     /// <summary>
     /// Set of characters that must be escaped for Long Literals.
     /// </summary>
-    protected List<string[]> _longLitMustEscape = new List<string[]>
-    { 
+    protected List<string[]> _longLitMustEscape =
+    [
         new string[] { @"\", @"\\" }, 
         new string[] { "\"", "\\\"" },
-    };
+    ];
 
     /// <summary>
     /// Set of characters that must be escaped for Literals.
     /// </summary>
-    protected List<string[]> _litMustEscape = new List<string[]>
-    { 
+    protected List<string[]> _litMustEscape =
+    [
         new string[] { @"\", @"\\" }, 
         new string[] { "\"", "\\\"" },
         new string[] { "\n", @"\n" },
         new string[] { "\r", @"\r" },
         new string[] { "\t", @"\t" },
-    };
+    ];
 
     /// <summary>
     /// Creates a new Turtle Formatter.

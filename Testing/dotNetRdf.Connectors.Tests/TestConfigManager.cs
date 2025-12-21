@@ -93,7 +93,7 @@ public static class TestConfigManager
     public const String UseRemoteParsing = "Parsing.Remote";
 
     private static bool _init = false, _failed = false;
-    private static readonly Dictionary<String, String> _settings = new Dictionary<string,string>();
+    private static readonly Dictionary<String, String> _settings = [];
 
     private static void Init()
     {

@@ -50,7 +50,7 @@ public class JsonLdContext
     /// </summary>
     public JsonLdContext()
     {
-        _termDefinitions = new Dictionary<string, JsonLdTermDefinition>();
+        _termDefinitions = [];
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ public class JsonLdContext
     public JsonLdContext(Uri baseIri)
     {
         Base = OriginalBase = baseIri;
-        _termDefinitions = new Dictionary<string, JsonLdTermDefinition>();
+        _termDefinitions = [];
     }
 
     private Uri _base;

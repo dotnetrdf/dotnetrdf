@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Inference;
 /// </remarks>
 public class SimpleN3RulesReasoner : IInferenceEngine
 {
-    private List<string[]> _rules = new List<string[]>();
+    private List<string[]> _rules = [];
     private SparqlUpdateValidator _validator = new SparqlUpdateValidator();
     private SparqlFormatter _formatter = new SparqlFormatter();
 

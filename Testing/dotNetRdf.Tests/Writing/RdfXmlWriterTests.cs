@@ -37,14 +37,14 @@ namespace VDS.RDF.Writing;
 
 public class RdfXmlWriterTests
 {
-    private readonly List<IRdfWriter> _writers = new List<IRdfWriter>()
-    {
+    private readonly List<IRdfWriter> _writers =
+    [
         new RdfXmlWriter(WriterCompressionLevel.High),
         new RdfXmlWriter(WriterCompressionLevel.High, false),
         new PrettyRdfXmlWriter(WriterCompressionLevel.High),
         new PrettyRdfXmlWriter(WriterCompressionLevel.High, false),
         new PrettyRdfXmlWriter(WriterCompressionLevel.High, true, false)
-    };
+    ];
 
     private readonly IRdfReader _parser = new RdfXmlParser();
     private readonly NTriplesFormatter _formatter = new NTriplesFormatter();

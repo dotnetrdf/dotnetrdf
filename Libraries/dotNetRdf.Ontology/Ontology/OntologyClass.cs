@@ -63,8 +63,8 @@ public class OntologyClass
 
         // Find derived classes
         IUriNode subClassOf = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertySubClassOf));
-        _resourceProperties.Add(PropertyDerivedClass, new HashSet<INode>());
-        _resourceProperties.Add(PropertyDirectSubClass, new HashSet<INode>());
+        _resourceProperties.Add(PropertyDerivedClass, []);
+        _resourceProperties.Add(PropertyDirectSubClass, []);
         foreach (Triple t in _graph.GetTriplesWithPredicateObject(subClassOf, _resource))
         {
             _resourceProperties[PropertyDerivedClass].Add(t.Subject);
@@ -85,7 +85,7 @@ public class OntologyClass
         } while (c < _resourceProperties[PropertyDerivedClass].Count);
 
         // Find additional super classes
-        _resourceProperties.Add(PropertyDirectSuperClass, new HashSet<INode>());
+        _resourceProperties.Add(PropertyDirectSuperClass, []);
         if (_resourceProperties.ContainsKey(OntologyHelper.PropertySubClassOf))
         {
             foreach (INode node in _resourceProperties[OntologyHelper.PropertySubClassOf])

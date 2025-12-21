@@ -24,7 +24,7 @@ internal static class VariableClassificationExtensions
 public class VariableClassificationTests
 {
     private readonly INodeFactory _factory = new NodeFactory();
-    private readonly List<String> _emptyList = new List<String>();
+    private readonly List<String> _emptyList = [];
     private readonly INode _rdfType, _s, _p, _o;
 
     public VariableClassificationTests()

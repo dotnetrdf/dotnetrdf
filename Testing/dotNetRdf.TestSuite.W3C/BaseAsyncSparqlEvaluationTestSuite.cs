@@ -23,7 +23,7 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
 
     protected abstract Task<object> ProcessQueryAsync(TripleStore tripleStore, SparqlQuery query);
 
-    protected Dictionary<string, string> SkipTests = new();
+    protected Dictionary<string, string> SkipTests = [];
 
     protected async Task PerformTest(ManifestTestData t)
     {

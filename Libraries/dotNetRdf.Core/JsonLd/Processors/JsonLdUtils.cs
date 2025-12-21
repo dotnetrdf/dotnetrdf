@@ -431,8 +431,10 @@ internal class JsonLdUtils
                 else
                 {
                     // Otherwise convert the target property value to an array and then append value
-                    entryArray = new JArray(o[entry]);
-                    entryArray.Add(value);
+                    entryArray = new JArray(o[entry])
+                    {
+                        value,
+                    };
                     o[entry] = entryArray;
                 }
             }

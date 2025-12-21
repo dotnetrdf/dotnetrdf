@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.Builder;
 internal class BindingTupleBuilder : IBindingTupleBuilder
 {
     private readonly List<string> _variables;
-    private readonly List<PatternItem> _patternItems = new List<PatternItem>();
+    private readonly List<PatternItem> _patternItems = [];
     private readonly PatternItemFactory _patternItemFactory = new PatternItemFactory();
 
     public BindingTupleBuilder(List<string> variables)

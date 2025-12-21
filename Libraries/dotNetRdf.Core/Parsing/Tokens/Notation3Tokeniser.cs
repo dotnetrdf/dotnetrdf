@@ -49,7 +49,7 @@ public class Notation3Tokeniser
     public const string ValidVarNamesPattern = "^\\?[_A-Za-z][\\w\\-]*$";
 
     private ParsingTextReader _in;
-    private List<string> _keywords = new List<string>();
+    private List<string> _keywords = [];
     private bool _keywordsmode = false;
     private Regex _isValidQName = new Regex(ValidQNamesPattern);
     private Regex _isValidVarName = new Regex(ValidVarNamesPattern);

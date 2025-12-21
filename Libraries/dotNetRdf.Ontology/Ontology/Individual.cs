@@ -40,7 +40,7 @@ namespace VDS.RDF.Ontology;
 /// </remarks>
 public class Individual : OntologyResource
 {
-    private List<OntologyClass> _classes = new List<OntologyClass>();
+    private List<OntologyClass> _classes = [];
 
     /// <summary>
     /// Gets an Individual from the Graph.

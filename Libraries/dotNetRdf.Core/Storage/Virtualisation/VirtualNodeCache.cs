@@ -34,7 +34,7 @@ namespace VDS.RDF.Storage.Virtualisation;
 /// </summary>
 public class VirtualNodeCache<TNodeID, TKey>
 {
-    private Dictionary<TKey, INode> _mapping = new Dictionary<TKey, INode>();
+    private Dictionary<TKey, INode> _mapping = [];
     private Func<TNodeID, TKey> _keyGenerator;
 
     /// <summary>

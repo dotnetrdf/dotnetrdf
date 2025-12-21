@@ -339,7 +339,7 @@ public static class MimeTypesHelper
         {
             if (!_init)
             {
-                _mimeTypes = new List<MimeTypeDefinition>();
+                _mimeTypes = [];
 
                 // Define NTriples
                 var ntriples = new MimeTypeDefinition("NTriples", W3CFormatsNamespace + "N-Triples", NTriples, new string[] { DefaultNTriplesExtension }, typeof(NTriplesParser), null, null, typeof(NTriplesWriter), null, null);
