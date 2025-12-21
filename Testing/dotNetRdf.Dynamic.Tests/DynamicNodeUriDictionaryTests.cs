@@ -418,7 +418,7 @@ public class DynamicNodeUriDictionaryTests
         var spo = new[] { s, p, o };
         void isEmpty(KeyValuePair<Uri, object> actual)
         {
-            Assert.Equal(default(KeyValuePair<Uri, object>), actual);
+            Assert.Equal(default, actual);
         }
 
         Action<KeyValuePair<Uri, object>> isSPOWith(Uri expected)
