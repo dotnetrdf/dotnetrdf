@@ -4530,7 +4530,7 @@ public class LeviathanQueryProcessor
     }
     #endregion
 
-    public static IEnumerable<T[]> ChunkBy<T>(IEnumerable<T> source, int size)
+    private static IEnumerable<T[]> ChunkBy<T>(IEnumerable<T> source, int size)
     {
         var buffer = new List<T>();
         foreach (var item in source)
