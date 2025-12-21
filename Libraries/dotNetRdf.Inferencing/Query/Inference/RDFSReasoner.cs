@@ -48,8 +48,8 @@ namespace VDS.RDF.Query.Inference;
 /// </remarks>
 public class StaticRdfsReasoner : IInferenceEngine
 {
-    private readonly Dictionary<INode, List<INode>> _classMappings = new();
-    private readonly Dictionary<INode, List<INode>> _propertyMappings = new();
+    private readonly Dictionary<INode, List<INode>> _classMappings = [];
+    private readonly Dictionary<INode, List<INode>> _propertyMappings = [];
     private readonly MultiDictionary<INode, List<INode>> _domainMappings = new MultiDictionary<INode, List<INode>>(new FastVirtualNodeComparer());
     private readonly MultiDictionary<INode, List<INode>> _rangeMappings = new MultiDictionary<INode, List<INode>>(new FastVirtualNodeComparer());
     private readonly IUriNode _rdfType, _rdfsClass, _rdfsSubClass, _rdfProperty, _rdfsSubProperty, _rdfsRange, _rdfsDomain;
@@ -180,11 +180,11 @@ public class StaticRdfsReasoner : IInferenceEngine
                 // The Triple defines a Sub Class
                 if (!_classMappings.ContainsKey(t.Subject))
                 {
-                    _classMappings.Add(t.Subject, new List<INode>());
+                    _classMappings.Add(t.Subject, []);
                 }
                 else if (_classMappings[t.Subject] == null)
                 {
-                    _classMappings[t.Subject] = new List<INode>();
+                    _classMappings[t.Subject] = [];
                 }
                 _classMappings[t.Subject].Add(t.Object);
             }
@@ -193,11 +193,11 @@ public class StaticRdfsReasoner : IInferenceEngine
                 // The Triple defines a Sub property
                 if (!_propertyMappings.ContainsKey(t.Subject))
                 {
-                    _propertyMappings.Add(t.Subject, new List<INode>());
+                    _propertyMappings.Add(t.Subject, []);
                 }
                 else if (_propertyMappings[t.Subject] == null)
                 {
-                    _propertyMappings[t.Subject] = new List<INode>();
+                    _propertyMappings[t.Subject] = [];
                 }
                 _propertyMappings[t.Subject].Add(t.Object);
             }
@@ -210,7 +210,7 @@ public class StaticRdfsReasoner : IInferenceEngine
                 }
                 if (!_rangeMappings.ContainsKey(t.Subject))
                 {
-                    _rangeMappings.Add(t.Subject, new List<INode> { t.Object });
+                    _rangeMappings.Add(t.Subject, [t.Object]);
                 }
                 if (!_classMappings.ContainsKey(t.Object))
                 {
@@ -226,7 +226,7 @@ public class StaticRdfsReasoner : IInferenceEngine
                 }
                 if (!_domainMappings.ContainsKey(t.Subject))
                 {
-                    _domainMappings.Add(t.Subject, new List<INode> { t.Object });
+                    _domainMappings.Add(t.Subject, [t.Object]);
                 }
                 if (!_classMappings.ContainsKey(t.Object))
                 {
@@ -251,12 +251,12 @@ public class StaticRdfsReasoner : IInferenceEngine
     /// <param name="inferences">List of Inferences.</param>
     private void InferClasses(Triple t, List<Triple> inferences)
     {
-        InferFromMappings(_classMappings, t.Object, (node) => new Triple(t.Subject, t.Predicate, node), inferences, new HashSet<INode>());
+        InferFromMappings(_classMappings, t.Object, (node) => new Triple(t.Subject, t.Predicate, node), inferences, []);
     }
     
     private void InferPredicates(Triple t, List<Triple> inferences)
     {
-        InferFromMappings(_propertyMappings, t.Predicate, (node) => new Triple(t.Subject, node, t.Object), inferences, new HashSet<INode>());
+        InferFromMappings(_propertyMappings, t.Predicate, (node) => new Triple(t.Subject, node, t.Object), inferences, []);
     }
 
     private void InferFromMappings(IDictionary<INode, List<INode>> mappings, INode mappingKey,

@@ -31,7 +31,7 @@ namespace VDS.RDF.Query.Spin;
 
 internal class SpinVariableTable
 {
-    private Dictionary<String, INode> _vars = new Dictionary<string, INode>();
+    private Dictionary<String, INode> _vars = [];
     private IGraph _g;
 
     public SpinVariableTable(IGraph g)

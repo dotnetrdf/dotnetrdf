@@ -36,8 +36,8 @@ namespace VDS.RDF.Query;
 public class BindingGroup 
     : IEnumerable<int>
 {
-    private List<int> _bindingIDs = new List<int>();
-    private Dictionary<string, INode> _assignments = new Dictionary<string, INode>();
+    private List<int> _bindingIDs = [];
+    private Dictionary<string, INode> _assignments = [];
 
     /// <summary>
     /// Creates a new Binding Group.

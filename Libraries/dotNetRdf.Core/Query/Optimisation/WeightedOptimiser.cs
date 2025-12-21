@@ -100,9 +100,9 @@ public class WeightedOptimiser
 /// </summary>
 class Weightings
 {
-    private Dictionary<INode, long> _subjectWeightings = new Dictionary<INode, long>();
-    private Dictionary<INode, long> _predicateWeightings = new Dictionary<INode, long>();
-    private Dictionary<INode, long> _objectWeightings = new Dictionary<INode, long>();
+    private Dictionary<INode, long> _subjectWeightings = [];
+    private Dictionary<INode, long> _predicateWeightings = [];
+    private Dictionary<INode, long> _objectWeightings = [];
 
     private double _defSubjWeight = WeightedOptimiser.DefaultSubjectWeight;
     private double _defPredWeight = WeightedOptimiser.DefaultPredicateWeight;

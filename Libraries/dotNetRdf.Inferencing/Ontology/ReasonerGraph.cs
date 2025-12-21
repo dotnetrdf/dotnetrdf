@@ -46,7 +46,7 @@ namespace VDS.RDF.Ontology;
 public class ReasonerGraph 
     : OntologyGraph
 {
-    private List<IInferenceEngine> _reasoners = new List<IInferenceEngine>();
+    private List<IInferenceEngine> _reasoners = [];
     private IGraph _baseGraph;
 
     /// <summary>

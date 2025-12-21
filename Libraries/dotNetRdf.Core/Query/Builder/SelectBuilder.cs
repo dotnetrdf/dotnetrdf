@@ -33,7 +33,7 @@ namespace VDS.RDF.Query.Builder;
 
 internal sealed class SelectBuilder : QueryBuilder, ISelectBuilder
 {
-    private readonly IList<Func<INamespaceMapper, SparqlVariable>> _buildSelectVariables = new List<Func<INamespaceMapper, SparqlVariable>>();
+    private readonly IList<Func<INamespaceMapper, SparqlVariable>> _buildSelectVariables = [];
 
     internal SelectBuilder(SparqlQueryType queryType) : base(queryType)
     {

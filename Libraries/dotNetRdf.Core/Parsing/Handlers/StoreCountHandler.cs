@@ -48,7 +48,7 @@ public class StoreCountHandler : BaseRdfHandler
     protected override void StartRdfInternal()
     {
         TripleCount = 0;
-        _graphs = new HashSet<string>();
+        _graphs = [];
     }
 
     /// <summary>

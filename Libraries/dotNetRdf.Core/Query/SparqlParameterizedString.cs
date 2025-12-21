@@ -83,9 +83,9 @@ public class SparqlParameterizedString
     private static readonly SparqlFormatter EmptyFormatter = new SparqlFormatter();
 
     private INamespaceMapper _nsmap = new NamespaceMapper(true);
-    private readonly List<string> _commandText = new List<string>();
-    private readonly Dictionary<string, INode> _parameters = new Dictionary<string, INode>();
-    private readonly Dictionary<string, INode> _variables = new Dictionary<string, INode>();
+    private readonly List<string> _commandText = [];
+    private readonly Dictionary<string, INode> _parameters = [];
+    private readonly Dictionary<string, INode> _variables = [];
 
     private readonly SparqlFormatter _formatter;
 

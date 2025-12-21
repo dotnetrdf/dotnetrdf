@@ -90,12 +90,12 @@ public class PathEvaluationContext
     /// <summary>
     /// Gets the hash set of incomplete paths generated so far.
     /// </summary>
-    public HashSet<PotentialPath> Paths { get; } = new HashSet<PotentialPath>();
+    public HashSet<PotentialPath> Paths { get; } = [];
 
     /// <summary>
     /// Gets the hash set of complete paths generated so far.
     /// </summary>
-    public HashSet<PotentialPath> CompletePaths { get; } = new HashSet<PotentialPath>();
+    public HashSet<PotentialPath> CompletePaths { get; } = [];
 
     /// <summary>
     /// Gets the pattern which is the start of the path.

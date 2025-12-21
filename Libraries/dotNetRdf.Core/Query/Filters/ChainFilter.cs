@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Filters;
 /// </summary>
 public class ChainFilter : ISparqlFilter
 {
-    private readonly List<ISparqlFilter> _filters = new();
+    private readonly List<ISparqlFilter> _filters = [];
 
     /// <summary>
     /// Creates a new Chain Filter.

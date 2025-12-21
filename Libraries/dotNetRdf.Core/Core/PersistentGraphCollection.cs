@@ -41,8 +41,8 @@ class PersistentGraphCollection
     private readonly IStorageProvider _manager;
     private readonly TripleEventHandler _tripleAddedHandler;
     private readonly TripleEventHandler _tripleRemovedHandler;
-    private readonly List<TripleStorePersistenceAction> _actions = new List<TripleStorePersistenceAction>();
-    private readonly HashSet<string> _removedGraphs = new HashSet<string>();
+    private readonly List<TripleStorePersistenceAction> _actions = [];
+    private readonly HashSet<string> _removedGraphs = [];
     private bool _persisting;
 
     public PersistentGraphCollection(IStorageProvider manager)

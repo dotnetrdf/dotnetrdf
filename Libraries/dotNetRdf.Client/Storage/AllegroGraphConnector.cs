@@ -190,7 +190,7 @@ public class AllegroGraphConnector
         try
         {
             // Create the Request
-            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, HttpMethod.Post, new Dictionary<string, string>());
+            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, HttpMethod.Post, []);
 
             // Build the Post Data and add to the Request Body
             request.Content = new FormUrlEncodedContent(new []{new KeyValuePair<string, string>("query", sparqlUpdate)});
@@ -220,7 +220,7 @@ public class AllegroGraphConnector
         {
             // Create the Request
             HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _updatePath,
-                MimeTypesHelper.Any, HttpMethod.Post, new Dictionary<string, string>());
+                MimeTypesHelper.Any, HttpMethod.Post, []);
 
             // Build the Post Data and add to the Request Body
             request.Content =
@@ -270,7 +270,7 @@ public class AllegroGraphConnector
         try
         {
             HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _updatePath,
-                MimeTypesHelper.Any, HttpMethod.Post, new Dictionary<string, string>());
+                MimeTypesHelper.Any, HttpMethod.Post, []);
 
             // Build the Post Data and add to the Request Body
             request.Content =

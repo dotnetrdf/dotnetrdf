@@ -119,9 +119,10 @@ public class DynamicSubjectCollectionTests
         var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
         var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
         var d = new DynamicNode(o, g);
-        var c = new DynamicSubjectCollection(p, d);
-
-        c.Add(s);
+        var c = new DynamicSubjectCollection(p, d)
+        {
+            s,
+        };
 
         Assert.Equal(expected, g);
     }

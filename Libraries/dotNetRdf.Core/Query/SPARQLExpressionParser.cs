@@ -626,7 +626,7 @@ class SparqlExpressionParser
 
             case Token.CALL:
                 if (SyntaxMode != SparqlQuerySyntax.Extended) throw Error("The CALL keyword is only valid when using SPARQL 1.1 Extended syntax", next);
-                args = new List<ISparqlExpression>();
+                args = [];
                 do
                 {
                     args.Add(TryParseBrackettedExpression(tokens, first, out comma));
@@ -640,7 +640,7 @@ class SparqlExpressionParser
 
             case Token.COALESCE:
                 // Get as many argument expressions as we can
-                args = new List<ISparqlExpression>();
+                args = [];
                 do
                 {
                     args.Add(TryParseBrackettedExpression(tokens, first, out comma));
@@ -651,7 +651,7 @@ class SparqlExpressionParser
 
             case Token.CONCAT:
                 // Get as many argument expressions as we can
-                args = new List<ISparqlExpression>();
+                args = [];
                 do
                 {
                     args.Add(TryParseBrackettedExpression(tokens, first, out comma));
@@ -893,8 +893,10 @@ class SparqlExpressionParser
             if (next.TokenType == Token.LEFTBRACKET)
             {
                 bool comma = false, semicolon = false;
-                var args = new List<ISparqlExpression>();
-                args.Add(TryParseBrackettedExpression(tokens, true, out comma, out semicolon));
+                var args = new List<ISparqlExpression>
+                {
+                    TryParseBrackettedExpression(tokens, true, out comma, out semicolon),
+                };
 
                 while (comma && !semicolon)
                 {

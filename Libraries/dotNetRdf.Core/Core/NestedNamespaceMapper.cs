@@ -35,8 +35,8 @@ namespace VDS.RDF;
 /// </summary>
 public class NestedNamespaceMapper : INestedNamespaceMapper
 {
-    private Dictionary<string, List<NestedMapping>> _uris = new Dictionary<string, List<NestedMapping>>();
-    private Dictionary<int, List<NestedMapping>> _prefixes = new Dictionary<int, List<NestedMapping>>();
+    private Dictionary<string, List<NestedMapping>> _uris = [];
+    private Dictionary<int, List<NestedMapping>> _prefixes = [];
     private int _level = 0;
 
     /// <summary>
@@ -77,7 +77,7 @@ public class NestedNamespaceMapper : INestedNamespaceMapper
     {
         if (uri == null) throw new ArgumentNullException(nameof(uri), "Cannot set a prefix to the null URI");
         var mapping = new NestedMapping(prefix, uri, _level);
-        if (!_prefixes.ContainsKey(uri.GetEnhancedHashCode())) _prefixes.Add(uri.GetEnhancedHashCode(), new List<NestedMapping>());
+        if (!_prefixes.ContainsKey(uri.GetEnhancedHashCode())) _prefixes.Add(uri.GetEnhancedHashCode(), []);
 
         if (_uris.ContainsKey(prefix))
         {
@@ -103,7 +103,7 @@ public class NestedNamespaceMapper : INestedNamespaceMapper
         else
         {
             // Not yet defined so add it
-            _uris.Add(prefix, new List<NestedMapping>());
+            _uris.Add(prefix, []);
             _uris[prefix].Add(mapping);
             _prefixes[uri.GetEnhancedHashCode()].Add(mapping);
             RaiseNamespaceAdded(prefix, uri);

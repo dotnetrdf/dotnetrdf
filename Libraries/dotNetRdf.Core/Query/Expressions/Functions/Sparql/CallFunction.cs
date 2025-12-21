@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql;
 public class CallFunction 
     : ISparqlExpression
 {
-    private List<ISparqlExpression> _args = new List<ISparqlExpression>();
+    private List<ISparqlExpression> _args = [];
 
     /// <summary>
     /// Creates a new COALESCE function with the given expressions as its arguments.

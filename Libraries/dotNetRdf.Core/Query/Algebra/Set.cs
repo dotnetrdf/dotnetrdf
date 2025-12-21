@@ -44,7 +44,7 @@ public sealed class Set
     /// </summary>
     public Set()
     {
-        _values = new Dictionary<string, INode>();
+        _values = [];
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ public sealed class Set
     /// <param name="y">A Set.</param>
     internal Set(ISet x, ISet y)
     {
-        _values = new Dictionary<string, INode>();
+        _values = [];
         foreach (var var in x.Variables)
         {
             _values.Add(var, x[var]);
@@ -78,7 +78,7 @@ public sealed class Set
     /// <param name="x">Set to copy.</param>
     internal Set(ISet x)
     {
-        _values = new Dictionary<string, INode>();
+        _values = [];
         foreach (var var in x.Variables)
         {
             _values.Add(var, x[var]);
@@ -91,7 +91,7 @@ public sealed class Set
     /// <param name="result">Result.</param>
     internal Set(SparqlResult result)
     {
-        _values = new Dictionary<string, INode>();
+        _values = [];
         foreach (var var in result.Variables)
         {
             Add(var, result[var]);
@@ -104,7 +104,7 @@ public sealed class Set
     /// <param name="tuple">Tuple.</param>
     internal Set(BindingTuple tuple)
     {
-        _values = new Dictionary<string, INode>();
+        _values = [];
         foreach (KeyValuePair<string, PatternItem> binding in tuple.Values)
         {
             Add(binding.Key, tuple[binding.Key]);

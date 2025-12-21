@@ -49,7 +49,7 @@ namespace VDS.RDF.Query;
 /// </remarks>
 public class FederatedSparqlQueryClient : ISparqlQueryClient, IConfigurationSerializable
 {
-    private readonly List<SparqlQueryClient> _endpoints = new();
+    private readonly List<SparqlQueryClient> _endpoints = [];
 
     /// <summary>
     /// Get or set whether a failed request on one endpoint should cause the entire request to fail.

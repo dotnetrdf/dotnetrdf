@@ -45,7 +45,7 @@ public class FullTextMatchPropertyFunction
     private readonly PatternItem _matchVar;
     private readonly PatternItem _scoreVar;
     private readonly PatternItem _searchVar;
-    private readonly List<String> _vars = new();
+    private readonly List<String> _vars = [];
     private int? _limit;
     private double? _threshold;
 
@@ -173,11 +173,7 @@ public class FullTextMatchPropertyFunction
         else if (context.InputMultiset.ContainsVariables(_matchVar.Variables))
         {
             checkExisting = true;
-            existing = new HashSet<INode>();
-            foreach (INode n in context.InputMultiset.Sets.Select(s => _matchVar.Bind(s)).Where(bound => bound != null))
-            {
-                existing.Add(n);
-            }
+            existing = [.. context.InputMultiset.Sets.Select(s => _matchVar.Bind(s)).Where(bound => bound != null)];
         }
 
         //Then check that the score variable is not already bound, if so error

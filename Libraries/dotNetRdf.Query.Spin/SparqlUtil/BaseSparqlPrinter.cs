@@ -78,7 +78,7 @@ internal class BaseSparqlPrinter : ISparqlPrinter
 
 
     public BaseSparqlPrinter(SpinWrappedDataset queryModel, StringBuilder sb)
-        : this(queryModel, sb, new Dictionary<String, IResource>())
+        : this(queryModel, sb, [])
     {
     }
 
@@ -144,7 +144,7 @@ internal class BaseSparqlPrinter : ISparqlPrinter
     {
         if (nodeToLabelMap == null)
         {
-            nodeToLabelMap = new Dictionary<INode, String>();
+            nodeToLabelMap = [];
         }
         return nodeToLabelMap;
     }
@@ -572,7 +572,7 @@ internal class BaseSparqlPrinter : ISparqlPrinter
         return varName;
     }
 
-    private Dictionary<IResource, String> _graphMaps = new Dictionary<IResource, String>();
+    private Dictionary<IResource, String> _graphMaps = [];
 
     /// <summary>
     /// Handles translating NamedGraph patterns into 

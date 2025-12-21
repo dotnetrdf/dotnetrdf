@@ -62,7 +62,7 @@ public sealed class SparqlQuery
     private List<IRefNode> _namedGraphs;
     private SparqlSpecialQueryType _specialType = SparqlSpecialQueryType.Unknown;
     private List<SparqlVariable> _vars;
-    private List<IToken> _describeVars = new();
+    private List<IToken> _describeVars = [];
     private ISparqlOrderBy _orderBy;
     private int _limit = -1;
     private int _offset;
@@ -80,9 +80,9 @@ public sealed class SparqlQuery
     {
         BaseUri = baseUri;
         NamespaceMap = namespaceMapper ?? new NamespaceMapper(true);
-        _vars = new List<SparqlVariable>();
-        _defaultGraphs = new List<IRefNode>();
-        _namedGraphs = new List<IRefNode>();
+        _vars = [];
+        _defaultGraphs = [];
+        _namedGraphs = [];
         IsSubQuery = subquery;
     }
 

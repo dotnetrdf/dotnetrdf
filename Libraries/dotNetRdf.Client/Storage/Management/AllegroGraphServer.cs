@@ -189,7 +189,7 @@ public class AllegroGraphServer
     {
         try
         {
-            HttpRequestMessage request = CreateRequest("repositories/" + storeID, "*/*", HttpMethod.Delete, new Dictionary<string, string>());
+            HttpRequestMessage request = CreateRequest("repositories/" + storeID, "*/*", HttpMethod.Delete, []);
 
             using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
@@ -212,7 +212,7 @@ public class AllegroGraphServer
         string data;
         try
         {
-            HttpRequestMessage request = CreateRequest("repositories", "application/json", HttpMethod.Get, new Dictionary<string, string>());
+            HttpRequestMessage request = CreateRequest("repositories", "application/json", HttpMethod.Get, []);
             using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
             {
@@ -265,7 +265,7 @@ public class AllegroGraphServer
         try
         {
             HttpRequestMessage request = CreateRequest("repositories", "application/json", HttpMethod.Get,
-                new Dictionary<string, string>());
+                []);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
                 if (requestTask.IsCanceled || requestTask.IsFaulted)
@@ -418,7 +418,7 @@ public class AllegroGraphServer
         try
         {
             HttpRequestMessage request = CreateRequest("repositories/" + storeId, "*/*", HttpMethod.Delete,
-                new Dictionary<string, string>());
+                []);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
                 if (requestTask.IsCanceled || requestTask.IsFaulted)

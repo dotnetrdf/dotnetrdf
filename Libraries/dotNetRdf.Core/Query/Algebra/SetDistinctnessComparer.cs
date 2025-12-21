@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Algebra;
 public class SetDistinctnessComparer
     : IEqualityComparer<ISet>
 {
-    private List<string> _vars = new List<string>();
+    private List<string> _vars = [];
 
     /// <summary>
     /// Creates a new comparer that compares across all variables.

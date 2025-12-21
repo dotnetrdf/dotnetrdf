@@ -45,11 +45,9 @@ namespace VDS.RDF.Query;
 internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEvaluationContext, int>
 {
     private readonly LeviathanQueryProcessor _algebraProcessor;
-    private readonly Dictionary<ISparqlExpression, ExistsCacheEntry> _existsCache =
-        new Dictionary<ISparqlExpression, ExistsCacheEntry>();
+    private readonly Dictionary<ISparqlExpression, ExistsCacheEntry> _existsCache = [];
 
-    private readonly Dictionary<ISparqlExpression, Dictionary<int, IValuedNode>> _randCache =
-        new Dictionary<ISparqlExpression, Dictionary<int, IValuedNode>>();
+    private readonly Dictionary<ISparqlExpression, Dictionary<int, IValuedNode>> _randCache = [];
 
     private readonly Random _rnd = new Random();
 
@@ -165,7 +163,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
         foreach (var var in joinVars)
         {
             values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
-            nulls.Add(new List<int>());
+            nulls.Add([]);
         }
 
         // First do a pass over the LHS Result to find all possible values for joined variables
@@ -183,7 +181,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
                     }
                     else
                     {
-                        values[i].Add(value, new List<int> { x.ID });
+                        values[i].Add(value, [x.ID]);
                     }
                 }
                 else
@@ -196,7 +194,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
 
 
         // Then do a pass over the RHS and work out the intersections
-        cacheEntry.Bindings = new HashSet<int>();
+        cacheEntry.Bindings = [];
         foreach (ISet y in result.Sets)
         {
             IEnumerable<int> possMatches = null;
@@ -277,7 +275,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
                             {
                                 if (!funcContext.BlankNodes.ContainsKey(binding))
                                 {
-                                    funcContext.BlankNodes.Add(binding, new Dictionary<string, INode>());
+                                    funcContext.BlankNodes.Add(binding, []);
                                 }
 
                                 if (!funcContext.BlankNodes[binding].ContainsKey(lit.Value))
@@ -311,7 +309,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
 
     class BNodeFunctionContext
     {
-        private Dictionary<int, Dictionary<string, INode>> _bnodes = new Dictionary<int, Dictionary<string, INode>>();
+        private Dictionary<int, Dictionary<string, INode>> _bnodes = [];
         private Graph _g = new Graph();
         private int _currInput;
 
@@ -404,7 +402,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
         {
             if (!_randCache.TryGetValue(rand, out randExprCache))
             {
-                randExprCache = new Dictionary<int, IValuedNode>();
+                randExprCache = [];
                 _randCache[rand] = randExprCache;
             }
         }

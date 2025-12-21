@@ -38,7 +38,7 @@ public class InferencingTripleStore : TripleStore, IInferencingTripleStore
     /// <summary>
     /// List of Reasoners that are applied to Graphs as they are added to the Triple Store.
     /// </summary>
-    protected List<IInferenceEngine> _reasoners = new();
+    protected List<IInferenceEngine> _reasoners = [];
 
     #region Loading with Inference
 

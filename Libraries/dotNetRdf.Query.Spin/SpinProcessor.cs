@@ -286,7 +286,7 @@ internal class SpinProcessor //: IInferenceEngine
 
     #region Dataset utilities
 
-    private Dictionary<IGraph, IGraph> _inferenceGraphs = new Dictionary<IGraph, IGraph>();
+    private Dictionary<IGraph, IGraph> _inferenceGraphs = [];
 
     internal IGraph ApplyInference(IGraph g)
     {
@@ -347,7 +347,7 @@ internal class SpinProcessor //: IInferenceEngine
     #region SPIN user's queries wrapping
 
     // TODO make the cache dynamic and set limits on the queryCache
-    private Dictionary<String, ICommand> queryCache = new Dictionary<String, ICommand>();
+    private Dictionary<String, ICommand> queryCache = [];
 
     internal IQuery BuildQuery(String sparqlQuery)
     {

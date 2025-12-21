@@ -41,9 +41,9 @@ namespace VDS.RDF.Query.Spin.Core;
 public class Aggregations
 {
 
-    private static Dictionary<String, INode> name2Type = new Dictionary<String, INode>();
+    private static Dictionary<String, INode> name2Type = [];
 
-    private static Dictionary<INode, String> type2Name = new Dictionary<INode, String>();
+    private static Dictionary<INode, String> type2Name = [];
 
     // Load types from sp system ontology
     static Aggregations()

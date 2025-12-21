@@ -45,8 +45,10 @@ public class IndexingTests
         ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
         //Use a dud hash function to put everything into a single bucket
-        var dictionary = new MultiDictionary<INode, int>(n => 1, false);
-        dictionary.Add(canonical, 1);
+        var dictionary = new MultiDictionary<INode, int>(n => 1, false)
+        {
+            { canonical, 1 },
+        };
         Assert.Equal(1, dictionary[canonical]);
         dictionary[alternate] = 2;
 
@@ -65,8 +67,10 @@ public class IndexingTests
         ILiteralNode canonical = (1).ToLiteral(g);
         ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
-        var dictionary = new MultiDictionary<INode, int>();
-        dictionary.Add(canonical, 1);
+        var dictionary = new MultiDictionary<INode, int>
+        {
+            { canonical, 1 },
+        };
         Assert.Equal(1, dictionary[canonical]);
         dictionary.Add(alternate, 2);
         Assert.Equal(2, dictionary.Count);
@@ -82,8 +86,10 @@ public class IndexingTests
 
         //Use a dud hash function to put everything into a single bucket and use
         //the FastNodeComparer
-        var dictionary = new MultiDictionary<INode, int>(n => 1, false, new FastNodeComparer(), MultiDictionaryMode.Avl);
-        dictionary.Add(canonical, 1);
+        var dictionary = new MultiDictionary<INode, int>(n => 1, false, new FastNodeComparer(), MultiDictionaryMode.Avl)
+        {
+            { canonical, 1 },
+        };
         Assert.Equal(1, dictionary[canonical]);
         dictionary.Add(alternate, 2);
 

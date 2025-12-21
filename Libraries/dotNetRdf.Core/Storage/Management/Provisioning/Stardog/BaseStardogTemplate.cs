@@ -57,14 +57,14 @@ public abstract class BaseStardogTemplate
         AutoUpdateStatistics = BaseStardogServer.DatabaseOptions.DefaultAutoUpdateStats;
 
         // Integrity Constraint Validation
-        IcvActiveGraphs = new List<string>();
+        IcvActiveGraphs = [];
         IcvEnabled = BaseStardogServer.DatabaseOptions.DefaultIcvEnabled;
         IcvReasoningMode = BaseStardogServer.DatabaseOptions.DefaultIcvReasoningMode;
 
         // Reasoning
         ConsistencyChecking = BaseStardogServer.DatabaseOptions.DefaultConsistencyChecking;
         EnablePunning = BaseStardogServer.DatabaseOptions.DefaultPunning;
-        SchemaGraphs = new List<string>();
+        SchemaGraphs = [];
 
         // Search
         FullTextSearch = BaseStardogServer.DatabaseOptions.DefaultFullTextSearch;
@@ -401,15 +401,18 @@ public abstract class BaseStardogTemplate
     public JObject GetTemplateJson()
     {
         // Set up the basic template
-        var template = new JObject();
-        template.Add("dbname", new JValue(ID));
+        var template = new JObject
+        {
+            ["dbname"] = new JValue(ID),
+        };
 
         // Build up the options object
         // Don't bother included non-required options if the user hasn't adjusted them from their defaults
-        var options = new JObject();
-
-        // Index Options
-        options.Add(BaseStardogServer.DatabaseOptions.IndexType, new JValue(DatabaseType.ToLower()));
+        var options = new JObject
+        {
+            // Index Options
+            [BaseStardogServer.DatabaseOptions.IndexType] = new JValue(DatabaseType.ToLower()),
+        };
         if (MinDifferentialIndexLimit != BaseStardogServer.DatabaseOptions.DefaultMinDifferentialIndexLimit) options.Add(BaseStardogServer.DatabaseOptions.IndexDifferentialEnableLimit, new JValue(MinDifferentialIndexLimit));
         if (MaxDifferentialIndexLimit != BaseStardogServer.DatabaseOptions.DefaultMaxDifferentialIndexLimit) options.Add(BaseStardogServer.DatabaseOptions.IndexDifferentialMergeLimit, new JValue(MaxDifferentialIndexLimit));
         if (CanoncialiseLiterals != BaseStardogServer.DatabaseOptions.DefaultCanonicaliseLiterals) options.Add(BaseStardogServer.DatabaseOptions.IndexLiteralsCanonical, new JValue(CanoncialiseLiterals));

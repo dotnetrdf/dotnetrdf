@@ -116,7 +116,7 @@ public abstract class BaseModificationCommand
     /// <param name="u">URI.</param>
     public void AddUsingUri(Uri u)
     {
-        if (_usingUris == null) _usingUris = new List<Uri>();
+        if (_usingUris == null) _usingUris = [];
         _usingUris.Add(u);
     }
 
@@ -126,7 +126,7 @@ public abstract class BaseModificationCommand
     /// <param name="u">URI.</param>
     public void AddUsingNamedUri(Uri u)
     {
-        if (_usingNamedUris == null) _usingNamedUris = new List<Uri>();
+        if (_usingNamedUris == null) _usingNamedUris = [];
         _usingNamedUris.Add(u);
     }
 

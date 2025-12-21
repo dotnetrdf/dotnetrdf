@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 namespace VDS.RDF;
@@ -36,8 +35,8 @@ namespace VDS.RDF;
 /// </summary>
 public class BlankNodeMapper
 {
-    private Dictionary<string, BlankNodeIDAssigment> _idmap = new Dictionary<string, BlankNodeIDAssigment>();
-    private Dictionary<string, string> _remappings = new Dictionary<string, string>();
+    private Dictionary<string, BlankNodeIDAssigment> _idmap = [];
+    private Dictionary<string, string> _remappings = [];
     private static long _nextid = 0;
     private static long _nextremap = 0;
     private string _prefix = "autos";
@@ -139,7 +138,7 @@ public class BlankNodeMapper
 public class BlankNodeOutputMapper
 {
     private Func<string, bool> _validator;
-    private Dictionary<string, BlankNodeIDAssigment> _remappings = new Dictionary<string, BlankNodeIDAssigment>();
+    private Dictionary<string, BlankNodeIDAssigment> _remappings = [];
     private int _nextid = 1;
 
     /// <summary>

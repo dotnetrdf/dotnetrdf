@@ -43,7 +43,7 @@ namespace VDS.RDF.Query;
 public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescribeContext
 {
     private readonly Stopwatch _timer = new Stopwatch();
-    private readonly Dictionary<string, object> _functionContexts = new Dictionary<string, object>();
+    private readonly Dictionary<string, object> _functionContexts = [];
     private HttpClient _defaultHttpClient;
 
     /// <summary>

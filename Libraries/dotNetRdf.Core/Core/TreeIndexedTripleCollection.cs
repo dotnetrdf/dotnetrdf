@@ -203,7 +203,7 @@ public class TreeIndexedTripleCollection
         {
             if (ts == null)
             {
-                index[n] = new HashSet<Triple> { t };
+                index[n] = [t];
             }
             else
             {
@@ -212,7 +212,7 @@ public class TreeIndexedTripleCollection
         }
         else
         {
-            index.Add(n, new HashSet<Triple> { t });
+            index.Add(n, [t]);
         }
     }
 
@@ -229,7 +229,7 @@ public class TreeIndexedTripleCollection
         {
             if (ts == null)
             {
-                index[t] = new HashSet<Triple> { t };
+                index[t] = [t];
             }
             else
             {
@@ -238,7 +238,7 @@ public class TreeIndexedTripleCollection
         }
         else
         {
-            index.Add(t, new HashSet<Triple> { t });
+            index.Add(t, [t]);
         }
     }
 

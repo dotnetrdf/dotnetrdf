@@ -55,10 +55,10 @@ namespace VDS.RDF;
 /// </remarks>
 public class GraphDiff
 {
-    private HashSet<Triple> _lhsUnassigned = new HashSet<Triple>();
-    private HashSet<Triple> _rhsUnassigned = new HashSet<Triple>();
-    private List<IGraph> _lhsMSGs = new List<IGraph>();
-    private List<IGraph> _rhsMSGs = new List<IGraph>();
+    private HashSet<Triple> _lhsUnassigned = [];
+    private HashSet<Triple> _rhsUnassigned = [];
+    private List<IGraph> _lhsMSGs = [];
+    private List<IGraph> _rhsMSGs = [];
 
     /// <summary>
     /// Calculates the Difference between the two Graphs i.e. the changes required to get from the 1st Graph to the 2nd Graph.
@@ -320,11 +320,11 @@ public class GraphDiff
 public class GraphDiffReport
 {
     private bool _areEqual = false, _areDiffSize = false;
-    private Dictionary<INode, INode> _mapping = new Dictionary<INode,INode>();
-    private List<Triple> _addedTriples = new List<Triple>();
-    private List<Triple> _removedTriples = new List<Triple>();
-    private List<IGraph> _addedMSGs = new List<IGraph>();
-    private List<IGraph> _removedMSGs = new List<IGraph>();
+    private Dictionary<INode, INode> _mapping = [];
+    private List<Triple> _addedTriples = [];
+    private List<Triple> _removedTriples = [];
+    private List<IGraph> _addedMSGs = [];
+    private List<IGraph> _removedMSGs = [];
 
     /// <summary>
     /// Gets whether the Graphs were equal at the time the Diff was calculated.

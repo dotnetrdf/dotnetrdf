@@ -379,8 +379,10 @@ public class HardGraphMatching
         INode b2 = _factory.CreateBlankNode("b2");
 
         //For this test we have a single blank node with two possible mappings
-        var possibles = new Dictionary<INode, List<INode>>();
-        possibles.Add(a, new List<INode> { b1, b2 });
+        var possibles = new Dictionary<INode, List<INode>>
+        {
+            [a] = [b1, b2],
+        };
 
         var generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
         PrintMappings(generated);
@@ -399,9 +401,11 @@ public class HardGraphMatching
         INode b2 = _factory.CreateBlankNode("b2");
 
         //For this test we have a two blank nodes with two possible mappings
-        var possibles = new Dictionary<INode, List<INode>>();
-        possibles.Add(a1, new List<INode> { b1, b2 });
-        possibles.Add(a2, new List<INode> { b1, b2 });
+        var possibles = new Dictionary<INode, List<INode>>
+        {
+            [a1] = [b1, b2],
+            [a2] = [b1, b2],
+        };
 
         var generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
         PrintMappings(generated);
@@ -419,9 +423,11 @@ public class HardGraphMatching
         INode b2 = _factory.CreateBlankNode("b2");
 
         //For this test we have a two blank nodes where the first has a single mapping and the second two possible mappings
-        var possibles = new Dictionary<INode, List<INode>>();
-        possibles.Add(a1, new List<INode> { b1 });
-        possibles.Add(a2, new List<INode> { b1, b2 });
+        var possibles = new Dictionary<INode, List<INode>>
+        {
+            [a1] = [b1],
+            [a2] = [b1, b2],
+        };
 
         var generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
         PrintMappings(generated);
@@ -440,9 +446,11 @@ public class HardGraphMatching
 
         //For this test we have a two blank nodes where the first has a single mapping and the second two possible mappings
         //Our base mapping also already calls out the confirmed mapping
-        var possibles = new Dictionary<INode, List<INode>>();
-        possibles.Add(a1, new List<INode> { b1 });
-        possibles.Add(a2, new List<INode> { b1, b2 });
+        var possibles = new Dictionary<INode, List<INode>>
+        {
+            [a1] = [b1],
+            [a2] = [b1, b2],
+        };
         baseMapping.Add(a1, b1);
 
         var generated = GraphMatcher.GenerateMappings(baseMapping, possibles).ToList();

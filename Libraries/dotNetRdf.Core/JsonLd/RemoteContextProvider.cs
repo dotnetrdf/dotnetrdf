@@ -46,7 +46,7 @@ public class RemoteContextProvider: IRemoteContextProvider
     public RemoteContextProvider(JsonLdProcessorOptions options)
     {
         _options = options;
-        _remoteContextCache = new Dictionary<Uri, JsonLdRemoteContext>();
+        _remoteContextCache = [];
     }
 
     /// <inheritdoc />

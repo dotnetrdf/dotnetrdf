@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String;
 public class ConcatFunction
     : ISparqlExpression
 {
-    private readonly List<ISparqlExpression> _exprs = new();
+    private readonly List<ISparqlExpression> _exprs = [];
 
     /// <summary>
     /// Creates a new XPath Concatenation function.

@@ -35,8 +35,8 @@ namespace VDS.RDF.Writing;
 
 public class StringEscapingTest
 {
-    private readonly List<String> _values = new List<string>()
-    {
+    private readonly List<String> _values =
+    [
         "Not escapes - nrt" ,
         @"An example with a \ in it should get escaped", 
         @"An example with a trailing \", 
@@ -55,7 +55,7 @@ new line",
         @"An example with unicode escapes like \uABCD and \U0034ABCD",
         @"An example with a \b backspace escape",
         @"An example with a \f form feed escape"
-    };
+    ];
 
     private void TestEscaping<T>(T formatter, IRdfReader parser) where T : INodeFormatter, ITripleFormatter
     {

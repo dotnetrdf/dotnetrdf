@@ -43,10 +43,10 @@ public class FullTextOptimiserTests
 {
     private readonly SparqlQueryParser _parser = new();
 
-    private readonly List<IAlgebraOptimiser> _optimisers = new()
-    {
-        new StrictAlgebraOptimiser(), new FullTextOptimiser(new MockSearchProvider())
-    };
+    private readonly List<IAlgebraOptimiser> _optimisers =
+    [
+        new StrictAlgebraOptimiser(), new FullTextOptimiser(new MockSearchProvider()),
+    ];
 
     private readonly SparqlFormatter _formatter = new();
 

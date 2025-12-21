@@ -37,12 +37,12 @@ public class GZipTests
 {
     private IGraph _g;
     private SparqlResultSet _results;
-    private List<String> _manualTestFiles = new List<String>();
-    private List<String> _autoTestFiles = new List<String>();
-    private List<String> _manualDatasetTestFiles = new List<String>();
-    private List<String> _autoDatasetTestFiles = new List<String>();
-    private List<String> _manualResultsTestFiles = new List<String>();
-    private List<String> _autoResultsTestFiles = new List<String>();
+    private List<String> _manualTestFiles = [];
+    private List<String> _autoTestFiles = [];
+    private List<String> _manualDatasetTestFiles = [];
+    private List<String> _autoDatasetTestFiles = [];
+    private List<String> _manualResultsTestFiles = [];
+    private List<String> _autoResultsTestFiles = [];
 
     public GZipTests()
     {

@@ -57,7 +57,7 @@ public class SpinWrappedDataset : ISparqlDataset
     /// <summary>
     /// The SPARQL update command calls made by this wrapper
     /// </summary>
-    public List<string> CommandCalls = new List<string>();
+    public List<string> CommandCalls = [];
 
     internal bool DatasetDescriptionChanged;
 
@@ -69,9 +69,9 @@ public class SpinWrappedDataset : ISparqlDataset
 
     private QueryMode _queryExecutionMode = QueryMode.UserQuerying;
 
-    private readonly HashSet<IGraph> _synchronizedGraphs = new();
+    private readonly HashSet<IGraph> _synchronizedGraphs = [];
 
-    private readonly HashSet<INode> _changedResources = new();
+    private readonly HashSet<INode> _changedResources = [];
 
     #region Initialisation
 
@@ -372,8 +372,8 @@ public class SpinWrappedDataset : ISparqlDataset
     #region ISparqlDataset implementation
 
     private readonly NodeFactory _graphNameNodeFactory = new(new NodeFactoryOptions());
-    private readonly HashSet<IRefNode> _activeGraphs = new();
-    private readonly HashSet<IRefNode> _defaultGraphs = new(); // do we really need this one ?
+    private readonly HashSet<IRefNode> _activeGraphs = [];
+    private readonly HashSet<IRefNode> _defaultGraphs = []; // do we really need this one ?
 
     /// <inheritdoc />
     public void SetActiveGraph(IEnumerable<Uri> graphUris)
@@ -644,9 +644,11 @@ public class SpinWrappedDataset : ISparqlDataset
         if (_hasPendingChanges)
         {
             _hasPendingChanges = false; // for security only
-            var commands = new List<IUpdate>();
-            commands.Add(new DeleteDataImpl(RDF.Nil, null, spinProcessor));
-            commands.Add(new InsertDataImpl(RDF.Nil, null, spinProcessor));
+            var commands = new List<IUpdate>
+            {
+                new DeleteDataImpl(RDF.Nil, null, spinProcessor),
+                new InsertDataImpl(RDF.Nil, null, spinProcessor),
+            };
             ExecuteUpdate(commands);
         }
         ResetActiveGraph();

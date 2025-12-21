@@ -253,9 +253,10 @@ WHERE {
 }
 ");
         ISparqlResult result = results.Single();
-        var d = new DynamicSparqlResult(result);
-
-        d.Add("x", "y");
+        var d = new DynamicSparqlResult(result)
+        {
+            { "x", "y" },
+        };
 
         Assert.Equal("y", ((ILiteralNode)result["x"]).Value);
     }

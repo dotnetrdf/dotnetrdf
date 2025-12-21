@@ -47,7 +47,7 @@ public class RdfAContext: IRdfAContext
     /// </summary>
     public RdfAContext()
     {
-        _termMap = new Dictionary<string, string>();
+        _termMap = [];
         _namespaceMapper = new NamespaceMapper(true);
     }
 
@@ -61,7 +61,7 @@ public class RdfAContext: IRdfAContext
         IEnumerable<KeyValuePair<string, string>> prefixes)
     {
         VocabularyUri = vocabularyUri;
-        _termMap = terms?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value) ?? new Dictionary<string, string>();
+        _termMap = terms?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value) ?? [];
         _namespaceMapper = new NamespaceMapper(true);
         if (prefixes != null)
         {
@@ -86,7 +86,7 @@ public class RdfAContext: IRdfAContext
         }
         else
         {
-            _termMap = new Dictionary<string, string>();
+            _termMap = [];
             foreach (KeyValuePair<string, string> entry in context.Mappings)
             {
                 _termMap[entry.Key.ToLowerInvariant()] = entry.Value;

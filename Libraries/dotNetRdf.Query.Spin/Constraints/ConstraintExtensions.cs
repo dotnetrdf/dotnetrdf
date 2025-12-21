@@ -45,7 +45,7 @@ internal static class ConstraintsExtensions
     /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
     public static List<ConstraintViolation> CheckConstraints(this SpinWrappedDataset dataset, IEnumerable<INode> resources, IProgressMonitor monitor)
     {
-        return CheckConstraints(dataset, resources, new List<SPINStatistics>(), monitor);
+        return CheckConstraints(dataset, resources, [], monitor);
     }
 
     /// <summary>
