@@ -40,10 +40,8 @@ public class GraphMLFixture
         Output = new XDocument();
         Input = GraphMLFixture.Load();
 
-        using (var outputWriter = Output.CreateWriter())
-        {
-            new GraphMLWriter().Save(Input, outputWriter);
-        }
+        using var outputWriter = Output.CreateWriter();
+        new GraphMLWriter().Save(Input, outputWriter);
     }
 
     private static ITripleStore Load()

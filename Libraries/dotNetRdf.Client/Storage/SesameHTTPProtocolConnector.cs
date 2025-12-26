@@ -337,52 +337,50 @@ public abstract class BaseSesameHttpProtocolConnector
             request.Content = new FormUrlEncodedContent(formData);
 
             // Get the Response and process based on the Content Type
-            using (HttpResponseMessage response = HttpClient.SendAsync(request).Result)
+            using var response = HttpClient.SendAsync(request).Result;
+            if (!response.IsSuccessStatusCode)
             {
-                if (!response.IsSuccessStatusCode)
+                throw StorageHelper.HandleHttpQueryError(response);
+            }
+
+            var data = new StreamReader(response.Content.ReadAsStreamAsync().Result);
+            var ctype = response.Content.Headers.ContentType.MediaType;
+            try
+            {
+                // Is the Content Type referring to a Sparql Result Set format?
+                ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, isAsk);
+                resreader.Load(resultsHandler, data);
+            }
+            catch (RdfParserSelectionException)
+            {
+                // If we get a Parser Selection exception then the Content Type isn't valid for a SPARQL Result Set
+                // HACK: As this is Sesame this may be it being buggy and sending application/xml instead of application/sparql-results+xml
+                if (ctype.StartsWith("application/xml"))
                 {
-                    throw StorageHelper.HandleHttpQueryError(response);
+                    try
+                    {
+                        ISparqlResultsReader resreader =
+                            MimeTypesHelper.GetSparqlParser("application/sparql-results+xml");
+                        resreader.Load(resultsHandler, data);
+
+                    }
+                    catch (RdfParserSelectionException)
+                    {
+                        // Ignore this and fall back to trying as an RDF format instead
+                    }
                 }
 
-                var data = new StreamReader(response.Content.ReadAsStreamAsync().Result);
-                var ctype = response.Content.Headers.ContentType.MediaType;
-                try
+                // Is the Content Type referring to a RDF format?
+                IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                if (q != null && (SparqlSpecsHelper.IsSelectQuery(q.QueryType) ||
+                                  q.QueryType == SparqlQueryType.Ask))
                 {
-                    // Is the Content Type referring to a Sparql Result Set format?
-                    ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, isAsk);
+                    var resreader = new SparqlRdfParser(rdfreader);
                     resreader.Load(resultsHandler, data);
                 }
-                catch (RdfParserSelectionException)
+                else
                 {
-                    // If we get a Parser Selection exception then the Content Type isn't valid for a SPARQL Result Set
-                    // HACK: As this is Sesame this may be it being buggy and sending application/xml instead of application/sparql-results+xml
-                    if (ctype.StartsWith("application/xml"))
-                    {
-                        try
-                        {
-                            ISparqlResultsReader resreader =
-                                MimeTypesHelper.GetSparqlParser("application/sparql-results+xml");
-                            resreader.Load(resultsHandler, data);
-
-                        }
-                        catch (RdfParserSelectionException)
-                        {
-                            // Ignore this and fall back to trying as an RDF format instead
-                        }
-                    }
-
-                    // Is the Content Type referring to a RDF format?
-                    IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
-                    if (q != null && (SparqlSpecsHelper.IsSelectQuery(q.QueryType) ||
-                                      q.QueryType == SparqlQueryType.Ask))
-                    {
-                        var resreader = new SparqlRdfParser(rdfreader);
-                        resreader.Load(resultsHandler, data);
-                    }
-                    else
-                    {
-                        rdfreader.Load(rdfHandler, data);
-                    }
+                    rdfreader.Load(rdfHandler, data);
                 }
             }
         }
