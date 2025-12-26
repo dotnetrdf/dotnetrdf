@@ -58,10 +58,8 @@ public class HtmlSchemaWriter
     /// <inheritdoc />
     public void Save(IGraph g, string filename, Encoding fileEncoding)
     {
-        using (FileStream stream = File.Open(filename, FileMode.Create))
-        {
-            Save(g, new StreamWriter(stream, fileEncoding));
-        }
+        using var stream = File.Open(filename, FileMode.Create);
+        Save(g, new StreamWriter(stream, fileEncoding));
     }
 
     /// <summary>

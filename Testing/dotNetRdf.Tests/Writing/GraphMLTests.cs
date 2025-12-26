@@ -135,11 +135,9 @@ _:s2 <urn:p> ""o"" .
             ValidationType = ValidationType.Schema, Schemas = {XmlResolver = new XmlUrlResolver()}
         };
         settings.Schemas.Add(GraphMLSpecsHelper.NS, GraphMLSpecsHelper.XsdUri);
-        using(var reader = XmlReader.Create(new StringReader(fixture.Output.ToString()), settings))
+        using var reader = XmlReader.Create(new StringReader(fixture.Output.ToString()), settings);
+        while (reader.Read())
         {
-            while (reader.Read())
-            {
-            }
         }
     }
 }

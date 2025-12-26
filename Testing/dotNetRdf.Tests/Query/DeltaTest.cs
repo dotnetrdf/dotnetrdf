@@ -125,11 +125,9 @@ WHERE
     {
         SparqlQuery q = _sparqlParser.ParseFromString(query);
         var processor = new LeviathanQueryProcessor(store);
-        using (var resultSet = processor.ProcessQuery(q) as SparqlResultSet)
-        {
-            Assert.NotNull(resultSet);
-            Assert.Equal(differences, resultSet.Count);
-        }
+        using var resultSet = processor.ProcessQuery(q) as SparqlResultSet;
+        Assert.NotNull(resultSet);
+        Assert.Equal(differences, resultSet.Count);
     }
 
     private void TestDeltas(IGraph a, IGraph b, int differences)

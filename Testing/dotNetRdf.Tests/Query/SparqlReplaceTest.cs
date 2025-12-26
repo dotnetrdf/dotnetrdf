@@ -81,14 +81,12 @@ HAVING (COUNT(?p) = 1)
         store.Add(graph);
         IQueryableStorage storage = new InMemoryManager(store);
 
-        using (var resultSet = (SparqlResultSet) storage.Query(query))
-        {
-            TestTools.ShowResults(resultSet);
-            Assert.Equal(1, resultSet.Count);
+        using var resultSet = (SparqlResultSet)storage.Query(query);
+        TestTools.ShowResults(resultSet);
+        Assert.Equal(1, resultSet.Count);
 
-            ISparqlResult result = resultSet[0];
-            Assert.True(result.HasBoundValue("oo"));
-            Assert.Equal(graph.CreateLiteralNode(literal), result["oo"]);
-        }
+        ISparqlResult result = resultSet[0];
+        Assert.True(result.HasBoundValue("oo"));
+        Assert.Equal(graph.CreateLiteralNode(literal), result["oo"]);
     }
 }

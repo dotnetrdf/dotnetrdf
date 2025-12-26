@@ -55,39 +55,33 @@ public class BlockingTextReaderTests : BaseTest
     public void ParsingTextReaderCreation1()
     {
         File.WriteAllText("ParsingTextReaderCreation1.txt", "ParsingTextReaderCreation1");
-        using (StreamReader stream = File.OpenText("ParsingTextReaderCreation1.txt"))
-        {
-            var reader = ParsingTextReader.Create(stream);
-            Assert.IsType<NonBlockingTextReader>(reader);
-            stream.Close();
-        }
+        using StreamReader stream = File.OpenText("ParsingTextReaderCreation1.txt");
+        var reader = ParsingTextReader.Create(stream);
+        Assert.IsType<NonBlockingTextReader>(reader);
+        stream.Close();
     }
 
     [Fact]
     public void ParsingTextReaderCreation2()
     {
-        using (var stream = new MemoryStream())
-        {
-            var reader = ParsingTextReader.Create(stream);
-            Assert.IsType<NonBlockingTextReader>(reader);
-            stream.Close();
-        }
+        using var stream = new MemoryStream();
+        var reader = ParsingTextReader.Create(stream);
+        Assert.IsType<NonBlockingTextReader>(reader);
+        stream.Close();
     }
 
     [Fact]
     public void ParsingTextReaderCreation3()
     {
-        using (var client = new WebClient())
+        using var client = new WebClient();
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+        using (Stream stream = client.OpenRead(new Uri("http://www.dotnetrdf.org")))
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-            using (Stream stream = client.OpenRead(new Uri("http://www.dotnetrdf.org")))
-            {
-                var reader = ParsingTextReader.Create(stream);
-                Assert.IsType<BlockingTextReader>(reader);
-                stream.Close();
-            }
-            client.Dispose();
+            var reader = ParsingTextReader.Create(stream);
+            Assert.IsType<BlockingTextReader>(reader);
+            stream.Close();
         }
+        client.Dispose();
     }
 
     [Fact]
@@ -408,20 +402,18 @@ public class BlockingTextReaderTests : BaseTest
     {
         if (!File.Exists(Path.Combine("resources", "nio.ttl")))
         {
-            using (StreamWriter writer = File.CreateText(Path.Combine("resources", "nio.ttl")))
+            using StreamWriter writer = File.CreateText(Path.Combine("resources", "nio.ttl"));
+            using (StreamReader reader = File.OpenText(Path.Combine("resources", "dataset_50.ttl.gz")))
             {
-                using (StreamReader reader = File.OpenText(Path.Combine("resources", "dataset_50.ttl.gz")))
+                var line = reader.ReadLine();
+                while (line != null)
                 {
-                    var line = reader.ReadLine();
-                    while (line != null)
-                    {
-                        writer.WriteLine(line);
-                        line = reader.ReadLine();
-                    }
-                    reader.Close();
+                    writer.WriteLine(line);
+                    line = reader.ReadLine();
                 }
-                writer.Close();
+                reader.Close();
             }
+            writer.Close();
         }
     }
 

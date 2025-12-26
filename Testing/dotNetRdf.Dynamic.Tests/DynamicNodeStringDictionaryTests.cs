@@ -486,17 +486,13 @@ public class DynamicNodeStringDictionaryTests
         var d = new DynamicNode(s, g);
         var spo = new[] { s, p, o };
 
-        using (var actual = d.Cast<KeyValuePair<string, object>>().GetEnumerator())
+        using var actual = d.Cast<KeyValuePair<string, object>>().GetEnumerator();
+        using var expected = spo.Select(n => n.Uri.AbsoluteUri).GetEnumerator();
+        while (expected.MoveNext() | actual.MoveNext())
         {
-            using (var expected = spo.Select(n => n.Uri.AbsoluteUri).GetEnumerator())
-            {
-                while (expected.MoveNext() | actual.MoveNext())
-                {
-                    Assert.Equal(expected.Current, actual.Current.Key);
-                    Assert.IsType<DynamicObjectCollection>(actual.Current.Value);
-                    Assert.Equal(spo, actual.Current.Value);
-                }
-            }
+            Assert.Equal(expected.Current, actual.Current.Key);
+            Assert.IsType<DynamicObjectCollection>(actual.Current.Value);
+            Assert.Equal(spo, actual.Current.Value);
         }
     }
 

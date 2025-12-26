@@ -257,12 +257,10 @@ public class SesameServer
         {
             HttpRequestMessage request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, HttpMethod.Delete, []);
 
-            using (var response = HttpClient.SendAsync(request).Result)
+            using var response = HttpClient.SendAsync(request).Result;
+            if (!response.IsSuccessStatusCode)
             {
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw StorageHelper.HandleHttpError(response, "deleting the Store '" + storeID + "' from");
-                }
+                throw StorageHelper.HandleHttpError(response, "deleting the Store '" + storeID + "' from");
             }
         }
         catch (Exception ex)

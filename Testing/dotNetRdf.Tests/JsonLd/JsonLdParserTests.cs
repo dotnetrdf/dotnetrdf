@@ -136,26 +136,21 @@ public class JsonLdParserTests : IDisposable
     [MemberData(nameof(DateTimeValues))]
     public void RoundtripsDatetimeLiteralsInDiff(string dateTimeValue, string datatype)
     {
-        using (var original = new TripleStore())
-        {
-            original.LoadFromString($@"<http://example.com/1> <http://example.com/1> ""{dateTimeValue}""^^<{datatype}>.");
+        using var original = new TripleStore();
+        original.LoadFromString($@"<http://example.com/1> <http://example.com/1> ""{dateTimeValue}""^^<{datatype}>.");
 
-            using (var target = new TripleStore())
-            {
-                target.LoadFromString(StringWriter.Write(original, new JsonLdWriter()), new JsonLdParser());
+        using var target = new TripleStore();
+        target.LoadFromString(StringWriter.Write(original, new JsonLdWriter()), new JsonLdParser());
 
-                Assert.True(original.Graphs.Single().Difference(target.Graphs.Single()).AreEqual);
-            }
-        }
+        Assert.True(original.Graphs.Single().Difference(target.Graphs.Single()).AreEqual);
     }
 
     [Theory]
     [MemberData(nameof(DateTimeValues))]
     public void RoundtripsDatetimeLiterals(string dateTimeValue, string datatype)
     {
-        using (var store = new TripleStore())
-        {
-            var jsonLd = $@"
+        using var store = new TripleStore();
+        var jsonLd = $@"
 {{
     ""http://example.com/1"": {{
         ""@type"": ""{datatype}"",
@@ -163,13 +158,12 @@ public class JsonLdParserTests : IDisposable
     }}
 }}
 ";
-            store.LoadFromString(jsonLd, new JsonLdParser());
+        store.LoadFromString(jsonLd, new JsonLdParser());
 
-            var result = store.Graphs.Single().Triples.Single().Object.As<ILiteralNode>();
+        var result = store.Graphs.Single().Triples.Single().Object.As<ILiteralNode>();
 
-            Assert.Equal(dateTimeValue, result.Value);
-            Assert.Equal(datatype, result.DataType.AbsoluteUri);
-        }
+        Assert.Equal(dateTimeValue, result.Value);
+        Assert.Equal(datatype, result.DataType.AbsoluteUri);
     }
 
     [Theory]
@@ -181,9 +175,8 @@ public class JsonLdParserTests : IDisposable
 
         if (isValidDateTime && isDateTimeDatatype)
         {
-            using (var store = new TripleStore())
-            {
-                var jsonLd = $@"
+            using var store = new TripleStore();
+            var jsonLd = $@"
 {{
     ""http://example.com/1"": {{
         ""@type"": ""{datatype}"",
@@ -191,12 +184,11 @@ public class JsonLdParserTests : IDisposable
     }}
 }}
 ";
-                store.LoadFromString(jsonLd, new JsonLdParser());
+            store.LoadFromString(jsonLd, new JsonLdParser());
 
-                var result = store.Graphs.Single().Triples.Single().Object.AsValuedNode().AsDateTime();
+            var result = store.Graphs.Single().Triples.Single().Object.AsValuedNode().AsDateTime();
 
-                Assert.Equal(parsedDateTime, result);
-            }
+            Assert.Equal(parsedDateTime, result);
         }
     }
 

@@ -337,16 +337,14 @@ public class DynamicSubjectCollectionTests
         var c = new DynamicSubjectCollection(p, d);
 
         var expected = new[] { s, p, o }.GetEnumerator();
-        using (var actual = c.GetEnumerator())
+        using var actual = c.GetEnumerator();
+        while (expected.MoveNext())
         {
-            while (expected.MoveNext())
-            {
-                actual.MoveNext();
+            actual.MoveNext();
 
-                Assert.Equal(
-                    expected.Current,
-                    actual.Current);
-            }
+            Assert.Equal(
+                expected.Current,
+                actual.Current);
         }
     }
 
