@@ -309,14 +309,14 @@ internal class EvaluationBuilder
         return path switch
         {
             SequencePath sequencePath => BuildSequencePath(sequencePath, pathStart, pathEnd, context),
-            Property propertyPath => new AsyncPropertyPathEvaluation(propertyPath.Predicate, pathStart, pathEnd),
-            InversePath inversePath => new AsyncInversePathEvaluation(Build(inversePath.Path, pathStart, pathEnd, context), pathStart, pathEnd),
+            Property propertyPath => new AsyncPropertyPathEvaluation(propertyPath.Predicate, pathEnd),
+            InversePath inversePath => new AsyncInversePathEvaluation(Build(inversePath.Path, pathStart, pathEnd, context), pathEnd),
             AlternativePath altPath => new AsyncPathUnionEvaluation(Build(altPath.LhsPath, pathStart, pathEnd, context),
                 Build(altPath.RhsPath, pathStart, pathEnd, context)),
-            ZeroOrOne zeroOrOne => new AsyncRepeatablePathEvaluation(0, 1, Build(zeroOrOne.Path, pathStart, pathEnd, context), pathEnd),
-            ZeroOrMore zeroOrMore => new AsyncRepeatablePathEvaluation(0, -1, Build(zeroOrMore.Path, pathStart, pathEnd, context), pathEnd),
-            OneOrMore oneOrMore => new AsyncRepeatablePathEvaluation(1, -1, Build(oneOrMore.Path, pathStart, pathEnd, context), pathEnd),
-            NegatedSet negatedSet => new AsyncNegatedSetPathEvaluation(negatedSet, pathStart, pathEnd),
+            ZeroOrOne zeroOrOne => new AsyncRepeatablePathEvaluation(0, 1, Build(zeroOrOne.Path, pathStart, pathEnd, context)),
+            ZeroOrMore zeroOrMore => new AsyncRepeatablePathEvaluation(0, -1, Build(zeroOrMore.Path, pathStart, pathEnd, context)),
+            OneOrMore oneOrMore => new AsyncRepeatablePathEvaluation(1, -1, Build(oneOrMore.Path, pathStart, pathEnd, context)),
+            NegatedSet negatedSet => new AsyncNegatedSetPathEvaluation(negatedSet, pathEnd),
             _ => throw new RdfQueryException($"Unsupported query algebra {path} ({path.GetType()})")
         };
     }
@@ -328,8 +328,7 @@ internal class EvaluationBuilder
         var joinVarPattern = new VariablePattern(joinVar);
         return new AsyncSequencePathEvaluation(
             Build(sequencePath.LhsPath, pathStart, joinVarPattern, context),
-            Build(sequencePath.RhsPath, joinVarPattern, pathEnd, context),
-            joinVar);
+            Build(sequencePath.RhsPath, joinVarPattern, pathEnd, context));
     }
 
     private IAsyncEvaluation BuildMinus(Minus minus, PullEvaluationContext context)

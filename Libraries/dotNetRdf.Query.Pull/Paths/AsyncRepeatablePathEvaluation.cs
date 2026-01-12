@@ -34,8 +34,7 @@ namespace VDS.RDF.Query.Pull.Paths;
 internal class AsyncRepeatablePathEvaluation(
     int minIterations,
     int maxIterations,
-    IAsyncPathEvaluation stepEvaluation,
-    PatternItem pathEnd) : IAsyncPathEvaluation
+    IAsyncPathEvaluation stepEvaluation) : IAsyncPathEvaluation
 {
     public async IAsyncEnumerable<PathResult> Evaluate(PatternItem pathStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)

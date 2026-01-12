@@ -30,7 +30,7 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Pull.Paths;
 
-internal class AsyncSequencePathEvaluation(IAsyncPathEvaluation lhs, IAsyncPathEvaluation rhs, string joinVar)
+internal class AsyncSequencePathEvaluation(IAsyncPathEvaluation lhs, IAsyncPathEvaluation rhs)
     : IAsyncPathEvaluation
 {
     public async IAsyncEnumerable<PathResult> Evaluate(PatternItem pathStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
