@@ -1350,9 +1350,9 @@ public static class MimeTypesHelper
     /// <summary>
     /// Selects an appropriate <see cref="IRdfReader">IRdfReader</see> based on the given MIME Types.
     /// </summary>
-    /// <param name="ctypes">MIME TYpes.</param>
+    /// <param name="ctypes">MIME types.</param>
     /// <param name="tokenQueueMode">The default token queue mode used for tokeniser based parsers.</param>
-    /// <exception cref="RdfParserSelectionException">Raised if there is no </exception>
+    /// <exception cref="RdfParserSelectionException">Raised if there is no definition that support the <paramref name="ctypes">given MIME types</paramref>.</exception>
     /// <returns></returns>
     public static IRdfReader GetParser(IEnumerable<string> ctypes, TokenQueueMode tokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing)
     {
