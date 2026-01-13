@@ -441,19 +441,15 @@ WHERE {
         ISparqlResult result = results.Single();
         var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
 
-        using (IEnumerator<KeyValuePair<string, object>> actual = d.GetEnumerator())
+        using IEnumerator<KeyValuePair<string, object>> actual = d.GetEnumerator();
+        using IEnumerator<KeyValuePair<string, INode>> expected = result.GetEnumerator();
+        while (expected.MoveNext() | actual.MoveNext())
         {
-            using (IEnumerator<KeyValuePair<string, INode>> expected = result.GetEnumerator())
-            {
-                while (expected.MoveNext() | actual.MoveNext())
-                {
-                    Assert.Equal(
-                        new KeyValuePair<string, object>(
-                            expected.Current.Key,
-                            ((IUriNode)expected.Current.Value).Uri),
-                        actual.Current);
-                }
-            }
+            Assert.Equal(
+                new KeyValuePair<string, object>(
+                    expected.Current.Key,
+                    ((IUriNode)expected.Current.Value).Uri),
+                actual.Current);
         }
     }
 
@@ -476,16 +472,14 @@ WHERE {
         var d = new DynamicSparqlResult(result);
 
         IEnumerator actual = d.GetEnumerator();
-        using (IEnumerator<KeyValuePair<string, INode>> expected = result.GetEnumerator())
+        using IEnumerator<KeyValuePair<string, INode>> expected = result.GetEnumerator();
+        while (expected.MoveNext() | actual.MoveNext())
         {
-            while (expected.MoveNext() | actual.MoveNext())
-            {
-                Assert.Equal(
-                    new KeyValuePair<string, object>(
-                        expected.Current.Key,
-                        ((IUriNode)expected.Current.Value).Uri),
-                    actual.Current);
-            }
+            Assert.Equal(
+                new KeyValuePair<string, object>(
+                    expected.Current.Key,
+                    ((IUriNode)expected.Current.Value).Uri),
+                actual.Current);
         }
     }
 

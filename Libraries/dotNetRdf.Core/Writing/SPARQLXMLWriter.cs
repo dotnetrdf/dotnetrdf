@@ -45,10 +45,8 @@ public class SparqlXmlWriter : ISparqlResultsWriter
     /// <param name="fileEncoding">The text encoding to use for the output file.</param>
     public virtual void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
     {
-        using (FileStream stream = File.Open(filename, FileMode.Create))
-        {
-            Save(results, new StreamWriter(stream, fileEncoding));
-        }
+        using var stream = File.Open(filename, FileMode.Create);
+        Save(results, new StreamWriter(stream, fileEncoding));
     }
 
     /// <summary>

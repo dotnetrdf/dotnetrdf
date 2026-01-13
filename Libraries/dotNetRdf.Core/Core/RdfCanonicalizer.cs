@@ -420,7 +420,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
             {
                 var sb = new StringBuilder();
                 var formatter = new NQuads11Formatter();
-                outputDataset.Graphs
+                OutputDataset.Graphs
                     .SelectMany(graph => graph.Triples.Select(triple => formatter.Format(triple, graph.Name)))
                     .OrderBy(p => p, StringComparer.Ordinal).ToList().ForEach(s =>
                     {

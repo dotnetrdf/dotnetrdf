@@ -311,9 +311,7 @@ WHERE
         store.Add(graph);
         IQueryableStorage storage = new InMemoryManager(store);
 
-        using (var resultSet = (SparqlResultSet)storage.Query(query))
-        {
-            Assert.Equal(expectedCount, resultSet.Count);
-        }
+        using var resultSet = (SparqlResultSet)storage.Query(query);
+        Assert.Equal(expectedCount, resultSet.Count);
     }
 }

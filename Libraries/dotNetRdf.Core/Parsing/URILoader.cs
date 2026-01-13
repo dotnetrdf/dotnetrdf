@@ -344,90 +344,88 @@ public static partial class UriLoader
                 httpRequest.UserAgent = _userAgent;
             }
 
-            using (var httpResponse = (HttpWebResponse)httpRequest.GetResponse())
+            using var httpResponse = (HttpWebResponse)httpRequest.GetResponse();
+            if (CacheEnabled)
             {
-                if (CacheEnabled)
+                // Are we using ETag based caching?
+                if (!etag.Equals(string.Empty))
                 {
-                    // Are we using ETag based caching?
-                    if (!etag.Equals(string.Empty))
+                    // Did we get a Not-Modified response?
+                    if (httpResponse.StatusCode == HttpStatusCode.NotModified)
                     {
-                        // Did we get a Not-Modified response?
-                        if (httpResponse.StatusCode == HttpStatusCode.NotModified)
+                        // If so then we need to load the Local Copy assuming it exists?
+                        if (_cache.HasLocalCopy(u, false))
                         {
-                            // If so then we need to load the Local Copy assuming it exists?
-                            if (_cache.HasLocalCopy(u, false))
+                            local = _cache.GetLocalCopy(u);
+                            try
                             {
-                                local = _cache.GetLocalCopy(u);
-                                try
-                                {
-                                    FileLoader.Load(handler, local, new TurtleParser());
-                                }
-                                catch
-                                {
-                                    // If we get an Exception we failed to access the file successfully
-                                    _cache.RemoveETag(u);
-                                    _cache.RemoveLocalCopy(u);
-                                    Load(handler, u, parser);
-                                }
-                                return;
+                                FileLoader.Load(handler, local, new TurtleParser());
                             }
-                            else
+                            catch
                             {
-                                // If the local copy didn't exist then we need to redo the response without
-                                // the ETag as we've lost the cached copy somehow
+                                // If we get an Exception we failed to access the file successfully
                                 _cache.RemoveETag(u);
+                                _cache.RemoveLocalCopy(u);
                                 Load(handler, u, parser);
-                                return;
                             }
-                        }
-                        // If we didn't get a Not-Modified response then we'll continue and parse the new response
-                    }
-                }
-
-                // Get a Parser and Load the RDF
-                if (parser == null)
-                {
-                    // Only need to auto-detect the parser if a specific one wasn't specified
-                    parser = MimeTypesHelper.GetParser(httpResponse.ContentType);
-                }
-                parser.Warning += RaiseWarning;
-                // To do caching we ask the cache to give us a handler and then we tie it to
-                if (CacheEnabled)
-                {
-                    IRdfHandler cacheHandler = _cache.ToCache(u, Tools.StripUriFragment(httpResponse.ResponseUri), httpResponse.Headers["ETag"]);
-                    if (cacheHandler != null)
-                    {
-                        // Note: We can ONLY use caching when we know that the Handler will accept all the data returned
-                        // i.e. if the Handler may trim the data in some way then we shouldn't cache the data returned
-                        if (handler.AcceptsAll)
-                        {
-                            // We should use the original handler in its capacity as node factory,
-                            // otherwise there might be unexpected differences between its output
-                            // and that of the MultiHandler's
-                            handler = new MultiHandler(new IRdfHandler[] { handler, cacheHandler }, handler);
+                            return;
                         }
                         else
                         {
-                            cacheHandler = null;
+                            // If the local copy didn't exist then we need to redo the response without
+                            // the ETag as we've lost the cached copy somehow
+                            _cache.RemoveETag(u);
+                            Load(handler, u, parser);
+                            return;
                         }
                     }
+                    // If we didn't get a Not-Modified response then we'll continue and parse the new response
                 }
-                try
+            }
+
+            // Get a Parser and Load the RDF
+            if (parser == null)
+            {
+                // Only need to auto-detect the parser if a specific one wasn't specified
+                parser = MimeTypesHelper.GetParser(httpResponse.ContentType);
+            }
+            parser.Warning += RaiseWarning;
+            // To do caching we ask the cache to give us a handler and then we tie it to
+            if (CacheEnabled)
+            {
+                IRdfHandler cacheHandler = _cache.ToCache(u, Tools.StripUriFragment(httpResponse.ResponseUri), httpResponse.Headers["ETag"]);
+                if (cacheHandler != null)
                 {
-                    parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
-                }
-                catch
-                {
-                    // If we were trying to cache the response and something went wrong discard the cached copy
-                    if (CacheEnabled)
+                    // Note: We can ONLY use caching when we know that the Handler will accept all the data returned
+                    // i.e. if the Handler may trim the data in some way then we shouldn't cache the data returned
+                    if (handler.AcceptsAll)
                     {
-                        _cache.RemoveETag(u);
-                        _cache.RemoveETag(Tools.StripUriFragment(httpResponse.ResponseUri));
-                        _cache.RemoveLocalCopy(u);
-                        _cache.RemoveLocalCopy(Tools.StripUriFragment(httpResponse.ResponseUri));
+                        // We should use the original handler in its capacity as node factory,
+                        // otherwise there might be unexpected differences between its output
+                        // and that of the MultiHandler's
+                        handler = new MultiHandler(new IRdfHandler[] { handler, cacheHandler }, handler);
                     }
-                    throw;
+                    else
+                    {
+                        cacheHandler = null;
+                    }
                 }
+            }
+            try
+            {
+                parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
+            }
+            catch
+            {
+                // If we were trying to cache the response and something went wrong discard the cached copy
+                if (CacheEnabled)
+                {
+                    _cache.RemoveETag(u);
+                    _cache.RemoveETag(Tools.StripUriFragment(httpResponse.ResponseUri));
+                    _cache.RemoveLocalCopy(u);
+                    _cache.RemoveLocalCopy(Tools.StripUriFragment(httpResponse.ResponseUri));
+                }
+                throw;
             }
         }
         catch (UriFormatException uriEx)
@@ -581,42 +579,40 @@ public static partial class UriLoader
 
             // HTTP Debugging
 
-            using (var httpResponse = (HttpWebResponse)httpRequest.GetResponse())
+            using var httpResponse = (HttpWebResponse)httpRequest.GetResponse();
+            // Get a Parser and Load the RDF
+            if (parser == null)
             {
-                // Get a Parser and Load the RDF
-                if (parser == null)
+                try
                 {
-                    try
-                    {
-                        parser = MimeTypesHelper.GetStoreParser(httpResponse.ContentType);
-                        parser.Warning += RaiseStoreWarning;
-                        parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
-                    }
-                    catch (RdfParserSelectionException)
-                    {
-                        RaiseStoreWarning("Unable to select a RDF Dataset parser based on Content-Type: " + httpResponse.ContentType + " - seeing if the content is an RDF Graph instead");
-
-                        try
-                        {
-                            // If not a RDF Dataset format see if it is a Graph
-                            IRdfReader rdfParser = MimeTypesHelper.GetParser(httpResponse.ContentType);
-                            rdfParser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
-                        }
-                        catch (RdfParserSelectionException)
-                        {
-                            // Finally fall back to assuming a dataset and trying format guessing
-                            var data = new StreamReader(httpResponse.GetResponseStream()).ReadToEnd();
-                            parser = StringParser.GetDatasetParser(data);
-                            parser.Warning += RaiseStoreWarning;
-                            parser.Load(handler, new StringReader(data));
-                        }
-                    }
-                }
-                else
-                {
+                    parser = MimeTypesHelper.GetStoreParser(httpResponse.ContentType);
                     parser.Warning += RaiseStoreWarning;
                     parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
                 }
+                catch (RdfParserSelectionException)
+                {
+                    RaiseStoreWarning("Unable to select a RDF Dataset parser based on Content-Type: " + httpResponse.ContentType + " - seeing if the content is an RDF Graph instead");
+
+                    try
+                    {
+                        // If not a RDF Dataset format see if it is a Graph
+                        IRdfReader rdfParser = MimeTypesHelper.GetParser(httpResponse.ContentType);
+                        rdfParser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
+                    }
+                    catch (RdfParserSelectionException)
+                    {
+                        // Finally fall back to assuming a dataset and trying format guessing
+                        var data = new StreamReader(httpResponse.GetResponseStream()).ReadToEnd();
+                        parser = StringParser.GetDatasetParser(data);
+                        parser.Warning += RaiseStoreWarning;
+                        parser.Load(handler, new StringReader(data));
+                    }
+                }
+            }
+            else
+            {
+                parser.Warning += RaiseStoreWarning;
+                parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
             }
         }
         catch (UriFormatException uriEx)
