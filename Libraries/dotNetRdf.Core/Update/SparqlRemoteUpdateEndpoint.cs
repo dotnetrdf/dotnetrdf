@@ -125,22 +125,18 @@ public class SparqlRemoteUpdateEndpoint
             {
                 request.Method = "POST";
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                using (var writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
-                {
-                    writer.Write(postData);
-                    writer.Close();
-                }
+                using var writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false));
+                writer.Write(postData);
+                writer.Close();
             }
             else
             {
                 request.Method = HttpMode;
             }
             request.Accept = MimeTypesHelper.Any;
-            using (var response = (HttpWebResponse)request.GetResponse())
-            {
-                // If we don't get an error then we should be fine
-                response.Close();
-            }
+            using var response = (HttpWebResponse)request.GetResponse();
+            // If we don't get an error then we should be fine
+            response.Close();
 
         }
         catch (WebException webEx)
@@ -187,11 +183,9 @@ public class SparqlRemoteUpdateEndpoint
                             {
                                 try
                                 {
-                                    using (var response = (HttpWebResponse) request.EndGetResponse(innerResult))
-                                    {
-                                        response.Close();
-                                        callback(state);
-                                    }
+                                    using var response = (HttpWebResponse)request.EndGetResponse(innerResult);
+                                    response.Close();
+                                    callback(state);
                                 }
                                 catch (SecurityException secEx)
                                 {
