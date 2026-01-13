@@ -53,10 +53,8 @@ public class SparqlCsvWriter
     /// <inheritdoc />
     public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
     {
-        using (FileStream stream = File.Open(filename, FileMode.Create))
-        {
-            Save(results, new StreamWriter(stream, fileEncoding));
-        }
+        using var stream = File.Open(filename, FileMode.Create);
+        Save(results, new StreamWriter(stream, fileEncoding));
     }
 
     /// <summary>

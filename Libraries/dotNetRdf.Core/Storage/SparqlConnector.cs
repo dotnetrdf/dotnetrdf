@@ -246,24 +246,22 @@ public class SparqlConnector
     private void QueryWithRemoteEndpoint(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
     {
         // If we're skipping local parsing then we'll need to just make a raw query and process the response
-        using (HttpWebResponse response = _endpoint.QueryRaw(sparqlQuery))
+        using HttpWebResponse response = _endpoint.QueryRaw(sparqlQuery);
+        try
         {
-            try
-            {
-                // Is the Content Type referring to a Sparql Result Set format?
-                ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
-                sparqlParser.Load(resultsHandler, new StreamReader(response.GetResponseStream()));
-                response.Close();
-            }
-            catch (RdfParserSelectionException)
-            {
-                // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
+            // Is the Content Type referring to a Sparql Result Set format?
+            ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
+            sparqlParser.Load(resultsHandler, new StreamReader(response.GetResponseStream()));
+            response.Close();
+        }
+        catch (RdfParserSelectionException)
+        {
+            // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
 
-                // Is the Content Type referring to a RDF format?
-                IRdfReader rdfParser = MimeTypesHelper.GetParser(response.ContentType);
-                rdfParser.Load(rdfHandler, new StreamReader(response.GetResponseStream()));
-                response.Close();
-            }
+            // Is the Content Type referring to a RDF format?
+            IRdfReader rdfParser = MimeTypesHelper.GetParser(response.ContentType);
+            rdfParser.Load(rdfHandler, new StreamReader(response.GetResponseStream()));
+            response.Close();
         }
     }
 

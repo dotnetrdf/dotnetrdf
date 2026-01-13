@@ -100,14 +100,12 @@ public class DynamicObjectCollectionTTests
         var test = new Test(s, g);
 
         var expected = new[] { s }.GetEnumerator();
-        using (var actual = test.ComplexProperty.GetEnumerator())
+        using var actual = test.ComplexProperty.GetEnumerator();
+        while (expected.MoveNext() | actual.MoveNext())
         {
-            while (expected.MoveNext() | actual.MoveNext())
-            {
-                Assert.Equal(
-                    expected.Current,
-                    actual.Current);
-            }
+            Assert.Equal(
+                expected.Current,
+                actual.Current);
         }
     }
 

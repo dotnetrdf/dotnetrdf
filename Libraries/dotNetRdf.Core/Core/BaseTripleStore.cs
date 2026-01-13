@@ -148,7 +148,7 @@ public abstract class BaseTripleStore
     #region Loading & Unloading
 
     /// <summary>
-    /// Add a new empty graph with the specified name to the triple store
+    /// Add a new empty graph with the specified name to the triple store.
     /// </summary>
     /// <param name="graphName">The name of the graph to add.</param>
     /// <returns>True if the execution resulted in a new graph being added to the triplestore, false otherwise.</returns>
