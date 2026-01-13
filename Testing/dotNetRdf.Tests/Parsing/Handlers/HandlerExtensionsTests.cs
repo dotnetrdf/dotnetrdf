@@ -19,7 +19,7 @@ public class HandlerExtensionsTests
         var expected = new Uri("http://example.org/");
         var innerHandler1 = new CustomHandler(null);
         var innerHandler2 = new CustomHandler(expected);
-        var wrappingHandler = new ChainedHandler(new[] { innerHandler1, innerHandler2 });
+        var wrappingHandler = new ChainedHandler([innerHandler1, innerHandler2]);
         wrappingHandler.GetBaseUri().Should().Be(expected);
     }
 

@@ -266,7 +266,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
             }
             var pushDownAggregatesOptimiser = new PushDownAggregatesOptimiser(autoVarPrefix);
             ISparqlAlgebra algebra = query.ToAlgebra(
-                true, new []{pushDownAggregatesOptimiser}
+                true, [pushDownAggregatesOptimiser]
                 );
             
             if (this._options.QueryExecutionTimeout > 0)

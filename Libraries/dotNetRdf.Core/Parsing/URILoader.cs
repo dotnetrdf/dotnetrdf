@@ -403,7 +403,7 @@ public static partial class UriLoader
                         // We should use the original handler in its capacity as node factory,
                         // otherwise there might be unexpected differences between its output
                         // and that of the MultiHandler's
-                        handler = new MultiHandler(new IRdfHandler[] { handler, cacheHandler }, handler);
+                        handler = new MultiHandler([handler, cacheHandler], handler);
                     }
                     else
                     {

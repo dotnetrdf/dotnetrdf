@@ -87,7 +87,7 @@ public class DynamicSubjectCollectionTTests
         testO.P.CopyTo(subjects, 1); // start at the second item at destination
 
         Assert.Equal<INode[]>(
-            new[] { null, s, p, o, null },
+            [null, s, p, o, null],
             subjects);
     }
 

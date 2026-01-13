@@ -247,7 +247,7 @@ internal class PullEvaluationContext : IPatternEvaluationContext
                 var t = new Triple(s, p, o);
                 if (tripleCollection.ContainsQuoted(t))
                 {
-                    return new[] { new TripleNode(t) };
+                    return [new TripleNode(t)];
                 }
                 return [];
             case TripleIndexType.None:

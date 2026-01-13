@@ -108,7 +108,7 @@ _:a dnr:other ""other"" ;
         var g = new Graph();
         g.LoadFromString(graph);
 
-        INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), new INode[] { g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:other"), g.CreateUriNode("dnr:type") });
+        INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), [g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:other"), g.CreateUriNode("dnr:type")]);
 
         Assert.Equal(NodeType.Literal, value.NodeType);
         Assert.Equal("other", ((ILiteralNode)value).Value);
@@ -124,7 +124,7 @@ _:a dnr:other <http://other> ;
         var g = new Graph();
         g.LoadFromString(graph);
 
-        INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), new INode[] { g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:other"), g.CreateUriNode("dnr:type") });
+        INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), [g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:other"), g.CreateUriNode("dnr:type")]);
 
         Assert.Equal(NodeType.Uri, value.NodeType);
         Assert.True(EqualityHelper.AreUrisEqual(new Uri("http://other"), ((IUriNode)value).Uri));
@@ -140,7 +140,7 @@ _:a dnr:other <http://other> ;
         var g = new Graph();
         g.LoadFromString(graph);
 
-        INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), new INode[] { g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:type"), g.CreateUriNode("dnr:other") });
+        INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), [g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:type"), g.CreateUriNode("dnr:other")]);
 
         Assert.Equal(NodeType.Uri, value.NodeType);
         Assert.True(EqualityHelper.AreUrisEqual(new Uri("http://uri"), ((IUriNode)value).Uri));
@@ -151,7 +151,7 @@ _:a dnr:other <http://other> ;
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("dnr", UriFactory.Root.Create(ConfigurationLoader.ConfigurationNamespace));
-        INode value = ConfigurationLoader.GetConfigurationNode(g, g.CreateBlankNode("a"), new INode[] { g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:type"), g.CreateUriNode("dnr:other") });
+        INode value = ConfigurationLoader.GetConfigurationNode(g, g.CreateBlankNode("a"), [g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:type"), g.CreateUriNode("dnr:other")]);
         Assert.Null(value);
     }
 
@@ -159,7 +159,7 @@ _:a dnr:other <http://other> ;
     public void ConfigurationLookupNode9()
     {
         var g = new Graph();
-        INode value = ConfigurationLoader.GetConfigurationNode(g, g.CreateBlankNode("a"), new INode[] { });
+        INode value = ConfigurationLoader.GetConfigurationNode(g, g.CreateBlankNode("a"), []);
         Assert.Null(value);
     }
 
@@ -239,7 +239,7 @@ _:a dnr:other false ; dnr:type true .";
         var g = new Graph();
         g.LoadFromString(graph);
 
-        var value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), new INode[] { g.CreateUriNode("dnr:other"), g.CreateUriNode("dnr:type")}, true);
+        var value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), [g.CreateUriNode("dnr:other"), g.CreateUriNode("dnr:type")], true);
         Assert.False(value);
     }
 
@@ -252,7 +252,7 @@ _:a dnr:other false ; dnr:type true .";
         var g = new Graph();
         g.LoadFromString(graph);
 
-        var value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), new INode[] { g.CreateUriNode("dnr:type"), g.CreateUriNode("dnr:other") }, false);
+        var value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), [g.CreateUriNode("dnr:type"), g.CreateUriNode("dnr:other")], false);
         Assert.True(value);
     }
 

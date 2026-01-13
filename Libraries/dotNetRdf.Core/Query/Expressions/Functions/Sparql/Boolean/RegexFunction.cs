@@ -284,11 +284,11 @@ public class RegexFunction
         {
             if (OptionsExpression != null)
             {
-                return new ISparqlExpression[] { TextExpression, PatternExpression, OptionsExpression };
+                return [TextExpression, PatternExpression, OptionsExpression];
             }
             else
             {
-                return new ISparqlExpression[] { TextExpression, PatternExpression };
+                return [TextExpression, PatternExpression];
             }
         }
     }

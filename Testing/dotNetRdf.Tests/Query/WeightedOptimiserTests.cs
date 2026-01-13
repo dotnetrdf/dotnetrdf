@@ -167,8 +167,8 @@ SELECT * WHERE
 
         Console.WriteLine(_formatter.Format(q));
 
-        Assert.True(q.RootGraphPattern.TriplePatterns[0].Variables.Intersect(new String[] { "p", "o" }).Count() == 2, "First Triple Pattern should contain ?p and ?o");
-        Assert.True(q.RootGraphPattern.TriplePatterns[1].Variables.Intersect(new String[] { "s", "p" }).Count() == 2, "Second Triple Pattern should contain ?s and ?p");
-        Assert.True(q.RootGraphPattern.TriplePatterns[2].Variables.Intersect(new String[] { "s", "o" }).Count() == 2, "Second Triple Pattern should contain ?s and ?o");
+        Assert.True(q.RootGraphPattern.TriplePatterns[0].Variables.Intersect(["p", "o"]).Count() == 2, "First Triple Pattern should contain ?p and ?o");
+        Assert.True(q.RootGraphPattern.TriplePatterns[1].Variables.Intersect(["s", "p"]).Count() == 2, "Second Triple Pattern should contain ?s and ?p");
+        Assert.True(q.RootGraphPattern.TriplePatterns[2].Variables.Intersect(["s", "o"]).Count() == 2, "Second Triple Pattern should contain ?s and ?o");
     }
 }

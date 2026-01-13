@@ -79,7 +79,7 @@ public class WriterTests
 
         g.Assert(testProperty, rdfType, rdfProperty);
         g.Assert(testProperty, rdfsRange, union);
-        g.Assert(union, unionOf, g.AssertList(new INode[] { testItem1, testItem2 }));
+        g.Assert(union, unionOf, g.AssertList([testItem1, testItem2]));
 
         TestTools.ShowGraph(g, _output);
 

@@ -467,7 +467,7 @@ class UriLoaderCache
                     // We should use the original handler in its capacity as node factory,
                     // otherwise there might be unexpected differences between its output
                     // and that of the MultiHandler's
-                    handler = new MultiHandler(new IRdfHandler[] { handler, new WriteThroughHandler(_formatterType, new StreamWriter(File.Open(graph, FileMode.Append, FileAccess.Write)), true) }, handler);
+                    handler = new MultiHandler([handler, new WriteThroughHandler(_formatterType, new StreamWriter(File.Open(graph, FileMode.Append, FileAccess.Write)), true)], handler);
                 }
             }
         }

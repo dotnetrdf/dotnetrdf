@@ -370,7 +370,7 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
                     {
                         valuePairs = (from set in InputMultiset.Sets
                                       where set.ContainsVariable(predVar) && set.ContainsVariable(objVar)
-                                      select set).Distinct(new SetDistinctnessComparer(new string[] { predVar, objVar }));
+                                      select set).Distinct(new SetDistinctnessComparer([predVar, objVar]));
                         return (from set in valuePairs
                                 where set[predVar] != null && set[objVar] != null
                                 select new Triple(subj, set[predVar], set[objVar])).Where(t => Data.ContainsTriple(t));
@@ -445,7 +445,7 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
                     {
                         valuePairs = (from set in InputMultiset.Sets
                                       where set.ContainsVariable(subjVar) && set.ContainsVariable(objVar)
-                                      select set).Distinct(new SetDistinctnessComparer(new string[] { subjVar, objVar }));
+                                      select set).Distinct(new SetDistinctnessComparer([subjVar, objVar]));
                         return (from set in valuePairs
                                 where set[subjVar] != null && set[objVar] != null
                                 select new Triple(set[subjVar], pred, set[objVar])).Where(t => Data.ContainsTriple(t));
@@ -502,7 +502,7 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
                     {
                         valuePairs = (from set in InputMultiset.Sets
                                       where set.ContainsVariable(subjVar) && set.ContainsVariable(predVar)
-                                      select set).Distinct(new SetDistinctnessComparer(new string[] { subjVar, predVar }));
+                                      select set).Distinct(new SetDistinctnessComparer([subjVar, predVar]));
                         return (from set in valuePairs
                                 where set[subjVar] != null && set[predVar] != null
                                 select new Triple(set[subjVar], set[predVar], obj)).Where(t => Data.ContainsTriple(t));
@@ -655,7 +655,7 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
                 var t = new Triple(s, p, o);
                 if (Data.ContainsQuotedTriple(t))
                 {
-                    return new[] { new TripleNode(t) };
+                    return [new TripleNode(t)];
                 }
                 else
                 {

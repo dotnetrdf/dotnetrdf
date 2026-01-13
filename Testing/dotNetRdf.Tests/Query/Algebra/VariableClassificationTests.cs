@@ -102,13 +102,13 @@ public class VariableClassificationTests
 
         // In the left join only the LHS variables should be fixed, others should be floating
         ILeftJoin leftJoin = new LeftJoin(lhs, rhs);
-        TestClassification(leftJoin, new String[] { "s", "type"}, new String[] { "p", "o"});
+        TestClassification(leftJoin, new String[] { "s", "type"}, ["p", "o"]);
         leftJoin = new LeftJoin(rhs, lhs);
-        TestClassification(leftJoin, new String[] { "s", "p", "o" }, new String[] { "type" });
+        TestClassification(leftJoin, new String[] { "s", "p", "o" }, ["type"]);
 
         // In the union only fixed variables on both sides are fixed, others should be floating
         IUnion union = new Union(lhs, rhs);
-        TestClassification(union, new String[] { "s"}, new String[] { "p", "o", "type"});
+        TestClassification(union, new String[] { "s"}, ["p", "o", "type"]);
     }
 
     [Fact]
@@ -121,17 +121,17 @@ public class VariableClassificationTests
 
         // In the left join only the LHS variables should be fixed, others should be floating
         ILeftJoin leftJoin = new LeftJoin(lhs, rhs);
-        TestClassification(leftJoin, new String[] { "s", "type" }, new String[] { "p", "o" });
+        TestClassification(leftJoin, new String[] { "s", "type" }, ["p", "o"]);
 
         tp = MakeTriplePattern(_factory.CreateVariableNode("s"), _factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label")), _factory.CreateVariableNode("label"));
         var top = new Bgp(tp);
 
         // Everything in the RHS not fixed on the LHS is floating
         ILeftJoin parentJoin = new LeftJoin(top, leftJoin);
-        TestClassification(parentJoin, new String[] { "s", "label"}, new String[] { "p", "o", "type"});
+        TestClassification(parentJoin, new String[] { "s", "label"}, ["p", "o", "type"]);
 
         parentJoin = new LeftJoin(leftJoin, top);
-        TestClassification(parentJoin, new String[] { "s", "type" }, new String[] { "p", "o", "label" });
+        TestClassification(parentJoin, new String[] { "s", "type" }, ["p", "o", "label"]);
     }
 }
 

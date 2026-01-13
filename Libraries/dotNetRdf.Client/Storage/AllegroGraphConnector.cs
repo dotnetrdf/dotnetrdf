@@ -193,7 +193,7 @@ public class AllegroGraphConnector
             HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, HttpMethod.Post, []);
 
             // Build the Post Data and add to the Request Body
-            request.Content = new FormUrlEncodedContent(new []{new KeyValuePair<string, string>("query", sparqlUpdate)});
+            request.Content = new FormUrlEncodedContent([new KeyValuePair<string, string>("query", sparqlUpdate)]);
 
             // Get the Response and process based on the Content Type
             using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
@@ -224,7 +224,7 @@ public class AllegroGraphConnector
 
             // Build the Post Data and add to the Request Body
             request.Content =
-                new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", sparqlUpdate)});
+                new FormUrlEncodedContent([new KeyValuePair<string, string>("query", sparqlUpdate)]);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
                 if (requestTask.IsCanceled || requestTask.IsFaulted)
@@ -274,7 +274,7 @@ public class AllegroGraphConnector
 
             // Build the Post Data and add to the Request Body
             request.Content =
-                new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", sparqlUpdate)});
+                new FormUrlEncodedContent([new KeyValuePair<string, string>("query", sparqlUpdate)]);
             HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {

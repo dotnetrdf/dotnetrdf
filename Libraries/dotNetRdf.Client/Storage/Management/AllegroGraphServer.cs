@@ -350,7 +350,7 @@ public class AllegroGraphServer
     /// <returns></returns>
     public override void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
     {
-        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, new IStoreTemplate[] { new StoreTemplate(id) }), state);
+        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, [new StoreTemplate(id)]), state);
     }
 
     /// <summary>
