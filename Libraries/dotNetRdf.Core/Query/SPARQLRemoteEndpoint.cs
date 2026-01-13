@@ -346,14 +346,12 @@ public class SparqlRemoteEndpoint
         try
         {
             // Make the Query
-            using (HttpWebResponse httpResponse = QueryInternal(sparqlQuery, RdfAcceptHeader))
-            {
-                // Parse into a Graph based on Content Type
-                var ctype = httpResponse.ContentType;
-                IRdfReader parser = MimeTypesHelper.GetParser(ctype);
-                parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
-                httpResponse.Close();
-            }
+            using HttpWebResponse httpResponse = QueryInternal(sparqlQuery, RdfAcceptHeader);
+            // Parse into a Graph based on Content Type
+            var ctype = httpResponse.ContentType;
+            IRdfReader parser = MimeTypesHelper.GetParser(ctype);
+            parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
+            httpResponse.Close();
         }
         catch (WebException webEx)
         {
@@ -545,11 +543,9 @@ public class SparqlRemoteEndpoint
         {
             httpRequest.Method = "POST";
             httpRequest.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-            using (var writer = new StreamWriter(httpRequest.GetRequestStream(), new UTF8Encoding(false)))
-            {
-                writer.Write(postData);
-                writer.Close();
-            }
+            using var writer = new StreamWriter(httpRequest.GetRequestStream(), new UTF8Encoding(false));
+            writer.Write(postData);
+            writer.Close();
         }
         else
         {
@@ -613,15 +609,13 @@ public class SparqlRemoteEndpoint
                             {
                                 try
                                 {
-                                    using (var response = (HttpWebResponse) request.EndGetResponse(innerResult))
-                                    {
-                                        ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
-                                        var rset = new SparqlResultSet();
-                                        parser.Load(rset, new StreamReader(response.GetResponseStream()));
+                                    using var response = (HttpWebResponse)request.EndGetResponse(innerResult);
+                                    ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
+                                    var rset = new SparqlResultSet();
+                                    parser.Load(rset, new StreamReader(response.GetResponseStream()));
 
-                                        response.Close();
-                                        callback(rset, state);
-                                    }
+                                    response.Close();
+                                    callback(rset, state);
                                 }
                                 catch (SecurityException secEx)
                                 {
@@ -710,14 +704,12 @@ public class SparqlRemoteEndpoint
                             {
                                 try
                                 {
-                                    using (var response = (HttpWebResponse) request.EndGetResponse(innerResult))
-                                    {
-                                        ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
-                                        parser.Load(handler, new StreamReader(response.GetResponseStream()));
+                                    using var response = (HttpWebResponse)request.EndGetResponse(innerResult);
+                                    ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
+                                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
 
-                                        response.Close();
-                                        callback(null, handler, state);
-                                    }
+                                    response.Close();
+                                    callback(null, handler, state);
                                 }
                                 catch (SecurityException secEx)
                                 {

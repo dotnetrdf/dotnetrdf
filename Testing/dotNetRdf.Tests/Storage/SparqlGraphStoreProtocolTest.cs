@@ -289,30 +289,28 @@ public class SparqlGraphStoreProtocolTest
             writer.Close();
         }
 
-        using (var response = (HttpWebResponse)request.GetResponse())
+        using var response = (HttpWebResponse)request.GetResponse();
+        //Should get a 201 Created response
+        if (response.StatusCode == HttpStatusCode.Created)
         {
-            //Should get a 201 Created response
-            if (response.StatusCode == HttpStatusCode.Created)
-            {
-                if (response.Headers["Location"] == null) Assert.Fail("A Location: Header containing the URI of the newly created Graph should have been returned");
-                var graphUri = new Uri(response.Headers["Location"]);
+            if (response.Headers["Location"] == null) Assert.Fail("A Location: Header containing the URI of the newly created Graph should have been returned");
+            var graphUri = new Uri(response.Headers["Location"]);
 
-                Console.WriteLine("New Graph URI is " + graphUri.ToString());
+            Console.WriteLine("New Graph URI is " + graphUri.ToString());
 
-                Console.WriteLine("Now attempting to retrieve this Graph from the Store");
-                var h = new Graph();
-                connector.LoadGraph(h, graphUri);
+            Console.WriteLine("Now attempting to retrieve this Graph from the Store");
+            var h = new Graph();
+            connector.LoadGraph(h, graphUri);
 
-                TestTools.ShowGraph(h);
+            TestTools.ShowGraph(h);
 
-                Assert.Equal(g, h);
-            }
-            else
-            {
-                Assert.Fail("A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
-            }
-            response.Close();
+            Assert.Equal(g, h);
         }
+        else
+        {
+            Assert.Fail("A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
+        }
+        response.Close();
     }
 
     [Fact]
