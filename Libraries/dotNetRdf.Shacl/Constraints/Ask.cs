@@ -76,7 +76,7 @@ internal class Ask : Sparql
     {
         SparqlQuery q = query.Copy();
         q.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("value", new ConstantTerm(valueNode)));
-
+        q.Optimise();
         return q;
     }
 }

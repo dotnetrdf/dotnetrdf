@@ -174,6 +174,14 @@ foaf:firstName ""Carol"" .");
 
             """);
 
+        var validDataGraph = new Graph();
+        validDataGraph.LoadFromString("""
+            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+            [ a foaf:Person ;
+              foaf:knows <http://example.org/Bob> 
+            ] .
+            """);
         var shapesGraph = new Graph();
         shapesGraph.LoadFromString(""""
             @prefix ex: <http://example.org/> .
@@ -207,7 +215,8 @@ foaf:firstName ""Carol"" .");
 
         var shaclGraph = new ShapesGraph(shapesGraph);
 
-        Assert.True(shaclGraph.Validate(dataGraph).Conforms);
+        Assert.False(shaclGraph.Validate(dataGraph).Conforms);
+        Assert.True(shaclGraph.Validate(validDataGraph).Conforms);
     }
     
     [Fact]
