@@ -61,7 +61,7 @@ public class BlankNodeVariableTests
         EnsureTestData();
 
         SparqlQuery q = _parser.ParseFromString("SELECT ?o WHERE { _:s ?p1 ?o1 FILTER(ISURI(?o1)) ?o1 ?p2 ?o . FILTER(ISLITERAL(?o)) }");
-        q.AlgebraOptimisers = new IAlgebraOptimiser[] { new StrictAlgebraOptimiser() };
+        q.AlgebraOptimisers = [new StrictAlgebraOptimiser()];
         var formatter = new SparqlFormatter();
         Console.WriteLine(formatter.Format(q));
         Console.WriteLine(q.ToAlgebra().ToString());

@@ -197,7 +197,7 @@ public abstract class BaseBinaryExpression
     {
         get
         {
-            return new ISparqlExpression[] { _leftExpr, _rightExpr };
+            return [_leftExpr, _rightExpr];
         }
     }
 

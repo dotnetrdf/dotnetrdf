@@ -333,7 +333,7 @@ public abstract class BaseSesameHttpProtocolConnector
 
             // Build the Post Data and add to the Request Body
             KeyValuePair<string, string>[]
-                formData = {new KeyValuePair<string, string>("query", sparqlQuery)};
+                formData = [new KeyValuePair<string, string>("query", sparqlQuery)];
             request.Content = new FormUrlEncodedContent(formData);
 
             // Get the Response and process based on the Content Type
@@ -1251,7 +1251,7 @@ public abstract class BaseSesameHttpProtocolConnector
 
         // Build the Post Data and add to the Request Body
         request.Content =
-            new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", sparqlQuery)});
+            new FormUrlEncodedContent([new KeyValuePair<string, string>("query", sparqlQuery)]);
         return request;
     }
 
@@ -1576,7 +1576,7 @@ public class SesameHttpProtocolVersion6Connector
 
             // Build the Post Data and add to the Request Body
             request.Content =
-                new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("update", sparqlUpdate)});
+                new FormUrlEncodedContent([new KeyValuePair<string, string>("update", sparqlUpdate)]);
 
             // Get the Response and process based on the Content Type
             using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
@@ -1607,7 +1607,7 @@ public class SesameHttpProtocolVersion6Connector
 
             // Build the Post Data and add to the Request Body
             request.Content =
-                new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("update", sparqlUpdate)});
+                new FormUrlEncodedContent([new KeyValuePair<string, string>("update", sparqlUpdate)]);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
                 if (requestTask.IsCanceled || requestTask.IsFaulted)

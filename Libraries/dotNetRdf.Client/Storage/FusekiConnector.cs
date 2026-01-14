@@ -357,7 +357,7 @@ public class FusekiConnector
                 request = new HttpRequestMessage(HttpMethod.Post, queryUri);
                 request.Headers.Add("Accept", MimeTypesHelper.HttpRdfOrSparqlAcceptHeader);
                 request.Content =
-                    new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", sparqlQuery)});
+                    new FormUrlEncodedContent([new KeyValuePair<string, string>("query", sparqlQuery)]);
             }
 
             // Get the Response and process based on the Content Type
@@ -554,7 +554,7 @@ public class FusekiConnector
 
         // Build the Post Data and add to the Request Body
         request.Content =
-            new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", sparqlQuery)});
+            new FormUrlEncodedContent([new KeyValuePair<string, string>("query", sparqlQuery)]);
         return request;
     }
 

@@ -33,6 +33,6 @@ public class RdfTestSuite
     {
         Assert.True(_runners.ContainsKey(t.Type.AbsoluteUri), "No runner found for test of type " + t.Type.AbsoluteUri);
         MethodInfo runner = _runners[t.Type.AbsoluteUri];
-        runner.Invoke(this, new[] { t });
+        runner.Invoke(this, [t]);
     }
 }

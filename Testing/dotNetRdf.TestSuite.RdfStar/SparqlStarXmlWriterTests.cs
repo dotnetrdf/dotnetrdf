@@ -18,10 +18,10 @@ public class SparqlStarXmlWriterTests
             new UriNode(new Uri("http://example.org/p")), new LiteralNode("o",  false)));
         var results = new List<ISparqlResult>
         {
-            new SparqlResult(new[]
-            {
+            new SparqlResult(
+            [
                 new KeyValuePair<string, INode>("x", tn)
-            })
+            ])
         };
         var resultSet = new SparqlResultSet(results);
         ISparqlResultsWriter writer = new SparqlXmlWriter();

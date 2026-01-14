@@ -51,12 +51,12 @@ public class SparqlQueryTests
         var type = new VariablePattern("type");
         var triplePattern = new TriplePattern(subj, rdfType, type);
         query.RootGraphPattern.AddTriplePattern(triplePattern);
-        query.RootGraphPattern.AddFilter(new UnaryExpressionFilter(new InFunction(new VariableTerm("type"), new[]
-            {
+        query.RootGraphPattern.AddFilter(new UnaryExpressionFilter(new InFunction(new VariableTerm("type"),
+            [
                 new ConstantTerm(new UriNode(new Uri("http://example.com/Type1"))), 
                 new ConstantTerm(new UriNode(new Uri("http://example.com/Type2"))), 
                 new ConstantTerm(new UriNode(new Uri("http://example.com/Type3")))
-            })));
+            ])));
 
         // when
         var algebra = (Distinct)query.ToAlgebra();

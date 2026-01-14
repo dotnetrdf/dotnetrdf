@@ -46,14 +46,14 @@ public class BaseTest
         TestTools.ShowResults(results, _output);
     }
 
-    protected static readonly IEnumerable<CultureInfo> TestedCultureInfos = new[]
-    {
+    protected static readonly IEnumerable<CultureInfo> TestedCultureInfos =
+    [
         new CultureInfo("en-US"),
         new CultureInfo("pl-PL"),
         new CultureInfo("ja-JP"),
         new CultureInfo("ru-RU"),
         new CultureInfo("pt-BR")
-    };
+    ];
 
     public static IEnumerable<TheoryDataRow<CultureInfo>> GetTestCultures()
     {

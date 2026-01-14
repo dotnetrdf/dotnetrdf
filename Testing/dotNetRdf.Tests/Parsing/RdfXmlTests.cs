@@ -149,7 +149,7 @@ namespace VDS.RDF.Parsing;
         var graphHandler = new GraphHandler(g);
         var paging = new PagingHandler(graphHandler, 1000);
         var counter = new CountHandler();
-        var handler = new ChainedHandler(new IRdfHandler[] { paging, counter });
+        var handler = new ChainedHandler([paging, counter]);
 
         var parser = new GZippedRdfXmlParser(RdfXmlParserMode.Streaming);
         parser.Load(handler, Path.Combine("resources", "oom.rdf.gz"));

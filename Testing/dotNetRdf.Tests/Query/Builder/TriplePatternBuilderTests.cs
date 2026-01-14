@@ -59,11 +59,11 @@ public class TriplePatternBuilderTests : IDisposable
         Assert.Single(_builder.Patterns);
         var pattern = (IMatchTriplePattern) _builder.Patterns.Single();
         Assert.True(pattern.Subject is VariablePattern);
-        Assert.Equal(new[] { "s" }, pattern.Subject.Variables);
+        Assert.Equal(["s"], pattern.Subject.Variables);
         Assert.True(pattern.Predicate is VariablePattern);
-        Assert.Equal(new[] { "p" }, pattern.Predicate.Variables);
+        Assert.Equal(["p"], pattern.Predicate.Variables);
         Assert.True(pattern.Object is VariablePattern);
-        Assert.Equal(new [] { "o" }, pattern.Object.Variables);
+        Assert.Equal(["o"], pattern.Object.Variables);
     }
 
     [Fact]
@@ -79,11 +79,11 @@ public class TriplePatternBuilderTests : IDisposable
         Assert.Single(_builder.Patterns);
         var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
         Assert.True(pattern.Subject is VariablePattern);
-        Assert.Equal(new[] { "s" }, pattern.Subject.Variables);
+        Assert.Equal(["s"], pattern.Subject.Variables);
         Assert.True(pattern.Predicate is NodeMatchPattern);
         Assert.Equal(new Uri("http://www.example.com/property"), ((dynamic)pattern.Predicate).Node.Uri);
         Assert.True(pattern.Object is VariablePattern);
-        Assert.Equal(new[] { "o" }, pattern.Object.Variables);
+        Assert.Equal(["o"], pattern.Object.Variables);
     }
 
     [Fact]
@@ -102,9 +102,9 @@ public class TriplePatternBuilderTests : IDisposable
         Assert.True(pattern.Subject is NodeMatchPattern);
         Assert.Equal(new Uri("http://xmlns.com/foaf/0.1/name"), ((dynamic)pattern.Subject).Node.Uri);
         Assert.True(pattern.Predicate is VariablePattern);
-        Assert.Equal(new[] { "p" }, pattern.Predicate.Variables);
+        Assert.Equal(["p"], pattern.Predicate.Variables);
         Assert.True(pattern.Object is VariablePattern);
-        Assert.Equal(new[] { "o" }, pattern.Object.Variables);
+        Assert.Equal(["o"], pattern.Object.Variables);
     }
 
     [Fact]
@@ -121,11 +121,11 @@ public class TriplePatternBuilderTests : IDisposable
         Assert.Single(_builder.Patterns);
         var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
         Assert.True(pattern.Subject is VariablePattern);
-        Assert.Equal(new[] { "s" }, pattern.Subject.Variables);
+        Assert.Equal(["s"], pattern.Subject.Variables);
         Assert.True(pattern.Predicate is NodeMatchPattern);
         Assert.Equal(new Uri("http://xmlns.com/foaf/0.1/name"), ((dynamic)pattern.Predicate).Node.Uri);
         Assert.True(pattern.Object is VariablePattern);
-        Assert.Equal(new[] { "o" }, pattern.Object.Variables);
+        Assert.Equal(["o"], pattern.Object.Variables);
     }
 
     [Fact]
@@ -140,9 +140,9 @@ public class TriplePatternBuilderTests : IDisposable
         Assert.True(pattern.Subject is NodeMatchPattern);
         Assert.Equal(new Uri("http://xmlns.com/foaf/0.1/name"), ((dynamic)pattern.Subject).Node.Uri);
         Assert.True(pattern.Predicate is VariablePattern);
-        Assert.Equal(new[] { "p" }, pattern.Predicate.Variables);
+        Assert.Equal(["p"], pattern.Predicate.Variables);
         Assert.True(pattern.Object is VariablePattern);
-        Assert.Equal(new[] { "o" }, pattern.Object.Variables);
+        Assert.Equal(["o"], pattern.Object.Variables);
     }
 
     [Fact]
@@ -155,9 +155,9 @@ public class TriplePatternBuilderTests : IDisposable
         Assert.Single(_builder.Patterns);
         var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
         Assert.True(pattern.Predicate is VariablePattern);
-        Assert.Equal(new[] { "p" }, pattern.Predicate.Variables);
+        Assert.Equal(["p"], pattern.Predicate.Variables);
         Assert.True(pattern.Subject is VariablePattern);
-        Assert.Equal(new[] { "s" }, pattern.Subject.Variables);
+        Assert.Equal(["s"], pattern.Subject.Variables);
         Assert.True(pattern.Object is NodeMatchPattern);
         Assert.Equal(new Uri("http://xmlns.com/foaf/0.1/Person"), ((dynamic)pattern.Object).Node.Uri);
     }
@@ -176,9 +176,9 @@ public class TriplePatternBuilderTests : IDisposable
         Assert.Single(_builder.Patterns);
         var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
         Assert.True(pattern.Subject is VariablePattern);
-        Assert.Equal(new[] { "s" }, pattern.Subject.Variables);
+        Assert.Equal(["s"], pattern.Subject.Variables);
         Assert.True(pattern.Predicate is VariablePattern);
-        Assert.Equal(new[] { "p" }, pattern.Predicate.Variables);
+        Assert.Equal(["p"], pattern.Predicate.Variables);
         Assert.True(pattern.Object is NodeMatchPattern);
         Assert.Equal(new Uri("http://xmlns.com/foaf/0.1/Person"), ((dynamic)pattern.Object).Node.Uri);
     }
@@ -193,9 +193,9 @@ public class TriplePatternBuilderTests : IDisposable
         Assert.Single(_builder.Patterns);
         var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
         Assert.True(pattern.Subject is VariablePattern);
-        Assert.Equal(new[] { "s" }, pattern.Subject.Variables);
+        Assert.Equal(["s"], pattern.Subject.Variables);
         Assert.True(pattern.Predicate is VariablePattern);
-        Assert.Equal(new[] { "p" }, pattern.Predicate.Variables);
+        Assert.Equal(["p"], pattern.Predicate.Variables);
         Assert.True(pattern.Object is BlankNodePattern);
         Assert.Equal("_:bnode", ((BlankNodePattern)pattern.Object).ID);
     }
@@ -212,9 +212,9 @@ public class TriplePatternBuilderTests : IDisposable
         Assert.True(pattern.Subject is BlankNodePattern);
         Assert.Equal("_:s", ((BlankNodePattern)pattern.Subject).ID);
         Assert.True(pattern.Predicate is VariablePattern);
-        Assert.Equal(new[] { "p" }, pattern.Predicate.Variables);
+        Assert.Equal(["p"], pattern.Predicate.Variables);
         Assert.True(pattern.Object is VariablePattern);
-        Assert.Equal(new[] { "o" }, pattern.Object.Variables);
+        Assert.Equal(["o"], pattern.Object.Variables);
     }
 
     [Fact]
@@ -232,9 +232,9 @@ public class TriplePatternBuilderTests : IDisposable
         Assert.True(pattern.Subject is NodeMatchPattern);
         Assert.Same(node, ((NodeMatchPattern)pattern.Subject).Node);
         Assert.True(pattern.Predicate is VariablePattern);
-        Assert.Equal(new[] { "p" }, pattern.Predicate.Variables);
+        Assert.Equal(["p"], pattern.Predicate.Variables);
         Assert.True(pattern.Object is VariablePattern);
-        Assert.Equal(new[] { "o" }, pattern.Object.Variables);
+        Assert.Equal(["o"], pattern.Object.Variables);
     }
 
     [Fact]
@@ -250,11 +250,11 @@ public class TriplePatternBuilderTests : IDisposable
         Assert.Single(_builder.Patterns);
         var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
         Assert.True(pattern.Subject is VariablePattern);
-        Assert.Equal(new[] { "s" }, pattern.Subject.Variables);
+        Assert.Equal(["s"], pattern.Subject.Variables);
         Assert.True(pattern.Predicate is NodeMatchPattern);
         Assert.Same(node, ((NodeMatchPattern)pattern.Predicate).Node);
         Assert.True(pattern.Object is VariablePattern);
-        Assert.Equal(new[] { "o" }, pattern.Object.Variables);
+        Assert.Equal(["o"], pattern.Object.Variables);
     }
 
     [Fact]
@@ -272,9 +272,9 @@ public class TriplePatternBuilderTests : IDisposable
         Assert.True(pattern.Object is NodeMatchPattern);
         Assert.Same(node, ((NodeMatchPattern)pattern.Object).Node);
         Assert.True(pattern.Predicate is VariablePattern);
-        Assert.Equal(new[] { "p" }, pattern.Predicate.Variables);
+        Assert.Equal(["p"], pattern.Predicate.Variables);
         Assert.True(pattern.Subject is VariablePattern);
-        Assert.Equal(new[] { "s" }, pattern.Subject.Variables);
+        Assert.Equal(["s"], pattern.Subject.Variables);
     }
 
     [Fact]

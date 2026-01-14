@@ -923,7 +923,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
                     {
                         if (explicitNewSubj)
                         {
-                            EmitList(context, newSubj, predicateNode, new []{currentObj});
+                            EmitList(context, newSubj, predicateNode, [currentObj]);
                         }
                         else
                         {

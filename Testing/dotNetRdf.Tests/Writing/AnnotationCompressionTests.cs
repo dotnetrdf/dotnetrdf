@@ -33,13 +33,13 @@ public class AnnotationCompressionTests
         var tAnnotation = new Triple(new TripleNode(t), g.CreateUriNode("ex:a"), g.CreateUriNode("ex:b"));
         var tAnnotation2 = new Triple(new TripleNode(t), g.CreateUriNode("ex:p"), g.CreateUriNode("ex:o"));
         var notAnnotation = new Triple(g.CreateUriNode("ex:s"), g.CreateUriNode("ex:p"), new TripleNode(t));
-        g.Assert(new [] {t, tAnnotation, tAnnotation2, notAnnotation});
+        g.Assert([t, tAnnotation, tAnnotation2, notAnnotation]);
 
         var context = new CompressingTurtleWriterContext(g, TextWriter.Null);
         WriterHelper.FindAnnotations(context);
         context.Annotations.Should().ContainKey(t);
-        context.Annotations[t].Should().HaveCount(2).And.Contain(new[] { tAnnotation, tAnnotation2 });
+        context.Annotations[t].Should().HaveCount(2).And.Contain([tAnnotation, tAnnotation2]);
         context.Annotations[t].Should().NotContain(notAnnotation);
-        context.TriplesDone.Should().HaveCount(2).And.Contain(new[] { tAnnotation, tAnnotation2 });
+        context.TriplesDone.Should().HaveCount(2).And.Contain([tAnnotation, tAnnotation2]);
     }
 }

@@ -14,12 +14,12 @@ public class SparqlStarJsonWriterTests
     {
         var results = new List<ISparqlResult>
         {
-            new SparqlResult(new[]
-            {
+            new SparqlResult(
+            [
                 new KeyValuePair<string, INode>("x",
                     new TripleNode(new Triple(new UriNode(new Uri("http://example.org/s")),
                         new UriNode(new Uri("http://example.org/p")), new LiteralNode("o", (Uri)null, false))))
-            })
+            ])
         };
         var resultSet = new SparqlResultSet(results);
         ISparqlResultsWriter writer = new SparqlJsonWriter();

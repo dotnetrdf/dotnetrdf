@@ -82,7 +82,7 @@ public class FullTextGraphScopingTests
     {
         //With Graph scope to g1 only one result should be returned
         using var searcher = new LuceneSearchProvider(LuceneVersion.LUCENE_48, _index, new StandardAnalyzer(LuceneVersion.LUCENE_48));
-        IEnumerable<IFullTextSearchResult> results = searcher.Match(new [] { new UriNode(new  Uri("http://g1")) }, "sample");
+        IEnumerable<IFullTextSearchResult> results = searcher.Match([new UriNode(new  Uri("http://g1"))], "sample");
         Assert.Single(results);
         Assert.Equal(new Uri("http://x"), ((IUriNode)results.First().Node).Uri);
     }
@@ -93,7 +93,7 @@ public class FullTextGraphScopingTests
     {
         //With Graph scope to g2 only two results should be returned
         using var searcher = new LuceneSearchProvider(LuceneVersion.LUCENE_48, _index, new StandardAnalyzer(LuceneVersion.LUCENE_48));
-        IEnumerable<IFullTextSearchResult> results = searcher.Match(new [] { new UriNode(new Uri("http://g2")) }, "sample");
+        IEnumerable<IFullTextSearchResult> results = searcher.Match([new UriNode(new Uri("http://g2"))], "sample");
         Assert.Equal(2, results.Count());
         Assert.True(results.All(r => EqualityHelper.AreUrisEqual(new Uri("http://y"), ((IUriNode)r.Node).Uri)));
     }
@@ -106,7 +106,7 @@ public class FullTextGraphScopingTests
         //No results should be returned as no results in default graph
         using var searcher = new LuceneSearchProvider(LuceneVersion.LUCENE_48, _index, new StandardAnalyzer(LuceneVersion.LUCENE_48));
         SparqlQuery q = _parser.ParseFromString(FullTextPrefix + "SELECT * WHERE { ?s pf:textMatch 'sample' }");
-        q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
+        q.AlgebraOptimisers = [new FullTextOptimiser(searcher)];
 
         var results = processor.ProcessQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
@@ -121,7 +121,7 @@ public class FullTextGraphScopingTests
         //1 result should be returned as only one result in the given graph g1
         using var searcher = new LuceneSearchProvider(LuceneVersion.LUCENE_48, _index, new StandardAnalyzer(LuceneVersion.LUCENE_48));
         SparqlQuery q = _parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH <http://g1> { ?s pf:textMatch 'sample' } }");
-        q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
+        q.AlgebraOptimisers = [new FullTextOptimiser(searcher)];
 
         var results = processor.ProcessQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
@@ -136,7 +136,7 @@ public class FullTextGraphScopingTests
         //2 results should be returned as two results in the given graph g2
         using var searcher = new LuceneSearchProvider(LuceneVersion.LUCENE_48, _index, new StandardAnalyzer(LuceneVersion.LUCENE_48));
         SparqlQuery q = _parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH <http://g2> { ?s pf:textMatch 'sample' } }");
-        q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
+        q.AlgebraOptimisers = [new FullTextOptimiser(searcher)];
 
         var results = processor.ProcessQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
@@ -151,7 +151,7 @@ public class FullTextGraphScopingTests
         //All results should be returned because all graphs are considered
         using var searcher = new LuceneSearchProvider(LuceneVersion.LUCENE_48, _index, new StandardAnalyzer(LuceneVersion.LUCENE_48));
         SparqlQuery q = _parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH ?g { ?s pf:textMatch 'sample' } }");
-        q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
+        q.AlgebraOptimisers = [new FullTextOptimiser(searcher)];
 
         var results = processor.ProcessQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
@@ -166,7 +166,7 @@ public class FullTextGraphScopingTests
         //Interaction of graph scope with limit
         using var searcher = new LuceneSearchProvider(LuceneVersion.LUCENE_48, _index, new StandardAnalyzer(LuceneVersion.LUCENE_48));
         SparqlQuery q = _parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH <http://g2> { ?s pf:textMatch ( 'sample' 1 ) } }");
-        q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
+        q.AlgebraOptimisers = [new FullTextOptimiser(searcher)];
 
         var results = processor.ProcessQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
@@ -182,7 +182,7 @@ public class FullTextGraphScopingTests
         //Interaction of graph scope with limit
         using var searcher = new LuceneSearchProvider(LuceneVersion.LUCENE_48, _index, new StandardAnalyzer(LuceneVersion.LUCENE_48));
         SparqlQuery q = _parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH <http://g2> { ?s pf:textMatch ( 'sample' 5 ) } }");
-        q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
+        q.AlgebraOptimisers = [new FullTextOptimiser(searcher)];
 
         var results = processor.ProcessQuery(q) as SparqlResultSet;
         Assert.NotNull(results);

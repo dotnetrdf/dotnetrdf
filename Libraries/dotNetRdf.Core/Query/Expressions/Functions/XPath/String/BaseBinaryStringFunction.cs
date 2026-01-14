@@ -144,7 +144,7 @@ public abstract class BaseBinaryStringFunction
     {
         get
         {
-            return new[] { _expr, _arg };
+            return [_expr, _arg];
         }
     }
 

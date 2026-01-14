@@ -102,7 +102,7 @@ public class ParallelEvaluation
             _output.WriteLine(string.Empty);
 
             //Evaluate parallelised
-            q.AlgebraOptimisers = new IAlgebraOptimiser[] { new ParallelEvaluationOptimiser() };
+            q.AlgebraOptimisers = [new ParallelEvaluationOptimiser()];
             _output.WriteLine("Parallel Algebra:");
             _output.WriteLine(q.ToAlgebra().ToString());
             _output.WriteLine(string.Empty);

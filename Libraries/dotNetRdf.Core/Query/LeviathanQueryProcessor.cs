@@ -1697,7 +1697,7 @@ public class LeviathanQueryProcessor
             }
         }
 
-        paths.AddRange(nodes.Select(kvp => new List<INode>(new INode[] { kvp.Key, kvp.Value })));
+        paths.AddRange(nodes.Select(kvp => new List<INode>([kvp.Key, kvp.Value])));
     }
 
     /// <summary>

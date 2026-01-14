@@ -133,7 +133,7 @@ public class IfElseFunction
     {
         get
         {
-            return new ISparqlExpression[] { ConditionExpression, TrueBranchExpression, FalseBranchExpression };
+            return [ConditionExpression, TrueBranchExpression, FalseBranchExpression];
         }
     }
 

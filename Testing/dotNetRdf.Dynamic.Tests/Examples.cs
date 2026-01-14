@@ -104,15 +104,14 @@ public class Examples
         Assert.Equal("RobVesse", accountName);
         Assert.Equal(2, currentProjects.Count());
         Assert.Equal(
-            new[]
-            {
+            [
                 "mailto:rav08r@ecs.soton.ac.uk",
                 "mailto:rvesse@apache.org",
                 "mailto:rvesse@cray.com",
                 "mailto:rvesse@dotnetrdf.org",
                 "mailto:rvesse@vdesign-studios.com",
                 "mailto:rvesse@yarcdata.com"
-            },
+            ],
             ((IEnumerable<object>)mbox).Select(mb => mb.ToString()));
         Assert.Equal("6E2497EB", hex_id);
     }
@@ -198,12 +197,12 @@ public class Examples
         };
         blankNodeCollection["rdf:type"] = d.CreateUriNode(":BlankNodeCollection");
 
-        INode collection = g.AssertList(new[]
-        {
+        INode collection = g.AssertList(
+        [
             g.CreateUriNode(":item1"),
             g.CreateUriNode(":item2"),
             g.CreateUriNode(":item3")
-        });
+        ]);
         d[collection]["rdf:type"] = d.CreateUriNode(":Collection");
         
         Assert.Equal(expected, g);

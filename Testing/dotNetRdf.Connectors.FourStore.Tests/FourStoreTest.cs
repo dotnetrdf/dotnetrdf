@@ -119,15 +119,15 @@ public class FourStoreTest
         FourStoreConnector fourstore = GetConnection();
         fourstore.DeleteGraph("http://example.org/4storeRemoveTriples");
 
-        g.Assert(new[]
-        {
+        g.Assert(
+        [
             new Triple(g.CreateUriNode(new Uri("http://example.org/s1")),
                 g.CreateUriNode(new Uri("http://example.org/p")),
                 g.CreateUriNode(new Uri("http://example.org/o"))),
             new Triple(g.CreateUriNode(new Uri("http://example.org/s2")),
                 g.CreateUriNode(new Uri("http://example.org/p")),
                 g.CreateUriNode(new Uri("http://example.org/o")))
-        });
+        ]);
         fourstore.SaveGraph(g);
         List<Triple> toRemove = g.GetTriplesWithSubject(new Uri("http://example.org/s1")).ToList();
 

@@ -656,7 +656,7 @@ internal static class FramingProcessor
     private static bool NodePatternMatch(FramingState state, JObject frame, JToken value, bool requireAll)
     {
         if (!(value is JObject valueObject) || !valueObject.ContainsKey("@id")) return false;
-        Dictionary<string, JObject> matches = MatchFrame(state, new[] {valueObject["@id"].Value<string>()}, frame, requireAll);
+        Dictionary<string, JObject> matches = MatchFrame(state, [valueObject["@id"].Value<string>()], frame, requireAll);
         return matches.Any();
 
     }

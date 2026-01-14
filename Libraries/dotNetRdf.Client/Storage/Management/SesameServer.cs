@@ -154,7 +154,7 @@ public class SesameServer
     public virtual IEnumerable<IStoreTemplate> GetAvailableTemplates(string id)
     {
         var templates = new List<IStoreTemplate>();
-        object[] args = { id };
+        object[] args = [id];
         foreach (Type t in TemplateTypes)
         {
             try
@@ -336,7 +336,7 @@ public class SesameServer
     public virtual void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
     {
         var templates = new List<IStoreTemplate>();
-        object[] args = { id };
+        object[] args = [id];
         foreach (Type t in TemplateTypes)
         {
             try

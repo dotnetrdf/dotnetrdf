@@ -76,7 +76,7 @@ internal class ConstraintComponent : GraphWrapperNode
     // See https://web.archive.org/web/20190405023324/https://ericlippert.com/2010/06/28/computing-a-cartesian-product-with-linq/
     private static IEnumerable<IEnumerable<T>> CartesianProduct<T>(IEnumerable<IEnumerable<T>> sequences)
     {
-        IEnumerable<IEnumerable<T>> emptyProduct = new[] { Enumerable.Empty<T>() };
+        IEnumerable<IEnumerable<T>> emptyProduct = [Enumerable.Empty<T>()];
         return sequences.Aggregate(
             emptyProduct,
             (accumulator, sequence) =>
