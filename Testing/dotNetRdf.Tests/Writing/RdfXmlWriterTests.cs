@@ -169,7 +169,7 @@ public class RdfXmlWriterTests
         INode o = g.CreateLiteralNode("&lt;tag>");
         g.Assert(s, p, o);
 
-        CheckRoundTrip(g, new Type[] { typeof(PrettyRdfXmlWriter) });
+        CheckRoundTrip(g, [typeof(PrettyRdfXmlWriter)]);
     }
 
     [Fact]

@@ -293,7 +293,7 @@ public class DynamicObjectCollectionTests
         c.CopyTo(objects, 1); // start at the second item at destination
 
         Assert.Equal(
-            new[] { null, s, p, o, null },
+            [null, s, p, o, null],
             objects);
     }
 

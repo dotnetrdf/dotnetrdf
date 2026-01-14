@@ -95,7 +95,7 @@ public class FullTextSparqlTests
         try
         {
             PropertyFunctionFactory.AddFactory(factory);
-            q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(provider) };
+            q.AlgebraOptimisers = [new FullTextOptimiser(provider)];
 
             var processor = new LeviathanQueryProcessor(_dataset);
             var results = processor.ProcessQuery(q) as SparqlResultSet;

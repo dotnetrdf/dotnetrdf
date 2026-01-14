@@ -156,7 +156,7 @@ public class SetTests
         y.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x")));
 
 
-        var comparer = new SetDistinctnessComparer(new String[] { "a" });
+        var comparer = new SetDistinctnessComparer(["a"]);
         var xHash = comparer.GetHashCode(x);
         var yHash = comparer.GetHashCode(y);
 
@@ -174,7 +174,7 @@ public class SetTests
         y.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x")));
         y.Add("b", _factory.CreateLiteralNode("y"));
         
-        var comparer = new SetDistinctnessComparer(new String[] { "a" });
+        var comparer = new SetDistinctnessComparer(["a"]);
         var xHash = comparer.GetHashCode(x);
         var yHash = comparer.GetHashCode(y);
 
@@ -192,7 +192,7 @@ public class SetTests
         y.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x")));
         y.Add("b", _factory.CreateLiteralNode("y"));
 
-        var comparer = new SetDistinctnessComparer(new String[] { "a", "b" });
+        var comparer = new SetDistinctnessComparer(["a", "b"]);
         var xHash = comparer.GetHashCode(x);
         var yHash = comparer.GetHashCode(y);
 
@@ -207,7 +207,7 @@ public class SetTests
         ISet y = new Set();
         y.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x")));
 
-        var comparer = new SetDistinctnessComparer(new String[] { "a" });
+        var comparer = new SetDistinctnessComparer(["a"]);
         var xHash = comparer.GetHashCode(x);
         var yHash = comparer.GetHashCode(y);
 

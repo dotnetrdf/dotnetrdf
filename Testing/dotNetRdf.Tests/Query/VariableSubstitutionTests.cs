@@ -119,7 +119,7 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { ?s ?p ?o }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
+        TestSubstitution(q, "s", "x", ["?x"], ["?s"]);
     }
 
     [Fact]
@@ -127,7 +127,7 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { ?s ?p ?o . ?s a ?type }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
+        TestSubstitution(q, "s", "x", ["?x"], ["?s"]);
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { ?s ?p ?o . FILTER(ISBLANK(?s)) }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
+        TestSubstitution(q, "s", "x", ["?x"], ["?s"]);
     }
 
     [Fact]
@@ -143,7 +143,7 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { ?s ?p ?o . BIND(ISBLANK(?s) AS ?blank) }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
+        TestSubstitution(q, "s", "x", ["?x"], ["?s"]);
     }
 
     [Fact]
@@ -155,7 +155,7 @@ public class VariableSubstitutionTests
 
             var query = "SELECT * WHERE { ?s ?p ?o . LET (?blank := ISBLANK(?s)) }";
             SparqlQuery q = _parser.ParseFromString(query);
-            TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
+            TestSubstitution(q, "s", "x", ["?x"], ["?s"]);
         }
         finally
         {
@@ -168,7 +168,7 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { ?s ?p ?o . FILTER(EXISTS { ?s a ?type }) }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
+        TestSubstitution(q, "s", "x", ["?x"], ["?s"]);
     }
 
     [Fact]
@@ -176,7 +176,7 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { ?s ?p ?o . { ?s a ?type } }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
+        TestSubstitution(q, "s", "x", ["?x"], ["?s"]);
     }
 
     [Fact]
@@ -184,7 +184,7 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { ?s ?p ?o . OPTIONAL { ?s a ?type } }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "s", "x", new String[] { "?x", "OPTIONAL" }, new String[] { "?s" });
+        TestSubstitution(q, "s", "x", ["?x", "OPTIONAL"], ["?s"]);
     }
 
     [Fact]
@@ -192,7 +192,7 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { ?s ?p ?o . GRAPH <http://example.org/graph> { ?s a ?type } }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "s", "x", new String[] { "?x", "GRAPH" }, new String[] { "?s" });
+        TestSubstitution(q, "s", "x", ["?x", "GRAPH"], ["?s"]);
     }
 
     [Fact]
@@ -200,7 +200,7 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { ?s ?p ?o . MINUS { ?s a ?type } }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "s", "x", new String[] { "?x", "MINUS" }, new String[] { "?s" });
+        TestSubstitution(q, "s", "x", ["?x", "MINUS"], ["?s"]);
     }
 
     [Fact]
@@ -208,7 +208,7 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { { ?s ?p ?o . } UNION { ?s a ?type } }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "s", "x", new String[] { "?x", "UNION" }, new String[] { "?s" });
+        TestSubstitution(q, "s", "x", ["?x", "UNION"], ["?s"]);
     }
 
     [Fact]
@@ -216,7 +216,7 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "g", "x", new String[] { "?x", "GRAPH" }, new String[] { "?g" });
+        TestSubstitution(q, "g", "x", ["?x", "GRAPH"], ["?g"]);
     }
 
     [Fact]
@@ -225,7 +225,7 @@ public class VariableSubstitutionTests
         var query = "SELECT * WHERE { ?s ?p ?o . }";
         SparqlQuery q = _parser.ParseFromString(query);
         var factory = new NodeFactory();
-        TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
+        TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), ["<http://example.org/object>"], ["?o"]);
     }
 
     [Fact]
@@ -234,7 +234,7 @@ public class VariableSubstitutionTests
         var query = "SELECT * WHERE { ?s ?p ?o . ?o ?x ?y }";
         SparqlQuery q = _parser.ParseFromString(query);
         var factory = new NodeFactory();
-        TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
+        TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), ["<http://example.org/object>"], ["?o"]);
     }
 
     [Fact]
@@ -243,7 +243,7 @@ public class VariableSubstitutionTests
         var query = "SELECT * WHERE { ?s ?p ?o . FILTER(ISURI(?o)) }";
         SparqlQuery q = _parser.ParseFromString(query);
         var factory = new NodeFactory();
-        TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
+        TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), ["<http://example.org/object>"], ["?o"]);
     }
 
     [Fact]
@@ -252,7 +252,7 @@ public class VariableSubstitutionTests
         var query = "SELECT * WHERE { ?s ?p ?o . BIND(ISURI(?o) AS ?uri) }";
         SparqlQuery q = _parser.ParseFromString(query);
         var factory = new NodeFactory();
-        TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
+        TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), ["<http://example.org/object>"], ["?o"]);
     }
 
     [Fact]
@@ -265,7 +265,7 @@ public class VariableSubstitutionTests
             var query = "SELECT * WHERE { ?s ?p ?o . LET (?uri := ISURI(?o))}";
             SparqlQuery q = _parser.ParseFromString(query);
             var factory = new NodeFactory();
-            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
+            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), ["<http://example.org/object>"], ["?o"]);
         }
         finally
         {
@@ -279,7 +279,7 @@ public class VariableSubstitutionTests
         var query = "SELECT * WHERE { ?s ?p ?o . OPTIONAL { ?o ?x ?y } }";
         SparqlQuery q = _parser.ParseFromString(query);
         var factory = new NodeFactory();
-        TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "OPTIONAL" }, new String[] { "?o" });
+        TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), ["<http://example.org/object>", "OPTIONAL"], ["?o"]);
     }
 
     [Fact]
@@ -288,7 +288,7 @@ public class VariableSubstitutionTests
         var query = "SELECT * WHERE { ?s ?p ?o . GRAPH <http://example.org/graph> { ?o ?x ?y } }";
         SparqlQuery q = _parser.ParseFromString(query);
         var factory = new NodeFactory();
-        TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "GRAPH" }, new String[] { "?o" });
+        TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), ["<http://example.org/object>", "GRAPH"], ["?o"]);
     }
 
     [Fact]
@@ -297,7 +297,7 @@ public class VariableSubstitutionTests
         var query = "SELECT * WHERE { ?s ?p ?o . MINUS { ?o ?x ?y } }";
         SparqlQuery q = _parser.ParseFromString(query);
         var factory = new NodeFactory();
-        TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "MINUS" }, new String[] { "?o" });
+        TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), ["<http://example.org/object>", "MINUS"], ["?o"]);
     }
 
     [Fact]
@@ -306,7 +306,7 @@ public class VariableSubstitutionTests
         var query = "SELECT * WHERE { { ?s ?p ?o .} UNION { ?o ?x ?y } }";
         SparqlQuery q = _parser.ParseFromString(query);
 
-        TestSubstitution(q, "o", _factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "UNION" }, new String[] { "?o" });
+        TestSubstitution(q, "o", _factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), ["<http://example.org/object>", "UNION"], ["?o"]);
     }
 
     [Fact]
@@ -314,7 +314,7 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "g", _factory.CreateUriNode(UriFactory.Root.Create("http://example.org/graph")), new String[] { "<http://example.org/graph>", "GRAPH" }, new String[] { "?g" });
+        TestSubstitution(q, "g", _factory.CreateUriNode(UriFactory.Root.Create("http://example.org/graph")), ["<http://example.org/graph>", "GRAPH"], ["?g"]);
     }
 
     [Fact]
@@ -322,7 +322,7 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { ?s <http://predicate>+ ?o }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "s", "x", new String[] { "?s", "+" }, new String[] { "?x" });
+        TestSubstitution(q, "s", "x", ["?s", "+"], ["?x"]);
     }
 
     [Fact]
@@ -330,7 +330,7 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "s", "x", new String[] { "?s" }, new String[] { "?x" });
+        TestSubstitution(q, "s", "x", ["?s"], ["?x"]);
     }
 
     [Fact]
@@ -338,7 +338,7 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { SERVICE <http://example.org/sparql> { ?s ?p ?o } }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "s", "x", new String[] { "?s", "SERVICE" }, new String[] { "?x" });
+        TestSubstitution(q, "s", "x", ["?s", "SERVICE"], ["?x"]);
     }
 
     [Fact]
@@ -346,6 +346,6 @@ public class VariableSubstitutionTests
     {
         var query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
         SparqlQuery q = _parser.ParseFromString(query);
-        TestSubstitution(q, "g", _factory.CreateLiteralNode("graph"), new String[] { "?g" }, new String[] { "\"graph\"" });
+        TestSubstitution(q, "g", _factory.CreateLiteralNode("graph"), ["?g"], ["\"graph\""]);
     }
 }

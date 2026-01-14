@@ -86,7 +86,7 @@ public class TripleFunction : ISparqlExpression
 
     /// <inheritdoc />
     public IEnumerable<ISparqlExpression> Arguments =>
-        new[] { SubjectExpression, PredicateExpression, ObjectExpression };
+        [SubjectExpression, PredicateExpression, ObjectExpression];
 
     /// <inheritdoc />
     public ISparqlExpression Transform(IExpressionTransformer transformer)

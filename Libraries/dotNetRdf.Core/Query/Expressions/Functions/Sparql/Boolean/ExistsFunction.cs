@@ -151,7 +151,7 @@ public class ExistsFunction
     {
         get
         {
-            return new ISparqlExpression[] { new GraphPatternTerm(Pattern) };
+            return [new GraphPatternTerm(Pattern)];
         }
     }
 

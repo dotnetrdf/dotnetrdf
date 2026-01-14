@@ -85,7 +85,7 @@ public abstract class BaseQuadDataset
         var s = new Stack<IEnumerable<IRefNode>>();
         if (!_unionDefaultGraph)
         {
-            s.Push(new [] { _defaultGraphName });
+            s.Push([_defaultGraphName]);
         }
         return s;
     }
@@ -138,7 +138,7 @@ public abstract class BaseQuadDataset
         }
         else
         {
-            _activeGraphs.Value.Push(new [] { graphName });
+            _activeGraphs.Value.Push([graphName]);
         }
 
     }
@@ -159,7 +159,7 @@ public abstract class BaseQuadDataset
     /// <param name="graphName"></param>
     public void SetDefaultGraph(IRefNode graphName)
     {
-        _defaultGraphs.Value.Push(new []{graphName});
+        _defaultGraphs.Value.Push([graphName]);
     }
 
     /// <summary>

@@ -51,7 +51,7 @@ public class SparqlClientFactory : IObjectFactory
         switch (targetType.FullName)
         {
             case SparqlQueryClient:
-                var queryEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+                var queryEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, [g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri))]);
                 if (queryEndpointUri == null) return false;
 
                 // Get Default/Named Graphs if specified
@@ -65,7 +65,7 @@ public class SparqlClientFactory : IObjectFactory
                 obj = client;
                 break;
             case SparqlUpdateClient:
-                var updateEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+                var updateEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, [g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri))]);
                 if (updateEndpointUri == null) return false;
                 var updateClient = new SparqlUpdateClient(httpClient, new Uri(updateEndpointUri));
                 obj = updateClient;

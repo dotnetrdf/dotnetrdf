@@ -46,7 +46,7 @@ public class StrictOptimiserTest
         Console.WriteLine(_formatter.Format(q));
         Console.WriteLine();
 
-        q.AlgebraOptimisers = new IAlgebraOptimiser[] { _optimiser };
+        q.AlgebraOptimisers = [_optimiser];
         ISparqlAlgebra algebra = q.ToAlgebra();
         var output = algebra.ToString();
         Console.WriteLine("Algebra:");

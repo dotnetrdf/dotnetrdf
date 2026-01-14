@@ -109,7 +109,7 @@ public class StorageFactory
 
             case Sparql:
                 // Get the Endpoint URI or the Endpoint
-                server = ConfigurationLoader.GetConfigurationString(g, objNode, new INode[] {g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri))});
+                server = ConfigurationLoader.GetConfigurationString(g, objNode, [g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri))]);
 
                 // What's the load mode?
                 loadModeRaw = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyLoadMode)));
@@ -128,7 +128,7 @@ public class StorageFactory
 
                 if (server == null)
                 {
-                    INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, new INode[] {g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint))});
+                    INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, [g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint))]);
                     if (endpointObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, endpointObj);
                     
@@ -173,11 +173,10 @@ public class StorageFactory
 
                 // Get the Query Endpoint URI or the Endpoint
                 server = ConfigurationLoader.GetConfigurationString(g, objNode,
-                    new INode[]
-                    {
+                    [
                         g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)),
                         g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)),
-                    });
+                    ]);
 
                 // What's the load mode?
                 loadModeRaw = ConfigurationLoader.GetConfigurationString(g, objNode,
@@ -201,11 +200,10 @@ public class StorageFactory
                 if (server == null)
                 {
                     INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode,
-                        new INode[]
-                        {
+                        [
                             g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)),
                             g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint)),
-                        });
+                        ]);
                     if (endpointObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, endpointObj);
                     switch (temp)
@@ -243,20 +241,18 @@ public class StorageFactory
 
                 // Find the Update Endpoint or Endpoint URI
                 server = ConfigurationLoader.GetConfigurationString(g, objNode,
-                    new INode[]
-                    {
+                    [
                         g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)),
                         g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)),
-                    });
+                    ]);
 
                 if (server == null)
                 {
                     INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode,
-                        new INode[]
-                        {
+                        [
                             g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint)),
                             g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint)),
-                        });
+                        ]);
                     if (endpointObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, endpointObj);
                     switch (temp)

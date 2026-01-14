@@ -81,7 +81,7 @@ public class DictionaryMetaObjectTests
 
         var names = meta.GetDynamicMemberNames();
 
-        Assert.Equal(new[] { "urn:s", "urn:o" }, names);
+        Assert.Equal(["urn:s", "urn:o"], names);
     }
 
     [Fact]

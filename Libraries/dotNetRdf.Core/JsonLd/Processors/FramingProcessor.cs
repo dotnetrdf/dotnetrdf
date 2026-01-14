@@ -657,6 +657,8 @@ internal static class FramingProcessor
     {
         if (value is not JObject valueObject || !valueObject.ContainsKey("@id")) return false;
         Dictionary<string, JObject> matches = MatchFrame(state, new[] {valueObject["@id"].Value<string>()}, frame, requireAll);
+        if (!(value is JObject valueObject) || !valueObject.ContainsKey("@id")) return false;
+        Dictionary<string, JObject> matches = MatchFrame(state, [valueObject["@id"].Value<string>()], frame, requireAll);
         return matches.Any();
 
     }

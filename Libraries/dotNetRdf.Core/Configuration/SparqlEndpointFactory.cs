@@ -60,7 +60,7 @@ public class SparqlEndpointFactory
         switch (targetType.FullName)
         {
             case QueryEndpoint:
-                var queryEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+                var queryEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, [g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri))]);
                 if (queryEndpointUri == null) return false;
 
                 // Get Default/Named Graphs if specified
@@ -72,7 +72,7 @@ public class SparqlEndpointFactory
                 break;
 
             case UpdateEndpoint:
-                var updateEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+                var updateEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, [g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri))]);
                 if (updateEndpointUri == null) return false;
 
                 endpoint = new SparqlRemoteUpdateEndpoint(g.UriFactory.Create(updateEndpointUri));

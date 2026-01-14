@@ -58,7 +58,7 @@ public class MultiHandlerTests
     {
         var h = new GraphHandler(new Graph());
 
-        Assert.Throws<ArgumentException>(() => new MultiHandler(new IRdfHandler[] { h, h }));
+        Assert.Throws<ArgumentException>(() => new MultiHandler([h, h]));
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class MultiHandlerTests
     {
         var h = new GraphHandler(new Graph());
 
-        Assert.Throws<ArgumentNullException>(() => new MultiHandler(new IRdfHandler[] { h }, null));
+        Assert.Throws<ArgumentNullException>(() => new MultiHandler([h], null));
     }
 
     [Fact]
@@ -80,7 +80,7 @@ public class MultiHandlerTests
         var handler1 = new GraphHandler(g);
         var handler2 = new GraphHandler(h);
 
-        var handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
+        var handler = new MultiHandler([handler1, handler2]);
 
         var parser = new TurtleParser();
         parser.Load(handler, "multi_handler_tests_temp.ttl");
@@ -100,7 +100,7 @@ public class MultiHandlerTests
         var handler1 = new GraphHandler(g);
         var handler2 = new PagingHandler(new GraphHandler(h), 100);
 
-        var handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
+        var handler = new MultiHandler([handler1, handler2]);
 
         var parser = new TurtleParser();
         parser.Load(handler, "multi_handler_tests_temp.ttl");
@@ -122,7 +122,7 @@ public class MultiHandlerTests
         var handler1 = new GraphHandler(g);
         var handler2 = new PagingHandler(new GraphHandler(h), 100);
 
-        var handler = new MultiHandler(new IRdfHandler[] { handler2, handler1 });
+        var handler = new MultiHandler([handler2, handler1]);
 
         var parser = new TurtleParser();
         parser.Load(handler, "multi_handler_tests_temp.ttl");
@@ -143,7 +143,7 @@ public class MultiHandlerTests
 
         var handler2 = new CountHandler();
 
-        var handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
+        var handler = new MultiHandler([handler1, handler2]);
 
         var parser = new TurtleParser();
         parser.Load(handler, "multi_handler_tests_temp.ttl");
@@ -162,7 +162,7 @@ public class MultiHandlerTests
 
         var handler2 = new NullHandler();
 
-        var handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
+        var handler = new MultiHandler([handler1, handler2]);
 
         var parser = new TurtleParser();
         parser.Load(handler, "multi_handler_tests_temp.ttl");

@@ -78,7 +78,7 @@ public class CountAllDistinctAggregate
     {
         get
         {
-            return new ISparqlExpression[] { new DistinctModifier(), new AllModifier() };
+            return [new DistinctModifier(), new AllModifier()];
         }
     }
 }

@@ -131,7 +131,7 @@ public abstract class BaseDataset
         var s = new Stack<IEnumerable<IRefNode>>();
         if (!_unionDefaultGraph)
         {
-            s.Push(new[] { _defaultGraphName });
+            s.Push([_defaultGraphName]);
         }
         return s;
     }
@@ -183,7 +183,7 @@ public abstract class BaseDataset
         if (HasGraph(graphName))
         {
             SetDefaultGraphInternal(this[graphName]);
-            _defaultGraphUris.Value.Push(new [] { graphName });
+            _defaultGraphUris.Value.Push([graphName]);
         }
         else
         {
@@ -274,7 +274,7 @@ public abstract class BaseDataset
         else if (HasGraph(graphName))
         {
             SetActiveGraphInternal(this[graphName]);
-            _activeGraphUris.Value.Push(new[] { graphName });
+            _activeGraphUris.Value.Push([graphName]);
         }
         else
         {
