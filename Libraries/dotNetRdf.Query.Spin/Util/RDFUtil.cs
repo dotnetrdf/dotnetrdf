@@ -48,14 +48,14 @@ internal static class RDFUtil
     internal static bool sameTerm(Uri uri1, INode uri2)
     {
         if (uri2 is IResource) uri2 = ((IResource)uri2).getSource();
-        if (!(uri2 is IUriNode)) return false;
+        if (uri2 is not IUriNode) return false;
         return uriComparer.Equals(uri1, ((IUriNode)uri2).Uri);
     }
 
     internal static bool sameTerm(INode uri1, Uri uri2)
     {
         if (uri1 is IResource) uri1 = ((IResource)uri1).getSource();
-        if (!(uri1 is IUriNode)) return false;
+        if (uri1 is not IUriNode) return false;
         return uriComparer.Equals(((IUriNode)uri1).Uri, uri2);
     }
 
@@ -63,7 +63,7 @@ internal static class RDFUtil
     {
         if (uri1 is IResource) uri1 = ((IResource)uri1).getSource();
         if (uri2 is IResource) uri2 = ((IResource)uri2).getSource();
-        if (!(uri1 is IUriNode) || !(uri2 is IUriNode)) return false;
+        if (uri1 is not IUriNode || uri2 is not IUriNode) return false;
         return uriComparer.Equals(((IUriNode)uri1).Uri, ((IUriNode)uri2).Uri);
     }
 

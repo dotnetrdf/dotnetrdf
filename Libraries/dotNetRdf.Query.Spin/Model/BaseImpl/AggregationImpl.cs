@@ -85,7 +85,7 @@ internal class AggregationImpl : AbstractSPINResource, IAggregation
         }
 
         Triple exprS = getProperty(SP.PropertyExpression);
-        if (exprS != null && !(exprS.Object is ILiteralNode))
+        if (exprS != null && exprS.Object is not ILiteralNode)
         {
             IResource r = Resource.Get(exprS.Object, Graph, getModel());
             IResource expr = SPINFactory.asExpression(r);

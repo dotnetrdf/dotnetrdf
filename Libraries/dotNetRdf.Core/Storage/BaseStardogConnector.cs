@@ -2016,7 +2016,7 @@ public abstract class BaseStardogConnector
         // Build the Request Uri
         var requestUri = _baseUri + servicePath + "?";
 
-        if (!(requestParams is null) && requestParams.Count > 0)
+        if (requestParams is not null && requestParams.Count > 0)
         {
             foreach (var p in requestParams.Keys)
             {
@@ -2059,7 +2059,7 @@ public abstract class BaseStardogConnector
     {
         // Build the Request Uri
         var requestUri = _baseUri + servicePath + "?";
-        if (!(requestParams is null) && requestParams.Count > 0)
+        if (requestParams is not null && requestParams.Count > 0)
         {
             foreach (var p in requestParams.Keys)
             {

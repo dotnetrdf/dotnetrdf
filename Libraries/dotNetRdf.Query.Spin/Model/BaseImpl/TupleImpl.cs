@@ -49,7 +49,7 @@ internal abstract class TupleImpl : AbstractSPINResource
     public IResource getObjectResource()
     {
         IResource node = getRDFNodeOrVariable(SP.PropertyObject);
-        if (!(node is IVariable))
+        if (node is not IVariable)
         {
             return node;
         }

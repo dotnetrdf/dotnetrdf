@@ -511,7 +511,7 @@ public class RdfXmlParser
 
         // Next Event in queue should be an EndElementEvent or we Error
         IRdfXmlEvent next = context.Events.Dequeue();
-        if (!(next is EndElementEvent))
+        if (next is not EndElementEvent)
         {
             throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', an EndElementEvent was expected", "RDF", element);
         }
@@ -580,7 +580,7 @@ public class RdfXmlParser
         IRdfXmlEvent first = eventlist.Dequeue();
 
         // Check it's an ElementEvent
-        if (!(first is ElementEvent))
+        if (first is not ElementEvent)
         {
             // Unexpected Event
             throw ParserHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType() + "'", "Node Element", first);
@@ -761,7 +761,7 @@ public class RdfXmlParser
 
         // Check Last Event in queue is an EndElement event
         IRdfXmlEvent last = eventlist.Dequeue();
-        if (!(last is EndElementEvent))
+        if (last is not EndElementEvent)
         {
             throw ParserHelper.Error("Unexpected Event '" + last.GetType() + "', expected an EndElement Event", "NodeElement", last);
         }
@@ -833,7 +833,7 @@ public class RdfXmlParser
         ElementEvent element;
 
         // Must be an ElementEvent
-        if (!(first is ElementEvent))
+        if (first is not ElementEvent)
         {
             // Unexpected Event
             throw ParserHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType() + "'", "PropertyElement", first);
@@ -966,7 +966,7 @@ public class RdfXmlParser
         }
 
         // Next must be an ElementEvent
-        if (!(next is ElementEvent))
+        if (next is not ElementEvent)
         {
             throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an ElementEvent as the first Event in a Resource Property Elements Event list", next);
         }
@@ -981,7 +981,7 @@ public class RdfXmlParser
 
         // Check Last is an EndElementEvent
         IRdfXmlEvent last = eventlist.Dequeue();
-        if (!(last is EndElementEvent))
+        if (last is not EndElementEvent)
         {
             throw ParserHelper.Error("Unexpected Event '" + last.GetType() + "', expected an EndElement Event", last);
         }
@@ -990,7 +990,7 @@ public class RdfXmlParser
         INode subj, pred, obj;
 
         // Validate the Type of the Parent
-        if (!(parent is ElementEvent))
+        if (parent is not ElementEvent)
         {
             throw ParserHelper.Error("Unexpected Parent Event '" + parent.GetType() + "', expected an ElementEvent", parent);
         }
@@ -1065,7 +1065,7 @@ public class RdfXmlParser
         ApplyNamespaces(context, element);
 
         // Validate that the middle event is a TextEvent
-        if (!(middle is TextEvent))
+        if (middle is not TextEvent)
         {
             throw ParserHelper.Error("Unexpected event '" + middle.GetType() + "', expected a TextEvent in a Literal Property Element", middle);
         }
@@ -1208,7 +1208,7 @@ public class RdfXmlParser
         // Get the next event in the Queue which should be a TypedLiteralEvent
         // Validate this
         IRdfXmlEvent lit = eventlist.Dequeue();
-        if (!(lit is TypedLiteralEvent))
+        if (lit is not TypedLiteralEvent)
         {
             throw ParserHelper.Error("Unexpected Event '" + lit.GetType() + "', expected a TypedLiteralEvent after a Property Element with Parse Type 'Literal'", "Parse Type Literal Property Element", lit);
         }
@@ -1249,7 +1249,7 @@ public class RdfXmlParser
 
         // Check for the last thing being an EndElement Event
         IRdfXmlEvent next = eventlist.Dequeue();
-        if (!(next is EndElementEvent))
+        if (next is not EndElementEvent)
         {
             throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an EndElementEvent to terminate a Parse Type Literal Property Element!", "Parse Type Literal Property Element", next);
         }
@@ -1384,7 +1384,7 @@ public class RdfXmlParser
         }
 
         // Check for the last thing being an EndElement Event
-        if (!(next is EndElementEvent))
+        if (next is not EndElementEvent)
         {
             throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an EndElementEvent to terminate a Parse Type Resource Property Element!", "Parse Type Resource Property Element", next);
         }
@@ -1573,7 +1573,7 @@ public class RdfXmlParser
 
         // Check last event is an EndElementEvent
         next = eventlist.Dequeue();
-        if (!(next is EndElementEvent))
+        if (next is not EndElementEvent)
         {
             throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an EndElementEvent to terminate a Parse Type Collection Property Element!", "Parse Type Collection Property Element", next);
         }

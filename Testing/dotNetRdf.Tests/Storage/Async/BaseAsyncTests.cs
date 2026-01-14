@@ -418,7 +418,7 @@ public abstract class BaseAsyncTests
     protected void TestAsyncQuery(IGraph g)
     {
         IAsyncStorageProvider provider = GetAsyncProvider();
-        if (!(provider is IAsyncQueryableStorage))
+        if (provider is not IAsyncQueryableStorage)
         {
             Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
             return;
@@ -665,7 +665,7 @@ public abstract class BaseAsyncTests
     protected async Task TestQueryAsync(IGraph g)
     {
         IAsyncStorageProvider provider = GetAsyncProvider();
-        if (!(provider is IAsyncQueryableStorage))
+        if (provider is not IAsyncQueryableStorage)
         {
             throw SkipException.ForSkip("[" + provider.GetType().Name +
                                     "] IO Behaviour required for this test is not supported, skipping test for this provider");
