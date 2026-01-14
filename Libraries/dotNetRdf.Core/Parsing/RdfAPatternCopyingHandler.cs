@@ -311,5 +311,5 @@ public class RdfAPatternCopyingHandler : IWrappingRdfHandler
     }
 
     /// <inheritdoc />
-    public IEnumerable<IRdfHandler> InnerHandlers => new[]{_innerHandler};
+    public IEnumerable<IRdfHandler> InnerHandlers => [_innerHandler];
 }

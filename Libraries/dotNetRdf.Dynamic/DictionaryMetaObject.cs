@@ -69,7 +69,7 @@ internal class DictionaryMetaObject : EnumerableMetaObject
                 Expression,
                 RuntimeType),
             "Item",
-            new[] { Expression.Constant(name) });
+            [Expression.Constant(name)]);
     }
 
     private DynamicMetaObject CreateMetaObject(Expression expression)

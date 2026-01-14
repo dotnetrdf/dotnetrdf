@@ -154,7 +154,7 @@ public class SesameServer
     public virtual IEnumerable<IStoreTemplate> GetAvailableTemplates(string id)
     {
         var templates = new List<IStoreTemplate>();
-        object[] args = { id };
+        object[] args = [id];
         foreach (Type t in TemplateTypes)
         {
             try
@@ -184,7 +184,7 @@ public class SesameServer
     /// </remarks>
     public virtual bool CreateStore(IStoreTemplate template)
     {
-        if (!(template is BaseSesameTemplate sesameTemplate))
+        if (template is not BaseSesameTemplate sesameTemplate)
         {
             throw new RdfStorageException("Invalid template, templates must derive from BaseSesameTemplate");
         }
@@ -257,12 +257,10 @@ public class SesameServer
         {
             HttpRequestMessage request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, HttpMethod.Delete, []);
 
-            using (var response = HttpClient.SendAsync(request).Result)
+            using var response = HttpClient.SendAsync(request).Result;
+            if (!response.IsSuccessStatusCode)
             {
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw StorageHelper.HandleHttpError(response, "deleting the Store '" + storeID + "' from");
-                }
+                throw StorageHelper.HandleHttpError(response, "deleting the Store '" + storeID + "' from");
             }
         }
         catch (Exception ex)
@@ -338,7 +336,7 @@ public class SesameServer
     public virtual void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
     {
         var templates = new List<IStoreTemplate>();
-        object[] args = { id };
+        object[] args = [id];
         foreach (Type t in TemplateTypes)
         {
             try
@@ -424,7 +422,7 @@ public class SesameServer
     /// <inheritdoc />
     public async Task<string> CreateStoreAsync(IStoreTemplate template, CancellationToken cancellationToken)
     {
-        if (!(template is BaseSesameTemplate sesameTemplate))
+        if (template is not BaseSesameTemplate sesameTemplate)
         {
             throw new RdfStorageException("Invalid template. Templates must derive from BaseSesameTemplate.");
         }

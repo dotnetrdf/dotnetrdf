@@ -119,12 +119,12 @@ internal class RdfStarHelper
                 mappings.TryGetValue(otn, out mappedObject);
             }
 
-            g.Assert(new[]
-            {
+            g.Assert(
+            [
                 new Triple(b, unstarSubject, mappedSubject ?? tn.Triple.Subject),
                 new Triple(b, unstarPredicate, tn.Triple.Predicate),
                 new Triple(b, unstarObject, mappedObject ?? tn.Triple.Object),
-            });
+            ]);
 
             if (mappedSubject == null && tn.Triple.Subject.NodeType != NodeType.Blank)
             {

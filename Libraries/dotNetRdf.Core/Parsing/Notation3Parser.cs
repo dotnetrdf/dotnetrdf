@@ -138,10 +138,8 @@ public class Notation3Parser
     {
         if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
         if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-        using (var reader = new StreamReader(File.OpenRead(filename), Encoding.UTF8))
-        {
-            Load(g, reader);
-        }
+        using var reader = new StreamReader(File.OpenRead(filename), Encoding.UTF8);
+        Load(g, reader);
     }
 
     /// <summary>
@@ -247,10 +245,8 @@ public class Notation3Parser
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
         if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-        using (var reader = new StreamReader(File.OpenRead(filename), Encoding.UTF8))
-        {
-            Load(handler, reader, uriFactory);
-        }
+        using var reader = new StreamReader(File.OpenRead(filename), Encoding.UTF8);
+        Load(handler, reader, uriFactory);
     }
 
     /// <summary>

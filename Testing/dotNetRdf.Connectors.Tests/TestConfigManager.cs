@@ -103,30 +103,28 @@ public static class TestConfigManager
 
         if (File.Exists(configFilePath))
         {
-            using (StreamReader reader = File.OpenText(configFilePath))
+            using var reader = File.OpenText(configFilePath);
+            do
             {
-                do
-                {
-                    var line = reader.ReadLine();
-                    if (line == null) break;
-                    if (line.TrimStart().StartsWith("#")) continue;
-                    if (line.Equals("")) continue;
+                var line = reader.ReadLine();
+                if (line == null) break;
+                if (line.TrimStart().StartsWith("#")) continue;
+                if (line.Equals("")) continue;
 
-                    var parts = line.Split(['='], 2);
-                    if (parts.Length == 2)
+                var parts = line.Split(['='], 2);
+                if (parts.Length == 2)
+                {
+                    if (_settings.ContainsKey(parts[0]))
                     {
-                        if (_settings.ContainsKey(parts[0]))
-                        {
-                            _settings[parts[0]] = parts[1];
-                        }
-                        else
-                        {
-                            _settings.Add(parts[0], parts[1]);
-                        }
+                        _settings[parts[0]] = parts[1];
                     }
-                } while (true);
-                reader.Close();
-            }
+                    else
+                    {
+                        _settings.Add(parts[0], parts[1]);
+                    }
+                }
+            } while (true);
+            reader.Close();
         }
         else
         {

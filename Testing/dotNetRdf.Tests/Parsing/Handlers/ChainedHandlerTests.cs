@@ -58,7 +58,7 @@ public class ChainedHandlerTests
     public void ParsingChainedHandlerBadInstantiation3()
     {
         var h = new GraphHandler(new Graph());
-        Assert.Throws<ArgumentException>(() => new ChainedHandler(new IRdfHandler[] { h, h }));
+        Assert.Throws<ArgumentException>(() => new ChainedHandler([h, h]));
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class ChainedHandlerTests
         var handler1 = new GraphHandler(g);
         var handler2 = new GraphHandler(h);
 
-        var handler = new ChainedHandler(new IRdfHandler[] { handler1, handler2 });
+        var handler = new ChainedHandler([handler1, handler2]);
 
         var parser = new TurtleParser();
         parser.Load(handler, "chained_handler_tests_temp.ttl");
@@ -92,7 +92,7 @@ public class ChainedHandlerTests
         var handler1 = new GraphHandler(g);
         var handler2 = new PagingHandler(new GraphHandler(h), 100);
 
-        var handler = new ChainedHandler(new IRdfHandler[] { handler1, handler2 });
+        var handler = new ChainedHandler([handler1, handler2]);
 
         var parser = new TurtleParser();
         parser.Load(handler, "chained_handler_tests_temp.ttl");
@@ -114,7 +114,7 @@ public class ChainedHandlerTests
         var handler1 = new GraphHandler(g);
         var handler2 = new PagingHandler(new GraphHandler(h), 100);
 
-        var handler = new ChainedHandler(new IRdfHandler[] { handler2, handler1 });
+        var handler = new ChainedHandler([handler2, handler1]);
 
         var parser = new TurtleParser();
         parser.Load(handler, "chained_handler_tests_temp.ttl");
@@ -135,7 +135,7 @@ public class ChainedHandlerTests
 
         var handler2 = new CountHandler();
 
-        var handler = new ChainedHandler(new IRdfHandler[] { handler1, handler2 });
+        var handler = new ChainedHandler([handler1, handler2]);
 
         var parser = new TurtleParser();
         parser.Load(handler, "chained_handler_tests_temp.ttl");
@@ -154,7 +154,7 @@ public class ChainedHandlerTests
 
         var handler2 = new NullHandler();
 
-        var handler = new ChainedHandler(new IRdfHandler[] { handler1, handler2 });
+        var handler = new ChainedHandler([handler1, handler2]);
 
         var parser = new TurtleParser();
         parser.Load(handler, "chained_handler_tests_temp.ttl");

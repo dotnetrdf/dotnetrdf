@@ -59,7 +59,7 @@ public class RemoteContextProvider: IRemoteContextProvider
                 new JsonLdLoaderOptions
                     { Profile = JsonLdVocabulary.Context, RequestProfile = JsonLdVocabulary.Context }, _options);
             JToken jsonRepresentation = GetJsonRepresentation(remoteDoc);
-            if (!(jsonRepresentation is JObject remoteJsonObject))
+            if (jsonRepresentation is not JObject remoteJsonObject)
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext,
                     $"Remote document at {reference} could not be parsed as a JSON object.");

@@ -358,10 +358,10 @@ public abstract class BaseStardogConnector
             request = CreateRequest(_kb + tID + "/query", accept, HttpMethod.Post, queryParams);
 
             // Build the Post Data and add to the Request Body
-            request.Content = new FormUrlEncodedContent(new[]
-            {
+            request.Content = new FormUrlEncodedContent(
+            [
                 new KeyValuePair<string, string>("query", sparqlQuery),
-            });
+            ]);
         }
 
         // Get the Response and process based on the Content Type
@@ -762,7 +762,7 @@ public abstract class BaseStardogConnector
                     {"graph-uri", graphUri.Equals(string.Empty) ? "DEFAULT" : graphUri},
                 }
             );
-            request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+            request.Content = new FormUrlEncodedContent([]);
 
             using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
@@ -1780,7 +1780,7 @@ public abstract class BaseStardogConnector
             HttpMethod.Post,
             new Dictionary<string, string>() {{"graph-uri", graphName.Equals(string.Empty) ? "DEFAULT" : graphName},}
         );
-        request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+        request.Content = new FormUrlEncodedContent([]);
         return request;
     }
 
@@ -1995,7 +1995,7 @@ public abstract class BaseStardogConnector
         HttpRequestMessage request = CreateRequest(_kb + transactionId + "/query", accept, HttpMethod.Post, queryParams);
 
         // Build the Post Data and add to the Request Body
-        request.Content = new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", query)});
+        request.Content = new FormUrlEncodedContent([new KeyValuePair<string, string>("query", query)]);
         return request;
     }
 
@@ -2016,7 +2016,7 @@ public abstract class BaseStardogConnector
         // Build the Request Uri
         var requestUri = _baseUri + servicePath + "?";
 
-        if (!(requestParams is null) && requestParams.Count > 0)
+        if (requestParams is not null && requestParams.Count > 0)
         {
             foreach (var p in requestParams.Keys)
             {
@@ -2059,7 +2059,7 @@ public abstract class BaseStardogConnector
     {
         // Build the Request Uri
         var requestUri = _baseUri + servicePath + "?";
-        if (!(requestParams is null) && requestParams.Count > 0)
+        if (requestParams is not null && requestParams.Count > 0)
         {
             foreach (var p in requestParams.Keys)
             {
@@ -2133,7 +2133,7 @@ public abstract class BaseStardogConnector
         if (enableReasoning) queryParams.Add("reasoning", "true");
 
         HttpRequestMessage request = CreateRequest(_kb + "/transaction/begin", "text/plain", HttpMethod.Post, queryParams);
-        request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+        request.Content = new FormUrlEncodedContent([]);
         try
         {
             using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
@@ -2163,7 +2163,7 @@ public abstract class BaseStardogConnector
     {
         HttpRequestMessage request = CreateRequest(_kb + "/transaction/commit/" + transactionId, "text/plain",
             HttpMethod.Post, []);
-        request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+        request.Content = new FormUrlEncodedContent([]);
 
         using (HttpResponseMessage response = HttpClient.SendAsync(request).Result)
         {
@@ -2188,7 +2188,7 @@ public abstract class BaseStardogConnector
     {
         HttpRequestMessage request = CreateRequest(_kb + "/transaction/rollback/" + transactionId,
             MimeTypesHelper.Any, HttpMethod.Post, []);
-        request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+        request.Content = new FormUrlEncodedContent([]);
         using (HttpResponseMessage response = HttpClient.SendAsync(request).Result)
         {
             if (!response.IsSuccessStatusCode)
@@ -2307,7 +2307,7 @@ public abstract class BaseStardogConnector
         {
             HttpRequestMessage request = CreateRequest(_kb + "/transaction/begin", "text/plain",
                 HttpMethod.Post, []);
-            request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+            request.Content = new FormUrlEncodedContent([]);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
                 if (requestTask.IsCanceled || requestTask.IsFaulted)
@@ -2385,7 +2385,7 @@ public abstract class BaseStardogConnector
         {
             HttpRequestMessage request = CreateRequest(_kb + "/transaction/begin", "text/plain",
                 HttpMethod.Post, []);
-            request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+            request.Content = new FormUrlEncodedContent([]);
             HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
@@ -2432,7 +2432,7 @@ public abstract class BaseStardogConnector
         {
             HttpRequestMessage request = CreateRequest(_kb + "/transaction/commit/" + _activeTrans,
                 "text/plain", HttpMethod.Post, []);
-            request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+            request.Content = new FormUrlEncodedContent([]);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
                 if (requestTask.IsCanceled || requestTask.IsFaulted)
@@ -2485,7 +2485,7 @@ public abstract class BaseStardogConnector
         {
             HttpRequestMessage request = CreateRequest(_kb + "/transaction/commit/" + _activeTrans,
                 "text/plain", HttpMethod.Post, []);
-            request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+            request.Content = new FormUrlEncodedContent([]);
             HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
@@ -2527,7 +2527,7 @@ public abstract class BaseStardogConnector
         {
             HttpRequestMessage request = CreateRequest(_kb + "/transaction/rollback/" + _activeTrans,
                 MimeTypesHelper.Any, HttpMethod.Post, []);
-            request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+            request.Content = new FormUrlEncodedContent([]);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
                 if (requestTask.IsCanceled || requestTask.IsFaulted)
@@ -2579,7 +2579,7 @@ public abstract class BaseStardogConnector
         {
             HttpRequestMessage request = CreateRequest(_kb + "/transaction/rollback/" + _activeTrans,
                 MimeTypesHelper.Any, HttpMethod.Post, []);
-            request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+            request.Content = new FormUrlEncodedContent([]);
             HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {

@@ -36,11 +36,11 @@ namespace VDS.RDF.Configuration;
 public class ParserFactory 
     : IObjectFactory
 {
-    private readonly Type[] _parserTypes = {
+    private readonly Type[] _parserTypes = [
         typeof(IRdfReader),
         typeof(IStoreReader),
         typeof(ISparqlResultsReader),
-    };
+    ];
 
     /// <summary>
     /// Tries to load a Parser based on information from the Configuration Graph.
@@ -94,11 +94,11 @@ public class ParserFactory
 /// </summary>
 public class WriterFactory : IObjectFactory
 {
-    private readonly Type[] _writerTypes = {
+    private readonly Type[] _writerTypes = [
         typeof(IRdfWriter),
         typeof(IStoreWriter),
         typeof(ISparqlResultsWriter),
-    };
+    ];
 
     /// <summary>
     /// Tries to load a Writer based on information from the Configuration Graph.

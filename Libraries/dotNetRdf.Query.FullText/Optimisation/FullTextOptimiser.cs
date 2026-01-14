@@ -43,7 +43,7 @@ public class FullTextOptimiser
     : IAlgebraOptimiser, IConfigurationSerializable
 {
     private readonly IFullTextSearchProvider _provider;
-    private readonly IEnumerable<IPropertyFunctionFactory> _factories = new IPropertyFunctionFactory[] { new FullTextPropertyFunctionFactory() };
+    private readonly IEnumerable<IPropertyFunctionFactory> _factories = [new FullTextPropertyFunctionFactory()];
 
     /// <inheritdoc/>
     public bool UnsafeOptimisation { get; set; }

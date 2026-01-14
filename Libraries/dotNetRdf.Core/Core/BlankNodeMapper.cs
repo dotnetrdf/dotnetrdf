@@ -117,6 +117,9 @@ public class BlankNodeMapper
         }
     }
 
+    /// <summary>
+    /// Converts all current blank node assignments to auto-assigned, resetting user-assigned status for all tracked blank nodes.
+    /// </summary>
     public void FlushBlankNodeAssignments()
     {
         var newMap = new Dictionary<string, BlankNodeIDAssigment>();

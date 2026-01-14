@@ -356,7 +356,7 @@ public class ConfigurationLoader : IConfigurationLoader
     {
         var g = new Graph();
         FileLoader.Load(g, file);
-        return LoadCommon(g, new INode[] { g.CreateLiteralNode(file), g.CreateLiteralNode(Path.GetFileName(file)) }, autoConfigure);
+        return LoadCommon(g, [g.CreateLiteralNode(file), g.CreateLiteralNode(Path.GetFileName(file))], autoConfigure);
     }
 
     /// <summary>

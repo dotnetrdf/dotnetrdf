@@ -105,8 +105,8 @@ public class TurtleFormatter
     /// </summary>
     protected List<string[]> _longLitMustEscape =
     [
-        new string[] { @"\", @"\\" }, 
-        new string[] { "\"", "\\\"" },
+        [@"\", @"\\"], 
+        ["\"", "\\\""],
     ];
 
     /// <summary>
@@ -114,11 +114,11 @@ public class TurtleFormatter
     /// </summary>
     protected List<string[]> _litMustEscape =
     [
-        new string[] { @"\", @"\\" }, 
-        new string[] { "\"", "\\\"" },
-        new string[] { "\n", @"\n" },
-        new string[] { "\r", @"\r" },
-        new string[] { "\t", @"\t" },
+        [@"\", @"\\"], 
+        ["\"", "\\\""],
+        ["\n", @"\n"],
+        ["\r", @"\r"],
+        ["\t", @"\t"],
     ];
 
     /// <summary>

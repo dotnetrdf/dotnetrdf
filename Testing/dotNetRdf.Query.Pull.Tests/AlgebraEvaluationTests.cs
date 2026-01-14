@@ -55,8 +55,8 @@ public class AlgebraEvaluationTests
     [Fact]
     public async Task SingleVarTriplePatternJoin()
     {
-        var algebra = new Bgp(new[]
-        {
+        var algebra = new Bgp(
+        [
             new TriplePattern(
                 new NodeMatchPattern(_alice),
                 new NodeMatchPattern(_foafKnows),
@@ -65,7 +65,7 @@ public class AlgebraEvaluationTests
                 new VariablePattern("x"),
                 new NodeMatchPattern(_foafName),
                 new VariablePattern("xname"))
-        });
+        ]);
         var processor = new PullQueryProcessor(_dataset);
         var results = new List<ISet>();
         await foreach (ISet result in processor.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
@@ -81,8 +81,8 @@ public class AlgebraEvaluationTests
     [Fact]
     public async Task SingleVarTriplePatternExtend()
     {
-        var algebra = new Bgp(new[]
-        {
+        var algebra = new Bgp(
+        [
             new TriplePattern(
                 new NodeMatchPattern(_alice),
                 new NodeMatchPattern(_foafKnows),
@@ -95,7 +95,7 @@ public class AlgebraEvaluationTests
                 new VariablePattern("x"),
                 new NodeMatchPattern(_foafHomepage),
                 new VariablePattern("xhome")),
-        });
+        ]);
         var processor = new PullQueryProcessor(_dataset);
         var results = new List<ISet>();
         await foreach (ISet result in processor.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))

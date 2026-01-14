@@ -87,7 +87,7 @@ public class DynamicSubjectCollectionTTests
         testO.P.CopyTo(subjects, 1); // start at the second item at destination
 
         Assert.Equal<INode[]>(
-            new[] { null, s, p, o, null },
+            [null, s, p, o, null],
             subjects);
     }
 
@@ -103,14 +103,12 @@ public class DynamicSubjectCollectionTTests
         var test = new Test(s, g);
 
         var expected = new[] { s }.GetEnumerator();
-        using (var actual = test.P.GetEnumerator())
+        using var actual = test.P.GetEnumerator();
+        while (expected.MoveNext() | actual.MoveNext())
         {
-            while (expected.MoveNext() | actual.MoveNext())
-            {
-                Assert.Equal(
-                    expected.Current,
-                    actual.Current);
-            }
+            Assert.Equal(
+                expected.Current,
+                actual.Current);
         }
     }
 

@@ -195,7 +195,7 @@ public class PropertyPathEvaluationTests
 
         var path =
             new NegatedSet(
-                new Property[] {new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))},
+                [new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))],
                 []);
         var algebra = GetAlgebra(path);
         var context = new SparqlEvaluationContext(null, _data, new LeviathanQueryOptions());
@@ -211,12 +211,10 @@ public class PropertyPathEvaluationTests
     {
         EnsureTestData();
 
-        var path = new NegatedSet([],
-                                         new Property[]
-                                             {
-                                                 new Property(
-                                             _factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))
-                                             });
+        var path = new NegatedSet(
+            [],
+            [ new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))]
+        );
         var algebra = GetAlgebra(path);
         var context = new SparqlEvaluationContext(null, _data, new LeviathanQueryOptions());
         var results = algebra.Accept(_processor, context);

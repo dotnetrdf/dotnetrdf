@@ -655,8 +655,8 @@ internal static class FramingProcessor
 
     private static bool NodePatternMatch(FramingState state, JObject frame, JToken value, bool requireAll)
     {
-        if (!(value is JObject valueObject) || !valueObject.ContainsKey("@id")) return false;
-        Dictionary<string, JObject> matches = MatchFrame(state, new[] {valueObject["@id"].Value<string>()}, frame, requireAll);
+        if (value is not JObject valueObject || !valueObject.ContainsKey("@id")) return false;
+        Dictionary<string, JObject> matches = MatchFrame(state, [valueObject["@id"].Value<string>()], frame, requireAll);
         return matches.Any();
 
     }
@@ -765,7 +765,7 @@ internal static class FramingProcessor
     private static void ValidateFrame(JToken value)
     {
         // 1.1 - Frame MUST be a map.
-        if (!(value is JObject obj))
+        if (value is not JObject obj)
         {
             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidFrame,
                 $"Invalid frame. The frame must be a map.");

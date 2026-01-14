@@ -52,16 +52,14 @@ public class SpeedTesting
             var g = new Graph();
             g.NamespaceMap.AddNamespace(string.Empty, new Uri("http://example.org/node#"));
 
-            using (var writer = new StreamWriter(File.OpenWrite(file)))
+            using var writer = new StreamWriter(File.OpenWrite(file));
+            for (var i = 1; i <= triples; i++)
             {
-                for (var i = 1; i <= triples; i++)
-                {
-                    var temp = g.CreateUriNode(":" + i);
-                    writer.WriteLine(formatter.Format(new Triple(temp, temp, temp)));
-                }
-
-                writer.Close();
+                var temp = g.CreateUriNode(":" + i);
+                writer.WriteLine(formatter.Format(new Triple(temp, temp, temp)));
             }
+
+            writer.Close();
         }
 
         //Force a GC prior to each of these tests

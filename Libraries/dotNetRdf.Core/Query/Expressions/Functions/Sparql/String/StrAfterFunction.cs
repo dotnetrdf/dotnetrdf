@@ -109,7 +109,7 @@ public class StrAfterFunction
     {
         get
         {
-            return new[] { StringExpression, StartsExpression };
+            return [StringExpression, StartsExpression];
         }
     }
 

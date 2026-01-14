@@ -395,7 +395,7 @@ u:s u:p u:o .
 :s :p :o .
 ");
 
-        Assert.Equal(new[] { ":s", ":o" }, d.Keys);
+        Assert.Equal([":s", ":o"], d.Keys);
     }
 
     [Fact]
@@ -406,7 +406,7 @@ u:s u:p u:o .
 <urn:s> <urn:p> <urn:o> .
 ");
 
-        Assert.Equal(new[] { "urn:s", "urn:o" }, d.Keys);
+        Assert.Equal(["urn:s", "urn:o"], d.Keys);
     }
 
     [Fact]
@@ -417,7 +417,7 @@ u:s u:p u:o .
 <http://example.com/#s> <http://example.com/#p> <http://example.com/#o> .
 ");
 
-        Assert.Equal(new[] { "s", "o" }, d.Keys);
+        Assert.Equal(["s", "o"], d.Keys);
     }
 
     [Fact]
@@ -428,6 +428,6 @@ u:s u:p u:o .
 <urn:s> <urn:p> <urn:o> .
 ");
 
-        Assert.Equal(new[] { "s", "o" }, d.Keys);
+        Assert.Equal(["s", "o"], d.Keys);
     }
 }

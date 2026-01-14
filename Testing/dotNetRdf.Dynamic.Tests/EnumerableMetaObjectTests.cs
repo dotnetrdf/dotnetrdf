@@ -106,12 +106,12 @@ public class EnumerableMetaObjectTests
             group =>
             {
                 Assert.Equal("en", group.Key);
-                Assert.Equal(new[] { "a", "b" }, group);
+                Assert.Equal(["a", "b"], group);
             },
             group =>
             {
                 Assert.Equal("fr", group.Key);
-                Assert.Equal(new[] { "c", "d" }, group);
+                Assert.Equal(["c", "d"], group);
             });
     }
 

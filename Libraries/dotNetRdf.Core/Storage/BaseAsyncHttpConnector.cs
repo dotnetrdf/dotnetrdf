@@ -695,7 +695,7 @@ public abstract class BaseAsyncHttpConnector
     /// If the store does not implement the <see cref="IAsyncQueryableStorage"/> interface, then this method MUST be overridden.</remarks>
     public virtual async Task<IEnumerable<string>> ListGraphsAsync(CancellationToken cancellationToken)
     {
-        if (!(this is IAsyncQueryableStorage queryableStore))
+        if (this is not IAsyncQueryableStorage queryableStore)
         {
             throw new RdfStorageException(
                 "Underlying store does not supported listing graphs asynchronously or has failed to appropriately override this method");

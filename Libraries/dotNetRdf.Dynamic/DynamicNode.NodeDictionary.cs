@@ -250,7 +250,7 @@ public partial class DynamicNode : IDictionary<INode, object>
     private IEnumerable<Triple> ConvertToTriples(INode predicate, object value)
     {
         // Strings are enumerable but not for our case
-        if (value is string || value is DynamicNode || !(value is IEnumerable enumerable))
+        if (value is string || value is DynamicNode || value is not IEnumerable enumerable)
         {
             enumerable = (IEnumerable<object>)[value]; // When they're not enumerable, wrap them in an enumerable of one
         }

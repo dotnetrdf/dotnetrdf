@@ -81,7 +81,7 @@ public class CountAllAggregate
     {
         get
         {
-            return new ISparqlExpression[] { new AllModifier() };
+            return [new AllModifier()];
         }
     }
 }

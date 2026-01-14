@@ -293,7 +293,7 @@ public class DynamicObjectCollectionTests
         c.CopyTo(objects, 1); // start at the second item at destination
 
         Assert.Equal(
-            new[] { null, s, p, o, null },
+            [null, s, p, o, null],
             objects);
     }
 
@@ -338,16 +338,14 @@ public class DynamicObjectCollectionTests
         var c = new DynamicObjectCollection(d, p);
 
         var expected = new[] { s, p, o }.GetEnumerator();
-        using (var actual = c.GetEnumerator())
+        using var actual = c.GetEnumerator();
+        while (expected.MoveNext())
         {
-            while (expected.MoveNext())
-            {
-                actual.MoveNext();
+            actual.MoveNext();
 
-                Assert.Equal(
-                    expected.Current,
-                    actual.Current);
-            }
+            Assert.Equal(
+                expected.Current,
+                actual.Current);
         }
     }
 

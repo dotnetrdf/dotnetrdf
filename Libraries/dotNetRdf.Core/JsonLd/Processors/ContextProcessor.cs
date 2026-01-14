@@ -224,7 +224,7 @@ internal class ContextProcessor : ProcessorBase
 
                 // Implements 5.6.4, 5.6.5, 5.6.6
                 JsonLdRemoteContext remoteContext = _contextProvider.GetRemoteContext(import);
-                if (!(remoteContext.Context is JObject importContext))
+                if (remoteContext.Context is not JObject importContext)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext,
                         "The value of the @context of the remote document referenced by @import must be a map.");

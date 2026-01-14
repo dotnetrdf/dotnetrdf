@@ -81,9 +81,9 @@ SELECT * WHERE
 
         _output.WriteLine(_formatter.Format(q));
 
-        Assert.True(q.RootGraphPattern.TriplePatterns[0].Variables.Intersect(new String[] { "value", "label" }).Count() == 2, "Both ?label and ?value should be in the first triple pattern");
-        Assert.True(q.RootGraphPattern.TriplePatterns[1].Variables.Intersect(new String[] { "s", "value" }).Count() == 2, "Both ?s and ?value should be in the second triple pattern");
-        Assert.True(q.RootGraphPattern.TriplePatterns[2].Variables.Intersect(new String[] { "s", "type" }).Count() == 2, "Both ?s and ?type should be in the third triple pattern");
+        Assert.True(q.RootGraphPattern.TriplePatterns[0].Variables.Intersect(["value", "label"]).Count() == 2, "Both ?label and ?value should be in the first triple pattern");
+        Assert.True(q.RootGraphPattern.TriplePatterns[1].Variables.Intersect(["s", "value"]).Count() == 2, "Both ?s and ?value should be in the second triple pattern");
+        Assert.True(q.RootGraphPattern.TriplePatterns[2].Variables.Intersect(["s", "type"]).Count() == 2, "Both ?s and ?type should be in the third triple pattern");
 
     }
 
@@ -104,7 +104,7 @@ SELECT * WHERE
 
         _output.WriteLine(_formatter.Format(q));
 
-        Assert.True(q.RootGraphPattern.ChildGraphPatterns[0].TriplePatterns[0].Variables.Intersect(new String[] { "s", "type" }).Count() == 2, "Both ?s and ?type should be in the first triple pattern of the child graph pattern");
+        Assert.True(q.RootGraphPattern.ChildGraphPatterns[0].TriplePatterns[0].Variables.Intersect(["s", "type"]).Count() == 2, "Both ?s and ?type should be in the first triple pattern of the child graph pattern");
         Assert.False(q.RootGraphPattern.ChildGraphPatterns[0].TriplePatterns[1].Variables.Contains("s"), "Second triple pattern of the child graph pattern should not contain ?s");
     }
 
@@ -225,12 +225,12 @@ SELECT * WHERE
         var type = new VariablePattern("type");
         var triplePattern = new TriplePattern(subj, rdfType, type);
         query.RootGraphPattern.AddTriplePattern(triplePattern);
-        query.RootGraphPattern.AddFilter(new UnaryExpressionFilter(new InFunction(new VariableTerm("type"), new[]
-            {
+        query.RootGraphPattern.AddFilter(new UnaryExpressionFilter(new InFunction(new VariableTerm("type"),
+            [
                 new ConstantTerm(new UriNode(new Uri("http://example.com/Type1"))), 
                 new ConstantTerm(new UriNode(new Uri("http://example.com/Type2"))), 
                 new ConstantTerm(new UriNode(new Uri("http://example.com/Type3")))
-            })));
+            ])));
 
         // when
         var algebra = query.ToAlgebra();

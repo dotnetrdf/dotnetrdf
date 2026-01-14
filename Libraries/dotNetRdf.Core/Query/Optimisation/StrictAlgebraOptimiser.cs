@@ -59,7 +59,7 @@ public class StrictAlgebraOptimiser
         else if (algebra is IBgp)
         {
             // Don't integerfer with other optimisers which have added custom BGP implementations
-            if (!(algebra is Bgp)) return algebra;
+            if (algebra is not Bgp) return algebra;
 
             var current = (IBgp)algebra;
             if (current.PatternCount == 0)

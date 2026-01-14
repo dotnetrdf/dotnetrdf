@@ -108,7 +108,7 @@ public class StrBeforeFunction
     {
         get
         {
-            return new ISparqlExpression[] { StringExpression, EndsExpression };
+            return [StringExpression, EndsExpression];
         }
     }
 

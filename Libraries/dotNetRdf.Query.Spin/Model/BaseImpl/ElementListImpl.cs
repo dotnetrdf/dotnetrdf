@@ -174,7 +174,7 @@ internal class ElementListImpl : ElementImpl, IElementList
                     element.Print(p);
                 }
             }
-            if (!(element is IElementList) || ((IElementList)element).getElements().Count > 1)
+            if (element is not IElementList || ((IElementList)element).getElements().Count > 1)
             {
                 p.print(" .");
             }

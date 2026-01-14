@@ -77,7 +77,7 @@ public class SparqlUpdateClient : IConfigurationSerializable
     public async Task UpdateAsync(string sparqlUpdate, CancellationToken cancellationToken)
     {
         var content = new FormUrlEncodedContent(
-            new[] {new KeyValuePair<string, string>("update", sparqlUpdate)}
+            [new KeyValuePair<string, string>("update", sparqlUpdate)]
         );
         HttpResponseMessage response = await _httpClient.PostAsync(EndpointUri, content, cancellationToken);
         if (!response.IsSuccessStatusCode)

@@ -148,11 +148,11 @@ public class SubstringFunction
         {
             if (EndExpression != null)
             {
-                return new ISparqlExpression[] { StringExpression, StartExpression, EndExpression };
+                return [StringExpression, StartExpression, EndExpression];
             }
             else
             {
-                return new ISparqlExpression[] { EndExpression, StartExpression };
+                return [EndExpression, StartExpression];
             }
         }
     }

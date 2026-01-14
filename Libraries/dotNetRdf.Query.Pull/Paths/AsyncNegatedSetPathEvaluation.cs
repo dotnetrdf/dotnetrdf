@@ -31,7 +31,7 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Pull.Paths;
 
-internal class AsyncNegatedSetPathEvaluation(NegatedSet algebra, PatternItem pathStart, PatternItem pathEnd) : IAsyncPathEvaluation
+internal class AsyncNegatedSetPathEvaluation(NegatedSet algebra, PatternItem pathEnd) : IAsyncPathEvaluation
 {
     public async IAsyncEnumerable<PathResult> Evaluate(PatternItem stepStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken)
