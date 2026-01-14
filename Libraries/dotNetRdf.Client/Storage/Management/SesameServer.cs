@@ -184,7 +184,7 @@ public class SesameServer
     /// </remarks>
     public virtual bool CreateStore(IStoreTemplate template)
     {
-        if (!(template is BaseSesameTemplate sesameTemplate))
+        if (template is not BaseSesameTemplate sesameTemplate)
         {
             throw new RdfStorageException("Invalid template, templates must derive from BaseSesameTemplate");
         }
@@ -422,7 +422,7 @@ public class SesameServer
     /// <inheritdoc />
     public async Task<string> CreateStoreAsync(IStoreTemplate template, CancellationToken cancellationToken)
     {
-        if (!(template is BaseSesameTemplate sesameTemplate))
+        if (template is not BaseSesameTemplate sesameTemplate)
         {
             throw new RdfStorageException("Invalid template. Templates must derive from BaseSesameTemplate.");
         }

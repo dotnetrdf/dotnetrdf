@@ -154,7 +154,7 @@ internal class JsonLdUtils
     /// <returns>True if <paramref name="token"/> is a JObject with an @graph property and optionally @id and @index properties and no other properties; false otherwise.</returns>
     public static bool IsGraphObject(JToken token)
     {
-        if (!(token is JObject o)) return false;
+        if (token is not JObject o) return false;
         if (!o.ContainsKey("@graph")) return false;
         return o.Properties().All(p => JsonLdKeywords.GraphObjectKeys.Contains(p.Name));
     }
@@ -166,7 +166,7 @@ internal class JsonLdUtils
     /// <returns>True if <paramref name="token"/> is a JObject with an @graph property and optionally an @index property and no other properties; false otherwise.</returns>
     public static bool IsSimpleGraphObject(JToken token)
     {
-        if (!(token is JObject o)) return false;
+        if (token is not JObject o) return false;
         if (!o.ContainsKey("@graph")) return false;
         return (o.Properties().All(p => p.Name == "@graph" || p.Name == "@index"));
     }
@@ -267,7 +267,7 @@ internal class JsonLdUtils
 
     public static bool IsAbsoluteIri(JToken token)
     {
-        if (!(token is JValue value)) return false;
+        if (token is not JValue value) return false;
         return value.Type == JTokenType.String && IsAbsoluteIri(value.Value<string>());
     }
 
@@ -294,7 +294,7 @@ internal class JsonLdUtils
     /// <returns>True if <paramref name="token"/> is a string token and the value of the string can be parsed as a relative IRI.</returns>
     public static bool IsRelativeIri(JToken token)
     {
-        if (!(token is JValue value)) return false;
+        if (token is not JValue value) return false;
         return value.Type == JTokenType.String && IsRelativeIri(value.Value<string>());
     }
 
@@ -329,7 +329,7 @@ internal class JsonLdUtils
         // A map is a node object if it exists outside of the JSON-LD context and:
         //   - it does not contain the @value, @list, or @set keywords, or
         //   - it is not the top - most map in the JSON-LD document consisting of no other entries than @graph and @context.
-        if (!(token is JObject o)) return false;
+        if (token is not JObject o) return false;
         if (!(o.ContainsKey("@value") || o.ContainsKey("@list") || o.ContainsKey("@set"))) return true;
         if (!isTopmostMap)
         {

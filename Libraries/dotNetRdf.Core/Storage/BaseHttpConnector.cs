@@ -233,7 +233,7 @@ public abstract class BaseHttpConnector : IDisposable
         context.Graph.Assert(new Triple(proxy, rdfType, proxyType));
         context.Graph.Assert(new Triple(proxy, server, context.Graph.CreateLiteralNode((Proxy as WebProxy).Address.AbsoluteUri)));
 
-        if (!(Proxy.Credentials is NetworkCredential)) return;
+        if (Proxy.Credentials is not NetworkCredential) return;
         var cred = (NetworkCredential)Proxy.Credentials;
         context.Graph.Assert(new Triple(proxy, user, context.Graph.CreateLiteralNode(cred.UserName)));
         context.Graph.Assert(new Triple(proxy, pwd, context.Graph.CreateLiteralNode(cred.Password)));

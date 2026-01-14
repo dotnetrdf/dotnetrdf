@@ -133,7 +133,7 @@ public abstract class BaseNode : INode
     {
         if (a is null)
         {
-            return !(b is null);
+            return b is not null;
         }
 
         return !a.Equals(b);

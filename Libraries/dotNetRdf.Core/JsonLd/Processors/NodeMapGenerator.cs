@@ -320,7 +320,7 @@ public class NodeMapGenerator : INodeMapGenerator
             {
                 var id = np.Name;
                 var node = np.Value as JObject;
-                if (!(result[id] is JObject mergedNode))
+                if (result[id] is not JObject mergedNode)
                 {
                     result[id] = mergedNode = new JObject(new JProperty("@id", id));
                 }

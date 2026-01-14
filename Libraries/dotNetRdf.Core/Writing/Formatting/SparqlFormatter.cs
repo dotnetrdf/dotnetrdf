@@ -933,7 +933,7 @@ public class SparqlFormatter
         for (var i = 0; i < args.Count; i++)
         {
             output.Append(FormatExpression(args[i]));
-            if (i < args.Count - 1 && !(args[i] is DistinctModifier))
+            if (i < args.Count - 1 && args[i] is not DistinctModifier)
             {
                 output.Append(", ");
             }

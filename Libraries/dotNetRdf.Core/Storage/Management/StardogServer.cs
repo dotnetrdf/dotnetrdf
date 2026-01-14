@@ -521,7 +521,7 @@ public abstract class BaseStardogServer
     /// <inheritdoc />
     public virtual async Task<string> CreateStoreAsync(IStoreTemplate template, CancellationToken cancellationToken)
     {
-        if (!(template is BaseStardogTemplate))
+        if (template is not BaseStardogTemplate)
         {
             throw new RdfStorageException("Invalid template, templates must derive from BaseStardogTemplate");
         }

@@ -4492,7 +4492,7 @@ public class LeviathanQueryProcessor
     {
         // Create a copy of the evaluation context for the RHS
         var context2 = new SparqlEvaluationContext(context.Query, context.Data, context.Processor, context.Options);
-        if (!(context.InputMultiset is IdentityMultiset))
+        if (context.InputMultiset is not IdentityMultiset)
         {
             context2.InputMultiset = new Multiset();
             foreach (ISet s in context.InputMultiset.Sets)
