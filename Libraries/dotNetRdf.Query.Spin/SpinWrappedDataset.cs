@@ -119,7 +119,7 @@ public class SpinWrappedDataset : ISparqlDataset
             // TODO maybe clean this to use SPINImports instead
             if (localGraphs.Contains(spinLibrary.Uri.AbsoluteUri))
             {
-                IGraph library = new ThreadSafeGraph();
+                var library = new ThreadSafeGraph();
                 library.BaseUri = spinLibrary.Uri;
                 Storage.LoadGraph(library, spinLibrary.Uri);
                 spinProcessor.Initialise(library);
@@ -284,7 +284,7 @@ public class SpinWrappedDataset : ISparqlDataset
     /// <param name="graphUri"></param>
     public void ImportGraph(Uri graphUri)
     {
-        IGraph graph = SPINImports.GetInstance().getImportedGraph(graphUri);
+        var graph = SPINImports.GetInstance().getImportedGraph(graphUri);
         ImportGraph(graph);
     }
 
@@ -296,7 +296,7 @@ public class SpinWrappedDataset : ISparqlDataset
     {
         // TODO forbid nulled URIed graphs or supply a composite URI ?
         // Since SPIN configuration should be processed at dataset load, we consider that subsequent imports should follow the normal SPIN processing pipeline.
-        Uri graphUri = graph.BaseUri;
+        var graphUri = graph.BaseUri;
         // TODO handle the updates to the current SpinProcessor
         Configuration.ImportGraph(graphUri);
         AddGraph(graph);
@@ -326,10 +326,10 @@ public class SpinWrappedDataset : ISparqlDataset
         {
             executionContextUri = RDFRuntime.NewTempGraphUri();
             SparqlParameterizedString restrictionQuery;
-            IGraph resourceRestrictions = new ThreadSafeGraph();
+            var resourceRestrictions = new ThreadSafeGraph();
             resourceRestrictions.BaseUri = executionContextUri;
-            INode inputGraphNode = RDFUtil.CreateUriNode(executionContextUri);
-            foreach (INode resource in resources)
+            var inputGraphNode = RDFUtil.CreateUriNode(executionContextUri);
+            foreach (var resource in resources)
             {
                 resourceRestrictions.Assert(inputGraphNode, RDFRuntime.PropertyExecutionRestrictedTo, resource);
             }
@@ -338,7 +338,7 @@ public class SpinWrappedDataset : ISparqlDataset
 
             restrictionQuery.SetUri("resourceRestriction", executionContextUri);
             var sb = new StringBuilder();
-            foreach (Resource graph in DefaultGraphs)
+            foreach (var graph in DefaultGraphs)
             {
                 sb.AppendLine("USING <" + graph.Uri.ToString() + ">");
             }
@@ -378,7 +378,7 @@ public class SpinWrappedDataset : ISparqlDataset
     /// <inheritdoc />
     public void SetActiveGraph(IEnumerable<Uri> graphUris)
     {
-        foreach (Uri graphUri in graphUris)
+        foreach (var graphUri in graphUris)
         {
             SetActiveGraph(graphUri);
         }
@@ -387,7 +387,7 @@ public class SpinWrappedDataset : ISparqlDataset
     /// <inheritdoc />
     public void SetActiveGraph(IList<IRefNode> graphNames)
     {
-        foreach (IRefNode graphName in graphNames)
+        foreach (var graphName in graphNames)
         {
             SetActiveGraph(graphName);
         }
@@ -420,7 +420,7 @@ public class SpinWrappedDataset : ISparqlDataset
     /// <inheritdoc />
     public void SetDefaultGraph(IEnumerable<Uri> graphUris)
     {
-        foreach (Uri graphUri in graphUris)
+        foreach (var graphUri in graphUris)
         {
             SetDefaultGraph(graphUri);
         }
@@ -429,7 +429,7 @@ public class SpinWrappedDataset : ISparqlDataset
     /// <inheritdoc />
     public void SetDefaultGraph(IList<IRefNode> graphNames)
     {
-        foreach (IRefNode graphName in graphNames)
+        foreach (var graphName in graphNames)
         {
             SetDefaultGraph(graphName);
         }
@@ -479,7 +479,7 @@ public class SpinWrappedDataset : ISparqlDataset
     {
         get
         {
-            foreach (IRefNode graphName in _activeGraphs)
+            foreach (var graphName in _activeGraphs)
             {
                 switch (graphName)
                 {
@@ -683,10 +683,10 @@ public class SpinWrappedDataset : ISparqlDataset
         updatedSourceDataset.Assert(Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, SPIN.ClassLibraryOntology));
         updatedSourceDataset.Assert(Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, SD.ClassGraph));
 
-        foreach (SpinWrappedGraph g in Configuration.ModificableGraphs)
+        foreach (var g in Configuration.ModificableGraphs)
         {
-            Uri updatedGraphUri = Configuration.GetUpdateControlUri(g.BaseUri);
-            Uri sourceGraph = g.BaseUri;
+            var updatedGraphUri = Configuration.GetUpdateControlUri(g.BaseUri);
+            var sourceGraph = g.BaseUri;
 
             if (Configuration.IsGraphReplaced(sourceGraph))
             {
@@ -737,13 +737,13 @@ public class SpinWrappedDataset : ISparqlDataset
     internal object ExecuteQuery(IQuery spinQuery)
     {
         ExecuteUpdate();
-        ISparqlPrinter sparqlFactory = new BaseSparqlPrinter(this);
+        var sparqlFactory = new BaseSparqlPrinter(this);
         if (_queryExecutionMode != QueryMode.UserQuerying && spinQuery is IConstruct)
         {
             ExecuteUpdate((IConstruct)spinQuery);
             return null; // TODO is this correct or should we return the execution graph ?
         }
-        SparqlParameterizedString commandText = sparqlFactory.GetCommandText(spinQuery);
+        var commandText = sparqlFactory.GetCommandText(spinQuery);
         return Storage.Query(commandText.ToString());
     }
 
@@ -760,13 +760,13 @@ public class SpinWrappedDataset : ISparqlDataset
     /// <param name="spinUpdateCommandSet"></param>
     internal IGraph ExecuteUpdate(IEnumerable<IUpdate> spinUpdateCommandSet)
     {
-        QueryMode currentQueryMode = QueryExecutionMode;
-        Uri currentExecutionGraphUri = RDFRuntime.NewTempGraphUri();
-        IGraph remoteChanges = new ThreadSafeGraph();
+        var currentQueryMode = QueryExecutionMode;
+        var currentExecutionGraphUri = RDFRuntime.NewTempGraphUri();
+        var remoteChanges = new ThreadSafeGraph();
         remoteChanges.BaseUri = currentExecutionGraphUri;
         try
         {
-            foreach (IUpdate update in spinUpdateCommandSet)
+            foreach (var update in spinUpdateCommandSet)
             {
                 if (update != null)
                 {
@@ -776,7 +776,7 @@ public class SpinWrappedDataset : ISparqlDataset
             Storage.LoadGraph(remoteChanges, currentExecutionGraphUri);
 
             var newTypes = new List<Resource>();
-            foreach (Triple t in remoteChanges.Triples)
+            foreach (var t in remoteChanges.Triples)
             {
                 if (RDFUtil.sameTerm(RDF.PropertyType, t.Predicate))
                 {
@@ -806,7 +806,7 @@ public class SpinWrappedDataset : ISparqlDataset
         catch (Exception any)
         {
             // for cleanliness sake on exception cases
-            foreach (Uri graphUri in Configuration.GetTriplesRemovalsGraphs().Union(Configuration.GetTriplesAdditionsGraphs()))
+            foreach (var graphUri in Configuration.GetTriplesRemovalsGraphs().Union(Configuration.GetTriplesAdditionsGraphs()))
             {
                 Storage.DeleteGraph(graphUri);
             }
@@ -825,9 +825,9 @@ public class SpinWrappedDataset : ISparqlDataset
     // TODO Replace IUpdate with a SparqlUpdateCommand
     private void UpdateInternal(IUpdate spinQuery, Uri outputGraphUri)
     {
-        ISparqlPrinter sparqlFactory = new BaseSparqlPrinter(this);
+        var sparqlFactory = new BaseSparqlPrinter(this);
         // TODO handle the current Execution Context while rewriting queries
-        SparqlParameterizedString command = sparqlFactory.GetCommandText(spinQuery);
+        var command = sparqlFactory.GetCommandText(spinQuery);
         command.SetUri("datasetUri", Configuration.BaseUri);
         command.SetUri("outputGraph", outputGraphUri);
 
@@ -850,10 +850,10 @@ public class SpinWrappedDataset : ISparqlDataset
             Storage.Update(command.ToString());
             _ignoreMonitoredChangeEvents = true;
             // TODO if needed : postpone this until full update execution is done to alleviate I/O 
-            foreach (IGraph synced in _synchronizedGraphs)
+            foreach (var synced in _synchronizedGraphs)
             {
-                Uri changesGraphUri = spinQuery is IDeleteData ? Configuration.GetTripleRemovalsMonitorUri(synced.BaseUri) : Configuration.GetTripleAdditionsMonitorUri(synced.BaseUri);
-                IGraph changes = new ThreadSafeGraph();
+                var changesGraphUri = spinQuery is IDeleteData ? Configuration.GetTripleRemovalsMonitorUri(synced.BaseUri) : Configuration.GetTripleAdditionsMonitorUri(synced.BaseUri);
+                var changes = new ThreadSafeGraph();
                 Storage.LoadGraph(changes, changesGraphUri);
                 if (spinQuery is IDeleteData)
                 {
@@ -867,7 +867,7 @@ public class SpinWrappedDataset : ISparqlDataset
         }
         finally
         {
-            foreach (Uri graphUri in dataGraphs)
+            foreach (var graphUri in dataGraphs)
             {
                 Storage.DeleteGraph(graphUri);
             }
@@ -883,7 +883,7 @@ public class SpinWrappedDataset : ISparqlDataset
     public String GetUpdateQuery(String spinQuery)
     {
         var sb = new StringBuilder();
-        foreach (IUpdate update in _spinProcessor.BuildUpdate(spinQuery))
+        foreach (var update in _spinProcessor.BuildUpdate(spinQuery))
         {
             SaveConfiguration();
             var sparqlFactory = new BaseSparqlPrinter(this);
@@ -906,7 +906,7 @@ public class SpinWrappedDataset : ISparqlDataset
 
     private void SaveInMemoryChanges()
     {
-        foreach (SpinWrappedGraph g in Configuration.ModificableGraphs)
+        foreach (var g in Configuration.ModificableGraphs)
         {
             if (!g.IsChanged)
             {
@@ -925,7 +925,7 @@ public class SpinWrappedDataset : ISparqlDataset
     internal void OnMonitoredGraphChanged(object sender, GraphEventArgs e)
     {
         if (_ignoreMonitoredChangeEvents) return;
-        Uri graphUri = e.Graph.BaseUri;
+        var graphUri = e.Graph.BaseUri;
         var g = (SpinWrappedGraph)GetModifiableGraph(graphUri);
         if (e.TripleEvent != null)
         {
@@ -960,7 +960,7 @@ public class SpinWrappedDataset : ISparqlDataset
             return;
         }
         // TODO simplify this
-        IEnumerable<String> disposableGraphs = Configuration.GetTriplesWithPredicate(RDFRuntime.PropertyUpdatesGraph)
+        var disposableGraphs = Configuration.GetTriplesWithPredicate(RDFRuntime.PropertyUpdatesGraph)
                     .Union(Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, RDFRuntime.ClassExecutionGraph))
                     .Union(Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, RDFRuntime.ClassFunctionEvalResultSet))
                     .Union(Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, RDFRuntime.ClassUpdateControlGraph))
@@ -974,7 +974,7 @@ public class SpinWrappedDataset : ISparqlDataset
         Storage.DeleteGraph(Configuration.BaseUri);
 
         // Reloads the original dataset from the storage
-        Uri sourceUri = Configuration.SourceUri;
+        var sourceUri = Configuration.SourceUri;
         Configuration.Clear();
         Storage.LoadGraph(Configuration, Configuration.SourceUri);
         Configuration.DisableUpdateControl();

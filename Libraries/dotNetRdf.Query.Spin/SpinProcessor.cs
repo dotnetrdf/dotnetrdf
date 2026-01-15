@@ -60,7 +60,7 @@ internal class SpinProcessor //: IInferenceEngine
         _spinConfiguration = new InMemoryDataset(true);
 
         // Ensure that SP, SPIN and SPL are present
-        IRdfReader rdfReader = new RdfXmlParser();
+        var rdfReader = new RdfXmlParser();
         Initialise(UriFactory.Root.Create(SP.BASE_URI), rdfReader);
         Initialise(UriFactory.Root.Create(SPIN.BASE_URI), rdfReader);
         Initialise(UriFactory.Root.Create(SPL.BASE_URI), rdfReader);
@@ -87,13 +87,13 @@ internal class SpinProcessor //: IInferenceEngine
             _spinConfiguration.RemoveGraph(spinGraph.Name);
         }
         var ontQuery = "CONSTRUCT { ?graphUri a <" + SPIN.ClassLibraryOntology + ">} WHERE { {?s (<" + SPIN.PropertyImports + ">|<" + OWL.PropertyImports + ">) ?graphUri} UNION {?graphUri a <" + SPIN.ClassLibraryOntology + ">} }";
-        IGraph imports = (Graph)spinGraph.ExecuteQuery(ontQuery);
+        var imports = (Graph)spinGraph.ExecuteQuery(ontQuery);
 
         // Explore for subsequent imports
-        foreach (Triple t in imports.GetTriplesWithPredicateObject(RDF.PropertyType, SPIN.ClassLibraryOntology))
+        foreach (var t in imports.GetTriplesWithPredicateObject(RDF.PropertyType, SPIN.ClassLibraryOntology))
         {
-            INode importGraphName = t.Subject;
-            Uri importUri = ((IUriNode)t.Subject).Uri;
+            var importGraphName = t.Subject;
+            var importUri = ((IUriNode)t.Subject).Uri;
             if (!_spinConfiguration.GraphNames.Contains(importGraphName) && !RDFUtil.sameTerm(importGraphName, spinGraph.Name))
             {
                 Initialise(importUri);
@@ -102,7 +102,7 @@ internal class SpinProcessor //: IInferenceEngine
         _spinConfiguration.AddGraph(spinGraph);
         _reasoner.Initialise(spinGraph);
 
-        IGraph inferenceGraph = ApplyInference(spinGraph);
+        var inferenceGraph = ApplyInference(spinGraph);
         _spinConfiguration.AddGraph(inferenceGraph);
         _reasoner.Initialise(inferenceGraph);
 
@@ -208,7 +208,7 @@ internal class SpinProcessor //: IInferenceEngine
     internal IResource CreateResource(INode rdfType = null)
     {
         // TODO put that in another graph to not overflow the configuration with temporary requests ?
-        INode resource = _currentSparqlGraph.CreateBlankNode();
+        var resource = _currentSparqlGraph.CreateBlankNode();
         if (rdfType != null)
         {
             _currentSparqlGraph.Assert(resource, RDF.PropertyType, rdfType);
@@ -223,8 +223,8 @@ internal class SpinProcessor //: IInferenceEngine
 
     internal IResource CreateList(IEnumerator<IResource> elements)
     {
-        IResource first = CreateResource();
-        IResource root = first;
+        var first = CreateResource();
+        var root = first;
         if (!elements.MoveNext())
         {
             first.AddProperty(RDF.PropertyFirst, RDF.Nil);
@@ -233,7 +233,7 @@ internal class SpinProcessor //: IInferenceEngine
         do
         {
             first.AddProperty(RDF.PropertyFirst, elements.Current);
-            IResource rest = CreateResource();
+            var rest = CreateResource();
             first.AddProperty(RDF.PropertyRest, rest);
             first = rest;
         } while (elements.MoveNext());
@@ -360,7 +360,7 @@ internal class SpinProcessor //: IInferenceEngine
         {
             _currentSparqlGraph = new Graph();
             _currentSparqlGraph.BaseUri = _currentSparqlGraph.UriFactory.Create("sparql-query:" + sparqlQuery);
-            INode q = new SparqlQueryParser().ParseFromString(sparqlQuery).ToSpinRdf(_currentSparqlGraph);
+            var q = new SparqlQueryParser().ParseFromString(sparqlQuery).ToSpinRdf(_currentSparqlGraph);
             if (!_currentSparqlGraph.IsEmpty)
             {
                 _spinConfiguration.AddGraph(_currentSparqlGraph);
@@ -374,9 +374,9 @@ internal class SpinProcessor //: IInferenceEngine
     internal IEnumerable<IUpdate> BuildUpdate(String sparqlQuery)
     {
         var spinQueryList = new List<IUpdate>();
-        SparqlUpdateCommandSet query = new SparqlUpdateParser().ParseFromString(sparqlQuery);
+        var query = new SparqlUpdateParser().ParseFromString(sparqlQuery);
         query.Optimise();
-        foreach (SparqlUpdateCommand command in query.Commands)
+        foreach (var command in query.Commands)
         {
             sparqlQuery = command.ToString();
             if (queryCache.ContainsKey(sparqlQuery))
@@ -387,11 +387,11 @@ internal class SpinProcessor //: IInferenceEngine
             {
                 _currentSparqlGraph = new Graph();
                 _currentSparqlGraph.BaseUri = _currentSparqlGraph.UriFactory.Create("sparql-query:" + sparqlQuery);
-                INode q = command.ToSpinRdf(_currentSparqlGraph);
+                var q = command.ToSpinRdf(_currentSparqlGraph);
                 if (!_currentSparqlGraph.IsEmpty)
                 {
                     _spinConfiguration.AddGraph(_currentSparqlGraph);
-                    IUpdate spinQuery = SPINFactory.asUpdate(Resource.Get(q, _currentSparqlGraph, this));
+                    var spinQuery = SPINFactory.asUpdate(Resource.Get(q, _currentSparqlGraph, this));
                     queryCache[sparqlQuery] = spinQuery;
                     spinQueryList.Add(spinQuery);
                 }

@@ -12,7 +12,7 @@ public class SparqlViewTests
     [Fact]
     public void SparqlViewNativeAllegroGraph()
     {
-        AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+        var agraph = AllegroGraphTests.GetConnection();
         var store = new PersistentTripleStore(agraph);
 
         //Load a Graph into the Store to ensure there is some data for the view to retrieve

@@ -146,7 +146,7 @@ public class SparqlUpdateParser
     /// <param name="message">Warning Message.</param>
     private void RaiseWarning(string message)
     {
-        SparqlWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);
@@ -362,7 +362,7 @@ public class SparqlUpdateParser
     private void TryParseBaseDeclaration(SparqlUpdateParserContext context)
     {
         // Get the next Token which should be a Uri Token
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         if (next.TokenType == Token.URI)
         {
             context.BaseUri = UriFactory.Create(next.Value);
@@ -379,15 +379,15 @@ public class SparqlUpdateParser
     private void TryParsePrefixDeclaration(SparqlUpdateParserContext context)
     {
         // Get the next Two Tokens which should be a Prefix and a Uri
-        IToken prefix = context.Tokens.Dequeue();
-        IToken uri = context.Tokens.Dequeue();
+        var prefix = context.Tokens.Dequeue();
+        var uri = context.Tokens.Dequeue();
 
         if (prefix.TokenType == Token.PREFIX)
         {
             if (uri.TokenType == Token.URI)
             {
                 var baseUri = (context.BaseUri != null) ? context.BaseUri.AbsoluteUri : string.Empty;
-                Uri u = UriFactory.Create(Tools.ResolveUri(uri.Value, baseUri));
+                var u = UriFactory.Create(Tools.ResolveUri(uri.Value, baseUri));
                 if (prefix.Value.Length == 1)
                 {
                     // Defining prefix for Default Namespace
@@ -416,7 +416,7 @@ public class SparqlUpdateParser
     {
         // First an Optional SILENT keyword
         var silent = false;
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         if (next.TokenType == Token.SILENT)
         {
             context.Tokens.Dequeue();
@@ -424,7 +424,7 @@ public class SparqlUpdateParser
         }
 
         // Then get the Source and Destination URIs
-        TryParseTransferUris(context, out IRefNode sourceGraph, out IRefNode destGraph);
+        TryParseTransferUris(context, out var sourceGraph, out var destGraph);
 
         context.CommandSet.AddCommand(new AddCommand(sourceGraph, destGraph, silent));
     }
@@ -434,7 +434,7 @@ public class SparqlUpdateParser
         var silent = false;
 
         // May possibly have a SILENT Keyword
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         if (next.TokenType == Token.SILENT)
         {
             silent = true;
@@ -444,7 +444,7 @@ public class SparqlUpdateParser
         // Then expect a GRAPH followed by a URI or one of the DEFAULT/NAMED/ALL keywords
         if (next.TokenType == Token.GRAPH)
         {
-            IRefNode u = TryParseGraphRef(context);
+            var u = TryParseGraphRef(context);
             var cmd = new ClearCommand(u, ClearMode.Graph, silent);
             context.CommandSet.AddCommand(cmd);
         }
@@ -470,7 +470,7 @@ public class SparqlUpdateParser
     {
         // First an Optional SILENT keyword
         var silent = false;
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         if (next.TokenType == Token.SILENT)
         {
             context.Tokens.Dequeue();
@@ -478,7 +478,7 @@ public class SparqlUpdateParser
         }
 
         // Then get the Source and Destination URIs
-        TryParseTransferUris(context, out IRefNode sourceGraph, out IRefNode destGraph);
+        TryParseTransferUris(context, out var sourceGraph, out var destGraph);
 
         context.CommandSet.AddCommand(new CopyCommand(sourceGraph, destGraph, silent));
     }
@@ -488,7 +488,7 @@ public class SparqlUpdateParser
         var silent = false;
 
         // May possibly have a SILENT Keyword
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         if (next.TokenType == Token.SILENT)
         {
             silent = true;
@@ -502,14 +502,14 @@ public class SparqlUpdateParser
         }
 
         // Then MUST have a URI
-        IRefNode u = TryParseGraphRef(context);
+        var u = TryParseGraphRef(context);
         var cmd = new CreateCommand(u, silent);
         context.CommandSet.AddCommand(cmd);
     }
 
     private SparqlUpdateCommand TryParseDeleteCommand(SparqlUpdateParserContext context, bool allowData)
     {
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         var usings = new List<Uri>();
         var usingNamed = new List<Uri>();
         if (allowData)
@@ -526,19 +526,19 @@ public class SparqlUpdateParser
         {
             // Parse the WHERE pattern which serves as both the selection and deletion pattern in this case
             context.Tokens.Dequeue();
-            GraphPattern where = TryParseModifyTemplate(context);
+            var where = TryParseModifyTemplate(context);
 
             // Then return the command
             return new DeleteCommand(where, where);
         }
         // Get the Modification Template
-        GraphPattern deletions = TryParseModifyTemplate(context);
+        var deletions = TryParseModifyTemplate(context);
 
         // Then we expect a WHERE keyword
         next = context.Tokens.Dequeue();
         if (next.TokenType == Token.USING)
         {
-            foreach (KeyValuePair<Uri, bool> kvp in TryParseUsingStatements(context))
+            foreach (var kvp in TryParseUsingStatements(context))
             {
                 if (kvp.Value)
                 {
@@ -559,7 +559,7 @@ public class SparqlUpdateParser
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionParser.QueryParser = context.QueryParser;
-            GraphPattern where = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
+            var where = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
             // And finally return the command
             var cmd = new DeleteCommand(deletions, @where);
@@ -588,7 +588,7 @@ public class SparqlUpdateParser
         subContext.ExpressionFactories = context.ExpressionFactories;
         subContext.ExpressionParser.QueryParser = context.QueryParser;
         subContext.CheckBlankNodeScope = false;
-        GraphPattern gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
+        var gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
         // Validate that the Graph Pattern is simple
         // Check it doesn't contain anything other than Triple Patterns or if it does it just contains a single GRAPH Pattern
@@ -641,7 +641,7 @@ public class SparqlUpdateParser
         var silent = false;
 
         // May possibly have a SILENT Keyword
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         if (next.TokenType == Token.SILENT)
         {
             silent = true;
@@ -651,7 +651,7 @@ public class SparqlUpdateParser
         // Then expect a GRAPH followed by a URI or one of the DEFAULT/NAMED/ALL keywords
         if (next.TokenType == Token.GRAPH)
         {
-            IRefNode u = TryParseGraphRef(context);
+            var u = TryParseGraphRef(context);
             var cmd = new DropCommand(u, ClearMode.Graph, silent);
             context.CommandSet.AddCommand(cmd);
         }
@@ -677,7 +677,7 @@ public class SparqlUpdateParser
     {
         var usings = new List<Uri>();
         var usingNamed = new List<Uri>();
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         if (allowData)
         {
             // We are allowed to have an INSERT DATA command here so check for it
@@ -689,13 +689,13 @@ public class SparqlUpdateParser
         }
 
         // Get the Modification Template
-        GraphPattern insertions = TryParseModifyTemplate(context);
+        var insertions = TryParseModifyTemplate(context);
 
         // Then we expect a WHERE keyword
         next = context.Tokens.Dequeue();
         if (next.TokenType == Token.USING)
         {
-            foreach (KeyValuePair<Uri, bool> kvp in TryParseUsingStatements(context))
+            foreach (var kvp in TryParseUsingStatements(context))
             {
                 if (kvp.Value)
                 {
@@ -716,7 +716,7 @@ public class SparqlUpdateParser
         subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
         subContext.ExpressionFactories = context.ExpressionFactories;
         subContext.ExpressionParser.QueryParser = context.QueryParser;
-        GraphPattern where = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
+        var where = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
         // And finally return the command
         var cmd = new InsertCommand(insertions, where);
@@ -735,7 +735,7 @@ public class SparqlUpdateParser
         subContext.ExpressionFactories = context.ExpressionFactories;
         subContext.ExpressionParser.QueryParser = context.QueryParser;
         subContext.CheckBlankNodeScope = false;
-        GraphPattern gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
+        var gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
         // Validate use of Blank Nodes in INSERT DATA, same BNode MAY be used within different graph patterns in a single command
         // though each represents a fresh blank node
@@ -824,19 +824,19 @@ public class SparqlUpdateParser
         }
 
         // Expect a URI which is the Source URI
-        Uri sourceUri = TryParseIriRef(context, "to LOAD data from");
+        var sourceUri = TryParseIriRef(context, "to LOAD data from");
 
         // Then optionally an INTO GRAPH followed by a Graph URI to assign
         if (context.Tokens.Count > 0)
         {
-            IToken next = context.Tokens.Peek();
+            var next = context.Tokens.Peek();
             if (next.TokenType == Token.INTO)
             {
                 context.Tokens.Dequeue();
                 next = context.Tokens.Dequeue();
                 if (next.TokenType == Token.GRAPH)
                 {
-                    IRefNode destUri = TryParseGraphRef(context);
+                    var destUri = TryParseGraphRef(context);
                     cmd = new LoadCommand(sourceUri, destUri, silent);
                 }
                 else
@@ -859,10 +859,10 @@ public class SparqlUpdateParser
     private void TryParseModifyCommand(SparqlUpdateParserContext context)
     {
         // Firstly we expect the URI that the modifications apply to
-        Uri u = TryParseIriRef(context, "after a WITH keyword");
+        var u = TryParseIriRef(context, "after a WITH keyword");
 
         // Now parse the INSERT/DELETE as appropriate
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         if (next.TokenType == Token.INSERT)
         {
             var insertCmd = (InsertCommand)TryParseInsertCommand(context, false);
@@ -871,7 +871,7 @@ public class SparqlUpdateParser
         }
         else if (next.TokenType == Token.DELETE)
         {
-            SparqlUpdateCommand deleteCmd = TryParseDeleteCommand(context, false);
+            var deleteCmd = TryParseDeleteCommand(context, false);
             if (deleteCmd is DeleteCommand)
             {
                 var delete = ((DeleteCommand)deleteCmd);
@@ -904,7 +904,7 @@ public class SparqlUpdateParser
         subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
         subContext.ExpressionFactories = context.ExpressionFactories;
         subContext.ExpressionParser.QueryParser = context.QueryParser;
-        GraphPattern gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
+        var gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
         // Validate that the Graph Pattern is simple
         // Check it doesn't contain anything other than Triple Patterns or if it does it just contains a single GRAPH Pattern
@@ -942,7 +942,7 @@ public class SparqlUpdateParser
     {
         // First an Optional SILENT keyword
         var silent = false;
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         if (next.TokenType == Token.SILENT)
         {
             context.Tokens.Dequeue();
@@ -950,14 +950,14 @@ public class SparqlUpdateParser
         }
 
         // Then get the Source and Destination URIs
-        TryParseTransferUris(context, out IRefNode sourceGraph, out IRefNode destGraph);
+        TryParseTransferUris(context, out var sourceGraph, out var destGraph);
 
         context.CommandSet.AddCommand(new MoveCommand(sourceGraph, destGraph, silent));
     }
 
     private void TryParseUsings(SparqlUpdateParserContext context, BaseModificationCommand cmd)
     {
-        foreach (KeyValuePair<Uri,bool> u in TryParseUsingStatements(context))
+        foreach (var u in TryParseUsingStatements(context))
         {
             // If the Boolean flag is true then this was a USING NAMED as opposed to a USING
             if (u.Value)
@@ -975,7 +975,7 @@ public class SparqlUpdateParser
     {
         if (context.Tokens.Count > 0)
         {
-            IToken next = context.Tokens.Peek();
+            var next = context.Tokens.Peek();
             var named = false;
 
             // While we can see USINGs we'll keep returning USING URIs
@@ -993,7 +993,7 @@ public class SparqlUpdateParser
                 if (next.TokenType == Token.URI || next.TokenType == Token.QNAME)
                 {
                     // Yield the URI
-                    Uri u = TryParseIriRef(context, " as part of a USING clause");
+                    var u = TryParseIriRef(context, " as part of a USING clause");
                     yield return new KeyValuePair<Uri, bool>(u, named);
                 }
                 else
@@ -1009,7 +1009,7 @@ public class SparqlUpdateParser
 
     private void TryParseTransferUris(SparqlUpdateParserContext context, out IRefNode sourceGraphName, out IRefNode destGraphName)
     {
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         sourceGraphName = destGraphName = null;
         Uri sourceUri = null, destUri = null;
         
@@ -1088,7 +1088,7 @@ public class SparqlUpdateParser
 
     private Uri TryParseIriRef(SparqlUpdateParserContext context, string expected)
     {
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         switch (next.TokenType)
         {
             case Token.URI:

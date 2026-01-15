@@ -62,7 +62,7 @@ public class SparqlTsvWriter : ISparqlResultsWriter
     /// <param name="fileEncoding">The text encoding to use for the file.</param>
     public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
     {
-        using FileStream stream = File.Open(filename, FileMode.Create);
+        using var stream = File.Open(filename, FileMode.Create);
         Save(results, new StreamWriter(stream, fileEncoding));
     }
 
@@ -92,7 +92,7 @@ public class SparqlTsvWriter : ISparqlResultsWriter
                     {
                         if (result.HasValue(vars[i]))
                         {
-                            INode temp = result[vars[i]];
+                            var temp = result[vars[i]];
                             if (temp != null)
                             {
                                 switch (temp.NodeType)
@@ -141,7 +141,7 @@ public class SparqlTsvWriter : ISparqlResultsWriter
     /// <param name="message">Warning Message.</param>
     private void RaiseWarning(string message)
     {
-        SparqlWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

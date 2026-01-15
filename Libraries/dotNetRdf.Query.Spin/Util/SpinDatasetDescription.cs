@@ -72,7 +72,7 @@ internal class SpinDatasetDescription : ThreadSafeGraph
         dataset = new SpinDatasetDescription(datasetUri);
         storage.LoadGraph(dataset, datasetUri);
         dataset.BaseUri = datasetUri;
-        Triple isUpdateControlledDataset = dataset.GetTriplesWithPredicate(RDFRuntime.PropertyUpdatesDataset).FirstOrDefault();
+        var isUpdateControlledDataset = dataset.GetTriplesWithPredicate(RDFRuntime.PropertyUpdatesDataset).FirstOrDefault();
         if (isUpdateControlledDataset!=null)
         {
             dataset._sourceUri = ((IUriNode)isUpdateControlledDataset.Object).Uri;
@@ -98,7 +98,7 @@ internal class SpinDatasetDescription : ThreadSafeGraph
     {
         if (HasGraph(graphUri))
         {
-            IUriNode sourceGraph = RDFUtil.CreateUriNode(graphUri);
+            var sourceGraph = RDFUtil.CreateUriNode(graphUri);
             this.Retract(sourceGraph, RDF.PropertyType, SD.ClassGraph);
             this.Assert(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyRemovesGraph, sourceGraph);
             return true;
@@ -121,7 +121,7 @@ internal class SpinDatasetDescription : ThreadSafeGraph
 
     public bool ImportGraph(Uri graphUri)
     {
-        INode graph = RDFUtil.CreateUriNode(graphUri);
+        var graph = RDFUtil.CreateUriNode(graphUri);
         this.Assert(graph, RDF.PropertyType, SPIN.ClassLibraryOntology);
         return true;
     }
@@ -148,7 +148,7 @@ internal class SpinDatasetDescription : ThreadSafeGraph
     {
         get
         {
-            IGraph graph = new SpinWrappedGraph(RDFUtil.CreateUriNode(graphUri));
+            var graph = new SpinWrappedGraph(RDFUtil.CreateUriNode(graphUri));
             graph.BaseUri = graphUri;
             return graph;
         }
@@ -158,7 +158,7 @@ internal class SpinDatasetDescription : ThreadSafeGraph
     {
         get
         {
-            IGraph graph = new SpinWrappedGraph(graphName);
+            var graph = new SpinWrappedGraph(graphName);
             return graph;
         }
     }
@@ -198,7 +198,7 @@ internal class SpinDatasetDescription : ThreadSafeGraph
     {
         if (!IsChanged)
         {
-            IUriNode sourceDataset = RDFUtil.CreateUriNode(_sourceUri);
+            var sourceDataset = RDFUtil.CreateUriNode(_sourceUri);
             BaseUri = RDFRuntime.NewTempDatasetUri();
             this.Retract(sourceDataset, RDF.PropertyType, SD.ClassDataset);
             this.Assert(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyUpdatesDataset, sourceDataset);
@@ -209,7 +209,7 @@ internal class SpinDatasetDescription : ThreadSafeGraph
         BaseUri = _sourceUri;
         _additionGraphs.Clear();
         _removalGraphs.Clear();
-        foreach (SpinWrappedGraph g in _modificableGraphs.Values) {
+        foreach (var g in _modificableGraphs.Values) {
             g.Changed -= OnModificableGraphChange;
             g.Cleared -= OnModificableGraphCleared;
         }
@@ -232,7 +232,7 @@ internal class SpinDatasetDescription : ThreadSafeGraph
             throw new SpinException("The graph " + graphName.ToString() + " is marked as Readonly for the current dataset");
         }
 
-        IRefNode updateControlGraph = GetUpdateControlNode(graphName, true);
+        var updateControlGraph = GetUpdateControlNode(graphName, true);
         this.Retract(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyRemovesGraph, graphName
         );
         this.Assert(graphName, RDF.PropertyType, SD.ClassGraph);
@@ -273,8 +273,8 @@ internal class SpinDatasetDescription : ThreadSafeGraph
     {
         if (e.TripleEvent != null)
         {
-            Uri graphUri = e.TripleEvent.GraphUri;
-            IUriNode graphNode = RDFUtil.CreateUriNode(GetUpdateControlUri(graphUri));
+            var graphUri = e.TripleEvent.GraphUri;
+            var graphNode = RDFUtil.CreateUriNode(GetUpdateControlUri(graphUri));
             if (e.TripleEvent.WasAsserted) {
                 this.Assert(RDFUtil.CreateUriNode(GetTripleAdditionsMonitorUri(graphUri)), RDFRuntime.PropertyAddTriplesTo, graphNode);
             } else {
@@ -288,8 +288,8 @@ internal class SpinDatasetDescription : ThreadSafeGraph
         var graph = (SpinWrappedGraph)e.Graph;
         graph.Reset();
 
-        IUriNode sourceGraph = RDFUtil.CreateUriNode(graph.BaseUri);
-        IUriNode graphNode = RDFUtil.CreateUriNode(GetUpdateControlUri(graph.BaseUri));
+        var sourceGraph = RDFUtil.CreateUriNode(graph.BaseUri);
+        var graphNode = RDFUtil.CreateUriNode(GetUpdateControlUri(graph.BaseUri));
         this.Retract(graphNode, RDFRuntime.PropertyUpdatesGraph, sourceGraph);
         this.Assert(graphNode, RDFRuntime.PropertyReplacesGraph, sourceGraph);
     }
@@ -297,7 +297,7 @@ internal class SpinDatasetDescription : ThreadSafeGraph
     internal Uri GetUpdateControlUri(Uri graphUri, bool create=true)
     {
 
-        Uri uri = GetTriplesWithPredicateObject(RDFRuntime.PropertyReplacesGraph, RDFUtil.CreateUriNode(graphUri))
+        var uri = GetTriplesWithPredicateObject(RDFRuntime.PropertyReplacesGraph, RDFUtil.CreateUriNode(graphUri))
             .Union(GetTriplesWithPredicateObject(RDFRuntime.PropertyUpdatesGraph, RDFUtil.CreateUriNode(graphUri)))
             .Select(t => ((IUriNode)t.Subject).Uri)
             .FirstOrDefault();
@@ -310,7 +310,7 @@ internal class SpinDatasetDescription : ThreadSafeGraph
 
     internal IRefNode GetUpdateControlNode(IRefNode graphName, bool create = true)
     {
-        IRefNode node = GetTriplesWithPredicateObject(RDFRuntime.PropertyReplacesGraph, graphName)
+        var node = GetTriplesWithPredicateObject(RDFRuntime.PropertyReplacesGraph, graphName)
             .Union(GetTriplesWithPredicateObject(RDFRuntime.PropertyUpdatesGraph, graphName))
             .Select(t => t.Subject)
             .OfType<IRefNode>()
@@ -334,8 +334,8 @@ internal class SpinDatasetDescription : ThreadSafeGraph
         {
             return _additionGraphs[graphUri];
         }
-        IUriNode monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(GetModifiableGraph(graphUri).BaseUri));
-        Uri uri = RDFRuntime.NewTempGraphUri();
+        var monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(GetModifiableGraph(graphUri).BaseUri));
+        var uri = RDFRuntime.NewTempGraphUri();
         _additionGraphs[graphUri] = uri;
         _additionGraphs[monitoredGraph.Uri] = uri;
         this.Assert(RDFUtil.CreateUriNode(uri), RDFRuntime.PropertyAddTriplesTo, monitoredGraph);
@@ -355,8 +355,8 @@ internal class SpinDatasetDescription : ThreadSafeGraph
         {
             return _removalGraphs[graphUri];
         }
-        IUriNode monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(GetModifiableGraph(graphUri).BaseUri));
-        Uri uri = RDFRuntime.NewTempGraphUri();
+        var monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(GetModifiableGraph(graphUri).BaseUri));
+        var uri = RDFRuntime.NewTempGraphUri();
         _removalGraphs[graphUri] = uri;
         _removalGraphs[monitoredGraph.Uri] = uri;
         this.Assert(RDFUtil.CreateUriNode(uri), RDFRuntime.PropertyDeleteTriplesFrom, monitoredGraph);

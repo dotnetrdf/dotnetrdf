@@ -86,10 +86,10 @@ public class SparqlXmlTests
         var store = new TripleStore();
         store.Add(new Graph());
         var g = new Graph(new UriNode(new Uri("http://example.org/graph")));
-        INode subj = g.CreateBlankNode();
-        INode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
-        INode obj1 = g.CreateLiteralNode("with & ampersand");
-        INode obj2 = g.CreateLiteralNode("with < tags > ");
+        var subj = g.CreateBlankNode();
+        var pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
+        var obj1 = g.CreateLiteralNode("with & ampersand");
+        var obj2 = g.CreateLiteralNode("with < tags > ");
         g.Assert(subj, pred, obj1);
         g.Assert(subj, pred, obj2);
         store.Add(g);

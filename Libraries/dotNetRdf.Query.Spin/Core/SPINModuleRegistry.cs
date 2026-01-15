@@ -121,11 +121,11 @@ internal class SPINModuleRegistry
     public static HashSet<SpinProcessor> getModels()
     {
         var spinModels = new HashSet<SpinProcessor>();
-        foreach (IFunction function in SPINModuleRegistry.getFunctions())
+        foreach (var function in SPINModuleRegistry.getFunctions())
         {
             spinModels.Add(function.getModel());
         }
-        foreach (ITemplate template in SPINModuleRegistry.getTemplates())
+        foreach (var template in SPINModuleRegistry.getTemplates())
         {
             spinModels.Add(template.getModel());
         }
@@ -152,7 +152,7 @@ internal class SPINModuleRegistry
     {
         if (model != null)
         {
-            IResource r = Resource.Get(RDFUtil.CreateUriNode(uri), null, model);
+            var r = Resource.Get(RDFUtil.CreateUriNode(uri), null, model);
             if (r.hasProperty(RDF.PropertyType, SPIN.ClassTemplate))
             {
                 return (ITemplate)r.As(typeof(TemplateImpl));
@@ -312,9 +312,9 @@ internal class SPINModuleRegistry
      */
     public static void registerFunctions(SpinProcessor model)
     {
-        foreach (IResource resource in model.GetAllInstances(SPIN.ClassFunction))
+        foreach (var resource in model.GetAllInstances(SPIN.ClassFunction))
         {
-            IFunction function = SPINFactory.asFunction(resource);
+            var function = SPINFactory.asFunction(resource);
             register(function, function.Graph, true);
         }
     }
@@ -328,7 +328,7 @@ internal class SPINModuleRegistry
      */
     public static void registerTemplates(SpinProcessor model)
     {
-        foreach (IResource resource in model.GetAllInstances(SPIN.ClassTemplate))
+        foreach (var resource in model.GetAllInstances(SPIN.ClassTemplate))
         {
             if (resource.isUri())
             {

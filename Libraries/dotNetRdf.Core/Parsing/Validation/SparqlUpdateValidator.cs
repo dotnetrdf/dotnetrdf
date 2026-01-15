@@ -46,7 +46,7 @@ public class SparqlUpdateValidator : ISyntaxValidator
         string message;
         try
         {
-            SparqlUpdateCommandSet cmds = _parser.ParseFromString(data);
+            var cmds = _parser.ParseFromString(data);
             message = "Valid SPARQL Update";
 
             return new SyntaxValidationResults(true, message, cmds);

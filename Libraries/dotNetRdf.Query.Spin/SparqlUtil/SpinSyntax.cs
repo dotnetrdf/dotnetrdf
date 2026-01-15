@@ -60,7 +60,7 @@ internal static class SpinSyntax
 
     internal static INode ToSpinRdf(this SparqlQuery query, IGraph g)
     {
-        INode root = g.CreateBlankNode();
+        var root = g.CreateBlankNode();
         var varTable = new SpinVariableTable(g);
 
         //Ensure the Query is optimised so that all the elements are placed in Graph Patterns
@@ -105,7 +105,7 @@ internal static class SpinSyntax
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
                     //Only Add Variables for SELECTs with explicit variable lists
-                    INode vars = g.CreateBlankNode();
+                    var vars = g.CreateBlankNode();
                     g.Assert(root, SP.PropertyResultVariables, vars);
 
                     //Get the Variables and generate the Nodes we'll use to help represent them
@@ -113,12 +113,12 @@ internal static class SpinSyntax
 
                     for (var i = 0; i < vs.Count; i++)
                     {
-                        SparqlVariable v = vs[i];
-                        INode var = varTable[v.Name];
+                        var v = vs[i];
+                        var var = varTable[v.Name];
                         g.Assert(vars, RDF.PropertyFirst, var);
                         if (i < vs.Count - 1)
                         {
-                            INode temp = g.CreateBlankNode();
+                            var temp = g.CreateBlankNode();
                             g.Assert(vars, RDF.PropertyRest, temp);
                             vars = temp;
                         }
@@ -205,7 +205,7 @@ internal static class SpinSyntax
     // TODO handle the defaultGraph case 
     internal static INode ToSpinRdf(this SparqlUpdateCommand query, IGraph g)
     {
-        INode root = g.CreateBlankNode();
+        var root = g.CreateBlankNode();
         var varTable = new SpinVariableTable(g);
 
         switch (query.CommandType)
@@ -380,8 +380,8 @@ internal static class SpinSyntax
 
     internal static INode ToSpinRdf(this GraphPattern pattern, IGraph g, SpinVariableTable varTable)
     {
-        INode p = g.CreateBlankNode();
-        INode ps = p;
+        var p = g.CreateBlankNode();
+        var ps = p;
 
         if (pattern.IsExists)
         {
@@ -392,7 +392,7 @@ internal static class SpinSyntax
         else if (pattern.IsGraph)
         {
             g.Assert(p, RDF.PropertyType, SP.ClassNamedGraph);
-            INode gSpec = pattern.GraphSpecifier.ToSpinRdf(g, varTable);
+            var gSpec = pattern.GraphSpecifier.ToSpinRdf(g, varTable);
             //g.Assert(p, SP.named, gSpec); // TODO check which is right
             g.Assert(p, SP.PropertyGraphNameNode, gSpec); // TODO check which is right
             if (gSpec is IBlankNode)
@@ -445,14 +445,14 @@ internal static class SpinSyntax
             //First output Triple Patterns
             for (var i = 0; i < pattern.TriplePatterns.Count; i++)
             {
-                INode current = pattern.TriplePatterns[i].ToSpinRdf(g, varTable);
+                var current = pattern.TriplePatterns[i].ToSpinRdf(g, varTable);
                 if (i == 0)
                 {
                     g.Assert(ps, RDF.PropertyFirst, current);
                 }
                 else
                 {
-                    INode temp = g.CreateBlankNode();
+                    var temp = g.CreateBlankNode();
                     g.Assert(ps, RDF.PropertyRest, temp);
                     g.Assert(temp, RDF.PropertyFirst, current);
                     ps = temp;
@@ -470,14 +470,14 @@ internal static class SpinSyntax
         {
             for (var i = 0; i < pattern.ChildGraphPatterns.Count; i++)
             {
-                INode current = pattern.ChildGraphPatterns[i].ToSpinRdf(g, varTable);
+                var current = pattern.ChildGraphPatterns[i].ToSpinRdf(g, varTable);
                 if (pattern.TriplePatterns.Count == 0 && i == 0)
                 {
                     g.Assert(ps, RDF.PropertyFirst, current);
                 }
                 else
                 {
-                    INode temp = g.CreateBlankNode();
+                    var temp = g.CreateBlankNode();
                     g.Assert(ps, RDF.PropertyRest, temp);
                     g.Assert(temp, RDF.PropertyFirst, current);
                     ps = temp;
@@ -491,7 +491,7 @@ internal static class SpinSyntax
 
     internal static INode ToSpinRdf(this ITriplePattern pattern, IGraph g, SpinVariableTable varTable)
     {
-        INode p = g.CreateBlankNode();
+        var p = g.CreateBlankNode();
 
         if (pattern is TriplePattern)
         {
@@ -522,7 +522,7 @@ internal static class SpinSyntax
         else if (pattern is LetPattern)
         {
             g.Assert(p, RDF.PropertyType, SP.ClassLet);
-            INode var = g.CreateBlankNode();
+            var var = g.CreateBlankNode();
             g.Assert(p, SP.PropertyVariable, var);
             g.Assert(var, SP.PropertyVarName, g.CreateLiteralNode(((LetPattern)pattern).VariableName, XSD.string_.Uri));
             g.Assert(p, SP.PropertyExpression, ((LetPattern)pattern).AssignExpression.ToSpinRdf(g, varTable));
@@ -568,7 +568,7 @@ internal static class SpinSyntax
 
     internal static INode ToSpinRdf(this ISparqlAggregate aggregate, IGraph g, SpinVariableTable varTable)
     {
-        INode a = g.CreateBlankNode();
+        var a = g.CreateBlankNode();
 
         if (aggregate is AverageAggregate)
         {
@@ -606,13 +606,13 @@ internal static class SpinSyntax
 
     internal static INode ToSpinRdf(this ISparqlExpression expr, IGraph g, SpinVariableTable varTable)
     {
-        INode e = g.CreateBlankNode();
+        var e = g.CreateBlankNode();
         return e;
     }
 
     internal static INode ToSpinRdf(this ISparqlOrderBy ordering, IGraph g, SpinVariableTable varTable)
     {
-        INode o = g.CreateBlankNode();
+        var o = g.CreateBlankNode();
 
         INode item = null;
 
@@ -624,7 +624,7 @@ internal static class SpinSyntax
             }
             else
             {
-                INode temp = g.CreateBlankNode();
+                var temp = g.CreateBlankNode();
                 g.Assert(o, RDF.PropertyRest, temp);
                 item = temp;
                 ordering = ordering.Child;
@@ -639,7 +639,7 @@ internal static class SpinSyntax
 
     internal static INode ToSpinRdf(this ISparqlPath path, IGraph g, SpinVariableTable varTable)
     {
-        INode p = g.CreateBlankNode();
+        var p = g.CreateBlankNode();
 
         return p;
     }

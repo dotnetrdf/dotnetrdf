@@ -147,7 +147,7 @@ public class SparqlXmlWriter : ISparqlResultsWriter
                 {
                     if (r.HasValue(var))
                     {
-                        INode n = r.Value(var);
+                        var n = r.Value(var);
                         if (n == null) continue; //NULLs don't get serialized in the XML Format
 
                         // <binding> Element
@@ -261,7 +261,7 @@ public class SparqlXmlWriter : ISparqlResultsWriter
     /// <param name="message">Warning Message.</param>
     protected void RaiseWarning(string message)
     {
-        SparqlWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

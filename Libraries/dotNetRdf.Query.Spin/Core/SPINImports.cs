@@ -72,7 +72,7 @@ internal class SPINImports
         {
             return _registeredImports[uri];
         }
-        IGraph importGraph = new ThreadSafeGraph();
+        var importGraph = new ThreadSafeGraph();
         importGraph.BaseUri = uri;
         try
         {

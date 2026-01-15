@@ -96,7 +96,7 @@ internal class SPINStatisticsManager
      */
     public void addSilently(IEnumerable<SPINStatistics> values)
     {
-        foreach (SPINStatistics s in values)
+        foreach (var s in values)
         {
             stats.Add(s);
         }
@@ -150,7 +150,7 @@ internal class SPINStatisticsManager
      */
     public void notifyListeners()
     {
-        foreach (ISPINStatisticsListener listener in new List<ISPINStatisticsListener>(_listeners))
+        foreach (var listener in new List<ISPINStatisticsListener>(_listeners))
         {
             listener.statisticsUpdated();
         }

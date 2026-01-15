@@ -96,7 +96,7 @@ public class SparqlXmlFormatter
         {
             if (result.HasValue(var))
             {
-                INode value = result[var];
+                var value = result[var];
                 if (value != null)
                 {
                     output.Append("  <binding name=\"" + var + "\">");

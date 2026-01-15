@@ -75,7 +75,7 @@ public class SparqlTsvTests
 
         var queryString = new SparqlParameterizedString(query);
         queryString.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
-        SparqlQuery q = _parser.ParseFromString(queryString);
+        var q = _parser.ParseFromString(queryString);
 
         var original = _processor.ProcessQuery(q) as SparqlResultSet;
         Assert.NotNull(original);

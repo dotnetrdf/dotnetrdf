@@ -58,13 +58,13 @@ internal class SPINFactory
     public static IAggregation asAggregation(IResource resource)
     {
         if (resource == null) return null;
-        IEnumerator<IResource> it = resource.getObjects(RDF.PropertyType).GetEnumerator();
+        var it = resource.getObjects(RDF.PropertyType).GetEnumerator();
         //JenaUtil.setGraphReadOptimization(true);
         try
         {
             while (it.MoveNext())
             {
-                IResource type = it.Current;
+                var type = it.Current;
                 if (type.isUri())
                 {
                     if (Aggregations.getName((IResource)type) != null)
@@ -98,7 +98,7 @@ internal class SPINFactory
     public static ICommand asCommand(IResource resource)
     {
         if (resource == null) return null;
-        IQuery query = asQuery(resource);
+        var query = asQuery(resource);
         if (query != null)
         {
             return query;
@@ -120,7 +120,7 @@ internal class SPINFactory
     {
         if (resource == null) return null;
         /*sealed*/
-        ITriplePattern triplePattern = asTriplePattern(resource);
+        var triplePattern = asTriplePattern(resource);
         if (triplePattern != null)
         {
             return triplePattern;
@@ -200,17 +200,17 @@ internal class SPINFactory
         if (resource == null) return null;
         if (resource is INode)
         {
-            IVariable var = SPINFactory.asVariable(resource);
+            var var = SPINFactory.asVariable(resource);
             if (var != null)
             {
                 return var;
             }
-            IAggregation aggr = SPINFactory.asAggregation((IResource)resource);
+            var aggr = SPINFactory.asAggregation((IResource)resource);
             if (aggr != null)
             {
                 return aggr;
             }
-            IFunctionCall functionCall = SPINFactory.asFunctionCall((IResource)resource);
+            var functionCall = SPINFactory.asFunctionCall((IResource)resource);
             if (functionCall != null)
             {
                 return functionCall;
@@ -250,7 +250,7 @@ internal class SPINFactory
         if (resource == null) return null;
         if (resource is IBlankNode)
         {
-            IResource t = resource.getResource(RDF.PropertyType);
+            var t = resource.getResource(RDF.PropertyType);
             if (t != null && !RDFUtil.sameTerm(SP.ClassVariable,t))
             {
                 return (IFunctionCall)resource.As(typeof(FunctionCallImpl));
@@ -316,10 +316,10 @@ internal class SPINFactory
         if (resource == null) return null;
         if (!resource.isLiteral())
         {
-            IResource t= resource.getResource(RDF.PropertyType);
+            var t= resource.getResource(RDF.PropertyType);
             if (t!=null && t.isUri())
             {
-                ITemplate template = SPINModuleRegistry.getTemplate(t.Uri, t.getModel());
+                var template = SPINModuleRegistry.getTemplate(t.Uri, t.getModel());
                 if (template != null)
                 {
                     return (ITemplateCall)resource.As(typeof(TemplateCallImpl));
@@ -753,7 +753,7 @@ internal class SPINFactory
      */
     public static IValues createValues(SpinProcessor model, SparqlResultSet data, bool untyped)
     {
-        IResource blank = untyped ? model.CreateResource() : model.CreateResource(SP.ClassValues);
+        var blank = untyped ? model.CreateResource() : model.CreateResource(SP.ClassValues);
         var values = (IValues)blank.As(typeof(ValuesImpl));
 
         var vars = new List<IResource>();
@@ -761,7 +761,7 @@ internal class SPINFactory
         {
             vars.Add(Resource.Get(RDFUtil.CreateLiteralNode(varName), null, model));
         }
-        IResource varList = model.CreateList(vars.GetEnumerator());
+        var varList = model.CreateList(vars.GetEnumerator());
         values.AddProperty(SP.PropertyVarNames, varList);
 
         using IEnumerator<ISparqlResult> bindings = data.Results.GetEnumerator();
@@ -771,10 +771,10 @@ internal class SPINFactory
             while (bindings.MoveNext())
             {
                 var nodes = new List<IResource>();
-                ISparqlResult binding = bindings.Current;
+                var binding = bindings.Current;
                 foreach (var varName in data.Variables)
                 {
-                    INode value = binding.Value(varName);
+                    var value = binding.Value(varName);
                     if (value == null)
                     {
                         nodes.Add(Resource.Get(SP.ClassPropertyUndef, null, model));
@@ -816,10 +816,10 @@ internal class SPINFactory
      */
     public static IAttribute getAttribute(IResource cls, INode property)
     {
-        IEnumerator<Triple> it = cls.listProperties(SPIN.PropertyConstraint).GetEnumerator();
+        var it = cls.listProperties(SPIN.PropertyConstraint).GetEnumerator();
         while (it.MoveNext())
         {
-            IResource obj = Resource.Get(it.Current.Object, cls.Graph, cls.getModel());
+            var obj = Resource.Get(it.Current.Object, cls.Graph, cls.getModel());
             if (obj is INode && ((IResource)obj).hasProperty(RDF.PropertyType, SPL.ClassAttribute))
             {
                 var a = (IAttribute)obj.As(typeof(AttributeImpl));
@@ -917,7 +917,7 @@ internal class SPINFactory
      */
     public static bool isModuleInstance(IResource resource)
     {
-        foreach (IResource type in resource.getObjects(RDF.PropertyType))
+        foreach (var type in resource.getObjects(RDF.PropertyType))
         {
             if (type.hasProperty(RDFS.PropertySubClassOf, SPIN.ClassModule))
             {
@@ -949,7 +949,7 @@ internal class SPINFactory
      */
     public static bool isTemplateCall(IResource node)
     {
-        ITemplateCall templateCall = asTemplateCall(node);
+        var templateCall = asTemplateCall(node);
         return templateCall != null && templateCall.getTemplate() != null;
     }
 

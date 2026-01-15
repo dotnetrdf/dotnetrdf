@@ -210,7 +210,7 @@ public class SparqlUpdateCommandSet
     public void Optimise(IQueryOptimiser optimiser = null)
     {
         optimiser ??= SparqlOptimiser.Default.QueryOptimiser;
-        foreach (SparqlUpdateCommand c in _commands)
+        foreach (var c in _commands)
         {
             c.Optimise(optimiser);
         }
@@ -237,7 +237,7 @@ public class SparqlUpdateCommandSet
         try
         {
             // Apply Local Optimisers
-            foreach (IAlgebraOptimiser opt in _optimisers.Where(o => o.IsApplicable(this)))
+            foreach (var opt in _optimisers.Where(o => o.IsApplicable(this)))
             {
                 try
                 {
@@ -250,7 +250,7 @@ public class SparqlUpdateCommandSet
             }
             // Apply Global Optimisers
             globalOptimisers ??= SparqlOptimiser.Default.AlgebraOptimisers;
-            foreach (IAlgebraOptimiser opt in globalOptimisers.Where(o => o.IsApplicable(this)))
+            foreach (var opt in globalOptimisers.Where(o => o.IsApplicable(this)))
             {
                 try
                 {

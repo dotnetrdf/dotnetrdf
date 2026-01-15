@@ -79,7 +79,7 @@ public class SparqlUpdateClient : IConfigurationSerializable
         var content = new FormUrlEncodedContent(
             [new KeyValuePair<string, string>("update", sparqlUpdate)]
         );
-        HttpResponseMessage response = await _httpClient.PostAsync(EndpointUri, content, cancellationToken);
+        var response = await _httpClient.PostAsync(EndpointUri, content, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             throw new SparqlUpdateException($"Server returned {(int)response.StatusCode}: {response.ReasonPhrase}");
@@ -92,11 +92,11 @@ public class SparqlUpdateClient : IConfigurationSerializable
     /// <param name="context">Serialization Context.</param>
     public void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode endpoint = context.NextSubject;
-        INode endpointClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlUpdateClient));
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
+        var endpoint = context.NextSubject;
+        var endpointClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlUpdateClient));
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
 
         context.Graph.Assert(new Triple(endpoint, rdfType, endpointClass));
         context.Graph.Assert(new Triple(endpoint, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
