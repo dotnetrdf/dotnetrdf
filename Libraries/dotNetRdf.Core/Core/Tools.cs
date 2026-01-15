@@ -129,7 +129,7 @@ public static class Tools
                 return u.AbsoluteUri;
             }
 
-            Uri b = uriFactory.Create(FixMalformedUriStrings(baseUri));
+            var b = uriFactory.Create(FixMalformedUriStrings(baseUri));
 
             // Check that the Base Uri is valid for resolving Relative URIs
             // If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant

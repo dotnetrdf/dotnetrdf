@@ -96,9 +96,9 @@ public class SubTreeIndexedTripleCollection
     /// <param name="hashFunc">Hash Function for the Index.</param>
     private void Index(INode n, Triple t, MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>> index, Func<Triple,int> hashFunc, IComparer<Triple> comparer)
     {
-        if (index.TryGetValue(n, out MultiDictionary<Triple, HashSet<Triple>> subtree))
+        if (index.TryGetValue(n, out var subtree))
         {
-            if (subtree.TryGetValue(t, out HashSet<Triple> ts))
+            if (subtree.TryGetValue(t, out var ts))
             {
                 if (ts == null)
                 {
@@ -152,9 +152,9 @@ public class SubTreeIndexedTripleCollection
     /// <param name="index">Index to remove from.</param>
     private void Unindex(INode n, Triple t, MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>> index)
     {
-        if (index.TryGetValue(n, out MultiDictionary<Triple, HashSet<Triple>> subtree))
+        if (index.TryGetValue(n, out var subtree))
         {
-            if (subtree.TryGetValue(t, out HashSet<Triple> ts))
+            if (subtree.TryGetValue(t, out var ts))
             {
                 if (ts != null) ts.Remove(t);
             }
@@ -171,7 +171,7 @@ public class SubTreeIndexedTripleCollection
     {
         get
         {
-            if (Triples.TryGetKey(t, out Triple actual))
+            if (Triples.TryGetKey(t, out var actual))
             {
                 return actual;
             }
@@ -181,7 +181,7 @@ public class SubTreeIndexedTripleCollection
 
     private IEnumerable<Triple> WithNode(INode key, MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>> index)
     {
-        if (index.TryGetValue(key, out MultiDictionary<Triple, HashSet<Triple>> subtree))
+        if (index.TryGetValue(key, out var subtree))
         {
             return (from ts in subtree.Values
                     where ts != null
@@ -193,9 +193,9 @@ public class SubTreeIndexedTripleCollection
 
     private IEnumerable<Triple> WithNodeAndTriple(INode key, Triple subkey, MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>> index)
     {
-        if (index.TryGetValue(key, out MultiDictionary<Triple, HashSet<Triple>> subtree))
+        if (index.TryGetValue(key, out var subtree))
         {
-            if (subtree.TryGetValue(subkey, out HashSet<Triple> triples))
+            if (subtree.TryGetValue(subkey, out var triples))
             {
                 return triples ?? Enumerable.Empty<Triple>();
             }

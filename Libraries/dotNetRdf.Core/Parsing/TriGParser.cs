@@ -222,7 +222,7 @@ public class TriGParser
             context.Handler.StartRdf();
 
             // Expect a BOF Token
-            IToken first = context.Tokens.Dequeue();
+            var first = context.Tokens.Dequeue();
             if (first.TokenType != Token.BOF)
             {
                 throw ParserHelper.Error("Unexpected Token '" + first.GetType() + "' encountered, expected a BOF Token", first);
@@ -316,7 +316,7 @@ public class TriGParser
 
                             // We must take care here because @prefix and @base directives may be Graph scoped so anything visible currently
                             // remains visible and must be restored afterwards but anything inside the Graph is not visible outside of it
-                            Uri extBase = context.BaseUri;
+                            var extBase = context.BaseUri;
                             INamespaceMapper nsmap = new NamespaceMapper(context.Namespaces);
 
                             TryParseGraph(context);
@@ -363,7 +363,7 @@ public class TriGParser
     /// <param name="context"></param>
     private void TryParseDirective(TriGParserContext context)
     {
-        IToken directive = context.Tokens.Dequeue();
+        var directive = context.Tokens.Dequeue();
         TryParseDirective(context, directive);
     }
 
@@ -380,7 +380,7 @@ public class TriGParser
         // See what type of directive it is
         if (directive.TokenType == Token.BASEDIRECTIVE)
         {
-            IToken baseUri = context.Tokens.Dequeue();
+            var baseUri = context.Tokens.Dequeue();
             if (baseUri.TokenType == Token.URI)
             {
                 try
@@ -403,10 +403,10 @@ public class TriGParser
         else if (directive.TokenType == Token.PREFIXDIRECTIVE)
         {
             // Prefix Directive
-            IToken prefix = context.Tokens.Dequeue();
+            var prefix = context.Tokens.Dequeue();
             if (prefix.TokenType == Token.PREFIX)
             {
-                IToken uri = context.Tokens.Dequeue();
+                var uri = context.Tokens.Dequeue();
                 if (uri.TokenType == Token.URI)
                 {
                     // Ensure the Uri is absolute
@@ -440,7 +440,7 @@ public class TriGParser
         if (directive.Value.StartsWith("@"))
         {
             // Expect a DOT to terminate Turtle-style prefixes
-            IToken dot = context.Tokens.Dequeue();
+            var dot = context.Tokens.Dequeue();
             if (dot.TokenType != Token.DOT)
             {
                 throw ParserHelper.Error(
@@ -457,10 +457,10 @@ public class TriGParser
     /// <param name="context"></param>
     private void TryParseTriplesOrGraph(TriGParserContext context)
     {
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         IRefNode graphOrSubjectNode;
-        bool subjectIsBlankNodePropertyList = false;
-        bool subjectIsCollection = false;
+        var subjectIsBlankNodePropertyList = false;
+        var subjectIsCollection = false;
         switch (next.TokenType)
         {
             case Token.QNAME:
@@ -508,7 +508,7 @@ public class TriGParser
                 throw ParserHelper.Error("Unexpected token '{'. An RDF collection or blank node property list cannot be used as a graph label.", next);
             }
             // parse graph content
-            Uri oldBase = context.BaseUri;
+            var oldBase = context.BaseUri;
             INamespaceMapper nsMap = new NamespaceMapper(context.Namespaces);
             context.Tokens.Dequeue();
             TryParseGraphContent(context, graphOrSubjectNode);
@@ -529,7 +529,7 @@ public class TriGParser
             if (context.Tokens.LastTokenType != Token.DOT && context.Tokens.LastTokenType != Token.RIGHTCURLYBRACKET)
             {
                 // We only do this if we haven't returned because we already hit the Dot Token/Right Curly Bracket
-                IToken dot = context.Tokens.Dequeue();
+                var dot = context.Tokens.Dequeue();
                 if (dot.TokenType != Token.DOT && dot.TokenType != Token.RIGHTCURLYBRACKET)
                 {
                     throw ParserHelper.Error("Unexpected Token '" + dot.GetType() + "' encountered, expected a Dot (Line Terminator) Token to terminate Triples", dot);
@@ -541,7 +541,7 @@ public class TriGParser
     private void TryParseGraph(TriGParserContext context)
     {
         // Is there a name for the Graph?
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         IRefNode graphNode;
         switch (next.TokenType)
         {
@@ -626,7 +626,7 @@ public class TriGParser
     private void TryParseGraphContent(TriGParserContext context, IRefNode graphNode)
     {
         // Check that the Graph isn't empty i.e. the next token is not a } to close the Graph
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         if (next.TokenType == Token.RIGHTCURLYBRACKET)
         {
             // Empty Graph so just discard the }
@@ -652,9 +652,9 @@ public class TriGParser
         do
         {
             // Try to get the Subject
-            IToken subj = context.Tokens.Dequeue();
+            var subj = context.Tokens.Dequeue();
             IRefNode subjNode;
-            bool parsedBlankNodePropertyList = false;
+            var parsedBlankNodePropertyList = false;
 
             // Turn the Subject Token into a Node
             switch (subj.TokenType)
@@ -675,7 +675,7 @@ public class TriGParser
 
                 case Token.LEFTSQBRACKET:
                     // Blank Node
-                    IToken next = context.Tokens.Peek();
+                    var next = context.Tokens.Peek();
                     if (next.TokenType == Token.RIGHTSQBRACKET)
                     {
                         // Anonymous Blank Node
@@ -753,7 +753,7 @@ public class TriGParser
             if (context.Tokens.LastTokenType != Token.DOT && context.Tokens.LastTokenType != Token.RIGHTCURLYBRACKET)
             {
                 // We only do this if we haven't returned because we already hit the Dot Token/Right Curly Bracket
-                IToken dot = context.Tokens.Dequeue();
+                var dot = context.Tokens.Dequeue();
                 if (dot.TokenType is not (Token.DOT or Token.RIGHTCURLYBRACKET))
                 {
                     throw ParserHelper.Error(
@@ -809,7 +809,7 @@ public class TriGParser
             }
 
             // Try to get the Predicate
-            IToken pred = context.Tokens.Dequeue();
+            var pred = context.Tokens.Dequeue();
             IRefNode predNode;
 
             switch (pred.TokenType)
@@ -894,7 +894,7 @@ public class TriGParser
             }
 
             // Try to get the Object
-            IToken obj = context.Tokens.Dequeue();
+            var obj = context.Tokens.Dequeue();
             IToken next;
 
             switch (obj.TokenType)
@@ -929,7 +929,7 @@ public class TriGParser
                         next = context.Tokens.Dequeue();
                         if (next.TokenType == Token.QNAME || next.TokenType == Token.URI)
                         {
-                            Uri dt = context.UriFactory.Create(Tools.ResolveUriOrQName(next, context.Namespaces, context.BaseUri));
+                            var dt = context.UriFactory.Create(Tools.ResolveUriOrQName(next, context.Namespaces, context.BaseUri));
                             objNode = context.Handler.CreateLiteralNode(obj.Value, dt);
                         }
                         else
@@ -941,7 +941,7 @@ public class TriGParser
                     {
                         // In RDF 1.1 mode, the Turtle tokenizer returns a DATATYPE token directly
                         context.Tokens.Dequeue();
-                        Uri dt = context.UriFactory.Create(Tools.ResolveUriOrQName(next, context.Namespaces,
+                        var dt = context.UriFactory.Create(Tools.ResolveUriOrQName(next, context.Namespaces,
                             context.BaseUri));
                         objNode = context.Handler.CreateLiteralNode(obj.Value, dt);
                     }
@@ -954,7 +954,7 @@ public class TriGParser
 
                 case Token.PLAINLITERAL:
                     // Plain Literals
-                    Uri plt = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)obj, TurtleSyntax.Original);
+                    var plt = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)obj, TurtleSyntax.Original);
                     objNode = context.Handler.CreateLiteralNode(obj.Value, plt);
                     break;
 
@@ -1123,7 +1123,7 @@ public class TriGParser
 
                 case Token.LITERAL:
                 case Token.LONGLITERAL:
-                    IToken obj = next;
+                    var obj = next;
                     next = context.Tokens.Peek();
                     switch (next.TokenType)
                     {
@@ -1137,7 +1137,7 @@ public class TriGParser
                                 next = context.Tokens.Dequeue();
                                 if (next.TokenType == Token.QNAME || next.TokenType == Token.URI)
                                 {
-                                    Uri dt = context.UriFactory.Create(
+                                    var dt = context.UriFactory.Create(
                                         Tools.ResolveUriOrQName(next, context.Namespaces, context.BaseUri));
                                     item = context.Handler.CreateLiteralNode(obj.Value, dt);
                                 }
@@ -1153,8 +1153,8 @@ public class TriGParser
                             }
                         case Token.DATATYPE:
                             {
-                                IToken dtToken = context.Tokens.Dequeue();
-                                Uri dt = context.UriFactory.Create(Tools.ResolveUriOrQName(dtToken,
+                                var dtToken = context.Tokens.Dequeue();
+                                var dt = context.UriFactory.Create(Tools.ResolveUriOrQName(dtToken,
                                     context.Namespaces,
                                     context.BaseUri));
                                 item = context.Handler.CreateLiteralNode(obj.Value, dt);
@@ -1166,7 +1166,7 @@ public class TriGParser
                     }
                     break;
                 case Token.PLAINLITERAL:
-                    Uri plt = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)next, TurtleSyntax.Original);
+                    var plt = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)next, TurtleSyntax.Original);
                     item = context.Handler.CreateLiteralNode(next.Value, plt);
                     break;
 
@@ -1251,7 +1251,7 @@ public class TriGParser
             Console.WriteLine("Attempting to parse a quoted triple.");
         }
 
-        IToken subjToken = context.Tokens.Dequeue();
+        var subjToken = context.Tokens.Dequeue();
         INode subj = subjToken.TokenType switch
         {
             Token.BLANKNODE => context.Handler.CreateBlankNode(),
@@ -1265,8 +1265,8 @@ public class TriGParser
                 subjToken)
         };
 
-        IToken predToken = context.Tokens.Dequeue();
-        INode pred = predToken.TokenType switch
+        var predToken = context.Tokens.Dequeue();
+        var pred = predToken.TokenType switch
         {
             Token.KEYWORDA =>
                 context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "type")),
@@ -1276,8 +1276,8 @@ public class TriGParser
                 $"Unexpected Token '{predToken.GetType()}' encountered, this Token is not valid as the predicate of a quoted triple", predToken)
         };
 
-        IToken objToken = context.Tokens.Dequeue();
-        INode obj = objToken.TokenType switch
+        var objToken = context.Tokens.Dequeue();
+        var obj = objToken.TokenType switch
         {
             Token.BLANKNODE => context.Handler.CreateBlankNode(),
             Token.BLANKNODEWITHID => context.Handler.CreateBlankNode(objToken.Value.Substring(2)),
@@ -1292,7 +1292,7 @@ public class TriGParser
                 objToken)
         };
 
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         if (next.TokenType != Token.ENDQUOTE)
         {
             throw ParserHelper.Error(
@@ -1308,7 +1308,7 @@ public class TriGParser
     private IBlankNode TryParseAnonBlankNode(TokenisingStoreParserContext context)
     {
         // Start of a Blank Node collection?
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         if (next.TokenType != Token.RIGHTSQBRACKET)
         {
             throw ParserHelper.Error(

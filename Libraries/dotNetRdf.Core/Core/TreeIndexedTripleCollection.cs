@@ -199,7 +199,7 @@ public class TreeIndexedTripleCollection
     {
         if (index == null) return;
 
-        if (index.TryGetValue(n, out HashSet<Triple> ts))
+        if (index.TryGetValue(n, out var ts))
         {
             if (ts == null)
             {
@@ -225,7 +225,7 @@ public class TreeIndexedTripleCollection
     {
         if (index == null) return;
 
-        if (index.TryGetValue(t, out HashSet<Triple> ts))
+        if (index.TryGetValue(t, out var ts))
         {
             if (ts == null)
             {
@@ -277,7 +277,7 @@ public class TreeIndexedTripleCollection
     {
         if (index == null) return;
 
-        if (index.TryGetValue(n, out HashSet<Triple> ts) && ts != null)
+        if (index.TryGetValue(n, out var ts) && ts != null)
         {
             ts.Remove(t);
             if (ts.Count == 0)
@@ -296,7 +296,7 @@ public class TreeIndexedTripleCollection
     {
         if (index == null) return;
 
-        if (index.TryGetValue(t, out HashSet<Triple> ts) && ts != null)
+        if (index.TryGetValue(t, out var ts) && ts != null)
         {
             ts.Remove(t);
             if (ts.Count == 0)
@@ -318,7 +318,7 @@ public class TreeIndexedTripleCollection
         {
             if (t == null) throw new ArgumentNullException(nameof(t));
 
-            if (Triples.TryGetKey(t, out Triple actual))
+            if (Triples.TryGetKey(t, out var actual))
             {
                 return actual;
             }
@@ -329,7 +329,7 @@ public class TreeIndexedTripleCollection
 
     private IEnumerable<Triple> AssertedTriples(Func<Triple, bool> filter)
     {
-        foreach (KeyValuePair<Triple, TripleRefs> entry in Triples)
+        foreach (var entry in Triples)
         {
             if (entry.Value.Asserted && filter(entry.Key))
             {
@@ -345,7 +345,7 @@ public class TreeIndexedTripleCollection
 
         if (_o != null)
         {
-            if (_o.TryGetValue(obj, out HashSet<Triple> ts))
+            if (_o.TryGetValue(obj, out var ts))
             {
                 return ts ?? Enumerable.Empty<Triple>();
             }
@@ -364,7 +364,7 @@ public class TreeIndexedTripleCollection
 
         if (_p != null)
         {
-            if (_p.TryGetValue(pred, out HashSet<Triple> ts))
+            if (_p.TryGetValue(pred, out var ts))
             {
                 return ts ?? Enumerable.Empty<Triple>();
             }
@@ -383,7 +383,7 @@ public class TreeIndexedTripleCollection
 
         if (_s != null)
         {
-            if (_s.TryGetValue(subj, out HashSet<Triple> ts))
+            if (_s.TryGetValue(subj, out var ts))
             {
                 return ts ?? Enumerable.Empty<Triple>();
             }
@@ -403,7 +403,7 @@ public class TreeIndexedTripleCollection
 
         if (_po != null)
         {
-            if (_po.TryGetValue(new Triple(_subjVar, pred, obj), out HashSet<Triple> ts))
+            if (_po.TryGetValue(new Triple(_subjVar, pred, obj), out var ts))
             {
                 return ts ?? Enumerable.Empty<Triple>();
             }
@@ -423,7 +423,7 @@ public class TreeIndexedTripleCollection
 
         if (_so != null)
         {
-            if (_so.TryGetValue(new Triple(subj, _predVar, obj), out HashSet<Triple> ts))
+            if (_so.TryGetValue(new Triple(subj, _predVar, obj), out var ts))
             {
                 return ts ?? Enumerable.Empty<Triple>();
             }
@@ -443,7 +443,7 @@ public class TreeIndexedTripleCollection
 
         if (_sp != null)
         {
-            if (_sp.TryGetValue(new Triple(subj, pred, _objVar), out HashSet<Triple> ts))
+            if (_sp.TryGetValue(new Triple(subj, pred, _objVar), out var ts))
             {
                 return ts ?? Enumerable.Empty<Triple>();
             }
@@ -461,7 +461,7 @@ public class TreeIndexedTripleCollection
     /// <returns></returns>
     private IEnumerable<Triple> QuotedTriples(Func<Triple, bool> filter)
     {
-        foreach (KeyValuePair<Triple, TripleRefs> entry in Triples)
+        foreach (var entry in Triples)
         {
             if (entry.Value.QuoteCount > 0 && filter(entry.Key))
             {
@@ -480,7 +480,7 @@ public class TreeIndexedTripleCollection
             return QuotedTriples(x => x.Object.Equals(obj));
         }
 
-        if (_qo.TryGetValue(obj, out HashSet<Triple> ts))
+        if (_qo.TryGetValue(obj, out var ts))
         {
             return ts ?? Enumerable.Empty<Triple>();
         }
@@ -499,7 +499,7 @@ public class TreeIndexedTripleCollection
             return QuotedTriples(t => t.Predicate.Equals(pred));
         }
 
-        if (_qp.TryGetValue(pred, out HashSet<Triple> ts))
+        if (_qp.TryGetValue(pred, out var ts))
         {
             return ts ?? Enumerable.Empty<Triple>();
         }
@@ -519,7 +519,7 @@ public class TreeIndexedTripleCollection
             return QuotedTriples(t => t.Subject.Equals(subj));
         }
 
-        if (_qs.TryGetValue(subj, out HashSet<Triple> ts))
+        if (_qs.TryGetValue(subj, out var ts))
         {
             return ts ?? Enumerable.Empty<Triple>();
         }
@@ -540,7 +540,7 @@ public class TreeIndexedTripleCollection
             return QuotedWithPredicate(pred).Where(t => t.Object.Equals(obj));
         }
 
-        if (_qpo.TryGetValue(new Triple(_subjVar, pred, obj), out HashSet<Triple> ts))
+        if (_qpo.TryGetValue(new Triple(_subjVar, pred, obj), out var ts))
         {
             return ts ?? Enumerable.Empty<Triple>();
         }
@@ -561,7 +561,7 @@ public class TreeIndexedTripleCollection
             return QuotedWithSubject(subj).Where(t => t.Object.Equals(obj));
         }
 
-        if (_qso.TryGetValue(new Triple(subj, _predVar, obj), out HashSet<Triple> ts))
+        if (_qso.TryGetValue(new Triple(subj, _predVar, obj), out var ts))
         {
             return ts ?? Enumerable.Empty<Triple>();
         }
@@ -582,7 +582,7 @@ public class TreeIndexedTripleCollection
             return QuotedWithSubject(subj).Where(t => t.Predicate.Equals(pred));
         }
 
-        if (_qsp.TryGetValue(new Triple(subj, pred, _objVar), out HashSet<Triple> ts))
+        if (_qsp.TryGetValue(new Triple(subj, pred, _objVar), out var ts))
         {
             return ts ?? Enumerable.Empty<Triple>();
         }

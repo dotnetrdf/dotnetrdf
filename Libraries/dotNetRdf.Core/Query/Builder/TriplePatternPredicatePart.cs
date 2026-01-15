@@ -50,7 +50,7 @@ public sealed class TriplePatternPredicatePart
     /// </summary>
     public TriplePatternObjectPart Predicate(SparqlVariable variable)
     {
-        PatternItem predicate = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variable.Name);
+        var predicate = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variable.Name);
         return CreateTriplePatternObjectPart(predicate);
     }
 
@@ -59,7 +59,7 @@ public sealed class TriplePatternPredicatePart
     /// </summary>
     public TriplePatternObjectPart Predicate(string variableName)
     {
-        PatternItem predicate = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variableName);
+        var predicate = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variableName);
         return CreateTriplePatternObjectPart(predicate);
     }
 
@@ -76,7 +76,7 @@ public sealed class TriplePatternPredicatePart
     /// </summary>
     public TriplePatternObjectPart PredicateUri(Uri predicateUri)
     {
-        PatternItem predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateUri);
+        var predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateUri);
         return CreateTriplePatternObjectPart(predicate);
     }
 
@@ -86,7 +86,7 @@ public sealed class TriplePatternPredicatePart
     /// <remarks>A relevant prefix/base URI must be added to <see cref="IQueryBuilder.Prefixes"/>.</remarks>
     public TriplePatternObjectPart PredicateUri(string predicateQName)
     {
-        PatternItem predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateQName, _prefixes);
+        var predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateQName, _prefixes);
         return CreateTriplePatternObjectPart(predicate);
     }
 
@@ -95,7 +95,7 @@ public sealed class TriplePatternPredicatePart
     /// </summary>
     public TriplePatternObjectPart PredicateUri(IUriNode predicateNode)
     {
-        PatternItem predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateNode);
+        var predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateNode);
         return CreateTriplePatternObjectPart(predicate);
     }
 

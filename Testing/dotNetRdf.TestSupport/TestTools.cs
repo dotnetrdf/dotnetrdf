@@ -82,7 +82,7 @@ public class TestTools
             Assert.Equal(g.Triples.Count, h.Triples.Count);
 
             //Each Triple in g must be in h
-            foreach (Triple t in g.Triples)
+            foreach (var t in g.Triples)
             {
                 Assert.True(h.Triples.Contains(t), "Second Graph must contain Triple " + t.ToString());
             }
@@ -137,7 +137,7 @@ public class TestTools
         }
         else
         {
-            foreach (ISet s in multiset.Sets)
+            foreach (var s in multiset.Sets)
             {
                 Console.WriteLine(s.ToString());
             }
@@ -159,7 +159,7 @@ public class TestTools
             }
             Console.WriteLine(g.Triples.Count + " Triples");
             var formatter = new NTriplesFormatter();
-            foreach (Triple t in g.Triples.ToList())
+            foreach (var t in g.Triples.ToList())
             {
                 Console.WriteLine(t.ToString(formatter));
             }
@@ -173,7 +173,7 @@ public class TestTools
 
     public static void AssertIsomorphic(IGraph expectGraph, IGraph actualGraph, ITestOutputHelper outputHelper)
     {
-        GraphDiffReport diffs = expectGraph.Difference(actualGraph);
+        var diffs = expectGraph.Difference(actualGraph);
         if (!diffs.AreEqual)
         {
             ShowDifferences(diffs, "expected", "actual", outputHelper);
@@ -195,7 +195,7 @@ public class TestTools
             }
             _output.WriteLine(g.Triples.Count + " Triples");
             var formatter = new NTriplesFormatter();
-            foreach (Triple t in g.Triples.ToList())
+            foreach (var t in g.Triples.ToList())
             {
                 _output.WriteLine(t.ToString(formatter));
             }
@@ -228,7 +228,7 @@ public class TestTools
             Console.WriteLine("Graphs are Equal");
             Console.WriteLine();
             Console.WriteLine("Blank Node Mapping between Graphs:");
-            foreach (KeyValuePair<INode, INode> kvp in report.Mapping)
+            foreach (var kvp in report.Mapping)
             {
                 Console.WriteLine(kvp.Key.ToString(formatter) + " => " + kvp.Value.ToString(formatter));
             }
@@ -238,19 +238,19 @@ public class TestTools
             Console.WriteLine("Graphs are non-equal");
             Console.WriteLine();
             Console.WriteLine("Triples added to " + lhsName + " to give " + rhsName + ":");
-            foreach (Triple t in report.AddedTriples)
+            foreach (var t in report.AddedTriples)
             {
                 Console.WriteLine(t.ToString(formatter));
             }
             Console.WriteLine();
             Console.WriteLine("Triples removed from " + lhsName + " to give " + rhsName + ":");
-            foreach (Triple t in report.RemovedTriples)
+            foreach (var t in report.RemovedTriples)
             {
                 Console.WriteLine(t.ToString(formatter));
             }
             Console.WriteLine();
             Console.WriteLine("Blank Node Mapping between Graphs:");
-            foreach (KeyValuePair<INode, INode> kvp in report.Mapping)
+            foreach (var kvp in report.Mapping)
             {
                 Console.WriteLine(kvp.Key.ToString(formatter) + " => " + kvp.Value.ToString(formatter));
             }
@@ -258,10 +258,10 @@ public class TestTools
             if (report.AddedMSGs.Any())
             {
                 Console.WriteLine("MSGs added to " + lhsName + " to give " + rhsName + ":");
-                foreach (IGraph msg in report.AddedMSGs)
+                foreach (var msg in report.AddedMSGs)
                 {
                     Console.WriteLine(msg.Triples.Count + " Triple(s):");
-                    foreach (Triple t in msg.Triples)
+                    foreach (var t in msg.Triples)
                     {
                         Console.WriteLine(t.ToString(formatter));
                     }
@@ -272,10 +272,10 @@ public class TestTools
             if (report.RemovedMSGs.Any())
             {
                 Console.WriteLine("MSGs removed from " + lhsName + " to give " + rhsName + ":");
-                foreach (IGraph msg in report.RemovedMSGs)
+                foreach (var msg in report.RemovedMSGs)
                 {
                     Console.WriteLine(msg.Triples.Count + " Triple(s):");
-                    foreach (Triple t in msg.Triples)
+                    foreach (var t in msg.Triples)
                     {
                         Console.WriteLine(t.ToString(formatter));
                     }
@@ -295,7 +295,7 @@ public class TestTools
             output.WriteLine("Graphs are Equal");
             output.WriteLine();
             output.WriteLine("Blank Node Mapping between Graphs:");
-            foreach (KeyValuePair<INode, INode> kvp in report.Mapping)
+            foreach (var kvp in report.Mapping)
             {
                 output.WriteLine(kvp.Key.ToString(formatter) + " => " + kvp.Value.ToString(formatter));
             }
@@ -305,19 +305,19 @@ public class TestTools
             output.WriteLine("Graphs are non-equal");
             output.WriteLine();
             output.WriteLine("Triples added to " + lhsName + " to give " + rhsName + ":");
-            foreach (Triple t in report.AddedTriples)
+            foreach (var t in report.AddedTriples)
             {
                 output.WriteLine(t.ToString(formatter));
             }
             output.WriteLine();
             output.WriteLine("Triples removed from " + lhsName + " to give " + rhsName + ":");
-            foreach (Triple t in report.RemovedTriples)
+            foreach (var t in report.RemovedTriples)
             {
                 output.WriteLine(t.ToString(formatter));
             }
             output.WriteLine();
             output.WriteLine("Blank Node Mapping between Graphs:");
-            foreach (KeyValuePair<INode, INode> kvp in report.Mapping)
+            foreach (var kvp in report.Mapping)
             {
                 output.WriteLine(kvp.Key.ToString(formatter) + " => " + kvp.Value.ToString(formatter));
             }
@@ -325,10 +325,10 @@ public class TestTools
             if (report.AddedMSGs.Any())
             {
                 output.WriteLine("MSGs added to " + lhsName + " to give " + rhsName + ":");
-                foreach (IGraph msg in report.AddedMSGs)
+                foreach (var msg in report.AddedMSGs)
                 {
                     output.WriteLine(msg.Triples.Count + " Triple(s):");
-                    foreach (Triple t in msg.Triples)
+                    foreach (var t in msg.Triples)
                     {
                         output.WriteLine(t.ToString(formatter));
                     }
@@ -339,10 +339,10 @@ public class TestTools
             if (report.RemovedMSGs.Any())
             {
                 output.WriteLine("MSGs removed from " + lhsName + " to give " + rhsName + ":");
-                foreach (IGraph msg in report.RemovedMSGs)
+                foreach (var msg in report.RemovedMSGs)
                 {
                     output.WriteLine(msg.Triples.Count + " Triple(s):");
-                    foreach (Triple t in msg.Triples)
+                    foreach (var t in msg.Triples)
                     {
                         output.WriteLine(t.ToString(formatter));
                     }
@@ -356,7 +356,7 @@ public class TestTools
     {
         var formatter = new NTriplesFormatter();
         Console.WriteLine("Blank Node Mapping between Graphs:");
-        foreach (KeyValuePair<INode, INode> kvp in report.Mapping)
+        foreach (var kvp in report.Mapping)
         {
             Console.WriteLine(kvp.Key.ToString(formatter) + " => " + kvp.Value.ToString(formatter));
         }
@@ -390,7 +390,7 @@ public class TestTools
         where T : class
     {
         var first = true;
-        foreach (T item in items)
+        foreach (var item in items)
         {
             if (!first)
             {
@@ -408,7 +408,7 @@ public class TestTools
         where T : struct
     {
         var first = true;
-        foreach (T item in items)
+        foreach (var item in items)
         {
             if (!first)
             {
@@ -459,7 +459,7 @@ public class TestTools
 
     public static void ExecuteWithChangedCulture(CultureInfo cultureInfoOverride, Action test)
     {
-        CultureInfo currentCulture = Thread.CurrentThread.CurrentCulture;
+        var currentCulture = Thread.CurrentThread.CurrentCulture;
         Thread.CurrentThread.CurrentCulture = cultureInfoOverride;
 
         try
@@ -476,7 +476,7 @@ public class TestTools
     {
         var bnodeMap = new Dictionary<INode, INode>();
 
-        foreach (IGraph expectGraph in expected.Graphs)
+        foreach (var expectGraph in expected.Graphs)
         {
             if (expectGraph.Name is IBlankNode)
             {
@@ -490,14 +490,14 @@ public class TestTools
             else
             {
                 Assert.True(actual.Graphs.Contains(expectGraph.Name));
-                IGraph actualGraph = actual.Graphs[expectGraph.Name];
-                GraphDiffReport diffReport = actualGraph.Difference(expectGraph);
+                var actualGraph = actual.Graphs[expectGraph.Name];
+                var diffReport = actualGraph.Difference(expectGraph);
                 if (!diffReport.AreEqual) ShowDifferences(diffReport, output);
                 Assert.True(diffReport.AreEqual);
             }
         }
 
-        foreach (IGraph actualGraph in actual.Graphs)
+        foreach (var actualGraph in actual.Graphs)
         {
             Assert.True((actualGraph.Name != null && bnodeMap.ContainsKey(actualGraph.Name)) || 
                         expected.Graphs.Contains(actualGraph.Name) || actualGraph.IsEmpty, 

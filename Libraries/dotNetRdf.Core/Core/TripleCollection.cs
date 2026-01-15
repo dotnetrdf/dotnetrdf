@@ -46,19 +46,19 @@ public class TripleCollection
     /// <inheritdoc />
     public override bool Contains(Triple t)
     {
-        return Triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted;
+        return Triples.TryGetValue(t, out var refs) && refs.Asserted;
     }
 
     /// <inheritdoc/>
     public override bool ContainsQuoted(Triple t)
     {
-        return Triples.TryGetValue(t, out TripleRefs refs) && refs.QuoteCount > 0;
+        return Triples.TryGetValue(t, out var refs) && refs.QuoteCount > 0;
     }
 
     /// <inheritdoc />
     protected internal override bool Add(Triple t)
     {
-        if (Triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted)
+        if (Triples.TryGetValue(t, out var refs) && refs.Asserted)
         {
             return false;
         }
@@ -88,7 +88,7 @@ public class TripleCollection
     /// <param name="tripleNode">The triple node that quotes the triple to be added to the collection.</param>
     protected internal void AddQuoted(ITripleNode tripleNode)
     {
-        if (Triples.TryGetValue(tripleNode.Triple, out TripleRefs refs))
+        if (Triples.TryGetValue(tripleNode.Triple, out var refs))
         {
             refs.QuoteCount++;
         }
@@ -111,7 +111,7 @@ public class TripleCollection
     /// </remarks>
     protected internal override bool Delete(Triple t)
     {
-        if (Triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted)
+        if (Triples.TryGetValue(t, out var refs) && refs.Asserted)
         {
             refs.Asserted = false;
             if (refs.QuoteCount == 0)
@@ -135,7 +135,7 @@ public class TripleCollection
     /// <remarks>This method decreases the quote reference count for the triple. If the reference count drops to 0 and the triple is not also asserted in the graph, then it will be removed from the collection. If the triple itself quotes other triples, then this process is applied out recursively.</remarks>
     protected internal void RemoveQuoted(ITripleNode tripleNode)
     {
-        if (Triples.TryGetValue(tripleNode.Triple, out TripleRefs refs))
+        if (Triples.TryGetValue(tripleNode.Triple, out var refs))
         {
             refs.QuoteCount--;
             if (refs.QuoteCount == 0 && !refs.Asserted)
@@ -167,7 +167,7 @@ public class TripleCollection
     {
         get
         {
-            if (Triples.TryGetKey(t, out Triple actual))
+            if (Triples.TryGetKey(t, out var actual))
             {
                 return actual;
             }
@@ -219,7 +219,7 @@ public class TripleCollection
     {
         get
         {
-            foreach (KeyValuePair<Triple, TripleRefs> x in Triples)
+            foreach (var x in Triples)
             {
                 if (x.Value.QuoteCount > 0) yield return x.Key;
             }
@@ -230,7 +230,7 @@ public class TripleCollection
     public override IEnumerable<Triple> Asserted {
         get
         {
-            foreach (KeyValuePair<Triple, TripleRefs> x in Triples)
+            foreach (var x in Triples)
             {
                 if (x.Value.Asserted) yield return x.Key;
             }

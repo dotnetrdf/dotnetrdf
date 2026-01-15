@@ -67,8 +67,8 @@ public class TimeSpanSubtraction
     private TimeSpan Subtract(IEnumerable<TimeSpan> ts)
     {
         var first = true;
-        TimeSpan total = TimeSpan.Zero;
-        foreach (TimeSpan t in ts)
+        var total = TimeSpan.Zero;
+        foreach (var t in ts)
         {
             if (first)
             {

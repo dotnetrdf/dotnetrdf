@@ -61,11 +61,11 @@ public class TransactionalUpdateTests
 
     private void TestCreateGraphCommit()
     {
-        ISparqlDataset dataset = GetEmptyDataset();
+        var dataset = GetEmptyDataset();
 
         var updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         processor.ProcessCommandSet(cmds);
@@ -75,11 +75,11 @@ public class TransactionalUpdateTests
 
     private void TestCreateGraphRollback()
     {
-        ISparqlDataset dataset = GetEmptyDataset();
+        var dataset = GetEmptyDataset();
 
         var updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         try
@@ -98,11 +98,11 @@ public class TransactionalUpdateTests
 
     private void TestCreateGraphRollbackWithoutAutoCommit()
     {
-        ISparqlDataset dataset = GetEmptyDataset();
+        var dataset = GetEmptyDataset();
 
         var updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset,
             options => { options.AutoCommit = false;});
@@ -138,12 +138,12 @@ public class TransactionalUpdateTests
 
     private void TestDropGraphCommit()
     {
-        ISparqlDataset dataset = GetNonEmptyDataset();
+        var dataset = GetNonEmptyDataset();
 
         var updates = "DROP GRAPH <" + TestGraphUri.ToString() + ">";
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString(updates);
+        var cmds = parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         processor.ProcessCommandSet(cmds);
@@ -153,11 +153,11 @@ public class TransactionalUpdateTests
 
     private void TestDropGraphRollback()
     {
-        ISparqlDataset dataset = GetNonEmptyDataset();
+        var dataset = GetNonEmptyDataset();
 
         var updates = "DROP GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         try
@@ -175,11 +175,11 @@ public class TransactionalUpdateTests
 
     private void TestLoadCommit()
     {
-        ISparqlDataset dataset = GetEmptyDataset();
+        var dataset = GetEmptyDataset();
 
         var updates = "LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         processor.ProcessCommandSet(cmds);
@@ -189,11 +189,11 @@ public class TransactionalUpdateTests
 
     private void TestLoadRollback()
     {
-        ISparqlDataset dataset = GetEmptyDataset();
+        var dataset = GetEmptyDataset();
 
         var updates = "LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         try
@@ -211,11 +211,11 @@ public class TransactionalUpdateTests
 
     private void TestCreateDropSequenceCommit()
     {
-        ISparqlDataset dataset = GetEmptyDataset();
+        var dataset = GetEmptyDataset();
 
         var updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         processor.ProcessCommandSet(cmds);
@@ -225,11 +225,11 @@ public class TransactionalUpdateTests
 
     private void TestCreateDropSequenceCommit2()
     {
-        ISparqlDataset dataset = GetEmptyDataset();
+        var dataset = GetEmptyDataset();
 
         var updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         processor.ProcessCommandSet(cmds);
@@ -239,11 +239,11 @@ public class TransactionalUpdateTests
 
     private void TestCreateDropSequenceRollback()
     {
-        ISparqlDataset dataset = GetEmptyDataset();
+        var dataset = GetEmptyDataset();
 
         var updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         try
@@ -262,11 +262,11 @@ public class TransactionalUpdateTests
 
     private void TestCreateDropSequenceRollback2()
     {
-        ISparqlDataset dataset = GetNonEmptyDataset();
+        var dataset = GetNonEmptyDataset();
 
         var updates = "DROP GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         Assert.Throws<SparqlUpdateException>(() => processor.ProcessCommandSet(cmds));
@@ -275,11 +275,11 @@ public class TransactionalUpdateTests
 
     private void TestInsertDataThenDropCommit()
     {
-        ISparqlDataset dataset = GetEmptyDataset();
+        var dataset = GetEmptyDataset();
 
         var updates = "INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subject> <ex:predicate> <ex:object> } }; DROP GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         processor.ProcessCommandSet(cmds);
@@ -289,11 +289,11 @@ public class TransactionalUpdateTests
 
     private void TestInsertDataThenDropRollback()
     {
-        ISparqlDataset dataset = GetNonEmptyDataset();
+        var dataset = GetNonEmptyDataset();
 
         var updates = "INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subject> <ex:predicate> <ex:object> } }; DROP GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         try
@@ -312,11 +312,11 @@ public class TransactionalUpdateTests
 
     private void TestCreateThenInsertDataRollback()
     {
-        ISparqlDataset dataset = GetEmptyDataset();
+        var dataset = GetEmptyDataset();
 
         var updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subject> <ex:predicate> <ex:object> } }; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         try
@@ -334,11 +334,11 @@ public class TransactionalUpdateTests
 
     private void TestDropThenInsertDataRollback()
     {
-        ISparqlDataset dataset = GetNonEmptyDataset();
+        var dataset = GetNonEmptyDataset();
 
         var updates = "DROP GRAPH <" + TestGraphUri.ToString() + ">; INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subject> <ex:predicate> <ex:object> } }; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         try
@@ -357,11 +357,11 @@ public class TransactionalUpdateTests
 
     private void TestInsertDataThenDeleteDataCommit()
     {
-        ISparqlDataset dataset = GetNonEmptyDataset();
+        var dataset = GetNonEmptyDataset();
 
         var updates = "INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; DELETE DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         processor.ProcessCommandSet(cmds);
@@ -371,11 +371,11 @@ public class TransactionalUpdateTests
 
     private void TestInsertDataThenDeleteDataRollback()
     {
-        ISparqlDataset dataset = GetNonEmptyDataset();
+        var dataset = GetNonEmptyDataset();
 
         var updates = "INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; DELETE DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         try
@@ -393,14 +393,14 @@ public class TransactionalUpdateTests
 
     private void TestDeleteDataThenInsertDataCommit()
     {
-        ISparqlDataset dataset = GetNonEmptyDataset();
-        IGraph g = dataset.GetModifiableGraph(TestGraphUri);
+        var dataset = GetNonEmptyDataset();
+        var g = dataset.GetModifiableGraph(TestGraphUri);
         g.Assert(new Triple(g.CreateUriNode(new Uri("ex:subj")), g.CreateUriNode(new Uri("ex:pred")), g.CreateUriNode(new Uri("ex:obj"))));
         dataset.Flush();
 
         var updates = "DELETE DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         processor.ProcessCommandSet(cmds);
@@ -410,13 +410,13 @@ public class TransactionalUpdateTests
 
     private void TestDeleteDataThenInsertDataRollback()
     {
-        ISparqlDataset dataset = GetNonEmptyDataset();
-        IGraph g = dataset.GetModifiableGraph(TestGraphUri);
+        var dataset = GetNonEmptyDataset();
+        var g = dataset.GetModifiableGraph(TestGraphUri);
         g.Assert(new Triple(g.CreateUriNode(new Uri("ex:subj")), g.CreateUriNode(new Uri("ex:pred")), g.CreateUriNode(new Uri("ex:obj"))));
 
         var updates = "DELETE DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         try
@@ -434,11 +434,11 @@ public class TransactionalUpdateTests
 
     private void TestInsertDataSequenceCommit()
     {
-        ISparqlDataset dataset = GetEmptyDataset();
+        var dataset = GetEmptyDataset();
 
         var updates = "INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { } }; INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }";
 
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+        var cmds = _parser.ParseFromString(updates);
         var processor = new LeviathanUpdateProcessor(dataset);
         processor.ProcessCommandSet(cmds);
 

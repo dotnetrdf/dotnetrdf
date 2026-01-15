@@ -71,7 +71,7 @@ public class TestSuite
 
     private static void Conforms(string name)
     {
-        ExtractTestData(name, out IGraph testGraph, out var failure, out IGraph dataGraph, out IGraph shapesGraph);
+        ExtractTestData(name, out var testGraph, out var failure, out var dataGraph, out var shapesGraph);
 
         void conforms()
         {
@@ -93,12 +93,12 @@ public class TestSuite
 
     private void Validates(string name)
     {
-        ExtractTestData(name, out IGraph testGraph, out var failure, out IGraph dataGraph, out IGraph shapesGraph);
+        ExtractTestData(name, out var testGraph, out var failure, out var dataGraph, out var shapesGraph);
 
         void validates()
         {
-            IGraph actual = new ShapesGraph(shapesGraph).Validate(dataGraph).Normalised;
-            IGraph expected = Report.Parse(testGraph).Normalised;
+            var actual = new ShapesGraph(shapesGraph).Validate(dataGraph).Normalised;
+            var expected = Report.Parse(testGraph).Normalised;
 
             var writer = new CompressingTurtleWriter();
             _output.WriteLine(StringWriter.Write(expected, writer));

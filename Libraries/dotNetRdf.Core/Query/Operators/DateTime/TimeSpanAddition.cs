@@ -66,8 +66,8 @@ public class TimeSpanAddition
 
     private TimeSpan Add(IEnumerable<TimeSpan> ts)
     {
-        TimeSpan total = TimeSpan.Zero;
-        foreach (TimeSpan t in ts)
+        var total = TimeSpan.Zero;
+        foreach (var t in ts)
         {
             total += t;
         }

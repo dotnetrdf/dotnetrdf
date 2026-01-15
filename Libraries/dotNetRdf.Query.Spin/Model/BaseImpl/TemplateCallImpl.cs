@@ -45,15 +45,15 @@ internal class TemplateCallImpl : ModuleCallImpl, ITemplateCall
     public Dictionary<IArgument, IResource> getArgumentsMap()
     {
         var map = new Dictionary<IArgument, IResource>();
-        ITemplate template = getTemplate();
+        var template = getTemplate();
         if (template != null)
         {
-            foreach (IArgument ad in template.getArguments(false))
+            foreach (var ad in template.getArguments(false))
             {
-                IResource argProperty = ad.getPredicate();
+                var argProperty = ad.getPredicate();
                 if (argProperty != null)
                 {
-                    IResource value = getObject(argProperty);
+                    var value = getObject(argProperty);
                     if (value != null)
                     {
                         map[ad] = value;
@@ -69,15 +69,15 @@ internal class TemplateCallImpl : ModuleCallImpl, ITemplateCall
     public Dictionary<IResource, IResource> getArgumentsMapByProperties()
     {
         var map = new Dictionary<IResource, IResource>();
-        ITemplate template = getTemplate();
+        var template = getTemplate();
         if (template != null)
         {
-            foreach (IArgument ad in template.getArguments(false))
+            foreach (var ad in template.getArguments(false))
             {
-                IResource argProperty = ad.getPredicate();
+                var argProperty = ad.getPredicate();
                 if (argProperty != null)
                 {
-                    IResource valueS = getObject(argProperty);
+                    var valueS = getObject(argProperty);
                     if (valueS != null)
                     {
                         map[argProperty] = valueS;
@@ -93,16 +93,16 @@ internal class TemplateCallImpl : ModuleCallImpl, ITemplateCall
     public Dictionary<String, IResource> getArgumentsMapByVarNames()
     {
         var map = new Dictionary<String, IResource>();
-        ITemplate template = getTemplate();
+        var template = getTemplate();
         if (template != null)
         {
-            foreach (IArgument ad in template.getArguments(false))
+            foreach (var ad in template.getArguments(false))
             {
-                IResource argProperty = ad.getPredicate();
+                var argProperty = ad.getPredicate();
                 if (argProperty != null)
                 {
                     var varName = ad.getVarName();
-                    IResource valueS = getObject(argProperty);
+                    var valueS = getObject(argProperty);
                     if (valueS != null)
                     {
                         map[varName] = valueS;
@@ -117,10 +117,10 @@ internal class TemplateCallImpl : ModuleCallImpl, ITemplateCall
     /*override*/ public Dictionary<String, IResource> getInitialBinding()
     {
         var map = new Dictionary<String, IResource>();
-        Dictionary<String, IResource> input = getArgumentsMapByVarNames();
+        var input = getArgumentsMapByVarNames();
         foreach (var varName in input.Keys)
         {
-            IResource value = input[varName];
+            var value = input[varName];
             map.Add(varName, value);
         }
         return map;
@@ -148,7 +148,7 @@ internal class TemplateCallImpl : ModuleCallImpl, ITemplateCall
 
     public ITemplate getTemplate()
     {
-        IResource s = getResource(RDF.PropertyType);
+        var s = getResource(RDF.PropertyType);
         if (s != null && s.isUri())
         {
             return SPINModuleRegistry.getTemplate(s.Uri, s.getModel());

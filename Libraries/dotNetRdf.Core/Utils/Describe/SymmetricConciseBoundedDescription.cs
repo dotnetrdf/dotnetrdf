@@ -55,10 +55,10 @@ public class SymmetricConciseBoundedDescription
         // Get Triples for this Subject
         var bnodes = new Queue<INode>();
         var expandedBNodes = new HashSet<INode>();
-        foreach (INode n in nodes)
+        foreach (var n in nodes)
         {
             // Get Triples where the Node is the Subject
-            foreach (Triple t in dataset.GetTriplesWithSubject(n).ToList())
+            foreach (var t in dataset.GetTriplesWithSubject(n).ToList())
             {
                 if (t.Object.NodeType == NodeType.Blank)
                 {
@@ -67,7 +67,7 @@ public class SymmetricConciseBoundedDescription
                 if (!handler.HandleTriple(RewriteDescribeBNodes(t, bnodeMapping, handler))) ParserHelper.Stop();
             }
             // Get Triples where the Node is the Object
-            foreach (Triple t in dataset.GetTriplesWithObject(n).ToList())
+            foreach (var t in dataset.GetTriplesWithObject(n).ToList())
             {
                 if (t.Subject.NodeType == NodeType.Blank)
                 {
@@ -79,11 +79,11 @@ public class SymmetricConciseBoundedDescription
             // Compute the Blank Node Closure for this Subject
             while (bnodes.Count > 0)
             {
-                INode bsubj = bnodes.Dequeue();
+                var bsubj = bnodes.Dequeue();
                 if (expandedBNodes.Contains(bsubj)) continue;
                 expandedBNodes.Add(bsubj);
 
-                foreach (Triple t2 in dataset.GetTriplesWithSubject(bsubj).ToList())
+                foreach (var t2 in dataset.GetTriplesWithSubject(bsubj).ToList())
                 {
                     if (t2.Object.NodeType == NodeType.Blank)
                     {
@@ -91,7 +91,7 @@ public class SymmetricConciseBoundedDescription
                     }
                     if (!handler.HandleTriple(RewriteDescribeBNodes(t2, bnodeMapping, handler))) ParserHelper.Stop();
                 }
-                foreach (Triple t2 in dataset.GetTriplesWithObject(bsubj).ToList())
+                foreach (var t2 in dataset.GetTriplesWithObject(bsubj).ToList())
                 {
                     if (t2.Subject.NodeType == NodeType.Blank)
                     {

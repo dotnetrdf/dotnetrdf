@@ -200,7 +200,7 @@ public sealed class Triple
     /// <returns>True if the Triple has a UriNode with the given Uri.</returns>
     public bool Involves(Uri uri)
     {
-        IUriNode temp = new UriNode(uri);
+        var temp = new UriNode(uri);
         return Involves(temp);
     }
 

@@ -114,7 +114,7 @@ public class TriGWriter
         }
 
         // Write the Header of the File
-        foreach (IGraph g in context.Store.Graphs)
+        foreach (var g in context.Store.Graphs)
         {
             context.NamespaceMap.Import(g.NamespaceMap);
         }
@@ -141,7 +141,7 @@ public class TriGWriter
             // Standard Multi-Threaded Writing
 
             // Queue the Graphs to be written
-            foreach (IGraph g in context.Store.Graphs)
+            foreach (var g in context.Store.Graphs)
             {
                 context.Add(g.Name);
             }
@@ -161,7 +161,7 @@ public class TriGWriter
             {
                 var outputException =
                     new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TriG"));
-                foreach (Exception innerException in ex.InnerExceptions)
+                foreach (var innerException in ex.InnerExceptions)
                 {
                     outputException.AddException(innerException);
                 }
@@ -180,7 +180,7 @@ public class TriGWriter
             try
             {
                 // Optional Single Threaded Writing
-                foreach (IGraph g in store.Graphs)
+                foreach (var g in store.Graphs)
                 {
                     var graphContext = new CompressingTurtleWriterContext(g, new System.IO.StringWriter(),
                         context.PrettyPrint, context.HighSpeedModePermitted,
@@ -260,7 +260,7 @@ public class TriGWriter
             var indentation = new string(' ', 4);
             context.Output.Write(indentation);
             if (globalContext.CompressionLevel > WriterCompressionLevel.None) context.Output.WriteLine("# Written using High Speed Mode");
-            foreach (Triple t in context.Graph.Triples)
+            foreach (var t in context.Graph.Triples)
             {
                 context.Output.Write(indentation);
                 context.Output.Write(GenerateNodeOutput(context, t.Subject, TripleSegment.Subject));
@@ -291,7 +291,7 @@ public class TriGWriter
 
             for (var i = 0; i < ts.Count; i++)
             {
-                Triple t = ts[i];
+                var t = ts[i];
                 if (lastSubj == null || !t.Subject.Equals(lastSubj))
                 {
                     // Terminate previous Triples
@@ -362,8 +362,8 @@ public class TriGWriter
         WriterHelper.SortTriplesBySubjectPredicate(annotationTriples);
         INode lastPred = null;
         indent += 3;
-        int predIndent = 0;
-        foreach (Triple t in annotationTriples)
+        var predIndent = 0;
+        foreach (var t in annotationTriples)
         {
             if (lastPred == null || !lastPred.Equals(t.Predicate))
             {
@@ -455,10 +455,10 @@ public class TriGWriter
     {
         try
         {
-            while (globalContext.TryGetNextGraphName(out IRefNode u))
+            while (globalContext.TryGetNextGraphName(out var u))
             {
                 // Get the Graph from the Store
-                IGraph g = globalContext.Store.Graphs[u];
+                var g = globalContext.Store.Graphs[u];
 
                 // Generate the Graph Output and add to Stream
                 var context = new CompressingTurtleWriterContext(g, new System.IO.StringWriter(),

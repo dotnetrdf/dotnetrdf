@@ -122,7 +122,7 @@ public class TriplePattern
     /// <returns>A set of variable bindings if the <paramref name="obj"/> matches, null otherwise.</returns>
     public ISet Evaluate(IPatternEvaluationContext context, Triple obj)
     {
-        ISet set = new Set();
+        var set = new Set();
         return Subject.Accepts(context, obj.Subject, set) &&
                Predicate.Accepts(context, obj.Predicate, set) &&
                Object.Accepts(context, obj.Object, set)
@@ -211,7 +211,7 @@ public class TriplePattern
     /// <returns></returns>
     public ISet CreateResult(Triple t)
     {
-        ISet s = new Set();
+        var s = new Set();
         if (!Subject.IsFixed)
         {
             Subject.AddBindings(t.Subject, s);

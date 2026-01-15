@@ -37,7 +37,7 @@ public class TriGTests
     private static ITripleStore TestParsing(String data, TriGSyntax syntax, bool shouldParse)
     {
         var parser = new TriGParser(syntax);
-        ITripleStore store = new TripleStore();
+        var store = new TripleStore();
 
         try
         {

@@ -52,7 +52,7 @@ public sealed class TriplePatternObjectPart
     /// </summary>
     public ITriplePatternBuilder Object(SparqlVariable variable)
     {
-        PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variable.Name);
+        var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variable.Name);
         return Object(objectPattern);
     }
 
@@ -61,7 +61,7 @@ public sealed class TriplePatternObjectPart
     /// </summary>
     public ITriplePatternBuilder Object(string variableName)
     {
-        PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variableName);
+        var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variableName);
         return Object(objectPattern);
     }
 
@@ -72,7 +72,7 @@ public sealed class TriplePatternObjectPart
     /// <remarks>A relevant prefix/base URI must be added to <see cref="IQueryBuilder.Prefixes"/> to accept a QName.</remarks>
     public ITriplePatternBuilder Object<TNode>(string @object) where TNode : INode
     {
-        PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreatePatternItem(typeof(TNode), @object, _prefixes);
+        var objectPattern = _triplePatternBuilder.PatternItemFactory.CreatePatternItem(typeof(TNode), @object, _prefixes);
         return Object(objectPattern);
     }
 
@@ -81,7 +81,7 @@ public sealed class TriplePatternObjectPart
     /// </summary>
     public ITriplePatternBuilder Object(INode objectNode)
     {
-        PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(objectNode);
+        var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(objectNode);
         return Object(objectPattern);
     }
 
@@ -90,7 +90,7 @@ public sealed class TriplePatternObjectPart
     /// </summary>
     public ITriplePatternBuilder Object(Uri objectUri)
     {
-        PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(objectUri);
+        var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(objectUri);
         return Object(objectPattern);
     }
 
@@ -99,7 +99,7 @@ public sealed class TriplePatternObjectPart
     /// </summary>
     public ITriplePatternBuilder ObjectLiteral(object literal)
     {
-        PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateLiteralNodeMatchPattern(literal);
+        var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateLiteralNodeMatchPattern(literal);
         return Object(objectPattern);
     }
 
@@ -108,7 +108,7 @@ public sealed class TriplePatternObjectPart
     /// </summary>
     public ITriplePatternBuilder ObjectLiteral(object literal, string langSpec)
     {
-        PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateLiteralNodeMatchPattern(literal, langSpec);
+        var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateLiteralNodeMatchPattern(literal, langSpec);
         return Object(objectPattern);
     }
 
@@ -117,7 +117,7 @@ public sealed class TriplePatternObjectPart
     /// </summary>
     public ITriplePatternBuilder ObjectLiteral(object literal, Uri datatype)
     {
-        PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateLiteralNodeMatchPattern(literal, datatype);
+        var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateLiteralNodeMatchPattern(literal, datatype);
         return Object(objectPattern);
     }
 

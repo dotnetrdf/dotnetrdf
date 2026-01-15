@@ -52,7 +52,7 @@ internal class TriplePathImpl : TupleImpl, ITriplePath
         print(getSubject(), p);
         p.print(" ");
 
-        IResource pathS = getObject(SP.PropertyPath);
+        var pathS = getObject(SP.PropertyPath);
         if (pathS == null || pathS.isLiteral())
         {
             p.print("<Missing path>");
@@ -67,7 +67,7 @@ internal class TriplePathImpl : TupleImpl, ITriplePath
 
     private void printPath(IResource path, ISparqlPrinter p)
     {
-        ISparqlPath arqPath = createPath(path);
+        var arqPath = createPath(path);
         if (p.getUsePrefixes())
         {
             //TODO INamespaceMapper prefixMapping = path.getModel().getPrefixMapping();
@@ -90,19 +90,19 @@ internal class TriplePathImpl : TupleImpl, ITriplePath
         }
         else
         {
-            IResource typeS = path.getResource(RDF.PropertyType);
+            var typeS = path.getResource(RDF.PropertyType);
             if (typeS != null && typeS.isUri())
             {
-                INode type = typeS;
+                var type = typeS;
                 if (RDFUtil.sameTerm(SP.ClassAltPath, type))
                 {
-                    ISparqlPath leftPath = createPath(path, SP.PropertyPath1);
-                    ISparqlPath rightPath = createPath(path, SP.PropertyPath2);
+                    var leftPath = createPath(path, SP.PropertyPath1);
+                    var rightPath = createPath(path, SP.PropertyPath2);
                     return new AlternativePath(leftPath, rightPath);
                 }
                 else if (RDFUtil.sameTerm(SP.ClassModPath, type))
                 {
-                    ISparqlPath subPath = createPath(path, SP.PropertySubPath);
+                    var subPath = createPath(path, SP.PropertySubPath);
                     var min = path.getInteger(SP.PropertyModMin);
                     var max = path.getInteger(SP.PropertyModMax);
                     if (max == null || max < 0)
@@ -134,19 +134,19 @@ internal class TriplePathImpl : TupleImpl, ITriplePath
                 }
                 else if (RDFUtil.sameTerm(SP.ClassReversePath, type))
                 {
-                    ISparqlPath subPath = createPath(path, SP.PropertySubPath);
+                    var subPath = createPath(path, SP.PropertySubPath);
                     return new InversePath(subPath);
                 }
                 else if (RDFUtil.sameTerm(SP.ClassSeqPath, type))
                 {
-                    ISparqlPath leftPath = createPath(path, SP.PropertyPath1);
-                    ISparqlPath rightPath = createPath(path, SP.PropertyPath2);
+                    var leftPath = createPath(path, SP.PropertyPath1);
+                    var rightPath = createPath(path, SP.PropertyPath2);
                     return new SequencePath(leftPath, rightPath);
                 }
                 else if (RDFUtil.sameTerm(SP.ClassReverseLinkPath, type))
                 {
-                    IResource node = path.getObject(SP.PropertyNode);
-                    ISparqlPath subPath = createPath(node); // TODO: is this correct ?
+                    var node = path.getObject(SP.PropertyNode);
+                    var subPath = createPath(node); // TODO: is this correct ?
                     return new InversePath(subPath);
                 }
             }
@@ -157,7 +157,7 @@ internal class TriplePathImpl : TupleImpl, ITriplePath
 
     private ISparqlPath createPath(IResource subject, INode predicate)
     {
-        IResource s = subject.getResource(predicate);
+        var s = subject.getResource(predicate);
         if (s != null)
         {
             return createPath(s);

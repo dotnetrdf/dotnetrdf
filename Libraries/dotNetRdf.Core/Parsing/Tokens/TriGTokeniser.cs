@@ -693,7 +693,7 @@ public class TriGTokeniser
         else
         {
             // Should be a QName
-            IToken qname = TryGetQName();
+            var qname = TryGetQName();
             if (qname.TokenType != Token.QNAME)
             {
                 throw Error("Unexpected Token '" + qname.GetType() + "' parsed when a QName Token to specify a Data Type was expected");
