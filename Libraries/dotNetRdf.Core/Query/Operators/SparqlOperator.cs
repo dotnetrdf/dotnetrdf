@@ -52,7 +52,7 @@ public static class SparqlOperators
             if (_init) return;
 
             // Set up empty registry for each operator type
-            foreach (SparqlOperatorType type in Enum.GetValues(typeof(SparqlOperatorType)).OfType<SparqlOperatorType>())
+            foreach (var type in Enum.GetValues(typeof(SparqlOperatorType)).OfType<SparqlOperatorType>())
             {
                 _operators.Add(type, []);
             }
@@ -193,7 +193,7 @@ public static class SparqlOperators
         {
             if (_operators.TryGetValue(type, out ops))
             {
-                foreach (ISparqlOperator possOp in ops)
+                foreach (var possOp in ops)
                 {
                     if (!(possOp.IsExtension && strict) && possOp.IsApplicable(ns))
                     {

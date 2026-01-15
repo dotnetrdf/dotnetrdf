@@ -201,7 +201,7 @@ public class SparqlHttpProtocolConnector
     /// <param name="graphUri">URI of the Graph to load.</param>
     public virtual void LoadGraph(IGraph g, string graphUri)
     {
-        Uri origUri = g.BaseUri;
+        var origUri = g.BaseUri;
         if (origUri == null && g.IsEmpty && graphUri != null && !graphUri.Equals(string.Empty))
         {
             origUri = g.UriFactory.Create(graphUri);
@@ -232,7 +232,7 @@ public class SparqlHttpProtocolConnector
             var request = new HttpRequestMessage(HttpMethod.Get, retrievalUri);
             request.Headers.Add("Accept", MimeTypesHelper.HttpAcceptHeader);
 
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
             {
                 // If the error is a 404 then return
@@ -242,7 +242,7 @@ public class SparqlHttpProtocolConnector
             }
 
             // Parse the retrieved RDF
-            IRdfReader parser = MimeTypesHelper.GetParser(response.Content.Headers.ContentType.MediaType);
+            var parser = MimeTypesHelper.GetParser(response.Content.Headers.ContentType.MediaType);
             parser.Load(handler, new StreamReader(response.Content.ReadAsStreamAsync().Result));
         }
         catch (Exception ex)
@@ -279,7 +279,7 @@ public class SparqlHttpProtocolConnector
         try
         {
             var request = new HttpRequestMessage(HttpMethod.Head, lookupUri);
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (response.IsSuccessStatusCode)
             {
                 return true;
@@ -316,7 +316,7 @@ public class SparqlHttpProtocolConnector
                 Content = new GraphContent(g, _writerMimeTypeDefinition.CanonicalMimeType),
             };
 
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (response.IsSuccessStatusCode) return;
             throw StorageHelper.HandleHttpError(response, "saving a Graph to");
         }
@@ -375,7 +375,7 @@ public class SparqlHttpProtocolConnector
         var g = new Graph();
         g.Assert(additions);
         request.Content = new GraphContent(g, _writerMimeTypeDefinition.GetRdfWriter());
-        using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+        using var response = HttpClient.SendAsync(request).Result;
         if (!response.IsSuccessStatusCode)
         {
             throw StorageHelper.HandleHttpError(response, "updating a Graph in");
@@ -403,8 +403,8 @@ public class SparqlHttpProtocolConnector
     /// <param name="graphUri">URI of the Graph to delete.</param>
     public virtual void DeleteGraph(string graphUri)
     {
-        HttpRequestMessage request = MakeDeleteGraphRequestMessage(graphUri);
-        HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+        var request = MakeDeleteGraphRequestMessage(graphUri);
+        var response = HttpClient.SendAsync(request).Result;
         if (!response.IsSuccessStatusCode && response.StatusCode != HttpStatusCode.NotFound)
         {
             throw StorageHelper.HandleHttpError(response, "deleting a Graph from");
@@ -461,7 +461,7 @@ public class SparqlHttpProtocolConnector
     /// <param name="state">State to pass to the callback.</param>
     public override void LoadGraph(IGraph g, string graphUri, AsyncStorageCallback callback, object state)
     {
-        Uri origUri = g.BaseUri;
+        var origUri = g.BaseUri;
         if (origUri == null && g.IsEmpty && graphUri != null && !graphUri.Equals(string.Empty))
         {
             origUri = g.UriFactory.Create(graphUri);
@@ -482,14 +482,14 @@ public class SparqlHttpProtocolConnector
     /// <param name="state">State to pass to the callback.</param>
     public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
     {
-        HttpRequestMessage request = MakeLoadGraphRequestMessage(graphUri);
+        var request = MakeLoadGraphRequestMessage(graphUri);
         LoadGraphAsync(request, handler, callback, state);
     }
 
     /// <inheritdoc />
     public override Task LoadGraphAsync(IRdfHandler handler, string graphName, CancellationToken cancellationToken)
     {
-        HttpRequestMessage request = MakeLoadGraphRequestMessage(graphName);
+        var request = MakeLoadGraphRequestMessage(graphName);
         return LoadGraphAsync(request, handler, cancellationToken);
     }
 
@@ -518,7 +518,7 @@ public class SparqlHttpProtocolConnector
     /// <param name="state">State to pass to the callback.</param>
     public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
     {
-        HttpRequestMessage request = MakeSaveGraphRequestMessage(g);
+        var request = MakeSaveGraphRequestMessage(g);
         SaveGraphAsync(request, new RdfXmlWriter(), g, callback, state);
     }
 
@@ -541,7 +541,7 @@ public class SparqlHttpProtocolConnector
     /// <inheritdoc />
     public override Task SaveGraphAsync(IGraph g, CancellationToken cancellationToken)
     {
-        HttpRequestMessage request = MakeSaveGraphRequestMessage(g);
+        var request = MakeSaveGraphRequestMessage(g);
         request.Content = new GraphContent(g, new RdfXmlWriter());
         return SaveGraphAsync(request, cancellationToken);
     }
@@ -571,7 +571,7 @@ public class SparqlHttpProtocolConnector
             return;
         }
 
-        HttpRequestMessage request = MakeUpdateGraphRequestMessage(graphUri);
+        var request = MakeUpdateGraphRequestMessage(graphUri);
         var writer = new RdfXmlWriter();
 
         UpdateGraphAsync(request, writer, graphUri.ToSafeUri(), additions, callback, state);
@@ -608,7 +608,7 @@ public class SparqlHttpProtocolConnector
             return Task.CompletedTask;
         }
 
-        HttpRequestMessage request = MakeUpdateGraphRequestMessage(graphUri);
+        var request = MakeUpdateGraphRequestMessage(graphUri);
         var writer = new RdfXmlWriter();
         return UpdateGraphAsync(request, writer, additions, cancellationToken);
     }
@@ -616,7 +616,7 @@ public class SparqlHttpProtocolConnector
     /// <inheritdoc />
     public override Task DeleteGraphAsync(string graphName, CancellationToken cancellationToken)
     {
-        HttpRequestMessage request = MakeDeleteGraphRequestMessage(graphName);
+        var request = MakeDeleteGraphRequestMessage(graphName);
         return DeleteGraphAsync(request, true, cancellationToken);
     }
 
@@ -675,12 +675,12 @@ public class SparqlHttpProtocolConnector
     /// <param name="context">Configuration Serialization Context.</param>
     public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode manager = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
-        INode server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
+        var manager = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+        var server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
 
         context.Graph.Assert(new Triple(manager, rdfType, genericManager));
         context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));

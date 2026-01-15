@@ -609,11 +609,11 @@ public sealed class SparqlQuery
 
             // Build the String for the FROM clause
             if (_defaultGraphs.Count > 0 || _namedGraphs.Count > 0) from.Append(' ');
-            foreach (IRefNode n in _defaultGraphs.Where(n => n != null))
+            foreach (var n in _defaultGraphs.Where(n => n != null))
             {
                 from.AppendLine("FROM " + formatter.Format(n));
             }
-            foreach (IRefNode n in _namedGraphs.Where(n => n != null))
+            foreach (var n in _namedGraphs.Where(n => n != null))
             {
                 from.AppendLine("FROM NAMED " + formatter.Format(n));
             }
@@ -651,7 +651,7 @@ public sealed class SparqlQuery
 
             case SparqlQueryType.Describe:
                 output.Append("DESCRIBE ");
-                foreach (IToken dvar in _describeVars)
+                foreach (var dvar in _describeVars)
                 {
                     switch (dvar.TokenType)
                     {
@@ -709,7 +709,7 @@ public sealed class SparqlQuery
                 }
                 else
                 {
-                    foreach (SparqlVariable var in _vars)
+                    foreach (var var in _vars)
                     {
                         if (var.IsResultVariable)
                         {
@@ -881,7 +881,7 @@ public sealed class SparqlQuery
 
                 // After grouping we do projection
                 // We introduce an Extend for each Project Expression
-                foreach (SparqlVariable var in _vars)
+                foreach (var var in _vars)
                 {
                     if (var.IsProjection)
                     {
@@ -955,7 +955,7 @@ public sealed class SparqlQuery
         try
         {
             // Apply Local Optimisers
-            foreach (IAlgebraOptimiser opt in _optimisers.Where(o => o.IsApplicable(this)))
+            foreach (var opt in _optimisers.Where(o => o.IsApplicable(this)))
             {
                 try
                 {
@@ -967,7 +967,7 @@ public sealed class SparqlQuery
                 }
             }
             // Apply Global Optimisers
-            foreach (IAlgebraOptimiser opt in optimisers.Where(o => o.IsApplicable(this)))
+            foreach (var opt in optimisers.Where(o => o.IsApplicable(this)))
             {
                 try
                 {

@@ -177,7 +177,7 @@ public class SparqlQueryParser
     /// <param name="message">Warning Message.</param>
     private void RaiseWarning(string message)
     {
-        SparqlWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);
@@ -405,7 +405,7 @@ public class SparqlQueryParser
                     {
                         // CORE-446
                         // Cope with the case where aggregates are used inside other functions
-                        foreach (SparqlVariable var in context.Query.Variables)
+                        foreach (var var in context.Query.Variables)
                         {
                             if (!var.IsResultVariable) continue;
                             if (var.IsAggregate) continue;
@@ -413,7 +413,7 @@ public class SparqlQueryParser
                             if (var.IsProjection)
                             {
                                 // Maybe OK if the projection operates over aggregates or group keys
-                                ISparqlExpression expr = var.Projection;
+                                var expr = var.Projection;
                                 var exprs = new Queue<ISparqlExpression>(expr.Arguments);
                                 while (exprs.Count > 0)
                                 {
@@ -438,7 +438,7 @@ public class SparqlQueryParser
                                     }
 
                                     // Anything else need to check its arguments
-                                    foreach (ISparqlExpression arg in expr.Arguments)
+                                    foreach (var arg in expr.Arguments)
                                     {
                                         exprs.Enqueue(arg);
                                     }
@@ -506,7 +506,7 @@ public class SparqlQueryParser
                     // Check Variable Usage
                     var projectedSoFar = new List<string>();
                     var mainBodyVars = (context.Query.RootGraphPattern != null ? context.Query.RootGraphPattern.Variables : []).Distinct().ToList();
-                    foreach (SparqlVariable var in context.Query.Variables)
+                    foreach (var var in context.Query.Variables)
                     {
                         if (!var.IsResultVariable) continue;
 
@@ -586,7 +586,7 @@ public class SparqlQueryParser
         if (context.SubQueryMode) throw new RdfQueryException("BASE Directives are not supported in Sub-queries");
 
         // Get the next Token which should be a Uri Token
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         if (next.TokenType == Token.URI)
         {
             context.Query.BaseUri = UriFactory.Create(next.Value);
@@ -603,15 +603,15 @@ public class SparqlQueryParser
         if (context.SubQueryMode) throw new RdfQueryException("PREFIX Directives are not supported in Sub-queries");
 
         // Get the next Two Tokens which should be a Prefix and a Uri
-        IToken prefix = context.Tokens.Dequeue();
-        IToken uri = context.Tokens.Dequeue();
+        var prefix = context.Tokens.Dequeue();
+        var uri = context.Tokens.Dequeue();
 
         if (prefix.TokenType == Token.PREFIX)
         {
             if (uri.TokenType == Token.URI)
             {
                 var baseUri = (context.Query.BaseUri != null) ? context.Query.BaseUri.AbsoluteUri : string.Empty;
-                Uri u = UriFactory.Create(Tools.ResolveUri(uri.Value, baseUri));
+                var u = UriFactory.Create(Tools.ResolveUri(uri.Value, baseUri));
                 if (prefix.Value.Length == 1)
                 {
                     // Defining prefix for Default Namespace
@@ -724,7 +724,7 @@ public class SparqlQueryParser
                     }
 
                     context.Tokens.Dequeue();
-                    SparqlVariable aggVar = TryParseAggregate(context, next);
+                    var aggVar = TryParseAggregate(context, next);
                     TryAddVariable(context, next, aggVar);
                     firstToken = false;
                     continue;
@@ -810,7 +810,7 @@ public class SparqlQueryParser
 
                     // Try and parse a Project Expression which is a naked function call
                     // Resolve the URI
-                    Uri u = UriFactory.Create(Tools.ResolveUriOrQName(next, context.Query.NamespaceMap, context.Query.BaseUri));
+                    var u = UriFactory.Create(Tools.ResolveUriOrQName(next, context.Query.NamespaceMap, context.Query.BaseUri));
                     context.Tokens.Dequeue();
 
                     // Ensure we then see a Open Bracket
@@ -1045,7 +1045,7 @@ public class SparqlQueryParser
         } while (openBrackets > 0);
 
         context.ExpressionParser.AllowAggregates = true;
-        ISparqlExpression aggExpr = context.ExpressionParser.Parse(tokens);
+        var aggExpr = context.ExpressionParser.Parse(tokens);
         context.ExpressionParser.AllowAggregates = false;
 
         if (aggExpr is AggregateTerm)
@@ -1154,7 +1154,7 @@ public class SparqlQueryParser
         }
         else if (shortForm)
         {
-            IToken temp = context.Tokens.Peek();
+            var temp = context.Tokens.Peek();
             if (context.Tokens.Peek().TokenType == Token.FROM)
             {
                 while (temp.TokenType == Token.FROM)
@@ -1175,14 +1175,14 @@ public class SparqlQueryParser
         }
 
         // Discard the opening {
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         if (next.TokenType != Token.LEFTCURLYBRACKET)
         {
             throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a Left Curly Bracket to start a CONSTRUCT Template", next);
         }
 
         // Use a Graph Pattern for the Construct Template
-        GraphPattern constructTemplate = TryParseGraphPattern(context, false);
+        var constructTemplate = TryParseGraphPattern(context, false);
 
         // Check it doesn't contain anything other than Triple Patterns
         if (constructTemplate.IsFiltered)
@@ -1225,7 +1225,7 @@ public class SparqlQueryParser
     {
         if (context.SubQueryMode) throw new RdfQueryException("Dataset Descriptions are not permitted in Sub-queries");
 
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
 
         // Should be a FROM
         if (next.TokenType == Token.FROM)
@@ -1512,7 +1512,7 @@ public class SparqlQueryParser
     private void TryParseTriplePatterns(SparqlQueryParserContext context, GraphPattern p)
     {
         var lasttoken = context.Tokens.LastTokenType;
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
 
         // Allowed a Variable/RDF Term/Collection
         // OR we might go straight to a OPTIONAL/GRAPH/UNION/FILTER/EXISTS/NOT EXISTS/LET
@@ -1663,7 +1663,7 @@ public class SparqlQueryParser
                 // Simplify Subqueries
                 if (p.ChildGraphPatterns.Last().IsSubQuery)
                 {
-                    GraphPattern temp = p.LastChildPattern();
+                    var temp = p.LastChildPattern();
                     p.AddTriplePattern(temp.TriplePatterns.First());
                 }
                 break;
@@ -1751,10 +1751,10 @@ public class SparqlQueryParser
                             $"Encountered an ENDQUOTE token inside a Triple Pattern, but there are not enough tokens to form a valid Quoted Triple Pattern.",
                             next);
                     }
-                    IToken qtObj = context.LocalTokens.Pop();
-                    IToken qtPred = context.LocalTokens.Pop();
-                    IToken qtSubj = context.LocalTokens.Pop();
-                    IToken start = context.LocalTokens.Pop();
+                    var qtObj = context.LocalTokens.Pop();
+                    var qtPred = context.LocalTokens.Pop();
+                    var qtSubj = context.LocalTokens.Pop();
+                    var start = context.LocalTokens.Pop();
                     if (start.TokenType != Token.STARTQUOTE)
                     {
                         throw ParserHelper.Error(
@@ -2058,8 +2058,8 @@ public class SparqlQueryParser
                                 ExcessTokensString(context, expectedCount), next);
                         }
 
-                        IToken objToken = context.LocalTokens.Pop();
-                        IToken predToken = context.LocalTokens.Pop();
+                        var objToken = context.LocalTokens.Pop();
+                        var predToken = context.LocalTokens.Pop();
                         obj = TryCreatePatternItem(context, objToken);
                         if (predToken.TokenType == Token.PATH)
                         {
@@ -2096,8 +2096,8 @@ public class SparqlQueryParser
                                 ExcessTokensString(context, expectedCount), next);
                         }
 
-                        IToken objToken = context.LocalTokens.Pop();
-                        IToken predToken = context.LocalTokens.Pop();
+                        var objToken = context.LocalTokens.Pop();
+                        var predToken = context.LocalTokens.Pop();
                         obj = TryCreatePatternItem(context, objToken);
                         if (predToken.TokenType == Token.PATH)
                         {
@@ -2144,7 +2144,7 @@ public class SparqlQueryParser
                         {
                             // In this case this should be a Cardinality Modifier on a path (we hope)
                             path = context.PathParser.Parse(context, context.LocalTokens.Pop());
-                            IToken pathToken = new PathToken(path);
+                            var pathToken = new PathToken(path);
                             context.LocalTokens.Push(pathToken);
                             continue;
                         }
@@ -2185,7 +2185,7 @@ public class SparqlQueryParser
     {
 
         // Check the next Token
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         if (next.TokenType == Token.RIGHTBRACKET)
         {
             // Empty Collection
@@ -2355,7 +2355,7 @@ public class SparqlQueryParser
 
                     case Token.STARTQUOTE:
                         context.Tokens.Dequeue();
-                        PatternItem qt = TryParseQuotedTriplePattern(context).AsQuotedPatternItem();
+                        var qt = TryParseQuotedTriplePattern(context).AsQuotedPatternItem();
                         if (first)
                         {
                             p.AddTriplePattern(new TriplePattern(TryCreatePatternItem(context, blank), new NodeMatchPattern(rdfFirst), qt));
@@ -2384,7 +2384,7 @@ public class SparqlQueryParser
     {
         // TODO: Refactor entire function to just rely on SparqlExpressionParser instead
 
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         switch (next.TokenType)
         {
             case Token.LEFTBRACKET:
@@ -2479,7 +2479,7 @@ public class SparqlQueryParser
     private void TryParseFilterBuiltInCall(SparqlQueryParserContext context, IToken t, GraphPattern p)
     {
         ISparqlFilter filter;
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
 
         // Should get a LeftBracket next
         if (next.TokenType != Token.LEFTBRACKET)
@@ -2507,7 +2507,7 @@ public class SparqlQueryParser
             subtokens.Enqueue(next);
         }
 
-        ISparqlExpression expr = context.ExpressionParser.Parse(subtokens);
+        var expr = context.ExpressionParser.Parse(subtokens);
         if (expr is BoundFunction)
         {
             filter = new BoundFilter((VariableTerm)expr.Arguments.First());
@@ -2524,7 +2524,7 @@ public class SparqlQueryParser
     private void TryParseFilterRegex(SparqlQueryParserContext context, IToken t, GraphPattern p)
     {
         // Gather all the Tokens that make up the Regex
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         var regexTokens = new Queue<IToken>();
         regexTokens.Enqueue(t);
 
@@ -2556,7 +2556,7 @@ public class SparqlQueryParser
         if (SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("EXISTS/NOT EXISTS is not supported in SPARQL 1.0");
 
         // EXISTS/NOT EXISTS generate a new Graph Pattern
-        GraphPattern existsClause = TryParseGraphPattern(context);
+        var existsClause = TryParseGraphPattern(context);
 
         var filter = new UnaryExpressionFilter(new ExistsFunction(existsClause, exists));
         p.IsFiltered = true;
@@ -2570,7 +2570,7 @@ public class SparqlQueryParser
         funcTokens.Enqueue(t);
 
         var openBrackets = 0;
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         do
         {
             if (next.TokenType == Token.LEFTBRACKET)
@@ -2596,7 +2596,7 @@ public class SparqlQueryParser
     private void TryParseOptionalClause(SparqlQueryParserContext context, GraphPattern p)
     {
         // Optional Clauses generate a child Graph Pattern
-        GraphPattern child = TryParseGraphPattern(context);
+        var child = TryParseGraphPattern(context);
         child.IsOptional = true;
 
         p.AddGraphPattern(child);
@@ -2607,7 +2607,7 @@ public class SparqlQueryParser
         // Graph Clauses generate a child Graph Pattern
 
         // Get the Graph Specifier - must be a Variable/IRIRef
-        IToken graphspec = context.Tokens.Dequeue();
+        var graphspec = context.Tokens.Dequeue();
         if (graphspec.TokenType != Token.URI && graphspec.TokenType != Token.QNAME && graphspec.TokenType != Token.VARIABLE)
         {
             throw ParserHelper.Error("Unexpected Token '" + graphspec.GetType() + "' encountered, expected a URI/QName/Variable Token to specify the active Graph for a GRAPH Clause", graphspec);
@@ -2627,7 +2627,7 @@ public class SparqlQueryParser
             TryAddVariable(context, graphspec, graphspec.Value);
         }
 
-        GraphPattern child = TryParseGraphPattern(context);
+        var child = TryParseGraphPattern(context);
         child.IsGraph = true;
         child.GraphSpecifier = graphspec;
 
@@ -2642,7 +2642,7 @@ public class SparqlQueryParser
         union.IsUnion = true;
 
         // Add the Last Child Pattern of the Parent as that is the start of the UNION
-        GraphPattern lastchild = p.LastChildPattern();
+        var lastchild = p.LastChildPattern();
         if (lastchild.IsSimplifiable)
         {
             union.AddGraphPattern(lastchild.LastChildPattern());
@@ -2652,11 +2652,11 @@ public class SparqlQueryParser
             union.AddGraphPattern(lastchild);
         }
 
-        GraphPattern child = TryParseGraphPattern(context, true);
+        var child = TryParseGraphPattern(context, true);
         union.AddGraphPattern(child);
 
         // Check for multiple
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         while (next.TokenType == Token.UNION)
         {
             context.Tokens.Dequeue();
@@ -2736,7 +2736,7 @@ public class SparqlQueryParser
         funcTokens.Enqueue(context.Tokens.Dequeue());
 
         var openBrackets = 0;
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         do
         {
             if (next.TokenType == Token.LEFTBRACKET)
@@ -2760,7 +2760,7 @@ public class SparqlQueryParser
     private void TryParseOrderByClause(SparqlQueryParserContext context)
     {
         // ORDER BY has already been discarded
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
 
         // If SPARQL 1.1 then aggregates are permitted in ORDER BY
         if (context.SyntaxMode != SparqlQuerySyntax.Sparql_1_0) context.ExpressionParser.AllowAggregates = true;
@@ -2895,7 +2895,7 @@ public class SparqlQueryParser
                 case Token.QNAME:
                 case Token.URI:
                     // Built-in/Extension Function Call Order By
-                    ISparqlExpression expr = TryParseFunctionExpression(context);
+                    var expr = TryParseFunctionExpression(context);
 
                     if (first == null)
                     {
@@ -2919,7 +2919,7 @@ public class SparqlQueryParser
                     if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw ParserHelper.Error($"Unexpected Token '{next.GetType()}' encountered, aggregates are not permitted in an ORDER BY in SPARQL 1.0", next);
 
                     // Built-in/Extension Function Call Order By
-                    ISparqlExpression aggExpr = TryParseFunctionExpression(context);
+                    var aggExpr = TryParseFunctionExpression(context);
 
                     if (first == null)
                     {
@@ -2961,7 +2961,7 @@ public class SparqlQueryParser
         if (SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("GROUP BY clauses are not supported in SPARQL 1.0");
 
         // GROUP BY has already been discarded
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
 
         ISparqlGroupBy first, last, current;
         ISparqlExpression expr;
@@ -3153,7 +3153,7 @@ public class SparqlQueryParser
     {
         if (SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("HAVING clauses are not supported in SPARQL 1.0");
         // HAVING Keyword has already been discarded
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         ISparqlExpression havingExpr;
 
         switch (next.TokenType)
@@ -3265,7 +3265,7 @@ public class SparqlQueryParser
 
     private void TryParseLimitOffsetClause(SparqlQueryParserContext context)
     {
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
 
         int offset;
         int limit;
@@ -3368,7 +3368,7 @@ public class SparqlQueryParser
         if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_1) throw new RdfParseException("EXISTS and NOT EXISTS clauses can only be used inside FILTER clauses in SPARQL 1.1");
 
         // EXISTS and NOT EXISTS generate a new Child Graph Pattern
-        GraphPattern child = TryParseGraphPattern(context);
+        var child = TryParseGraphPattern(context);
 
         if (exists)
         {
@@ -3387,7 +3387,7 @@ public class SparqlQueryParser
         if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("MINUS clauses are not supported in SPARQL 1.0");
 
         // MINUS generates a new child graph pattern
-        GraphPattern child = TryParseGraphPattern(context);
+        var child = TryParseGraphPattern(context);
         child.IsMinus = true;
         p.AddGraphPattern(child);
     }
@@ -3401,7 +3401,7 @@ public class SparqlQueryParser
         ISparqlExpression expr;
 
         // Firstly we expect an opening bracket, a variable and then an assignment operator
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         if (next.TokenType == Token.LEFTBRACKET)
         {
             next = context.Tokens.Dequeue();
@@ -3528,11 +3528,11 @@ public class SparqlQueryParser
         if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("BIND assignment is not supported in SPARQL 1.0");
 
         // First need to discard opening (
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         if (next.TokenType != Token.LEFTBRACKET) throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a ( to start a BIND assignment after a BIND keyword", next);
 
         // Expect a bracketted expression terminated by an AS
-        ISparqlExpression expr = TryParseExpression(context, false, true);
+        var expr = TryParseExpression(context, false, true);
         if (context.Tokens.LastTokenType != Token.AS)
         {
             throw ParserHelper.Error("A BIND assignment did not end with an AS ?var as expected, BIND assignment must be of the general form BIND(expr AS ?var)", next);
@@ -3593,7 +3593,7 @@ public class SparqlQueryParser
         var openBrackets = 1;
         do
         {
-            IToken next = context.Tokens.Peek();
+            var next = context.Tokens.Peek();
 
             if (next.TokenType == Token.LEFTCURLYBRACKET)
             {
@@ -3619,8 +3619,8 @@ public class SparqlQueryParser
         // Create a Sub-query Parser Context
         var subcontext = new SparqlQueryParserContext(context, tokens);
         subcontext.Query.NamespaceMap.Import(context.Query.NamespaceMap);
-        SparqlQuery subquery = ParseInternal(subcontext);
-        foreach (SparqlVariable var in subquery.Variables)
+        var subquery = ParseInternal(subcontext);
+        foreach (var var in subquery.Variables)
         {
             if (var.IsResultVariable) context.Query.AddVariable("?" + var.Name, false);
         }
@@ -3643,14 +3643,14 @@ public class SparqlQueryParser
         }
 
         // SERVICE first has a URI/Variable service specifier
-        IToken specifier = context.Tokens.Dequeue();
+        var specifier = context.Tokens.Dequeue();
         if (specifier.TokenType != Token.URI && specifier.TokenType != Token.VARIABLE)
         {
             throw ParserHelper.Error("Unexpected Token '" + specifier.GetType() + "' encountered, expected a URI/Variable after a SERVICE keyword", specifier);
         }
 
         // Then a Graph Pattern
-        GraphPattern child = TryParseGraphPattern(context);
+        var child = TryParseGraphPattern(context);
         child.IsService = true;
         child.GraphSpecifier = specifier;
         child.IsSilent = silent;
@@ -3660,7 +3660,7 @@ public class SparqlQueryParser
     private BindingsPattern TryParseInlineData(SparqlQueryParserContext context)
     {
         // First expect either a single variable or a sequence of variables enclosed in ( )
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         var vars = new List<string>();
         var simpleForm = false;
         if (next.TokenType == Token.LEFTBRACKET)
@@ -3726,7 +3726,7 @@ public class SparqlQueryParser
                         case Token.LONGLITERAL:
                         case Token.LITERAL:
                             // Need to check for subsequent datatype or language declaration
-                            IToken lit = next;
+                            var lit = next;
                             next = context.Tokens.Peek();
                             if (next.TokenType == Token.HATHAT)
                             {
@@ -3760,7 +3760,7 @@ public class SparqlQueryParser
                             break;
 
                         case Token.STARTQUOTE:
-                            TriplePattern qt = TryParseQuotedTriplePattern(context);
+                            var qt = TryParseQuotedTriplePattern(context);
                             if (qt.Variables.Any())
                             {
                                 throw ParserHelper.Error(
@@ -3910,10 +3910,10 @@ public class SparqlQueryParser
 
     private TriplePattern TryParseQuotedTriplePattern(SparqlQueryParserContext context)
     {
-        PatternItem subj = TryParseQuotedSubjectOrObject(context);
-        PatternItem pred = TryParseVerb(context);
-        PatternItem obj = TryParseQuotedSubjectOrObject(context);
-        IToken next = context.Tokens.Dequeue();
+        var subj = TryParseQuotedSubjectOrObject(context);
+        var pred = TryParseVerb(context);
+        var obj = TryParseQuotedSubjectOrObject(context);
+        var next = context.Tokens.Dequeue();
         if (next.TokenType != Token.ENDQUOTE)
         {
             throw ParserHelper.Error(
@@ -3924,7 +3924,7 @@ public class SparqlQueryParser
 
     private PatternItem TryParseQuotedSubjectOrObject(SparqlQueryParserContext context)
     {
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         do
         {
             switch (next.TokenType)
@@ -3992,7 +3992,7 @@ public class SparqlQueryParser
     {
         do
         {
-            IToken next = context.Tokens.Dequeue();
+            var next = context.Tokens.Dequeue();
             switch (next.TokenType)
             {
                 case Token.COMMENT:
@@ -4052,7 +4052,7 @@ public class SparqlQueryParser
         }
         excessTokens.Reverse();
 
-        IToken first = excessTokens[0];
+        var first = excessTokens[0];
         builder.AppendLine(first.StartLine + " Column " + first.StartPosition + " onwards:");
         for (var i = 0; i < excessTokens.Count; i++)
         {

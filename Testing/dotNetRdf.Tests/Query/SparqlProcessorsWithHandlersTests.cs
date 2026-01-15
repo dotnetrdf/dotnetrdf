@@ -43,7 +43,7 @@ public class SparqlProcessorsWithHandlersTests
 
     private void TestCountHandler(ISparqlQueryProcessor processor, String query)
     {
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         var expected = processor.ProcessQuery(q) as Graph;
         Assert.NotNull(expected);
@@ -56,7 +56,7 @@ public class SparqlProcessorsWithHandlersTests
 
     private void TestGraphHandler(ISparqlQueryProcessor processor, String query)
     {
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         var expected = processor.ProcessQuery(q) as Graph;
         Assert.NotNull(expected);
@@ -75,7 +75,7 @@ public class SparqlProcessorsWithHandlersTests
 
     private void TestResultCountHandler(ISparqlQueryProcessor processor, String query)
     {
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         var expected = processor.ProcessQuery(q) as SparqlResultSet;
         Assert.NotNull(expected);
@@ -88,7 +88,7 @@ public class SparqlProcessorsWithHandlersTests
 
     private void TestResultSetHandler(ISparqlQueryProcessor processor, String query)
     {
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         var expected = processor.ProcessQuery(q) as SparqlResultSet;
         Assert.NotNull(expected);
@@ -105,7 +105,7 @@ public class SparqlProcessorsWithHandlersTests
         var formatter = new NTriplesFormatter();
         var data = new StringWriter();
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
         var expected = processor.ProcessQuery(q) as Graph;
         Assert.NotNull(expected);
 

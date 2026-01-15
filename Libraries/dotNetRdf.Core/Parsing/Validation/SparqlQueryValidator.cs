@@ -72,7 +72,7 @@ public class SparqlQueryValidator : ISyntaxValidator
         string message;
         try
         {
-            SparqlQuery q = _parser.ParseFromString(data);
+            var q = _parser.ParseFromString(data);
             message = "Valid SPARQL Query";
 
             return new SyntaxValidationResults(true, message, q);

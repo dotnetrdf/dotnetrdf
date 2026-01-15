@@ -75,19 +75,19 @@ public class SparqlOrderByTests
         //Test Case for CORE-350
         //DESC() on a condition causes subsequent condition to act as DESC even if it was an ASC condition
 
-        IGraph g = new Graph();
+        var g = new Graph();
         g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Root.Create("http://example/"));
-        INode a = g.CreateUriNode(":a");
-        INode b = g.CreateUriNode(":b");
-        INode c = g.CreateUriNode(":c");
+        var a = g.CreateUriNode(":a");
+        var b = g.CreateUriNode(":b");
+        var c = g.CreateUriNode(":c");
 
         var nodes = new List<INode>() { a, b, c };
         var ts = new List<Triple>();
-        foreach (INode s in nodes)
+        foreach (var s in nodes)
         {
-            foreach (INode p in nodes.OrderByDescending(x => x))
+            foreach (var p in nodes.OrderByDescending(x => x))
             {
-                foreach (INode o in nodes)
+                foreach (var o in nodes)
                 {
                     ts.Add(new Triple(s, p, o));
                 }
@@ -97,7 +97,7 @@ public class SparqlOrderByTests
         Assert.Equal(27, g.Triples.Count);
 
         var query = @"SELECT * WHERE { ?s ?p ?o } ORDER BY ?s DESC(?p) ?o";
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
 
         var results = g.ExecuteQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
@@ -116,19 +116,19 @@ public class SparqlOrderByTests
         //Test Case for CORE-350
         //DESC() on a condition causes subsequent condition to act as DESC even if it was an ASC condition
 
-        IGraph g = new Graph();
+        var g = new Graph();
         g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Root.Create("http://example/"));
-        INode a = g.CreateUriNode(":a");
-        INode b = g.CreateUriNode(":b");
-        INode c = g.CreateUriNode(":c");
+        var a = g.CreateUriNode(":a");
+        var b = g.CreateUriNode(":b");
+        var c = g.CreateUriNode(":c");
 
         var nodes = new List<INode>() { a, b, c };
         var ts = new List<Triple>();
-        foreach (INode s in nodes)
+        foreach (var s in nodes)
         {
-            foreach (INode p in nodes.OrderByDescending(x => x))
+            foreach (var p in nodes.OrderByDescending(x => x))
             {
-                foreach (INode o in nodes)
+                foreach (var o in nodes)
                 {
                     ts.Add(new Triple(s, p, o));
                 }
@@ -138,7 +138,7 @@ public class SparqlOrderByTests
         Assert.Equal(27, g.Triples.Count);
 
         var query = @"SELECT * WHERE { ?s ?p ?o } ORDER BY STR(?s) DESC(STR(?p)) STR(?o)";
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
 
         var results = g.ExecuteQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
@@ -171,7 +171,7 @@ public class SparqlOrderByTests
 } ORDER BY ?a ?b";
 
         var g = new Graph();
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
 
         var results = g.ExecuteQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
@@ -212,7 +212,7 @@ public class SparqlOrderByTests
 } ORDER BY STR(?a) STR(?b)";
 
         var g = new Graph();
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
 
         var results = g.ExecuteQuery(q) as SparqlResultSet;
         Assert.NotNull(results);

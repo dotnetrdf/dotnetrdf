@@ -26,15 +26,15 @@ public class SparqlQueryClientTests : IClassFixture<MockRemoteSparqlEndpointFixt
     [Fact]
     public async Task SelectWithResultSet()
     {
-        SparqlQueryClient client = GetQueryClient();
-        SparqlResultSet resultSet = await client.QueryWithResultSetAsync(_fixture.SelectQuery, TestContext.Current.CancellationToken);
+        var client = GetQueryClient();
+        var resultSet = await client.QueryWithResultSetAsync(_fixture.SelectQuery, TestContext.Current.CancellationToken);
         resultSet.Count.Should().Be(1);
     }
 
     [Fact]
     public async Task SelectWithCountHandler()
     {
-        SparqlQueryClient client = GetQueryClient();
+        var client = GetQueryClient();
         var handler = new ResultCountHandler();
         await client.QueryWithResultSetAsync(_fixture.SelectQuery, handler, TestContext.Current.CancellationToken);
         handler.Count.Should().Be(1);
@@ -43,23 +43,23 @@ public class SparqlQueryClientTests : IClassFixture<MockRemoteSparqlEndpointFixt
     [Fact]
     public async Task SelectRaisesExceptionOnServerError()
     {
-        SparqlQueryClient client = GetQueryClient();
-        RdfQueryException ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultSetAsync(_fixture.ErrorSelectQuery, TestContext.Current.CancellationToken));
+        var client = GetQueryClient();
+        var ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultSetAsync(_fixture.ErrorSelectQuery, TestContext.Current.CancellationToken));
         ex.Message.Should().Contain("400");
     }
 
     [Fact]
     public async Task ConstructWithResultGraph()
     {
-        SparqlQueryClient client = GetQueryClient();
-        IGraph resultGraph = await client.QueryWithResultGraphAsync(_fixture.ConstructQuery, TestContext.Current.CancellationToken);
+        var client = GetQueryClient();
+        var resultGraph = await client.QueryWithResultGraphAsync(_fixture.ConstructQuery, TestContext.Current.CancellationToken);
         resultGraph.Triples.Count.Should().Be(1);
     }
 
     [Fact]
     public async Task ConstructWithCountHandler()
     {
-        SparqlQueryClient client = GetQueryClient();
+        var client = GetQueryClient();
         var handler = new CountHandler();
         await client.QueryWithResultGraphAsync(_fixture.ConstructQuery, handler, TestContext.Current.CancellationToken);
         handler.Count.Should().Be(1);
@@ -68,8 +68,8 @@ public class SparqlQueryClientTests : IClassFixture<MockRemoteSparqlEndpointFixt
     [Fact]
     public async Task ConstructRaisesExceptionOnServerError()
     {
-        SparqlQueryClient client = GetQueryClient();
-        RdfQueryException ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultGraphAsync(_fixture.ErrorConstructQuery, TestContext.Current.CancellationToken));
+        var client = GetQueryClient();
+        var ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultGraphAsync(_fixture.ErrorConstructQuery, TestContext.Current.CancellationToken));
         ex.Message.Should().Contain("400");
     }
 }

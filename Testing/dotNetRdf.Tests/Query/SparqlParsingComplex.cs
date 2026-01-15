@@ -40,14 +40,14 @@ public class SparqlParsingComplex
     public void SparqlParsingNestedGraphPatternFirstItem()
     {
             var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromFile(Path.Combine("resources", "childgraphpattern.rq"));
+            var q = parser.ParseFromFile(Path.Combine("resources", "childgraphpattern.rq"));
     }
 
     [Fact]
     public void SparqlParsingNestedGraphPatternFirstItem2()
     {
             var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromFile(Path.Combine("resources", "childgraphpattern2.rq"));
+            var q = parser.ParseFromFile(Path.Combine("resources", "childgraphpattern2.rq"));
      }
 
     [Fact]
@@ -58,7 +58,7 @@ public class SparqlParsingComplex
 
         var query = "SELECT * WHERE { { SELECT * WHERE {?s ?p ?o} ORDER BY ?p ?o LIMIT 2 } }";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var results = g.ExecuteQuery(q);
         if (results is SparqlResultSet)
@@ -154,7 +154,7 @@ public class SparqlParsingComplex
         var formatter = new SparqlFormatter();
         foreach (var v in valid)
         {
-                SparqlQuery q = parser.ParseFromString(v);
+                var q = parser.ParseFromString(v);
                 Console.WriteLine(formatter.Format(q));
                 Console.WriteLine();
         }
@@ -163,7 +163,7 @@ public class SparqlParsingComplex
         {
             try
             {
-                SparqlQuery q = parser.ParseFromString(iv);
+                var q = parser.ParseFromString(iv);
                 Assert.Fail("Should have thrown a Parsing Error");
             }
             catch (RdfParseException parseEx)
@@ -198,7 +198,7 @@ public class SparqlParsingComplex
         foreach (var v in valid)
         {
             Console.WriteLine("Valid Input: " + v);
-                SparqlQuery q = parser.ParseFromString(v);
+                var q = parser.ParseFromString(v);
                 Console.WriteLine(formatter.Format(q));
             Console.WriteLine();
         }
@@ -208,7 +208,7 @@ public class SparqlParsingComplex
             Console.WriteLine("Invalid Input: " + iv);
             try
             {
-                SparqlQuery q = parser.ParseFromString(iv);
+                var q = parser.ParseFromString(iv);
                 Assert.Fail("Should have thrown a Parsing Error");
             }
             catch (RdfParseException parseEx)
@@ -227,7 +227,7 @@ public class SparqlParsingComplex
         store.LoadFromFile(Path.Combine("resources", "multiple-options.trig"), new TriGParser(TriGSyntax.MemberSubmission));
 
         var parser = new SparqlQueryParser();
-        SparqlQuery query = parser.ParseFromFile(Path.Combine("resources", "multiple-optionals.rq"));
+        var query = parser.ParseFromFile(Path.Combine("resources", "multiple-optionals.rq"));
 
         var processor = new LeviathanQueryProcessor(store);
         var results = processor.ProcessQuery(query);
@@ -248,7 +248,7 @@ public class SparqlParsingComplex
         store.LoadFromFile(Path.Combine("resources", "multiple-options.trig"), new TriGParser(TriGSyntax.MemberSubmission));
 
         var parser = new SparqlQueryParser();
-        SparqlQuery query = parser.ParseFromFile(Path.Combine("resources", "multiple-optionals-alternate.rq"));
+        var query = parser.ParseFromFile(Path.Combine("resources", "multiple-optionals-alternate.rq"));
 
         var processor = new LeviathanQueryProcessor(store);
         var results = processor.ProcessQuery(query);
@@ -275,11 +275,11 @@ public class SparqlParsingComplex
     {
         var query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
         Console.WriteLine("Parsed original input OK");
 
         var query2 = q.ToString();
-        SparqlQuery q2 = parser.ParseFromString(query2);
+        var q2 = parser.ParseFromString(query2);
         Console.WriteLine("Parsed reserialized input OK");
     }
 
@@ -288,7 +288,7 @@ public class SparqlParsingComplex
     {
         var query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } . }";
         var parser = new SparqlQueryParser();
-        Assert.Throws<RdfParseException>(() => { SparqlQuery q = parser.ParseFromString(query); });
+        Assert.Throws<RdfParseException>(() => { var q = parser.ParseFromString(query); });
     }
 
     [Fact]
@@ -296,12 +296,12 @@ public class SparqlParsingComplex
     {
         var query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
         Console.WriteLine("Parsed original input OK");
 
         var formatter = new SparqlFormatter();
         var query2 = formatter.Format(q);
-        SparqlQuery q2 = parser.ParseFromString(query2);
+        var q2 = parser.ParseFromString(query2);
         Console.WriteLine("Parsed reserialized input OK");
     }
 
@@ -324,9 +324,9 @@ WHERE
   FILTER(?p = rdf:type) 
 }";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
         var output = q.ToString();
-        SparqlQuery q2 = parser.ParseFromString(output);
+        var q2 = parser.ParseFromString(output);
     }
 
     [Fact]

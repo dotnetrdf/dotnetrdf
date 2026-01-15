@@ -66,7 +66,7 @@ public class SparqlHtmlWriter
     /// <inheritdoc />
     public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
     {
-        using FileStream stream = File.Open(filename, FileMode.Create);
+        using var stream = File.Open(filename, FileMode.Create);
         Save(results, new StreamWriter(stream, fileEncoding));
     }
 
@@ -156,7 +156,7 @@ public class SparqlHtmlWriter
 
                     if (result.HasValue(var))
                     {
-                        INode value = result[var];
+                        var value = result[var];
 
                         if (value != null)
                         {
@@ -275,7 +275,7 @@ public class SparqlHtmlWriter
     /// <param name="message">Warning Message.</param>
     private void RaiseWarning(string message)
     {
-        SparqlWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

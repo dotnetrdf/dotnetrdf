@@ -534,7 +534,7 @@ public class SparqlParameterizedString
         if (QueryProcessor == null) throw new RdfQueryException("Cannot call ExecuteQuery() when the QueryProcessor property has not been set");
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(ToString());
+        var q = parser.ParseFromString(ToString());
         QueryProcessor.ProcessQuery(rdfHandler, resultsHandler, q);
     }
 
@@ -546,7 +546,7 @@ public class SparqlParameterizedString
         if (UpdateProcessor == null) throw new SparqlUpdateException("Cannot call ExecuteUpdate() when the UpdateProcessor property has not been set");
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString(ToString());
+        var cmds = parser.ParseFromString(ToString());
         UpdateProcessor.ProcessCommandSet(cmds);
     }
 

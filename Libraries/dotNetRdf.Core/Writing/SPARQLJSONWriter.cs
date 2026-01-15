@@ -60,7 +60,7 @@ public class SparqlJsonWriter : ISparqlResultsWriter
     /// <param name="fileEncoding">The text encoding to use for the output file.</param>
     public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
     {
-        using FileStream stream = File.Open(filename, FileMode.Create);
+        using var stream = File.Open(filename, FileMode.Create);
         Save(results, new StreamWriter(stream, fileEncoding));
     }
 
@@ -137,7 +137,7 @@ public class SparqlJsonWriter : ISparqlResultsWriter
                 {
                     if (!result.HasValue(var)) continue; //No output for unbound variables
 
-                    INode value = result.Value(var);
+                    var value = result.Value(var);
                     if (value == null) continue;
 
                     // Create an Object for the Variable
@@ -255,7 +255,7 @@ public class SparqlJsonWriter : ISparqlResultsWriter
     /// <param name="message">Warning Message.</param>
     private void RaiseWarning(string message)
     {
-        SparqlWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

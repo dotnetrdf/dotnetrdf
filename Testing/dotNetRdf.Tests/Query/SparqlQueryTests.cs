@@ -71,7 +71,7 @@ public class SparqlQueryTests
     {
         IGraph g = new Graph();
         g.LoadFromFile(Path.Combine("resources", "LearningStyles.rdf"));
-        SparqlQuery query = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "learning-problem.rq"));
+        var query = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "learning-problem.rq"));
 
         var processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
         var results = processor.ProcessQuery(query) as SparqlResultSet;

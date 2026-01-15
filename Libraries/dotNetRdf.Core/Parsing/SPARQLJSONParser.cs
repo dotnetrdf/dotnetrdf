@@ -607,7 +607,7 @@ public class SparqlJsonParser : BaseSparqlResultsReader
             {
                 try
                 {
-                    INode n = ParseNode(context);
+                    var n = ParseNode(context);
 
                     // Check that the Variable was defined in the Header
                     if (!context.Variables.Contains(var))
@@ -752,7 +752,7 @@ public class SparqlJsonParser : BaseSparqlResultsReader
 
                         if (nodeDatatype != null)
                         {
-                            Uri dtUri = ((IUriNode)ParserHelper.TryResolveUri(context, nodeDatatype)).Uri;
+                            var dtUri = ((IUriNode)ParserHelper.TryResolveUri(context, nodeDatatype)).Uri;
                             return  context.Handler.CreateLiteralNode(nodeValue, dtUri);
                         }
 
@@ -1027,7 +1027,7 @@ public class SparqlJsonParser : BaseSparqlResultsReader
     /// <param name="message">Warning Message.</param>
     private void RaiseWarning(string message)
     {
-        SparqlWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

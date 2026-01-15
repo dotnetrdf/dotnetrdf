@@ -42,7 +42,7 @@ class SparqlPathParser
         var openBrackets = 0;
         var tokens = new Queue<IToken>();
         IToken next;
-        LastPathItemType lastItem = LastPathItemType.None;
+        var lastItem = LastPathItemType.None;
         var lastSequencer = -1;
 
         // Add the first token and set the initial last item type
@@ -237,7 +237,7 @@ class SparqlPathParser
             }
         }
 
-        ISparqlPath path = TryParsePath(context, tokens);
+        var path = TryParsePath(context, tokens);
         return path;
     }
 
@@ -248,7 +248,7 @@ class SparqlPathParser
 
     private ISparqlPath TryParsePathAlternative(SparqlQueryParserContext context, Queue<IToken> tokens)
     {
-        ISparqlPath path = TryParsePathSequence(context, tokens);
+        var path = TryParsePathSequence(context, tokens);
         IToken next;
         while (tokens.Count > 0)
         {
@@ -268,7 +268,7 @@ class SparqlPathParser
 
     private ISparqlPath TryParsePathSequence(SparqlQueryParserContext context, Queue<IToken> tokens)
     {
-        ISparqlPath path = TryParsePathEltOrInverse(context, tokens);
+        var path = TryParsePathEltOrInverse(context, tokens);
         IToken next;
         while (tokens.Count > 0)
         {
@@ -293,7 +293,7 @@ class SparqlPathParser
 
     private ISparqlPath TryParsePathEltOrInverse(SparqlQueryParserContext context, Queue<IToken> tokens)
     {
-        IToken next = tokens.Peek();
+        var next = tokens.Peek();
         if (next.TokenType == Token.HAT)
         {
             tokens.Dequeue();
@@ -312,7 +312,7 @@ class SparqlPathParser
 
     private ISparqlPath TryParsePathPrimary(SparqlQueryParserContext context, Queue<IToken> tokens)
     {
-        IToken next = tokens.Dequeue();
+        var next = tokens.Dequeue();
         ISparqlPath path;
         switch (next.TokenType)
         {
@@ -373,7 +373,7 @@ class SparqlPathParser
 
     private ISparqlPath TryParsePathMod(SparqlQueryParserContext context, Queue<IToken> tokens, ISparqlPath path)
     {
-        IToken next = tokens.Dequeue();
+        var next = tokens.Dequeue();
         switch (next.TokenType)
         {
             case Token.MULTIPLY:
@@ -489,7 +489,7 @@ class SparqlPathParser
 
     private ISparqlPath TryParseNegatedPropertySet(SparqlQueryParserContext context, Queue<IToken> tokens)
     {
-        IToken next = tokens.Peek();
+        var next = tokens.Peek();
         bool inverse;
         Property p;
 
@@ -557,7 +557,7 @@ class SparqlPathParser
 
     private Property TryParsePathOneInPropertySet(SparqlQueryParserContext context, Queue<IToken> tokens, out bool inverse)
     {
-        IToken next = tokens.Dequeue();
+        var next = tokens.Dequeue();
         inverse = false;
         switch (next.TokenType)
         {

@@ -105,8 +105,8 @@ public class SparqlNodeComparer
                         return false;
                     }
 
-                    SparqlNumericType xnumtype = NumericTypesHelper.GetNumericTypeFromDataTypeUri(xtype);
-                    SparqlNumericType ynumtype = NumericTypesHelper.GetNumericTypeFromDataTypeUri(ytype);
+                    var xnumtype = NumericTypesHelper.GetNumericTypeFromDataTypeUri(xtype);
+                    var ynumtype = NumericTypesHelper.GetNumericTypeFromDataTypeUri(ytype);
                     var numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
                     if (numtype != SparqlNumericType.NaN)
                     {
@@ -246,8 +246,8 @@ public class SparqlNodeComparer
                 else
                 {
                     // Both have known types
-                    SparqlNumericType xnumtype = x.NumericType;
-                    SparqlNumericType ynumtype = y.NumericType;
+                    var xnumtype = x.NumericType;
+                    var ynumtype = y.NumericType;
                     var numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
                     if (numtype != SparqlNumericType.NaN)
                     {
@@ -429,8 +429,8 @@ public class SparqlNodeComparer
         if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date time comparison when one or both arguments are Null");
         try
         {
-            DateTime c = x.AsDateTime();
-            DateTime d = y.AsDateTime();
+            var c = x.AsDateTime();
+            var d = y.AsDateTime();
 
             switch (c.Kind)
             {
@@ -482,8 +482,8 @@ public class SparqlNodeComparer
         if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date comparison when one or both arguments are Null");
         try
         {
-            DateTime c = x.AsDateTime();
-            DateTime d = y.AsDateTime();
+            var c = x.AsDateTime();
+            var d = y.AsDateTime();
 
             switch (c.Kind)
             {

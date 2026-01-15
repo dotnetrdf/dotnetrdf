@@ -157,15 +157,15 @@ public class SparqlQueryClient : ISparqlQueryClient, IConfigurationSerializable
     public async Task QueryWithResultSetAsync(
         string sparqlQuery, ISparqlResultsHandler resultsHandler, CancellationToken cancellationToken)
     {
-        using HttpResponseMessage response = await QueryInternal(sparqlQuery, ResultsAcceptHeader, cancellationToken);
+        using var response = await QueryInternal(sparqlQuery, ResultsAcceptHeader, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             throw new RdfQueryException($"Server reports {(int)response.StatusCode}: {response.ReasonPhrase}.");
         }
-        MediaTypeHeaderValue ctype = response.Content.Headers.ContentType;
-        ISparqlResultsReader resultsParser = MimeTypesHelper.GetSparqlParser(ctype.MediaType);
-        Stream responseStream = await response.Content.ReadAsStreamAsync();
-        using StreamReader responseReader = string.IsNullOrEmpty(ctype.CharSet)
+        var ctype = response.Content.Headers.ContentType;
+        var resultsParser = MimeTypesHelper.GetSparqlParser(ctype.MediaType);
+        var responseStream = await response.Content.ReadAsStreamAsync();
+        using var responseReader = string.IsNullOrEmpty(ctype.CharSet)
             ? new StreamReader(responseStream)
             : new StreamReader(responseStream, Encoding.GetEncoding(ctype.CharSet));
         resultsParser.Load(resultsHandler, responseReader);
@@ -221,15 +221,15 @@ public class SparqlQueryClient : ISparqlQueryClient, IConfigurationSerializable
     public async Task QueryWithResultGraphAsync(string sparqlQuery, IRdfHandler handler,
         CancellationToken cancellationToken)
     {
-        using HttpResponseMessage response = await QueryInternal(sparqlQuery, RdfAcceptHeader, cancellationToken);
+        using var response = await QueryInternal(sparqlQuery, RdfAcceptHeader, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             throw new RdfQueryException($"Server reports {(int)response.StatusCode}: {response.ReasonPhrase}.");
         }
-        MediaTypeHeaderValue ctype = response.Content.Headers.ContentType;
-        IRdfReader rdfParser = MimeTypesHelper.GetParser(ctype.MediaType);
-        Stream responseStream = await response.Content.ReadAsStreamAsync();
-        using StreamReader responseReader = string.IsNullOrEmpty(ctype.CharSet)
+        var ctype = response.Content.Headers.ContentType;
+        var rdfParser = MimeTypesHelper.GetParser(ctype.MediaType);
+        var responseStream = await response.Content.ReadAsStreamAsync();
+        using var responseReader = string.IsNullOrEmpty(ctype.CharSet)
             ? new StreamReader(responseStream)
             : new StreamReader(responseStream, Encoding.GetEncoding(ctype.CharSet));
         rdfParser.Load(handler, responseReader);
@@ -246,27 +246,27 @@ public class SparqlQueryClient : ISparqlQueryClient, IConfigurationSerializable
     public async Task QueryAsync(string sparqlQuery, IRdfHandler graphHandler,
         ISparqlResultsHandler resultsHandler, CancellationToken cancellationToken)
     {
-        using HttpResponseMessage response = await QueryInternal(sparqlQuery,
+        using var response = await QueryInternal(sparqlQuery,
             MimeTypesHelper.HttpRdfOrSparqlAcceptHeader, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             throw new RdfQueryException($"Server reports {(int)response.StatusCode}: {response.ReasonPhrase}.");
         }
-        MediaTypeHeaderValue ctype = response.Content.Headers.ContentType;
+        var ctype = response.Content.Headers.ContentType;
         try
         {
-            IRdfReader rdfParser = MimeTypesHelper.GetParser(ctype.MediaType);
-            Stream responseStream = await response.Content.ReadAsStreamAsync();
-            using StreamReader responseReader = string.IsNullOrEmpty(ctype.CharSet)
+            var rdfParser = MimeTypesHelper.GetParser(ctype.MediaType);
+            var responseStream = await response.Content.ReadAsStreamAsync();
+            using var responseReader = string.IsNullOrEmpty(ctype.CharSet)
                 ? new StreamReader(responseStream)
                 : new StreamReader(responseStream, Encoding.GetEncoding(ctype.CharSet));
             rdfParser.Load(graphHandler, responseReader);
         }
         catch (RdfParserSelectionException)
         {
-            ISparqlResultsReader resultsParser = MimeTypesHelper.GetSparqlParser(ctype.MediaType);
-            Stream responseStream = await response.Content.ReadAsStreamAsync();
-            using StreamReader responseReader = string.IsNullOrEmpty(ctype.CharSet)
+            var resultsParser = MimeTypesHelper.GetSparqlParser(ctype.MediaType);
+            var responseStream = await response.Content.ReadAsStreamAsync();
+            using var responseReader = string.IsNullOrEmpty(ctype.CharSet)
                 ? new StreamReader(responseStream)
                 : new StreamReader(responseStream, Encoding.GetEncoding(ctype.CharSet));
             resultsParser.Load(resultsHandler, responseReader);
@@ -351,13 +351,13 @@ public class SparqlQueryClient : ISparqlQueryClient, IConfigurationSerializable
     /// <param name="context">Configuration Serialization Context.</param>
     public void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode endpoint = context.NextSubject;
-        INode endpointClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlQueryClient));
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
-        INode defGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
-        INode namedGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
+        var endpoint = context.NextSubject;
+        var endpointClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlQueryClient));
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
+        var defGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
+        var namedGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
 
         context.Graph.Assert(new Triple(endpoint, rdfType, endpointClass));
         context.Graph.Assert(new Triple(endpoint, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));

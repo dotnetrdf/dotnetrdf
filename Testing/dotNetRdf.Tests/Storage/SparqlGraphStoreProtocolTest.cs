@@ -59,14 +59,14 @@ public class SparqlGraphStoreProtocolTest
             g.BaseUri = new Uri("http://example.org/sparqlTest");
 
             //Save Graph to SPARQL Uniform Protocol
-            SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
+            var sparql = SparqlGraphStoreProtocolTest.GetConnection();
             sparql.SaveGraph(g);
 
             //Now retrieve Graph from SPARQL Uniform Protocol
             var h = new Graph();
             sparql.LoadGraph(h, "http://example.org/sparqlTest");
 
-            GraphDiffReport diff = g.Difference(h);
+            var diff = g.Difference(h);
             if (!diff.AreEqual)
             {
                 TestTools.ShowDifferences(diff);
@@ -94,14 +94,14 @@ public class SparqlGraphStoreProtocolTest
             g.BaseUri = new Uri("http://example.org/sparql#test");
 
             //Save Graph to SPARQL Uniform Protocol
-            SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
+            var sparql = SparqlGraphStoreProtocolTest.GetConnection();
             sparql.SaveGraph(g);
 
             //Now retrieve Graph from SPARQL Uniform Protocol
             var h = new Graph();
             sparql.LoadGraph(h, "http://example.org/sparql#test");
 
-            GraphDiffReport diff = g.Difference(h);
+            var diff = g.Difference(h);
             if (!diff.AreEqual)
             {
                 TestTools.ShowDifferences(diff);
@@ -131,12 +131,12 @@ public class SparqlGraphStoreProtocolTest
             g.BaseUri = new Uri("http://example.org/sparqlTest");
 
             //Try to load the relevant Graph back from the Store
-            SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
+            var sparql = SparqlGraphStoreProtocolTest.GetConnection();
 
             var h = new Graph();
             sparql.LoadGraph(h, "http://example.org/sparqlTest");
 
-            GraphDiffReport diff = g.Difference(h);
+            var diff = g.Difference(h);
             if (!diff.AreEqual)
             {
                 TestTools.ShowDifferences(diff);
@@ -162,7 +162,7 @@ public class SparqlGraphStoreProtocolTest
             StorageSparqlUniformHttpProtocolSaveGraph();
 
             //Check the Graph exists in the Store
-            SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
+            var sparql = SparqlGraphStoreProtocolTest.GetConnection();
             Assert.True(sparql.HasGraph("http://example.org/sparqlTest"));
         }
         finally
@@ -179,7 +179,7 @@ public class SparqlGraphStoreProtocolTest
             SetUriLoaderCaching(false);
             StorageSparqlUniformHttpProtocolSaveGraph();
 
-            SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
+            var sparql = SparqlGraphStoreProtocolTest.GetConnection();
             sparql.DeleteGraph("http://example.org/sparqlTest");
 
             //Give SPARQL Uniform Protocol time to delete stuff
@@ -218,13 +218,13 @@ public class SparqlGraphStoreProtocolTest
             g.Retract(g.Triples.Where(t => !t.IsGroundTriple));
             FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
-            SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
+            var sparql = SparqlGraphStoreProtocolTest.GetConnection();
             sparql.UpdateGraph("http://example.org/sparqlTest", g.Triples, null);
 
             var h = new Graph();
             sparql.LoadGraph(h, "http://example.org/sparqlTest");
 
-            foreach (Triple t in h.Triples)
+            foreach (var t in h.Triples)
             {
                 Console.WriteLine(t.ToString(_formatter));
             }
@@ -248,7 +248,7 @@ public class SparqlGraphStoreProtocolTest
 
             try
             {
-                SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
+                var sparql = SparqlGraphStoreProtocolTest.GetConnection();
                 sparql.UpdateGraph("http://example.org/sparqlTest", null, g.Triples);
 
                 Assert.Fail("SPARQL Uniform HTTP Protocol does not support removing Triples");
@@ -273,7 +273,7 @@ public class SparqlGraphStoreProtocolTest
     [Fact]
     public void StorageSparqlUniformHttpProtocolPostCreate()
     {
-        SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
+        var connector = SparqlGraphStoreProtocolTest.GetConnection();
 
         var request = (HttpWebRequest)WebRequest.Create(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
         request.Method = "POST";
@@ -316,7 +316,7 @@ public class SparqlGraphStoreProtocolTest
     [Fact]
     public void StorageSparqlUniformHttpProtocolPostCreateMultiple()
     {
-        SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
+        var connector = SparqlGraphStoreProtocolTest.GetConnection();
 
         var g = new Graph();
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));

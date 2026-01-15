@@ -42,8 +42,8 @@ public class SparqlNewFunctions
     public void SparqlFunctionsIsNumeric()
     {
         var g = new Graph();
-        IUriNode subj = g.CreateUriNode(new Uri("http://example.org/subject"));
-        IUriNode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
+        var subj = g.CreateUriNode(new Uri("http://example.org/subject"));
+        var pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
 
         g.Assert(subj, pred, (12).ToLiteral(g));
         g.Assert(subj, pred, g.CreateLiteralNode("12"));
@@ -59,7 +59,7 @@ public class SparqlNewFunctions
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString("SELECT ?obj (IsNumeric(?obj) AS ?IsNumeric) WHERE { ?s ?p ?obj }");
+        var q = parser.ParseFromString("SELECT ?obj (IsNumeric(?obj) AS ?IsNumeric) WHERE { ?s ?p ?obj }");
 
         var processor = new LeviathanQueryProcessor(store);
         var results = processor.ProcessQuery(q);
@@ -72,7 +72,7 @@ public class SparqlNewFunctions
     public void SparqlFunctionsNow()
     {
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromFile(Path.Combine("resources", "now01.rq"));
+        var q = parser.ParseFromFile(Path.Combine("resources", "now01.rq"));
         var store = new TripleStore();
         var processor = new LeviathanQueryProcessor(store);
         if (processor.ProcessQuery(q) is SparqlResultSet results)
@@ -92,7 +92,7 @@ public class SparqlNewFunctions
         var g = new Graph();
         g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
-        object results = g.ExecuteQuery(query);
+        var results = g.ExecuteQuery(query);
         Assert.IsType<SparqlResultSet>(results, exactMatch: false);
     }
 
@@ -102,8 +102,8 @@ public class SparqlNewFunctions
         var rand = new RandFunction();
         var context = new SparqlEvaluationContext(null, null, new LeviathanQueryOptions());
         var processor = new LeviathanExpressionProcessor(new LeviathanQueryOptions(), null);
-        IValuedNode resultNode = rand.Accept(processor, context, 0);
-        IValuedNode repeatResultNode = rand.Accept(processor, context, 0);
+        var resultNode = rand.Accept(processor, context, 0);
+        var repeatResultNode = rand.Accept(processor, context, 0);
         Assert.Same(resultNode, repeatResultNode);
     }
 }
