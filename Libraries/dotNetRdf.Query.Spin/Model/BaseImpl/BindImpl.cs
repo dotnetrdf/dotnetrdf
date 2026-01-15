@@ -44,7 +44,7 @@ internal class BindImpl : ElementImpl, IBind
 
     public IResource getExpression()
     {
-        IResource expr = getResource(SP.PropertyExpression);
+        var expr = getResource(SP.PropertyExpression);
         if (expr != null)
         {
             return SPINFactory.asExpression(expr);
@@ -58,7 +58,7 @@ internal class BindImpl : ElementImpl, IBind
 
     public IVariable getVariable()
     {
-        IResource var = getResource(SP.PropertyVariable);
+        var var = getResource(SP.PropertyVariable);
         if (var != null)
         {
             return (IVariable)var.As(typeof(VariableImpl));
@@ -74,7 +74,7 @@ internal class BindImpl : ElementImpl, IBind
     {
         context.printKeyword("BIND");
         context.print(" (");
-        IResource expression = getExpression();
+        var expression = getExpression();
         if (expression != null)
         {
             printNestedExpressionString(context, expression);
@@ -86,7 +86,7 @@ internal class BindImpl : ElementImpl, IBind
         context.print(" ");
         context.printKeyword("AS");
         context.print(" ");
-        IVariable variable = getVariable();
+        var variable = getVariable();
         if (variable != null)
         {
             context.print(variable.ToString());

@@ -124,7 +124,7 @@ public abstract class BaseTripleCollection
             if (pattern.o == null) return this.WithSubjectPredicate(pattern.s, pattern.p);
             try
             {
-                Triple t = this[new Triple(pattern.s, pattern.p, pattern.o)];
+                var t = this[new Triple(pattern.s, pattern.p, pattern.o)];
                 return [t];
             }
             catch (KeyNotFoundException)

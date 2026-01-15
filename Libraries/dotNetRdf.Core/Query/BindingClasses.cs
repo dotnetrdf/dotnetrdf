@@ -53,7 +53,7 @@ public class BindingGroup
     /// <param name="parent">Parent Group.</param>
     public BindingGroup(BindingGroup parent)
     {
-        foreach (KeyValuePair<string, INode> assignment in parent.Assignments)
+        foreach (var assignment in parent.Assignments)
         {
             _assignments.Add(assignment.Key, assignment.Value);
         }

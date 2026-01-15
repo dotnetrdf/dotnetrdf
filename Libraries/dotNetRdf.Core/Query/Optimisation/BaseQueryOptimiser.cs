@@ -176,7 +176,7 @@ public abstract class BaseQueryOptimiser
                         var fs = gp.UnplacedFilters.ToList();
                         for (var i = 0; i < fs.Count; i++)
                         {
-                            ISparqlFilter f = fs[i];
+                            var f = fs[i];
                             if (f.Expression is AndExpression)
                             {
                                 // Split the And
@@ -192,7 +192,7 @@ public abstract class BaseQueryOptimiser
                         gp.ResetFilters(fs);
                     }
 
-                    foreach (ISparqlFilter f in gp.UnplacedFilters.ToList())
+                    foreach (var f in gp.UnplacedFilters.ToList())
                     {
                         TryPlaceFilter(gp, f);
                     }
@@ -201,7 +201,7 @@ public abstract class BaseQueryOptimiser
         }
 
         // Finally optimise the Child Graph Patterns
-        foreach (GraphPattern cgp in gp.ChildGraphPatterns)
+        foreach (var cgp in gp.ChildGraphPatterns)
         {
             // At each point the variables that have occurred are those in the Triple Patterns and
             // those in previous Graph Patterns

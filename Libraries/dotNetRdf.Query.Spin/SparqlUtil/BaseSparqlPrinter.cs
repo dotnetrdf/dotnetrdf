@@ -236,7 +236,7 @@ internal class BaseSparqlPrinter : ISparqlPrinter
 
     public void printVariable(String str)
     {
-        IResource binding = getInitialBinding(str);
+        var binding = getInitialBinding(str);
         if (binding == null || binding.isBlank())
         {
             print("?" + str);
@@ -265,7 +265,7 @@ internal class BaseSparqlPrinter : ISparqlPrinter
             }
             else if (getUseExtraPrefixes())
             {
-                INamespaceMapper extras = new NamespaceMapper(); //ExtraPrefixes.getExtraPrefixes();
+                var extras = new NamespaceMapper(); //ExtraPrefixes.getExtraPrefixes();
                 foreach (var prefix in extras.Prefixes)
                 {
                     var ns = extras.GetNamespaceUri(prefix).ToString();
@@ -357,14 +357,14 @@ internal class BaseSparqlPrinter : ISparqlPrinter
         spinQuery.PrintEnhancedSPARQL(this);
         var commandText = getString();
         var sb = new StringBuilder();
-        foreach (Uri graphUri in Dataset.DefaultGraphUris)
+        foreach (var graphUri in Dataset.DefaultGraphUris)
         {
             sb.AppendLine("USING <" + graphUri.ToString() + ">");
         }
         commandText = commandText.Replace("@USING_DEFAULT", sb.ToString());
         sb.Clear();
         sb.AppendLine("USING NAMED @datasetUri");
-        foreach (Uri graphUri in Dataset.ActiveGraphUris)
+        foreach (var graphUri in Dataset.ActiveGraphUris)
         {
             if (Dataset.HasGraph(graphUri))
             {
@@ -376,7 +376,7 @@ internal class BaseSparqlPrinter : ISparqlPrinter
                 {
                     sb.AppendLine("USING NAMED <" + Dataset.Configuration.GetTripleAdditionsMonitorUri(graphUri).ToString() + ">");
                 }
-                Uri ucg = Dataset.Configuration.GetUpdateControlUri(graphUri, false);
+                var ucg = Dataset.Configuration.GetUpdateControlUri(graphUri, false);
                 if (ucg != null)
                 {
                     sb.AppendLine("USING NAMED <" + ucg.ToString() + ">");
@@ -429,7 +429,7 @@ internal class BaseSparqlPrinter : ISparqlPrinter
                 printURIResource(element);
                 continue;
             }
-            IElement asElement = SPINFactory.asElement(element);
+            var asElement = SPINFactory.asElement(element);
             if (asElement != null)
             {
                 asElement.PrintEnhancedSPARQL(this);
@@ -452,17 +452,17 @@ internal class BaseSparqlPrinter : ISparqlPrinter
     /// <param name="command">a IDeleteData instance</param>
     public virtual void PrintEnhancedSPARQL(IDeleteData command)
     {
-        IResource data = command.getResource(SP.PropertyData);
+        var data = command.getResource(SP.PropertyData);
         var template = SparqlTemplates.DeleteData;
         if (data != null)
         {
             foreach (Resource graph in data.AsList())
             {
-                Uri graphUri = graph.getResource(SP.PropertyGraphNameNode).Uri;
+                var graphUri = graph.getResource(SP.PropertyGraphNameNode).Uri;
                 Dataset.SetActiveGraph(graphUri);
                 if (Dataset.HasGraph(graphUri))
                 {
-                    IGraph ucg = queryModel.GetModifiableGraph(graphUri);
+                    var ucg = queryModel.GetModifiableGraph(graphUri);
                     foreach (Resource t in graph.getResource(SP.PropertyElements).AsList())
                     {
                         var triple = (ITriplePattern)t.As(typeof(TriplePatternImpl));
@@ -485,17 +485,17 @@ internal class BaseSparqlPrinter : ISparqlPrinter
     /// <param name="command">a IInsertData instance</param>
     public virtual void PrintEnhancedSPARQL(IInsertData command)
     {
-        IResource data = command.getResource(SP.PropertyData);
+        var data = command.getResource(SP.PropertyData);
         var template = SparqlTemplates.InsertData;
         if (data != null)
         {
             foreach (Resource graph in data.AsList())
             {
-                Uri graphUri = graph.getResource(SP.PropertyGraphNameNode).Uri;
+                var graphUri = graph.getResource(SP.PropertyGraphNameNode).Uri;
                 Dataset.SetActiveGraph(graphUri);
                 if (Dataset.HasGraph(graphUri))
                 {
-                    IGraph ucg = queryModel.GetModifiableGraph(graphUri);
+                    var ucg = queryModel.GetModifiableGraph(graphUri);
                     foreach (Resource t in graph.getResource(SP.PropertyElements).AsList())
                     {
                         var triple = (ITriplePattern)t.As(typeof(TriplePatternImpl));
@@ -581,7 +581,7 @@ internal class BaseSparqlPrinter : ISparqlPrinter
     public virtual void PrintEnhancedSPARQL(INamedGraph pattern)
     {
         // creates a mapping for the graph node
-        IResource nameNode = pattern.getNameNode();
+        var nameNode = pattern.getNameNode();
         _currentGraphContext.Push(nameNode);
         if (nameNode.isUri())
         {

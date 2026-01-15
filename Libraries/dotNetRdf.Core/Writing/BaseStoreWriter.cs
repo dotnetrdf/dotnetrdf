@@ -50,7 +50,7 @@ public abstract class BaseStoreWriter : IStoreWriter
     {
         if (store == null) throw new ArgumentNullException(nameof(store), "Cannot output a null ITripleStore instance.");
         if (filename == null) throw new ArgumentNullException(nameof(filename), "Cannot output to a null file");
-        using FileStream stream = File.Open(filename, FileMode.Create);
+        using var stream = File.Open(filename, FileMode.Create);
         Save(store, new StreamWriter(stream, fileEncoding), false);
     }
 

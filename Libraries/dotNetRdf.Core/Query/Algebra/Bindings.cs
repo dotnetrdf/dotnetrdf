@@ -98,7 +98,7 @@ public class Bindings
     /// <returns></returns>
     public SparqlQuery ToQuery()
     {
-        GraphPattern gp = ToGraphPattern();
+        var gp = ToGraphPattern();
         var q = new SparqlQuery {RootGraphPattern = gp};
         return q;
     }

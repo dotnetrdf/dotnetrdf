@@ -81,7 +81,7 @@ public abstract class BaseSesameTemplate
     /// <returns></returns>
     protected virtual IGraph GetBaseTemplateGraph()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
 
         // Add relevant namespaces
         g.NamespaceMap.AddNamespace("rep", g.UriFactory.Create(RepositoryNamespace));

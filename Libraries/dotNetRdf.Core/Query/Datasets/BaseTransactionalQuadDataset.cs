@@ -118,7 +118,7 @@ public abstract class BaseTransactionalQuadDataset
         {
             if (DefaultGraphNames.Any())
             {
-                foreach (IRefNode u in DefaultGraphNames)
+                foreach (var u in DefaultGraphNames)
                 {
                     if (IsDefaultGraph(u))
                     {
@@ -247,7 +247,7 @@ public abstract class BaseTransactionalQuadDataset
     {
         if (!_modifiableGraphs.HasGraph(graphName))
         {
-            IGraph current = GetModifiableGraphInternal(graphName);
+            var current = GetModifiableGraphInternal(graphName);
             if (!_modifiableGraphs.HasGraph(current.Name))
             {
                 _modifiableGraphs.Add(current);
@@ -277,7 +277,7 @@ public abstract class BaseTransactionalQuadDataset
         var i = 0;
         while (i < _actions.Count)
         {
-            GraphPersistenceAction action = _actions[i];
+            var action = _actions[i];
             switch (action.Action)
             {
                 case GraphPersistenceActionType.Added:
@@ -297,7 +297,7 @@ public abstract class BaseTransactionalQuadDataset
         }
         _actions.Clear();
         // Ensure any Modifiable Graphs we've looked at have been Flushed()
-        foreach (ITransactionalGraph g in _modifiableGraphs.Graphs.OfType<ITransactionalGraph>())
+        foreach (var g in _modifiableGraphs.Graphs.OfType<ITransactionalGraph>())
         {
             g.Flush();
         }
@@ -318,7 +318,7 @@ public abstract class BaseTransactionalQuadDataset
         var total = _actions.Count;
         while (i >= 0)
         {
-            GraphPersistenceAction action = _actions[i];
+            var action = _actions[i];
             switch (action.Action)
             {
                 case GraphPersistenceActionType.Added:
@@ -350,7 +350,7 @@ public abstract class BaseTransactionalQuadDataset
             _actions.RemoveRange(0, total);
         }
         // Ensure any modifiable Graphs we've looked at have been Discarded
-        foreach (ITransactionalGraph g in _modifiableGraphs.Graphs.OfType<ITransactionalGraph>())
+        foreach (var g in _modifiableGraphs.Graphs.OfType<ITransactionalGraph>())
         {
             g.Discard();
         }

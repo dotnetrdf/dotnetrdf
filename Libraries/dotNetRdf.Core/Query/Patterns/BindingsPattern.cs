@@ -104,13 +104,13 @@ public class BindingsPattern
     {
         var output = new StringBuilder();
         output.Append("VALUES ( ");
-        foreach (string var in _vars)
+        foreach (var var in _vars)
         {
             output.Append("?" + var + " ");
         }
         output.AppendLine(")");
         output.AppendLine("{");
-        foreach (BindingTuple t in _tuples)
+        foreach (var t in _tuples)
         {
             output.AppendLine("  " + t);
         }
@@ -161,7 +161,7 @@ public class BindingTuple
         get
         {
             if (!_values.ContainsKey(var)) throw new IndexOutOfRangeException();
-            PatternItem temp = _values[var];
+            var temp = _values[var];
             if (temp is NodeMatchPattern)
             {
                 return ((NodeMatchPattern)temp).Node;
@@ -202,7 +202,7 @@ public class BindingTuple
     /// <returns>True if the variable exists in the tuple and is bound, false otherwise.</returns>
     public bool IsBound(string var)
     {
-        return _values.TryGetValue(var, out PatternItem value) && value != null;
+        return _values.TryGetValue(var, out var value) && value != null;
     }
 
     /// <summary>
@@ -213,7 +213,7 @@ public class BindingTuple
     {
         var output = new StringBuilder();
         output.Append("( ");
-        foreach (PatternItem p in _values.Values)
+        foreach (var p in _values.Values)
         {
             if (p != null) 
             {

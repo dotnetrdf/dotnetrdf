@@ -110,11 +110,11 @@ public abstract class BaseSparqlView
         if (_q.DefaultGraphNames.Any() || _q.NamedGraphNames.Any())
         {
             _graphs = [];
-            foreach (IRefNode graphName in _q.DefaultGraphNames)
+            foreach (var graphName in _q.DefaultGraphNames)
             {
                 _graphs.Add($"{graphName}");
             }
-            foreach (IRefNode graphName in _q.NamedGraphNames)
+            foreach (var graphName in _q.NamedGraphNames)
             {
                 _graphs.Add($"{graphName}");
             }
@@ -180,7 +180,7 @@ public abstract class BaseSparqlView
     {
         if (args.GraphEvent != null)
         {
-            IGraph g = args.GraphEvent.Graph;
+            var g = args.GraphEvent.Graph;
             if (g != null)
             {
                 // Ignore Changes to self
@@ -207,7 +207,7 @@ public abstract class BaseSparqlView
     {
         if (args.GraphEvent != null)
         {
-            IGraph g = args.GraphEvent.Graph;
+            var g = args.GraphEvent.Graph;
             if (g != null)
             {
                 // Ignore merges to self
@@ -234,7 +234,7 @@ public abstract class BaseSparqlView
     {
         if (args.GraphEvent != null)
         {
-            IGraph g = args.GraphEvent.Graph;
+            var g = args.GraphEvent.Graph;
             if (g != null)
             {
                 // Ignore Changes to self
@@ -261,7 +261,7 @@ public abstract class BaseSparqlView
     {
         if (args.GraphEvent != null)
         {
-            IGraph g = args.GraphEvent.Graph;
+            var g = args.GraphEvent.Graph;
             if (g != null)
             {
                 // Ignore Changes to self

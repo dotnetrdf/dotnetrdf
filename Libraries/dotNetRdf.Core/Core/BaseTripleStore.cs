@@ -354,7 +354,7 @@ public abstract class BaseTripleStore
     /// <param name="g">Graph.</param>
     protected void RaiseGraphAdded(IGraph g)
     {
-        TripleStoreEventHandler d = GraphAdded;
+        var d = GraphAdded;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, g));
@@ -368,7 +368,7 @@ public abstract class BaseTripleStore
     /// <param name="args">Graph Event Arguments.</param>
     protected void RaiseGraphAdded(GraphEventArgs args)
     {
-        TripleStoreEventHandler d = GraphAdded;
+        var d = GraphAdded;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, args));
@@ -393,7 +393,7 @@ public abstract class BaseTripleStore
     /// <param name="g">Graph.</param>
     protected void RaiseGraphRemoved(IGraph g)
     {
-        TripleStoreEventHandler d = GraphRemoved;
+        var d = GraphRemoved;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, g));
@@ -407,7 +407,7 @@ public abstract class BaseTripleStore
     /// <param name="args">Graph Event Arguments.</param>
     protected void RaiseGraphRemoved(GraphEventArgs args)
     {
-        TripleStoreEventHandler d = GraphRemoved;
+        var d = GraphRemoved;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, args));
@@ -431,7 +431,7 @@ public abstract class BaseTripleStore
     /// <param name="args">Graph Event Arguments.</param>
     protected void RaiseGraphChanged(GraphEventArgs args)
     {
-        TripleStoreEventHandler d = GraphChanged;
+        var d = GraphChanged;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, args));
@@ -454,7 +454,7 @@ public abstract class BaseTripleStore
     /// <param name="g">Graph.</param>
     protected void RaiseGraphChanged(IGraph g)
     {
-        TripleStoreEventHandler d = GraphChanged;
+        var d = GraphChanged;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, g));
@@ -467,7 +467,7 @@ public abstract class BaseTripleStore
     /// <param name="args">Graph Event Arguments.</param>
     protected void RaiseGraphCleared(GraphEventArgs args)
     {
-        TripleStoreEventHandler d = GraphCleared;
+        var d = GraphCleared;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, args));
@@ -490,7 +490,7 @@ public abstract class BaseTripleStore
     /// <param name="args">Graph Event Arguments.</param>
     protected void RaiseGraphMerged(GraphEventArgs args)
     {
-        TripleStoreEventHandler d = GraphMerged;
+        var d = GraphMerged;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, args));

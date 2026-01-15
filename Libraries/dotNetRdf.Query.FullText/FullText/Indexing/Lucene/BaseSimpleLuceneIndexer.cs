@@ -108,7 +108,7 @@ public abstract class BaseSimpleLuceneIndexer
     /// <param name="text">Full Text.</param>
     protected override void Index(String graphUri, INode n, string text)
     {
-        Document doc = CreateDocument(graphUri, n, text);
+        var doc = CreateDocument(graphUri, n, text);
         EnsureReaderClosed();
         EnsureWriterOpen();
         _writer.AddDocument(doc);
@@ -124,9 +124,9 @@ public abstract class BaseSimpleLuceneIndexer
     {
         EnsureWriterOpen();
         var query = new TermQuery(new Term(_schema.HashField, GetHash(graphUri, n, text)));
-        DirectoryReader deleteReader = _writer.GetReader(true);
+        var deleteReader = _writer.GetReader(true);
         var searcher = new IndexSearcher(deleteReader);
-        TopDocs results = searcher.Search(query, 1);
+        var results = searcher.Search(query, 1);
         EnsureReaderClosed();
         if (results.ScoreDocs.Length > 0)
         {
@@ -224,26 +224,26 @@ public abstract class BaseSimpleLuceneIndexer
     {
         context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
-        INode indexerObj = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode indexerClass = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.ClassIndexer));
-        INode index = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyIndex));
-        INode schema = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertySchema));
-        INode analyzer = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyAnalyzer));
+        var indexerObj = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var indexerClass = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.ClassIndexer));
+        var index = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyIndex));
+        var schema = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertySchema));
+        var analyzer = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyAnalyzer));
 
         //Basic Properties
         context.Graph.Assert(indexerObj, rdfType, indexerClass);
         context.Graph.Assert(indexerObj, dnrType, context.Graph.CreateLiteralNode(GetType().FullName + ", dotNetRDF.Query.FullText"));
 
         //Serialize and link the Index
-        INode indexObj = context.Graph.CreateBlankNode();
+        var indexObj = context.Graph.CreateBlankNode();
         context.NextSubject = indexObj;
         _indexDir.SerializeConfiguration(context);
         context.Graph.Assert(indexerObj, index, indexObj);
 
         //Serialize and link the Schema
-        INode schemaObj = context.Graph.CreateBlankNode();
+        var schemaObj = context.Graph.CreateBlankNode();
         context.NextSubject = schemaObj;
         if (_schema is IConfigurationSerializable serializable)
         {
@@ -256,7 +256,7 @@ public abstract class BaseSimpleLuceneIndexer
         context.Graph.Assert(indexerObj, schema, schemaObj);
 
         //Serialize and link the Analyzer
-        INode analyzerObj = context.Graph.CreateBlankNode();
+        var analyzerObj = context.Graph.CreateBlankNode();
         context.NextSubject = analyzerObj;
         _analyzer.SerializeConfiguration(context);
         context.Graph.Assert(indexerObj, analyzer, analyzerObj);

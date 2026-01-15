@@ -64,7 +64,7 @@ public class BasicTests2 : BaseTest
         if (mapping != null)
         {
             Debug("Blank Node Mapping was:");
-            foreach (KeyValuePair<INode, INode> pair in mapping)
+            foreach (var pair in mapping)
             {
                 Debug(pair.Key.ToString() + " => " + pair.Value.ToString());
             }
@@ -77,8 +77,8 @@ public class BasicTests2 : BaseTest
         Debug("Testing that the overridden operators for Nodes work as expected");
 
         var g = new Graph();
-        IBlankNode a = g.CreateBlankNode();
-        IBlankNode b = g.CreateBlankNode();
+        var a = g.CreateBlankNode();
+        var b = g.CreateBlankNode();
 
         Debug("Testing using Equals() method");
         Assert.False(a.Equals(b), "Two different Blank Nodes should be non-equal");
@@ -97,8 +97,8 @@ public class BasicTests2 : BaseTest
         Debug();
 
         //Test typed as INode
-        INode c = g.CreateBlankNode();
-        INode d = g.CreateBlankNode();
+        var c = g.CreateBlankNode();
+        var d = g.CreateBlankNode();
 
         Debug("Now testing with typed as INode using Equals()");
         Assert.False(c.Equals(d), "Two different Nodes should be non-equal");
@@ -121,9 +121,9 @@ public class BasicTests2 : BaseTest
         var g = new Graph();
         var wrapper = new GraphPersistenceWrapper(g);
 
-        INode s = wrapper.CreateBlankNode();
-        INode p = wrapper.CreateUriNode("rdf:type");
-        INode o = wrapper.CreateUriNode("rdfs:Class");
+        var s = wrapper.CreateBlankNode();
+        var p = wrapper.CreateUriNode("rdf:type");
+        var o = wrapper.CreateUriNode("rdfs:Class");
 
         wrapper.Assert(s, p, o);
     }
@@ -141,7 +141,7 @@ public class BasicTests2 : BaseTest
         Assert.Equal(g.BaseUri, h.BaseUri);
 
         //Do equality check
-        var equals = g.Equals(h, out Dictionary<INode, INode> mapping);
+        var equals = g.Equals(h, out var mapping);
         Assert.True(equals, "Graphs should have been equal");
         mapping.Should().NotBeNull("Equality function should return a blank node mapping");
         mapping.Should().NotBeEmpty("Matched graphs contain mapped blank nodes");
@@ -253,7 +253,7 @@ public class BasicTests2 : BaseTest
             new Uri("file://resources/MergePart1.ttl"),
         };
 
-        foreach (Uri u in testUris)
+        foreach (var u in testUris)
         {
             //Load the Test RDF
             var g = new Graph();

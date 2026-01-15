@@ -106,7 +106,7 @@ public abstract class BaseUriNode
 
         if (other.NodeType == NodeType.Uri)
         {
-            Uri temp = ((IUriNode)other).Uri;
+            var temp = ((IUriNode)other).Uri;
 
             return EqualityHelper.AreUrisEqual(_uri, temp);
         }

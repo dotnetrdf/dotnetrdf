@@ -53,7 +53,7 @@ public abstract class BaseRdfParserSuite : BaseParserSuite<IRdfReader, Graph>
         var expected = new Graph();
         ResultsParser.Load(expected, resultFile);
 
-        GraphDiffReport diff = expected.Difference(actual);
+        var diff = expected.Difference(actual);
         if (diff.AreEqual)
         {
             Console.WriteLine("Parsed Graph matches Expected Graph (Test Passed)");

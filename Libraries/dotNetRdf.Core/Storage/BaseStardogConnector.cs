@@ -365,7 +365,7 @@ public abstract class BaseStardogConnector
         }
 
         // Get the Response and process based on the Content Type
-        using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+        using var response = HttpClient.SendAsync(request).Result;
         if (!response.IsSuccessStatusCode)
         {
             throw StorageHelper.HandleHttpQueryError(response);
@@ -376,7 +376,7 @@ public abstract class BaseStardogConnector
         try
         {
             // Is the Content Type referring to a Sparql Result Set format?
-            ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype,
+            var resreader = MimeTypesHelper.GetSparqlParser(ctype,
                 Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase));
             resreader.Load(resultsHandler, data);
         }
@@ -385,7 +385,7 @@ public abstract class BaseStardogConnector
             // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
 
             // Is the Content Type referring to a RDF format?
-            IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+            var rdfreader = MimeTypesHelper.GetParser(ctype);
             rdfreader.Load(rdfHandler, data);
         }
     }
@@ -434,13 +434,13 @@ public abstract class BaseStardogConnector
             }
 
             // Get the Response and process based on the Content Type
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             var data = new StreamReader(response.Content.ReadAsStreamAsync().Result);
             var contentType = response.Content.Headers.ContentType.MediaType;
             try
             {
                 // Is the Content Type referring to a Sparql Result Set format?
-                ISparqlResultsReader sparqlResultsReader = MimeTypesHelper.GetSparqlParser(contentType,
+                var sparqlResultsReader = MimeTypesHelper.GetSparqlParser(contentType,
                     Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase));
                 sparqlResultsReader.Load(resultsHandler, data);
             }
@@ -449,7 +449,7 @@ public abstract class BaseStardogConnector
                 // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
 
                 // Is the Content Type referring to a RDF format?
-                IRdfReader rdfReader = MimeTypesHelper.GetParser(contentType);
+                var rdfReader = MimeTypesHelper.GetParser(contentType);
                 rdfReader.Load(rdfHandler, data);
             }
         }
@@ -522,13 +522,13 @@ public abstract class BaseStardogConnector
 
         serviceParams.Add("query", construct);
 
-        HttpRequestMessage request = CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, HttpMethod.Get,
+        var request = CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, HttpMethod.Get,
             serviceParams);
 
-        using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+        using var response = HttpClient.SendAsync(request).Result;
         if (!response.IsSuccessStatusCode)
             throw StorageHelper.HandleHttpError(response, "loading a Graph from");
-        IRdfReader parser = MimeTypesHelper.GetParser(response.Content.Headers.ContentType.MediaType);
+        var parser = MimeTypesHelper.GetParser(response.Content.Headers.ContentType.MediaType);
         parser.Load(handler, new StreamReader(response.Content.ReadAsStreamAsync().Result));
     }
 
@@ -564,11 +564,11 @@ public abstract class BaseStardogConnector
             // Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
             transactionId = _activeTrans ?? BeginTransaction();
 
-            HttpRequestMessage request = CreateRequest(_kb + "/" + transactionId + "/add", MimeTypesHelper.Any,
+            var request = CreateRequest(_kb + "/" + transactionId + "/add", MimeTypesHelper.Any,
                 HttpMethod.Post, []);
             request.Content = new DatasetContent(g, _writer);
 
-            using (HttpResponseMessage response = HttpClient.SendAsync(request).Result)
+            using (var response = HttpClient.SendAsync(request).Result)
             {
                 if (!response.IsSuccessStatusCode)
                 {
@@ -649,14 +649,14 @@ public abstract class BaseStardogConnector
             {
                 if (removals.Any())
                 {
-                    HttpRequestMessage request = CreateRequest(_kb + "/" + tID + "/remove",
+                    var request = CreateRequest(_kb + "/" + tID + "/remove",
                         MimeTypesHelper.Any, HttpMethod.Post, []);
 
                     // Save the Data to be removed as TriG to the Request Stream
                     var g = new Graph(graphUri);
                     g.Assert(removals);
                     request.Content = new DatasetContent(g, _writer);
-                    using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                    using var response = HttpClient.SendAsync(request).Result;
                     if (!response.IsSuccessStatusCode) throw StorageHelper.HandleHttpError(response, "updating a Graph in");
                 }
             }
@@ -666,7 +666,7 @@ public abstract class BaseStardogConnector
             {
                 if (additions.Any())
                 {
-                    HttpRequestMessage request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any,
+                    var request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any,
                         HttpMethod.Post, []);
 
                     // Save the Data to be added as TriG to the Request Stream
@@ -674,7 +674,7 @@ public abstract class BaseStardogConnector
                     g.Assert(additions);
                     request.Content = new DatasetContent(g, _writer);
 
-                    using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                    using var response = HttpClient.SendAsync(request).Result;
                     if (!response.IsSuccessStatusCode) throw StorageHelper.HandleHttpError(response, "updating a Graph in");
                 }
             }
@@ -753,7 +753,7 @@ public abstract class BaseStardogConnector
             // Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
             tID = _activeTrans ?? BeginTransaction();
 
-            HttpRequestMessage request = CreateRequest(
+            var request = CreateRequest(
                 _kb + "/" + tID + "/clear/",
                 MimeTypesHelper.Any,
                 HttpMethod.Post, 
@@ -764,7 +764,7 @@ public abstract class BaseStardogConnector
             );
             request.Content = new FormUrlEncodedContent([]);
 
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
                 throw StorageHelper.HandleHttpError(response, "deleting a Graph from");
             // If we get here then the Delete worked OK
@@ -817,7 +817,7 @@ public abstract class BaseStardogConnector
                 {
                     if (r.HasValue("g"))
                     {
-                        INode temp = r["g"];
+                        var temp = r["g"];
                         if (temp.NodeType == NodeType.Uri)
                         {
                             graphs.Add(((IUriNode)temp).Uri);
@@ -858,7 +858,7 @@ public abstract class BaseStardogConnector
                 {
                     if (r.HasValue("g"))
                     {
-                        INode temp = r["g"];
+                        var temp = r["g"];
                         if (temp.NodeType == NodeType.Uri)
                         {
                             graphs.Add(((IUriNode)temp).Uri.AbsoluteUri);
@@ -976,7 +976,7 @@ public abstract class BaseStardogConnector
     protected virtual void SaveGraphAsync(string tID, bool autoCommit, IGraph g, AsyncStorageCallback callback,
         object state)
     {
-        HttpRequestMessage request = MakeSaveGraphRequestMessage(tID, g);
+        var request = MakeSaveGraphRequestMessage(tID, g);
         HttpClient.SendAsync(request).ContinueWith(requestTask =>
         {
             if (requestTask.IsCanceled)
@@ -1007,7 +1007,7 @@ public abstract class BaseStardogConnector
             }
             else
             {
-                HttpResponseMessage response = requestTask.Result;
+                var response = requestTask.Result;
                 if (response.IsSuccessStatusCode)
                 {
                     callback(this,
@@ -1034,7 +1034,7 @@ public abstract class BaseStardogConnector
 
     private HttpRequestMessage MakeSaveGraphRequestMessage(string tID, IGraph g)
     {
-        HttpRequestMessage request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any, HttpMethod.Post,
+        var request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any, HttpMethod.Post,
             []);
         request.Content = new DatasetContent(g, _writer);
         return request;
@@ -1052,10 +1052,10 @@ public abstract class BaseStardogConnector
     protected virtual async Task SaveGraphAsync(string transactionId, bool autoCommit, IGraph g,
         CancellationToken cancellationToken)
     {
-        HttpRequestMessage request = MakeSaveGraphRequestMessage(transactionId, g);
+        var request = MakeSaveGraphRequestMessage(transactionId, g);
         try
         {
-            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            var response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "saving a graph asynchronously to");
@@ -1092,7 +1092,7 @@ public abstract class BaseStardogConnector
     public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback,
         object state)
     {
-        HttpRequestMessage request = MakeLoadGraphRequestMessage(graphUri);
+        var request = MakeLoadGraphRequestMessage(graphUri);
         HttpClient.SendAsync(request).ContinueWith(requestTask =>
         {
             if (requestTask.IsCanceled)
@@ -1110,7 +1110,7 @@ public abstract class BaseStardogConnector
             }
             else
             {
-                HttpResponseMessage response = requestTask.Result;
+                var response = requestTask.Result;
                 if (response.IsSuccessStatusCode)
                 {
                     response.Content.ReadAsStreamAsync().ContinueWith(contentTask =>
@@ -1132,7 +1132,7 @@ public abstract class BaseStardogConnector
                         {
                             try
                             {
-                                IRdfReader parser =
+                                var parser =
                                     MimeTypesHelper.GetParser(
                                         response.Content.Headers.ContentType.MediaType);
                                 parser.Load(handler, new StreamReader(contentTask.Result));
@@ -1168,7 +1168,7 @@ public abstract class BaseStardogConnector
 
         serviceParams.Add("query", construct);
 
-        HttpRequestMessage request = CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, HttpMethod.Get,
+        var request = CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, HttpMethod.Get,
             serviceParams);
         return request;
     }
@@ -1178,14 +1178,14 @@ public abstract class BaseStardogConnector
     {
         try
         {
-            HttpRequestMessage request = MakeLoadGraphRequestMessage(graphName);
-            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            var request = MakeLoadGraphRequestMessage(graphName);
+            var response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "loading a graph from");
             }
 
-            IRdfReader parser = MimeTypesHelper.GetParser(response.Content.Headers.ContentType.MediaType);
+            var parser = MimeTypesHelper.GetParser(response.Content.Headers.ContentType.MediaType);
             parser.Load(handler, new StreamReader(await response.Content.ReadAsStreamAsync()));
         }
         catch (OperationCanceledException)
@@ -1293,7 +1293,7 @@ public abstract class BaseStardogConnector
     {
         if (removals != null && removals.Any())
         {
-            HttpRequestMessage request = MakeRemoveTriplesRequestMessage(tID, graphUri, removals);
+            var request = MakeRemoveTriplesRequestMessage(tID, graphUri, removals);
             HttpClient.SendAsync(request).ContinueWith(removalRequestTask =>
             {
                 if (removalRequestTask.IsCanceled)
@@ -1323,7 +1323,7 @@ public abstract class BaseStardogConnector
                 }
                 else
                 {
-                    HttpResponseMessage removalResponse = removalRequestTask.Result;
+                    var removalResponse = removalRequestTask.Result;
                     if (!removalResponse.IsSuccessStatusCode)
                     {
                         if (autoCommit)
@@ -1375,7 +1375,7 @@ public abstract class BaseStardogConnector
                         }
 
                         // Apply additions
-                        HttpRequestMessage addRequest = MakeAddTriplesRequestMessage(tID, graphUri, additions);
+                        var addRequest = MakeAddTriplesRequestMessage(tID, graphUri, additions);
                         HttpClient.SendAsync(addRequest).ContinueWith(addRequestTask =>
                         {
                             if (addRequestTask.IsCanceled)
@@ -1407,7 +1407,7 @@ public abstract class BaseStardogConnector
                             }
                             else
                             {
-                                HttpResponseMessage addResponse = addRequestTask.Result;
+                                var addResponse = addRequestTask.Result;
                                 if (!addResponse.IsSuccessStatusCode)
                                 {
                                     if (autoCommit)
@@ -1460,7 +1460,7 @@ public abstract class BaseStardogConnector
         }
         else if (additions != null && additions.Any())
         {
-            HttpRequestMessage addRequest = MakeAddTriplesRequestMessage(tID, graphUri, additions);
+            var addRequest = MakeAddTriplesRequestMessage(tID, graphUri, additions);
             HttpClient.SendAsync(addRequest).ContinueWith(addRequestTask =>
             {
                 if (addRequestTask.IsCanceled)
@@ -1492,7 +1492,7 @@ public abstract class BaseStardogConnector
                 }
                 else
                 {
-                    HttpResponseMessage addResponse = addRequestTask.Result;
+                    var addResponse = addRequestTask.Result;
                     if (!addResponse.IsSuccessStatusCode)
                     {
                         if (autoCommit)
@@ -1558,7 +1558,7 @@ public abstract class BaseStardogConnector
     /// <returns></returns>
     protected virtual HttpRequestMessage MakeAddTriplesRequestMessage(string transactionId, string graphName, IEnumerable<Triple> additions)
     {
-        HttpRequestMessage addRequest = CreateRequest(_kb + "/" + transactionId + "/add",
+        var addRequest = CreateRequest(_kb + "/" + transactionId + "/add",
             MimeTypesHelper.Any,
             HttpMethod.Post, []);
         var g = new Graph(graphName.ToSafeUri());
@@ -1576,7 +1576,7 @@ public abstract class BaseStardogConnector
     /// <returns></returns>
     protected virtual HttpRequestMessage MakeRemoveTriplesRequestMessage(string transactionId, string graphName, IEnumerable<Triple> removals)
     {
-        HttpRequestMessage request = CreateRequest(_kb + "/" + transactionId + "/remove", MimeTypesHelper.Any,
+        var request = CreateRequest(_kb + "/" + transactionId + "/remove", MimeTypesHelper.Any,
             HttpMethod.Post, []);
         var g = new Graph(graphName.ToSafeUri());
         g.Assert(removals);
@@ -1603,8 +1603,8 @@ public abstract class BaseStardogConnector
         {
             if (removals != null && removals.Any())
             {
-                HttpRequestMessage request = MakeRemoveTriplesRequestMessage(transactionId, graphUri, removals);
-                HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                var request = MakeRemoveTriplesRequestMessage(transactionId, graphUri, removals);
+                var response = await HttpClient.SendAsync(request, cancellationToken);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw StorageHelper.HandleHttpError(response, "updating a graph in");
@@ -1627,8 +1627,8 @@ public abstract class BaseStardogConnector
             }
             else if (additions != null && additions.Any())
             {
-                HttpRequestMessage request = MakeAddTriplesRequestMessage(transactionId, graphUri, additions);
-                HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                var request = MakeAddTriplesRequestMessage(transactionId, graphUri, additions);
+                var response = await HttpClient.SendAsync(request, cancellationToken);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw StorageHelper.HandleHttpError(response, "updating a graph in");
@@ -1698,7 +1698,7 @@ public abstract class BaseStardogConnector
     protected virtual void DeleteGraphAsync(string tID, bool autoCommit, string graphUri,
         AsyncStorageCallback callback, object state)
     {
-        HttpRequestMessage request = MakeDeleteGraphRequestMessage(tID, graphUri);
+        var request = MakeDeleteGraphRequestMessage(tID, graphUri);
         HttpClient.SendAsync(request).ContinueWith(requestTask =>
         {
             if (requestTask.IsCanceled || requestTask.IsFaulted)
@@ -1720,7 +1720,7 @@ public abstract class BaseStardogConnector
             }
             else
             {
-                HttpResponseMessage response = requestTask.Result;
+                var response = requestTask.Result;
                 if (!response.IsSuccessStatusCode)
                 {
                     if (autoCommit)
@@ -1774,7 +1774,7 @@ public abstract class BaseStardogConnector
     /// <returns>A configured <see cref="HttpRequestMessage"/> instance.</returns>
     protected virtual HttpRequestMessage MakeDeleteGraphRequestMessage(string transactionId, string graphName)
     {
-        HttpRequestMessage request = CreateRequest(
+        var request = CreateRequest(
             _kb + "/" + transactionId + "/clear/",
             MimeTypesHelper.Any,
             HttpMethod.Post,
@@ -1810,10 +1810,10 @@ public abstract class BaseStardogConnector
     protected virtual async Task DeleteGraphAsync(string transactionId, string graphName, bool autoCommit,
         CancellationToken cancellationToken)
     {
-        HttpRequestMessage request = MakeDeleteGraphRequestMessage(transactionId, graphName);
+        var request = MakeDeleteGraphRequestMessage(transactionId, graphName);
         try
         {
-            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            var response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "deleting a graph from");
@@ -1885,7 +1885,7 @@ public abstract class BaseStardogConnector
     public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query,
         AsyncStorageCallback callback, object state)
     {
-        HttpRequestMessage request = MakeQueryRequestMessage(query);
+        var request = MakeQueryRequestMessage(query);
         HttpClient.SendAsync(request).ContinueWith(requestTask =>
         {
             if (requestTask.IsCanceled || requestTask.IsFaulted)
@@ -1897,7 +1897,7 @@ public abstract class BaseStardogConnector
             }
             else
             {
-                HttpResponseMessage response = requestTask.Result;
+                var response = requestTask.Result;
                 if (!response.IsSuccessStatusCode)
                 {
                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler,
@@ -1924,7 +1924,7 @@ public abstract class BaseStardogConnector
                             try
                             {
                                 // Is the Content Type referring to a Sparql Result Set format?
-                                ISparqlResultsReader sparqlResultsReader = MimeTypesHelper.GetSparqlParser(
+                                var sparqlResultsReader = MimeTypesHelper.GetSparqlParser(
                                     contentType,
                                     Regex.IsMatch(query, "ASK", RegexOptions.IgnoreCase));
                                 sparqlResultsReader.Load(resultsHandler, data);
@@ -1934,7 +1934,7 @@ public abstract class BaseStardogConnector
                                 // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
 
                                 // Is the Content Type referring to a RDF format?
-                                IRdfReader rdfReader = MimeTypesHelper.GetParser(contentType);
+                                var rdfReader = MimeTypesHelper.GetParser(contentType);
                                 rdfReader.Load(rdfHandler, data);
                             }
 
@@ -1953,8 +1953,8 @@ public abstract class BaseStardogConnector
     public virtual async Task QueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query,
         CancellationToken cancellationToken)
     {
-        HttpRequestMessage request = MakeQueryRequestMessage(query);
-        HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+        var request = MakeQueryRequestMessage(query);
+        var response = await HttpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             throw StorageHelper.HandleHttpQueryError(response);
@@ -1965,7 +1965,7 @@ public abstract class BaseStardogConnector
         try
         {
             // Is the Content Type referring to a Sparql Result Set format?
-            ISparqlResultsReader sparqlResultsReader = MimeTypesHelper.GetSparqlParser(
+            var sparqlResultsReader = MimeTypesHelper.GetSparqlParser(
                 contentType,
                 Regex.IsMatch(query, "ASK", RegexOptions.IgnoreCase));
             sparqlResultsReader.Load(resultsHandler, data);
@@ -1975,7 +1975,7 @@ public abstract class BaseStardogConnector
             // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
 
             // Is the Content Type referring to a RDF format?
-            IRdfReader rdfReader = MimeTypesHelper.GetParser(contentType);
+            var rdfReader = MimeTypesHelper.GetParser(contentType);
             rdfReader.Load(rdfHandler, data);
         }
     }
@@ -1992,7 +1992,7 @@ public abstract class BaseStardogConnector
 
         // Create the Request, for simplicity async requests are always POST
         var queryParams = new Dictionary<string, string>();
-        HttpRequestMessage request = CreateRequest(_kb + transactionId + "/query", accept, HttpMethod.Post, queryParams);
+        var request = CreateRequest(_kb + transactionId + "/query", accept, HttpMethod.Post, queryParams);
 
         // Build the Post Data and add to the Request Body
         request.Content = new FormUrlEncodedContent([new KeyValuePair<string, string>("query", query)]);
@@ -2132,11 +2132,11 @@ public abstract class BaseStardogConnector
         var queryParams = new Dictionary<string, string>();
         if (enableReasoning) queryParams.Add("reasoning", "true");
 
-        HttpRequestMessage request = CreateRequest(_kb + "/transaction/begin", "text/plain", HttpMethod.Post, queryParams);
+        var request = CreateRequest(_kb + "/transaction/begin", "text/plain", HttpMethod.Post, queryParams);
         request.Content = new FormUrlEncodedContent([]);
         try
         {
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "beginning a Transaction in");
@@ -2161,11 +2161,11 @@ public abstract class BaseStardogConnector
     /// <param name="transactionId">The ID of the transaction to commit.</param>
     protected virtual void CommitTransaction(string transactionId)
     {
-        HttpRequestMessage request = CreateRequest(_kb + "/transaction/commit/" + transactionId, "text/plain",
+        var request = CreateRequest(_kb + "/transaction/commit/" + transactionId, "text/plain",
             HttpMethod.Post, []);
         request.Content = new FormUrlEncodedContent([]);
 
-        using (HttpResponseMessage response = HttpClient.SendAsync(request).Result)
+        using (var response = HttpClient.SendAsync(request).Result)
         {
             if (!response.IsSuccessStatusCode)
             {
@@ -2186,10 +2186,10 @@ public abstract class BaseStardogConnector
     /// <param name="transactionId">The ID of the transaction to rollback.</param>
     protected virtual void RollbackTransaction(string transactionId)
     {
-        HttpRequestMessage request = CreateRequest(_kb + "/transaction/rollback/" + transactionId,
+        var request = CreateRequest(_kb + "/transaction/rollback/" + transactionId,
             MimeTypesHelper.Any, HttpMethod.Post, []);
         request.Content = new FormUrlEncodedContent([]);
-        using (HttpResponseMessage response = HttpClient.SendAsync(request).Result)
+        using (var response = HttpClient.SendAsync(request).Result)
         {
             if (!response.IsSuccessStatusCode)
             {
@@ -2305,7 +2305,7 @@ public abstract class BaseStardogConnector
         }
         else
         {
-            HttpRequestMessage request = CreateRequest(_kb + "/transaction/begin", "text/plain",
+            var request = CreateRequest(_kb + "/transaction/begin", "text/plain",
                 HttpMethod.Post, []);
             request.Content = new FormUrlEncodedContent([]);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
@@ -2321,7 +2321,7 @@ public abstract class BaseStardogConnector
                 }
                 else
                 {
-                    HttpResponseMessage response = requestTask.Result;
+                    var response = requestTask.Result;
                     if (!response.IsSuccessStatusCode)
                     {
                         callback(this,
@@ -2383,10 +2383,10 @@ public abstract class BaseStardogConnector
 
         try
         {
-            HttpRequestMessage request = CreateRequest(_kb + "/transaction/begin", "text/plain",
+            var request = CreateRequest(_kb + "/transaction/begin", "text/plain",
                 HttpMethod.Post, []);
             request.Content = new FormUrlEncodedContent([]);
-            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            var response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "beginning a Transaction in");
@@ -2430,7 +2430,7 @@ public abstract class BaseStardogConnector
         }
         else
         {
-            HttpRequestMessage request = CreateRequest(_kb + "/transaction/commit/" + _activeTrans,
+            var request = CreateRequest(_kb + "/transaction/commit/" + _activeTrans,
                 "text/plain", HttpMethod.Post, []);
             request.Content = new FormUrlEncodedContent([]);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
@@ -2446,7 +2446,7 @@ public abstract class BaseStardogConnector
                 }
                 else
                 {
-                    using HttpResponseMessage response = requestTask.Result;
+                    using var response = requestTask.Result;
                     if (!response.IsSuccessStatusCode)
                     {
                         callback(this,
@@ -2483,10 +2483,10 @@ public abstract class BaseStardogConnector
 
         try
         {
-            HttpRequestMessage request = CreateRequest(_kb + "/transaction/commit/" + _activeTrans,
+            var request = CreateRequest(_kb + "/transaction/commit/" + _activeTrans,
                 "text/plain", HttpMethod.Post, []);
             request.Content = new FormUrlEncodedContent([]);
-            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            var response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "committing a Transaction to");
@@ -2525,7 +2525,7 @@ public abstract class BaseStardogConnector
         }
         else
         {
-            HttpRequestMessage request = CreateRequest(_kb + "/transaction/rollback/" + _activeTrans,
+            var request = CreateRequest(_kb + "/transaction/rollback/" + _activeTrans,
                 MimeTypesHelper.Any, HttpMethod.Post, []);
             request.Content = new FormUrlEncodedContent([]);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
@@ -2541,7 +2541,7 @@ public abstract class BaseStardogConnector
                 }
                 else
                 {
-                    using HttpResponseMessage response = requestTask.Result;
+                    using var response = requestTask.Result;
                     if (!response.IsSuccessStatusCode)
                     {
                         callback(this,
@@ -2577,10 +2577,10 @@ public abstract class BaseStardogConnector
 
         try
         {
-            HttpRequestMessage request = CreateRequest(_kb + "/transaction/rollback/" + _activeTrans,
+            var request = CreateRequest(_kb + "/transaction/rollback/" + _activeTrans,
                 MimeTypesHelper.Any, HttpMethod.Post, []);
             request.Content = new FormUrlEncodedContent([]);
-            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            var response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "rolling back a transaction from");
@@ -2649,15 +2649,15 @@ public abstract class BaseStardogConnector
     /// <param name="context">Configuration Serialization Context.</param>
     public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode manager = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode genericManager =
+        var manager = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var genericManager =
             context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
-        INode server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
-        INode store = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyStore));
-        INode loadMode = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyLoadMode));
+        var server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
+        var store = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyStore));
+        var loadMode = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyLoadMode));
 
         // Add Core config
         context.Graph.Assert(new Triple(manager, rdfType, genericManager));
@@ -2674,8 +2674,8 @@ public abstract class BaseStardogConnector
         // Add User Credentials
         if (_username != null && _pwd != null)
         {
-            INode username = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUser));
-            INode pwd = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPassword));
+            var username = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUser));
+            var pwd = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPassword));
             context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(_username)));
             context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(_pwd)));
         }

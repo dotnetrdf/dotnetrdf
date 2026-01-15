@@ -70,7 +70,7 @@ public class BasicTests1 : BaseTest
             g.CreateUriNode(new Uri("http://example.org")),
         };
 
-        foreach (INode n in test.Distinct())
+        foreach (var n in test.Distinct())
         {
             if (n != null)
             {
@@ -117,10 +117,10 @@ public class BasicTests1 : BaseTest
         has = g.CreateUriNode("vds:has");
 
         //Create some Literal Nodes
-        ILiteralNode singleLine = g.CreateLiteralNode("Some string");
-        ILiteralNode multiLine = g.CreateLiteralNode("This goes over\n\nseveral\n\nlines");
-        ILiteralNode french = g.CreateLiteralNode("Bonjour", "fr");
-        ILiteralNode number = g.CreateLiteralNode("12", new Uri(g.NamespaceMap.GetNamespaceUri("xsd") + "integer"));
+        var singleLine = g.CreateLiteralNode("Some string");
+        var multiLine = g.CreateLiteralNode("This goes over\n\nseveral\n\nlines");
+        var french = g.CreateLiteralNode("Bonjour", "fr");
+        var number = g.CreateLiteralNode("12", new Uri(g.NamespaceMap.GetNamespaceUri("xsd") + "integer"));
 
         g.Assert(new Triple(wh, supervises, rav08r));
         g.Assert(new Triple(lac, supervises, rav08r));
@@ -135,7 +135,7 @@ public class BasicTests1 : BaseTest
 
         //Now print all the Statements
         Console.WriteLine("All Statements");
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             Console.WriteLine(t.ToString());
         }
@@ -143,7 +143,7 @@ public class BasicTests1 : BaseTest
         //Get statements about Rob Vesse
         Console.WriteLine();
         Console.WriteLine("Statements about Rob Vesse");
-        foreach (Triple t in g.GetTriples(rav08r))
+        foreach (var t in g.GetTriples(rav08r))
         {
             Console.WriteLine(t.ToString());
         }
@@ -151,7 +151,7 @@ public class BasicTests1 : BaseTest
         //Get Statements about Collaboration
         Console.WriteLine();
         Console.WriteLine("Statements about Collaboration");
-        foreach (Triple t in g.GetTriples(collaborates))
+        foreach (var t in g.GetTriples(collaborates))
         {
             Console.WriteLine(t.ToString());
         }
@@ -266,20 +266,20 @@ public class BasicTests1 : BaseTest
     [Fact]
     public void UriResolutionWithGraphBase()
     {
-        IGraph g = new Graph
+        var g = new Graph
         {
             BaseUri = new Uri("http://example.org/")
         };
 
         var expected = new Uri("http://example.org/relative/path");
-        IUriNode actual = g.CreateUriNode(new Uri("relative/path", UriKind.Relative));
+        var actual = g.CreateUriNode(new Uri("relative/path", UriKind.Relative));
         Assert.Equal(expected, actual.Uri);
     }
 
     [Fact]
     public void UriResolutionUriProvidedToQNameMethod()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         var ex = Assert.Throws<RdfException>(() => g.CreateUriNode("http://example.org"));
      
         TestTools.ReportError("Error", ex);
@@ -311,8 +311,8 @@ public class BasicTests1 : BaseTest
 
         //Create the Nodes
         var g = new Graph();
-        IUriNode u = g.CreateUriNode(new Uri("http://www.google.com"));
-        ILiteralNode l = g.CreateLiteralNode("http://www.google.com/");
+        var u = g.CreateUriNode(new Uri("http://www.google.com"));
+        var l = g.CreateLiteralNode("http://www.google.com/");
 
         Console.WriteLine("Created a URI and Literal Node both referring to 'http://www.google.com'");
         Console.WriteLine("String form of URI Node is:");
@@ -329,8 +329,8 @@ public class BasicTests1 : BaseTest
         //Assert.NotEqual(u, l);
 
         //Create some plain and typed literals which may have colliding Hash Codes
-        ILiteralNode plain = g.CreateLiteralNode("test^^http://example.org/type");
-        ILiteralNode typed = g.CreateLiteralNode("test", new Uri("http://example.org/type"));
+        var plain = g.CreateLiteralNode("test^^http://example.org/type");
+        var typed = g.CreateLiteralNode("test", new Uri("http://example.org/type"));
 
         Console.WriteLine();
         Console.WriteLine("Created a Plain and Typed Literal where the String representations are identical");
@@ -347,8 +347,8 @@ public class BasicTests1 : BaseTest
         Assert.NotEqual(plain, typed);
 
         //Create Triples
-        IBlankNode b = g.CreateBlankNode();
-        IUriNode type = g.CreateUriNode("rdf:type");
+        var b = g.CreateBlankNode();
+        var type = g.CreateUriNode("rdf:type");
         Triple t1, t2;
         t1 = new Triple(b, type, u);
         t2 = new Triple(b, type, l);
@@ -393,33 +393,33 @@ public class BasicTests1 : BaseTest
         //Create the Nodes
         var g = new Graph();
         Console.WriteLine("Creating two URIs referring to google - one lowercase, one uppercase - which should be equivalent");
-        IUriNode a = g.CreateUriNode(new Uri("http://www.google.com"));
-        IUriNode b = g.CreateUriNode(new Uri("http://www.GOOGLE.com/"));
+        var a = g.CreateUriNode(new Uri("http://www.google.com"));
+        var b = g.CreateUriNode(new Uri("http://www.GOOGLE.com/"));
 
         TestTools.CompareNodes(a, b, true);
 
         Console.WriteLine("Creating two URIs with the same Fragment ID but differing in case and thus are different since Fragment IDs are case sensitive => not equals");
-        IUriNode c = g.CreateUriNode(new Uri("http://www.google.com/#Test"));
-        IUriNode d = g.CreateUriNode(new Uri("http://www.GOOGLE.com/#test"));
+        var c = g.CreateUriNode(new Uri("http://www.google.com/#Test"));
+        var d = g.CreateUriNode(new Uri("http://www.GOOGLE.com/#test"));
 
         TestTools.CompareNodes(c, d, false);
 
         Console.WriteLine("Creating two identical URIs with unusual characters in them");
-        IUriNode e = g.CreateUriNode(new Uri("http://www.google.com/random,_@characters"));
-        IUriNode f = g.CreateUriNode(new Uri("http://www.google.com/random,_@characters"));
+        var e = g.CreateUriNode(new Uri("http://www.google.com/random,_@characters"));
+        var f = g.CreateUriNode(new Uri("http://www.google.com/random,_@characters"));
 
         TestTools.CompareNodes(e, f, true);
 
         Console.WriteLine("Creating two URIs with similar paths that differ in case");
-        IUriNode h = g.CreateUriNode(new Uri("http://www.google.com/path/test/case"));
-        IUriNode i = g.CreateUriNode(new Uri("http://www.google.com/path/Test/case"));
+        var h = g.CreateUriNode(new Uri("http://www.google.com/path/test/case"));
+        var i = g.CreateUriNode(new Uri("http://www.google.com/path/Test/case"));
 
         TestTools.CompareNodes(h, i, false);
 
         Console.WriteLine("Creating three URIs with equivalent relative paths");
-        IUriNode j = g.CreateUriNode(new Uri("http://www.google.com/relative/test/../example.html"));
-        IUriNode k = g.CreateUriNode(new Uri("http://www.google.com/relative/test/monkey/../../example.html"));
-        IUriNode l = g.CreateUriNode(new Uri("http://www.google.com/relative/./example.html"));
+        var j = g.CreateUriNode(new Uri("http://www.google.com/relative/test/../example.html"));
+        var k = g.CreateUriNode(new Uri("http://www.google.com/relative/test/monkey/../../example.html"));
+        var l = g.CreateUriNode(new Uri("http://www.google.com/relative/./example.html"));
 
         TestTools.CompareNodes(j, k, true);
         TestTools.CompareNodes(k, l, true);
@@ -441,10 +441,10 @@ public class BasicTests1 : BaseTest
             BaseUri = new Uri("http://example.org/BlankNodeEquality")
         };
 
-        IBlankNode b = g.CreateBlankNode();
-        IBlankNode c = g.CreateBlankNode();
-        IBlankNode d = h.CreateBlankNode();
-        IBlankNode e = i.CreateBlankNode();
+        var b = g.CreateBlankNode();
+        var c = g.CreateBlankNode();
+        var d = h.CreateBlankNode();
+        var e = i.CreateBlankNode();
 
         //Shouldn't be equal
         Assert.NotEqual(b, c);
@@ -461,9 +461,9 @@ public class BasicTests1 : BaseTest
 
         //Named Nodes
         // Named nodes are equal if they have the same ID
-        IBlankNode one = g.CreateBlankNode("one");
-        IBlankNode two = h.CreateBlankNode("one");
-        IBlankNode three = i.CreateBlankNode("one");
+        var one = g.CreateBlankNode("one");
+        var two = h.CreateBlankNode("one");
+        var three = i.CreateBlankNode("one");
 
         Assert.Equal(one, three);
         Assert.Equal(one, two);
@@ -624,7 +624,7 @@ public class BasicTests1 : BaseTest
         nodes.Sort();
 
         //Output the Results
-        foreach (INode n in nodes)
+        foreach (var n in nodes)
         {
             if (n == null)
             {
@@ -643,7 +643,7 @@ public class BasicTests1 : BaseTest
         nodes.Reverse();
 
         //Output the Results
-        foreach (INode n in nodes)
+        foreach (var n in nodes)
         {
             if (n == null)
             {
@@ -713,7 +713,7 @@ public class BasicTests1 : BaseTest
         nodes.Sort(comparer);
 
         //Output the Results
-        foreach (INode n in nodes)
+        foreach (var n in nodes)
         {
             if (n == null)
             {
@@ -732,7 +732,7 @@ public class BasicTests1 : BaseTest
         nodes.Reverse();
 
         //Output the Results
-        foreach (INode n in nodes)
+        foreach (var n in nodes)
         {
             if (n == null)
             {
@@ -753,9 +753,9 @@ public class BasicTests1 : BaseTest
         BlankNode nullBNode = null;
 
         var g = new Graph();
-        IUriNode someUri = g.CreateUriNode(new Uri("http://example.org"));
-        ILiteralNode someLiteral = g.CreateLiteralNode("A Literal");
-        IBlankNode someBNode = g.CreateBlankNode();
+        var someUri = g.CreateUriNode(new Uri("http://example.org"));
+        var someLiteral = g.CreateLiteralNode("A Literal");
+        var someBNode = g.CreateBlankNode();
 
         Assert.Equal(nullUri, nullUri);
         Assert.Equal(nullUri, null);
