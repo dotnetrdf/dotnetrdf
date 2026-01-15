@@ -48,12 +48,12 @@ public class Aggregations
     // Load types from sp system ontology
     static Aggregations()
     {
-        IGraph model = SP.GetModel();
-        IEnumerator<INode> it = model.GetTriplesWithPredicateObject(RDFS.PropertySubClassOf, SP.ClassAggregation).Select(t => t.Subject).GetEnumerator();
+        var model = SP.GetModel();
+        var it = model.GetTriplesWithPredicateObject(RDFS.PropertySubClassOf, SP.ClassAggregation).Select(t => t.Subject).GetEnumerator();
         while (it.MoveNext())
         {
-            INode aggType = it.Current;
-            Triple labelTriple = model.GetTriplesWithSubjectPredicate(aggType, RDFS.PropertyLabel).FirstOrDefault();
+            var aggType = it.Current;
+            var labelTriple = model.GetTriplesWithSubjectPredicate(aggType, RDFS.PropertyLabel).FirstOrDefault();
             if (labelTriple != null) {
                 var name = ((ILiteralNode)labelTriple.Object).Value;
                 register(aggType, name);

@@ -50,14 +50,14 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
         _rhsHasMore = true;
         _lhsResults = _lhs.Evaluate(context, input, activeGraph).GetAsyncEnumerator(cancellationToken);
         _rhsResults = _rhs.Evaluate(context, input, activeGraph).GetAsyncEnumerator(cancellationToken);
-        Task<bool> lhsMoveNext = _lhsResults.MoveNextAsync().AsTask();
-        Task<bool> rhsMoveNext = _rhsResults.MoveNextAsync().AsTask();
+        var lhsMoveNext = _lhsResults.MoveNextAsync().AsTask();
+        var rhsMoveNext = _rhsResults.MoveNextAsync().AsTask();
         IAsyncEnumerable<ISet>? joinEnumerator = null;
         do
         {
             if (joinEnumerator != null)
             {
-                await foreach (ISet? joinResult in joinEnumerator)
+                await foreach (var joinResult in joinEnumerator)
                 {
                     if (joinResult != null)
                     {
@@ -78,7 +78,7 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                         _lhsHasMore = lhsMoveNext.Result;
                         if (_lhsHasMore)
                         {
-                            foreach (ISet p in ProcessLhs(context, _lhsResults.Current, activeGraph))
+                            foreach (var p in ProcessLhs(context, _lhsResults.Current, activeGraph))
                             {
                                 yield return p;
                             }
@@ -87,10 +87,10 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                         }
                         else
                         {
-                            IEnumerable<ISet>? moreResults =  OnLhsDone(context);
+                            var moreResults =  OnLhsDone(context);
                             if (moreResults != null)
                             {
-                                foreach (ISet r in moreResults) { yield return r; }
+                                foreach (var r in moreResults) { yield return r; }
                             }
                         }
                     }
@@ -99,7 +99,7 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                         _rhsHasMore = rhsMoveNext.Result;
                         if (_rhsHasMore)
                         {
-                            foreach (ISet p in ProcessRhs(context, _rhsResults.Current, activeGraph))
+                            foreach (var p in ProcessRhs(context, _rhsResults.Current, activeGraph))
                             {
                                 yield return p;
                             }
@@ -108,10 +108,10 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                         }
                         else
                         {
-                            IEnumerable<ISet>? moreResults = OnRhsDone(context);
+                            var moreResults = OnRhsDone(context);
                             if (moreResults != null)
                             {
-                                foreach (ISet r in moreResults) { yield return r; }
+                                foreach (var r in moreResults) { yield return r; }
                             }
                         }
                     }
@@ -121,7 +121,7 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                     _lhsHasMore = await lhsMoveNext;
                     if (_lhsHasMore)
                     {
-                        foreach (ISet p in ProcessLhs(context, _lhsResults.Current, activeGraph))
+                        foreach (var p in ProcessLhs(context, _lhsResults.Current, activeGraph))
                         {
                             yield return p;
                         }
@@ -130,10 +130,10 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                     }
                     else
                     {
-                        IEnumerable<ISet>? moreResults = OnLhsDone(context);
+                        var moreResults = OnLhsDone(context);
                         if (moreResults != null)
                         {
-                            foreach (ISet r in moreResults) { yield return r; }
+                            foreach (var r in moreResults) { yield return r; }
                         }
                     }
                 }
@@ -143,7 +143,7 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                 _rhsHasMore = await rhsMoveNext;
                 if (_rhsHasMore)
                 {
-                    foreach (ISet p in ProcessRhs(context, _rhsResults.Current, activeGraph))
+                    foreach (var p in ProcessRhs(context, _rhsResults.Current, activeGraph))
                     {
                         yield return p;
                     }
@@ -152,10 +152,10 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                 }
                 else
                 {
-                    IEnumerable<ISet>? moreResults = OnRhsDone(context);
+                    var moreResults = OnRhsDone(context);
                     if (moreResults != null)
                     {
-                        foreach (ISet r in moreResults) { yield return r; }
+                        foreach (var r in moreResults) { yield return r; }
                     }
                 }
             }

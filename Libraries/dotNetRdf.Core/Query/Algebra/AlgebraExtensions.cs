@@ -76,7 +76,7 @@ public static class AlgebraExtensions
 
         var stop = new StopToken();
         var t = (int)Math.Min(timeout, int.MaxValue);
-        Task productTask = Task.Factory.StartNew(() => GenerateProduct(multiset, other, productSet, stop));
+        var productTask = Task.Factory.StartNew(() => GenerateProduct(multiset, other, productSet, stop));
         if (!productTask.Wait(t))
         {
             stop.ShouldStop = true;
@@ -110,9 +110,9 @@ public static class AlgebraExtensions
         }
         else
         {
-            foreach (ISet x in multiset.Sets)
+            foreach (var x in multiset.Sets)
             {
-                foreach (ISet y in other.Sets)
+                foreach (var y in other.Sets)
                 {
                     target.Add(x.Join(y));
                     // if (stop.ShouldStop) break;
@@ -126,10 +126,10 @@ public static class AlgebraExtensions
     {
         if (stop.ShouldStop) return;
         var id = productSet.GetNextBaseID();
-        foreach (ISet y in other.Sets)
+        foreach (var y in other.Sets)
         {
             id++;
-            ISet z = x.Join(y);
+            var z = x.Join(y);
             z.ID = id;
             productSet.Add(z);
             if (stop.ShouldStop) return;
@@ -149,10 +149,10 @@ public static class AlgebraExtensions
             {
                 m.AddVariable(var);
             }
-            foreach (BindingTuple tuple in pattern.Tuples)
+            foreach (var tuple in pattern.Tuples)
             {
                 var set = new Set();
-                foreach (KeyValuePair<string, PatternItem> binding in tuple.Values)
+                foreach (var binding in tuple.Values)
                 {
                     set.Add(binding.Key, tuple[binding.Key]);
                 }

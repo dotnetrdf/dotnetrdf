@@ -28,7 +28,7 @@ public class AlgebraEvaluationTests
         _g.LoadFromFile("resources/single_graph.ttl");
         _dataset = new TripleStore();
         _dataset.Add(_g);
-        INodeFactory nodeFactory = _g;
+        var nodeFactory = _g;
         _alice = nodeFactory.CreateUriNode(nodeFactory.UriFactory.Create("http://example.org/alice"));
         _bob = nodeFactory.CreateUriNode(nodeFactory.UriFactory.Create("http://example.org/bob"));
         _carol = nodeFactory.CreateUriNode(nodeFactory.UriFactory.Create("http://example.org/carol"));
@@ -45,7 +45,7 @@ public class AlgebraEvaluationTests
         var algebra = new Bgp(new TriplePattern(new NodeMatchPattern(_alice), new NodeMatchPattern(_foafKnows), new VariablePattern("x")));
         var p = new PullQueryProcessor(_dataset);
         var results = new List<ISet>();
-        await foreach (ISet result in p.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
+        await foreach (var result in p.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
         {
             results.Add(result);
         }
@@ -68,12 +68,12 @@ public class AlgebraEvaluationTests
         ]);
         var processor = new PullQueryProcessor(_dataset);
         var results = new List<ISet>();
-        await foreach (ISet result in processor.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
+        await foreach (var result in processor.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
         {
             results.Add(result);
         }
         Assert.Single(results);
-        ISet actual = results.First();
+        var actual = results.First();
         Assert.Equal(_bob, actual["x"]);
         Assert.Equal("Bob", ((ILiteralNode)actual["xname"]).Value);
     }
@@ -98,12 +98,12 @@ public class AlgebraEvaluationTests
         ]);
         var processor = new PullQueryProcessor(_dataset);
         var results = new List<ISet>();
-        await foreach (ISet result in processor.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
+        await foreach (var result in processor.Evaluate(algebra, cancellationToken: TestContext.Current.CancellationToken))
         {
             results.Add(result);
         }
         Assert.Single(results);
-        ISet actual = results.First();
+        var actual = results.First();
         Assert.Equal(_bob, actual["x"]);
         Assert.Equal("Bob", ((ILiteralNode)actual["xname"]).Value);
         Assert.Equal(_bobHome, actual["xhome"]);

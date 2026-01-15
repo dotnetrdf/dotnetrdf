@@ -171,8 +171,8 @@ public class AllegroGraphConnector
         {
             var accept = new HashSet<MediaTypeWithQualityHeaderValue>(
                 MimeTypesHelper.SparqlResultsJson.Select(r => new MediaTypeWithQualityHeaderValue(r)));
-            HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> header = new HttpRequestMessage().Headers.Accept;
-            foreach (MediaTypeWithQualityHeaderValue mt in accept)
+            var header = new HttpRequestMessage().Headers.Accept;
+            foreach (var mt in accept)
             {
                 header.Add(mt);
             }
@@ -190,13 +190,13 @@ public class AllegroGraphConnector
         try
         {
             // Create the Request
-            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, HttpMethod.Post, []);
+            var request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, HttpMethod.Post, []);
 
             // Build the Post Data and add to the Request Body
             request.Content = new FormUrlEncodedContent([new KeyValuePair<string, string>("query", sparqlUpdate)]);
 
             // Get the Response and process based on the Content Type
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "updating");
@@ -219,7 +219,7 @@ public class AllegroGraphConnector
         try
         {
             // Create the Request
-            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _updatePath,
+            var request = CreateRequest(_repositoriesPrefix + _store + _updatePath,
                 MimeTypesHelper.Any, HttpMethod.Post, []);
 
             // Build the Post Data and add to the Request Body
@@ -239,7 +239,7 @@ public class AllegroGraphConnector
                 }
                 else
                 {
-                    using HttpResponseMessage response = requestTask.Result;
+                    using var response = requestTask.Result;
                     if (!response.IsSuccessStatusCode)
                     {
                         callback(this,
@@ -269,13 +269,13 @@ public class AllegroGraphConnector
     {
         try
         {
-            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _updatePath,
+            var request = CreateRequest(_repositoriesPrefix + _store + _updatePath,
                 MimeTypesHelper.Any, HttpMethod.Post, []);
 
             // Build the Post Data and add to the Request Body
             request.Content =
                 new FormUrlEncodedContent([new KeyValuePair<string, string>("query", sparqlUpdate)]);
-            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            var response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "updating");
@@ -378,14 +378,14 @@ public class AllegroGraphConnector
     /// <param name="context">Configuration Serialization Context.</param>
     public override void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode manager = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
-        INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode genericManager = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
-        INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
-        INode catalog = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCatalog));
-        INode store = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore));
+        var manager = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        var dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
+        var genericManager = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+        var server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
+        var catalog = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCatalog));
+        var store = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore));
 
         context.Graph.Assert(new Triple(manager, rdfType, genericManager));
         context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
@@ -403,8 +403,8 @@ public class AllegroGraphConnector
         
         if (HttpClientHandler?.Credentials is NetworkCredential networkCredential)
         {
-            INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
-            INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
+            var username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
+            var pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
             context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(networkCredential.UserName)));
             context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(networkCredential.Password)));
         }

@@ -159,10 +159,10 @@ public class AllegroGraphServer
         try
         {
             var createParams = new Dictionary<string, string> {{"override", "false"}};
-            HttpRequestMessage request =
+            var request =
                 CreateRequest("repositories/" + template.ID, "*/*", HttpMethod.Put, createParams);
 
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.Conflict)
             {
                 // A 409 just means that the store already exists
@@ -189,9 +189,9 @@ public class AllegroGraphServer
     {
         try
         {
-            HttpRequestMessage request = CreateRequest("repositories/" + storeID, "*/*", HttpMethod.Delete, []);
+            var request = CreateRequest("repositories/" + storeID, "*/*", HttpMethod.Delete, []);
 
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "delete");
@@ -212,8 +212,8 @@ public class AllegroGraphServer
         string data;
         try
         {
-            HttpRequestMessage request = CreateRequest("repositories", "application/json", HttpMethod.Get, []);
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            var request = CreateRequest("repositories", "application/json", HttpMethod.Get, []);
+            using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "list Stores from");
@@ -230,7 +230,7 @@ public class AllegroGraphServer
 
         var json = JArray.Parse(data);
         var stores = new List<string>();
-        foreach (JToken token in json.Children())
+        foreach (var token in json.Children())
         {
             if (token["id"] is JValue id && id.Value != null)
             {
@@ -264,7 +264,7 @@ public class AllegroGraphServer
     {
         try
         {
-            HttpRequestMessage request = CreateRequest("repositories", "application/json", HttpMethod.Get,
+            var request = CreateRequest("repositories", "application/json", HttpMethod.Get,
                 []);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
@@ -279,7 +279,7 @@ public class AllegroGraphServer
                 }
                 else
                 {
-                    HttpResponseMessage response = requestTask.Result;
+                    var response = requestTask.Result;
                     if (!response.IsSuccessStatusCode)
                     {
                         callback(this,
@@ -305,7 +305,7 @@ public class AllegroGraphServer
                             {
                                 var json = JArray.Parse(readTask.Result);
                                 var stores = new List<string>();
-                                foreach (JToken token in json.Children())
+                                foreach (var token in json.Children())
                                 {
                                     if (token["id"] is JValue id)
                                     {
@@ -364,7 +364,7 @@ public class AllegroGraphServer
         try
         {
             var createParams = new Dictionary<string, string> {{"override", "false"}};
-            HttpRequestMessage request =
+            var request =
                 CreateRequest("repositories/" + template.ID, "*/*", HttpMethod.Put, createParams);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
@@ -380,7 +380,7 @@ public class AllegroGraphServer
                 }
                 else
                 {
-                    HttpResponseMessage response = requestTask.Result;
+                    var response = requestTask.Result;
                     if (!(response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.Conflict))
                     {
                         callback(this,
@@ -417,7 +417,7 @@ public class AllegroGraphServer
     {
         try
         {
-            HttpRequestMessage request = CreateRequest("repositories/" + storeId, "*/*", HttpMethod.Delete,
+            var request = CreateRequest("repositories/" + storeId, "*/*", HttpMethod.Delete,
                 []);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
@@ -432,7 +432,7 @@ public class AllegroGraphServer
                 }
                 else
                 {
-                    HttpResponseMessage response = requestTask.Result;
+                    var response = requestTask.Result;
                     if (!response.IsSuccessStatusCode)
                     {
                         callback(this,
@@ -532,13 +532,13 @@ public class AllegroGraphServer
     /// <param name="context">Configuration Serialization Context.</param>
     public override void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode manager = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode storageServer = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageServer));
-        INode server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
-        INode catalog = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyCatalog));
+        var manager = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var storageServer = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageServer));
+        var server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
+        var catalog = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyCatalog));
 
         context.Graph.Assert(new Triple(manager, rdfType, storageServer));
         context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
@@ -555,8 +555,8 @@ public class AllegroGraphServer
 
         if (_username != null && _pwd != null)
         {
-            INode username = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUser));
-            INode pwd = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPassword));
+            var username = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUser));
+            var pwd = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPassword));
             context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(_username)));
             context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(_pwd)));
         }

@@ -46,7 +46,7 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void TripleStoreIsEmpty01()
     {
-        ITripleStore store = GetInstance();
+        var store = GetInstance();
 
         Assert.True(store.IsEmpty);
     }
@@ -54,7 +54,7 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void TripleStoreIsEmpty02()
     {
-        ITripleStore store = GetInstance();
+        var store = GetInstance();
         store.Add(new Graph());
 
         Assert.False(store.IsEmpty);
@@ -63,7 +63,7 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void TripleStoreAdd01()
     {
-        ITripleStore store = GetInstance();
+        var store = GetInstance();
 
         var g = new Graph();
         store.Add(g);
@@ -75,9 +75,9 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void TripleStoreAdd02()
     {
-        ITripleStore store = GetInstance();
+        var store = GetInstance();
 
-        IGraph g = new Graph(new UriNode(new Uri("https://example.org/graph")));
+        var g = new Graph(new UriNode(new Uri("https://example.org/graph")));
         store.Add(g);
 
         Assert.False(store.IsEmpty);
@@ -87,7 +87,7 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void TripleStoreHasGraph01()
     {
-        ITripleStore store = GetInstance();
+        var store = GetInstance();
 
         Assert.False(store.HasGraph(new UriNode(new Uri("https://thereisnosuchdomain.com:1234/graph"))));
     }
@@ -95,9 +95,9 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void TripleStoreHasGraph02()
     {
-        ITripleStore store = GetInstance();
+        var store = GetInstance();
 
-        IGraph g = new Graph();
+        var g = new Graph();
         store.Add(g);
 
         Assert.True(store.HasGraph((IRefNode?)null));
@@ -106,9 +106,9 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void TripleStoreHasGraph03()
     {
-        ITripleStore store = GetInstance();
+        var store = GetInstance();
 
-        IGraph g = new Graph(new UriNode(new Uri("https://nosuchdomain.com/graph")));
+        var g = new Graph(new UriNode(new Uri("https://nosuchdomain.com/graph")));
         store.Add(g);
 
         Assert.True(store.HasGraph(g.Name));
@@ -117,12 +117,12 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void EnumerateQuads01()
     {
-        ITripleStore store = GetInstance();
-        IGraph g = new Graph(new UriNode(new Uri("https://example.org/g1")));
-        INode s1 = g.CreateUriNode(new Uri("https://example.org/s1"));
-        IUriNode p = g.CreateUriNode(new Uri("https://example.org/p"));
-        IUriNode o = g.CreateUriNode(new Uri("https://example.org/o"));
-        IUriNode s2 = g.CreateUriNode(new Uri("https://example.org/s2"));
+        var store = GetInstance();
+        var g = new Graph(new UriNode(new Uri("https://example.org/g1")));
+        var s1 = g.CreateUriNode(new Uri("https://example.org/s1"));
+        var p = g.CreateUriNode(new Uri("https://example.org/p"));
+        var o = g.CreateUriNode(new Uri("https://example.org/o"));
+        var s2 = g.CreateUriNode(new Uri("https://example.org/s2"));
         g.Assert(new Triple(s1, p, o));
         g.Assert(new Triple(s2, p, o));
         
@@ -141,20 +141,20 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void EnumerateQuads02()
     {
-        ITripleStore store = GetInstance();
+        var store = GetInstance();
         var g1 = new Graph(new UriNode(new Uri("https://example.org/g1")));
-        INode s1 = g1.CreateUriNode(new Uri("https://example.org/s1"));
-        IUriNode p = g1.CreateUriNode(new Uri("https://example.org/p"));
-        IUriNode o = g1.CreateUriNode(new Uri("https://example.org/o"));
-        IUriNode s2 = g1.CreateUriNode(new Uri("https://example.org/s2"));
+        var s1 = g1.CreateUriNode(new Uri("https://example.org/s1"));
+        var p = g1.CreateUriNode(new Uri("https://example.org/p"));
+        var o = g1.CreateUriNode(new Uri("https://example.org/o"));
+        var s2 = g1.CreateUriNode(new Uri("https://example.org/s2"));
         g1.Assert(new Triple(s1, p, o));
         g1.Assert(new Triple(s2, p, o));
 
         var g2 = new Graph(new UriNode(new Uri("https://example.org/g2")));
-        INode s12 = g2.CreateUriNode(new Uri("https://example.org/s1"));
-        IUriNode p2 = g2.CreateUriNode(new Uri("https://example.org/p"));
-        IUriNode o2 = g2.CreateUriNode(new Uri("https://example.org/o"));
-        IUriNode s22 = g2.CreateUriNode(new Uri("https://example.org/s2"));
+        var s12 = g2.CreateUriNode(new Uri("https://example.org/s1"));
+        var p2 = g2.CreateUriNode(new Uri("https://example.org/p"));
+        var o2 = g2.CreateUriNode(new Uri("https://example.org/o"));
+        var s22 = g2.CreateUriNode(new Uri("https://example.org/s2"));
         g2.Assert(new Triple(s12, p2, o2));
         g2.Assert(new Triple(s22, p2, o2));
 
@@ -182,12 +182,12 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void AssertQuadsIntoNewGraphs()
     {
-        ITripleStore store = GetInstance();
-        INode s = new UriNode(store.UriFactory.Create("https://example.org/s"));
-        INode p = new UriNode(store.UriFactory.Create("https://example.org/p"));
-        INode o = new UriNode(store.UriFactory.Create("https://example.org/o"));
-        IRefNode g1 = new UriNode(store.UriFactory.Create("https://example.org/g1"));
-        IRefNode g2 = new UriNode(store.UriFactory.Create("https://example.org/g2"));
+        var store = GetInstance();
+        var s = new UriNode(store.UriFactory.Create("https://example.org/s"));
+        var p = new UriNode(store.UriFactory.Create("https://example.org/p"));
+        var o = new UriNode(store.UriFactory.Create("https://example.org/o"));
+        var g1 = new UriNode(store.UriFactory.Create("https://example.org/g1"));
+        var g2 = new UriNode(store.UriFactory.Create("https://example.org/g2"));
         store.Assert(new Quad(s,p,o,g1));
         store.Assert(new Quad(s, p,o, g2));
         Assert.Equal(2, store.Graphs.Count);
@@ -197,12 +197,12 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void AssertQuadsIntoExistingGraphs()
     {
-        ITripleStore store = GetInstance();
-        INode s = new UriNode(store.UriFactory.Create("https://example.org/s"));
-        INode p = new UriNode(store.UriFactory.Create("https://example.org/p"));
-        INode o = new UriNode(store.UriFactory.Create("https://example.org/o"));
-        INode o2= new UriNode(store.UriFactory.Create("https://example.org/o2"));
-        IRefNode g1 = new UriNode(store.UriFactory.Create("https://example.org/g1"));
+        var store = GetInstance();
+        var s = new UriNode(store.UriFactory.Create("https://example.org/s"));
+        var p = new UriNode(store.UriFactory.Create("https://example.org/p"));
+        var o = new UriNode(store.UriFactory.Create("https://example.org/o"));
+        var o2 = new UriNode(store.UriFactory.Create("https://example.org/o2"));
+        var g1 = new UriNode(store.UriFactory.Create("https://example.org/g1"));
         var g = new Graph(g1);
         g.Assert(new Triple(s, p, o));
         store.Add(g);
@@ -221,10 +221,10 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void AssertQuadsIntoNewUnnamedGraph()
     {
-        ITripleStore store = GetInstance();
-        INode s = new UriNode(store.UriFactory.Create("https://example.org/s"));
-        INode p = new UriNode(store.UriFactory.Create("https://example.org/p"));
-        INode o = new UriNode(store.UriFactory.Create("https://example.org/o"));
+        var store = GetInstance();
+        var s = new UriNode(store.UriFactory.Create("https://example.org/s"));
+        var p = new UriNode(store.UriFactory.Create("https://example.org/p"));
+        var o = new UriNode(store.UriFactory.Create("https://example.org/o"));
         store.Assert(new Quad(s, p, o, null));
         Assert.True(store.HasGraph((IRefNode?)null));
         Assert.Single(store.Graphs[(IRefNode?)null].Triples);
@@ -233,11 +233,11 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void AssertQuadsIntoExistingUnnamedGraph()
     {
-        ITripleStore store = GetInstance();
-        INode s = new UriNode(store.UriFactory.Create("https://example.org/s"));
-        INode p = new UriNode(store.UriFactory.Create("https://example.org/p"));
-        INode o = new UriNode(store.UriFactory.Create("https://example.org/o"));
-        INode o2= new UriNode(store.UriFactory.Create("https://example.org/o2"));
+        var store = GetInstance();
+        var s = new UriNode(store.UriFactory.Create("https://example.org/s"));
+        var p = new UriNode(store.UriFactory.Create("https://example.org/p"));
+        var o = new UriNode(store.UriFactory.Create("https://example.org/o"));
+        var o2 = new UriNode(store.UriFactory.Create("https://example.org/o2"));
         var g = new Graph();
         g.Assert(new Triple(s, p, o));
         store.Add(g);
@@ -252,12 +252,12 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void RetractQuadsFromExistingNamedGraph()
     {
-        ITripleStore store = GetInstance();
-        INode s = new UriNode(store.UriFactory.Create("https://example.org/s"));
-        INode p = new UriNode(store.UriFactory.Create("https://example.org/p"));
-        INode o = new UriNode(store.UriFactory.Create("https://example.org/o"));
-        INode o2= new UriNode(store.UriFactory.Create("https://example.org/o2"));
-        IRefNode g1 = new UriNode(store.UriFactory.Create("https://example.org/g1"));
+        var store = GetInstance();
+        var s = new UriNode(store.UriFactory.Create("https://example.org/s"));
+        var p = new UriNode(store.UriFactory.Create("https://example.org/p"));
+        var o = new UriNode(store.UriFactory.Create("https://example.org/o"));
+        var o2 = new UriNode(store.UriFactory.Create("https://example.org/o2"));
+        var g1 = new UriNode(store.UriFactory.Create("https://example.org/g1"));
         var g = new Graph(g1);
         g.Assert(new Triple(s, p, o));
         store.Add(g);
@@ -277,11 +277,11 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void RetractQuadsFromExistingUnnamedGraph()
     {
-        ITripleStore store = GetInstance();
-        INode s = new UriNode(store.UriFactory.Create("https://example.org/s"));
-        INode p = new UriNode(store.UriFactory.Create("https://example.org/p"));
-        INode o = new UriNode(store.UriFactory.Create("https://example.org/o"));
-        INode o2= new UriNode(store.UriFactory.Create("https://example.org/o2"));
+        var store = GetInstance();
+        var s = new UriNode(store.UriFactory.Create("https://example.org/s"));
+        var p = new UriNode(store.UriFactory.Create("https://example.org/p"));
+        var o = new UriNode(store.UriFactory.Create("https://example.org/o"));
+        var o2 = new UriNode(store.UriFactory.Create("https://example.org/o2"));
         IRefNode? unnamed = null;
         var g = new Graph();
         g.Assert(new Triple(s, p, o));
@@ -302,12 +302,12 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void RetractQuadsFromNonExistentNamedGraph()
     {
-        ITripleStore store = GetInstance();
-        INode s = new UriNode(store.UriFactory.Create("https://example.org/s"));
-        INode p = new UriNode(store.UriFactory.Create("https://example.org/p"));
-        INode o = new UriNode(store.UriFactory.Create("https://example.org/o"));
-        IRefNode g1 = new UriNode(store.UriFactory.Create("https://example.org/g1"));
-        IRefNode g2 = new UriNode(store.UriFactory.Create("https://example.org/g2"));
+        var store = GetInstance();
+        var s = new UriNode(store.UriFactory.Create("https://example.org/s"));
+        var p = new UriNode(store.UriFactory.Create("https://example.org/p"));
+        var o = new UriNode(store.UriFactory.Create("https://example.org/o"));
+        var g1 = new UriNode(store.UriFactory.Create("https://example.org/g1"));
+        var g2 = new UriNode(store.UriFactory.Create("https://example.org/g2"));
         var g = new Graph(g1);
         g.Assert(new Triple(s,p,o));
         store.Add(g);
@@ -322,11 +322,11 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void RetractQuadsFromNonExistentUnnamedGraph()
     {
-        ITripleStore store = GetInstance();
-        INode s = new UriNode(store.UriFactory.Create("https://example.org/s"));
-        INode p = new UriNode(store.UriFactory.Create("https://example.org/p"));
-        INode o = new UriNode(store.UriFactory.Create("https://example.org/o"));
-        IRefNode g1 = new UriNode(store.UriFactory.Create("https://example.org/g1"));
+        var store = GetInstance();
+        var s = new UriNode(store.UriFactory.Create("https://example.org/s"));
+        var p = new UriNode(store.UriFactory.Create("https://example.org/p"));
+        var o = new UriNode(store.UriFactory.Create("https://example.org/o"));
+        var g1 = new UriNode(store.UriFactory.Create("https://example.org/g1"));
         IRefNode? unnamed = null;
         var g = new Graph(g1);
         g.Assert(new Triple(s,p,o));
@@ -342,12 +342,12 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void MatchQuadsInNamedGraph()
     {
-        ITripleStore store = GetInstance();
-        INode s = new UriNode(store.UriFactory.Create("https://example.org/s"));
-        INode p = new UriNode(store.UriFactory.Create("https://example.org/p"));
-        INode o = new UriNode(store.UriFactory.Create("https://example.org/o"));
-        IRefNode g = new UriNode(store.UriFactory.Create("https://example.org/g1"));
-        IRefNode g2 = new UriNode(store.UriFactory.Create("https://example.org/g2"));
+        var store = GetInstance();
+        var s = new UriNode(store.UriFactory.Create("https://example.org/s"));
+        var p = new UriNode(store.UriFactory.Create("https://example.org/p"));
+        var o = new UriNode(store.UriFactory.Create("https://example.org/o"));
+        var g = new UriNode(store.UriFactory.Create("https://example.org/g1"));
+        var g2 = new UriNode(store.UriFactory.Create("https://example.org/g2"));
         store.Assert(new Quad(s, p, o, g));
         store.Assert(new Quad(s, p, o, g2));
         Assert.Single(store.GetQuads(s: s, g: g));
@@ -363,12 +363,12 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void MatchQuadsInUnnamedGraph()
     {
-        ITripleStore store = GetInstance();
-        INode s = new UriNode(store.UriFactory.Create("https://example.org/s"));
-        INode p = new UriNode(store.UriFactory.Create("https://example.org/p"));
-        INode o = new UriNode(store.UriFactory.Create("https://example.org/o"));
+        var store = GetInstance();
+        var s = new UriNode(store.UriFactory.Create("https://example.org/s"));
+        var p = new UriNode(store.UriFactory.Create("https://example.org/p"));
+        var o = new UriNode(store.UriFactory.Create("https://example.org/o"));
         IRefNode? unnamed = null;
-        IRefNode g = new UriNode(store.UriFactory.Create("https://example.org/g1"));
+        var g = new UriNode(store.UriFactory.Create("https://example.org/g1"));
         store.Assert(new Quad(s, p, o, unnamed));
         store.Assert(new Quad(s, p, o, g));
         Assert.Single(store.GetQuads(s: s, allGraphs:false));
@@ -384,12 +384,12 @@ public abstract class AbstractTripleStoreTests
     [Fact]
     public void MatchQuadsInAllGraphs()
     {
-        ITripleStore store = GetInstance();
-        INode s = new UriNode(store.UriFactory.Create("https://example.org/s"));
-        INode p = new UriNode(store.UriFactory.Create("https://example.org/p"));
-        INode o = new UriNode(store.UriFactory.Create("https://example.org/o"));
-        IRefNode g = new UriNode(store.UriFactory.Create("https://example.org/g1"));
-        IRefNode g2 = new UriNode(store.UriFactory.Create("https://example.org/g2"));
+        var store = GetInstance();
+        var s = new UriNode(store.UriFactory.Create("https://example.org/s"));
+        var p = new UriNode(store.UriFactory.Create("https://example.org/p"));
+        var o = new UriNode(store.UriFactory.Create("https://example.org/o"));
+        var g = new UriNode(store.UriFactory.Create("https://example.org/g1"));
+        var g2 = new UriNode(store.UriFactory.Create("https://example.org/g2"));
         IRefNode? unnamed = null; 
         store.Assert(new Quad(s, p, o, g));
         store.Assert(new Quad(s, p, o, g2));

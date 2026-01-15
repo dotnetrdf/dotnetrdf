@@ -50,13 +50,13 @@ public abstract class AbstractIndexedTripleCollection : BaseTripleCollection
     /// <inheritdoc />
     public override bool Contains(Triple t)
     {
-        return Triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted;
+        return Triples.TryGetValue(t, out var refs) && refs.Asserted;
     }
 
     /// <inheritdoc />
     public override bool ContainsQuoted(Triple t)
     {
-        return Triples.TryGetValue(t, out TripleRefs refs) && refs.QuoteCount > 0;
+        return Triples.TryGetValue(t, out var refs) && refs.QuoteCount > 0;
     }
 
     /// <inheritdoc />
@@ -70,7 +70,7 @@ public abstract class AbstractIndexedTripleCollection : BaseTripleCollection
     {
         get
         {
-            foreach (KeyValuePair<Triple, TripleRefs> x in Triples)
+            foreach (var x in Triples)
             {
                 if (x.Value.Asserted) yield return x.Key;
             }
@@ -82,7 +82,7 @@ public abstract class AbstractIndexedTripleCollection : BaseTripleCollection
     {
         get
         {
-            foreach (KeyValuePair<Triple, TripleRefs> x in Triples)
+            foreach (var x in Triples)
             {
                 if (x.Value.QuoteCount > 0) yield return x.Key;
             }
@@ -96,7 +96,7 @@ public abstract class AbstractIndexedTripleCollection : BaseTripleCollection
     /// <returns></returns>
     protected internal override bool Add(Triple t)
     {
-        if (Triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted)
+        if (Triples.TryGetValue(t, out var refs) && refs.Asserted)
         {
             return false;
         }
@@ -149,7 +149,7 @@ public abstract class AbstractIndexedTripleCollection : BaseTripleCollection
     /// <returns></returns>
     protected internal override bool Delete(Triple t)
     {
-        if (Triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted)
+        if (Triples.TryGetValue(t, out var refs) && refs.Asserted)
         {
             refs.Asserted = false;
             if (refs.QuoteCount == 0)
@@ -178,7 +178,7 @@ public abstract class AbstractIndexedTripleCollection : BaseTripleCollection
     /// <param name="tripleNode">The triple node that quotes the triple to be added to the collection.</param>
     protected internal void AddQuoted(ITripleNode tripleNode)
     {
-        if (Triples.TryGetValue(tripleNode.Triple, out TripleRefs refs))
+        if (Triples.TryGetValue(tripleNode.Triple, out var refs))
         {
             if (refs.QuoteCount == 0)
             {
@@ -210,7 +210,7 @@ public abstract class AbstractIndexedTripleCollection : BaseTripleCollection
     /// </remarks>
     protected internal void RemoveQuoted(ITripleNode tripleNode)
     {
-        if (Triples.TryGetValue(tripleNode.Triple, out TripleRefs refs) && refs.QuoteCount > 0)
+        if (Triples.TryGetValue(tripleNode.Triple, out var refs) && refs.QuoteCount > 0)
         {
             refs.QuoteCount--;
             if (refs.QuoteCount == 0)

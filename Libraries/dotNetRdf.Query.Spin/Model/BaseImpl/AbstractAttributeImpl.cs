@@ -40,7 +40,7 @@ internal abstract class AbstractAttributeImpl : AbstractSPINResource, IAbstractA
 
     public IResource getPredicate()
     {
-        IResource r = getResource(SPL.PropertyPredicate);
+        var r = getResource(SPL.PropertyPredicate);
         if (r!=null && r.isUri())
         {
             return r;

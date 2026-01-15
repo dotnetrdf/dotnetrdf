@@ -67,7 +67,7 @@ public class AggregateTests : IDisposable
         store.LoadFromFile(Path.Combine("resources", "LearningStyles.rdf"));
 
         
-        IGraph graph = ExecuteGraphQuery(store, @"prefix sage:
+        var graph = ExecuteGraphQuery(store, @"prefix sage:
 <http://www.semanticsage.home.lc/LearningStyles.owl#>
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 prefix : <http://semanticsage.home.lc/files/LearningStyles.rdf#>
@@ -99,8 +99,8 @@ WHERE
 }");
         Assert.NotNull(graph);
 
-        INode zero = (0).ToLiteral(graph);
-        foreach (Triple t in graph.Triples)
+        var zero = (0).ToLiteral(graph);
+        foreach (var t in graph.Triples)
         {
             Assert.False(t.Object.CompareTo(zero) == 0, "Unexpected zero value returned");
         }
@@ -112,7 +112,7 @@ WHERE
         var store = new TripleStore();
         store.LoadFromFile(Path.Combine("resources","LearningStyles.rdf"));
 
-        IGraph graph = ExecuteGraphQuery(store, @"prefix sage:
+        var graph = ExecuteGraphQuery(store, @"prefix sage:
 <http://www.semanticsage.home.lc/LearningStyles.owl#>
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 prefix : <http://semanticsage.home.lc/files/LearningStyles.rdf#>
@@ -144,8 +144,8 @@ WHERE
 }");
         Assert.NotNull(graph);
 
-        INode zero = (0).ToLiteral(graph);
-        foreach (Triple t in graph.Triples)
+        var zero = (0).ToLiteral(graph);
+        foreach (var t in graph.Triples)
         {
             Assert.False(t.Object.CompareTo(zero) == 0, "Unexpected zero value returned");
         }

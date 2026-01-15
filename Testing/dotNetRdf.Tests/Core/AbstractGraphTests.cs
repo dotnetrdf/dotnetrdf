@@ -46,14 +46,14 @@ public abstract class AbstractGraphTests
     [Fact]
     public void GraphIsEmpty01()
     {
-        IGraph g = GetInstance();
+        var g = GetInstance();
         Assert.True(g.IsEmpty);
     }
 
     [Fact]
     public void GraphIsEmpty02()
     {
-        IGraph g = GetInstance();
+        var g = GetInstance();
 
         g.Assert(new Triple(g.CreateBlankNode(), g.CreateBlankNode(), g.CreateBlankNode()));
         Assert.False(g.IsEmpty);
@@ -62,7 +62,7 @@ public abstract class AbstractGraphTests
     [Fact]
     public void GraphAssert01()
     {
-        IGraph g = GetInstance();
+        var g = GetInstance();
         g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create("http://example/"));
 
         var t = new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateBlankNode(":o"));
@@ -74,7 +74,7 @@ public abstract class AbstractGraphTests
     [Fact]
     public void GraphRetract01()
     {
-        IGraph g = GetInstance();
+        var g = GetInstance();
         g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create("http://example/"));
 
         var t = new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateBlankNode(":o"));
@@ -90,12 +90,12 @@ public abstract class AbstractGraphTests
     [Fact]
     public void GraphRetract02()
     {
-        IGraph g = GetInstance();
+        var g = GetInstance();
         g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
         Assert.False(g.IsEmpty);
 
-        INode rdfType = g.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfType));
+        var rdfType = g.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfType));
         Assert.True(g.GetTriplesWithPredicate(rdfType).Any());
 
         g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
@@ -105,7 +105,7 @@ public abstract class AbstractGraphTests
     [Fact]
     public void GraphClear()
     {
-        IGraph g = GetInstance();
+        var g = GetInstance();
         g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
         g.IsEmpty.Should().BeFalse("expected non-empty graph after Load");
         g.Clear();
@@ -125,7 +125,7 @@ public abstract class AbstractGraphTests
     [Fact]
     public void NodesPropertyShouldNotReturnNodesInQuotedTriples()
     {
-        IGraph g = GetInstance();
+        var g = GetInstance();
         g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create("http://example/"));
         INode[] quotedNodes = [g.CreateUriNode(":a"), g.CreateUriNode(":b"), g.CreateUriNode(":c")];
         g.Assert(new Triple(g.CreateUriNode(":s"),
@@ -146,7 +146,7 @@ public abstract class AbstractGraphTests
     [Fact]
     public void AllNodesPropertyShouldNotReturnNodesInQuotedTriples()
     {
-        IGraph g = GetInstance();
+        var g = GetInstance();
         g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create("http://example/"));
         INode[] quotedNodes = [g.CreateUriNode(":a"), g.CreateUriNode(":b"), g.CreateUriNode(":c")];
         g.Assert(new Triple(g.CreateUriNode(":s"),
@@ -406,8 +406,8 @@ public abstract class AbstractGraphTests
     [Fact]
     public void Merge_ShouldRemapBlankNodes()
     {
-        IGraph graph1 = GetInstance();
-        IGraph graph2 = GetInstance();
+        var graph1 = GetInstance();
+        var graph2 = GetInstance();
         graph1.Assert(graph1.CreateBlankNode("a"),
             graph1.CreateUriNode(new Uri("http://example.org/p")),
             graph1.CreateUriNode(new Uri("http://example.org/o1")));
@@ -416,7 +416,7 @@ public abstract class AbstractGraphTests
             graph2.CreateUriNode(new Uri("http://example.org/o2")));
         graph1.Merge(graph2);
         Assert.Single(graph1.GetTriplesWithSubject(graph1.CreateBlankNode("a")));
-        IBlankNode mergedBlankNode = graph1.GetTriplesWithObject(new UriNode(new Uri("http://example.org/o2")))
+        var mergedBlankNode = graph1.GetTriplesWithObject(new UriNode(new Uri("http://example.org/o2")))
             .Select(t => t.Subject).OfType<IBlankNode>().FirstOrDefault();
         Assert.NotNull(mergedBlankNode);
         Assert.NotEqual("a", mergedBlankNode.InternalID);
@@ -425,12 +425,12 @@ public abstract class AbstractGraphTests
     [Fact]
     public void Merge_ShouldRemapQuotedBlankNodes()
     {
-        IGraph graph1 = GetInstance();
-        IGraph graph2 = GetInstance();
-        INode bn = new BlankNode("a");
-        INode p = new UriNode(new Uri("http://example.org/p"));
-        INode o1 = new UriNode(new Uri("http://example.org/o1"));
-        INode o2 = new UriNode(new Uri("http://example.org/o2"));
+        var graph1 = GetInstance();
+        var graph2 = GetInstance();
+        var bn = new BlankNode("a");
+        var p = new UriNode(new Uri("http://example.org/p"));
+        var o1 = new UriNode(new Uri("http://example.org/o1"));
+        var o2 = new UriNode(new Uri("http://example.org/o2"));
 
         graph1.Assert(graph1.CreateTripleNode(new Triple(bn, p, o1)), p, o1);
         graph2.Assert(graph2.CreateTripleNode(new Triple(bn, p, o2)), p, o2);
@@ -438,9 +438,9 @@ public abstract class AbstractGraphTests
         graph1.Merge(graph2);
         Assert.Equal(2, graph1.Triples.QuotedCount);
         Assert.Single(graph1.GetQuotedWithSubject(bn));
-        IBlankNode mergedQuotedBlankNode = graph1.GetQuotedWithObject(new UriNode(new Uri("http://example.org/o2")))
+        var mergedQuotedBlankNode = graph1.GetQuotedWithObject(new UriNode(new Uri("http://example.org/o2")))
             .Select(t => t.Subject).OfType<IBlankNode>().FirstOrDefault();
-        IBlankNode mergedAssertedBlankNode = graph1.GetTriplesWithObject(o2).Select(t=>t.Subject).OfType<IBlankNode>().FirstOrDefault();
+        var mergedAssertedBlankNode = graph1.GetTriplesWithObject(o2).Select(t=>t.Subject).OfType<IBlankNode>().FirstOrDefault();
         Assert.NotNull(mergedQuotedBlankNode);
         Assert.NotNull(mergedAssertedBlankNode);
         Assert.NotEqual("a", mergedQuotedBlankNode.InternalID);

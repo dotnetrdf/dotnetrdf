@@ -62,7 +62,7 @@ public class AllegroGraphTests
         FileLoader.Load(g, Path.Combine("resources","InferenceTest.ttl"));
         g.BaseUri = new Uri("http://example.org/AllegroGraphTest");
 
-        AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+        var agraph = AllegroGraphTests.GetConnection();
         agraph.SaveGraph(g);
 
         var h = new Graph();
@@ -80,7 +80,7 @@ public class AllegroGraphTests
             BaseUri = new Uri("http://example.org/AllegroGraph/empty")
         };
 
-        AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+        var agraph = AllegroGraphTests.GetConnection();
         agraph.SaveGraph(g);
 
         var h = new Graph();
@@ -93,7 +93,7 @@ public class AllegroGraphTests
     [Fact]
     public void StorageAllegroGraphSaveEmptyGraph2()
     {
-        AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+        var agraph = AllegroGraphTests.GetConnection();
         var graphUri = new Uri("http://example.org/AllegroGraph/empty2");
         // Delete any existing graph
         agraph.DeleteGraph(graphUri);
@@ -129,7 +129,7 @@ public class AllegroGraphTests
     [Fact]
     public void StorageAllegroGraphSaveEmptyGraph3()
     {
-        AllegroGraphConnector agraph = GetConnection();
+        var agraph = GetConnection();
         Uri graphUri = null;
         // Delete existing graph
         agraph.DeleteGraph(graphUri);
@@ -169,7 +169,7 @@ public class AllegroGraphTests
         FileLoader.Load(g, Path.Combine("resources","InferenceTest.ttl"));
         g.BaseUri = new Uri("http://example.org/AllegroGraphTest");
 
-        AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+        var agraph = AllegroGraphTests.GetConnection();
         agraph.SaveGraph(g);
 
         //Delete all Triples about the Ford Fiesta
@@ -192,7 +192,7 @@ public class AllegroGraphTests
     [Fact]
     public void StorageAllegroGraphDeleteGraph1()
     {
-        AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+        var agraph = AllegroGraphTests.GetConnection();
         var graphUri = new Uri("http://example.org/AllegroGraph/delete");
 
         var g = new Graph();
@@ -217,7 +217,7 @@ public class AllegroGraphTests
     [Fact]
     public void StorageAllegroGraphDeleteGraph2()
     {
-        AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+        var agraph = AllegroGraphTests.GetConnection();
         Uri graphUri = null;
         agraph.DeleteGraph(graphUri);
 
@@ -243,7 +243,7 @@ public class AllegroGraphTests
     [Fact]
     public void StorageAllegroGraphAsk()
     {
-        AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+        var agraph = AllegroGraphTests.GetConnection();
 
         var ask = "ASK WHERE { ?s ?p ?o }";
 
@@ -254,7 +254,7 @@ public class AllegroGraphTests
     [Fact]
     public void StorageAllegroGraphDescribe()
     {
-        AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+        var agraph = AllegroGraphTests.GetConnection();
 
         var describe = "DESCRIBE <http://example.org/Vehicles/FordFiesta>";
 
@@ -265,7 +265,7 @@ public class AllegroGraphTests
     [Fact]
     public void StorageAllegroGraphSparqlUpdate()
     {
-        AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+        var agraph = AllegroGraphTests.GetConnection();
         agraph.DeleteGraph("http://example.org/new-graph");
 
         var updates = "INSERT DATA { GRAPH <http://example.org/new-graph> { <http://subject> <http://predicate> <http://object> } }";

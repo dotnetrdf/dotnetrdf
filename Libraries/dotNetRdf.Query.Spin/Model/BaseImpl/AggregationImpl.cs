@@ -42,7 +42,7 @@ internal class AggregationImpl : AbstractSPINResource, IAggregation
 
     public IVariable getAs()
     {
-        IResource node = getObject(SP.PropertyAs);
+        var node = getObject(SP.PropertyAs);
         if (node != null)
         {
             return SPINFactory.asVariable(node);
@@ -68,13 +68,13 @@ internal class AggregationImpl : AbstractSPINResource, IAggregation
     override public void Print(ISparqlPrinter p)
     {
 
-        IVariable asVar = getAs();
+        var asVar = getAs();
         if (asVar != null)
         {
             p.print("(");
         }
 
-        INode aggType = getObject(RDF.PropertyType);
+        var aggType = getObject(RDF.PropertyType);
         var aggName = Aggregations.getName(aggType);
         p.printKeyword(aggName);
         p.print("(");
@@ -84,11 +84,11 @@ internal class AggregationImpl : AbstractSPINResource, IAggregation
             p.print("DISTINCT ");
         }
 
-        Triple exprS = getProperty(SP.PropertyExpression);
+        var exprS = getProperty(SP.PropertyExpression);
         if (exprS != null && exprS.Object is not ILiteralNode)
         {
-            IResource r = Resource.Get(exprS.Object, Graph, getModel());
-            IResource expr = SPINFactory.asExpression(r);
+            var r = Resource.Get(exprS.Object, Graph, getModel());
+            var expr = SPINFactory.asExpression(r);
             if (expr is IPrintable)
             {
                 ((IPrintable)expr).Print(p);

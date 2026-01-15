@@ -60,7 +60,7 @@ internal class ArgumentImpl : AbstractAttributeImpl, IArgument
 
     public String getVarName()
     {
-        IResource argProperty = getPredicate();
+        var argProperty = getPredicate();
         if (argProperty != null)
         {
             return argProperty.Uri.ToString().Replace(SP.BASE_URI, "");

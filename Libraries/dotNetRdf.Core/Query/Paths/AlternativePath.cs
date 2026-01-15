@@ -66,8 +66,8 @@ public class AlternativePath : BaseBinaryPath
     {
         var lhsContext = new PathTransformContext(context);
         var rhsContext = new PathTransformContext(context);
-        ISparqlAlgebra lhs = _lhs.ToAlgebra(lhsContext);
-        ISparqlAlgebra rhs = _rhs.ToAlgebra(rhsContext);
+        var lhs = _lhs.ToAlgebra(lhsContext);
+        var rhs = _rhs.ToAlgebra(rhsContext);
         return new Union(lhs, rhs);
     }
 }

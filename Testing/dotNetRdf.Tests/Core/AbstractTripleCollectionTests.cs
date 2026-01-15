@@ -48,7 +48,7 @@ public abstract class AbstractTripleCollectionTests
     [Fact]
     public void ItIndexesQuotedTripleInSubjectPosition()
     {
-        BaseTripleCollection collection = GetInstance();
+        var collection = GetInstance();
         var quotedTriple = new Triple(
             NodeFactory.CreateUriNode("ex:s"),
             NodeFactory.CreateUriNode("ex:p"),
@@ -66,12 +66,12 @@ public abstract class AbstractTripleCollectionTests
         collection.ContainsQuoted(assertedTriple).Should().BeFalse();
 
         // Can look-up using the asserted triple instance wrapped in a new TripleNode
-        ITripleNode testNode = NodeFactory.CreateTripleNode(quotedTriple);
+        var testNode = NodeFactory.CreateTripleNode(quotedTriple);
         collection.WithSubject(testNode).Should().ContainSingle().Which.Should().Be(assertedTriple);
         collection.QuotedWithSubject(testNode).Should().BeEmpty();
 
         // Can look-up using a new triple with the same subject, predicate and object wrapped in a new triple node
-        ITripleNode testNode2 = NodeFactory.CreateTripleNode(new Triple(
+        var testNode2 = NodeFactory.CreateTripleNode(new Triple(
             NodeFactory.CreateUriNode("ex:s"),
             NodeFactory.CreateUriNode("ex:p"),
             NodeFactory.CreateUriNode("ex:o")
@@ -100,7 +100,7 @@ public abstract class AbstractTripleCollectionTests
     [Fact]
     public void ItIndexesQuotedTripleInObjectPosition()
     {
-        BaseTripleCollection collection = GetInstance();
+        var collection = GetInstance();
         var quotedTriple = new Triple(
             NodeFactory.CreateUriNode("ex:s"),
             NodeFactory.CreateUriNode("ex:p"),
@@ -118,12 +118,12 @@ public abstract class AbstractTripleCollectionTests
         collection.ContainsQuoted(assertedTriple).Should().BeFalse();
 
         // Can look-up using the asserted triple instance wrapped in a new TripleNode
-        ITripleNode testNode = NodeFactory.CreateTripleNode(quotedTriple);
+        var testNode = NodeFactory.CreateTripleNode(quotedTriple);
         collection.WithObject(testNode).Should().ContainSingle().Which.Should().Be(assertedTriple);
         collection.QuotedWithObject(testNode).Should().BeEmpty();
 
         // Can look-up using a new triple with the same subject, predicate and object wrapped in a new triple node
-        ITripleNode testNode2 = NodeFactory.CreateTripleNode(new Triple(
+        var testNode2 = NodeFactory.CreateTripleNode(new Triple(
             NodeFactory.CreateUriNode("ex:s"),
             NodeFactory.CreateUriNode("ex:p"),
             NodeFactory.CreateUriNode("ex:o")
@@ -140,7 +140,7 @@ public abstract class AbstractTripleCollectionTests
     [Fact]
     public void ItIndexesNestedQuotedTriples()
     {
-        BaseTripleCollection collection = GetInstance();
+        var collection = GetInstance();
         var nestedTriple = new Triple(
             NodeFactory.CreateUriNode("ex:s"),
             NodeFactory.CreateUriNode("ex:p"),
@@ -158,7 +158,7 @@ public abstract class AbstractTripleCollectionTests
 
         collection.Add(assertedTriple);
 
-        ITripleNode testNode = NodeFactory.CreateTripleNode(nestedTriple);
+        var testNode = NodeFactory.CreateTripleNode(nestedTriple);
         collection.QuotedWithSubject(testNode).Should().ContainSingle().Which.Should().Be(quotedTriple);
         collection.WithSubject(testNode).Should().BeEmpty();
 
@@ -171,7 +171,7 @@ public abstract class AbstractTripleCollectionTests
     [Fact]
     public void DeletingATripleCanDeleteQuotedTriples()
     {
-        BaseTripleCollection collection = GetInstance();
+        var collection = GetInstance();
         var quotedTriple = new Triple(
             NodeFactory.CreateUriNode("ex:s"),
             NodeFactory.CreateUriNode("ex:p"),
@@ -194,7 +194,7 @@ public abstract class AbstractTripleCollectionTests
     [Fact]
     public void QuotedTripleIsNotDeletedIfItIsAlsoAsserted()
     {
-        BaseTripleCollection collection = GetInstance();
+        var collection = GetInstance();
         var quotedTriple = new Triple(
             NodeFactory.CreateUriNode("ex:s"),
             NodeFactory.CreateUriNode("ex:p"),
@@ -218,7 +218,7 @@ public abstract class AbstractTripleCollectionTests
     [Fact]
     public void QuotedTripleIsNotDeletedIfOtherReferencesToItExist()
     {
-        BaseTripleCollection collection = GetInstance();
+        var collection = GetInstance();
         var quotedTriple = new Triple(
             NodeFactory.CreateUriNode("ex:s"),
             NodeFactory.CreateUriNode("ex:p"),
@@ -253,7 +253,7 @@ public abstract class AbstractTripleCollectionTests
     [Fact]
     public void NestedQuotationsAreAlsoRemoved()
     {
-        BaseTripleCollection collection = GetInstance();
+        var collection = GetInstance();
         var nestedTriple = new Triple(
             NodeFactory.CreateUriNode("ex:s"),
             NodeFactory.CreateUriNode("ex:p"),
@@ -282,7 +282,7 @@ public abstract class AbstractTripleCollectionTests
     [Fact]
     public void DeletingAQuotedTripleHasNoEffect()
     {
-        BaseTripleCollection collection = GetInstance();
+        var collection = GetInstance();
         var quotedTriple = new Triple(
             NodeFactory.CreateUriNode("ex:s"),
             NodeFactory.CreateUriNode("ex:p"),
@@ -306,7 +306,7 @@ public abstract class AbstractTripleCollectionTests
     [Fact]
     public void RetrievalByNodeShouldOnlyIncludeAssertedTriples()
     {
-        BaseTripleCollection collection = GetInstance();
+        var collection = GetInstance();
         var quotedTriple = new Triple(
             NodeFactory.CreateUriNode("ex:s"),
             NodeFactory.CreateUriNode("ex:p"),
@@ -339,7 +339,7 @@ public abstract class AbstractTripleCollectionTests
     [Fact]
     public void RetrievalByQuotedNodeShouldOnlyIncludeQuotedTriples()
     {
-        BaseTripleCollection collection = GetInstance();
+        var collection = GetInstance();
         var quotedTriple = new Triple(
             NodeFactory.CreateUriNode("ex:s"),
             NodeFactory.CreateUriNode("ex:p"),
@@ -374,15 +374,15 @@ public abstract class AbstractTripleCollectionTests
     [Fact]
     public void CollectionTupleIndexing()
     {
-        BaseTripleCollection collection = GetInstance();
-        INode a = NodeFactory.CreateUriNode("ex:a");
-        INode b = NodeFactory.CreateUriNode("ex:b");
-        INode c = NodeFactory.CreateUriNode("ex:c");
-        INode d = NodeFactory.CreateUriNode("ex:d");
-        INode x = NodeFactory.CreateUriNode("ex:x");
-        INode b1 = NodeFactory.CreateBlankNode("b1");
-        INode l1 = NodeFactory.CreateLiteralNode("l1");
-        INode q1 = NodeFactory.CreateTripleNode(new Triple(a, b, c));
+        var collection = GetInstance();
+        var a = NodeFactory.CreateUriNode("ex:a");
+        var b = NodeFactory.CreateUriNode("ex:b");
+        var c = NodeFactory.CreateUriNode("ex:c");
+        var d = NodeFactory.CreateUriNode("ex:d");
+        var x = NodeFactory.CreateUriNode("ex:x");
+        var b1 = NodeFactory.CreateBlankNode("b1");
+        var l1 = NodeFactory.CreateLiteralNode("l1");
+        var q1 = NodeFactory.CreateTripleNode(new Triple(a, b, c));
         var t1 = new Triple(a,b,c);
         var t2 = new Triple(a,b, b1);
         var t3 = new Triple(b1, d, l1);

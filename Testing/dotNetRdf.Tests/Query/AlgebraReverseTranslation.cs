@@ -55,7 +55,7 @@ public class AlgebraReverseTranslation
             Console.WriteLine(test);
             Console.WriteLine();
             Console.WriteLine("Parsed Query:");
-            SparqlQuery q = parser.ParseFromString(test);
+            var q = parser.ParseFromString(test);
             Console.WriteLine(q.ToString());
             Console.WriteLine();
             Console.WriteLine("Algebra:");

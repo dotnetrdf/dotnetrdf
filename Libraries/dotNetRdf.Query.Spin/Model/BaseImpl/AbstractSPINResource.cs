@@ -68,7 +68,7 @@ internal abstract class AbstractSPINResource : Resource, IPrintable
     public List<IElement> getElements(INode predicate)
     {
         var results = new List<IElement>();
-        foreach (IResource node in getList(predicate))
+        foreach (var node in getList(predicate))
         {
             if (node != null && !node.isLiteral())
             {
@@ -80,7 +80,7 @@ internal abstract class AbstractSPINResource : Resource, IPrintable
 
     public List<IResource> getList(INode predicate)
     {
-        IResource rawList = getObject(predicate);
+        var rawList = getObject(predicate);
         if (rawList != null)
         {
             return rawList.AsList();
@@ -93,10 +93,10 @@ internal abstract class AbstractSPINResource : Resource, IPrintable
         var prefix = Graph.NamespaceMap.GetPrefix(ns);
         if (prefix == null && context.getUseExtraPrefixes())
         {
-            INamespaceMapper extras = ExtraPrefixes.getExtraPrefixes();
+            var extras = ExtraPrefixes.getExtraPrefixes();
             foreach (var extraPrefix in extras.Prefixes)
             {
-                Uri extraNs = extras.GetNamespaceUri(extraPrefix);
+                var extraNs = extras.GetNamespaceUri(extraPrefix);
                 if (RDFUtil.sameTerm(ns, extraNs))
                 {
                     return extraPrefix;
@@ -138,7 +138,7 @@ internal abstract class AbstractSPINResource : Resource, IPrintable
     {
         p.print(" {");
         p.println();
-        IResource elementsRaw = getObject(predicate);
+        var elementsRaw = getObject(predicate);
         if (elementsRaw != null)
         {
             var elements = (IElementList)elementsRaw.As(typeof(ElementListImpl));
@@ -214,7 +214,7 @@ internal abstract class AbstractSPINResource : Resource, IPrintable
 
     public static void printVarOrResource(ISparqlPrinter p, IResource resource)
     {
-        IVariable variable = SPINFactory.asVariable(resource);
+        var variable = SPINFactory.asVariable(resource);
         if (variable != null)
         {
             variable.Print(p);
