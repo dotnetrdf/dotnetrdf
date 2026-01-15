@@ -205,13 +205,13 @@ public class StardogV2Connector
             // NB - Updates don't run inside a transaction rather they use their own self-contained transaction
 
             // Create the Request
-            HttpRequestMessage request = CreateRequest(KbId + "/update", MimeTypesHelper.Any, HttpMethod.Post, null);
+            var request = CreateRequest(KbId + "/update", MimeTypesHelper.Any, HttpMethod.Post, null);
 
             // Build the Post Data and add to the Request Body
             request.Content = new StringContent(sparqlUpdate, Encoding.UTF8, MimeTypesHelper.SparqlUpdate);
 
             // Check the response
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "executing a SPARQL update against");
@@ -237,7 +237,7 @@ public class StardogV2Connector
         // NB - Updates don't run inside a transaction rather they use their own self-contained transaction
 
         // Create the Request, for simplicity async requests are always POST
-        HttpRequestMessage request = CreateRequest(KbId + "/update", MimeTypesHelper.Any, HttpMethod.Post, null);
+        var request = CreateRequest(KbId + "/update", MimeTypesHelper.Any, HttpMethod.Post, null);
 
         // Create the request body
         request.Content = new StringContent(sparqlUpdates, Encoding.UTF8, MimeTypesHelper.SparqlUpdate);
@@ -255,7 +255,7 @@ public class StardogV2Connector
             }
             else
             {
-                HttpResponseMessage response = requestTask.Result;
+                var response = requestTask.Result;
                 if (!response.IsSuccessStatusCode)
                 {
                     callback(this,
@@ -279,10 +279,10 @@ public class StardogV2Connector
     {
         try
         {
-            HttpRequestMessage request =
+            var request =
                 CreateRequest(KbId + "/update", MimeTypesHelper.Any, HttpMethod.Post, null);
             request.Content = new StringContent(sparqlUpdates, Encoding.UTF8, MimeTypesHelper.SparqlUpdate);
-            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            var response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "executing a SPARQL update against");

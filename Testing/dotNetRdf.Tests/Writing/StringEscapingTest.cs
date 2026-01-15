@@ -60,15 +60,15 @@ new line",
     private void TestEscaping<T>(T formatter, IRdfReader parser) where T : INodeFormatter, ITripleFormatter
     {
         var g = new Graph();
-        IUriNode subj = g.CreateUriNode(new Uri("http://example.org/subject"));
-        IUriNode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
-        IUriNode pred2 = g.CreateUriNode(new Uri("http://example.org/predicate2"));
+        var subj = g.CreateUriNode(new Uri("http://example.org/subject"));
+        var pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
+        var pred2 = g.CreateUriNode(new Uri("http://example.org/predicate2"));
 
         foreach (var value in _values)
         {
             //Do Escaping and Checking
             Console.WriteLine("Original Value - " + value);
-            INode obj = g.CreateLiteralNode(value);
+            var obj = g.CreateLiteralNode(value);
             Console.WriteLine("Formatted Value - " + formatter.Format(obj));
 
             //Can only do round-trip checking if an RDF format
@@ -83,7 +83,7 @@ new line",
                 Console.WriteLine(writer.ToString());
 
                 StringParser.Parse(g, writer.ToString(), parser);
-                Triple t = g.Triples.FirstOrDefault();
+                var t = g.Triples.FirstOrDefault();
                 Assert.NotNull(t);
 
                 Assert.Equal(tOrig.Object, t.Object);

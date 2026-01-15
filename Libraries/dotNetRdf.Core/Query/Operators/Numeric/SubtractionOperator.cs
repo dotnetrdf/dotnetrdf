@@ -75,7 +75,7 @@ public class SubtractionOperator
     private long Subtract(IEnumerable<long> ls)
     {
         var first = true;
-        long total = 0;
+        var total = 0L;
         foreach (var l in ls)
         {
             if (first)
@@ -94,7 +94,7 @@ public class SubtractionOperator
     private decimal Subtract(IEnumerable<decimal> ls)
     {
         var first = true;
-        decimal total = 0;
+        var total = 0m;
         foreach (var l in ls)
         {
             if (first)
@@ -113,7 +113,7 @@ public class SubtractionOperator
     private float Subtract(IEnumerable<float> ls)
     {
         var first = true;
-        float total = 0;
+        var total = 0f;
         foreach (var l in ls)
         {
             if (first)
@@ -132,7 +132,7 @@ public class SubtractionOperator
     private double Subtract(IEnumerable<double> ls)
     {
         var first = true;
-        double total = 0;
+        var total = 0.0;
         foreach (var l in ls)
         {
             if (first)

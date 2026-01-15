@@ -119,7 +119,7 @@ public class StreamingEventGenerator
         // If the Root Element is filled then return it
         if (_rootEl != null)
         {
-            IRdfXmlEvent temp = _rootEl;
+            var temp = _rootEl;
             _rootEl = null;
             return temp;
         }
@@ -311,7 +311,7 @@ public class StreamingEventGenerator
         {
             for (var i = 0; i < _reader.AttributeCount; i++)
             {
-                IRdfXmlEvent attr = GetNextAttribute();
+                var attr = GetNextAttribute();
                 if (attr is AttributeEvent)
                 {
                     el.Attributes.Add((AttributeEvent)attr);
@@ -338,7 +338,7 @@ public class StreamingEventGenerator
         }
 
         // Validate generated Attributes for Namespace Confusion and URIRef encoding
-        foreach (AttributeEvent a in el.Attributes)
+        foreach (var a in el.Attributes)
         {
             // KA - Cannot perform ambiguous attribute verification without the current element's namespace map which is not available here
             /*

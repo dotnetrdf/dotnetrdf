@@ -46,7 +46,7 @@ public class SubQueryPattern
         _subquery = subquery;
         
         // Get the Variables this query projects out
-        foreach (SparqlVariable var in _subquery.Variables)
+        foreach (var var in _subquery.Variables)
         {
             if (var.IsResultVariable)
             {

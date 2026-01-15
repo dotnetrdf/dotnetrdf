@@ -239,7 +239,7 @@ public class StorageFactory
             {
                 connector.Timeout = timeout;
             }
-            INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyProxy)));
+            var proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyProxy)));
             if (proxyNode != null)
             {
                 var temp = ConfigurationLoader.LoadObject(g, proxyNode);

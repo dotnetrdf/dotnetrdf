@@ -41,13 +41,13 @@ public class StrictOptimiserTest
 
     private void TestStrictOptimiser(String query, String[] expectedOperators)
     {
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
         Console.WriteLine("Query:");
         Console.WriteLine(_formatter.Format(q));
         Console.WriteLine();
 
         q.AlgebraOptimisers = [_optimiser];
-        ISparqlAlgebra algebra = q.ToAlgebra();
+        var algebra = q.ToAlgebra();
         var output = algebra.ToString();
         Console.WriteLine("Algebra:");
         Console.WriteLine(output);

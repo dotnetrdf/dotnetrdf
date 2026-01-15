@@ -59,19 +59,19 @@ public class StoreFactory
         object temp;
 
         // Get Property Nodes we need
-        INode propStorageProvider = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
+        var propStorageProvider = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
 
         // Check whether to use a specific Graph Collection
-        INode collectionNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraphCollection)));
+        var collectionNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraphCollection)));
 
-        INode uriFactoryNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
+        var uriFactoryNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
             g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingUriFactory)));
 
         // Instantiate the Store Class
         switch (targetType.FullName)
         {
             case TripleStore:
-                IUriFactory uriFactory = UriFactory.Root;
+                var uriFactory = UriFactory.Root;
                 if (uriFactoryNode != null)
                 {
                     uriFactory = ConfigurationLoader.LoadObject(g, uriFactoryNode) as IUriFactory;
@@ -94,7 +94,7 @@ public class StoreFactory
                 break;
 
             case PersistentTripleStore:
-                INode subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
+                var subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
                 if (subObj == null) return false;
 
                 temp = ConfigurationLoader.LoadObject(g, subObj);
@@ -125,10 +125,10 @@ public class StoreFactory
         // Read in additional data to be added to the Store
         if (store != null)
         {
-            IEnumerable<INode> sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
+            var sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
 
             // Read from Graphs
-            foreach (INode source in sources)
+            foreach (var source in sources)
             {
                 temp = ConfigurationLoader.LoadObject(g, source);
                 if (temp is IGraph graph)
@@ -143,7 +143,7 @@ public class StoreFactory
 
             // Load from Embedded Resources
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFromEmbedded)));
-            foreach (INode source in sources)
+            foreach (var source in sources)
             {
                 if (source.NodeType == NodeType.Literal)
                 {
@@ -157,7 +157,7 @@ public class StoreFactory
 
             // Read from Files - we assume these files are Dataset Files
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
-            foreach (INode source in sources)
+            foreach (var source in sources)
             {
                 if (source.NodeType == NodeType.Literal)
                 {

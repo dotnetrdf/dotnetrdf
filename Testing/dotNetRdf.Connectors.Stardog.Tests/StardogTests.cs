@@ -49,7 +49,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogLoadDefaultGraph()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
         var g = new Graph();
         g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
         g.BaseUri = null;
@@ -64,7 +64,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogLoadNamedGraph()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
 
         // Ensure graph exists
         var g = new Graph(new UriNode(new Uri("http://example.org/graph")));
@@ -82,7 +82,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogSaveToDefaultGraph()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
         
         var g = new Graph();
         g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
@@ -105,7 +105,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogSaveToNamedGraph()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
 
         var g = new Graph(new Uri("http://example.org/graph"));
         g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
@@ -120,7 +120,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogSaveToNamedGraph2()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
 
         var graphName = new Uri("http://example.org/graph/" + DateTime.Now.Ticks);
         var g = new Graph(graphName);
@@ -136,7 +136,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogSaveToNamedGraphOverwrite()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
 
         var graphName = new Uri("http://example.org/namedGraph");
         var g = new Graph(graphName);
@@ -166,14 +166,14 @@ public class StardogTests
         {
             //Options.UseBomForUtf8 = false;
 
-            StardogConnector stardog = _fixture.Connector;
+            var stardog = _fixture.Connector;
             
             var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/graph");
             stardog.SaveGraph(g);
 
-            INode rdfType = g.CreateUriNode(new Uri(VDS.RDF.Parsing.RdfSpecsHelper.RdfType));
+            var rdfType = g.CreateUriNode(new Uri(VDS.RDF.Parsing.RdfSpecsHelper.RdfType));
 
             stardog.UpdateGraph(g.BaseUri, null, g.GetTriplesWithPredicate(rdfType));
             g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
@@ -205,13 +205,13 @@ public class StardogTests
         {
             //Options.UseBomForUtf8 = false;
 
-            StardogConnector stardog = _fixture.Connector;
+            var stardog = _fixture.Connector;
 
             var graphName = new Uri("http://example.org/addGraph");
             var g = new Graph(graphName);
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            INode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            var rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
             var types = new Graph();
             types.Assert(g.GetTriplesWithPredicate(rdfType));
             g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
@@ -251,7 +251,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogDeleteNamedGraph()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
 
         var g = new Graph(new Uri("http://example.org/tempGraph"));
         g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
@@ -279,7 +279,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogReasoningQL()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
         Assert.SkipWhen(stardog.Reasoning == StardogReasoningMode.DatabaseControlled, 
                 "Version of Stardog being tested does not support configuring reasoning mode at connection level");
 
@@ -306,7 +306,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogReasoningByQuery1()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
         Assert.SkipWhen(stardog.Reasoning == StardogReasoningMode.DatabaseControlled, 
                 "Version of Stardog being tested does not support configuring reasoning mode at connection level");
 
@@ -325,7 +325,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogReasoningByQuery2()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
         Assert.SkipWhen(stardog.Reasoning == StardogReasoningMode.DatabaseControlled, 
                 "Version of Stardog being tested does not support configuring reasoning mode at connection level");
 
@@ -344,7 +344,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogReasoningMode()
     {
-        StardogConnector connector = _fixture.Connector;
+        var connector = _fixture.Connector;
 
         if (connector.Reasoning != StardogReasoningMode.DatabaseControlled)
         {
@@ -361,7 +361,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogTransactionTest()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
         
         stardog.Begin();
         stardog.Commit();
@@ -371,7 +371,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogAmpersandsInDataTest()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
 
         //Save the Graph
         var g = new Graph(new Uri("http://example.org/ampersandGraph"));
@@ -408,8 +408,8 @@ public class StardogTests
             guid = Guid.NewGuid();
         } while (guid.Equals(Guid.Empty) || !Char.IsLetter(guid.ToString()[0]));
 
-        StardogServer stardog = _fixture.GetServer();
-        IStoreTemplate template = stardog.GetDefaultTemplate(guid.ToString());
+        var stardog = _fixture.GetServer();
+        var template = stardog.GetDefaultTemplate(guid.ToString());
 
         stardog.CreateStore(template);
 
@@ -419,7 +419,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogSparqlUpdate1()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
         IGraph g;
 
         g = new Graph();
@@ -443,7 +443,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogSparqlUpdate2()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
         IGraph g;
 
         stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/2>");
@@ -462,7 +462,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogSparqlUpdate3()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
         IGraph g;
 
         stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/3>");
@@ -470,7 +470,7 @@ public class StardogTests
         stardog.LoadGraph(g, "http://example.org/stardog/update/3");
         Assert.True(g.IsEmpty, "Graph should be empty after DROP command");
 
-        IGraph newData = new Graph(new Uri("http://example.org/stardog/update/3"));
+        var newData = new Graph(new Uri("http://example.org/stardog/update/3"));
         newData.Assert(newData.CreateUriNode(new Uri("http://x")), newData.CreateUriNode(new Uri("http://y")),
             newData.CreateUriNode(new Uri("http://z")));
         stardog.SaveGraph(newData);
@@ -483,7 +483,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogSparqlUpdate4()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
         IGraph g;
 
         // Begin a transaction
@@ -507,7 +507,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogSparqlUpdate5()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
         IGraph g;
 
         // Begin a transaction
@@ -529,7 +529,7 @@ public class StardogTests
     [Fact]
     public void StorageStardogIsReadyValidDb()
     {
-        StardogConnector stardog = _fixture.Connector;
+        var stardog = _fixture.Connector;
         Assert.True(stardog.IsReady);
 
         

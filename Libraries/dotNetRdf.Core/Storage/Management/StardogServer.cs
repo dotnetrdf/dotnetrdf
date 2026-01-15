@@ -151,12 +151,12 @@ public abstract class BaseStardogServer
     public virtual IEnumerable<string> ListStores()
     {
         // GET /admin/databases - application/json
-        HttpRequestMessage request = CreateAdminRequest("databases", "application/json", HttpMethod.Get, []);
+        var request = CreateAdminRequest("databases", "application/json", HttpMethod.Get, []);
 
         try
         {
             var stores = new List<string>();
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             var data = response.Content.ReadAsStringAsync().Result;
             if (string.IsNullOrEmpty(data))
             {
@@ -165,7 +165,7 @@ public abstract class BaseStardogServer
 
             var obj = JObject.Parse(data);
             var dbs = (JArray) obj["databases"];
-            foreach (JValue db in dbs.OfType<JValue>())
+            foreach (var db in dbs.OfType<JValue>())
             {
                 stores.Add(db.Value.ToString());
             }
@@ -196,7 +196,7 @@ public abstract class BaseStardogServer
     {
         var templates = new List<IStoreTemplate>();
         var args = new object[] {id};
-        foreach (Type t in _templateTypes)
+        foreach (var t in _templateTypes)
         {
             try
             {
@@ -231,10 +231,10 @@ public abstract class BaseStardogServer
             // Creates a new database; expects a multipart request with a JSON specifying database name, options and filenames followed by (optional) file contents as a multipart POST request.
             try
             {
-                HttpRequestMessage request = BuildCreateStoreRequestMessage(template);
+                var request = BuildCreateStoreRequestMessage(template);
 
                 // Make the request
-                using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                using var response = HttpClient.SendAsync(request).Result;
                 if (!response.IsSuccessStatusCode)
                 {
                     throw StorageHelper.HandleHttpError(response, $"creating a new Store '{template.ID}' in");
@@ -255,14 +255,14 @@ public abstract class BaseStardogServer
     {
         // Get the Template
         var stardogTemplate = (BaseStardogTemplate) template;
-        IEnumerable<string> errors = stardogTemplate.Validate();
+        var errors = stardogTemplate.Validate();
         if (errors.Any())
             throw new RdfStorageException(
                 "Template is not valid, call Validate() on the template to see the list of errors");
-        JObject jsonTemplate = stardogTemplate.GetTemplateJson();
+        var jsonTemplate = stardogTemplate.GetTemplateJson();
 
         // Create the request and write the JSON
-        HttpRequestMessage request = CreateAdminRequest("databases", MimeTypesHelper.Any, HttpMethod.Post, []);
+        var request = CreateAdminRequest("databases", MimeTypesHelper.Any, HttpMethod.Post, []);
         request.Content =
             new MultipartFormDataContent(StorageHelper.HttpMultipartBoundary)
             {
@@ -278,11 +278,11 @@ public abstract class BaseStardogServer
     public virtual void DeleteStore(string storeId)
     {
         // DELETE /admin/databases/{db}
-        HttpRequestMessage request = CreateAdminRequest("databases/" + storeId, MimeTypesHelper.Any, HttpMethod.Delete, []);
+        var request = CreateAdminRequest("databases/" + storeId, MimeTypesHelper.Any, HttpMethod.Delete, []);
 
         try
         {
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, $"deleting Store {storeId} from");
@@ -313,7 +313,7 @@ public abstract class BaseStardogServer
     public virtual void ListStores(AsyncStorageCallback callback, object state)
     {
         // GET /admin/databases - application/json
-        HttpRequestMessage request = CreateAdminRequest("databases", "application/json", HttpMethod.Get, []);
+        var request = CreateAdminRequest("databases", "application/json", HttpMethod.Get, []);
 
         try
         {
@@ -331,7 +331,7 @@ public abstract class BaseStardogServer
                 }
                 else
                 {
-                    HttpResponseMessage response = requestTask.Result;
+                    var response = requestTask.Result;
                     if (!response.IsSuccessStatusCode)
                     {
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores,
@@ -355,7 +355,7 @@ public abstract class BaseStardogServer
                             {
                                 var obj = JObject.Parse(readTask.Result);
                                 var dbs = (JArray)obj["databases"];
-                                foreach (JValue db in dbs.OfType<JValue>())
+                                foreach (var db in dbs.OfType<JValue>())
                                 {
                                     stores.Add(db.Value.ToString());
                                 }
@@ -380,8 +380,8 @@ public abstract class BaseStardogServer
     /// <inheritdoc />
     public async Task<IEnumerable<string>> ListStoresAsync(CancellationToken cancellationToken)
     {
-        HttpRequestMessage request = CreateAdminRequest("databases", "application/json", HttpMethod.Get, []);
-        HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+        var request = CreateAdminRequest("databases", "application/json", HttpMethod.Get, []);
+        var response = await HttpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             throw StorageHelper.HandleHttpError(response, "listing stores from");
@@ -421,7 +421,7 @@ public abstract class BaseStardogServer
     /// <returns></returns>
     public virtual void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
     {
-        IEnumerable<IStoreTemplate> templates = MakeStoreTemplatesList(id);
+        var templates = MakeStoreTemplatesList(id);
         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, templates), state);
     }
 
@@ -429,7 +429,7 @@ public abstract class BaseStardogServer
     {
         var templates = new List<IStoreTemplate>();
         var args = new object[] {id};
-        foreach (Type t in _templateTypes)
+        foreach (var t in _templateTypes)
         {
             try
             {
@@ -469,7 +469,7 @@ public abstract class BaseStardogServer
             // Creates a new database; expects a multipart request with a JSON specifying database name, options and filenames followed by (optional) file contents as a multipart POST request.
             try
             {
-                HttpRequestMessage request = BuildCreateStoreRequestMessage(template);
+                var request = BuildCreateStoreRequestMessage(template);
                 HttpClient.SendAsync(request).ContinueWith(requestTask =>
                 {
                     if (requestTask.IsCanceled || requestTask.IsFaulted)
@@ -485,7 +485,7 @@ public abstract class BaseStardogServer
                     }
                     else
                     {
-                        HttpResponseMessage response = requestTask.Result;
+                        var response = requestTask.Result;
                         if (!response.IsSuccessStatusCode)
                         {
                             callback(this,
@@ -528,8 +528,8 @@ public abstract class BaseStardogServer
 
         try
         {
-            HttpRequestMessage request = BuildCreateStoreRequestMessage(template);
-            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            var request = BuildCreateStoreRequestMessage(template);
+            var response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, $"creating a new store '{template.ID}' in");
@@ -562,7 +562,7 @@ public abstract class BaseStardogServer
         try
         {
             // DELETE /admin/databases/{db}
-            HttpRequestMessage request = CreateAdminRequest("databases/" + storeId, MimeTypesHelper.Any,
+            var request = CreateAdminRequest("databases/" + storeId, MimeTypesHelper.Any,
                 HttpMethod.Delete, []);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
@@ -580,7 +580,7 @@ public abstract class BaseStardogServer
                 }
                 else
                 {
-                    HttpResponseMessage response = requestTask.Result;
+                    var response = requestTask.Result;
                     if (!response.IsSuccessStatusCode)
                     {
                         callback(this,
@@ -612,9 +612,9 @@ public abstract class BaseStardogServer
     {
         try
         {
-            HttpRequestMessage request = CreateAdminRequest("databases/" + storeId, MimeTypesHelper.Any,
+            var request = CreateAdminRequest("databases/" + storeId, MimeTypesHelper.Any,
                 HttpMethod.Delete, []);
-            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            var response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, $"deleting store '{storeId}' from");
@@ -730,12 +730,12 @@ public abstract class BaseStardogServer
     /// <param name="context">Configuration Serialization Context.</param>
     public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode manager = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode storageServer = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageServer));
-        INode server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
+        var manager = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var storageServer = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageServer));
+        var server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
 
         context.Graph.Assert(new Triple(manager, rdfType, storageServer));
         context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
@@ -744,8 +744,8 @@ public abstract class BaseStardogServer
 
         if (HttpClientHandler?.Credentials is NetworkCredential networkCredential)
         {
-            INode username = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUser));
-            INode pwd = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPassword));
+            var username = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUser));
+            var pwd = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPassword));
             context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(networkCredential.UserName)));
             context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(networkCredential.Password)));
         }

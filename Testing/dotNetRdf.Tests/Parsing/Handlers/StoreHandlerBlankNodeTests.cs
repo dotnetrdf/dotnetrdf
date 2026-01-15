@@ -58,7 +58,7 @@ public class StoreHandlerBlankNodeTests
 
     private void EnsureTestResults(TripleStore store)
     {
-        foreach (IGraph g in store.Graphs)
+        foreach (var g in store.Graphs)
         {
             TestTools.ShowGraph(g);
             Console.WriteLine();
@@ -67,18 +67,18 @@ public class StoreHandlerBlankNodeTests
         Assert.Equal(2, store.Graphs.Count);
         Assert.Equal(8, store.Graphs.Sum(g => g.Triples.Count));
 
-        IGraph def = store[(IRefNode)null];
-        IGraph named = store[new UriNode(new Uri("http://example.org/bnodes#graph"))];
+        var def = store[(IRefNode)null];
+        var named = store[new UriNode(new Uri("http://example.org/bnodes#graph"))];
 
         var subjects = new HashSet<INode>();
         var defSubjects = new HashSet<INode>();
         var namedSubjects = new HashSet<INode>();
-        foreach (Triple t in def.Triples)
+        foreach (var t in def.Triples)
         {
             subjects.Add(t.Subject);
             defSubjects.Add(t.Subject);
         }
-        foreach (Triple t in named.Triples)
+        foreach (var t in named.Triples)
         {
             subjects.Add(t.Subject);
             namedSubjects.Add(t.Subject);

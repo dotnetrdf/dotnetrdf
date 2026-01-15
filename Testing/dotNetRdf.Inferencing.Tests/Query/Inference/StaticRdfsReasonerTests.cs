@@ -18,8 +18,8 @@ public class StaticRdfsReasonerTests
         var reasoner = new StaticRdfsReasoner();
         reasoner.Initialise(g);
         reasoner.Apply(g, g);
-        INode obj= g.GetUriNode(new Uri("http://example.com/o"));
-        INode subj = g.GetUriNode(new Uri("http://example.com/s"));
+        var obj= g.GetUriNode(new Uri("http://example.com/o"));
+        var subj = g.GetUriNode(new Uri("http://example.com/s"));
         Assert.NotNull(subj);
         Assert.NotNull(obj);
         INode[] expectedNodes =
@@ -29,8 +29,8 @@ public class StaticRdfsReasonerTests
             g.CreateUriNode(new Uri("http://example.com/source/predicate#c")),
             g.CreateUriNode(new Uri("http://example.com/ontology/predicate#test"))
         ];
-        IList<INode> predicates = g.GetTriplesWithSubjectObject(subj, obj).Select(t => t.Predicate).ToList();
-        foreach (INode expectedNode in expectedNodes)
+        var predicates = g.GetTriplesWithSubjectObject(subj, obj).Select(t => t.Predicate).ToList();
+        foreach (var expectedNode in expectedNodes)
         {
             Assert.Contains(expectedNode, predicates);
         }
@@ -44,16 +44,16 @@ public class StaticRdfsReasonerTests
         var reasoner = new StaticRdfsReasoner();
         reasoner.Initialise(g);
         reasoner.Apply(g, g);
-        INode inst = g.GetUriNode(new Uri("http://example.org/test"));
-        INode rdfType = g.CreateUriNode("rdf:type");
+        var inst = g.GetUriNode(new Uri("http://example.org/test"));
+        var rdfType = g.CreateUriNode("rdf:type");
         INode[] expectedClasses =
         [
             g.CreateUriNode(new Uri("http://example.org/ontology/A")),
             g.CreateUriNode(new Uri("http://example.org/ontology/B")),
             g.CreateUriNode(new Uri("http://example.org/ontology/C"))
         ];
-        IList<INode> actualClasses = g.GetTriplesWithSubjectPredicate(inst, rdfType).Select(t => t.Object).ToList();
-        foreach (INode expectedClass in expectedClasses)
+        var actualClasses = g.GetTriplesWithSubjectPredicate(inst, rdfType).Select(t => t.Object).ToList();
+        foreach (var expectedClass in expectedClasses)
         {
             Assert.Contains(expectedClass, actualClasses);
         }
@@ -67,17 +67,17 @@ public class StaticRdfsReasonerTests
         var reasoner = new StaticRdfsReasoner();
         reasoner.Initialise(g);
         reasoner.Apply(g, g);
-        INode inst = g.GetUriNode(new Uri("http://example.org/test"));
-        INode rdfType = g.CreateUriNode("rdf:type");
+        var inst = g.GetUriNode(new Uri("http://example.org/test"));
+        var rdfType = g.CreateUriNode("rdf:type");
         INode[] expectedClasses = 
         [
             g.CreateUriNode(new Uri("http://example.org/ontology/A")),
             g.CreateUriNode(new Uri("http://example.org/ontology/B")),
             g.CreateUriNode(new Uri("http://example.org/ontology/C"))
         ];
-        IList<INode> actualClasses = g.GetTriplesWithSubjectPredicate(inst, rdfType).Select(t => t.Object).ToList();
+        var actualClasses = g.GetTriplesWithSubjectPredicate(inst, rdfType).Select(t => t.Object).ToList();
         Assert.Equal(expectedClasses.Length, actualClasses.Count);
-        foreach (INode expectedClass in expectedClasses)
+        foreach (var expectedClass in expectedClasses)
         {
             Assert.Contains(expectedClass, actualClasses);
         }
@@ -91,16 +91,16 @@ public class StaticRdfsReasonerTests
         var reasoner = new StaticRdfsReasoner();
         reasoner.Initialise(g);
         reasoner.Apply(g, g);
-        INode subj = g.GetUriNode(new Uri("http://example.org/s"));
-        INode obj = g.GetUriNode(new Uri("http://example.org/o"));
+        var subj = g.GetUriNode(new Uri("http://example.org/s"));
+        var obj = g.GetUriNode(new Uri("http://example.org/o"));
         INode[] expectedPredicates = [
             g.CreateUriNode(new Uri("http://example.org/ontology/a")),
             g.CreateUriNode(new Uri("http://example.org/ontology/b")),
             g.CreateUriNode(new Uri("http://example.org/ontology/c")),
         ];
-        IList<INode> actualPredicates = g.GetTriplesWithSubjectObject(subj, obj).Select(t=>t.Predicate).ToList();
+        var actualPredicates = g.GetTriplesWithSubjectObject(subj, obj).Select(t=>t.Predicate).ToList();
         Assert.Equal(expectedPredicates.Length, actualPredicates.Count);
-        foreach (INode expectedPredicate in expectedPredicates)
+        foreach (var expectedPredicate in expectedPredicates)
         {
             Assert.Contains(expectedPredicate, actualPredicates);
         }

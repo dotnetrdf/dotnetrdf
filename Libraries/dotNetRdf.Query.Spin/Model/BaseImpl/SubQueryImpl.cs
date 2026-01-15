@@ -45,7 +45,7 @@ internal class SubQueryImpl : ElementImpl, ISubQuery
 
     public IQuery getQuery()
     {
-        IResource r = getResource(SP.PropertyQuery);
+        var r = getResource(SP.PropertyQuery);
         if (r != null)
         {
             return SPINFactory.asQuery(r);
@@ -61,7 +61,7 @@ internal class SubQueryImpl : ElementImpl, ISubQuery
     {
         p.print("{");
         p.println();
-        IQuery query = getQuery();
+        var query = getQuery();
         if (query != null)
         {
             p.setIndentation(p.getIndentation() + 1);

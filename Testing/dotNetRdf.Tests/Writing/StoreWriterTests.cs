@@ -65,7 +65,7 @@ public class StoreWriterTests
         var store2 = new TripleStore();
         reader.Load(store2, new System.IO.StringReader(strWriter.ToString()));
 
-        foreach (IGraph graph in store.Graphs)
+        foreach (var graph in store.Graphs)
         {
             Assert.True(store2.HasGraph(graph.Name), "Parsed Stored should have contained serialized graph");
             Assert.Equal(graph, store2[graph.Name]);

@@ -76,7 +76,7 @@ public class StoreHandler
             var g = new Graph();
             Store.Add(g);
         }
-        IGraph target = Store[(IRefNode)null];
+        var target = Store[(IRefNode)null];
         target.Assert(t);
         return true;
     }
@@ -94,7 +94,7 @@ public class StoreHandler
             var g = new Graph(graph);
             Store.Add(g);
         }
-        IGraph target = Store[graph];
+        var target = Store[graph];
         target.Assert(t);
         return true;
     }
@@ -114,7 +114,7 @@ public class StoreHandler
     protected override void EndRdfInternal(bool ok)
     {
         // Propogate discovered namespaces to all graphs
-        foreach (IGraph g in Store.Graphs)
+        foreach (var g in Store.Graphs)
         {
             g.NamespaceMap.Import(_nsmap);
         }

@@ -23,14 +23,14 @@ public class SubGraphMatcherTests
         var parser = new TurtleParser(TurtleSyntax.Rdf11Star, false);
         parent.LoadFromString(Prefixes +parentData, parser);
         subGraph.LoadFromString(Prefixes + subgraphData, parser);
-        Assert.Equal(expectSubgraph, subGraph.IsSubGraphOf(parent, out Dictionary<INode, INode> mapping));
+        Assert.Equal(expectSubgraph, subGraph.IsSubGraphOf(parent, out var mapping));
         if (expectSubgraph)
         {
             Assert.Equal(expectMappings.Length / 2, mapping.Count);
             for (var i = 0; i < expectMappings.Length; i += 2)
             {
-                INode expectKey = new BlankNode(expectMappings[i]);
-                INode expectValue = new BlankNode(expectMappings[i + 1]);
+                var expectKey = new BlankNode(expectMappings[i]);
+                var expectValue = new BlankNode(expectMappings[i + 1]);
                 Assert.True(mapping.ContainsKey(expectKey));
                 Assert.Equal(expectValue, mapping[expectKey]);
             }

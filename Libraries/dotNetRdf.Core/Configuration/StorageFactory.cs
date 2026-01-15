@@ -128,7 +128,7 @@ public class StorageFactory
 
                 if (server == null)
                 {
-                    INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, [g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint))]);
+                    var endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, [g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint))]);
                     if (endpointObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, endpointObj);
                     
@@ -149,10 +149,10 @@ public class StorageFactory
                 else
                 {
                     // Are there any Named/Default Graph URIs
-                    IEnumerable<Uri> defGraphs = from def in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
+                    var defGraphs = from def in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
                                                  where def.NodeType == NodeType.Uri
                                                  select ((IUriNode) def).Uri;
-                    IEnumerable<Uri> namedGraphs = from named in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
+                    var namedGraphs = from named in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
                                                    where named.NodeType == NodeType.Uri
                                                    select ((IUriNode) named).Uri;
                     var queryClient = new SparqlQueryClient(new HttpClient(), g.UriFactory.Create(server));
@@ -199,7 +199,7 @@ public class StorageFactory
 
                 if (server == null)
                 {
-                    INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode,
+                    var endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode,
                         [
                             g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)),
                             g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint)),
@@ -226,11 +226,11 @@ public class StorageFactory
                 else
                 {
                     // Are there any Named/Default Graph URIs
-                    IEnumerable<Uri> defGraphs = from def in ConfigurationLoader.GetConfigurationData(g, objNode,
+                    var defGraphs = from def in ConfigurationLoader.GetConfigurationData(g, objNode,
                             g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
                         where def.NodeType == NodeType.Uri
                         select ((IUriNode)def).Uri;
-                    IEnumerable<Uri> namedGraphs = from named in ConfigurationLoader.GetConfigurationData(g,
+                    var namedGraphs = from named in ConfigurationLoader.GetConfigurationData(g,
                             objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
                         where named.NodeType == NodeType.Uri
                         select ((IUriNode)named).Uri;
@@ -248,7 +248,7 @@ public class StorageFactory
 
                 if (server == null)
                 {
-                    INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode,
+                    var endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode,
                         [
                             g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint)),
                             g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint)),
@@ -314,7 +314,7 @@ public class StorageFactory
 
             case InMemory:
                 // Get the Dataset/Store
-                INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
+                var datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
                 if (datasetObj != null)
                 {
                     temp = ConfigurationLoader.LoadObject(g, datasetObj);
@@ -366,7 +366,7 @@ public class StorageFactory
             {
                 connector.Timeout = timeout;
             }
-            INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyProxy)));
+            var proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyProxy)));
             if (proxyNode != null)
             {
                 temp = ConfigurationLoader.LoadObject(g, proxyNode);

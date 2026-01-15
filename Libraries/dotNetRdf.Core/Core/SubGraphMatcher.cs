@@ -65,7 +65,7 @@ class SubGraphMatcher
         var subNodes = new Dictionary<INode, int>();
         var parentNodes = new Dictionary<INode, int>();
         _parentTriples = parent.Triples.ToList();
-        foreach (Triple t in subgraph.Triples)
+        foreach (var t in subgraph.Triples)
         {
             if (t.IsGroundTriple)
             {
@@ -89,7 +89,7 @@ class SubGraphMatcher
         if (_parentTriples.Count == 0 && gtCount == subgraph.Triples.Count && subNodes.Count == 0) return true;
 
         // Now classify the remaining Triples from the parent Graph
-        foreach (Triple t in _parentTriples)
+        foreach (var t in _parentTriples)
         {
             CountBlankNodes(t, parentNodes);
         }
@@ -219,14 +219,14 @@ class SubGraphMatcher
                          select n).ToList();
 
         // Map single use Nodes first to reduce the size of the overall mapping
-        foreach (KeyValuePair<INode, int> pair in subNodes.Where(p => p.Value == 1))
+        foreach (var pair in subNodes.Where(p => p.Value == 1))
         {
             // Find the Triple we need to map
-            Triple toMap = (from t in _subTriples
+            var toMap = (from t in _subTriples
                             where t.Involves(pair.Key)
                             select t).First();
 
-            foreach (INode n in _unbound.Where(n => parentNodes[n] == pair.Value))
+            foreach (var n in _unbound.Where(n => parentNodes[n] == pair.Value))
             {
                 // See if this Mapping works
                 _mapping.Add(pair.Key, n);
@@ -255,15 +255,15 @@ class SubGraphMatcher
         if (_parentTriples.Count == 0) return true;
 
         // Map any Nodes of unique degree next
-        foreach (KeyValuePair<int, int> degreeClass in subDegrees)
+        foreach (var degreeClass in subDegrees)
         {
             if (degreeClass.Key > 1 && degreeClass.Value == 1)
             {
                 // There is a Node of degree greater than 1 than has a unique degree
                 // i.e. there is only one Node with this degree so there can only ever be one
                 // possible mapping for this Node
-                INode x = subNodes.FirstOrDefault(p => p.Value == degreeClass.Key).Key;
-                INode y = parentNodes.FirstOrDefault(p => p.Value == degreeClass.Key).Key;
+                var x = subNodes.FirstOrDefault(p => p.Value == degreeClass.Key).Key;
+                var y = parentNodes.FirstOrDefault(p => p.Value == degreeClass.Key).Key;
 
                 // If either of these return null then the Graphs can't be equal
                 if (x == null || y == null) return false;
@@ -280,7 +280,7 @@ class SubGraphMatcher
         // If multiple nodes appear together we can use this information to restrict
         // the possible mappings we generate
         var subDependencies = new List<MappingPair>();
-        foreach (Triple t in _subTriples)
+        foreach (var t in _subTriples)
         {
             if (t.Subject.NodeType == NodeType.Blank && t.Predicate.NodeType == NodeType.Blank && t.Object.NodeType == NodeType.Blank)
             {
@@ -301,7 +301,7 @@ class SubGraphMatcher
         }
         subDependencies = subDependencies.Distinct().ToList();
         var parentDependencies = new List<MappingPair>();
-        foreach (Triple t in _parentTriples)
+        foreach (var t in _parentTriples)
         {
             if (t.Subject.NodeType == NodeType.Blank && t.Predicate.NodeType == NodeType.Blank && t.Object.NodeType == NodeType.Blank)
             {
@@ -334,13 +334,13 @@ class SubGraphMatcher
         if (subIndependents.Count > parentIndependents.Count) return false;
 
         // Try to map the independent nodes
-        foreach (INode x in subIndependents)
+        foreach (var x in subIndependents)
         {
             // They may already be mapped as they may be single use Triples
             if (_mapping.ContainsKey(x)) continue;
 
             var xs = _subTriples.Where(t => t.Involves(x)).ToList();
-            foreach (INode y in parentIndependents)
+            foreach (var y in parentIndependents)
             {
                 if (subNodes[x] != parentNodes[y]) continue;
 
@@ -367,7 +367,7 @@ class SubGraphMatcher
         var baseMapping = new Dictionary<INode, INode>(_mapping);
 
         // Now we use the dependency information to try and find mappings
-        foreach (MappingPair dependency in subDependencies)
+        foreach (var dependency in subDependencies)
         {
             // If both dependent Nodes are already mapped we don't need to try mapping them again
             if (_mapping.ContainsKey(dependency.X) && _mapping.ContainsKey(dependency.Y)) continue;
@@ -419,7 +419,7 @@ class SubGraphMatcher
             var ybound = _mapping.ContainsKey(dependency.Y);
 
             // Look at all the possible Target Dependencies we could map to
-            foreach (MappingPair target in parentDependencies)
+            foreach (var target in parentDependencies)
             {
                 if (target.Type != dependency.Type) continue;
 
@@ -528,18 +528,18 @@ class SubGraphMatcher
         var possibleMappings = new Dictionary<INode, List<INode>>();
 
         // Populate existing Mappings
-        foreach (KeyValuePair<INode,INode> fixedMapping in _mapping) 
+        foreach (var fixedMapping in _mapping) 
         {
             possibleMappings.Add(fixedMapping.Key, [fixedMapping.Value]);
         }
 
         // Populate possibilities for each Node
-        foreach (KeyValuePair<INode, int> gPair in subNodes)
+        foreach (var gPair in subNodes)
         {
             if (!_mapping.ContainsKey(gPair.Key))
             {
                 possibleMappings.Add(gPair.Key, []);
-                foreach (KeyValuePair<INode, int> hPair in parentNodes.Where(p => p.Value == gPair.Value && !_bound.Contains(p.Key)))
+                foreach (var hPair in parentNodes.Where(p => p.Value == gPair.Value && !_bound.Contains(p.Key)))
                 {
                     possibleMappings[gPair.Key].Add(hPair.Key);
                 }
@@ -550,9 +550,9 @@ class SubGraphMatcher
         }
 
         // Now start testing the possiblities
-        List<Dictionary<INode, INode>> possibles = GenerateMappings(possibleMappings, subDependencies, parentDependencies, parent);
+        var possibles = GenerateMappings(possibleMappings, subDependencies, parentDependencies, parent);
 
-        foreach (Dictionary<INode, INode> mapping in possibles)
+        foreach (var mapping in possibles)
         {
             var targets = new List<Triple>(_parentTriples);
             if (_subTriples.All(t => targets.Remove(t.MapTriple(parent, mapping))))
@@ -575,7 +575,7 @@ class SubGraphMatcher
     private List<Dictionary<INode, INode>> GenerateMappings(Dictionary<INode, List<INode>> possibleMappings, List<MappingPair> subDependencies, List<MappingPair> parentDependencies, IGraph target)
     {
         List<Dictionary<INode, INode>> mappings = [[]];
-        foreach (INode x in possibleMappings.Keys)
+        foreach (var x in possibleMappings.Keys)
         {
             if (possibleMappings[x].Count == 1)
             {
@@ -591,9 +591,9 @@ class SubGraphMatcher
                 // Need to know whether there are any dependencies we can use to limit possible mappings
                 var dependent = subDependencies.Any(p => p.Contains(x));
 
-                foreach (INode y in possibleMappings[x])
+                foreach (var y in possibleMappings[x])
                 {
-                    foreach (Dictionary<INode, INode> m in mappings)
+                    foreach (var m in mappings)
                     {
                         if (m.ContainsValue(y)) continue;
                         var n = new Dictionary<INode, INode>(m)
@@ -602,7 +602,7 @@ class SubGraphMatcher
                         };
                         if (dependent)
                         {
-                            foreach (MappingPair dependency in subDependencies)
+                            foreach (var dependency in subDependencies)
                             {
                                 if (n.ContainsKey(dependency.X) && n.ContainsKey(dependency.Y))
                                 {
@@ -623,19 +623,19 @@ class SubGraphMatcher
             }
 
             // List of Triples for doing partial mapping Tests
-            foreach (INode test in possibleMappings.Keys)
+            foreach (var test in possibleMappings.Keys)
             {
                 var xs = (from t in _subTriples
                                    where t.Involves(test)
                                    select t).ToList();
 
-                foreach (Dictionary<INode, INode> m in mappings)
+                foreach (var m in mappings)
                 {
                     // Are all the Blank Nodes involved in these Triples mapped at this stage?
                     if (xs.All(t => t.Nodes.All(node => node.NodeType != NodeType.Blank || m.ContainsKey(node))))
                     {
                         // Then we can do a partial mapping test
-                        IEnumerable<Triple> ys = (from t in xs
+                        var ys = (from t in xs
                                                   where _parentTriples.Contains(t.MapTriple(target, m))
                                                   select t);
 
