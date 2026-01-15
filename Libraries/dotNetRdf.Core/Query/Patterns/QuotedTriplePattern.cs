@@ -66,9 +66,9 @@ public class QuotedTriplePattern : PatternItem
     /// <inheritdoc />
     public override INode Construct(ConstructContext context)
     {
-        INode subjectNode = QuotedTriple.Subject.Construct(context);
-        INode predicateNode = QuotedTriple.Predicate.Construct(context);
-        INode objectNode = QuotedTriple.Object.Construct(context);
+        var subjectNode = QuotedTriple.Subject.Construct(context);
+        var predicateNode = QuotedTriple.Predicate.Construct(context);
+        var objectNode = QuotedTriple.Object.Construct(context);
         return new TripleNode(new Triple(subjectNode, predicateNode, objectNode));
     }
 

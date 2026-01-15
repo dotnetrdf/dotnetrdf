@@ -64,8 +64,8 @@ public abstract class QueryProcessorBase
             {
                 if (antecedent.Exception != null)
                 {
-                    Exception innerException = antecedent.Exception.InnerExceptions[0];
-                    RdfQueryException queryException = innerException as RdfQueryException ??
+                    var innerException = antecedent.Exception.InnerExceptions[0];
+                    var queryException = innerException as RdfQueryException ??
                                                        new RdfQueryException(
                                                            "Unexpected error while making an asynchronous query, see inner exception for details",
                                                            innerException);
@@ -101,8 +101,8 @@ public abstract class QueryProcessorBase
             {
                 if (antecedent.Exception != null)
                 {
-                    Exception innerException = antecedent.Exception.InnerExceptions[0];
-                    RdfQueryException queryException = innerException as RdfQueryException ??
+                    var innerException = antecedent.Exception.InnerExceptions[0];
+                    var queryException = innerException as RdfQueryException ??
                                                        new RdfQueryException(
                                                            "Unexpected error while making an asynchronous query, see inner exception for details",
                                                            innerException);

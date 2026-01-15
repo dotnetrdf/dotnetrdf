@@ -21,7 +21,7 @@ public class RdfJsonParserTests
     }
   }";
 
-        IGraph g = new Graph();
+        var g = new Graph();
         g.LoadFromString(json, new RdfJsonParser());
         var matches = g.GetTriplesWithSubjectPredicate(
             g.CreateUriNode(new Uri("http://example.com")),

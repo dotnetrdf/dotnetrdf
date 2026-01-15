@@ -15,7 +15,7 @@ public class QueryManipulationTests
         var g = new Graph();
         g.LoadFromFile(Path.Combine("resources", "rvesse.ttl"));
         var parser = new SparqlQueryParser();
-        SparqlQuery startingQuery =
+        var startingQuery =
             parser.ParseFromString("SELECT * WHERE { <http://www.dotnetrdf.org/people#rvesse> ?p ?o }");
         var bindingVars = new List<string> {"p"};
         var binding = new BindingsPattern(bindingVars);

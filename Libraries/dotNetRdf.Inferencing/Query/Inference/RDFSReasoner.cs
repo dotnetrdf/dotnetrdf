@@ -87,7 +87,7 @@ public class StaticRdfsReasoner : IInferenceEngine
     {
         // Infer information
         var inferences = new List<Triple>();
-        foreach (Triple t in input.Triples)
+        foreach (var t in input.Triples)
         {
             // Apply class/property hierarchy inferencing
             if (t.Predicate.Equals(_rdfType))
@@ -113,10 +113,10 @@ public class StaticRdfsReasoner : IInferenceEngine
             }
 
             // Apply Domain and Range inferencing on Predicates
-            if (_rangeMappings.TryGetValue(t.Predicate, out List<INode> rangeMapping))
+            if (_rangeMappings.TryGetValue(t.Predicate, out var rangeMapping))
             {
                 // Assert additional type information
-                foreach (INode n in rangeMapping)
+                foreach (var n in rangeMapping)
                 {
                     inferences.Add(new Triple(t.Object, _rdfType, n));
                 }
@@ -124,10 +124,10 @@ public class StaticRdfsReasoner : IInferenceEngine
                 // Call InferClasses to get extra type information
                 InferClasses(inferences[inferences.Count - 1], inferences);
             }
-            if (_domainMappings.TryGetValue(t.Predicate, out List<INode> domainMapping))
+            if (_domainMappings.TryGetValue(t.Predicate, out var domainMapping))
             {
                 // Assert additional type information
-                foreach (INode n in domainMapping)
+                foreach (var n in domainMapping)
                 {
                     inferences.Add(new Triple(t.Subject, _rdfType, n));
                 }
@@ -154,7 +154,7 @@ public class StaticRdfsReasoner : IInferenceEngine
     /// </remarks>
     public void Initialise(IGraph g)
     {
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             if (t.Predicate.Equals(_rdfType))
             {
@@ -263,9 +263,9 @@ public class StaticRdfsReasoner : IInferenceEngine
         Func<INode, Triple> inferenceFn, List<Triple> inferences, HashSet<INode> visited)
     {
         visited.Add(mappingKey);
-        if (mappings.TryGetValue(mappingKey, out List<INode> mappingValues) && mappingValues != null)
+        if (mappings.TryGetValue(mappingKey, out var mappingValues) && mappingValues != null)
         {
-            foreach (INode mappingValue in mappingValues)
+            foreach (var mappingValue in mappingValues)
             {
                 if (!visited.Contains(mappingValue))
                 {

@@ -190,7 +190,7 @@ public class RdfA
                     timer.Stop();
 
                     //Write the Triples to the Output
-                    foreach (Triple t in g.Triples)
+                    foreach (var t in g.Triples)
                     {
                         _testOutputHelper.WriteLine(t.ToString());
                     }
@@ -207,7 +207,7 @@ public class RdfA
                         {
                             try
                             {
-                                SparqlQuery q = queryparser.ParseFromFile("rdfa_tests/" + Path.GetFileNameWithoutExtension(file) + ".sparql");
+                                var q = queryparser.ParseFromFile("rdfa_tests/" + Path.GetFileNameWithoutExtension(file) + ".sparql");
                                 var results = g.ExecuteQuery(q);
                                 if (results is SparqlResultSet)
                                 {

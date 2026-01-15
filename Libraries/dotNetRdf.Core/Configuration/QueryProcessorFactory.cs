@@ -56,7 +56,7 @@ public class QueryProcessorFactory : IObjectFactory
         INode storeObj;
         object temp;
 
-        INode propStorageProvider = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
+        var propStorageProvider = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
 
         switch (targetType.FullName)
         {
@@ -75,7 +75,7 @@ public class QueryProcessorFactory : IObjectFactory
                 break;
 
             case GenericQueryProcessor:
-                INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
+                var managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
                 if (managerObj == null) return false;
                 temp = ConfigurationLoader.LoadObject(g, managerObj);
                 if (temp is IQueryableStorage)
@@ -89,7 +89,7 @@ public class QueryProcessorFactory : IObjectFactory
                 break;
 
             case RemoteQueryProcessor:
-                INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint)));
+                var endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint)));
                 if (endpointObj == null) return false;
                 temp = ConfigurationLoader.LoadObject(g, endpointObj);
 #pragma warning disable 618
@@ -109,7 +109,7 @@ public class QueryProcessorFactory : IObjectFactory
                 break;
 
             case LeviathanQueryProcessor:
-                INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
+                var datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
                 if (datasetObj != null)
                 {
                     temp = ConfigurationLoader.LoadObject(g, datasetObj);

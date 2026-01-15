@@ -201,7 +201,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
         try
 
         {
-            THtmlDocument doc = LoadAndParse(input);
+            var doc = LoadAndParse(input);
 
             var context =
                 new RdfAParserContext<THtmlDocument>(handler, doc, uriFactory) { BaseUri = _options.Base ?? handler.BaseUri };
@@ -403,7 +403,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
             evalContext.LocalContext = new RdfAContext();
 
             // If there's a base element this permanently changes the Base URI
-            TElement baseEl = GetBaseElement(context.Document);
+            var baseEl = GetBaseElement(context.Document);
             if (baseEl != null)
             {
                 var uri = GetAttribute(baseEl, "href");
@@ -431,7 +431,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
             context.Syntax = _options?.Syntax ?? RdfASyntax.AutoDetectLegacy;
             if (context.Syntax == RdfASyntax.AutoDetect || context.Syntax == RdfASyntax.AutoDetectLegacy)
             {
-                TElement docNode = GetHtmlElement(context.Document);
+                var docNode = GetHtmlElement(context.Document);
                 if (docNode != null && HasAttribute(docNode, "version"))
                 {
                     var version = GetAttribute(docNode, "version");
@@ -521,18 +521,18 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
         var inScopePrefixes = new List<string>();
         Dictionary<string, Uri> hiddenPrefixes = null;
         var lang = evalContext.Language;
-        Uri oldBase = evalContext.BaseUri;
+        var oldBase = evalContext.BaseUri;
         var baseChanged = false;
         var oldLang = lang;
         var langChanged = false;
         var baseUri = evalContext.BaseUri == null ? string.Empty : evalContext.BaseUri.AbsoluteUri;
-        Dictionary<INode, List<INode>> listMapping = evalContext.ListMapping;
+        var listMapping = evalContext.ListMapping;
 
         #region Steps 2-5 of the RDFa Processing Rules
 
         // Process xmlns attribute first.
         // These can be overridden by @prefix later
-        foreach (TAttribute attr in GetAttributes(currentElement)
+        foreach (var attr in GetAttributes(currentElement)
                      .Where(attr => GetAttributeName(attr).StartsWith("xmlns:")))
         {
             // Namespace URIs are resolved against the document URI, not any declared base
@@ -548,7 +548,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
         }
 
         // Process other relevant attributes
-        foreach (TAttribute attr in GetAttributes(currentElement))
+        foreach (var attr in GetAttributes(currentElement))
         {
             if (GetAttributeName(attr).StartsWith("xmlns:"))
             {
@@ -890,8 +890,8 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
         // If the Subject is not a null then we'll generate type triples if there's any @typeof attributes
         if (type && typedResource != null)
         {
-            INode rdfType = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-            foreach (INode dtObj in ParseComplexAttribute(context, evalContext, GetAttribute(currentElement, "typeof"), false))
+            var rdfType = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+            foreach (var dtObj in ParseComplexAttribute(context, evalContext, GetAttribute(currentElement, "typeof"), false))
             {
                 if (!context.Handler.HandleTriple(new Triple(typedResource, rdfType, dtObj)))
                 {
@@ -917,7 +917,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
             // We can generate some complete triples
             if (rel)
             {
-                foreach (INode predicateNode in ParseComplexAttribute(context, evalContext, GetAttribute(currentElement, "rel"), property))
+                foreach (var predicateNode in ParseComplexAttribute(context, evalContext, GetAttribute(currentElement, "rel"), property))
                 {
                     if (inList)
                     {
@@ -943,7 +943,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
             }
             if (rev)
             {
-                foreach (INode predicateNode in ParseComplexAttribute(context, evalContext, GetAttribute(currentElement, "rev"), property))
+                foreach (var predicateNode in ParseComplexAttribute(context, evalContext, GetAttribute(currentElement, "rev"), property))
                 {
                     if (!context.Handler.HandleTriple(new Triple(currentObj, predicateNode, newSubj)))
                     {
@@ -958,7 +958,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
             var hasPredicates = false;
             if (rel)
             {
-                foreach (INode predicateNode in ParseComplexAttribute(context, evalContext, GetAttribute(currentElement, "rel"), property))
+                foreach (var predicateNode in ParseComplexAttribute(context, evalContext, GetAttribute(currentElement, "rel"), property))
                 {
                     hasPredicates = true;
                     if (inList)
@@ -977,7 +977,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
             }
             if (rev)
             {
-                foreach (INode predicateNode in ParseComplexAttribute(context, evalContext, GetAttribute(currentElement, "rev"), property))
+                foreach (var predicateNode in ParseComplexAttribute(context, evalContext, GetAttribute(currentElement, "rev"), property))
                 {
                     hasPredicates = true;
                     incomplete.Add(new IncompleteTriple(predicateNode, IncompleteTripleDirection.Reverse));
@@ -1009,7 +1009,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
                 {
                     try
                     {
-                        INode dt = ResolveTermOrCurieOrAbsUri(context, evalContext, datatypeValue);
+                        var dt = ResolveTermOrCurieOrAbsUri(context, evalContext, datatypeValue);
                         if (dt is not UriNode uriNode)
                         {
                             throw new RdfException("Expected @datatype to resolve to a URI.");
@@ -1018,7 +1018,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
                         if (uriNode.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfXmlLiteral))
                         {
                             // It's an explicitly declared XML Literal
-                            foreach (TElement child in GetChildren(currentElement).OfType<TElement>()
+                            foreach (var child in GetChildren(currentElement).OfType<TElement>()
                                          .Where(c => !IsTextNode(c)))
                             {
                                 ProcessXmlLiteral(evalContext, child, noDefaultNamespace);
@@ -1080,7 +1080,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
             // Get the Properties which we are connecting this literal with
             if (currentPropertyValue != null)
             {
-                foreach (INode predicateNode in ParseComplexAttribute(context, evalContext, GetAttribute(currentElement, "property"), false))
+                foreach (var predicateNode in ParseComplexAttribute(context, evalContext, GetAttribute(currentElement, "property"), false))
                 {
                     if (predicateNode is IBlankNode)
                     {
@@ -1109,7 +1109,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
         // Complete incomplete Triples if this is possible
         if (!skip && newSubj != null && evalContext.ParentSubject != null)
         {
-            foreach (IncompleteTriple i in evalContext.IncompleteTriples)
+            foreach (var i in evalContext.IncompleteTriples)
             {
                 switch (i.Direction)
                 {
@@ -1156,7 +1156,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
                 }
                 else
                 {
-                    Uri newBase = baseUri.Equals(string.Empty) ? null : context.UriFactory.Create(baseUri);
+                    var newBase = baseUri.Equals(string.Empty) ? null : context.UriFactory.Create(baseUri);
                     newEvalContext = new RdfAEvaluationContext(newBase, evalContext.NamespaceMap)
                     {
                         // Set the Parent Subject for the new Context
@@ -1185,7 +1185,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
                 newEvalContext.LocalContext = new RdfAContext(evalContext.LocalContext);
 
                 // Iterate over the Nodes
-                foreach (TElement element in GetChildren(currentElement).OfType<TElement>().Where(IsElement))
+                foreach (var element in GetChildren(currentElement).OfType<TElement>().Where(IsElement))
                 {
                     ProcessElement(context, newEvalContext, element);
                 }
@@ -1195,9 +1195,9 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
         #endregion
         #region Step 14 of RDFa Processing Rules
 
-        foreach (KeyValuePair<INode, List<INode>> entry in listMapping)
+        foreach (var entry in listMapping)
         {
-            if (evalContext.ListMapping.TryGetValue(entry.Key, out List<INode> ecList) && ecList.SequenceEqual(entry.Value))
+            if (evalContext.ListMapping.TryGetValue(entry.Key, out var ecList) && ecList.SequenceEqual(entry.Value))
             {
                 break;
             }
@@ -1220,7 +1220,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
             // If they were hiding another prefix then that comes back into scope
             if (hiddenPrefixes != null)
             {
-                if (hiddenPrefixes.TryGetValue(prefix, out Uri hiddenPrefix))
+                if (hiddenPrefixes.TryGetValue(prefix, out var hiddenPrefix))
                 {
                     evalContext.NamespaceMap.AddNamespace(prefix, hiddenPrefix);
                 }
@@ -1251,11 +1251,11 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
     private static void EmitList(IParserContext context, INode subject, INode predicate, IReadOnlyList<INode> listMembers)
     {
         INode nextNode = null;
-        INode first = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
-        INode rest = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListRest));
+        var first = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+        var rest = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListRest));
         for (var i = listMembers.Count - 1; i >= 0; i--)
         {
-            IBlankNode listNode = context.Handler.CreateBlankNode();
+            var listNode = context.Handler.CreateBlankNode();
             EmitTriple(context, listNode, first, listMembers[i]);
             EmitTriple(context, listNode, rest, nextNode ?? context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListNil)));
             nextNode = listNode;
@@ -1341,12 +1341,12 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
     {
         // Value is concatenation of all Text Child Nodes
         var lit = new StringBuilder();
-        foreach (TNode n in GetChildren(element))
+        foreach (var n in GetChildren(element))
         {
             lit.Append(GetInnerText(n));
         }
 
-        INode literalNode = string.IsNullOrEmpty(lang)
+        var literalNode = string.IsNullOrEmpty(lang)
             ? context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(lit.ToString()))
             : context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(lit.ToString()), lang);
         return literalNode;
@@ -1559,7 +1559,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
 
         try
         {
-            Uri uri = context.UriFactory.Create(value);
+            var uri = context.UriFactory.Create(value);
             if (uri.IsAbsoluteUri) return context.Handler.CreateUriNode(uri);
         }
         catch (UriFormatException)
@@ -1592,7 +1592,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
             try
             {
 
-                INode n = skipTerms ? ResolveCurieOrAbsUri(context, evalContext, val) : ResolveTermOrCurieOrAbsUri(context, evalContext, val);
+                var n = skipTerms ? ResolveCurieOrAbsUri(context, evalContext, val) : ResolveTermOrCurieOrAbsUri(context, evalContext, val);
                 nodes.Add(n);
             }
             catch
@@ -1610,7 +1610,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
 
     private IEnumerable<string> GetAttributeTokens(string value)
     {
-        MatchCollection matches = _tokenListRegex.Matches(value);
+        var matches = _tokenListRegex.Matches(value);
         foreach (Match match in matches)
         {
             yield return match.Groups["token"].Value;
@@ -1622,7 +1622,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
         // Do nothing if the @prefix attribute is empty
         if (GetAttributeValue(attr).Equals(string.Empty)) return;
         var attrValue = GetAttributeValue(attr);
-        MatchCollection matches = _prefixRegex.Matches(attrValue);
+        var matches = _prefixRegex.Matches(attrValue);
         foreach (Match match in matches)
         {
             var prefix = match.Groups["prefix"].Value;
@@ -1678,7 +1678,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
                     try
                     {
                         loader.LoadGraph(g, context.UriFactory.Create(profile));
-                        IRdfAContext profileContext = RdfAContext.Load(g);
+                        var profileContext = RdfAContext.Load(g);
                         evalContext.LocalContext.Merge(profileContext);
                     }
                     catch
@@ -1774,7 +1774,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
         }
 
         // Recurse on any child nodes
-        foreach (TElement child in GetChildren(n).OfType<TElement>().Where(c=>!IsTextNode(c)))
+        foreach (var child in GetChildren(n).OfType<TElement>().Where(c=>!IsTextNode(c)))
         {
             ProcessXmlLiteral(evalContext, child, noDefaultNamespace);
         }

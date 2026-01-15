@@ -106,10 +106,10 @@ public class RdfAParser : RdfAParserBase<HtmlDocument, HtmlNode, HtmlNode, HtmlA
     /// <inheritdoc/>
     protected override bool IsXmlBaseIsPermissible(HtmlDocument document)
     {
-        HtmlNodeCollection docTypes = document.DocumentNode.SelectNodes("comment()");
+        var docTypes = document.DocumentNode.SelectNodes("comment()");
         if (docTypes != null)
         {
-            foreach (HtmlCommentNode docType in docTypes.OfType<HtmlCommentNode>())
+            foreach (var docType in docTypes.OfType<HtmlCommentNode>())
             {
                 if (_html5DoctypeRegex.IsMatch(docType.Comment))
                 {
@@ -125,7 +125,7 @@ public class RdfAParser : RdfAParserBase<HtmlDocument, HtmlNode, HtmlNode, HtmlA
                         return false;
                     }
                     // Extract the Document Type
-                    Match dtd = Regex.Match(docType.Comment, "\"([^\"]+)\">");
+                    var dtd = Regex.Match(docType.Comment, "\"([^\"]+)\">");
                     if (dtd.Success)
                     {
                         if (dtd.Groups[1].Value.Equals(XHtmlPlusRdfADoctype))
@@ -227,7 +227,7 @@ public class RdfAParser : RdfAParserBase<HtmlDocument, HtmlNode, HtmlNode, HtmlA
         {
             case HtmlNodeType.Document:
             case HtmlNodeType.Element:
-                foreach (HtmlNode child in node.ChildNodes)
+                foreach (var child in node.ChildNodes)
                 {
                     GrabText(output, child);
                 }

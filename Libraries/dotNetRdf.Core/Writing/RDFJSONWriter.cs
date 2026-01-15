@@ -106,7 +106,7 @@ public class RdfJsonWriter : BaseRdfWriter, IPrettyPrintingWriter
 
         for (var i = 0; i < ts.Count; i++)
         {
-            Triple t = ts[i];
+            var t = ts[i];
             if (lastSubj == null || !t.Subject.Equals(lastSubj))
             {
                 // Terminate previous Triples
@@ -207,7 +207,7 @@ public class RdfJsonWriter : BaseRdfWriter, IPrettyPrintingWriter
 
             // Write the Object
             // Create an Object for the Object
-            INode obj = t.Object;
+            var obj = t.Object;
             writer.WriteStartObject();
             writer.WritePropertyName("value");
             switch (obj.NodeType)

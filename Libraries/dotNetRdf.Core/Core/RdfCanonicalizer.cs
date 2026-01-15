@@ -104,7 +104,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
 
         // 4) For each entry of _hashToBlankNodesMap, code point ordered by hash
         // 4.1) Skipping entries that have more than one value
-        foreach (KeyValuePair<string, List<string>> entry in _hashToBlankNodesMap
+        foreach (var entry in _hashToBlankNodesMap
                      .OrderBy(p => p.Key, StringComparer.Ordinal).Where(pair => pair.Value.Count <= 1))
         {
             // 4.2) Issue a canonical identifier for the blank node
@@ -114,7 +114,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
         }
 
         // 5) For each entry of _hashToBlankNodesMap, code point ordered by hash 
-        foreach (KeyValuePair<string, List<string>> entry in _hashToBlankNodesMap.OrderBy(p => p.Key,
+        foreach (var entry in _hashToBlankNodesMap.OrderBy(p => p.Key,
                      StringComparer.Ordinal))
         {
             // 5.1) Create hashPathList where each item will be a result of running HashNDegreeQuads
@@ -131,7 +131,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
                 tempIssuer.GenerateBlankNodeIdentifier(blankNodeIdentifier);
                 // 5.2.4) Run HashNDegreeQuads for the blank node identifier, passing the other variables we just set up
                 hashPathList.Add((
-                    HashNDegreeQuads(blankNodeIdentifier, tempIssuer, out IBlankNodeGenerator resultIssuer),
+                    HashNDegreeQuads(blankNodeIdentifier, tempIssuer, out var resultIssuer),
                     resultIssuer));
             }
 
@@ -146,24 +146,24 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
         }
 
         // Generate the canonicalized dataset
-        foreach (IGraph graph in inputDatasetEnum)
+        foreach (var graph in inputDatasetEnum)
         {
-            IRefNode graphName = graph.Name is BlankNode graphBlankNode
+            var graphName = graph.Name is BlankNode graphBlankNode
                 ? new BlankNode(_canonicalIssuer.GenerateBlankNodeIdentifier(graphBlankNode.InternalID).Substring(2))
                 : graph.Name;
 
             var nGraph = new Graph(graphName);
-            foreach (Triple triple in graph.Triples)
+            foreach (var triple in graph.Triples)
             {
-                INode subj = triple.Subject is BlankNode subjBlankNode
+                var subj = triple.Subject is BlankNode subjBlankNode
                     ? new BlankNode(_canonicalIssuer.GenerateBlankNodeIdentifier(subjBlankNode.InternalID).Substring(2))
                     : triple.Subject;
 
-                INode pred = triple.Predicate is BlankNode predBlankNode
+                var pred = triple.Predicate is BlankNode predBlankNode
                     ? new BlankNode(_canonicalIssuer.GenerateBlankNodeIdentifier(predBlankNode.InternalID).Substring(2))
                     : triple.Predicate;
 
-                INode obj = triple.Object is BlankNode objBlankNode
+                var obj = triple.Object is BlankNode objBlankNode
                     ? new BlankNode(_canonicalIssuer.GenerateBlankNodeIdentifier(objBlankNode.InternalID).Substring(2))
                     : triple.Object;
 
@@ -181,7 +181,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
     {
         var formatter = new NQuads11Formatter();
 
-        IOrderedEnumerable<string> nquads = _blankNodeToQuadsMap[identifier]
+        var nquads = _blankNodeToQuadsMap[identifier]
             .Select(quad => PrepareQuadForHash(quad, identifier))
             .Select(quad => formatter.Format(quad.Triple, quad.Graph) + '\n')
             .OrderBy(p => p, StringComparer.Ordinal);
@@ -194,7 +194,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
         if (_nquadsRecursionLimit-- <= 0) throw new Exception("Recursion limit reached");
 
         var relatedHashToBlankNodesMap = new MultiValueDictionary<string, string>();
-        foreach (Quad quad in _blankNodeToQuadsMap[identifier])
+        foreach (var quad in _blankNodeToQuadsMap[identifier])
         {
             ProcessRelatedComponent(quad.Subject, "s", identifier, quad, issuer, ref relatedHashToBlankNodesMap);
             ProcessRelatedComponent(quad.Object, "o", identifier, quad, issuer, ref relatedHashToBlankNodesMap);
@@ -203,16 +203,16 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
 
         List<string> dataToHash = [];
 
-        foreach (KeyValuePair<string, List<string>> mapping in relatedHashToBlankNodesMap.OrderBy(p => p.Key,
+        foreach (var mapping in relatedHashToBlankNodesMap.OrderBy(p => p.Key,
                      StringComparer.Ordinal))
         {
             dataToHash.Add(mapping.Key);
             var chosenPath = string.Empty;
             IBlankNodeGenerator chosenIssuer = null;
 
-            foreach (IList<string> permutation in Permute(mapping.Value))
+            foreach (var permutation in Permute(mapping.Value))
             {
-                IBlankNodeGenerator issuerCopy = issuer.Clone();
+                var issuerCopy = issuer.Clone();
                 var path = string.Empty;
                 var recursionList = new List<string>();
 
@@ -239,7 +239,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
 
                 foreach (var related in recursionList)
                 {
-                    var result = HashNDegreeQuads(related, issuerCopy, out IBlankNodeGenerator issuerCopyRecurse);
+                    var result = HashNDegreeQuads(related, issuerCopy, out var issuerCopyRecurse);
                     path += issuerCopy.GenerateBlankNodeIdentifier(related);
                     path += $"<{result}>";
                     issuerCopy = issuerCopyRecurse;
@@ -315,19 +315,19 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
 
     private static Quad PrepareQuadForHash(Quad quad, string referenceId)
     {
-        IRefNode graph = quad.Graph is BlankNode blankRefNode
+        var graph = quad.Graph is BlankNode blankRefNode
             ? new BlankNode(blankRefNode.InternalID == referenceId ? "a" : "z")
             : quad.Graph;
 
-        INode subj = quad.Subject is BlankNode blankSubjectNode
+        var subj = quad.Subject is BlankNode blankSubjectNode
             ? new BlankNode(blankSubjectNode.InternalID == referenceId ? "a" : "z")
             : quad.Subject;
 
-        INode pred = quad.Predicate is BlankNode blankPredicateNode
+        var pred = quad.Predicate is BlankNode blankPredicateNode
             ? new BlankNode(blankPredicateNode.InternalID == referenceId ? "a" : "z")
             : quad.Predicate;
 
-        INode obj = quad.Object is BlankNode blankObjectNode
+        var obj = quad.Object is BlankNode blankObjectNode
             ? new BlankNode(blankObjectNode.InternalID == referenceId ? "a" : "z")
             : quad.Object;
 
@@ -341,7 +341,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
 
         public void Add(TKey key, TValue value)
         {
-            if (_dictionary.TryGetValue(key, out List<TValue> list))
+            if (_dictionary.TryGetValue(key, out var list))
             {
                 list.Add(value);
             }
@@ -375,7 +375,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
 
     private static void RotateRight<T>(IList<T> sequence, int count)
     {
-        T tmp = sequence[count - 1];
+        var tmp = sequence[count - 1];
         sequence.RemoveAt(count - 1);
         sequence.Insert(0, tmp);
     }
@@ -389,7 +389,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
         {
             for (var i = 0; i < count; i++)
             {
-                foreach (IList<T> perm in Permute(sequence, count - 1))
+                foreach (var perm in Permute(sequence, count - 1))
                     yield return perm;
                 RotateRight(sequence, count);
             }

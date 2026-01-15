@@ -19,7 +19,7 @@ public class RdfaTestDataProvider : IEnumerable<object[]>
 
     public RdfaTestData GetTestData(Uri testUri)
     {
-        IUriNode testNode = _manifest.Graph.GetUriNode(testUri);
+        var testNode = _manifest.Graph.GetUriNode(testUri);
         Assert.NotNull(testNode);
         return new RdfaTestData(_manifest, testNode);
     }

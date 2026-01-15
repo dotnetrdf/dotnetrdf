@@ -71,10 +71,10 @@ internal abstract class QueryImpl : AbstractSPINResource, ISolutionModifierQuery
     private List<String> getStringList(INode predicate)
     {
         var results = new List<String>();
-        IEnumerator<Triple> it = listProperties(predicate).GetEnumerator();
+        var it = listProperties(predicate).GetEnumerator();
         while (it.MoveNext())
         {
-            INode node = it.Current.Object;
+            var node = it.Current.Object;
             if (node is IValuedNode)
             {
                 results.Add(((IValuedNode)node).AsString());
@@ -90,7 +90,7 @@ internal abstract class QueryImpl : AbstractSPINResource, ISolutionModifierQuery
 
     public IValues getValues()
     {
-        IResource values = getResource(SP.PropertyValues);
+        var values = getResource(SP.PropertyValues);
         if (values != null)
         {
             return (IValues)values.As(typeof(ValuesImpl));
@@ -104,10 +104,10 @@ internal abstract class QueryImpl : AbstractSPINResource, ISolutionModifierQuery
 
     public IElementList getWhere()
     {
-        IResource whereS = getResource(SP.PropertyWhere);
+        var whereS = getResource(SP.PropertyWhere);
         if (whereS != null)
         {
-            IElement element = SPINFactory.asElement(whereS);
+            var element = SPINFactory.asElement(whereS);
             return (IElementList)element;
         }
         else
@@ -176,13 +176,13 @@ internal abstract class QueryImpl : AbstractSPINResource, ISolutionModifierQuery
 
     protected void printSolutionModifiers(ISparqlPrinter context)
     {
-        List<IResource> orderBy = getList(SP.PropertyOrderBy);
+        var orderBy = getList(SP.PropertyOrderBy);
         if (orderBy.Count > 0)
         {
             context.println();
             context.printIndentation(context.getIndentation());
             context.printKeyword("ORDER BY");
-            foreach (IResource node in orderBy)
+            foreach (var node in orderBy)
             {
                 if (!node.isLiteral())
                 {
@@ -191,7 +191,7 @@ internal abstract class QueryImpl : AbstractSPINResource, ISolutionModifierQuery
                         context.print(" ");
                         context.printKeyword("ASC");
                         context.print(" ");
-                        IResource expression = node.getResource(SP.PropertyExpression);
+                        var expression = node.getResource(SP.PropertyExpression);
                         printOrderByExpression(context, expression);
                     }
                     else if (node.hasProperty(RDF.PropertyType, SP.ClassDesc))
@@ -199,7 +199,7 @@ internal abstract class QueryImpl : AbstractSPINResource, ISolutionModifierQuery
                         context.print(" ");
                         context.printKeyword("DESC");
                         context.print(" ");
-                        IResource expression = node.getResource(SP.PropertyExpression);
+                        var expression = node.getResource(SP.PropertyExpression);
                         printOrderByExpression(context, expression);
                     }
                     else
@@ -235,11 +235,11 @@ internal abstract class QueryImpl : AbstractSPINResource, ISolutionModifierQuery
         if (node is INode)
         {
             var resource = (IResource)node;
-            IFunctionCall call = SPINFactory.asFunctionCall(resource);
+            var call = SPINFactory.asFunctionCall(resource);
             if (call != null)
             {
                 sb.print("(");
-                ISparqlPrinter pc = sb.clone();
+                var pc = sb.clone();
                 pc.setNested(true);
                 call.Print(pc);
                 sb.print(")");
@@ -253,7 +253,7 @@ internal abstract class QueryImpl : AbstractSPINResource, ISolutionModifierQuery
 
     protected void printValues(ISparqlPrinter p)
     {
-        IValues values = getValues();
+        var values = getValues();
         if (values != null)
         {
             p.println();

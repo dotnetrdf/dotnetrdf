@@ -28,7 +28,7 @@ public class RdfaTestSuite : RdfTestSuite
         Assert.NotNull(testParams);
         Assert.Single(testParams);
         Assert.NotNull(testParams[0]);
-        RdfaTestData testData = Assert.IsType<RdfaTestData>(testParams[0]);
+        var testData = Assert.IsType<RdfaTestData>(testParams[0]);
         Assert.NotNull(testData.Description);
         Assert.NotNull(testData.Input);
         Assert.NotNull(testData.Results);
@@ -59,9 +59,9 @@ public class RdfaTestSuite : RdfTestSuite
                     var inputPath = t.GetInputPath("rdfa1.1", hostLanguage);
                     parser.Load(g, inputPath);
                     if (t.Results != null) {
-                        SparqlQuery q = queryParser.ParseFromFile(t.GetResultPath("rdfa1.1", hostLanguage));
+                        var q = queryParser.ParseFromFile(t.GetResultPath("rdfa1.1", hostLanguage));
                         var results = g.ExecuteQuery(q);
-                        SparqlResultSet resultSet = Assert.IsType<SparqlResultSet>(results);
+                        var resultSet = Assert.IsType<SparqlResultSet>(results);
                         Assert.Equal(t.ExpectedResults, resultSet.Result);
                     }
                 } else
@@ -92,9 +92,9 @@ public class RdfaTestSuite : RdfTestSuite
                     parser.Load(g, inputPath);
                     if (t.Results != null)
                     {
-                        SparqlQuery q = queryParser.ParseFromFile(t.GetResultPath("rdfa1.1", hostLanguage));
+                        var q = queryParser.ParseFromFile(t.GetResultPath("rdfa1.1", hostLanguage));
                         var results = g.ExecuteQuery(q);
-                        SparqlResultSet resultSet = Assert.IsType<SparqlResultSet>(results);
+                        var resultSet = Assert.IsType<SparqlResultSet>(results);
                         Assert.Equal(t.ExpectedResults, resultSet.Result);
                     }
                 }

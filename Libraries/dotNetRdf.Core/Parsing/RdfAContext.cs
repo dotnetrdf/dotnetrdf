@@ -65,7 +65,7 @@ public class RdfAContext: IRdfAContext
         _namespaceMapper = new NamespaceMapper(true);
         if (prefixes != null)
         {
-            foreach (KeyValuePair<string, string> prefixMapping in prefixes)
+            foreach (var prefixMapping in prefixes)
             {
                 _namespaceMapper.AddNamespace(prefixMapping.Key, new Uri(prefixMapping.Value));
             }
@@ -87,7 +87,7 @@ public class RdfAContext: IRdfAContext
         else
         {
             _termMap = [];
-            foreach (KeyValuePair<string, string> entry in context.Mappings)
+            foreach (var entry in context.Mappings)
             {
                 _termMap[entry.Key.ToLowerInvariant()] = entry.Value;
             }
@@ -107,7 +107,7 @@ public class RdfAContext: IRdfAContext
         VocabularyUri = vocabularyUri;
         if (terms != null)
         {
-            foreach (KeyValuePair<string, string> entry in terms)
+            foreach (var entry in terms)
             {
                 AddTerm(entry.Key, entry.Value);
             }
@@ -115,7 +115,7 @@ public class RdfAContext: IRdfAContext
 
         if (prefixMappings != null)
         {
-            foreach (KeyValuePair<string, Uri> mapping in prefixMappings)
+            foreach (var mapping in prefixMappings)
             {
                 if (_namespaceMapper.HasNamespace(mapping.Key))
                 {
@@ -162,7 +162,7 @@ public class RdfAContext: IRdfAContext
     /// <inheritdoc />
     public void Merge(IRdfAContext vocab)
     {
-        foreach (KeyValuePair<string, string> mapping in vocab.Mappings)
+        foreach (var mapping in vocab.Mappings)
         {
             _termMap[mapping.Key] = mapping.Value;
         }
@@ -194,16 +194,16 @@ public class RdfAContext: IRdfAContext
     /// <returns>A new <see cref="IRdfAContext"/> instance containing the vocabulary declaration, term and prefix mappings defined in the graph.</returns>
     public static IRdfAContext Load(IGraph g)
     {
-        IEnumerable<KeyValuePair<string, string>> prefixMappings = GetPrefixMappings(g);
-        IEnumerable<KeyValuePair<string, string>> termMappings = GetTermMappings(g);
+        var prefixMappings = GetPrefixMappings(g);
+        var termMappings = GetTermMappings(g);
         var vocabularyUri = GetVocabularyUri(g);
         return new RdfAContext(vocabularyUri, termMappings, prefixMappings);
     }
 
     private static IEnumerable<KeyValuePair<string, string>> GetPrefixMappings(IGraph g)
     {
-        IUriNode prefix = g.GetUriNode(g.UriFactory.Create(RdfASpecsHelper.RdfAPrefix));
-        IUriNode uri = g.GetUriNode(g.UriFactory.Create(RdfASpecsHelper.RdfAUri));
+        var prefix = g.GetUriNode(g.UriFactory.Create(RdfASpecsHelper.RdfAPrefix));
+        var uri = g.GetUriNode(g.UriFactory.Create(RdfASpecsHelper.RdfAUri));
         if (prefix == null || uri == null)
         {
             // Graph contains no mappings
@@ -214,8 +214,8 @@ public class RdfAContext: IRdfAContext
 
     private static IEnumerable<KeyValuePair<string, string>> GetTermMappings(IGraph g)
     {
-        IUriNode term = g.GetUriNode(g.UriFactory.Create(RdfASpecsHelper.RdfATerm));
-        IUriNode uri = g.GetUriNode(g.UriFactory.Create(RdfASpecsHelper.RdfAUri));
+        var term = g.GetUriNode(g.UriFactory.Create(RdfASpecsHelper.RdfATerm));
+        var uri = g.GetUriNode(g.UriFactory.Create(RdfASpecsHelper.RdfAUri));
         if (term == null || uri == null)
         {
             // Graph contains no mappings
@@ -237,10 +237,10 @@ public class RdfAContext: IRdfAContext
             .Where(g => g.Count() == 1)
             .ToDictionary(g => g.Key, g => g.First().Object);
 
-        foreach (INode mappingNode in prefixByMapNode.Keys.Intersect(uriByMapNode.Keys))
+        foreach (var mappingNode in prefixByMapNode.Keys.Intersect(uriByMapNode.Keys))
         {
-            INode prefixNode = prefixByMapNode[mappingNode];
-            INode nsNode = uriByMapNode[mappingNode];
+            var prefixNode = prefixByMapNode[mappingNode];
+            var nsNode = uriByMapNode[mappingNode];
             if (prefixNode is ILiteralNode prefixLiteralNode &&
                 nsNode is ILiteralNode nsListLiteralNode)
             {
@@ -253,7 +253,7 @@ public class RdfAContext: IRdfAContext
 
     private static string GetVocabularyUri(IGraph g)
     {
-        IUriNode vocabulary = g.GetUriNode(g.UriFactory.Create(RdfASpecsHelper.RdfAVocabulary));
+        var vocabulary = g.GetUriNode(g.UriFactory.Create(RdfASpecsHelper.RdfAVocabulary));
         return g.GetTriplesWithPredicate(vocabulary)
             .Select(t => t.Predicate)
             .OfType<IUriNode>()

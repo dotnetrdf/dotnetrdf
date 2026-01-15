@@ -33,7 +33,7 @@ public class RdfCanonTestSuite(ITestOutputHelper output) : RdfTestSuite
         {
             expectedResult = sr.ReadToEnd();
         }
-        RdfCanonicalizer.CanonicalizedRdfDataset result = RunCanonicalize(t);
+        var result = RunCanonicalize(t);
 
         result.SerializedNQuads.Should().BeEquivalentTo(expectedResult);
     }
@@ -51,7 +51,7 @@ public class RdfCanonTestSuite(ITestOutputHelper output) : RdfTestSuite
         var expectedResultJson = File.ReadAllText(resultInputPath);
         var expectedResult = JsonConvert.DeserializeObject<Dictionary<string, string>>(expectedResultJson);
         
-        RdfCanonicalizer.CanonicalizedRdfDataset result = RunCanonicalize(t);
+        var result = RunCanonicalize(t);
 
         var dict = result.IssuedIdentifiersMap.Select(p =>
             new KeyValuePair<string, string>(p.Key, p.Value.StartsWith("_:") ? p.Value.Substring(2) : p.Value));

@@ -202,7 +202,7 @@ public class RdfAPatternCopyingHandler : IWrappingRdfHandler
     /// <inheritdoc />
     public bool HandleTriple(Triple t)
     {
-        if (_patternTriples.TryGetValue(t.Subject, out List<Triple> triples))
+        if (_patternTriples.TryGetValue(t.Subject, out var triples))
         {
             // Add this triple to the list of triples defined by the pattern t.Subject
             // unless it is a (re)declaration of the RDFa Pattern type
@@ -234,7 +234,7 @@ public class RdfAPatternCopyingHandler : IWrappingRdfHandler
             }
 
             // Record a reference from t.Subject to the pattern defined by t.Object
-            if (_patternRefs.TryGetValue(t.Subject, out List<INode> refList))
+            if (_patternRefs.TryGetValue(t.Subject, out var refList))
             {
                 refList.Add(t.Object);
             }
@@ -261,16 +261,16 @@ public class RdfAPatternCopyingHandler : IWrappingRdfHandler
     private bool EmitPatternCopy()
     {
         var referencedPatterns = new HashSet<INode>();
-        foreach (INode copySubject in _patternRefs.Keys)
+        foreach (var copySubject in _patternRefs.Keys)
         {
             var patternsToCopy = new List<INode>(_patternRefs[copySubject]);
             for (var i = 0; i < patternsToCopy.Count; i++)
             {
-                INode patternNode = patternsToCopy[i];
+                var patternNode = patternsToCopy[i];
                 referencedPatterns.Add(patternNode);
-                if (_patternTriples.TryGetValue(patternNode, out List<Triple> patternTriples))
+                if (_patternTriples.TryGetValue(patternNode, out var patternTriples))
                 {
-                    foreach (Triple patternTriple in patternTriples)
+                    foreach (var patternTriple in patternTriples)
                     {
                         if (patternTriple.HasPredicate(_rdfaCopy))
                         {
@@ -294,14 +294,14 @@ public class RdfAPatternCopyingHandler : IWrappingRdfHandler
             }
         }
         // Emit any unreferenced patterns
-        foreach (INode unreferencedPattern in _patternTriples.Keys.Where(node => !referencedPatterns.Contains(node)))
+        foreach (var unreferencedPattern in _patternTriples.Keys.Where(node => !referencedPatterns.Contains(node)))
         {
             if (!_innerHandler.HandleTriple(new Triple(unreferencedPattern, _rdfType, _rdfaPattern)))
             {
                 return false;
             }
 
-            foreach (Triple t in _patternTriples[unreferencedPattern])
+            foreach (var t in _patternTriples[unreferencedPattern])
             {
                 if (!_innerHandler.HandleTriple(t)) return false;
             }

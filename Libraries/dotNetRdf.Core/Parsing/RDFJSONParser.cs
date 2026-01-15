@@ -214,7 +214,7 @@ public class RdfJsonParser : IRdfReader
     private void ParseGraphObject(JsonParserContext context)
     {
         // Can we read the overall Graph Object
-        PositionInfo startPos = context.CurrentPosition;
+        var startPos = context.CurrentPosition;
         if (context.Input.Read())
         {
             if (context.Input.TokenType == JsonToken.StartObject)
@@ -245,7 +245,7 @@ public class RdfJsonParser : IRdfReader
     /// <param name="context">Parser Context.</param>
     private void ParseTriples(JsonParserContext context)
     {
-        PositionInfo startPos = context.CurrentPosition;
+        var startPos = context.CurrentPosition;
         if (context.Input.Read())
         {
             while (context.Input.TokenType != JsonToken.EndObject)
@@ -286,7 +286,7 @@ public class RdfJsonParser : IRdfReader
     /// <param name="subj">Subject of Triples which comes from the parent Json Object.</param>
     private void ParsePredicateObjectList(JsonParserContext context, INode subj)
     {
-        PositionInfo startPos = context.CurrentPosition;
+        var startPos = context.CurrentPosition;
 
         if (context.Input.Read())
         {
@@ -299,7 +299,7 @@ public class RdfJsonParser : IRdfReader
                     if (context.Input.TokenType == JsonToken.PropertyName)
                     {
                         var predValue = context.Input.Value.ToString();
-                        INode predNode = context.Handler.CreateUriNode(context.UriFactory.Create(predValue));
+                        var predNode = context.Handler.CreateUriNode(context.UriFactory.Create(predValue));
 
                         ParseObjectList(context, subj, predNode);
                     }
@@ -330,7 +330,7 @@ public class RdfJsonParser : IRdfReader
     /// <param name="pred">Predicate of Triples which comes form the Parent Json Object.</param>
     private void ParseObjectList(JsonParserContext context, INode subj, INode pred)
     {
-        PositionInfo startPos = context.CurrentPosition;
+        var startPos = context.CurrentPosition;
 
         if (context.Input.Read())
         {
@@ -365,7 +365,7 @@ public class RdfJsonParser : IRdfReader
         string token, nodeValue, nodeType, nodeLang, nodeDatatype;
         nodeValue = nodeType = nodeLang = nodeDatatype = null;
 
-        PositionInfo startPos = context.CurrentPosition;
+        var startPos = context.CurrentPosition;
 
         if (context.Input.Read())
         {
@@ -532,7 +532,7 @@ public class RdfJsonParser : IRdfReader
     /// <returns></returns>
     private RdfParseException Error(JsonParserContext context, string message, PositionInfo startPos)
     {
-        PositionInfo info = context.GetPositionRange(startPos);
+        var info = context.GetPositionRange(startPos);
         var error = new StringBuilder();
         error.Append("[Line " + info.StartLine + " Column " + info.StartPosition + " to Line " + info.EndLine + " Column " + info.EndPosition + "] ");
         error.AppendLine(message);
@@ -545,7 +545,7 @@ public class RdfJsonParser : IRdfReader
     /// <param name="message">Warning Message.</param>
     private void RaiseWarning(string message)
     {
-        RdfReaderWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

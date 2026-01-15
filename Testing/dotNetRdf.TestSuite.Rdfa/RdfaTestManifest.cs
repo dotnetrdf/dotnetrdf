@@ -33,17 +33,17 @@ public class RdfaTestManifest
 
     public string ResolveResourcePath(Uri resourcePath)
     {
-        Uri relPath = BaseUri.MakeRelativeUri(resourcePath);
+        var relPath = BaseUri.MakeRelativeUri(resourcePath);
         return new Uri(LocalManifestUri, relPath).LocalPath;
     }
 
     public IEnumerable<RdfaTestData> GetTestData()
     {
-        INode testCase = Graph.CreateUriNode("test:TestCase");
-        IEnumerable<INode> tests = Graph.GetTriplesWithPredicateObject(
+        var testCase = Graph.CreateUriNode("test:TestCase");
+        var tests = Graph.GetTriplesWithPredicateObject(
             Graph.CreateUriNode("rdf:type"),
             Graph.CreateUriNode("test:TestCase")).Select(triple => triple.Subject);
-        foreach (IUriNode testNode in tests.OfType<IUriNode>())
+        foreach (var testNode in tests.OfType<IUriNode>())
         {
             yield return new RdfaTestData(this, testNode);
         }

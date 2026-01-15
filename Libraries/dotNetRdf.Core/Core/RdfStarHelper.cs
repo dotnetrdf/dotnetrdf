@@ -51,7 +51,7 @@ internal class RdfStarHelper
     /// </summary>
     private static void UpdateUnstarNodes(IGraph g)
     {
-        foreach (Triple t in g.Triples.Asserted.Union(g.Triples.Quoted).Where(t => t.Nodes.Any(IsUnstarNode)).ToList())
+        foreach (var t in g.Triples.Asserted.Union(g.Triples.Quoted).Where(t => t.Nodes.Any(IsUnstarNode)).ToList())
         {
             g.Retract(t);
             g.Assert(new Triple(UpdateUnstarNodes(g, t.Subject), UpdateUnstarNodes(g, t.Predicate), UpdateUnstarNodes(g, t.Object), t.Context));
@@ -84,30 +84,30 @@ internal class RdfStarHelper
     private static void ReplaceQuotedTriples(IGraph g)
     {
         var mappings = new Dictionary<ITripleNode, IBlankNode>(new FastNodeComparer());
-        IUriNode unstarSubject = g.CreateUriNode(UriFactory.Create("https://w3c.github.io/rdf-star/unstar#subject"));
-        IUriNode unstarPredicate = g.CreateUriNode(UriFactory.Create("https://w3c.github.io/rdf-star/unstar#predicate"));
-        IUriNode unstarObject = g.CreateUriNode(UriFactory.Create("https://w3c.github.io/rdf-star/unstar#object"));
-        IUriNode unstarSubjectLexical = g.CreateUriNode(UriFactory.Create("https://w3c.github.io/rdf-star/unstar#subjectLexical"));
-        IUriNode unstarPredicateLexical = g.CreateUriNode(UriFactory.Create("https://w3c.github.io/rdf-star/unstar#predicateLexical"));
-        IUriNode unstarObjectLexical = g.CreateUriNode(UriFactory.Create("https://w3c.github.io/rdf-star/unstar#objectLexical"));
+        var unstarSubject = g.CreateUriNode(UriFactory.Create("https://w3c.github.io/rdf-star/unstar#subject"));
+        var unstarPredicate = g.CreateUriNode(UriFactory.Create("https://w3c.github.io/rdf-star/unstar#predicate"));
+        var unstarObject = g.CreateUriNode(UriFactory.Create("https://w3c.github.io/rdf-star/unstar#object"));
+        var unstarSubjectLexical = g.CreateUriNode(UriFactory.Create("https://w3c.github.io/rdf-star/unstar#subjectLexical"));
+        var unstarPredicateLexical = g.CreateUriNode(UriFactory.Create("https://w3c.github.io/rdf-star/unstar#predicateLexical"));
+        var unstarObjectLexical = g.CreateUriNode(UriFactory.Create("https://w3c.github.io/rdf-star/unstar#objectLexical"));
         var lexicalFormatter = new NTriples11Formatter();
 
         // First assign a new blank node to each distinct triple node in the graph.
         var tripleNodes = g.Nodes.OfType<ITripleNode>().Union(g.QuotedNodes.OfType<ITripleNode>()).ToList();
-        foreach (ITripleNode tn in tripleNodes)
+        foreach (var tn in tripleNodes)
         {
             if (!mappings.ContainsKey(tn))
             {
-                IBlankNode b = g.CreateBlankNode();
+                var b = g.CreateBlankNode();
                 mappings[tn] = b;
             }
         }
 
         // Now record the unstar triples for each triple node, taking into account that
         // the subject or object of a triple node may itself be a triple node that is mapped to a blank node.
-        foreach (ITripleNode tn in tripleNodes)
+        foreach (var tn in tripleNodes)
         {
-            IBlankNode b = mappings[tn];
+            var b = mappings[tn];
             IBlankNode mappedSubject = null, mappedObject = null;
             if (tn.Triple.Subject is ITripleNode stn)
             {
@@ -149,7 +149,7 @@ internal class RdfStarHelper
                 (t.Subject is ITripleNode stn && mappings.ContainsKey(stn)) ||
                 (t.Object is ITripleNode otn && mappings.ContainsKey(otn)))
             .ToList();
-        foreach (Triple t in toReplace)
+        foreach (var t in toReplace)
         {
             IBlankNode subjectReplacement = null, objectReplacement = null;
             var replaceSubject = t.Subject is ITripleNode stn && mappings.TryGetValue(stn, out subjectReplacement);
