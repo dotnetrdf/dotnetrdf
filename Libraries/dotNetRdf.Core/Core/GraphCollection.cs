@@ -116,7 +116,7 @@ public class GraphCollection
     [Obsolete("Replaced by Remove(IRefNode)")]
     public override bool Remove(Uri graphUri)
     {
-        IRefNode graphName = _graphs.Keys.FirstOrDefault(k => k is UriNode uriNode && uriNode.Uri.Equals(graphUri));
+        var graphName = _graphs.Keys.FirstOrDefault(k => k is UriNode uriNode && uriNode.Uri.Equals(graphUri));
         if (graphName == null && !_graphs.ContainsKey(null!)) return false;
         return Remove(graphName);
     }
@@ -130,7 +130,7 @@ public class GraphCollection
     /// </remarks>
     public override bool Remove(IRefNode graphName) 
     {
-        if (_graphs.TryGetValue(graphName, out IGraph g) &&
+        if (_graphs.TryGetValue(graphName, out var g) &&
             _graphs.Remove(graphName))
         {
             RaiseGraphRemoved(g);
@@ -178,12 +178,12 @@ public class GraphCollection
     {
         get 
         {
-            if (graphUri == null && _graphs.TryGetValue(null!, out IGraph defaultGraph))
+            if (graphUri == null && _graphs.TryGetValue(null!, out var defaultGraph))
             {
                 return defaultGraph;
             }
 
-            IGraph g = _graphs.Values.FirstOrDefault(
+            var g = _graphs.Values.FirstOrDefault(
                 graph => graph.Name is IUriNode uriNode && uriNode.Uri.Equals(graphUri));
             if (g == null)
             {
@@ -204,7 +204,7 @@ public class GraphCollection
     {
         get
         {
-            if (_graphs.TryGetValue(graphName, out IGraph g)) return g;
+            if (_graphs.TryGetValue(graphName, out var g)) return g;
             throw new RdfException("The graph with the given name does not exist in this graph collection.");
         }
     }

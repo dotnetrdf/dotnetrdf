@@ -44,9 +44,9 @@ public abstract class GenericUpdateProcessorTests : BaseTest
     [Fact]
     public void SparqlUpdateGenericCreateAndInsertData()
     {
-        IStorageProvider manager = GetManager();
+        var manager = GetManager();
         var processor = new GenericUpdateProcessor(manager);
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString("CREATE SILENT GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
+        var cmds = _parser.ParseFromString("CREATE SILENT GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
 
         processor.ProcessCommandSet(cmds);
 
@@ -62,9 +62,9 @@ public abstract class GenericUpdateProcessorTests : BaseTest
     [Fact]
     public void SparqlUpdateGenericCreateInsertDeleteData()
     {
-        IStorageProvider manager = GetManager();
+        var manager = GetManager();
         var processor = new GenericUpdateProcessor(manager);
-        SparqlUpdateCommandSet cmds = _parser.ParseFromString("CREATE SILENT GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
+        var cmds = _parser.ParseFromString("CREATE SILENT GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
 
         processor.ProcessCommandSet(cmds);
 

@@ -227,7 +227,7 @@ public class Graph
     public override bool Retract(IEnumerable<Triple> ts)
     {
         var retracted = false;
-        foreach (Triple t in ts)
+        foreach (var t in ts)
         {
             retracted = Retract(t) || retracted;
         }

@@ -108,7 +108,7 @@ public class GraphFactory
     /// </summary>
     public void Reset()
     {
-        foreach (IGraph g in _store.Graphs)
+        foreach (var g in _store.Graphs)
         {
             g.Clear();
         }

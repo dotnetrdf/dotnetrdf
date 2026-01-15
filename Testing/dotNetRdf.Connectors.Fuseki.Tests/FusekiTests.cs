@@ -47,7 +47,7 @@ public class FusekiTests
 
     public static FusekiConnector GetConnection(string uploadMimeType = null)
     {
-        MimeTypeDefinition mimeTypeDescription =
+        var mimeTypeDescription =
             uploadMimeType == null ? null : MimeTypesHelper.GetDefinitions(uploadMimeType).First();
         return new FusekiConnector(TestConfigManager.GetSetting(TestConfigManager.FusekiServer),
             mimeTypeDescription);
@@ -63,7 +63,7 @@ public class FusekiTests
         g.BaseUri = new Uri("http://example.org/fusekiTest");
 
         //Save Graph to Fuseki
-        FusekiConnector fuseki = FusekiTests.GetConnection(mimeType);
+        var fuseki = FusekiTests.GetConnection(mimeType);
         fuseki.SaveGraph(g);
         _testOutputHelper.WriteLine("Graph saved to Fuseki OK");
 
@@ -72,7 +72,7 @@ public class FusekiTests
         fuseki.LoadGraph(h, "http://example.org/fusekiTest");
 
         _testOutputHelper.WriteLine("");
-        foreach (Triple t in h.Triples)
+        foreach (var t in h.Triples)
         {
             _testOutputHelper.WriteLine(t.ToString(_formatter));
         }
@@ -88,7 +88,7 @@ public class FusekiTests
         g.BaseUri = new Uri("http://example.org/fuseki#test");
 
         //Save Graph to Fuseki
-        FusekiConnector fuseki = FusekiTests.GetConnection();
+        var fuseki = FusekiTests.GetConnection();
         fuseki.SaveGraph(g);
 
         //Now retrieve Graph from Fuseki
@@ -106,7 +106,7 @@ public class FusekiTests
         g.BaseUri = null;
 
         //Save Graph to Fuseki
-        FusekiConnector fuseki = FusekiTests.GetConnection();
+        var fuseki = FusekiTests.GetConnection();
         fuseki.SaveGraph(g);
 
         //Now retrieve Graph from Fuseki
@@ -125,7 +125,7 @@ public class FusekiTests
         g.BaseUri = null;
 
         //Save Graph to Fuseki
-        FusekiConnector fuseki = FusekiTests.GetConnection();
+        var fuseki = FusekiTests.GetConnection();
         fuseki.SaveGraph(g);
 
         //Now retrieve Graph from Fuseki
@@ -147,7 +147,7 @@ public class FusekiTests
         g.BaseUri = new Uri("http://example.org/fusekiTest");
 
         //Try to load the relevant Graph back from the Store
-        FusekiConnector fuseki = FusekiTests.GetConnection();
+        var fuseki = FusekiTests.GetConnection();
 
         var h = new Graph();
         fuseki.LoadGraph(h, "http://example.org/fusekiTest");
@@ -160,7 +160,7 @@ public class FusekiTests
     {
         StorageFusekiSaveGraph();
 
-        FusekiConnector fuseki = FusekiTests.GetConnection();
+        var fuseki = FusekiTests.GetConnection();
         fuseki.DeleteGraph("http://example.org/fusekiTest");
 
         var g = new Graph();
@@ -183,7 +183,7 @@ public class FusekiTests
     {
         StorageFusekiSaveDefaultGraph();
 
-        FusekiConnector fuseki = FusekiTests.GetConnection();
+        var fuseki = FusekiTests.GetConnection();
         fuseki.DeleteGraph((Uri)null);
 
         var g = new Graph();
@@ -207,7 +207,7 @@ public class FusekiTests
     {
         StorageFusekiSaveDefaultGraph();
 
-        FusekiConnector fuseki = FusekiTests.GetConnection();
+        var fuseki = FusekiTests.GetConnection();
         fuseki.DeleteGraph((String)null);
 
         var g = new Graph();
@@ -238,7 +238,7 @@ public class FusekiTests
                 g.CreateUriNode(new Uri("http://example.org/object")))
         };
 
-        FusekiConnector fuseki = FusekiTests.GetConnection();
+        var fuseki = FusekiTests.GetConnection();
         fuseki.UpdateGraph("http://example.org/fusekiTest", ts, null);
 
         fuseki.LoadGraph(g, "http://example.org/fusekiTest");
@@ -258,7 +258,7 @@ public class FusekiTests
                 g.CreateUriNode(new Uri("http://example.org/object")))
         };
 
-        FusekiConnector fuseki = FusekiTests.GetConnection();
+        var fuseki = FusekiTests.GetConnection();
         fuseki.UpdateGraph("http://example.org/fusekiTest", null, ts);
 
         fuseki.LoadGraph(g, "http://example.org/fusekiTest");
@@ -268,9 +268,9 @@ public class FusekiTests
     [Fact]
     public void StorageFusekiQuery()
     {
-        FusekiConnector fuseki = FusekiTests.GetConnection();
+        var fuseki = FusekiTests.GetConnection();
 
-        object results = fuseki.Query("SELECT * WHERE { {?s ?p ?o} UNION { GRAPH ?g {?s ?p ?o} } }");
+        var results = fuseki.Query("SELECT * WHERE { {?s ?p ?o} UNION { GRAPH ?g {?s ?p ?o} } }");
         if (results is SparqlResultSet)
         {
             //TestTools.ShowResults(results);
@@ -284,14 +284,14 @@ public class FusekiTests
     [Fact]
     public void StorageFusekiUpdate()
     {
-        FusekiConnector fuseki = FusekiTests.GetConnection();
+        var fuseki = FusekiTests.GetConnection();
 
         //Try doing a SPARQL Update LOAD command
         var command = "LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/Ilson>";
         fuseki.Update(command);
 
         //Then see if we can retrieve the newly loaded graph
-        IGraph g = new Graph();
+        var g = new Graph();
         fuseki.LoadGraph(g, "http://example.org/Ilson");
         Assert.False(g.IsEmpty, "Graph should be non-empty");
 
@@ -307,9 +307,9 @@ public class FusekiTests
     [Fact]
     public void StorageFusekiDescribe()
     {
-        FusekiConnector fuseki = FusekiTests.GetConnection();
+        var fuseki = FusekiTests.GetConnection();
 
-        object results = fuseki.Query("DESCRIBE <http://example.org/vehicles/FordFiesta>");
+        var results = fuseki.Query("DESCRIBE <http://example.org/vehicles/FordFiesta>");
         if (results is IGraph)
         {
             //TestTools.ShowGraph((IGraph) results);

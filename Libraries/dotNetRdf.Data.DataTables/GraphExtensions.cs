@@ -47,9 +47,9 @@ public static class GraphExtensions
         table.Columns.Add(new DataColumn("Predicate", typeof(INode)));
         table.Columns.Add(new DataColumn("Object", typeof(INode)));
 
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
-            DataRow row = table.NewRow();
+            var row = table.NewRow();
             row["Subject"] = t.Subject;
             row["Predicate"] = t.Predicate;
             row["Object"] = t.Object;

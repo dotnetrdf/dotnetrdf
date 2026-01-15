@@ -49,11 +49,11 @@ public class GraphPatternBuilderTests
     public void ShouldAllowUsingISparqlExpressionForFilter()
     {
         // given
-        ISparqlExpression expression = new IsIriFunction(new VariableTerm("x"));
+        var expression = new IsIriFunction(new VariableTerm("x"));
         _builder.Filter(expression);
 
         // when
-        GraphPattern graphPattern = _builder.BuildGraphPattern(_namespaceMapper.Object);
+        var graphPattern = _builder.BuildGraphPattern(_namespaceMapper.Object);
 
         // then
         Assert.True(graphPattern.IsFiltered);

@@ -254,7 +254,7 @@ public class GraphPattern
     /// </remarks>
     public void SwapTriplePatterns(int i, int j)
     {
-        ITriplePattern temp = _triplePatterns[i];
+        var temp = _triplePatterns[i];
         _triplePatterns[i] = _triplePatterns[j];
         _triplePatterns[j] = temp;
     }
@@ -486,7 +486,7 @@ public class GraphPattern
     /// </summary>
     internal GraphPattern LastChildPattern()
     {
-        GraphPattern p = _graphPatterns[_graphPatterns.Count - 1];
+        var p = _graphPatterns[_graphPatterns.Count - 1];
         _graphPatterns.RemoveAt(_graphPatterns.Count - 1);
         return p;
     }
@@ -651,7 +651,7 @@ public class GraphPattern
             indent = new string(' ', 2);
             for (var i = 0; i < _graphPatterns.Count; i++)
             {
-                GraphPattern gp = _graphPatterns[i];
+                var gp = _graphPatterns[i];
 
                 if (i > 0) output.Append(indent);
                 var temp = gp.ToString();
@@ -730,7 +730,7 @@ public class GraphPattern
             indent = new string(' ', 2);
         }
         // Triple Patterns
-        foreach (ITriplePattern tp in _triplePatterns)
+        foreach (var tp in _triplePatterns)
         {
             var temp = tp.ToString();
             output.Append(indent);
@@ -754,7 +754,7 @@ public class GraphPattern
             }
         }
         // Unplaced Assignments
-        foreach (IAssignmentPattern ap in _unplacedAssignments)
+        foreach (var ap in _unplacedAssignments)
         {
             output.Append(ap);
             if (linebreaks) output.AppendLine();
@@ -775,7 +775,7 @@ public class GraphPattern
             if (linebreaks) output.AppendLine();
         }
         // Graph Patterns
-        foreach (GraphPattern gp in _graphPatterns)
+        foreach (var gp in _graphPatterns)
         {
             output.Append(indent);
             var temp = gp.ToString();
@@ -796,7 +796,7 @@ public class GraphPattern
             output.Append(_filter);
             if (linebreaks) output.AppendLine();
         }
-        foreach (ISparqlFilter filter in _unplacedFilters)
+        foreach (var filter in _unplacedFilters)
         {
             output.Append(indent);
             output.Append(filter);
@@ -842,7 +842,7 @@ public class GraphPattern
             if (_unplacedAssignments.Count > 0)
             {
                 // If we have any unplaced LETs these get Extended onto the BGP
-                foreach (IAssignmentPattern p in _unplacedAssignments)
+                foreach (var p in _unplacedAssignments)
                 {
                     bgp = new Extend(bgp, p.AssignExpression, p.VariableName);
                 }
@@ -888,12 +888,12 @@ public class GraphPattern
         if (HasInlineData) complex = Join.CreateJoin(complex, new Bindings(_data));
 
         // Then Join each of the Graph Patterns as appropriate
-        foreach (GraphPattern gp in _graphPatterns)
+        foreach (var gp in _graphPatterns)
         {
             if (gp.IsGraph)
             {
                 // A GRAPH clause means a Join of the current pattern to a Graph clause
-                ISparqlAlgebra gpAlgebra = gp.ToAlgebra();
+                var gpAlgebra = gp.ToAlgebra();
                 complex = Join.CreateJoin(complex, Algebra.Graph.ApplyGraph(gpAlgebra, gp.GraphSpecifier));
             }
             else if (gp.IsOptional)
@@ -938,7 +938,7 @@ public class GraphPattern
         {
             // Unplaced assignments get Extended over the algebra so far here
             // complex = Join.CreateJoin(complex, new Bgp(this._unplacedAssignments.OfType<ITriplePattern>()));
-            foreach (IAssignmentPattern p in _unplacedAssignments)
+            foreach (var p in _unplacedAssignments)
             {
                 complex = new Extend(complex, p.AssignExpression, p.VariableName);
             }

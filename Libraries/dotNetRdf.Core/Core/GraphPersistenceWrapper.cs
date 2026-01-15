@@ -196,7 +196,7 @@ public class GraphPersistenceWrapper
     public bool Assert(IEnumerable<Triple> ts)
     {
         var asserted = false;
-        foreach (Triple t in ts)
+        foreach (var t in ts)
         {
             asserted = Assert(t) || asserted;
         }
@@ -225,7 +225,7 @@ public class GraphPersistenceWrapper
     public bool Retract(IEnumerable<Triple> ts)
     {
         var retracted = false;
-        foreach (Triple t in ts)
+        foreach (var t in ts)
         {
             retracted = Retract(t) || retracted;
         }
@@ -237,7 +237,7 @@ public class GraphPersistenceWrapper
     /// </summary>
     public void Clear()
     {
-        foreach (Triple t in _g.Triples)
+        foreach (var t in _g.Triples)
         {
             _actions.Add(new TriplePersistenceAction(t, _g.Name, true));
         }
@@ -681,11 +681,11 @@ public class GraphPersistenceWrapper
         {   //Prepare a mapping of Blank Nodes to Blank Nodes
             var mapping = new Dictionary<INode, IBlankNode>();
 
-            foreach (Triple t in g.Triples)
+            foreach (var t in g.Triples)
             {
-                INode s = MapBlankNode(t.Subject, mapping);
-                INode p = MapBlankNode(t.Predicate, mapping);
-                INode o = MapBlankNode(t.Object, mapping);
+                var s = MapBlankNode(t.Subject, mapping);
+                var p = MapBlankNode(t.Predicate, mapping);
+                var o = MapBlankNode(t.Object, mapping);
                 Assert(new Triple(s, p, o));
             }
         }
@@ -697,8 +697,8 @@ public class GraphPersistenceWrapper
         {
             return node;
         }
-        if (mapping.TryGetValue(node, out IBlankNode mapped)) return mapped;
-        IBlankNode tmp = CreateBlankNode();
+        if (mapping.TryGetValue(node, out var mapped)) return mapped;
+        var tmp = CreateBlankNode();
         mapping.Add(node, tmp);
         return tmp;
     }
@@ -892,7 +892,7 @@ public class GraphPersistenceWrapper
     /// <param name="args">Triple Event Arguments.</param>
     protected void RaiseTripleAsserted(TripleEventArgs args)
     {
-        TripleEventHandler d = TripleAsserted;
+        var d = TripleAsserted;
         args.Graph = this;
         if (d != null)
         {
@@ -907,8 +907,8 @@ public class GraphPersistenceWrapper
     /// <param name="t">Triple.</param>
     protected void RaiseTripleAsserted(Triple t)
     {
-        TripleEventHandler d = TripleAsserted;
-        GraphEventHandler e = Changed;
+        var d = TripleAsserted;
+        var e = Changed;
         if (d != null || e != null)
         {
             var args = new TripleEventArgs(t, this);
@@ -933,7 +933,7 @@ public class GraphPersistenceWrapper
     /// <param name="args"></param>
     protected void RaiseTripleRetracted(TripleEventArgs args)
     {
-        TripleEventHandler d = TripleRetracted;
+        var d = TripleRetracted;
         args.Graph = this;
         if (d != null)
         {
@@ -948,8 +948,8 @@ public class GraphPersistenceWrapper
     /// <param name="t">Triple.</param>
     protected void RaiseTripleRetracted(Triple t)
     {
-        TripleEventHandler d = TripleRetracted;
-        GraphEventHandler e = Changed;
+        var d = TripleRetracted;
+        var e = Changed;
         if (d != null || e != null)
         {
             var args = new TripleEventArgs(t, this, false);
@@ -964,7 +964,7 @@ public class GraphPersistenceWrapper
     /// <param name="args">Triple Event Arguments.</param>
     protected void RaiseGraphChanged(TripleEventArgs args)
     {
-        GraphEventHandler d = Changed;
+        var d = Changed;
         if (d != null)
         {
             d(this, new GraphEventArgs(this, args));
@@ -976,7 +976,7 @@ public class GraphPersistenceWrapper
     /// </summary>
     protected void RaiseGraphChanged()
     {
-        GraphEventHandler d = Changed;
+        var d = Changed;
         if (d != null)
         {
             d(this, new GraphEventArgs(this));
@@ -989,7 +989,7 @@ public class GraphPersistenceWrapper
     /// <returns>True if the operation can continue, false if it should be aborted.</returns>
     protected bool RaiseClearRequested()
     {
-        CancellableGraphEventHandler d = ClearRequested;
+        var d = ClearRequested;
         if (d != null)
         {
             var args = new CancellableGraphEventArgs(this);
@@ -1007,7 +1007,7 @@ public class GraphPersistenceWrapper
     /// </summary>
     protected void RaiseCleared()
     {
-        GraphEventHandler d = Cleared;
+        var d = Cleared;
         if (d != null)
         {
             d(this, new GraphEventArgs(this));
@@ -1020,7 +1020,7 @@ public class GraphPersistenceWrapper
     /// <returns>True if the operation can continue, false if it should be aborted.</returns>
     protected bool RaiseMergeRequested()
     {
-        CancellableGraphEventHandler d = MergeRequested;
+        var d = MergeRequested;
         if (d != null)
         {
             var args = new CancellableGraphEventArgs(this);
@@ -1038,7 +1038,7 @@ public class GraphPersistenceWrapper
     /// </summary>
     protected void RaiseMerged()
     {
-        GraphEventHandler d = Merged;
+        var d = Merged;
         if (d != null)
         {
             d(this, new GraphEventArgs(this));
@@ -1084,7 +1084,7 @@ public class GraphPersistenceWrapper
         {
             if (SupportsTriplePersistence)
             {
-                TriplePersistenceAction action = _actions[0];
+                var action = _actions[0];
                 var isDelete = action.IsDelete;
                 var ts = new List<Triple>
                 {
@@ -1143,7 +1143,7 @@ public class GraphPersistenceWrapper
         var i = _actions.Count - 1;
         while (i >= 0)
         {
-            TriplePersistenceAction action = _actions[i];
+            var action = _actions[i];
             if (action.IsDelete)
             {
                 _g.Assert(action.Triple);

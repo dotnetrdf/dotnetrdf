@@ -147,7 +147,7 @@ public class FusekiConnector
                 {
                     if (r.HasValue("g"))
                     {
-                        INode n = r["g"];
+                        var n = r["g"];
                         if (n != null && n.NodeType == NodeType.Uri)
                         {
                             uris.Add(((IUriNode)n).Uri);
@@ -196,7 +196,7 @@ public class FusekiConnector
             {
                 if (r.HasValue("g"))
                 {
-                    INode n = r["g"];
+                    var n = r["g"];
                     if (n != null)
                     {
                         switch (n.NodeType)
@@ -246,7 +246,7 @@ public class FusekiConnector
                     update.AppendLine("INSERT DATA {");
                     if (!graph.Equals(string.Empty)) update.AppendLine(graph);
 
-                    foreach (Triple t in additions)
+                    foreach (var t in additions)
                     {
                         update.AppendLine(_formatter.Format(t));
                     }
@@ -265,7 +265,7 @@ public class FusekiConnector
                     update.AppendLine("DELETE DATA {");
                     if (!graph.Equals(string.Empty)) update.AppendLine(graph);
 
-                    foreach (Triple t in removals)
+                    foreach (var t in removals)
                     {
                         update.AppendLine(_formatter.Format(t));
                     }
@@ -282,7 +282,7 @@ public class FusekiConnector
                 {
                     Content = new StringContent(update.ToString(), Encoding.UTF8, MimeTypesHelper.SparqlUpdate),
                 };
-                using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                using var response = HttpClient.SendAsync(request).Result;
                 if (!response.IsSuccessStatusCode)
                 {
                     throw StorageHelper.HandleHttpError(response, "updating a Graph in");
@@ -361,7 +361,7 @@ public class FusekiConnector
             }
 
             // Get the Response and process based on the Content Type
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpQueryError(response);
@@ -372,7 +372,7 @@ public class FusekiConnector
             try
             {
                 // Is the Content Type referring to a RDF format?
-                IRdfReader rdfReader = MimeTypesHelper.GetParser(ctype);
+                var rdfReader = MimeTypesHelper.GetParser(ctype);
                 rdfReader.Load(rdfHandler, data);
             }
             catch (RdfParserSelectionException)
@@ -380,7 +380,7 @@ public class FusekiConnector
                 // If we get a Parser selection exception then the Content Type isn't valid for a RDF Graph
 
                 // Is the Content Type referring to a Sparql Result Set format?
-                ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(ctype, true);
+                var sparqlParser = MimeTypesHelper.GetSparqlParser(ctype, true);
                 sparqlParser.Load(resultsHandler, data);
             }
         }
@@ -407,7 +407,7 @@ public class FusekiConnector
             {
                 Content = new StringContent(sparqlUpdate, Encoding.UTF8, MimeTypesHelper.SparqlUpdate),
             };
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "updating");
@@ -461,7 +461,7 @@ public class FusekiConnector
     {
         try
         {
-            HttpRequestMessage request = CreateQueryRequestMessage(sparqlQuery);
+            var request = CreateQueryRequestMessage(sparqlQuery);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
                 if (requestTask.IsCanceled || requestTask.IsFaulted)
@@ -475,7 +475,7 @@ public class FusekiConnector
                 }
                 else
                 {
-                    HttpResponseMessage response = requestTask.Result;
+                    var response = requestTask.Result;
                     if (!response.IsSuccessStatusCode)
                     {
                         callback(this,
@@ -505,7 +505,7 @@ public class FusekiConnector
                                     try
                                     {
                                         // Is the Content Type referring to a Sparql Result Set format?
-                                        ISparqlResultsReader resreader =
+                                        var resreader =
                                             MimeTypesHelper.GetSparqlParser(ctype, true);
                                         resreader.Load(resultsHandler, data);
                                     }
@@ -514,7 +514,7 @@ public class FusekiConnector
                                         // If we get a Parse exception then the Content Type isn't valid for a Sparql Result Set
 
                                         // Is the Content Type referring to a RDF format?
-                                        IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                                        var rdfreader = MimeTypesHelper.GetParser(ctype);
                                         rdfreader.Load(rdfHandler, data);
                                     }
 
@@ -571,8 +571,8 @@ public class FusekiConnector
     public async Task QueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery,
         CancellationToken cancellationToken)
     {
-        HttpRequestMessage request = CreateQueryRequestMessage(sparqlQuery);
-        HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+        var request = CreateQueryRequestMessage(sparqlQuery);
+        var response = await HttpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             throw StorageHelper.HandleHttpQueryError(response);
@@ -585,7 +585,7 @@ public class FusekiConnector
             try
             {
                 // Is the Content Type referring to a Sparql Result Set format?
-                ISparqlResultsReader resultsReader =
+                var resultsReader =
                     MimeTypesHelper.GetSparqlParser(contentType, true);
                 resultsReader.Load(resultsHandler, data);
             }
@@ -594,7 +594,7 @@ public class FusekiConnector
                 // If we get a Parse exception then the Content Type isn't valid for a Sparql Result Set
 
                 // Is the Content Type referring to a RDF format?
-                IRdfReader rdfReader = MimeTypesHelper.GetParser(contentType);
+                var rdfReader = MimeTypesHelper.GetParser(contentType);
                 rdfReader.Load(rdfHandler, data);
             }
         }
@@ -632,7 +632,7 @@ public class FusekiConnector
                 }
                 else
                 {
-                    HttpResponseMessage response = requestTask.Result;
+                    var response = requestTask.Result;
                     if (!response.IsSuccessStatusCode)
                     {
                         callback(this,
@@ -661,7 +661,7 @@ public class FusekiConnector
         {
             Content = new StringContent(sparqlUpdates, Encoding.UTF8, MimeTypesHelper.SparqlUpdate),
         };
-        HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+        var response = await HttpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             throw StorageHelper.HandleHttpError(response, "updating");
@@ -760,7 +760,7 @@ public class FusekiConnector
                 update.AppendLine("INSERT DATA {");
                 if (!graph.Equals(string.Empty)) update.AppendLine(graph);
 
-                foreach (Triple t in additions)
+                foreach (var t in additions)
                 {
                     update.AppendLine(_formatter.Format(t));
                 }
@@ -779,7 +779,7 @@ public class FusekiConnector
                 update.AppendLine("DELETE DATA {");
                 if (!graph.Equals(string.Empty)) update.AppendLine(graph);
 
-                foreach (Triple t in removals)
+                foreach (var t in removals)
                 {
                     update.AppendLine(_formatter.Format(t));
                 }
@@ -820,12 +820,12 @@ public class FusekiConnector
     /// <param name="context">Configuration Serialization Context.</param>
     public override void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode manager = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
-        INode server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
+        var manager = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+        var server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
 
         context.Graph.Assert(new Triple(manager, rdfType, genericManager));
         context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));

@@ -57,14 +57,14 @@ public class GenericQueryProcessor
     public object ProcessQuery(SparqlQuery query)
     {
         query.QueryExecutionTime = null;
-        DateTime start = DateTime.Now;
+        var start = DateTime.Now;
         try
         {
             return _manager.Query(_formatter.Format(query));
         }
         finally
         {
-            TimeSpan elapsed = (DateTime.Now - start);
+            var elapsed = (DateTime.Now - start);
             query.QueryExecutionTime = elapsed;
         }
     }
@@ -78,14 +78,14 @@ public class GenericQueryProcessor
     public override void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
     {
         query.QueryExecutionTime = null;
-        DateTime start = DateTime.Now;
+        var start = DateTime.Now;
         try
         {
             _manager.Query(rdfHandler, resultsHandler, _formatter.Format(query));
         }
         finally
         {
-            TimeSpan elapsed = (DateTime.Now - start);
+            var elapsed = (DateTime.Now - start);
             query.QueryExecutionTime = elapsed;
         }
     }

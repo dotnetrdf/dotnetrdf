@@ -163,7 +163,7 @@ public class GraphMatcher
         _targetTriples = new HashSet<Triple>(h.Triples.Asserted);
         _targetQuoted = new HashSet<Triple>(h.Triples.Quoted);
 
-        foreach (Triple t in g.Triples.Asserted)
+        foreach (var t in g.Triples.Asserted)
         {
             if (t.IsGroundTriple)
             {
@@ -188,7 +188,7 @@ public class GraphMatcher
             }
         }
 
-        foreach (Triple t in g.Triples.Quoted)
+        foreach (var t in g.Triples.Quoted)
         {
             if (t.IsGroundTriple)
             {
@@ -227,12 +227,12 @@ public class GraphMatcher
         }
 
         // Now classify the remaining Triples from the other Graph
-        foreach (Triple t in _targetTriples)
+        foreach (var t in _targetTriples)
         {
             GatherBlankNodes(t, hNodes);
         }
 
-        foreach (Triple t in _targetQuoted)
+        foreach (var t in _targetQuoted)
         {
             GatherBlankNodes(t, hNodes);
         }
@@ -371,7 +371,7 @@ public class GraphMatcher
 
         // First thing consider the trivial mapping
         var trivialMapping = new Dictionary<INode, INode>();
-        foreach (INode n in gNodes.Keys)
+        foreach (var n in gNodes.Keys)
         {
             trivialMapping.Add(n, n);
         }
@@ -389,13 +389,13 @@ public class GraphMatcher
 
         // Map single use Nodes first to reduce the size of the overall mapping
         Debug.WriteLine("Mapping single use blank nodes");
-        foreach (KeyValuePair<INode, int> pair in gNodes.Where(p => p.Value == 1))
+        foreach (var pair in gNodes.Where(p => p.Value == 1))
         {
             // Find the Triple we need to map
-            Triple toMap = _sourceTriples.FirstOrDefault(t => t.Involves(pair.Key));
+            var toMap = _sourceTriples.FirstOrDefault(t => t.Involves(pair.Key));
             if (toMap != null)
             {
-                foreach (INode n in _unbound.Where(n => hNodes[n] == pair.Value))
+                foreach (var n in _unbound.Where(n => hNodes[n] == pair.Value))
                 {
                     // See if this Mapping works
                     _mapping.Add(pair.Key, n);
@@ -431,15 +431,15 @@ public class GraphMatcher
         // Map any Nodes of unique degree next
         Debug.WriteLine("Trying to map unique blank nodes");
         var mappedSoFar = _mapping.Count;
-        foreach (KeyValuePair<int, int> degreeClass in gDegrees)
+        foreach (var degreeClass in gDegrees)
         {
             if (degreeClass.Key > 1 && degreeClass.Value == 1)
             {
                 // There is a Node of degree greater than 1 than has a unique degree
                 // i.e. there is only one Node with this degree so there can only ever be one
                 // possible mapping for this Node
-                INode x = gNodes.FirstOrDefault(p => p.Value == degreeClass.Key).Key;
-                INode y = hNodes.FirstOrDefault(p => p.Value == degreeClass.Key).Key;
+                var x = gNodes.FirstOrDefault(p => p.Value == degreeClass.Key).Key;
+                var y = hNodes.FirstOrDefault(p => p.Value == degreeClass.Key).Key;
 
                 // If either of these return null then the Graphs can't be equal
                 if (x == null || y == null)
@@ -474,7 +474,7 @@ public class GraphMatcher
         // If multiple nodes appear together we can use this information to restrict
         // the possible mappings we generate
         var sourceDependencies = new List<MappingPair>();
-        foreach (Triple t in _sourceTriples)
+        foreach (var t in _sourceTriples)
         {
             if (t.Subject.NodeType == NodeType.Blank && t.Predicate.NodeType == NodeType.Blank && t.Object.NodeType == NodeType.Blank)
             {
@@ -495,7 +495,7 @@ public class GraphMatcher
         }
         sourceDependencies = sourceDependencies.Distinct().ToList();
         var targetDependencies = new List<MappingPair>();
-        foreach (Triple t in _targetTriples)
+        foreach (var t in _targetTriples)
         {
             if (t.Subject.NodeType == NodeType.Blank && t.Predicate.NodeType == NodeType.Blank && t.Object.NodeType == NodeType.Blank)
             {
@@ -533,13 +533,13 @@ public class GraphMatcher
         Debug.WriteLine("Graphs contain " + sourceIndependents.Count + " independent blank nodes, attempting mapping");
 
         // Try to map the independent nodes
-        foreach (INode x in sourceIndependents)
+        foreach (var x in sourceIndependents)
         {
             // They may already be mapped as they may be single use Triples
             if (_mapping.ContainsKey(x)) continue;
 
             var xs = _sourceTriples.Where(t => t.Involves(x)).ToList();
-            foreach (INode y in targetIndependents)
+            foreach (var y in targetIndependents)
             {
                 if (gNodes[x] != hNodes[y]) continue;
 
@@ -574,7 +574,7 @@ public class GraphMatcher
         Debug.WriteLine("Using dependency information to try and map more blank nodes");
 
         // Now we use the dependency information to try and find mappings
-        foreach (MappingPair dependency in sourceDependencies)
+        foreach (var dependency in sourceDependencies)
         {
             // If both dependent Nodes are already mapped we don't need to try mapping them again
             if (_mapping.ContainsKey(dependency.X) && _mapping.ContainsKey(dependency.Y)) continue;
@@ -626,7 +626,7 @@ public class GraphMatcher
             var ybound = _mapping.ContainsKey(dependency.Y);
 
             // Look at all the possible Target Dependencies we could map to
-            foreach (MappingPair target in targetDependencies)
+            foreach (var target in targetDependencies)
             {
                 if (target.Type != dependency.Type) continue;
 
@@ -728,7 +728,7 @@ public class GraphMatcher
 
     private bool MapNodesWithUniqueConstants(HashSet<Triple> sourceTriples, HashSet<Triple> targetTriples)
     {
-        foreach (Triple t in sourceTriples)
+        foreach (var t in sourceTriples)
         {
             if (t.Subject.NodeType == NodeType.Blank && t.Predicate.NodeType != NodeType.Blank &&
                 t.Object.NodeType != NodeType.Blank)
@@ -745,8 +745,8 @@ public class GraphMatcher
                 if (possibles.Count == 1)
                 {
                     // Precisely one possible match so map
-                    INode x = t.Subject;
-                    INode y = possibles.First().Subject;
+                    var x = t.Subject;
+                    var y = possibles.First().Subject;
                     _mapping.Add(x, y);
                     _bound.Add(y);
                     _unbound.Remove(y);
@@ -775,8 +775,8 @@ public class GraphMatcher
                 if (possibles.Count == 1)
                 {
                     // Precisely one possible match so map
-                    INode x = t.Object;
-                    INode y = possibles.First().Object;
+                    var x = t.Object;
+                    var y = possibles.First().Object;
                     _mapping.Add(x, y);
                     _bound.Add(y);
                     _unbound.Remove(y);
@@ -845,7 +845,7 @@ public class GraphMatcher
 
             while (lhsMsgs.Count > 0)
             {
-                IGraph lhs = lhsMsgs[0];
+                var lhs = lhsMsgs[0];
                 lhsMsgs.RemoveAt(0);
 
                 // Find possible matches
@@ -864,7 +864,7 @@ public class GraphMatcher
                 Debug.WriteLine("Dividing and conquering on isolated sub-graph with " + lhs.Triples.Count + " triples...");
                 Debug.Indent();
                 var i = 1;
-                foreach (IGraph rhs in possibles)
+                foreach (var rhs in possibles)
                 {
                     Debug.WriteLine("Testing possiblity " + i + " of " + possibles.Count);
                     Debug.Indent();
@@ -891,7 +891,7 @@ public class GraphMatcher
                 else if (partialMappings.Count == 1)
                 {
                     // Only one possible match
-                    foreach (KeyValuePair<INode, INode> kvp in partialMappings[0])
+                    foreach (var kvp in partialMappings[0])
                     {
                         if (_mapping.ContainsKey(kvp.Key))
                         {
@@ -972,12 +972,12 @@ public class GraphMatcher
         var possibleMappings = new Dictionary<INode, List<INode>>();
 
         // Populate possibilities for each Node
-        foreach (KeyValuePair<INode, int> gPair in gNodes)
+        foreach (var gPair in gNodes)
         {
             if (!_mapping.ContainsKey(gPair.Key))
             {
                 possibleMappings.Add(gPair.Key, []);
-                foreach (KeyValuePair<INode, int> hPair in hNodes)
+                foreach (var hPair in hNodes)
                 {
                     if (hPair.Value == gPair.Value && !_bound.Contains(hPair.Key))
                     {
@@ -1006,9 +1006,9 @@ public class GraphMatcher
         }
 
         // Now start testing the possiblities
-        IEnumerable<Dictionary<INode, INode>> possibles = GenerateMappings(new Dictionary<INode, INode>(_mapping), possibleMappings);
+        var possibles = GenerateMappings(new Dictionary<INode, INode>(_mapping), possibleMappings);
         var count = 0;
-        foreach (Dictionary<INode, INode> mapping in possibles)
+        foreach (var mapping in possibles)
         {
             count++;
             if (mapping.Count != gNodes.Count) continue;
@@ -1042,16 +1042,16 @@ public class GraphMatcher
     public static IEnumerable<Dictionary<INode, INode>> GenerateMappings(Dictionary<INode, INode> baseMapping, Dictionary<INode, List<INode>> possibleMappings)
     {
         // Remove any explicit base mappings from possible mappings
-        foreach (KeyValuePair<INode, INode> p in baseMapping)
+        foreach (var p in baseMapping)
         {
-            if (possibleMappings.TryGetValue(p.Key, out List<INode> mappings))
+            if (possibleMappings.TryGetValue(p.Key, out var mappings))
             {
                 mappings.Remove(p.Value);
                 if (mappings.Count == 0) possibleMappings.Remove(p.Key);
             }
         }
-        INode x = possibleMappings.Keys.First();
-        foreach (Dictionary<INode, INode> mapping in GenerateMappingsInternal(baseMapping, possibleMappings, x, baseMapping.Count + possibleMappings.Count))
+        var x = possibleMappings.Keys.First();
+        foreach (var mapping in GenerateMappingsInternal(baseMapping, possibleMappings, x, baseMapping.Count + possibleMappings.Count))
         {
             yield return mapping;
         }
@@ -1070,10 +1070,10 @@ public class GraphMatcher
     /// </remarks>
     private static IEnumerable<Dictionary<INode, INode>> GenerateMappingsInternal(IDictionary<INode, INode> baseMapping, Dictionary<INode, List<INode>> possibleMappings, INode x, int targetCount)
     {
-        List<INode> possibles = possibleMappings[x];
+        var possibles = possibleMappings[x];
 
         // For each possiblity build a possible mapping
-        foreach (INode y in possibles)
+        foreach (var y in possibles)
         {
             var test = new Dictionary<INode, INode>(baseMapping);
             if (!test.ContainsKey(x)) test.Add(x, y);
@@ -1085,10 +1085,10 @@ public class GraphMatcher
             else
             {
                 // Go ahead and recurse
-                foreach (INode x2 in possibleMappings.Keys)
+                foreach (var x2 in possibleMappings.Keys)
                 {
                     if (test.ContainsKey(x2)) continue;
-                    foreach (Dictionary<INode, INode> mapping in GenerateMappingsInternal(test, possibleMappings, x2, targetCount))
+                    foreach (var mapping in GenerateMappingsInternal(test, possibleMappings, x2, targetCount))
                     {
                         yield return mapping;
                     }

@@ -78,7 +78,7 @@ public class GraphMLWriter : BaseStoreWriter, ICollapseLiteralsWriter
         WriteKey(writer, GraphMLSpecsHelper.NodeLabel, GraphMLSpecsHelper.Node);
         WriteKey(writer, GraphMLSpecsHelper.GraphLabel, GraphMLSpecsHelper.Graph);
 
-        foreach (IGraph graph in store.Graphs)
+        foreach (var graph in store.Graphs)
         {
             WriteGraph(writer, graph, collapseLiterals);
         }
@@ -110,11 +110,11 @@ public class GraphMLWriter : BaseStoreWriter, ICollapseLiteralsWriter
     {
         var nodesAlreadyWritten = new HashSet<object>();
 
-        foreach (Triple triple in graph.Triples)
+        foreach (var triple in graph.Triples)
         {
-            foreach (INode node in new[] { triple.Subject, triple.Object })
+            foreach (var node in new[] { triple.Subject, triple.Object })
             {
-                object id = CalculateNodeId(node, triple, collapseLiterals);
+                var id = CalculateNodeId(node, triple, collapseLiterals);
 
                 // Skip if already written
                 if (nodesAlreadyWritten.Add(id))

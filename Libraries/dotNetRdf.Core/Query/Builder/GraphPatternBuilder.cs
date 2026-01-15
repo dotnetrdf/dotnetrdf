@@ -72,22 +72,22 @@ public sealed class GraphPatternBuilder : IGraphPatternBuilder, IDescribeGraphPa
 
     internal GraphPattern BuildGraphPattern(INamespaceMapper prefixes)
     {
-        GraphPattern graphPattern = CreateGraphPattern();
+        var graphPattern = CreateGraphPattern();
 
-        foreach (ITriplePattern triplePattern in _triplePatterns.SelectMany(getTriplePatterns => getTriplePatterns(prefixes)))
+        foreach (var triplePattern in _triplePatterns.SelectMany(getTriplePatterns => getTriplePatterns(prefixes)))
         {
             AddTriplePattern(graphPattern, triplePattern);
         }
-        foreach (GraphPatternBuilder graphPatternBuilder in _childGraphPatternBuilders)
+        foreach (var graphPatternBuilder in _childGraphPatternBuilders)
         {
             graphPattern.AddGraphPattern(graphPatternBuilder.BuildGraphPattern(prefixes));
         }
-        foreach (Func<INamespaceMapper, ISparqlExpression> buildFilter in _filterBuilders)
+        foreach (var buildFilter in _filterBuilders)
         {
             graphPattern.AddFilter(new UnaryExpressionFilter(buildFilter(prefixes)));
         }
 
-        foreach (InlineDataBuilder builder in _inlineDataBuilders)
+        foreach (var builder in _inlineDataBuilders)
         {
             builder.AppendTo(graphPattern);
         }
@@ -248,7 +248,7 @@ public sealed class GraphPatternBuilder : IGraphPatternBuilder, IDescribeGraphPa
         var union = new GraphPatternBuilder(GraphPatternType.Union);
         union.Child(firstGraphPattern);
 
-        foreach (GraphPatternBuilder builder in unionedGraphPatternBuilders)
+        foreach (var builder in unionedGraphPatternBuilders)
         {
             union.Child(builder);
         }
@@ -269,7 +269,7 @@ public sealed class GraphPatternBuilder : IGraphPatternBuilder, IDescribeGraphPa
         var union = new GraphPatternBuilder(GraphPatternType.Union);
         union.AddChildGraphPattern(firstGraphPattern, GraphPatternType.Normal);
 
-        foreach (Action<IGraphPatternBuilder> builder in unionedGraphPatternBuilders)
+        foreach (var builder in unionedGraphPatternBuilders)
         {
             union.AddChildGraphPattern(builder, GraphPatternType.Normal);
         }
@@ -287,7 +287,7 @@ public sealed class GraphPatternBuilder : IGraphPatternBuilder, IDescribeGraphPa
     /// <inheritdoc />
     public IGraphPatternBuilder Child(IQueryBuilder queryBuilder)
     {
-        SparqlQuery subquery = queryBuilder.BuildQuery();
+        var subquery = queryBuilder.BuildQuery();
 
         var childBuilder = new GraphPatternBuilder();
         childBuilder.Where(new SubQueryPattern(subquery));

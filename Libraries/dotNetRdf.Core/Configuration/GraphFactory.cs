@@ -54,17 +54,17 @@ public class GraphFactory
         IGraph output;
 
         // Check whether to create with a name
-        INode nameNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
+        var nameNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
             g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyWithName)));
         
         // Check whether to use a specific Triple Collection
-        INode collectionNode = ConfigurationLoader.GetConfigurationNode(g, objNode, 
+        var collectionNode = ConfigurationLoader.GetConfigurationNode(g, objNode, 
             g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingTripleCollection)));
 
-        INode nodeFactoryNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
+        var nodeFactoryNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
             g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingNodeFactory)));
 
-        INode uriFactoryNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
+        var uriFactoryNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
             g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingUriFactory)));
 
         try
@@ -132,7 +132,7 @@ public class GraphFactory
 
         // Load from Graphs
         sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFromGraph)));
-        foreach (INode source in sources)
+        foreach (var source in sources)
         {
             ConfigurationLoader.CheckCircularReference(objNode, source, "dnr:fromGraph");
 
@@ -149,7 +149,7 @@ public class GraphFactory
 
         // Load from Embedded Resources
         sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFromEmbedded)));
-        foreach (INode source in sources)
+        foreach (var source in sources)
         {
             if (source.NodeType == NodeType.Literal)
             {
@@ -163,7 +163,7 @@ public class GraphFactory
         
         // Load from Files
         sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
-        foreach (INode source in sources)
+        foreach (var source in sources)
         {
             if (source.NodeType == NodeType.Literal)
             {
@@ -177,7 +177,7 @@ public class GraphFactory
 
         // Load from Strings
         sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFromString)));
-        foreach (INode source in sources)
+        foreach (var source in sources)
         {
             if (source.NodeType == NodeType.Literal)
             {
@@ -190,15 +190,15 @@ public class GraphFactory
         }
 
         // Load from Stores
-        IEnumerable<INode> stores = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFromStore)));
+        var stores = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFromStore)));
         stores.All(s => !ConfigurationLoader.CheckCircularReference(objNode, s, "dnr:fromStore"));
-        IEnumerable<object> connections = stores.Select(s => ConfigurationLoader.LoadObject(g, s));
+        var connections = stores.Select(s => ConfigurationLoader.LoadObject(g, s));
         sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyWithUri)));
-        foreach (object store in connections)
+        foreach (var store in connections)
         {
             if (store is IStorageProvider storageProvider)
             {
-                foreach (INode source in sources)
+                foreach (var source in sources)
                 {
                     if (source.NodeType == NodeType.Uri || source.NodeType == NodeType.Literal)
                     {
@@ -212,7 +212,7 @@ public class GraphFactory
             }
             else if (store is ITripleStore tripleStore)
             {
-                foreach (INode source in sources)
+                foreach (var source in sources)
                 {
                     if (source.NodeType == NodeType.Uri)
                     {
@@ -235,15 +235,15 @@ public class GraphFactory
         }
 
         // Load from Datasets
-        IEnumerable<INode> ds = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFromDataset)));
+        var ds = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFromDataset)));
         ds.All(d => !ConfigurationLoader.CheckCircularReference(objNode, d, ConfigurationLoader.PropertyFromDataset));
-        IEnumerable<object> datasets = ds.Select(d => ConfigurationLoader.LoadObject(g, d));
+        var datasets = ds.Select(d => ConfigurationLoader.LoadObject(g, d));
         sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyWithUri)));
-        foreach (object dataset in datasets)
+        foreach (var dataset in datasets)
         {
             if (dataset is ISparqlDataset sparqlDataset)
             {
-                foreach (INode source in sources)
+                foreach (var source in sources)
                 {
                     switch (source.NodeType)
                     {
@@ -267,7 +267,7 @@ public class GraphFactory
 
         // Finally load from Remote URIs
         sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFromUri)));
-        foreach (INode source in sources)
+        foreach (var source in sources)
         {
             switch (source.NodeType)
             {
@@ -283,7 +283,7 @@ public class GraphFactory
         }
         
         // Then are we assigning a Base URI to this Graph which overrides any existing Base URI?
-        INode baseUri = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAssignUri)));
+        var baseUri = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAssignUri)));
         if (baseUri != null)
         {
             switch (baseUri.NodeType)
@@ -327,12 +327,12 @@ public class GraphFactory
     /// <returns></returns>
     public bool CanLoadObject(Type t)
     {
-        Type igraph = typeof(IGraph);
+        var igraph = typeof(IGraph);
         
         // We can load any object which implements IGraph and has a public unparameterized constructor
         if (t.GetInterfaces().Any(i => i.Equals(igraph)))
         {
-            ConstructorInfo c = t.GetConstructor([]);
+            var c = t.GetConstructor([]);
             if (c != null)
             {
                 return c.IsPublic;

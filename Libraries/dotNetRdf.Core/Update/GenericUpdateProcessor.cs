@@ -113,7 +113,7 @@ public class GenericUpdateProcessor
                         throw new SparqlUpdateException("The underlying store does not provide support for an explicit unnamed Default Graph required to process this command");
                     }
                 }
-                IOBehaviour desired = cmd.DestinationGraphName == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
+                var desired = cmd.DestinationGraphName == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
                 if ((_manager.IOBehaviour & desired) == 0) throw new SparqlUpdateException("The underlying store does not provide the required IO Behaviour to implement this command");
 
                 // Load Source Graph
@@ -252,7 +252,7 @@ public class GenericUpdateProcessor
                         throw new SparqlUpdateException("The underlying store does not provide support for an explicit unnamed Default Graph required to process this command");
                     }
                 }
-                IOBehaviour desired = cmd.DestinationGraphName == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
+                var desired = cmd.DestinationGraphName == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
                 if ((_manager.IOBehaviour & desired) == 0) throw new SparqlUpdateException("The underlying store does not provide the required IO Behaviour to implement this command");
 
                 var source = new Graph(cmd.SourceGraphName);
@@ -398,7 +398,7 @@ public class GenericUpdateProcessor
     /// </remarks>
     public virtual void ProcessCommandSet(SparqlUpdateCommandSet commands)
     {
-        DateTime start = DateTime.Now;
+        var start = DateTime.Now;
         commands.UpdateExecutionTime = null;
         try
         {
@@ -416,7 +416,7 @@ public class GenericUpdateProcessor
         }
         finally
         {
-            TimeSpan elapsed = (DateTime.Now - start);
+            var elapsed = (DateTime.Now - start);
             commands.UpdateExecutionTime = elapsed;
         }
     }
@@ -462,13 +462,13 @@ public class GenericUpdateProcessor
                 // First build and make the query to get a Result Set
                 var queryText = "SELECT * WHERE " + cmd.WherePattern;
                 var parser = new SparqlQueryParser();
-                SparqlQuery query = parser.ParseFromString(queryText);
+                var query = parser.ParseFromString(queryText);
                 if (cmd.WithGraphName != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.WithGraphName);
-                foreach (Uri u in cmd.UsingUris)
+                foreach (var u in cmd.UsingUris)
                 {
                     query.AddDefaultGraph(new UriNode(u));
                 }
-                foreach (Uri u in cmd.UsingNamedUris)
+                foreach (var u in cmd.UsingNamedUris)
                 {
                     query.AddNamedGraph(new UriNode(u));
                 }
@@ -482,13 +482,13 @@ public class GenericUpdateProcessor
                     // Generate the Triples for each Solution
                     var deletedTriples = new List<Triple>();
                     var deletedGraphTriples = new Dictionary<IUriNode, List<Triple>>();
-                    foreach (ISet s in mset.Sets)
+                    foreach (var s in mset.Sets)
                     {
                         var tempDeletedTriples = new List<Triple>();
                         try
                         {
                             var context = new ConstructContext(s, true);
-                            foreach (IConstructTriplePattern p in cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                            foreach (var p in cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try
                                 {
@@ -509,7 +509,7 @@ public class GenericUpdateProcessor
                         }
 
                         // Triples from GRAPH clauses
-                        foreach (GraphPattern gp in cmd.DeletePattern.ChildGraphPatterns)
+                        foreach (var gp in cmd.DeletePattern.ChildGraphPatterns)
                         {
                             tempDeletedTriples.Clear();
                             try
@@ -546,7 +546,7 @@ public class GenericUpdateProcessor
                                 }
                                 if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, []);
                                 var context = new ConstructContext(s, true);
-                                foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
+                                foreach (var p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
                                     try
                                     {
@@ -572,7 +572,7 @@ public class GenericUpdateProcessor
                     if (_manager.UpdateSupported)
                     {
                         _manager.UpdateGraph(cmd.WithGraphName, [], deletedTriples);
-                        foreach (KeyValuePair<IUriNode, List<Triple>> graphDeletion in deletedGraphTriples)
+                        foreach (var graphDeletion in deletedGraphTriples)
                         {
                             _manager.UpdateGraph(graphDeletion.Key, [], graphDeletion.Value);
                         }
@@ -584,7 +584,7 @@ public class GenericUpdateProcessor
                         g.Retract(deletedTriples);
                         _manager.SaveGraph(g);
 
-                        foreach (KeyValuePair<IUriNode, List<Triple>> graphDeletion in deletedGraphTriples)
+                        foreach (var graphDeletion in deletedGraphTriples)
                         {
                             g = new Graph();
                             _manager.LoadGraph(g, graphDeletion.Key.Uri);
@@ -657,7 +657,7 @@ public class GenericUpdateProcessor
                 return;
             }
 
-            foreach (GraphPattern pattern in patterns)
+            foreach (var pattern in patterns)
             {
                 if (!IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate a DELETE DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
 
@@ -688,11 +688,11 @@ public class GenericUpdateProcessor
 
                 // Delete the actual Triples
                 var context = new ConstructContext(g, false);
-                foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                foreach (var p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                 {
-                    INode subj = p.Subject.Construct(context);
-                    INode pred = p.Predicate.Construct(context);
-                    INode obj = p.Object.Construct(context);
+                    var subj = p.Subject.Construct(context);
+                    var pred = p.Predicate.Construct(context);
+                    var obj = p.Object.Construct(context);
 
                     if (!_manager.UpdateSupported)
                     {
@@ -852,18 +852,18 @@ public class GenericUpdateProcessor
                 // First build and make the query to get a Result Set
                 var queryText = "SELECT * WHERE " + cmd.WherePattern;
                 var parser = new SparqlQueryParser();
-                SparqlQuery query = parser.ParseFromString(queryText);
+                var query = parser.ParseFromString(queryText);
                 if (cmd.WithGraphName != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.WithGraphName);
-                foreach (Uri u in cmd.UsingUris)
+                foreach (var u in cmd.UsingUris)
                 {
                     query.AddDefaultGraph(new UriNode(u));
                 }
-                foreach (Uri u in cmd.UsingNamedUris)
+                foreach (var u in cmd.UsingNamedUris)
                 {
                     query.AddNamedGraph(new UriNode(u));
                 }
 
-                object results = queryableStorage.Query(query.ToString());
+                var results = queryableStorage.Query(query.ToString());
                 if (results is SparqlResultSet resultSet)
                 {
                     // Now need to transform the Result Set back to a Multiset
@@ -872,13 +872,13 @@ public class GenericUpdateProcessor
                     // Generate the Triples for each Solution
                     var insertedTriples = new List<Triple>();
                     var insertedGraphTriples = new Dictionary<IUriNode, List<Triple>>();
-                    foreach (ISet s in mset.Sets)
+                    foreach (var s in mset.Sets)
                     {
                         var tempInsertedTriples = new List<Triple>();
                         try
                         {
                             var context = new ConstructContext(s, true);
-                            foreach (IConstructTriplePattern p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                            foreach (var p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try
                                 {
@@ -899,7 +899,7 @@ public class GenericUpdateProcessor
                         }
 
                         // Triples from GRAPH clauses
-                        foreach (GraphPattern gp in cmd.InsertPattern.ChildGraphPatterns)
+                        foreach (var gp in cmd.InsertPattern.ChildGraphPatterns)
                         {
                             tempInsertedTriples.Clear();
                             try
@@ -936,7 +936,7 @@ public class GenericUpdateProcessor
                                 }
                                 if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, []);
                                 var context = new ConstructContext(s, true);
-                                foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
+                                foreach (var p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
                                     try
                                     {
@@ -962,7 +962,7 @@ public class GenericUpdateProcessor
                     if (queryableStorage.UpdateSupported)
                     {
                         queryableStorage.UpdateGraph(cmd.WithGraphName, insertedTriples, []);
-                        foreach (KeyValuePair<IUriNode, List<Triple>> graphInsertion in insertedGraphTriples)
+                        foreach (var graphInsertion in insertedGraphTriples)
                         {
                             queryableStorage.UpdateGraph(graphInsertion.Key, graphInsertion.Value, []);
                         }
@@ -974,7 +974,7 @@ public class GenericUpdateProcessor
                         g.Assert(insertedTriples);
                         queryableStorage.SaveGraph(g);
 
-                        foreach (KeyValuePair<IUriNode, List<Triple>> graphInsertion in insertedGraphTriples)
+                        foreach (var graphInsertion in insertedGraphTriples)
                         {
                             g = new Graph();
                             queryableStorage.LoadGraph(g, graphInsertion.Key.Uri);
@@ -1047,7 +1047,7 @@ public class GenericUpdateProcessor
                 return;
             }
 
-            foreach (GraphPattern pattern in patterns)
+            foreach (var pattern in patterns)
             {
                 if (!IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate an INSERT DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
 
@@ -1071,11 +1071,11 @@ public class GenericUpdateProcessor
 
                 // Insert the actual Triples
                 var context = new ConstructContext(g, false);
-                foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                foreach (var p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                 {
-                    INode subj = p.Subject.Construct(context);
-                    INode pred = p.Predicate.Construct(context);
-                    INode obj = p.Object.Construct(context);
+                    var subj = p.Subject.Construct(context);
+                    var pred = p.Predicate.Construct(context);
+                    var obj = p.Object.Construct(context);
 
                     g.Assert(new Triple(subj, pred, obj));
                 }
@@ -1196,13 +1196,13 @@ public class GenericUpdateProcessor
                 // First build and make the query to get a Result Set
                 var queryText = "SELECT * WHERE " + cmd.WherePattern;
                 var parser = new SparqlQueryParser();
-                SparqlQuery query = parser.ParseFromString(queryText);
+                var query = parser.ParseFromString(queryText);
                 if (cmd.WithGraphName != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.WithGraphName);
-                foreach (Uri u in cmd.UsingUris)
+                foreach (var u in cmd.UsingUris)
                 {
                     query.AddDefaultGraph(new UriNode(u));
                 }
-                foreach (Uri u in cmd.UsingNamedUris)
+                foreach (var u in cmd.UsingNamedUris)
                 {
                     query.AddNamedGraph(new UriNode(u));
                 }
@@ -1216,13 +1216,13 @@ public class GenericUpdateProcessor
                     // Generate the Triples for each Solution
                     var deletedTriples = new List<Triple>();
                     var deletedGraphTriples = new Dictionary<IUriNode, List<Triple>>();
-                    foreach (ISet s in mset.Sets)
+                    foreach (var s in mset.Sets)
                     {
                         var tempDeletedTriples = new List<Triple>();
                         try
                         {
                             var context = new ConstructContext(s, true);
-                            foreach (IConstructTriplePattern p in cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                            foreach (var p in cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try
                                 {
@@ -1243,7 +1243,7 @@ public class GenericUpdateProcessor
                         }
 
                         // Triples from GRAPH clauses
-                        foreach (GraphPattern gp in cmd.DeletePattern.ChildGraphPatterns)
+                        foreach (var gp in cmd.DeletePattern.ChildGraphPatterns)
                         {
                             tempDeletedTriples.Clear();
                             try
@@ -1280,7 +1280,7 @@ public class GenericUpdateProcessor
                                 }
                                 if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, []);
                                 var context = new ConstructContext(s, true);
-                                foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
+                                foreach (var p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
                                     try
                                     {
@@ -1305,13 +1305,13 @@ public class GenericUpdateProcessor
                     // Generate the Triples for each Solution
                     var insertedTriples = new List<Triple>();
                     var insertedGraphTriples = new Dictionary<IUriNode, List<Triple>>();
-                    foreach (ISet s in mset.Sets)
+                    foreach (var s in mset.Sets)
                     {
                         var tempInsertedTriples = new List<Triple>();
                         try
                         {
                             var context = new ConstructContext(s, true);
-                            foreach (IConstructTriplePattern p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                            foreach (var p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try
                                 {
@@ -1332,7 +1332,7 @@ public class GenericUpdateProcessor
                         }
 
                         // Triples from GRAPH clauses
-                        foreach (GraphPattern gp in cmd.InsertPattern.ChildGraphPatterns)
+                        foreach (var gp in cmd.InsertPattern.ChildGraphPatterns)
                         {
                             tempInsertedTriples.Clear();
                             try
@@ -1368,7 +1368,7 @@ public class GenericUpdateProcessor
                                 }
                                 if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, []);
                                 var context = new ConstructContext(s, true);
-                                foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
+                                foreach (var p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
                                     try
                                     {
@@ -1397,11 +1397,11 @@ public class GenericUpdateProcessor
                         // We do these two operations sequentially even if in some cases they could be combined to ensure that the underlying
                         // Manager doesn't do any optimisations which would have the result of our updates not being properly applied
                         // e.g. ignoring Triples which are both asserted and retracted in one update
-                        foreach (KeyValuePair<IUriNode, List<Triple>> graphDeletion in deletedGraphTriples)
+                        foreach (var graphDeletion in deletedGraphTriples)
                         {
                             queryableStorage.UpdateGraph(graphDeletion.Key, [], graphDeletion.Value);
                         }
-                        foreach (KeyValuePair<IUriNode, List<Triple>> graphInsertion in insertedGraphTriples)
+                        foreach (var graphInsertion in insertedGraphTriples)
                         {
                             queryableStorage.UpdateGraph(graphInsertion.Key, graphInsertion.Value, []);
                         }
@@ -1413,12 +1413,12 @@ public class GenericUpdateProcessor
                         g.Retract(deletedTriples);
                         queryableStorage.SaveGraph(g);
 
-                        foreach (IUriNode graphUri in deletedGraphTriples.Keys.Concat(insertedGraphTriples.Keys).Distinct())
+                        foreach (var graphUri in deletedGraphTriples.Keys.Concat(insertedGraphTriples.Keys).Distinct())
                         {
                             g = new Graph();
                             queryableStorage.LoadGraph(g, graphUri.Uri);
-                            if (deletedGraphTriples.TryGetValue(graphUri, out List<Triple> triplesToRetract)) g.Retract(triplesToRetract);
-                            if (insertedGraphTriples.TryGetValue(graphUri, out List<Triple> triplesToAssert)) g.Assert(triplesToAssert);
+                            if (deletedGraphTriples.TryGetValue(graphUri, out var triplesToRetract)) g.Retract(triplesToRetract);
+                            if (insertedGraphTriples.TryGetValue(graphUri, out var triplesToAssert)) g.Assert(triplesToAssert);
                             queryableStorage.SaveGraph(g);
                         }
                     }
@@ -1457,7 +1457,7 @@ public class GenericUpdateProcessor
                 {
                     if ((_manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not provide support for an explicit unnamed Default Graph required to process this command");
                 }
-                IOBehaviour desired = cmd.DestinationGraphName == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
+                var desired = cmd.DestinationGraphName == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
                 if ((_manager.IOBehaviour & desired) == 0) throw new SparqlUpdateException("The underlying store does not provide the required IO Behaviour to implement this command");
 
                 var source = new Graph(cmd.SourceGraphName);

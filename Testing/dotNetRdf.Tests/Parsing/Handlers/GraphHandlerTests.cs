@@ -49,7 +49,7 @@ public class GraphHandlerTests
         EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
 
         var formatter = new NTriplesFormatter();
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             Console.WriteLine(t.ToString(formatter));
         }
@@ -71,7 +71,7 @@ public class GraphHandlerTests
         parser.Load(handler, tempFile);
 
         var formatter = new NTriplesFormatter();
-        foreach (Triple t in h.Triples)
+        foreach (var t in h.Triples)
         {
             Console.WriteLine(t.ToString(formatter));
         }
@@ -139,7 +139,7 @@ public class GraphHandlerTests
         Assert.NotEqual(g, h);
 
         var formatter = new NTriplesFormatter();
-        foreach (Triple t in h.Triples.Where(x => !x.IsGroundTriple))
+        foreach (var t in h.Triples.Where(x => !x.IsGroundTriple))
         {
             Console.WriteLine(t.ToString(formatter));
         }
@@ -168,7 +168,7 @@ public class GraphHandlerTests
         Assert.NotEqual(g, h);
 
         var formatter = new NTriplesFormatter();
-        foreach (Triple t in h.Triples.Where(x => !x.IsGroundTriple))
+        foreach (var t in h.Triples.Where(x => !x.IsGroundTriple))
         {
             Console.WriteLine(t.ToString(formatter));
         }
@@ -213,7 +213,7 @@ public class GraphHandlerTests
         var loader = new Loader(_serverFixture.Client);
         var g = new Graph();
         g.BaseUri.Should().BeNull();
-        Uri targetUri = _serverFixture.UriFor("/one.ttl");
+        var targetUri = _serverFixture.UriFor("/one.ttl");
         loader.LoadGraph(g, targetUri);
         g.BaseUri.Should().Be(targetUri);
     }
@@ -223,11 +223,11 @@ public class GraphHandlerTests
     {
         var loader = new Loader(_serverFixture.Client);
         var g = new Graph();
-        Uri targetUri = _serverFixture.UriFor("/one.ttl");
+        var targetUri = _serverFixture.UriFor("/one.ttl");
         g.BaseUri.Should().BeNull();
         g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
         g.BaseUri.Should().NotBeNull("loading into a graph with no BaseUri should set the BaseUri");
-        Uri baseUri = g.BaseUri;
+        var baseUri = g.BaseUri;
         loader.LoadGraph(g, targetUri);
         g.BaseUri.Should().Be(baseUri, "merging a second graph should not overwrite the BaseUri");
     }

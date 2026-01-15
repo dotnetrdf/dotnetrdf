@@ -42,7 +42,7 @@ public class GraphDiffTests
         g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
         h = g;
 
-        GraphDiffReport report = g.Difference(h);
+        var report = g.Difference(h);
         TestTools.ShowDifferences(report);
 
         Assert.True(report.AreEqual, "Graphs should be equal");
@@ -56,7 +56,7 @@ public class GraphDiffTests
         g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
         h.LoadFromFile(Path.Combine("resources", "Turtle.ttl"));
 
-        GraphDiffReport report = g.Difference(h);
+        var report = g.Difference(h);
         TestTools.ShowDifferences(report);
 
         Assert.False(report.AreEqual, "Graphs should not be equal");
@@ -70,7 +70,7 @@ public class GraphDiffTests
         g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
         h.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
-        GraphDiffReport report = g.Difference(h);
+        var report = g.Difference(h);
         TestTools.ShowDifferences(report);
 
         Assert.True(report.AreEqual, "Graphs should be equal");
@@ -87,7 +87,7 @@ public class GraphDiffTests
         //Remove Triples about Ford Fiestas from 2nd Graph
         h.Retract(h.GetTriplesWithSubject(new Uri("http://example.org/vehicles/FordFiesta")).ToList());
 
-        GraphDiffReport report = g.Difference(h);
+        var report = g.Difference(h);
         TestTools.ShowDifferences(report);
 
         Assert.False(report.AreEqual, "Graphs should not have been reported as equal");
@@ -103,12 +103,12 @@ public class GraphDiffTests
         h.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
         //Add additional Triple to 2nd Graph
-        IUriNode spaceVehicle = h.CreateUriNode("eg:SpaceVehicle");
-        IUriNode subClass = h.CreateUriNode("rdfs:subClassOf");
-        IUriNode vehicle = h.CreateUriNode("eg:Vehicle");
+        var spaceVehicle = h.CreateUriNode("eg:SpaceVehicle");
+        var subClass = h.CreateUriNode("rdfs:subClassOf");
+        var vehicle = h.CreateUriNode("eg:Vehicle");
         h.Assert(new Triple(spaceVehicle, subClass, vehicle));
 
-        GraphDiffReport report = g.Difference(h);
+        var report = g.Difference(h);
         TestTools.ShowDifferences(report);
 
         Assert.False(report.AreEqual, "Graphs should not have been reported as equal");
@@ -124,12 +124,12 @@ public class GraphDiffTests
         h.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
         //Add additional Triple to 2nd Graph
-        INode blank = h.CreateBlankNode();
-        IUriNode subClass = h.CreateUriNode("rdfs:subClassOf");
-        IUriNode vehicle = h.CreateUriNode("eg:Vehicle");
+        var blank = h.CreateBlankNode();
+        var subClass = h.CreateUriNode("rdfs:subClassOf");
+        var vehicle = h.CreateUriNode("eg:Vehicle");
         h.Assert(new Triple(blank, subClass, vehicle));
 
-        GraphDiffReport report = g.Difference(h);
+        var report = g.Difference(h);
         TestTools.ShowDifferences(report);
 
         Assert.False(report.AreEqual, "Graphs should not have been reported as equal");
@@ -145,11 +145,11 @@ public class GraphDiffTests
         h.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
         //Remove MSG from 2nd Graph
-        INode toRemove = h.Nodes.BlankNodes().FirstOrDefault();
+        var toRemove = h.Nodes.BlankNodes().FirstOrDefault();
         Assert.SkipWhen(toRemove == null, "No MSGs in test graph");
         h.Retract(h.GetTriplesWithSubject(toRemove).ToList());
 
-        GraphDiffReport report = g.Difference(h);
+        var report = g.Difference(h);
         TestTools.ShowDifferences(report);
 
         Assert.False(report.AreEqual, "Graphs should not have been reported as equal");
@@ -160,7 +160,7 @@ public class GraphDiffTests
     public void GraphDiffNullReferenceBoth()
     {
         var diff = new GraphDiff();
-        GraphDiffReport report = diff.Difference(null, null);
+        var report = diff.Difference(null, null);
 
         TestTools.ShowDifferences(report);
 
@@ -175,7 +175,7 @@ public class GraphDiffTests
         g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
         var diff = new GraphDiff();
-        GraphDiffReport report = diff.Difference(null, g);
+        var report = diff.Difference(null, g);
         TestTools.ShowDifferences(report);
 
         Assert.False(report.AreEqual, "Graphs should have been reported as non-equal for one null reference");
@@ -189,7 +189,7 @@ public class GraphDiffTests
         var g = new Graph();
         g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
-        GraphDiffReport report = g.Difference(null);
+        var report = g.Difference(null);
         TestTools.ShowDifferences(report);
 
         Assert.False(report.AreEqual, "Graphs should have been reported as non-equal for one null reference");
@@ -200,7 +200,7 @@ public class GraphDiffTests
     public static IEnumerable<TheoryDataRow<string>> DiffCases()
     {
         var resourceDirectory = new DirectoryInfo(Path.Combine("resources", "diff_cases"));
-        foreach (FileInfo fileA in resourceDirectory.EnumerateFiles("*_a.ttl"))
+        foreach (var fileA in resourceDirectory.EnumerateFiles("*_a.ttl"))
         {
             var testCase = fileA.Name;
             testCase = testCase.Substring(0, testCase.LastIndexOf('_'));
@@ -230,7 +230,7 @@ public class GraphDiffTests
         var b = new Graph();
         b.LoadFromFile(Path.Combine("resources", "diff_cases", $"{testGraphName}_b.ttl"));
 
-        GraphDiffReport diff = a.Difference(b);
+        var diff = a.Difference(b);
 
         if (!diff.AreEqual)
         {

@@ -84,7 +84,7 @@ public class GraphDiff
                 // A is null and B is non-null so considered non-equal with everything from B listed as added
                 report.AreEqual = false;
                 report.AreDifferentSizes = true;
-                foreach (Triple t in b.Triples)
+                foreach (var t in b.Triples)
                 {
                     if (t.IsGroundTriple)
                     {
@@ -96,7 +96,7 @@ public class GraphDiff
                     }
                 }
                 ComputeMSGs(b, _rhsUnassigned, _rhsMSGs);
-                foreach (IGraph msg in _rhsMSGs)
+                foreach (var msg in _rhsMSGs)
                 {
                     report.AddAddedMSG(msg);
                 }
@@ -108,7 +108,7 @@ public class GraphDiff
             // A is non-null and B is null so considered non-equal with everything from A listed as removed
             report.AreEqual = false;
             report.AreDifferentSizes = true;
-            foreach (Triple t in a.Triples)
+            foreach (var t in a.Triples)
             {
                 if (t.IsGroundTriple)
                 {
@@ -120,7 +120,7 @@ public class GraphDiff
                 }
             }
             ComputeMSGs(a, _lhsUnassigned, _lhsMSGs);
-            foreach (IGraph msg in _lhsMSGs)
+            foreach (var msg in _lhsMSGs)
             {
                 report.AddRemovedMSG(msg);
             }
@@ -142,7 +142,7 @@ public class GraphDiff
 
         // Next check for changes in Ground Triples
         // Iterate over the Ground Triples in the 1st Graph to find those that have been removed in the 2nd
-        foreach (Triple t in a.Triples.Where(t => t.IsGroundTriple))
+        foreach (var t in a.Triples.Where(t => t.IsGroundTriple))
         {
             if (!b.Triples.Contains(t))
             {
@@ -150,7 +150,7 @@ public class GraphDiff
             }
         }
         // Iterate over the Ground Triples in the 2nd Graph to find those that have been added in the 2nd
-        foreach (Triple t in b.Triples.Where(t => t.IsGroundTriple))
+        foreach (var t in b.Triples.Where(t => t.IsGroundTriple))
         {
             if (!a.Triples.Contains(t))
             {
@@ -165,11 +165,11 @@ public class GraphDiff
             // Some non-ground Triples so start computing MSGs
 
             // First build 2 HashSets of the non-ground Triples from the Graphs
-            foreach (Triple t in a.Triples.Where(t => !t.IsGroundTriple))
+            foreach (var t in a.Triples.Where(t => !t.IsGroundTriple))
             {
                 _lhsUnassigned.Add(t);
             }
-            foreach (Triple t in b.Triples.Where(t => !t.IsGroundTriple))
+            foreach (var t in b.Triples.Where(t => !t.IsGroundTriple))
             {
                 _rhsUnassigned.Add(t);
             }
@@ -184,7 +184,7 @@ public class GraphDiff
             _rhsMSGs.Sort(comparer);
 
             // Now start trying to match MSG
-            foreach (IGraph msg in _lhsMSGs)
+            foreach (var msg in _lhsMSGs)
             {
                 // Get Candidate MSGs from RHS i.e. those of equal size
                 var candidates = (from g in _rhsMSGs
@@ -200,7 +200,7 @@ public class GraphDiff
                 {
                     // Do any of the candidates match?
                     var hasMatch = false;
-                    foreach (IGraph candidate in candidates)
+                    foreach (var candidate in candidates)
                     {
                         var tempMapping = new Dictionary<INode, INode>();
                         if (msg.Equals(candidate, out tempMapping))
@@ -230,7 +230,7 @@ public class GraphDiff
             }
 
             // If we are left with any MSGs in the RHS then these are added MSG
-            foreach (IGraph msg in _rhsMSGs)
+            foreach (var msg in _rhsMSGs)
             {
                 report.AddAddedMSG(msg);
             }
@@ -253,7 +253,7 @@ public class GraphDiff
             var unprocessed = new Queue<INode>();
 
             // Get next Triple from unassigned
-            Triple first = unassigned.First();
+            var first = unassigned.First();
             unassigned.Remove(first);
 
             // Get the BNodes from it that need to be processed
@@ -264,12 +264,12 @@ public class GraphDiff
             msg.Assert(first);
             while (unprocessed.Count > 0)
             {
-                INode next = unprocessed.Dequeue();
+                var next = unprocessed.Dequeue();
                 // Can safely skip Nodes we've already processed
                 if (processed.Contains(next)) continue;
 
                 // Get all the Triples that use the given Node and find any additional Blank Nodes for processing
-                foreach (Triple t in g.GetTriples(next))
+                foreach (var t in g.GetTriples(next))
                 {
                     // When a Triple is added to an MSG it is removed from the unassigned list
                     unassigned.Remove(t);
@@ -294,7 +294,7 @@ public class GraphDiff
     private void MergeMapping(GraphDiffReport report, Dictionary<INode, INode> mapping)
     {
         // This first run through ensures the mappings don't conflict in which case it is an invalid mapping
-        foreach (KeyValuePair<INode, INode> kvp in mapping)
+        foreach (var kvp in mapping)
         {
             if (report.Mapping.ContainsKey(kvp.Key))
             {
@@ -302,7 +302,7 @@ public class GraphDiff
             }
         }
         // The second run through does the actual merge
-        foreach (KeyValuePair<INode, INode> kvp in mapping)
+        foreach (var kvp in mapping)
         {
             report.Mapping.Add(kvp.Key, kvp.Value);
         }
