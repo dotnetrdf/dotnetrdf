@@ -257,7 +257,7 @@ public class ExplainQueryProcessor
             case Token.QNAME:
             case Token.URI:
                 // Only a single active graph
-                Uri activeGraphUri = context.UriFactory.Create(Tools.ResolveUriOrQName(graph.GraphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri));
+                var activeGraphUri = context.UriFactory.Create(Tools.ResolveUriOrQName(graph.GraphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri));
                 PrintExplanations("Graph clause accesses single named graph " + activeGraphUri.AbsoluteUri);
                 break;
             case Token.VARIABLE:
@@ -271,9 +271,9 @@ public class ExplainQueryProcessor
                 {
                     // If there are already values bound to the Graph variable for all Input Solutions then we limit the Query to those Graphs
                     var graphUris = new List<Uri>();
-                    foreach (ISet s in context.InputMultiset.Sets)
+                    foreach (var s in context.InputMultiset.Sets)
                     {
-                        INode temp = s[gvar];
+                        var temp = s[gvar];
                         if (temp == null) continue;
                         if (temp.NodeType != NodeType.Uri) continue;
                         activeGraphs.Add(temp.ToString());
@@ -459,8 +459,8 @@ public class ExplainQueryProcessor
         // End Timing and Print (if enabled)
         if (HasFlag(ExplanationLevel.ShowTimings))
         {
-            DateTime start = _startTimes.Value.Pop();
-            TimeSpan elapsed = DateTime.Now - start;
+            var start = _startTimes.Value.Pop();
+            var elapsed = DateTime.Now - start;
             // this.PrintExplanations("Took " + elapsed.ToString());
             ExplainEvaluationAction(algebra, context, "Took " + elapsed);
         }

@@ -351,7 +351,7 @@ public static class Extensions
         }
         else
         {
-            INode listRoot = g.CreateBlankNode();
+            var listRoot = g.CreateBlankNode();
             AssertList<T>(g, listRoot, objects, mapFunc);
             return listRoot;
         }
@@ -367,10 +367,10 @@ public static class Extensions
     /// <param name="mapFunc">Mapping from Object Type to <see cref="INode">INode</see>.</param>
     public static void AssertList<T>(this IGraph g, INode listRoot, IEnumerable<T> objects, Func<T, INode> mapFunc)
     {
-        INode rdfNil = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListNil));
-        INode rdfFirst = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
-        INode rdfRest = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListRest));
-        INode listCurrent = listRoot;
+        var rdfNil = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListNil));
+        var rdfFirst = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+        var rdfRest = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListRest));
+        var listCurrent = listRoot;
 
         // Then we can assert the collection
         var nodes = objects.Select(x => mapFunc(x)).ToList();
@@ -381,7 +381,7 @@ public static class Extensions
 
             if (i < nodes.Count - 1)
             {
-                INode listNext = g.CreateBlankNode();
+                var listNext = g.CreateBlankNode();
                 g.Assert(listCurrent, rdfRest, listNext);
                 listCurrent = listNext;
             }
@@ -424,16 +424,16 @@ public static class Extensions
     /// <returns>Triples that make up the List.</returns>
     public static IEnumerable<Triple> GetListAsTriples(this IGraph g, INode listRoot)
     {
-        INode rdfFirst = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
-        INode rdfRest = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListRest));
-        INode rdfNil = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListNil));
+        var rdfFirst = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+        var rdfRest = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListRest));
+        var rdfNil = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListNil));
 
         if (listRoot.Equals(rdfNil)) return [];
 
         var ts = new List<Triple>();
         var currCount = 0;
         var diff = 0;
-        INode listCurrent = listRoot;
+        var listCurrent = listRoot;
         do
         {
             ts.AddRange(g.GetTriplesWithSubjectPredicate(listCurrent, rdfFirst));
@@ -462,7 +462,7 @@ public static class Extensions
     /// <returns>Nodes that are the items in the list.</returns>
     public static IEnumerable<INode> GetListItems(this IGraph g, INode listRoot)
     {
-        INode rdfFirst = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+        var rdfFirst = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
         return GetListAsTriples(g, listRoot).Where(t => t.Predicate.Equals(rdfFirst)).Select(t => t.Object);
     }
 
@@ -474,7 +474,7 @@ public static class Extensions
     /// <returns>Nodes that are the intermediate nodes of the list.</returns>
     public static IEnumerable<INode> GetListNodes(this IGraph g, INode listRoot)
     {
-        INode rdfFirst = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+        var rdfFirst = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
         return GetListAsTriples(g, listRoot).Where(t => t.Predicate.Equals(rdfFirst)).Select(t => t.Subject);
     }
 
@@ -489,8 +489,8 @@ public static class Extensions
     /// </remarks>
     public static bool IsListRoot(this INode n, IGraph g)
     {
-        INode rdfRest = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListRest));
-        INode rdfFirst = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+        var rdfRest = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListRest));
+        var rdfFirst = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
         return !g.GetTriplesWithPredicateObject(rdfRest, n).Any() && (g.GetTriplesWithSubjectPredicate(n, rdfFirst).Count() == 1);
     }
 
@@ -529,16 +529,16 @@ public static class Extensions
         if (!objects.Any()) return;
 
         // Get the List Tail
-        INode listTail = GetListTail(g, listRoot);
+        var listTail = GetListTail(g, listRoot);
 
         // Remove the rdf:rest rdf:nil triple
-        INode rdfRest = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListRest));
-        INode rdfNil = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListNil));
+        var rdfRest = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListRest));
+        var rdfNil = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListNil));
         g.Retract(new Triple(listTail, rdfRest, rdfNil));
 
         // Create a new tail for the list that will act as the root of the extended list
-        INode newRoot = g.CreateBlankNode();
-        INode rdfFirst = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+        var newRoot = g.CreateBlankNode();
+        var rdfFirst = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
         g.Assert(new Triple(listTail, rdfRest, newRoot));
 
         // Then assert the new list
@@ -572,7 +572,7 @@ public static class Extensions
         // Figure out which items need removing
         var currObjects = GetListItems(g, listRoot).ToList();
         var initialCount = currObjects.Count;
-        foreach (INode obj in objects.Select(x => mapFunc(x)))
+        foreach (var obj in objects.Select(x => mapFunc(x)))
         {
             currObjects.Remove(obj);
         }
@@ -921,7 +921,7 @@ public static class Extensions
                     else
                     {
                         // Is it a Number?
-                        SparqlNumericType numType = NumericTypesHelper.GetNumericTypeFromDataTypeUri(dt);
+                        var numType = NumericTypesHelper.GetNumericTypeFromDataTypeUri(dt);
                         switch (numType)
                         {
                             case SparqlNumericType.Decimal:
@@ -1203,7 +1203,7 @@ public static class GraphExtensions
     /// <param name="file">File to save to.</param>
     public static void SaveToFile(this IGraph g, string file)
     {
-        IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(file));
+        var writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(file));
         writer.Save(g, file);
     }
 
@@ -1246,7 +1246,7 @@ public static class GraphExtensions
     /// <param name="streamWriter">The stream to write to.</param>
     public static void SaveToStream(this IGraph g, string filename, TextWriter streamWriter)
     {
-        IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
+        var writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
         g.SaveToStream(streamWriter, writer);
     }
 
@@ -1261,7 +1261,7 @@ public static class GraphExtensions
         ts.Sort();
 
         var hash = new StringBuilder();
-        foreach (Triple t in ts)
+        foreach (var t in ts)
         {
             hash.AppendLine(t.GetHashCode().ToString());
         }
@@ -1433,7 +1433,7 @@ public static class TripleStoreExtensions
     /// <param name="file">File to save to.</param>
     public static void SaveToFile(this ITripleStore store, string file)
     {
-        IStoreWriter writer = MimeTypesHelper.GetStoreWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(file));
+        var writer = MimeTypesHelper.GetStoreWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(file));
         writer.Save(store, file);
     }
 }
@@ -1756,7 +1756,7 @@ public static class LiteralExtensions
     public static BaseTripleCollection ToTripleCollection(this IEnumerable<Triple> triples, bool indexed=true)
     {
         BaseTripleCollection collection = indexed ? new TreeIndexedTripleCollection() : new TripleCollection();
-        foreach (Triple t in triples) collection.Add(t);
+        foreach (var t in triples) collection.Add(t);
         return collection;
     }
 }

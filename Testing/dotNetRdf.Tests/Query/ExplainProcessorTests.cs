@@ -52,7 +52,7 @@ public class ExplainProcessorTests
             _processor = new ExplainQueryProcessor(store);
         }
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
         Object results;
         Console.WriteLine("Input Query:");
         Console.WriteLine(_formatter.Format(q));

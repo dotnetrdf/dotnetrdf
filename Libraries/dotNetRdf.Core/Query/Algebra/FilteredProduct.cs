@@ -122,7 +122,7 @@ public class FilteredProduct
         get
         {
             // Floating variables are those floating on either side which are not fixed
-            IEnumerable<string> floating = Lhs.FloatingVariables.Concat(Rhs.FloatingVariables).Distinct();
+            var floating = Lhs.FloatingVariables.Concat(Rhs.FloatingVariables).Distinct();
             var fixedVars = new HashSet<string>(FixedVariables);
             return floating.Where(v => !fixedVars.Contains(v));
         }
@@ -146,7 +146,7 @@ public class FilteredProduct
     /// <returns></returns>
     public SparqlQuery ToQuery()
     {
-        ISparqlAlgebra algebra = new Filter(new Join(Lhs, Rhs), new UnaryExpressionFilter(FilterExpression));
+        var algebra = new Filter(new Join(Lhs, Rhs), new UnaryExpressionFilter(FilterExpression));
         return algebra.ToQuery();
     }
 
@@ -156,7 +156,7 @@ public class FilteredProduct
     /// <returns></returns>
     public Patterns.GraphPattern ToGraphPattern()
     {
-        ISparqlAlgebra algebra = new Filter(new Join(Lhs, Rhs), new UnaryExpressionFilter(FilterExpression));
+        var algebra = new Filter(new Join(Lhs, Rhs), new UnaryExpressionFilter(FilterExpression));
         return algebra.ToGraphPattern();
     }
 

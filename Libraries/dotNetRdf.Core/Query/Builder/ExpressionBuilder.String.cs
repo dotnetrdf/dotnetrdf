@@ -96,7 +96,7 @@ internal partial class ExpressionBuilder
 
     private static BooleanExpression Regex(ISparqlExpression text, ISparqlExpression pattern, ISparqlExpression flags)
     {
-        RegexFunction regex = flags == null ? new RegexFunction(text, pattern) : new RegexFunction(text, pattern, flags);
+        var regex = flags == null ? new RegexFunction(text, pattern) : new RegexFunction(text, pattern, flags);
 
         return new BooleanExpression(regex);
     }
@@ -115,7 +115,7 @@ internal partial class ExpressionBuilder
 
     private static TypedLiteralExpression<string> Substr(ISparqlExpression str, ISparqlExpression startingLoc, ISparqlExpression length)
     {
-        SubStrFunction subStrFunction = length == null ? new SubStrFunction(str, startingLoc) : new SubStrFunction(str, startingLoc, length);
+        var subStrFunction = length == null ? new SubStrFunction(str, startingLoc) : new SubStrFunction(str, startingLoc, length);
         return new TypedLiteralExpression<string>(subStrFunction);
     }
 

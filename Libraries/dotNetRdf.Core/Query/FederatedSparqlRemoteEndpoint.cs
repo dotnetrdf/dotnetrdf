@@ -233,7 +233,7 @@ public class FederatedSparqlRemoteEndpoint
         var asyncCalls = new List<Task<IGraph>>();
         var count = 0;
         var cts = new CancellationTokenSource();
-        foreach (SparqlRemoteEndpoint endpoint in _endpoints)
+        foreach (var endpoint in _endpoints)
         {
             // Limit the number of simultaneous requests we make to the user defined level (default 4)
             // We do this limiting check before trying to issue a request so that when the last request
@@ -264,7 +264,7 @@ public class FederatedSparqlRemoteEndpoint
                 catch (AggregateException ex)
                 {
                     var faultedTaskIx = asyncCalls.FindIndex(x => x.IsFaulted);
-                    SparqlRemoteEndpoint faultedEndpoint = _endpoints[faultedTaskIx];
+                    var faultedEndpoint = _endpoints[faultedTaskIx];
                     if (!_ignoreFailedRequests)
                     {
                         throw new RdfQueryException("Federated Querying failed due to the query against the endpoint '" + faultedEndpoint + "' failing", ex);
@@ -323,14 +323,14 @@ public class FederatedSparqlRemoteEndpoint
 
             try
             {
-                IGraph g = asyncCalls[i].Result;
+                var g = asyncCalls[i].Result;
 
                 // Merge the result into the final results
                 // If the handler has previously told us to stop we skip this step
                 if (cont)
                 {
                     handler.StartRdf();
-                    foreach (Triple t in g.Triples)
+                    foreach (var t in g.Triples)
                     {
                         cont = handler.HandleTriple(t);
                         // Stop if the Handler tells us to
@@ -393,7 +393,7 @@ public class FederatedSparqlRemoteEndpoint
         var asyncCalls = new List<Task<SparqlResultSet>>();
         var cts = new CancellationTokenSource();
         var count = 0;
-        foreach (SparqlRemoteEndpoint endpoint in _endpoints)
+        foreach (var endpoint in _endpoints)
         {
             // Limit the number of simultaneous requests we make to the user defined level (default 4)
             // We do this limiting check before trying to issue a request so that when the last request
@@ -519,18 +519,18 @@ public class FederatedSparqlRemoteEndpoint
     /// <param name="context">Configuration Serialization Context.</param>
     public override void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode endpointObj = context.NextSubject;
-        INode endpointClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlQueryEndpoint));
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
+        var endpointObj = context.NextSubject;
+        var endpointClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlQueryEndpoint));
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
 
         context.Graph.Assert(new Triple(endpointObj, rdfType, endpointClass));
         context.Graph.Assert(new Triple(endpointObj, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
-        foreach (SparqlRemoteEndpoint ep in _endpoints)
+        foreach (var ep in _endpoints)
         {
             // Serialize the child endpoint configuration
-            INode epObj = context.Graph.CreateBlankNode();
+            var epObj = context.Graph.CreateBlankNode();
             context.NextSubject = epObj;
             ep.SerializeConfiguration(context);
 

@@ -101,11 +101,11 @@ public partial class ExpressionBuilderTests
     public void CanCreateSameTermFunction()
     {
         // given
-        SparqlExpression left = new VariableExpression("x");
-        SparqlExpression right = new NumericExpression<int>(10);
+        var left = new VariableExpression("x");
+        var right = new NumericExpression<int>(10);
 
         // when
-        BooleanExpression sameTerm = Builder.SameTerm(left, right);
+        var sameTerm = Builder.SameTerm(left, right);
 
         // then
         Assert.True(sameTerm.Expression is SameTermFunction);
@@ -117,11 +117,11 @@ public partial class ExpressionBuilderTests
     public void CanCreateSameTermFunctionUsingVariableNameForFirstParameter()
     {
         // given
-        SparqlExpression left = new VariableExpression("x");
-        SparqlExpression right = new NumericExpression<int>(10);
+        var left = new VariableExpression("x");
+        var right = new NumericExpression<int>(10);
 
         // when
-        BooleanExpression sameTerm = Builder.SameTerm("x", right);
+        var sameTerm = Builder.SameTerm("x", right);
 
         // then
         Assert.True(sameTerm.Expression is SameTermFunction);
@@ -133,11 +133,11 @@ public partial class ExpressionBuilderTests
     public void CanCreateSameTermFunctionUsingVariableNameForSecondParameter()
     {
         // given
-        SparqlExpression right = new VariableExpression("x");
-        SparqlExpression left = new NumericExpression<int>(10);
+        var right = new VariableExpression("x");
+        var left = new NumericExpression<int>(10);
 
         // when
-        BooleanExpression sameTerm = Builder.SameTerm(left, "x");
+        var sameTerm = Builder.SameTerm(left, "x");
 
         // then
         Assert.True(sameTerm.Expression is SameTermFunction);
@@ -149,11 +149,11 @@ public partial class ExpressionBuilderTests
     public void CanCreateSameTermFunctionUsingVariableNameForBothParameter()
     {
         // given
-        SparqlExpression right = new VariableExpression("x");
-        SparqlExpression left = new VariableExpression("y");
+        var right = new VariableExpression("x");
+        var left = new VariableExpression("y");
 
         // when
-        BooleanExpression sameTerm = Builder.SameTerm("y", "x");
+        var sameTerm = Builder.SameTerm("y", "x");
 
         // then
         Assert.True(sameTerm.Expression is SameTermFunction);
@@ -165,10 +165,10 @@ public partial class ExpressionBuilderTests
     public void CanCreateIsIRIFunction()
     {
         // given
-        SparqlExpression variable = new VariableExpression("x");
+        var variable = new VariableExpression("x");
 
         // when
-        BooleanExpression sameTerm = Builder.IsIRI(variable);
+        var sameTerm = Builder.IsIRI(variable);
 
         // then
         Assert.True(sameTerm.Expression is IsIriFunction);
@@ -179,10 +179,10 @@ public partial class ExpressionBuilderTests
     public void CanCreateIsIRIFunctionUsingVariableName()
     {
         // given
-        SparqlExpression variable = new VariableExpression("x");
+        var variable = new VariableExpression("x");
 
         // when
-        BooleanExpression isIRI = Builder.IsIRI("x");
+        var isIRI = Builder.IsIRI("x");
 
         // then
         Assert.True(isIRI.Expression is IsIriFunction);
@@ -193,10 +193,10 @@ public partial class ExpressionBuilderTests
     public void CanCreateIsBlankFunction()
     {
         // given
-        SparqlExpression variable = new VariableExpression("x");
+        var variable = new VariableExpression("x");
 
         // when
-        BooleanExpression isBlank = Builder.IsBlank(variable);
+        var isBlank = Builder.IsBlank(variable);
 
         // then
         Assert.True(isBlank.Expression is IsBlankFunction);
@@ -207,10 +207,10 @@ public partial class ExpressionBuilderTests
     public void CanCreateIsBlankFunctionUsingVariableName()
     {
         // given
-        SparqlExpression variable = new VariableExpression("x");
+        var variable = new VariableExpression("x");
 
         // when
-        BooleanExpression isBlank = Builder.IsBlank("x");
+        var isBlank = Builder.IsBlank("x");
 
         // then
         Assert.True(isBlank.Expression is IsBlankFunction);
@@ -221,10 +221,10 @@ public partial class ExpressionBuilderTests
     public void CanCreateIsLiteralFunction()
     {
         // given
-        SparqlExpression variable = new VariableExpression("x");
+        var variable = new VariableExpression("x");
 
         // when
-        BooleanExpression isLiteral = Builder.IsLiteral(variable);
+        var isLiteral = Builder.IsLiteral(variable);
 
         // then
         Assert.True(isLiteral.Expression is IsLiteralFunction);
@@ -235,10 +235,10 @@ public partial class ExpressionBuilderTests
     public void CanCreateIsLiteralFunctionUsingVariableName()
     {
         // given
-        SparqlExpression variable = new VariableExpression("x");
+        var variable = new VariableExpression("x");
 
         // when
-        BooleanExpression isLiteral = Builder.IsLiteral("x");
+        var isLiteral = Builder.IsLiteral("x");
 
         // then
         Assert.True(isLiteral.Expression is IsLiteralFunction);
@@ -249,10 +249,10 @@ public partial class ExpressionBuilderTests
     public void CanCreateIsNumericFunction()
     {
         // given
-        SparqlExpression variable = new VariableExpression("x");
+        var variable = new VariableExpression("x");
 
         // when
-        BooleanExpression isNumeric = Builder.IsNumeric(variable);
+        var isNumeric = Builder.IsNumeric(variable);
 
         // then
         Assert.True(isNumeric.Expression is IsNumericFunction);
@@ -263,10 +263,10 @@ public partial class ExpressionBuilderTests
     public void CanCreateIsNumericFunctionUsingVariableName()
     {
         // given
-        SparqlExpression variable = new VariableExpression("x");
+        var variable = new VariableExpression("x");
 
         // when
-        BooleanExpression isNumeric = Builder.IsNumeric("x");
+        var isNumeric = Builder.IsNumeric("x");
 
         // then
         Assert.True(isNumeric.Expression is IsNumericFunction);
@@ -280,7 +280,7 @@ public partial class ExpressionBuilderTests
         var variable = new VariableExpression("x");
 
         // when
-        LiteralExpression str = Builder.Str(variable);
+        var str = Builder.Str(variable);
 
         // then
         Assert.True(str.Expression is StrFunction);
@@ -291,10 +291,10 @@ public partial class ExpressionBuilderTests
     public void CanCreateStrFunctionWithLiteralParameter()
     {
         // given
-        LiteralExpression literal = new TypedLiteralExpression<string>("1000");
+        var literal = new TypedLiteralExpression<string>("1000");
 
         // when
-        LiteralExpression str = Builder.Str(literal);
+        var str = Builder.Str(literal);
 
         // then
         Assert.True(str.Expression is StrFunction);
@@ -308,7 +308,7 @@ public partial class ExpressionBuilderTests
         var iri = new IriExpression(new Uri("urn:some:uri"));
 
         // when
-        LiteralExpression str = Builder.Str(iri);
+        var str = Builder.Str(iri);
 
         // then
         Assert.True(str.Expression is StrFunction);
@@ -322,7 +322,7 @@ public partial class ExpressionBuilderTests
         var variable = new VariableExpression("x");
 
         // when
-        LiteralExpression lang = Builder.Lang(variable);
+        var lang = Builder.Lang(variable);
 
         // then
         Assert.True(lang.Expression is LangFunction);
@@ -333,10 +333,10 @@ public partial class ExpressionBuilderTests
     public void CanCreateLangFunctionWithLiteralParameter()
     {
         // given
-        LiteralExpression literal = new TypedLiteralExpression<string>("1000");
+        var literal = new TypedLiteralExpression<string>("1000");
 
         // when
-        LiteralExpression lang = Builder.Lang(literal);
+        var lang = Builder.Lang(literal);
 
         // then
         Assert.True(lang.Expression is LangFunction);
@@ -350,7 +350,7 @@ public partial class ExpressionBuilderTests
         var literal = new VariableExpression("s");
 
         // when
-        IriExpression lang = Builder.Datatype(literal);
+        var lang = Builder.Datatype(literal);
 
         // then
         Assert.True(lang.Expression is DataType11Function);
@@ -361,10 +361,10 @@ public partial class ExpressionBuilderTests
     public void CanCreateDatatypeFunctionWithLiteralParameter()
     {
         // given
-        LiteralExpression literal = new TypedLiteralExpression<string>("1000");
+        var literal = new TypedLiteralExpression<string>("1000");
 
         // when
-        IriExpression lang = Builder.Datatype(literal);
+        var lang = Builder.Datatype(literal);
 
         // then
         Assert.True(lang.Expression is DataType11Function);
@@ -378,7 +378,7 @@ public partial class ExpressionBuilderTests
         var literal = new VariableExpression("s");
 
         // when
-        IriExpression lang = Builder.Datatype(literal);
+        var lang = Builder.Datatype(literal);
 
         // then
         Assert.True(lang.Expression is DataTypeFunction);
@@ -389,10 +389,10 @@ public partial class ExpressionBuilderTests
     public void CanCreateOldDatatypeFunctionWithLiteralParameter()
     {
         // given
-        LiteralExpression literal = new TypedLiteralExpression<string>("1000");
+        var literal = new TypedLiteralExpression<string>("1000");
 
         // when
-        IriExpression lang = Builder.Datatype(literal);
+        var lang = Builder.Datatype(literal);
 
         // then
         Assert.True(lang.Expression is DataTypeFunction);
@@ -403,7 +403,7 @@ public partial class ExpressionBuilderTests
     public void CanCreateBNodeFunctionWithoutParameter()
     {
         // when
-        BlankNodeExpression bnode = Builder.BNode();
+        var bnode = Builder.BNode();
 
         // then
         Assert.True(bnode.Expression is BNodeFunction);
@@ -417,7 +417,7 @@ public partial class ExpressionBuilderTests
         var expression = new LiteralExpression(new VariableTerm("S"));
 
         // when
-        BlankNodeExpression bnode = Builder.BNode(expression);
+        var bnode = Builder.BNode(expression);
 
         // then
         Assert.True(bnode.Expression is BNodeFunction);
@@ -431,7 +431,7 @@ public partial class ExpressionBuilderTests
         var expression = new TypedLiteralExpression<string>("str");
 
         // when
-        BlankNodeExpression bnode = Builder.BNode(expression);
+        var bnode = Builder.BNode(expression);
 
         // then
         Assert.True(bnode.Expression is BNodeFunction);
@@ -446,7 +446,7 @@ public partial class ExpressionBuilderTests
         var iriExpression = new IriExpression(new Uri("http://example.com"));
 
         // when
-        LiteralExpression literal = Builder.StrDt(expression, iriExpression);
+        var literal = Builder.StrDt(expression, iriExpression);
 
         // then
         Assert.True(literal.Expression is StrDtFunction);
@@ -462,7 +462,7 @@ public partial class ExpressionBuilderTests
         var iriExpression = new IriExpression(new Uri("http://example.com"));
 
         // when
-        LiteralExpression literal = Builder.StrDt("literal", iriExpression);
+        var literal = Builder.StrDt("literal", iriExpression);
 
         // then
         Assert.True(literal.Expression is StrDtFunction);
@@ -478,7 +478,7 @@ public partial class ExpressionBuilderTests
         var iriExpression = new IriExpression(new Uri("http://example.com"));
 
         // when
-        LiteralExpression literal = Builder.StrDt(expression, new Uri("http://example.com"));
+        var literal = Builder.StrDt(expression, new Uri("http://example.com"));
 
         // then
         Assert.True(literal.Expression is StrDtFunction);
@@ -494,7 +494,7 @@ public partial class ExpressionBuilderTests
         var iriExpression = new IriExpression(new Uri("http://example.com"));
 
         // when
-        LiteralExpression literal = Builder.StrDt(expression, new Uri("http://example.com"));
+        var literal = Builder.StrDt(expression, new Uri("http://example.com"));
 
         // then
         Assert.True(literal.Expression is StrDtFunction);
@@ -510,7 +510,7 @@ public partial class ExpressionBuilderTests
         var iriExpression = new IriExpression(new Uri("http://example.com"));
 
         // when
-        LiteralExpression literal = Builder.StrDt("literal", new Uri("http://example.com"));
+        var literal = Builder.StrDt("literal", new Uri("http://example.com"));
 
         // then
         Assert.True(literal.Expression is StrDtFunction);
@@ -526,7 +526,7 @@ public partial class ExpressionBuilderTests
         var iriExpression = new VariableExpression("var");
 
         // when
-        LiteralExpression literal = Builder.StrDt("literal", iriExpression);
+        var literal = Builder.StrDt("literal", iriExpression);
 
         // then
         Assert.True(literal.Expression is StrDtFunction);
@@ -542,7 +542,7 @@ public partial class ExpressionBuilderTests
         var iriExpression = new VariableExpression("var");
 
         // when
-        LiteralExpression literal = Builder.StrDt(expression, iriExpression);
+        var literal = Builder.StrDt(expression, iriExpression);
 
         // then
         Assert.True(literal.Expression is StrDtFunction);
@@ -558,7 +558,7 @@ public partial class ExpressionBuilderTests
         var iriExpression = new VariableExpression("var");
 
         // when
-        LiteralExpression literal = Builder.StrDt(expression, iriExpression);
+        var literal = Builder.StrDt(expression, iriExpression);
 
         // then
         Assert.True(literal.Expression is StrDtFunction);
@@ -574,7 +574,7 @@ public partial class ExpressionBuilderTests
         var iriExpression = new IriExpression(new Uri("http://example.com"));
 
         // when
-        LiteralExpression literal = Builder.StrDt(expression, iriExpression);
+        var literal = Builder.StrDt(expression, iriExpression);
 
         // then
         Assert.True(literal.Expression is StrDtFunction);
@@ -586,7 +586,7 @@ public partial class ExpressionBuilderTests
     public void ShouldAllowCreatingStrUuidFucntionCall()
     {
         // when
-        LiteralExpression uuid = Builder.StrUUID();
+        var uuid = Builder.StrUUID();
 
         // then
         Assert.True(uuid.Expression is StrUUIDFunction);
@@ -596,7 +596,7 @@ public partial class ExpressionBuilderTests
     public void ShouldAllowCreatingUuidFucntionCall()
     {
         // when
-        IriExpression uuid = Builder.UUID();
+        var uuid = Builder.UUID();
 
         // then
         Assert.True(uuid.Expression is UUIDFunction);
@@ -606,10 +606,10 @@ public partial class ExpressionBuilderTests
     public void ShouldAllowCastingAsXsdInt()
     {
         // given
-        SparqlExpression expression = new VariableExpression("variable");
+        var expression = new VariableExpression("variable");
 
         // when
-        SparqlCastBuilder cast = Builder.Cast(expression);
+        var cast = Builder.Cast(expression);
 
         // then
         Assert.NotNull(cast);

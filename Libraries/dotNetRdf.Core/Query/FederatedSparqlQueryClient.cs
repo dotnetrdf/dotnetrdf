@@ -171,7 +171,7 @@ public class FederatedSparqlQueryClient : ISparqlQueryClient, IConfigurationSeri
         var asyncCalls = new List<Task<IGraph>>(_endpoints.Count);
         var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         var throttler = new SemaphoreSlim(MaxSimultaneousRequests);
-        foreach (SparqlQueryClient endpoint in _endpoints)
+        foreach (var endpoint in _endpoints)
         {
             await throttler.WaitAsync(cts.Token);
             if (!cancellationToken.IsCancellationRequested)
@@ -255,14 +255,14 @@ public class FederatedSparqlQueryClient : ISparqlQueryClient, IConfigurationSeri
 
             try
             {
-                IGraph g = asyncCalls[i].Result;
+                var g = asyncCalls[i].Result;
 
                 // Merge the result into the final results
                 // If the handler has previously told us to stop we skip this step
                 if (cont)
                 {
                     handler.StartRdf();
-                    foreach (Triple t in g.Triples)
+                    foreach (var t in g.Triples)
                     {
                         cont = handler.HandleTriple(t);
                         // Stop if the Handler tells us to
@@ -312,7 +312,7 @@ public class FederatedSparqlQueryClient : ISparqlQueryClient, IConfigurationSeri
         var asyncCalls = new List<Task<SparqlResultSet>>(_endpoints.Count);
         var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         var throttler = new SemaphoreSlim(MaxSimultaneousRequests);
-        foreach (SparqlQueryClient endpoint in _endpoints)
+        foreach (var endpoint in _endpoints)
         {
             await throttler.WaitAsync(cts.Token);
             if (!cancellationToken.IsCancellationRequested)
@@ -451,18 +451,18 @@ public class FederatedSparqlQueryClient : ISparqlQueryClient, IConfigurationSeri
     /// <param name="context">Configuration Serialization Context.</param>
     public void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode endpoint = context.NextSubject;
-        INode endpointClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassFederatedSparqlQueryClient));
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode endpointProp = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
+        var endpoint = context.NextSubject;
+        var endpointClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassFederatedSparqlQueryClient));
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var endpointProp = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
 
         context.Graph.Assert(new Triple(endpoint, rdfType, endpointClass));
         context.Graph.Assert(new Triple(endpoint, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
-        foreach (SparqlQueryClient ep in _endpoints)
+        foreach (var ep in _endpoints)
         {
             // Serialize the child endpoint configuration
-            INode epObj = context.Graph.CreateBlankNode();
+            var epObj = context.Graph.CreateBlankNode();
             context.NextSubject = epObj;
             ep.SerializeConfiguration(context);
 

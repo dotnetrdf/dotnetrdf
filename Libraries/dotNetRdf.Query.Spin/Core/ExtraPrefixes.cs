@@ -78,7 +78,7 @@ internal static class ExtraPrefixes
     public static void Add(IResource resource)
     {
         if (!resource.isUri() || resource.Graph == null) return;
-        INamespaceMapper mapper = resource.Graph.NamespaceMap;
+        var mapper = resource.Graph.NamespaceMap;
         if (mapper.ReduceToQName(resource.Uri.ToString(), out var prefix))
         {
             prefix = prefix.Split(':')[0];

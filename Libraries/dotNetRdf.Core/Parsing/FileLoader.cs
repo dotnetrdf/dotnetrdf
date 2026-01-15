@@ -263,7 +263,7 @@ public static class FileLoader
                 // Try selecting a RDF parser instead
                 try
                 {
-                    IRdfReader rdfParser = MimeTypesHelper.GetParserByFileExtension(ext);
+                    var rdfParser = MimeTypesHelper.GetParserByFileExtension(ext);
                     var g = new Graph();
                     rdfParser.Load(handler, filename);
                     return;
@@ -314,7 +314,7 @@ public static class FileLoader
     /// <param name="message">Warning Message.</param>
     static void RaiseWarning(string message)
     {
-        RdfReaderWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);
@@ -327,7 +327,7 @@ public static class FileLoader
     /// <param name="message">Warning Message.</param>
     static void RaiseStoreWarning(string message)
     {
-        StoreReaderWarning d = StoreWarning;
+        var d = StoreWarning;
         if (d != null)
         {
             d(message);

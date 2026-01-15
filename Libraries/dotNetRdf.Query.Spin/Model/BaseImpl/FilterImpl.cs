@@ -44,7 +44,7 @@ internal class FilterImpl : ElementImpl, IFilter
 
     public IResource getExpression()
     {
-        IResource expr = getObject(SP.PropertyExpression);
+        var expr = getObject(SP.PropertyExpression);
         if (expr != null)
         {
             return SPINFactory.asExpression(expr);
@@ -60,7 +60,7 @@ internal class FilterImpl : ElementImpl, IFilter
     {
         context.printKeyword("FILTER");
         context.print(" ");
-        IResource expression = getExpression();
+        var expression = getExpression();
         if (expression == null)
         {
             context.print("<Exception: Missing expression>");

@@ -55,13 +55,13 @@ class ExplainDataset
     [Obsolete("Replaced by SetActiveGraph(IList<IRefNode>)")]
     public override void SetActiveGraph(IEnumerable<Uri> graphUris)
     {
-        IList<Uri> gs = graphUris as IList<Uri> ?? graphUris.ToList();
+        var gs = graphUris as IList<Uri> ?? graphUris.ToList();
         if (Processor != null)
         {
             if (Processor.HasFlag(ExplanationLevel.AnalyseNamedGraphs))
             {
                 Processor.PrintExplanations("Switching to named graph as merge of the following graphs:");
-                foreach (Uri graphUri in gs)
+                foreach (var graphUri in gs)
                 {
                     Processor.PrintExplanations(graphUri?.AbsoluteUri ?? "");
                     

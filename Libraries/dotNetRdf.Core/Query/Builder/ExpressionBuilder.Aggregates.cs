@@ -192,7 +192,7 @@ internal partial class ExpressionBuilder : IAggregateBuilder
 
     public AggregateExpression Count()
     {
-        ISparqlAggregate aggregate = _distinctAggregate 
+        var aggregate = _distinctAggregate 
             ? (ISparqlAggregate)new CountAllDistinctAggregate()
             : new CountAllAggregate();
 
@@ -201,7 +201,7 @@ internal partial class ExpressionBuilder : IAggregateBuilder
 
     public AggregateExpression Count(VariableTerm variable)
     {
-        ISparqlAggregate aggregate = _distinctAggregate
+        var aggregate = _distinctAggregate
             ? (ISparqlAggregate)new CountDistinctAggregate(variable)
             : new CountAggregate(variable);
 
@@ -220,7 +220,7 @@ internal partial class ExpressionBuilder : IAggregateBuilder
 
     public AggregateExpression Count(SparqlExpression expression)
     {
-        ISparqlAggregate aggregate = _distinctAggregate
+        var aggregate = _distinctAggregate
             ? (ISparqlAggregate)new CountDistinctAggregate(expression.Expression)
             : new CountAggregate(expression.Expression);
 

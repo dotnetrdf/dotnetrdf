@@ -116,7 +116,7 @@ public class FilteredProductOptimiser
                 // Not a product if we've seen both variables already
                 if (filterVars.All(v => vars.Contains(v))) return false;
 
-                ITriplePattern p = ps[i];
+                var p = ps[i];
                 if (p.PatternType == TriplePatternType.Match || p.PatternType == TriplePatternType.SubQuery)
                 {
                     if (vars.Count > 0 && !vars.Intersect(p.Variables).Any())

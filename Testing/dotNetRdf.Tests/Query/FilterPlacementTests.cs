@@ -45,7 +45,7 @@ public class FilterPlacementTests
         query.CommandText = "SELECT * WHERE { ?property a rdf:Property . OPTIONAL { ?property rdfs:range ?range } FILTER (!BOUND(?range)) }";
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
         var results = g.ExecuteQuery(q) as SparqlResultSet;
         if (results != null)
         {

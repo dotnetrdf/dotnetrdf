@@ -78,7 +78,7 @@ public class FixedBlankNodePattern : PatternItem
     {
         if (context.Graph != null)
         {
-            IBlankNode b = context.Graph.GetBlankNode(InternalID);
+            var b = context.Graph.GetBlankNode(InternalID);
             if (b != null)
             {
                 return b;

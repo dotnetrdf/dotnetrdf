@@ -211,7 +211,7 @@ public partial class ExpressionBuilderTests
         var var = new VariableExpression("mail");
 
         // when
-        NumericExpression<int> strlen = Builder.StrLen(var);
+        var strlen = Builder.StrLen(var);
 
         // then
         Assert.True(strlen.Expression is StrLenFunction);
@@ -225,7 +225,7 @@ public partial class ExpressionBuilderTests
         var literal = new TypedLiteralExpression<string>("mail");
 
         // when
-        NumericExpression<int> strlen = Builder.StrLen(literal);
+        var strlen = Builder.StrLen(literal);
 
         // then
         Assert.True(strlen.Expression is StrLenFunction);
@@ -240,7 +240,7 @@ public partial class ExpressionBuilderTests
         var startLocation = new NumericExpression<int>(5);
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation);
+        var strlen = Builder.Substr(literal, startLocation);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -256,7 +256,7 @@ public partial class ExpressionBuilderTests
         var startLocation = new NumericExpression<int>(5);
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5);
+        var strlen = Builder.Substr(literal, 5);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -272,7 +272,7 @@ public partial class ExpressionBuilderTests
         var startLocation = new NumericExpression<int>(5);
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation);
+        var strlen = Builder.Substr(literal, startLocation);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -288,7 +288,7 @@ public partial class ExpressionBuilderTests
         var startLocation = new NumericExpression<int>(5);
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5);
+        var strlen = Builder.Substr(literal, 5);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -304,7 +304,7 @@ public partial class ExpressionBuilderTests
         var startLocation = new VariableExpression("startFrom");
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation);
+        var strlen = Builder.Substr(literal, startLocation);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -320,7 +320,7 @@ public partial class ExpressionBuilderTests
         var startLocation = new VariableExpression("startFrom");
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation);
+        var strlen = Builder.Substr(literal, startLocation);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -336,7 +336,7 @@ public partial class ExpressionBuilderTests
         var startLocation = new NumericExpression<int>(5);
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, 5);
+        var strlen = Builder.Substr(literal, startLocation, 5);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -353,7 +353,7 @@ public partial class ExpressionBuilderTests
         var startLocation = new NumericExpression<int>(5);
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5, 5);
+        var strlen = Builder.Substr(literal, 5, 5);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -370,7 +370,7 @@ public partial class ExpressionBuilderTests
         var startLocation = new NumericExpression<int>(5);
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, 5);
+        var strlen = Builder.Substr(literal, startLocation, 5);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -387,7 +387,7 @@ public partial class ExpressionBuilderTests
         var startLocation = new NumericExpression<int>(5);
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5, 5);
+        var strlen = Builder.Substr(literal, 5, 5);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -404,7 +404,7 @@ public partial class ExpressionBuilderTests
         var startLocation = new VariableExpression("startFrom");
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, 5);
+        var strlen = Builder.Substr(literal, startLocation, 5);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -421,7 +421,7 @@ public partial class ExpressionBuilderTests
         var startLocation = new VariableExpression("startFrom");
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, 5);
+        var strlen = Builder.Substr(literal, startLocation, 5);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -439,7 +439,7 @@ public partial class ExpressionBuilderTests
         var length = new NumericExpression<int>(5);
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
+        var strlen = Builder.Substr(literal, startLocation, length);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -457,7 +457,7 @@ public partial class ExpressionBuilderTests
         var length = new NumericExpression<int>(5);
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5, length);
+        var strlen = Builder.Substr(literal, 5, length);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -475,7 +475,7 @@ public partial class ExpressionBuilderTests
         var length = new NumericExpression<int>(5);
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
+        var strlen = Builder.Substr(literal, startLocation, length);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -493,7 +493,7 @@ public partial class ExpressionBuilderTests
         var length = new NumericExpression<int>(5);
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5, length);
+        var strlen = Builder.Substr(literal, 5, length);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -511,7 +511,7 @@ public partial class ExpressionBuilderTests
         var length = new NumericExpression<int>(5);
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
+        var strlen = Builder.Substr(literal, startLocation, length);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -529,7 +529,7 @@ public partial class ExpressionBuilderTests
         var length = new NumericExpression<int>(5);
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
+        var strlen = Builder.Substr(literal, startLocation, length);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -547,7 +547,7 @@ public partial class ExpressionBuilderTests
         var length = new VariableExpression("len");
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
+        var strlen = Builder.Substr(literal, startLocation, length);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -565,7 +565,7 @@ public partial class ExpressionBuilderTests
         var length = new VariableExpression("len");
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5, length);
+        var strlen = Builder.Substr(literal, 5, length);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -583,7 +583,7 @@ public partial class ExpressionBuilderTests
         var length = new VariableExpression("len");
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
+        var strlen = Builder.Substr(literal, startLocation, length);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -601,7 +601,7 @@ public partial class ExpressionBuilderTests
         var length = new VariableExpression("len");
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5, length);
+        var strlen = Builder.Substr(literal, 5, length);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -619,7 +619,7 @@ public partial class ExpressionBuilderTests
         var length = new VariableExpression("len");
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
+        var strlen = Builder.Substr(literal, startLocation, length);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -637,7 +637,7 @@ public partial class ExpressionBuilderTests
         var length = new VariableExpression("len");
 
         // when
-        TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
+        var strlen = Builder.Substr(literal, startLocation, length);
 
         // then
         Assert.True(strlen.Expression is SubStrFunction);
@@ -653,7 +653,7 @@ public partial class ExpressionBuilderTests
         var languageTag = new TypedLiteralExpression<string>("title");
 
         // when
-        BooleanExpression strlen = Builder.LangMatches(languageTag, "fr");
+        var strlen = Builder.LangMatches(languageTag, "fr");
 
         // then
         Assert.True(strlen.Expression is LangMatchesFunction);
@@ -668,7 +668,7 @@ public partial class ExpressionBuilderTests
         var languageTag = new VariableExpression("title");
 
         // when
-        BooleanExpression strlen = Builder.LangMatches(languageTag, "fr");
+        var strlen = Builder.LangMatches(languageTag, "fr");
 
         // then
         Assert.True(strlen.Expression is LangMatchesFunction);
@@ -680,11 +680,11 @@ public partial class ExpressionBuilderTests
     public void ShouldAllowCreatingCallToLangMatchesFunctionWithLiteralExpressionAndLiteralExpressionParameters()
     {
         // given
-        LiteralExpression languageTag = new TypedLiteralExpression<string>("title");
-        LiteralExpression languageRange = new TypedLiteralExpression<string>("*");
+        var languageTag = new TypedLiteralExpression<string>("title");
+        var languageRange = new TypedLiteralExpression<string>("*");
 
         // when
-        BooleanExpression strlen = Builder.LangMatches(languageTag, languageRange);
+        var strlen = Builder.LangMatches(languageTag, languageRange);
 
         // then
         Assert.True(strlen.Expression is LangMatchesFunction);
@@ -697,10 +697,10 @@ public partial class ExpressionBuilderTests
     {
         // given
         var languageTag = new VariableExpression("title");
-        LiteralExpression languageRange = new TypedLiteralExpression<string>("*");
+        var languageRange = new TypedLiteralExpression<string>("*");
 
         // when
-        BooleanExpression strlen = Builder.LangMatches(languageTag, languageRange);
+        var strlen = Builder.LangMatches(languageTag, languageRange);
 
         // then
         Assert.True(strlen.Expression is LangMatchesFunction);
@@ -712,11 +712,11 @@ public partial class ExpressionBuilderTests
     public void ShouldAllowCreatingCallToLangMatchesFunctionWithLiteralExpressionAndVariableParameters()
     {
         // given
-        LiteralExpression languageTag = new TypedLiteralExpression<string>("title");
+        var languageTag = new TypedLiteralExpression<string>("title");
         var languageRange = new VariableExpression("range");
 
         // when
-        BooleanExpression strlen = Builder.LangMatches(languageTag, languageRange);
+        var strlen = Builder.LangMatches(languageTag, languageRange);
 
         // then
         Assert.True(strlen.Expression is LangMatchesFunction);
@@ -732,7 +732,7 @@ public partial class ExpressionBuilderTests
         var languageRange = new VariableExpression("range");
 
         // when
-        BooleanExpression strlen = Builder.LangMatches(languageTag, languageRange);
+        var strlen = Builder.LangMatches(languageTag, languageRange);
 
         // then
         Assert.True(strlen.Expression is LangMatchesFunction);

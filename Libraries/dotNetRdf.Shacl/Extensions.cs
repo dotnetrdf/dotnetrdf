@@ -108,9 +108,9 @@ internal static class Extensions
         {
             yield return node;
 
-            foreach (INode subclass in Vocabulary.RdfsSubClassOf.SubjectsOf(node, graph))
+            foreach (var subclass in Vocabulary.RdfsSubClassOf.SubjectsOf(node, graph))
             {
-                foreach (INode inferred in InferSubclasses(subclass, graph, seen))
+                foreach (var inferred in InferSubclasses(subclass, graph, seen))
                 {
                     yield return inferred;
                 }

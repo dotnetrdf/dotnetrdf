@@ -118,7 +118,7 @@ internal partial class ExpressionBuilder
 
     private IriExpression Datatype(ISparqlExpression expression)
     {
-        DataTypeFunction dataTypeFunction = SparqlVersion == SparqlQuerySyntax.Sparql_1_0
+        var dataTypeFunction = SparqlVersion == SparqlQuerySyntax.Sparql_1_0
                                    ? new DataTypeFunction(expression)
                                    : new DataType11Function(expression);
         return new IriExpression(dataTypeFunction);
