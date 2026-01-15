@@ -41,7 +41,7 @@ internal class AsyncIntegerEnumeration : IAsyncEvaluation
 
             if (mustMatch == null || mustMatch == i)
             {
-                ISet s = new Set();
+                var s = new Set();
                 s.Add(_varName, _nodeFactory.CreateLiteralNode(i.ToString(), _xsdInteger));
                 yield return s;
             }

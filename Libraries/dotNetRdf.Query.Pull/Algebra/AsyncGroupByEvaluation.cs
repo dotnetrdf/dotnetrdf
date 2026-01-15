@@ -51,11 +51,11 @@ internal class AsyncGroupByEvaluation : IAsyncEvaluation
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        await foreach (ISet solutionBinding in _inner.Evaluate(context, input, activeGraph, cancellationToken))
+        await foreach (var solutionBinding in _inner.Evaluate(context, input, activeGraph, cancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             var groupingKey = new GroupingKey(EvaluateGroupingKey(solutionBinding, context, _groupBy.Grouping, activeGraph));
-            if (_groups.TryGetValue(groupingKey, out AsyncGroupEvaluation? group))
+            if (_groups.TryGetValue(groupingKey, out var group))
             {
                 group.Accept(solutionBinding, activeGraph);
             }
@@ -74,12 +74,12 @@ internal class AsyncGroupByEvaluation : IAsyncEvaluation
             _groups.Add(new GroupingKey(Array.Empty<INode?>()), age);
         }
 
-        foreach (GroupingKey groupingKey in _groups.Keys)
+        foreach (var groupingKey in _groups.Keys)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            ISet groupResult = groupingKey.ToSet(_groupVars);
-            AsyncGroupEvaluation aggregationGroup = _groups[groupingKey];
-            ISet aggregationResult = aggregationGroup.GetBindings();
+            var groupResult = groupingKey.ToSet(_groupVars);
+            var aggregationGroup = _groups[groupingKey];
+            var aggregationResult = aggregationGroup.GetBindings();
             foreach (var v in aggregationResult.Variables)
             {
                 groupResult.Add(v, aggregationResult[v]);
@@ -100,7 +100,7 @@ internal class AsyncGroupByEvaluation : IAsyncEvaluation
         if (grouping == null) yield break;
         if (grouping.Expression != null)
         {
-            INode expressionValue = grouping.Expression.Accept(context.ExpressionProcessor, context, new ExpressionContext(solutionBinding, activeGraph));
+            var expressionValue = grouping.Expression.Accept(context.ExpressionProcessor, context, new ExpressionContext(solutionBinding, activeGraph));
             yield return expressionValue;
         }
         else
@@ -113,7 +113,7 @@ internal class AsyncGroupByEvaluation : IAsyncEvaluation
 
         if (grouping.Child != null)
         {
-            foreach (INode? v in EvaluateGroupingKey(solutionBinding, context, grouping.Child, activeGraph)) yield return v;
+            foreach (var v in EvaluateGroupingKey(solutionBinding, context, grouping.Child, activeGraph)) yield return v;
         }        
     }
 }
@@ -124,7 +124,7 @@ internal class AsyncGroupEvaluation
     public AsyncGroupEvaluation(GroupBy groupBy, PullEvaluationContext context, IEnumerable<IAsyncAggregation> aggregations)
     {
         _aggregations.AddRange(aggregations);
-        foreach (IAsyncAggregation agg in _aggregations)
+        foreach (var agg in _aggregations)
         {
             agg.Start();
         }
@@ -132,7 +132,7 @@ internal class AsyncGroupEvaluation
 
     public void Accept(ISet solutionBinding, IRefNode? activeGraph)
     {
-        foreach (IAsyncAggregation agg in _aggregations)
+        foreach (var agg in _aggregations)
         {
             agg.Accept(new ExpressionContext(solutionBinding, activeGraph));
         }
@@ -141,7 +141,7 @@ internal class AsyncGroupEvaluation
     public ISet GetBindings()
     {
         ISet ret = new Set();
-        foreach (IAsyncAggregation agg in _aggregations)
+        foreach (var agg in _aggregations)
         {
             agg.End();
             ret.Add(agg.VariableName, agg.Value);

@@ -47,7 +47,7 @@ internal class AsyncAskEvaluation : IAsyncEvaluation
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        await using IAsyncEnumerator<ISet> innerEnumerator = _inner
+        await using var innerEnumerator = _inner
             .Evaluate(context, input, activeGraph, cancellationToken)
             .GetAsyncEnumerator(cancellationToken);
         var hasNext = await innerEnumerator.MoveNextAsync();

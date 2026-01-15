@@ -39,10 +39,10 @@ internal class AsyncBindingsEvaluation(Bindings bindings) : IAsyncEvaluation
         {
             yield return new Set();
         }
-        foreach (BindingTuple t in bindings.BindingsPattern.Tuples)
+        foreach (var t in bindings.BindingsPattern.Tuples)
         {
             var s = new Set();
-            foreach (KeyValuePair<string, PatternItem> binding in t.Values)
+            foreach (var binding in t.Values)
             {
                 s.Add(binding.Key, t[binding.Key]);
             }

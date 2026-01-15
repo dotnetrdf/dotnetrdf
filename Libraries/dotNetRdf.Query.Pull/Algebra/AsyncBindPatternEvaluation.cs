@@ -43,7 +43,7 @@ internal class AsyncBindPatternEvaluation(BindPattern bindPattern, IAsyncEvaluat
         }
         else
         {
-            await foreach (ISet solution in inner.Evaluate(context, input, activeGraph, cancellationToken))
+            await foreach (var solution in inner.Evaluate(context, input, activeGraph, cancellationToken))
             {
                 if (solution.ContainsVariable(bindPattern.Variable))
                 {

@@ -55,7 +55,7 @@ internal class AsyncJoinEvaluation : AbstractAsyncJoinEvaluation
             _leftIndex.Add(lhsResult);
         }
 
-        foreach (ISet rhsResult in _rightIndex.GetMatches(lhsResult).Where(r => r.IsCompatibleWith(lhsResult, _joinVars)))
+        foreach (var rhsResult in _rightIndex.GetMatches(lhsResult).Where(r => r.IsCompatibleWith(lhsResult, _joinVars)))
         {
             yield return lhsResult.Join(rhsResult);
         }
@@ -68,7 +68,7 @@ internal class AsyncJoinEvaluation : AbstractAsyncJoinEvaluation
             _rightSolutions.AddLast(rhsResult);
             _rightIndex.Add(rhsResult);
         }
-        foreach (ISet leftResult in _leftIndex.GetMatches(rhsResult).Where(l => l.IsCompatibleWith(rhsResult, _joinVars)))
+        foreach (var leftResult in _leftIndex.GetMatches(rhsResult).Where(l => l.IsCompatibleWith(rhsResult, _joinVars)))
         {
             yield return leftResult.Join(rhsResult);
         }

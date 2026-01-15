@@ -53,7 +53,7 @@ internal abstract class AssignmentVariableNamePart<TExpression>
     protected TExpression BuildAssignmentExpression(INamespaceMapper prefixes)
     {
         var expressionBuilder = new ExpressionBuilder(prefixes);
-        PrimaryExpression<TExpression> assignment = _buildAssignmentExpression(expressionBuilder);
+        var assignment = _buildAssignmentExpression(expressionBuilder);
         return assignment.Expression;
     }
 }

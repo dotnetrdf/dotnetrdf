@@ -60,7 +60,7 @@ internal class AsyncGraphEvaluation : IAsyncEvaluation
 
         return context.NamedGraphNames.Select(gn =>
             {
-                ISet inputWithGraphBinding = input?.Copy() ?? new Set();
+                var inputWithGraphBinding = input?.Copy() ?? new Set();
                 if (_graphVarName != null)
                 {
                     inputWithGraphBinding.Add(_graphVarName, gn);

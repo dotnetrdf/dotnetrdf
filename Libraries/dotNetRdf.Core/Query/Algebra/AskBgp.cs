@@ -132,7 +132,7 @@ public class AskBgp : IBgp
         get
         {
             // Floating variables are those declared as floating by triple patterns minus those that are declared as fixed by the triple patterns
-            IEnumerable<string> floating = from tp in _triplePatterns
+            var floating = from tp in _triplePatterns
                                            from v in tp.FloatingVariables
                                            select v;
             var fixedVars = new HashSet<string>(FixedVariables);
@@ -190,7 +190,7 @@ public class AskBgp : IBgp
     public GraphPattern ToGraphPattern()
     {
         var p = new GraphPattern();
-        foreach (ITriplePattern tp in _triplePatterns)
+        foreach (var tp in _triplePatterns)
         {
             p.AddTriplePattern(tp);
         }

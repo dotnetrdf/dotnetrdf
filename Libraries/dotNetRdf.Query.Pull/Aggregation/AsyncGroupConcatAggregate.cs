@@ -77,7 +77,7 @@ internal class AsyncGroupConcatAggregate : IAsyncAggregation
     {
         try
         {
-            IValuedNode value = _valueExpression.Accept(_context.ExpressionProcessor, _context, expressionContext);
+            var value = _valueExpression.Accept(_context.ExpressionProcessor, _context, expressionContext);
             if (value == null)
             {
                 return true;
@@ -90,7 +90,7 @@ internal class AsyncGroupConcatAggregate : IAsyncAggregation
                 }
                 else if (_separatorExpression != null)
                 {
-                    IValuedNode separatorTerm = _separatorExpression.Accept(_context.ExpressionProcessor, _context,
+                    var separatorTerm = _separatorExpression.Accept(_context.ExpressionProcessor, _context,
                         expressionContext);
                     _builder.Append(separatorTerm.ToString());
                 }

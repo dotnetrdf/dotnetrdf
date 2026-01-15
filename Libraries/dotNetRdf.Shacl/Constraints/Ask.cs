@@ -62,7 +62,7 @@ internal class Ask : Sparql
 
     protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report, SparqlQuery query)
     {
-        IEnumerable<INode> invalidValues =
+        var invalidValues =
             from valueNode in valueNodes
             let q = BindValue(query, valueNode)
             let result = ((SparqlResultSet)dataGraph.ExecuteQuery(q)).Result
@@ -74,7 +74,7 @@ internal class Ask : Sparql
 
     private static SparqlQuery BindValue(SparqlQuery query, INode valueNode)
     {
-        SparqlQuery q = query.Copy();
+        var q = query.Copy();
         q.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("value", new ConstantTerm(valueNode)));
         q.Optimise();
         return q;

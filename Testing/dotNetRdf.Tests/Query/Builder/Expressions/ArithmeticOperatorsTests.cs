@@ -70,7 +70,7 @@ public class ArithmeticOperatorsTests
     {
         // given
         var right = new NumericExpression<int>(10);
-        NumericExpression left = new NumericExpression<decimal>(10);
+        var left = new NumericExpression<decimal>(10);
 
         // when
         var multiplication = (right * left).Expression;
@@ -86,7 +86,7 @@ public class ArithmeticOperatorsTests
     {
         // given
         var right = new NumericExpression<int>(10);
-        NumericExpression left = new NumericExpression<decimal>(10);
+        var left = new NumericExpression<decimal>(10);
 
         // when
         var multiplication = (left * right).Expression;
@@ -211,7 +211,7 @@ public class ArithmeticOperatorsTests
     {
         // given
         var right = new NumericExpression<int>(10);
-        NumericExpression left = new NumericExpression<decimal>(10);
+        var left = new NumericExpression<decimal>(10);
 
         // when
         var multiplication = (right / left).Expression;
@@ -227,7 +227,7 @@ public class ArithmeticOperatorsTests
     {
         // given
         var right = new NumericExpression<int>(10);
-        NumericExpression left = new NumericExpression<decimal>(10);
+        var left = new NumericExpression<decimal>(10);
 
         // when
         var multiplication = (left / right).Expression;
@@ -322,7 +322,7 @@ public class ArithmeticOperatorsTests
     {
         // given
         var right = new NumericExpression<int>(10);
-        NumericExpression left = new NumericExpression<decimal>(10);
+        var left = new NumericExpression<decimal>(10);
 
         // when
         var multiplication = (right + left).Expression;
@@ -338,7 +338,7 @@ public class ArithmeticOperatorsTests
     {
         // given
         var right = new NumericExpression<int>(10);
-        NumericExpression left = new NumericExpression<decimal>(10);
+        var left = new NumericExpression<decimal>(10);
 
         // when
         var multiplication = (left + right).Expression;
@@ -433,7 +433,7 @@ public class ArithmeticOperatorsTests
     {
         // given
         var right = new NumericExpression<int>(10);
-        NumericExpression left = new NumericExpression<decimal>(10);
+        var left = new NumericExpression<decimal>(10);
 
         // when
         var multiplication = (right - left).Expression;
@@ -449,7 +449,7 @@ public class ArithmeticOperatorsTests
     {
         // given
         var right = new NumericExpression<int>(10);
-        NumericExpression left = new NumericExpression<decimal>(10);
+        var left = new NumericExpression<decimal>(10);
 
         // when
         var multiplication = (left - right).Expression;

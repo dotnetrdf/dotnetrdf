@@ -37,7 +37,7 @@ internal class AsyncExtendEvaluation(Extend extend, PullEvaluationContext contex
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        await foreach (ISet solution in inner.Evaluate(context, input, activeGraph, cancellationToken))
+        await foreach (var solution in inner.Evaluate(context, input, activeGraph, cancellationToken))
         {
             if (solution.ContainsVariable(extend.VariableName))
             {
@@ -47,7 +47,7 @@ internal class AsyncExtendEvaluation(Extend extend, PullEvaluationContext contex
 
             try
             {
-                INode value = extend.AssignExpression.Accept(context.ExpressionProcessor, context, new ExpressionContext(solution, activeGraph));
+                var value = extend.AssignExpression.Accept(context.ExpressionProcessor, context, new ExpressionContext(solution, activeGraph));
                 solution.Add(extend.VariableName, value);
             }
             catch

@@ -91,7 +91,7 @@ public class Ask
     /// <returns></returns>
     public SparqlQuery ToQuery()
     {
-        SparqlQuery q = InnerAlgebra.ToQuery();
+        var q = InnerAlgebra.ToQuery();
         q.QueryType = SparqlQueryType.Ask;
         return q;
     }

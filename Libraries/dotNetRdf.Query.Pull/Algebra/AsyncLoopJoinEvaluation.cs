@@ -40,9 +40,9 @@ internal class AsyncLoopJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rh
 
     private async IAsyncEnumerable<ISet> EvaluateLoopLeftJoin(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        await foreach (ISet lhSolution in lhs.Evaluate(context, input, activeGraph, cancellationToken))
+        await foreach (var lhSolution in lhs.Evaluate(context, input, activeGraph, cancellationToken))
         {
-            await using IAsyncEnumerator<ISet> joinEnumerator = rhs.Evaluate(context, lhSolution, activeGraph, cancellationToken).GetAsyncEnumerator(cancellationToken);
+            await using var joinEnumerator = rhs.Evaluate(context, lhSolution, activeGraph, cancellationToken).GetAsyncEnumerator(cancellationToken);
             if (await joinEnumerator.MoveNextAsync())
             {
                 do

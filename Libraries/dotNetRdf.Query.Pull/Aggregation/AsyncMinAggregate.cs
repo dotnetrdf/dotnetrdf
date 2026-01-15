@@ -49,7 +49,7 @@ internal class AsyncMinAggregate(
     public bool Accept(ExpressionContext expressionContext)
     {
         if (_failed) return true;
-        INode? tmp = maxVar != null
+        var tmp = maxVar != null
             ? (expressionContext.Bindings.ContainsVariable(maxVar) ? expressionContext.Bindings[maxVar] : null)
             : valueExpression.Accept(context.ExpressionProcessor, context, expressionContext);
         if (tmp == null)
