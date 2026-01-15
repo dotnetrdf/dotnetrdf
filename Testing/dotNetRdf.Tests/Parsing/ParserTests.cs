@@ -97,7 +97,7 @@ public class ParserTests
             }
 
             Console.WriteLine("# Final Graph Contents");
-            foreach (Triple t in g.Triples)
+            foreach (var t in g.Triples)
             {
                 Console.WriteLine(t.ToString());
             }
@@ -115,10 +115,10 @@ public class ParserTests
         request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
         var response = (HttpWebResponse)request.GetResponse();
-        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+        var parser = MimeTypesHelper.GetParser(response.ContentType);
         parser.Load(g, new StreamReader(response.GetResponseStream()));
 
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             Console.WriteLine(t.ToString());
         }
@@ -144,7 +144,7 @@ public class ParserTests
 
         var g = new Graph();
         VDS.RDF.Parsing.StringParser.Parse(g, malformedFileUriFragment);
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             Console.WriteLine(t.ToString());
         }
@@ -232,7 +232,7 @@ public class ParserTests
             TraceParsing = true
         };
         VDS.RDF.Parsing.StringParser.Parse(g, fragment, parser);
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             Console.WriteLine(t.ToString());
         }
@@ -273,7 +273,7 @@ public class ParserTests
     public void ParsingDefaultPrefixFallbackTurtle1()
     {
         var data = @"@base <http://base/> . :subj :pred :obj .";
-        IRdfReader parser = new TurtleParser();
+        var parser = new TurtleParser();
         var g = new Graph();
 
         Assert.Throws<RdfParseException>(() => parser.Load(g, new StringReader(data)));
@@ -283,7 +283,7 @@ public class ParserTests
     public void ParsingDefaultPrefixFallbackTurtle2()
     {
         var data = @"@prefix : <http://default/ns#> . :subj :pred :obj .";
-        IRdfReader parser = new TurtleParser();
+        var parser = new TurtleParser();
         var g = new Graph();
         parser.Load(g, new StringReader(data));
         Assert.False(g.IsEmpty);
@@ -294,7 +294,7 @@ public class ParserTests
     public void ParsingDefaultPrefixFallbackNotation3_1()
     {
         var data = @"@base <http://base/> . :subj :pred :obj .";
-        IRdfReader parser = new Notation3Parser();
+        var parser = new Notation3Parser();
         var g = new Graph();
         parser.Load(g, new StringReader(data));
         Assert.False(g.IsEmpty);
@@ -305,7 +305,7 @@ public class ParserTests
     public void ParsingDefaultPrefixFallbackNotation3_2()
     {
         var data = @"@prefix : <http://default/ns#> . :subj :pred :obj .";
-        IRdfReader parser = new Notation3Parser();
+        var parser = new Notation3Parser();
         var g = new Graph();
         parser.Load(g, new StringReader(data));
         Assert.False(g.IsEmpty);
@@ -369,7 +369,7 @@ public class ParserTests
             new RdfJsonParser()
         };
 
-        foreach (IRdfReader parser in parsersToTest)
+        foreach (var parser in parsersToTest)
         {
             Console.WriteLine("Testing " + parser.GetType().ToString());
             //parser.TraceTokeniser = true;
@@ -387,7 +387,7 @@ public class ParserTests
                 VDS.RDF.Parsing.StringParser.Parse(g, sample, parser);
                 Console.WriteLine("Original Graph");
                 Console.WriteLine(g.Triples.Count + " Triples produced");
-                foreach (Triple t in g.Triples)
+                foreach (var t in g.Triples)
                 {
                     Console.WriteLine(t.ToString());
                 }
@@ -407,7 +407,7 @@ public class ParserTests
 
                     Console.WriteLine("Graph after Serialization and Parsing");
                     Console.WriteLine(h.Triples.Count + " Triples produced");
-                    foreach (Triple t in h.Triples)
+                    foreach (var t in h.Triples)
                     {
                         Console.WriteLine(t.ToString());
                     }
@@ -432,7 +432,7 @@ public class ParserTests
                     }
                     Assert.True(equals, "Graphs should be equal");
                     Console.WriteLine("Node Mapping was:");
-                    foreach (KeyValuePair<INode, INode> pair in mapping)
+                    foreach (var pair in mapping)
                     {
                         Console.WriteLine(pair.Key.ToString() + " => " + pair.Value.ToString());
                     }
@@ -492,7 +492,7 @@ public class ParserTests
             new RdfJsonParser()
         };
 
-        foreach (IRdfReader parser in parsersToTest)
+        foreach (var parser in parsersToTest)
         {
             Console.WriteLine("Testing " + parser.GetType().ToString());
             //parser.TraceTokeniser = true;
@@ -509,7 +509,7 @@ public class ParserTests
                 var g = new Graph();
                 VDS.RDF.Parsing.StringParser.Parse(g, sample, parser);
                 Console.WriteLine(g.Triples.Count + " Triples produced");
-                foreach (Triple t in g.Triples)
+                foreach (var t in g.Triples)
                 {
                     Console.WriteLine(t.ToString());
                 }
@@ -542,7 +542,7 @@ public class ParserTests
                     var equals = g.Equals(h, out mapping);
                     Assert.True(equals, "Graphs should have been equal");
                     Console.WriteLine("Node mapping was:");
-                    foreach (KeyValuePair<INode, INode> pair in mapping)
+                    foreach (var pair in mapping)
                     {
                         Console.WriteLine(pair.Key.ToString() + " => " + pair.Value.ToString());
                     }

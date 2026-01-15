@@ -74,9 +74,9 @@ public abstract class PersistentTripleStoreTests
 
         var store = new PersistentTripleStore(manager);
         var nodeFactory = new NodeFactory(new NodeFactoryOptions());
-        IUriNode graph1 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
-        IUriNode graph2 = nodeFactory.CreateUriNode(new Uri(TestGraphUri2));
-        IUriNode graph3 = nodeFactory.CreateUriNode(new Uri(TestGraphUri3));
+        var graph1 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+        var graph2 = nodeFactory.CreateUriNode(new Uri(TestGraphUri2));
+        var graph3 = nodeFactory.CreateUriNode(new Uri(TestGraphUri3));
         try
         {
             Assert.True(store.HasGraph(graph1), "URI 1 should return true for HasGraph()");
@@ -89,7 +89,7 @@ public abstract class PersistentTripleStoreTests
             Assert.True(store.Graphs.Contains(graph3),
                 "URI 3 should return true for Graphs.Contains()");
 
-            IUriNode noSuchThing = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/noSuchGraph"));
+            var noSuchThing = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/noSuchGraph"));
             Assert.False(store.HasGraph(noSuchThing), "Bad URI should return false for HasGraph()");
             Assert.False(store.Graphs.Contains(noSuchThing), "Bad URI should return false for Graphs.Contains()");
 
@@ -103,7 +103,7 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemContains()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestContains(manager);
     }
 
@@ -121,7 +121,7 @@ public abstract class PersistentTripleStoreTests
             var aExpected = new Graph(new Uri(TestGraphUri1));
             aExpected.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             aExpected.Retract(aExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
-            IGraph aActual = store[aExpected.Name];
+            var aActual = store[aExpected.Name];
             Assert.Equal(aExpected, aActual);
             aActual = store.Graphs[aExpected.Name];
             Assert.Equal(aExpected, aActual);
@@ -129,7 +129,7 @@ public abstract class PersistentTripleStoreTests
             var bExpected = new Graph(new Uri(TestGraphUri2));
             bExpected.LoadFromFile(System.IO.Path.Combine("resources", "InferenceTest.ttl"));
             bExpected.Retract(bExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
-            IGraph bActual = store[bExpected.Name];
+            var bActual = store[bExpected.Name];
             Assert.Equal(bExpected, bActual);
             bActual = store.Graphs[bExpected.Name];
             Assert.Equal(bExpected, bActual);
@@ -137,7 +137,7 @@ public abstract class PersistentTripleStoreTests
             var cExpected = new Graph(new Uri(TestGraphUri3));
             cExpected.LoadFromEmbeddedResource("VDS.RDF.Query.Optimisation.OptimiserStats.ttl");
             cExpected.Retract(cExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
-            IGraph cActual = store[cExpected.Name];
+            var cActual = store[cExpected.Name];
             Assert.Equal(cExpected, cActual);
             cActual = store.Graphs[cExpected.Name];
             Assert.Equal(cExpected, cActual);
@@ -151,7 +151,7 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemGetGraph()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestGetGraph(manager);
     }
 
@@ -168,7 +168,7 @@ public abstract class PersistentTripleStoreTests
         var store = new PersistentTripleStore(manager);
         try
         {
-            IGraph g = store[nodeFactory.CreateUriNode(new Uri(TestGraphUri1))];
+            var g = store[nodeFactory.CreateUriNode(new Uri(TestGraphUri1))];
 
             var toAdd = new Triple(g.CreateUriNode(new Uri("http://example.org/subject")),
                 g.CreateUriNode(new Uri("http://example.org/predicate")),
@@ -198,7 +198,7 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemAddTriplesFlushed()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestAddTriplesFlushed(manager);
     }
 
@@ -211,7 +211,7 @@ public abstract class PersistentTripleStoreTests
         var store = new PersistentTripleStore(manager);
         try
         {
-            IGraph g = store[nodeFactory.CreateUriNode(new Uri(TestGraphUri1))];
+            var g = store[nodeFactory.CreateUriNode(new Uri(TestGraphUri1))];
 
             var toAdd = new Triple(g.CreateUriNode(new Uri("http://example.org/subject")),
                 g.CreateUriNode(new Uri("http://example.org/predicate")),
@@ -243,7 +243,7 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemAddTriplesDiscarded()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestAddTriplesDiscarded(manager);
     }
 
@@ -259,9 +259,9 @@ public abstract class PersistentTripleStoreTests
         var nodeFactory = new NodeFactory(new NodeFactoryOptions());
         try
         {
-            IGraph g = store[nodeFactory.CreateUriNode(new Uri(TestGraphUri1))];
+            var g = store[nodeFactory.CreateUriNode(new Uri(TestGraphUri1))];
 
-            INode rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
+            var rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
             g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
 
             Assert.False(g.GetTriplesWithPredicate(rdfType).Any(),
@@ -290,7 +290,7 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemRemoveTriplesFlushed()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestRemoveTriplesFlushed(manager);
     }
 
@@ -302,9 +302,9 @@ public abstract class PersistentTripleStoreTests
         var nodeFactory = new NodeFactory(new NodeFactoryOptions());
         try
         {
-            IGraph g = store[nodeFactory.CreateUriNode(new Uri(TestGraphUri1))];
+            var g = store[nodeFactory.CreateUriNode(new Uri(TestGraphUri1))];
 
-            INode rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
+            var rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
             g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
 
             Assert.False(g.GetTriplesWithPredicate(rdfType).Any(),
@@ -333,7 +333,7 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemRemoveTriplesDiscarded()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestRemoveTriplesDiscarded(manager);
     }
 
@@ -372,7 +372,7 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemAddGraphFlushed()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestAddGraphFlushed(manager);
     }
 
@@ -417,7 +417,7 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemAddGraphDiscarded()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestAddGraphDiscarded(manager);
     }
 
@@ -433,7 +433,7 @@ public abstract class PersistentTripleStoreTests
         var nodeFactory = new NodeFactory(new NodeFactoryOptions());
         try
         {
-            IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+            var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
             Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
             store.Remove(toRemove);
@@ -465,7 +465,7 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemRemoveGraphFlushed()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestRemoveGraphFlushed(manager);
     }
 
@@ -477,7 +477,7 @@ public abstract class PersistentTripleStoreTests
         var nodeFactory = new NodeFactory(new NodeFactoryOptions());
         try
         {
-            IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+            var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
             Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
             store.Remove(toRemove);
@@ -501,7 +501,7 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemRemoveGraphDiscarded()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestRemoveGraphDiscarded(manager);
     }
 
@@ -548,7 +548,7 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemAddThenRemoveGraphFlushed()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestAddThenRemoveGraphFlushed(manager);
     }
 
@@ -591,7 +591,7 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemAddThenRemoveGraphDiscarded()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestAddThenRemoveGraphDiscarded(manager);
     }
 
@@ -607,8 +607,8 @@ public abstract class PersistentTripleStoreTests
         var nodeFactory = new NodeFactory(new NodeFactoryOptions());
         try
         {
-            IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
-            IGraph g = store[toRemove];
+            var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+            var g = store[toRemove];
             Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
             store.Remove(toRemove);
@@ -636,7 +636,7 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemRemoveThenAddGraphFlushed()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestRemoveThenAddGraphFlushed(manager);
     }
 
@@ -648,8 +648,8 @@ public abstract class PersistentTripleStoreTests
         var nodeFactory = new NodeFactory(new NodeFactoryOptions());
         try
         {
-            IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
-            IGraph g = store[toRemove];
+            var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+            var g = store[toRemove];
             Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
             store.Remove(toRemove);
@@ -677,7 +677,7 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemRemoveThenAddGraphDiscarded()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestRemoveThenAddGraphDiscarded(manager);
     }
 
@@ -773,21 +773,21 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemQueryUnsynced()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         Assert.Throws<RdfQueryException>(() => TestQueryUnsynced(manager));
     }
 
     [Fact]
     public void StoragePersistentTripleStoreMemQuerySelect()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestQuerySelect(manager, "SELECT * WHERE { ?s a ?type }");
     }
 
     [Fact]
     public void StoragePersistentTripleStoreMemQueryAsk()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestQueryAsk(manager, "ASK WHERE { GRAPH ?g { ?s a ?type } }", true);
         TestQueryAsk(manager, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
     }
@@ -795,14 +795,14 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemQueryConstruct()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestQueryConstruct(manager, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
     }
 
     [Fact]
     public void StoragePersistentTripleStoreMemQueryDescribe()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestQueryDescribe(manager, "DESCRIBE ?type WHERE { ?s a ?type } LIMIT 5");
     }
 
@@ -814,7 +814,7 @@ public abstract class PersistentTripleStoreTests
     {
         EnsureTestDataset(manager);
         var nodeFactory = new NodeFactory(new NodeFactoryOptions());
-        IUriNode updateUri = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/update/temp"));
+        var updateUri = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/update/temp"));
         EnsureGraphDeleted(manager, updateUri);
 
         var store = new PersistentTripleStore(manager);
@@ -879,9 +879,9 @@ public abstract class PersistentTripleStoreTests
 
         var store = new PersistentTripleStore(manager);
         var nodeFactory = new NodeFactory(new NodeFactoryOptions());
-        IUriNode graph1 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
-        IUriNode graph2 = nodeFactory.CreateUriNode(new Uri(TestGraphUri2));
-        IUriNode graph3 = nodeFactory.CreateUriNode(new Uri(TestGraphUri3));
+        var graph1 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+        var graph2 = nodeFactory.CreateUriNode(new Uri(TestGraphUri2));
+        var graph3 = nodeFactory.CreateUriNode(new Uri(TestGraphUri3));
         try
         {
             // First prime the persistent store by loading a bunch of stuff
@@ -895,7 +895,7 @@ public abstract class PersistentTripleStoreTests
             Assert.True(store.Graphs.Contains(graph3),
                 "URI 3 should return true for Graphs.Contains()");
 
-            IUriNode noSuchThing = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/noSuchGraph"));
+            var noSuchThing = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/noSuchGraph"));
             Assert.False(store.HasGraph(noSuchThing), "Bad URI should return false for HasGraph()");
             Assert.False(store.Graphs.Contains(noSuchThing), "Bad URI should return false for Graphs.Contains()");
 
@@ -917,14 +917,14 @@ public abstract class PersistentTripleStoreTests
     [Fact]
     public void StoragePersistentTripleStoreMemDump1()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestDumpStoreEmpty(manager);
     }
 
     [Fact]
     public void StoragePersistentTripleStoreMemDump2()
     {
-        IStorageProvider manager = GetStorageProvider();
+        var manager = GetStorageProvider();
         TestDumpStorePrimed(manager);
     }
 

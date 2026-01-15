@@ -61,7 +61,7 @@ public class PermissionFactory : IObjectFactory
                 break;
 
             case PermissionSet:
-                IEnumerable<string> actions = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAction)))
+                var actions = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAction)))
                                               where n.NodeType == NodeType.Literal
                                               select ((ILiteralNode)n).Value;
                 result = new PermissionSet(actions);
@@ -116,8 +116,8 @@ public class UserGroupFactory : IObjectFactory
                 result = new UserGroup();
 
                 // Get the members of the Group
-                IEnumerable<INode> members = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyMember)));
-                foreach (INode member in members)
+                var members = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyMember)));
+                foreach (var member in members)
                 {
                     string username, password;
                     ConfigurationLoader.GetUsernameAndPassword(g, member, true, out username, out password);
@@ -132,8 +132,8 @@ public class UserGroupFactory : IObjectFactory
                 }
 
                 // Get the allow list for the Group
-                IEnumerable<INode> allowed = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAllow)));
-                foreach (INode allow in allowed)
+                var allowed = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAllow)));
+                foreach (var allow in allowed)
                 {
                     var temp = ConfigurationLoader.LoadObject(g, allow);
                     if (temp is IPermission)
@@ -147,8 +147,8 @@ public class UserGroupFactory : IObjectFactory
                 }
 
                 // Get the deny list for the Group
-                IEnumerable<INode> denied = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDeny)));
-                foreach (INode deny in denied)
+                var denied = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDeny)));
+                foreach (var deny in denied)
                 {
                     var temp = ConfigurationLoader.LoadObject(g, deny);
                     if (temp is IPermission)

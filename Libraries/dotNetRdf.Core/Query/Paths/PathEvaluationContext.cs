@@ -57,7 +57,7 @@ public class PathEvaluationContext
     public PathEvaluationContext(PathEvaluationContext context)
         : this(context.SparqlContext, context.PathStart, context.PathEnd)
     {
-        foreach (PotentialPath p in context.Paths)
+        foreach (var p in context.Paths)
         {
             Paths.Add(new PotentialPath(p));
         }

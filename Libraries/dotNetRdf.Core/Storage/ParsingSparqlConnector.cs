@@ -136,7 +136,7 @@ public class ParsingSparqlConnector
         if (!SkipLocalParsing)
         {
             var queryParser = new SparqlQueryParser();
-            SparqlQuery q = queryParser.ParseFromString(sparqlQuery);
+            var q = queryParser.ParseFromString(sparqlQuery);
             switch (q.QueryType)
             {
                 case SparqlQueryType.Ask:
@@ -350,11 +350,11 @@ public class ParsingSparqlConnector
             if (results is SparqlResultSet resultSet)
             {
                 var graphs = new List<Uri>();
-                foreach (ISparqlResult r in resultSet)
+                foreach (var r in resultSet)
                 {
                     if (r.HasValue("g"))
                     {
-                        INode temp = r["g"];
+                        var temp = r["g"];
                         if (temp.NodeType == NodeType.Uri)
                         {
                             graphs.Add(((IUriNode)temp).Uri);
@@ -385,11 +385,11 @@ public class ParsingSparqlConnector
             if (results is SparqlResultSet resultSet)
             {
                 var graphs = new List<string>();
-                foreach (ISparqlResult r in resultSet)
+                foreach (var r in resultSet)
                 {
                     if (r.HasValue("g"))
                     {
-                        INode temp = r["g"];
+                        var temp = r["g"];
                         if (temp.NodeType == NodeType.Uri)
                         {
                             graphs.Add(((IUriNode)temp).Uri.AbsoluteUri);
@@ -466,13 +466,13 @@ public class ParsingSparqlConnector
     /// <param name="context">Configuration Serialization Context.</param>
     public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode manager = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
-        INode loadMode = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyLoadMode));
-        INode skipParsing = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertySkipParsing));
+        var manager = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+        var loadMode = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyLoadMode));
+        var skipParsing = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertySkipParsing));
 
         // Basic information
         context.Graph.Assert(new Triple(manager, rdfType, genericManager));
@@ -489,8 +489,8 @@ public class ParsingSparqlConnector
             // Use the indirect serialization method
 
             // Serialize the Endpoints Configuration
-            INode endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
-            INode endpointObj = context.Graph.CreateBlankNode();
+            var endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
+            var endpointObj = context.Graph.CreateBlankNode();
             context.NextSubject = endpointObj;
             ((IConfigurationSerializable)QueryClient).SerializeConfiguration(context);
 
@@ -500,9 +500,9 @@ public class ParsingSparqlConnector
         else
         {
             // Use the direct serialization method
-            INode endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
-            INode defGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
-            INode namedGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
+            var endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
+            var defGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
+            var namedGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
 
             if (QueryClient != null)
             {

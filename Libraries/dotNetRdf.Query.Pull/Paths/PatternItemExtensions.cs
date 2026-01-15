@@ -40,7 +40,7 @@ internal static class PatternItemExtensions
                 {
                     if (input != null && input.ContainsVariable(vp.VariableName))
                     {
-                        INode? tmp = input[vp.VariableName];
+                        var tmp = input[vp.VariableName];
                         if (tmp != null)
                         {
                             node = tmp;

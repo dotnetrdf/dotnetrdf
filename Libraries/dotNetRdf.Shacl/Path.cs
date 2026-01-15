@@ -67,7 +67,7 @@ public abstract class Path : GraphWrapperNode
             return new Sequence(value, graph);
         }
 
-        INode predicate = graph.GetTriplesWithSubject(value).Single().Predicate;
+        var predicate = graph.GetTriplesWithSubject(value).Single().Predicate;
 
         switch (predicate)
         {
@@ -84,7 +84,7 @@ public abstract class Path : GraphWrapperNode
     internal IEnumerable<INode> SelectValueNodes(IGraph dataGraph, INode focusNode)
     {
         const string value = "value";
-        SparqlQuery query = QueryBuilder.Select(value).Distinct().Where(new PropertyPathPattern(new NodeMatchPattern(focusNode), SparqlPath, new VariablePattern(value))).BuildQuery();
+        var query = QueryBuilder.Select(value).Distinct().Where(new PropertyPathPattern(new NodeMatchPattern(focusNode), SparqlPath, new VariablePattern(value))).BuildQuery();
         var results = dataGraph.ExecuteQuery(query) as SparqlResultSet;
         return results?.Select(result => result[value]);
     }

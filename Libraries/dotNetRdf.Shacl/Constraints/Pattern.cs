@@ -88,7 +88,7 @@ ASK {
             return !((SparqlResultSet)dataGraph.ExecuteQuery(query)).Result;
         }
 
-        IEnumerable<INode> invalidValues = valueNodes.Where(isInvalid);
+        var invalidValues = valueNodes.Where(isInvalid);
 
         return ReportValueNodes(focusNode, invalidValues, report);
     }

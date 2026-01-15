@@ -142,12 +142,12 @@ public static class PropertyFunctionFactory
     {
         function = null;
         // First try locally scoped factories
-        foreach (IPropertyFunctionFactory factory in localFactories)
+        foreach (var factory in localFactories)
         {
             if (factory.TryCreatePropertyFunction(info, out function)) return true;
         }
         // Then try global factories
-        foreach (IPropertyFunctionFactory factory in _factories)
+        foreach (var factory in _factories)
         {
             if (factory.TryCreatePropertyFunction(info, out function)) return true;
         }

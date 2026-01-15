@@ -16,7 +16,7 @@ public class PatternToAlgebraTests
             GraphSpecifier = new VariableToken("g", 0, 0, 1)
         };
 
-        ISparqlAlgebra algebra = gp.ToAlgebra();
+        var algebra = gp.ToAlgebra();
         Assert.IsType<Graph>(algebra);
 
         var g = (Graph) algebra;
@@ -41,7 +41,7 @@ public class PatternToAlgebraTests
         var empty = new GraphPattern();
         up.AddGraphPattern(empty);
 
-        ISparqlAlgebra algebra = up.ToAlgebra();
+        var algebra = up.ToAlgebra();
         Assert.IsType<Union>(algebra);
         var u = (Union) algebra;
 
@@ -62,7 +62,7 @@ public class PatternToAlgebraTests
             GraphSpecifier = new UriToken("<http://example.org/sparql>", 0, 0, 0)
         };
 
-        ISparqlAlgebra algebra = gp.ToAlgebra();
+        var algebra = gp.ToAlgebra();
         Assert.IsType<Service>(algebra);
     }
 
@@ -84,7 +84,7 @@ public class PatternToAlgebraTests
         var empty = new GraphPattern();
         up.AddGraphPattern(empty);
 
-        ISparqlAlgebra algebra = up.ToAlgebra();
+        var algebra = up.ToAlgebra();
         Assert.IsType<Union>(algebra);
         var u = (Union)algebra;
 
@@ -103,7 +103,7 @@ public class PatternToAlgebraTests
         };
         gp.AddInlineData(new BindingsPattern());
 
-        ISparqlAlgebra algebra = gp.ToAlgebra();
+        var algebra = gp.ToAlgebra();
         Assert.IsType<IJoin>(algebra, exactMatch: false);
 
         var join = (IJoin) algebra;
@@ -125,7 +125,7 @@ public class PatternToAlgebraTests
         };
         gp.AddInlineData(new BindingsPattern());
 
-        ISparqlAlgebra algebra = gp.ToAlgebra();
+        var algebra = gp.ToAlgebra();
         Assert.IsType<IJoin>(algebra, exactMatch: false);
 
         var join = (IJoin)algebra;
@@ -142,7 +142,7 @@ public class PatternToAlgebraTests
             GraphSpecifier = new VariableToken("g", 0, 0, 1)
         };
 
-        ISparqlAlgebra algebra = gp.ToAlgebra();
+        var algebra = gp.ToAlgebra();
         Assert.IsType<Graph>(algebra);
 
         var g = (Graph)algebra;
@@ -173,7 +173,7 @@ public class PatternToAlgebraTests
             GraphSpecifier = new VariableToken("g", 0, 0, 1)
         };
 
-        ISparqlAlgebra algebra = gp.ToAlgebra();
+        var algebra = gp.ToAlgebra();
         Assert.IsType<Graph>(algebra);
 
         var g = (Graph)algebra;
@@ -209,7 +209,7 @@ public class PatternToAlgebraTests
             GraphSpecifier = new VariableToken("g", 0, 0, 1)
         };
 
-        ISparqlAlgebra algebra = gp.ToAlgebra();
+        var algebra = gp.ToAlgebra();
         Assert.IsType<Graph>(algebra);
 
         var g = (Graph)algebra;

@@ -41,7 +41,7 @@ internal abstract class PropertyCompare : Compare
 
     internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
     {
-        IEnumerable<INode> invalidValues =
+        var invalidValues =
             from valueNode in valueNodes
             from value in this.ObjectsOf(focusNode, dataGraph)
             where !IsValid(valueNode, value)

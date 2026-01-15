@@ -87,11 +87,11 @@ public class PartitionedMultiset
         if (other.IsEmpty) return this;
 
         var m = new Multiset();
-        foreach (ISet s in Sets)
+        foreach (var s in Sets)
         {
             m.Add(s.Copy());
         }
-        foreach (ISet s in other.Sets)
+        foreach (var s in other.Sets)
         {
             m.Add(s.Copy());
         }
@@ -198,7 +198,7 @@ public class PartitionedMultiset
     {
         // Validate that the ordering is applicable
         var vars = new HashSet<string>();
-        foreach (HashSet<string> varList in _variables)
+        foreach (var varList in _variables)
         {
             foreach (var var in varList)
             {
@@ -351,7 +351,7 @@ public class PartitionedMultiset
         var trimVars = Variables.Where(v => v.StartsWith("_:")).ToList();
         foreach (var var in trimVars)
         {
-            foreach (HashSet<string> vs in _variables)
+            foreach (var vs in _variables)
             {
                 vs.Remove(var);
             }
@@ -373,7 +373,7 @@ public class PartitionedMultiset
         }
         else
         {
-            foreach (ISet s in Sets)
+            foreach (var s in Sets)
             {
                 foreach (var var in trimVars)
                 {
@@ -390,7 +390,7 @@ public class PartitionedMultiset
     public override void Trim(string variable)
     {
         if (variable == null) return;
-        foreach (HashSet<string> vs in _variables)
+        foreach (var vs in _variables)
         {
             vs.Remove(variable);
         }
@@ -400,7 +400,7 @@ public class PartitionedMultiset
         }
         else
         {
-            foreach (ISet s in Sets)
+            foreach (var s in Sets)
             {
                 s.Remove(variable);
             }

@@ -135,8 +135,8 @@ public class ParallelEvaluation
     [Fact]
     public void SparqlParallelEvaluationDivision1()
     {
-        INode zero = (0).ToLiteral(_factory);
-        INode one = (0).ToLiteral(_factory);
+        var zero = (0).ToLiteral(_factory);
+        var one = (0).ToLiteral(_factory);
 
         var data = new List<INode[]>()
         {
@@ -147,7 +147,7 @@ public class ParallelEvaluation
         };
 
         BaseMultiset multiset = new Multiset();
-        foreach (INode[] row in data)
+        foreach (var row in data)
         {
             var s = new Set();
             s.Add("x", row[0]);
@@ -155,7 +155,7 @@ public class ParallelEvaluation
             s.Add("expected", row[2]);
         }
 
-        ISparqlExpression expr = new DivisionExpression(new VariableTerm("x"), new VariableTerm("y"));
+        var expr = new DivisionExpression(new VariableTerm("x"), new VariableTerm("y"));
 
         var processor = new LeviathanExpressionProcessor(new LeviathanQueryOptions(), null);
 
@@ -169,7 +169,7 @@ public class ParallelEvaluation
 
             context.InputMultiset.SetIDs.AsParallel().ForAll(id => EvalExtend(processor, context, context.InputMultiset, expr, "actual", id));
 
-            foreach (ISet s in context.OutputMultiset.Sets)
+            foreach (var s in context.OutputMultiset.Sets)
             {
                 Assert.Equal(s["expected"], s["actual"]);
             }
@@ -178,11 +178,11 @@ public class ParallelEvaluation
 
     private void EvalExtend(LeviathanExpressionProcessor processor, SparqlEvaluationContext context, BaseMultiset results, ISparqlExpression expr, String var, int id)
     {
-        ISet s = results[id].Copy();
+        var s = results[id].Copy();
         try
         {
             //Make a new assignment
-            INode temp = expr.Accept(processor, context, id);
+            var temp = expr.Accept(processor, context, id);
             s.Add(var, temp);
         }
         catch

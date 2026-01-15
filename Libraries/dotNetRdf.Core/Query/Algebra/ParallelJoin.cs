@@ -67,7 +67,7 @@ public class ParallelJoin : IJoin
         get
         {
             // Floating variables are those floating on either side which are not fixed
-            IEnumerable<string> floating = Lhs.FloatingVariables.Concat(Rhs.FloatingVariables).Distinct();
+            var floating = Lhs.FloatingVariables.Concat(Rhs.FloatingVariables).Distinct();
             var fixedVars = new HashSet<string>(FixedVariables);
             return floating.Where(v => !fixedVars.Contains(v));
         }

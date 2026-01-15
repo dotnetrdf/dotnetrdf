@@ -149,7 +149,7 @@ public class PersistentTripleStoreTests
             var aExpected = new Graph(new UriNode(new Uri(TestGraphUri1)));
             aExpected.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             aExpected.Retract(aExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
-            IGraph aActual = store[aExpected.Name];
+            var aActual = store[aExpected.Name];
             Assert.Equal(aExpected, aActual);
             aActual = store.Graphs[aExpected.Name];
             Assert.Equal(aExpected, aActual);
@@ -157,7 +157,7 @@ public class PersistentTripleStoreTests
             var bExpected = new Graph(new UriNode(new Uri(TestGraphUri2)));
             bExpected.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
             bExpected.Retract(bExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
-            IGraph bActual = store[bExpected.Name];
+            var bActual = store[bExpected.Name];
             Assert.Equal(bExpected, bActual);
             bActual = store.Graphs[bExpected.Name];
             Assert.Equal(bExpected, bActual);
@@ -165,7 +165,7 @@ public class PersistentTripleStoreTests
             var cExpected = new Graph(new UriNode(new Uri(TestGraphUri3)));
             cExpected.LoadFromEmbeddedResource("VDS.RDF.Query.Optimisation.OptimiserStats.ttl, dotNetRdf");
             cExpected.Retract(cExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
-            IGraph cActual = store[cExpected.Name];
+            var cActual = store[cExpected.Name];
             Assert.Equal(cExpected, cActual);
             cActual = store.Graphs[cExpected.Name];
             Assert.Equal(cExpected, cActual);
@@ -195,7 +195,7 @@ public class PersistentTripleStoreTests
         var store = new PersistentTripleStore(manager);
         try
         {
-            IGraph g = store[new UriNode(new Uri(TestGraphUri1))];
+            var g = store[new UriNode(new Uri(TestGraphUri1))];
 
             var toAdd = new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
             g.Assert(toAdd);
@@ -233,7 +233,7 @@ public class PersistentTripleStoreTests
         var store = new PersistentTripleStore(manager);
         try
         {
-            IGraph g = store[new UriNode(new Uri(TestGraphUri1))];
+            var g = store[new UriNode(new Uri(TestGraphUri1))];
 
             var toAdd = new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
             g.Assert(toAdd);
@@ -274,9 +274,9 @@ public class PersistentTripleStoreTests
         var store = new PersistentTripleStore(manager);
         try
         {
-            IGraph g = store[new UriNode(new Uri(TestGraphUri1))];
+            var g = store[new UriNode(new Uri(TestGraphUri1))];
 
-            INode rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
+            var rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
             g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
 
             Assert.False(g.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should not be present in in-memory view prior to Flush/Discard");
@@ -313,9 +313,9 @@ public class PersistentTripleStoreTests
         try
         {
             var graphName = new UriNode(new Uri(TestGraphUri1));
-            IGraph g = store[graphName];
+            var g = store[graphName];
 
-            INode rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
+            var rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
             g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
 
             Assert.False(g.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should not be present in in-memory view prior to Flush/Discard");
@@ -586,7 +586,7 @@ public class PersistentTripleStoreTests
         try
         {
             var toRemove = new UriNode(new Uri(TestGraphUri1));
-            IGraph g = store[toRemove];
+            var g = store[toRemove];
             Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
             store.Remove(toRemove);
@@ -623,7 +623,7 @@ public class PersistentTripleStoreTests
         try
         {
             var toRemove = new UriNode(new Uri(TestGraphUri1));
-            IGraph g = store[toRemove];
+            var g = store[toRemove];
             Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
             store.Remove(toRemove);

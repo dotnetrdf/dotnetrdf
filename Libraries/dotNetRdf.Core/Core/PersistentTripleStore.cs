@@ -237,7 +237,7 @@ public sealed class PersistentTripleStore
         {
             if (_updateProcessor == null) _updateProcessor = new GenericUpdateProcessor(_manager);
             if (_updateParser == null) _updateParser = new SparqlUpdateParser();
-            SparqlUpdateCommandSet cmds = _updateParser.ParseFromString(update);
+            var cmds = _updateParser.ParseFromString(update);
             _updateProcessor.ProcessCommandSet(cmds);
         }
     }

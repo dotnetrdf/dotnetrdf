@@ -34,33 +34,33 @@ public class ProcessorTests
     [Fact]
     public void CanQueryUnionDefaultGraph()
     {
-        TripleStore store = MakeTestTripleStore();
+        var store = MakeTestTripleStore();
         var sparqlParser = new SparqlQueryParser();
-        SparqlQuery? query = sparqlParser.ParseFromString("SELECT * WHERE {?s ?p ?o}");
+        var query = sparqlParser.ParseFromString("SELECT * WHERE {?s ?p ?o}");
         var processor = new PullQueryProcessor(store, options => { options.UnionDefaultGraph = true; });
         var resultsUnionDefault = processor.ProcessQuery(query);
-        SparqlResultSet sparqlResultsUnionDefault = Assert.IsType<SparqlResultSet>(resultsUnionDefault);
+        var sparqlResultsUnionDefault = Assert.IsType<SparqlResultSet>(resultsUnionDefault);
         Assert.Equal(3, sparqlResultsUnionDefault.Count);
     }
 
     [Fact]
     public void DefaultsToUnnamedDefaultGraph()
     {
-        TripleStore store = MakeTestTripleStore();
+        var store = MakeTestTripleStore();
         var sparqlParser = new SparqlQueryParser();
-        SparqlQuery? query = sparqlParser.ParseFromString("SELECT * WHERE {?s ?p ?o}");
+        var query = sparqlParser.ParseFromString("SELECT * WHERE {?s ?p ?o}");
         var processor = new PullQueryProcessor(store, options => { options.UnionDefaultGraph = false; });
         var resultsUnnamedDefault = processor.ProcessQuery(query);
-        SparqlResultSet sparqlResultsUnnamedDefault = Assert.IsType<SparqlResultSet>(resultsUnnamedDefault);
+        var sparqlResultsUnnamedDefault = Assert.IsType<SparqlResultSet>(resultsUnnamedDefault);
         Assert.Equal(1, sparqlResultsUnnamedDefault.Count);
     }
 
     [Fact]
     public void CanSetExplicitDefaultGraph()
     {
-        TripleStore store = MakeTestTripleStore();
+        var store = MakeTestTripleStore();
         var sparqlParser = new SparqlQueryParser();
-        SparqlQuery? query = sparqlParser.ParseFromString("SELECT * WHERE {?s ?p ?o}");
+        var query = sparqlParser.ParseFromString("SELECT * WHERE {?s ?p ?o}");
         var nameNodeFactory = new NodeFactory();
         var processor = new PullQueryProcessor(store, options =>
         {
@@ -72,16 +72,16 @@ public class ProcessorTests
             ];
         });
         var results = processor.ProcessQuery(query);
-        SparqlResultSet resultSet = Assert.IsType<SparqlResultSet>(results);
+        var resultSet = Assert.IsType<SparqlResultSet>(results);
         Assert.Equal(2, resultSet.Count);
     }
 
     [Fact]
     public async Task AsyncSelectQueryWithHandler()
     {
-        TripleStore store = MakeTestTripleStore();
+        var store = MakeTestTripleStore();
         var sparqlParser = new SparqlQueryParser();
-        SparqlQuery? query = sparqlParser.ParseFromString("SELECT * WHERE {?s ?p ?o}");
+        var query = sparqlParser.ParseFromString("SELECT * WHERE {?s ?p ?o}");
         var processor = new PullQueryProcessor(store, options => {options.UnionDefaultGraph = true;});
         var handler = new ResultCountHandler();
         await processor.ProcessQueryAsync(null, handler, query);
@@ -91,9 +91,9 @@ public class ProcessorTests
     [Fact]
     public async Task AsyncAskQueryWithHandler()
     {
-        TripleStore store = MakeTestTripleStore();
+        var store = MakeTestTripleStore();
         var sparqlParser = new SparqlQueryParser();
-        SparqlQuery? query = sparqlParser.ParseFromString("ASK WHERE {?s ?p ?o}");
+        var query = sparqlParser.ParseFromString("ASK WHERE {?s ?p ?o}");
         var processor = new PullQueryProcessor(store, options => {options.UnionDefaultGraph = true;});
         var handler = new ResultCountHandler();
         await processor.ProcessQueryAsync(null, handler, query);
@@ -103,9 +103,9 @@ public class ProcessorTests
     [Fact]
     public async Task AsyncSelectQueryWithoutHandler()
     {
-        TripleStore store = MakeTestTripleStore();
+        var store = MakeTestTripleStore();
         var sparqlParser = new SparqlQueryParser();
-        SparqlQuery? query = sparqlParser.ParseFromString("SELECT * WHERE {?s ?p ?o}");
+        var query = sparqlParser.ParseFromString("SELECT * WHERE {?s ?p ?o}");
         var processor = new PullQueryProcessor(store, options => {options.UnionDefaultGraph = true;});
         await Assert.ThrowsAsync<ArgumentNullException>( () => processor.ProcessQueryAsync(null, null, query));
     }
@@ -113,9 +113,9 @@ public class ProcessorTests
     [Fact]
     public async Task DescribeQueryWithHandler()
     {
-        TripleStore store = MakeTestTripleStore();
+        var store = MakeTestTripleStore();
         var sparqlParser= new SparqlQueryParser();
-        SparqlQuery? query = sparqlParser.ParseFromString("DESCRIBE ?s WHERE {?s <http://example.org/p> <http://example.org/o> }");
+        var query = sparqlParser.ParseFromString("DESCRIBE ?s WHERE {?s <http://example.org/p> <http://example.org/o> }");
         var processor = new PullQueryProcessor(store, options => {options.UnionDefaultGraph = false;});
         var graph = new Graph();
         await processor.ProcessQueryAsync(new GraphHandler(graph), null, query);
@@ -125,9 +125,9 @@ public class ProcessorTests
     [Fact]
     public async Task DescribeQueryUnionDefaultGraphWithHandler()
     {
-        TripleStore store = MakeTestTripleStore();
+        var store = MakeTestTripleStore();
         var sparqlParser= new SparqlQueryParser();
-        SparqlQuery? query = sparqlParser.ParseFromString("DESCRIBE ?s WHERE {?s <http://example.org/p> <http://example.org/o> }");
+        var query = sparqlParser.ParseFromString("DESCRIBE ?s WHERE {?s <http://example.org/p> <http://example.org/o> }");
         var processor = new PullQueryProcessor(store, options => {options.UnionDefaultGraph = true;});
         var graph = new Graph();
         await processor.ProcessQueryAsync(new GraphHandler(graph), null, query);
@@ -137,9 +137,9 @@ public class ProcessorTests
     [Fact]
     public async Task DescribeAllQueryWithHandler()
     {
-        TripleStore store = MakeTestTripleStore();
+        var store = MakeTestTripleStore();
         var sparqlParser= new SparqlQueryParser();
-        SparqlQuery? query = sparqlParser.ParseFromString("DESCRIBE * WHERE {?s <http://example.org/p> <http://example.org/o> }");
+        var query = sparqlParser.ParseFromString("DESCRIBE * WHERE {?s <http://example.org/p> <http://example.org/o> }");
         var processor = new PullQueryProcessor(store, options => {options.UnionDefaultGraph = false;});
         var graph = new Graph();
         await processor.ProcessQueryAsync(new GraphHandler(graph), null, query);

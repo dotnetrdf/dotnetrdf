@@ -65,7 +65,7 @@ class PersistentGraphCollection
                     // When a new graph is introduced that does not exist in the underlying store
                     // be sure to persist the initial triples
                     _actions.Add(new TripleStorePersistenceAction(new GraphPersistenceAction(g, GraphPersistenceActionType.Added)));
-                    foreach (Triple t in g.Triples)
+                    foreach (var t in g.Triples)
                     {
                         _actions.Add(new TripleStorePersistenceAction(new TriplePersistenceAction(t, g.Name)));
                     }
@@ -203,12 +203,12 @@ class PersistentGraphCollection
                 foreach (var graphName in _manager.ListGraphNames())
                 {
                     if (string.IsNullOrEmpty(graphName)) yield return null;
-                    else if (Uri.TryCreate(graphName, UriKind.Absolute, out Uri graphUri)) yield return new UriNode(graphUri);
+                    else if (Uri.TryCreate(graphName, UriKind.Absolute, out var graphUri)) yield return new UriNode(graphUri);
                     else if (graphName.StartsWith("_:")) yield return new BlankNode(graphName.Substring(2));
                     else yield return new BlankNode(graphName);
                 }
             }
-            foreach(IRefNode name in base.GraphNames) yield return name;
+            foreach(var name in base.GraphNames) yield return name;
         }
     }
 
@@ -321,12 +321,12 @@ class PersistentGraphCollection
                 // First group Triple together based on Graph URI
                 while (_actions.Count > 0)
                 {
-                    TripleStorePersistenceAction action = _actions[0];
+                    var action = _actions[0];
 
                     if (action.IsTripleAction)
                     {
                         var actions = new Queue<TriplePersistenceAction>();
-                        IRefNode currentGraph = action.TripleAction.Graph;
+                        var currentGraph = action.TripleAction.Graph;
                         actions.Enqueue(_actions[0].TripleAction);
                         _actions.RemoveAt(0);
 
@@ -347,7 +347,7 @@ class PersistentGraphCollection
                         var batch = new List<Triple>();
                         while (actions.Count > 0)
                         {
-                            TriplePersistenceAction next = actions.Dequeue();
+                            var next = actions.Dequeue();
                             if (next.IsDelete != toDelete)
                             {
                                 if (batch.Count > 0)
@@ -412,7 +412,7 @@ class PersistentGraphCollection
             else
             {
                 // Persist based on Graph level actions
-                foreach (TripleStorePersistenceAction action in _actions)
+                foreach (var action in _actions)
                 {
                     if (action.IsGraphAction)
                     {
@@ -458,12 +458,12 @@ class PersistentGraphCollection
                 // First group Triple together based on Graph URI
                 while (_actions.Count > 0)
                 {
-                    TripleStorePersistenceAction action = _actions[0];
+                    var action = _actions[0];
 
                     if (action.IsTripleAction)
                     {
                         var actions = new Queue<TriplePersistenceAction>();
-                        IRefNode currentGraph = _actions[0].TripleAction.Graph;
+                        var currentGraph = _actions[0].TripleAction.Graph;
                         actions.Enqueue(_actions[0].TripleAction);
                         _actions.RemoveAt(0);
 
@@ -484,7 +484,7 @@ class PersistentGraphCollection
                         var batch = new List<Triple>();
                         while (actions.Count > 0)
                         {
-                            TriplePersistenceAction next = actions.Dequeue();
+                            var next = actions.Dequeue();
                             if (next.IsDelete != toDelete)
                             {
                                 if (batch.Count > 0)
@@ -549,7 +549,7 @@ class PersistentGraphCollection
             else
             {
                 // Persist based on Graph level actions
-                foreach (TripleStorePersistenceAction action in _actions)
+                foreach (var action in _actions)
                 {
                     // Important - For discard we flip the actions in order to reverse them
                     // i.e. additions become removals and vice versa
