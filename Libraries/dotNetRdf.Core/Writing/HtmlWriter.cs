@@ -186,9 +186,9 @@ public class HtmlWriter
         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Tbody);
 
         var triplesDone = new TripleCollection();
-        foreach (INode subj in context.Graph.Triples.SubjectNodes)
+        foreach (var subj in context.Graph.Triples.SubjectNodes)
         {
-            IEnumerable<Triple> ts = context.Graph.GetTriplesWithSubject(subj);
+            var ts = context.Graph.GetTriplesWithSubject(subj);
 
             // Start a Row
             context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Valign, "top");
@@ -222,7 +222,7 @@ public class HtmlWriter
             context.HtmlWriter.WriteLine();
 
             var firstPred = true;
-            foreach (Triple t in ts)
+            foreach (var t in ts)
             {
                 if (triplesDone.Contains(t)) continue;
                 if (!firstPred)
@@ -233,7 +233,7 @@ public class HtmlWriter
                 }
 
                 // Then a Column for the Predicate
-                IEnumerable<Triple> predTriples = context.Graph.GetTriplesWithSubjectPredicate(t.Subject, t.Predicate);
+                var predTriples = context.Graph.GetTriplesWithSubjectPredicate(t.Subject, t.Predicate);
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Rowspan, predTriples.Count().ToString());
                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Td);
                 context.HtmlWriter.WriteLine();
@@ -244,7 +244,7 @@ public class HtmlWriter
 
                 // Then we write out all the Objects
                 var firstObj = true;
-                foreach (Triple predTriple in predTriples)
+                foreach (var predTriple in predTriples)
                 {
                     if (triplesDone.Contains(predTriple)) continue;
                     if (!firstObj)
@@ -493,7 +493,7 @@ public class HtmlWriter
     /// <param name="message">Warning Message.</param>
     private void RaiseWarning(string message)
     {
-        RdfWriterWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

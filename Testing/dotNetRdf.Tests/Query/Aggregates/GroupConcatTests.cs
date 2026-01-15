@@ -37,7 +37,7 @@ public class GroupConcatTests
 
     private void RunTest(IGraph g, String query, int expected, String var, bool expectNotNull, String expectMatch)
     {
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
         var processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
 
         var results = processor.ProcessQuery(q) as SparqlResultSet;
@@ -53,7 +53,7 @@ public class GroupConcatTests
             if (expectNotNull)
             {
                 Assert.True(r.HasBoundValue(var));
-                INode value = r[var];
+                var value = r[var];
                 Assert.Equal(NodeType.Literal, value.NodeType);
                 var lexValue = ((ILiteralNode)value).Value;
                 Assert.Contains(expectMatch, lexValue);
@@ -68,7 +68,7 @@ public class GroupConcatTests
     [Fact]
     public void SparqlGroupConcat1()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", UriFactory.Root.Create("http://example.org/ns#"));
         g.Assert(g.CreateUriNode("ex:subject"), g.CreateUriNode("ex:predicate"), g.CreateLiteralNode("object"));
 
@@ -78,7 +78,7 @@ public class GroupConcatTests
     [Fact]
     public void SparqlGroupConcat2()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", UriFactory.Root.Create("http://example.org/ns#"));
         g.Assert(g.CreateUriNode("ex:subject"), g.CreateUriNode("ex:predicate"), g.CreateLiteralNode("object"));
 
@@ -88,7 +88,7 @@ public class GroupConcatTests
     [Fact]
     public void SparqlGroupConcat3()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
 
         var query = @"SELECT (GROUP_CONCAT(?x) AS ?concat)
 WHERE
@@ -106,7 +106,7 @@ WHERE
     [Fact]
     public void SparqlGroupConcat4()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
 
         var query = @"SELECT (GROUP_CONCAT(?x) AS ?concat)
 WHERE

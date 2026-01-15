@@ -117,11 +117,11 @@ public class HtmlSchemaWriter
 
         // Find the Node that represents the Schema Ontology
         // Assumes there is exactly one thing given rdf:type owl:Ontology
-        IUriNode ontology = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.OWL + "Ontology"));
-        IUriNode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        IUriNode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-        INode ontoNode = context.Graph.GetTriplesWithPredicateObject(rdfType, ontology).Select(t => t.Subject).FirstOrDefault();
-        INode ontoLabel = (ontoNode != null) ? context.Graph.GetTriplesWithSubjectPredicate(ontoNode, rdfsLabel).Select(t => t.Object).FirstOrDefault() : null;
+        var ontology = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.OWL + "Ontology"));
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        var ontoNode = context.Graph.GetTriplesWithPredicateObject(rdfType, ontology).Select(t => t.Subject).FirstOrDefault();
+        var ontoLabel = (ontoNode != null) ? context.Graph.GetTriplesWithSubjectPredicate(ontoNode, rdfsLabel).Select(t => t.Object).FirstOrDefault() : null;
 
         // Stuff for formatting
         // We'll use the Turtle Formatter to get nice QNames wherever possible
@@ -187,12 +187,12 @@ public class HtmlSchemaWriter
                 {
                     if (!((SparqlResultSet)results).IsEmpty)
                     {
-                        ISparqlResult ontoInfo = ((SparqlResultSet)results)[0];
+                        var ontoInfo = ((SparqlResultSet)results)[0];
 
                         // Show rdfs:comment on the Ontology
                         if (ontoInfo.HasValue("description"))
                         {
-                            INode descrip = ontoInfo["description"];
+                            var descrip = ontoInfo["description"];
                             if (descrip.NodeType == NodeType.Literal)
                             {
                                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
@@ -205,8 +205,8 @@ public class HtmlSchemaWriter
                         // Show Author Information
                         if (ontoInfo.HasValue("creator"))
                         {
-                            INode author = ontoInfo["creator"];
-                            INode authorName = ontoInfo["creatorName"];
+                            var author = ontoInfo["creator"];
+                            var authorName = ontoInfo["creatorName"];
                             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
                             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Em);
                             context.HtmlWriter.WriteEncodedText("Schema created by ");
@@ -358,7 +358,7 @@ public class HtmlSchemaWriter
                 var rs = (SparqlResultSet)results;
                 for (var i = 0; i < rs.Count; i++)
                 {
-                    ISparqlResult r = rs[i];
+                    var r = rs[i];
 
                     // Get the QName and output a Link to an anchor that we'll generate later to let
                     // users jump to a Class/Property definition
@@ -408,7 +408,7 @@ public class HtmlSchemaWriter
                 var rs = (SparqlResultSet)results;
                 for (var i = 0; i < rs.Count; i++)
                 {
-                    ISparqlResult r = rs[i];
+                    var r = rs[i];
 
                     // Get the QName and output a Link to an anchor that we'll generate later to let
                     // users jump to a Class/Property definition
@@ -445,14 +445,14 @@ public class HtmlSchemaWriter
         context.HtmlWriter.WriteLine();
 
         // Now create the URI Nodes we need for the next stage of Output
-        IUriNode rdfsDomain = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "domain"));
-        IUriNode rdfsRange = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "range"));
-        IUriNode rdfsSubClassOf = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "subClassOf"));
-        IUriNode rdfsSubPropertyOf = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "subPropertyOf"));
-        IUriNode owlDisjointClass = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.OWL + "disjointWith"));
-        IUriNode owlEquivalentClass = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.OWL + "equivalentClass"));
-        IUriNode owlEquivalentProperty = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.OWL + "equivalentProperty"));
-        IUriNode owlInverseProperty = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.OWL + "inverseOf"));
+        var rdfsDomain = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "domain"));
+        var rdfsRange = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "range"));
+        var rdfsSubClassOf = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "subClassOf"));
+        var rdfsSubPropertyOf = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "subPropertyOf"));
+        var owlDisjointClass = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.OWL + "disjointWith"));
+        var owlEquivalentClass = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.OWL + "equivalentClass"));
+        var owlEquivalentProperty = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.OWL + "equivalentProperty"));
+        var owlInverseProperty = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.OWL + "inverseOf"));
 
         // Alter our previous getClasses query to get additional details
         getClasses.CommandText = "SELECT ?class (SAMPLE(?label) AS ?classLabel) (SAMPLE(?description) AS ?classDescription) WHERE { { ?class a rdfs:Class } UNION { ?class a owl:Class } FILTER(ISURI(?class)) OPTIONAL { ?class rdfs:label ?label } OPTIONAL { ?class rdfs:comment ?description } } GROUP BY ?class ORDER BY ?class";
@@ -699,7 +699,7 @@ public class HtmlSchemaWriter
             context.HtmlWriter.WriteEncodedText(caption + ": ");
             context.HtmlWriter.RenderEndTag();
             context.HtmlWriter.WriteLine();
-            foreach (INode n in ns.OrderBy(x => x))
+            foreach (var n in ns.OrderBy(x => x))
             {
                 var qname = context.NodeFormatter.Format(n);
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, "#" + qname);
@@ -720,7 +720,7 @@ public class HtmlSchemaWriter
     /// <param name="message">Warning Message.</param>
     private void RaiseWarning(string message)
     {
-        RdfWriterWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

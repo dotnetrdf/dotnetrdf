@@ -40,7 +40,7 @@ public class GroupByTests
     private object ExecuteQuery(IInMemoryQueryableStore store, string query)
     {
         var parser = new SparqlQueryParser();
-        SparqlQuery parsedQuery = parser.ParseFromString(query);
+        var parsedQuery = parser.ParseFromString(query);
         var processor =new LeviathanQueryProcessor(store);
         return processor.ProcessQuery(parsedQuery);
     }
@@ -50,7 +50,7 @@ public class GroupByTests
     {
         const string query = "SELECT ?s WHERE {{SELECT ?s WHERE {?s ?p ?o} GROUP BY ?s}} GROUP BY ?s";
         var parser = new SparqlQueryParser();
-        SparqlQuery _ = parser.ParseFromString(query);
+        var _ = parser.ParseFromString(query);
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class GroupByTests
     {
         const string query = "SELECT ?x WHERE { ?s ?p ?o } GROUP BY ?s AS ?x";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var g = new QueryableGraph();
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
@@ -79,7 +79,7 @@ public class GroupByTests
     {
         const string query = "SELECT ?x (COUNT(?p) AS ?predicates) WHERE { ?s ?p ?o } GROUP BY ?s AS ?x";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var g = new QueryableGraph();
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
@@ -100,7 +100,7 @@ public class GroupByTests
     {
         const string query = "SELECT ?s ?sum WHERE { ?s ?p ?o } GROUP BY ?s (1 + 2 AS ?sum)";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var g = new QueryableGraph();
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
@@ -121,7 +121,7 @@ public class GroupByTests
     {
         const string query = "SELECT ?lang (SAMPLE(?o) AS ?example) WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) } GROUP BY (LANG(?o) AS ?lang)";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var g = new QueryableGraph();
         FileLoader.Load(g, Path.Combine("resources", "rdfserver", "southampton.rdf"));
@@ -141,7 +141,7 @@ public class GroupByTests
     {
         const string query = "SELECT ?lang (SAMPLE(?o) AS ?example) WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) } GROUP BY (LANG(?o) AS ?lang) HAVING LANGMATCHES(?lang, \"*\")";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var g = new QueryableGraph();
         FileLoader.Load(g, Path.Combine("resources", "rdfserver", "southampton.rdf"));
@@ -161,7 +161,7 @@ public class GroupByTests
     {
         const string query = "SELECT ?s (SAMPLE(?o) AS ?object) WHERE {?s ?p ?o} GROUP BY ?s";
         var parser = new SparqlQueryParser();
-        SparqlQuery _ = parser.ParseFromString(query);
+        var _ = parser.ParseFromString(query);
     }
 
     [Fact]
@@ -173,7 +173,7 @@ WHERE {
 	?x ex:p ?value
 }";
 
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
         var processor = new LeviathanQueryProcessor(new TripleStore());
 
         var results = processor.ProcessQuery(q) as SparqlResultSet;
@@ -193,7 +193,7 @@ WHERE {
 	?x ex:p ?value
 } GROUP BY ?x";
 
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
         var processor = new LeviathanQueryProcessor(new TripleStore());
         var results = processor.ProcessQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
@@ -211,7 +211,7 @@ WHERE {
    ?s :p ?x
 }
 GROUP BY ?s";
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
         var processor = new LeviathanQueryProcessor(new TripleStore());
         var results = processor.ProcessQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
@@ -228,7 +228,7 @@ SELECT (count(*) AS ?C)
 WHERE {
    ?s :p ?x
 }";
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
         var processor = new LeviathanQueryProcessor(new TripleStore());
         var results = processor.ProcessQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
@@ -365,7 +365,7 @@ GROUP BY ?s ?w";
         const string query = "SELECT ?s WHERE { ?s ?p ?o } GROUP BY ?s";
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var queryStr = q.ToString();
         Assert.Contains("GROUP BY ?s", queryStr);
@@ -380,7 +380,7 @@ GROUP BY ?s ?w";
         const string query = "SELECT ?s ?p WHERE { ?s ?p ?o } GROUP BY ?s ?p";
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var queryStr = q.ToString();
         Assert.Contains("GROUP BY ?s ?p", queryStr);
@@ -395,7 +395,7 @@ GROUP BY ?s ?w";
         const string query = "SELECT ?s WHERE { ?s ?p ?o } GROUP BY (?s)";
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var queryStr = q.ToString();
         Assert.Contains("GROUP BY ?s", queryStr);
@@ -434,7 +434,7 @@ WHERE
         Assert.Equal(4, results.Count);
         Assert.Equal(3, results.Variables.Count());
 
-        foreach (ISparqlResult r in results)
+        foreach (var r in results)
         {
             if (r.HasBoundValue("x"))
             {
@@ -487,7 +487,7 @@ WHERE
         Assert.Equal(4, results.Count);
         Assert.Equal(4, results.Variables.Count());
 
-        foreach (ISparqlResult r in results)
+        foreach (var r in results)
         {
             var cxVal = r["cx"].AsValuedNode().AsInteger();
             if (cxVal == -1) Assert.Equal(-2, r["div"].AsValuedNode().AsInteger());
@@ -510,11 +510,11 @@ WHERE
         Assert.NotNull(results);
         Assert.True(results.All(r => r.HasBoundValue("Total")));
 
-        ISparqlResult x = results.FirstOrDefault(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/x")));
+        var x = results.FirstOrDefault(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/x")));
         Assert.NotNull(x);
         Assert.Equal("$3", x["Total"].AsValuedNode().AsString());
 
-        ISparqlResult y = results.FirstOrDefault(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/y")));
+        var y = results.FirstOrDefault(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/y")));
         Assert.NotNull(y);
         Assert.Equal("$5", y["Total"].AsValuedNode().AsString());
     }

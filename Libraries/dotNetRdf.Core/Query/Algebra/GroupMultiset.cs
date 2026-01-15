@@ -84,7 +84,7 @@ public class GroupMultiset
     public void AddGroup(BindingGroup group)
     {
         var s = new Set();
-        foreach (KeyValuePair<string, INode> assignment in group.Assignments)
+        foreach (var assignment in group.Assignments)
         {
             s.Add(assignment.Key, assignment.Value);
         }

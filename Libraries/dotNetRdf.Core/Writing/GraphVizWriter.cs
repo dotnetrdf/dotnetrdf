@@ -88,7 +88,7 @@ public class GraphVizWriter : BaseRdfWriter, IPrettyPrintingWriter, ICollapseLit
         context.Output.Write(Dot.OpenCurly);
         Prettify(Dot.NewLine, context);
 
-        foreach (Triple t in context.Graph.Triples)
+        foreach (var t in context.Graph.Triples)
         {
             WriteTriple(t, context, collapseLiterals);
         }
@@ -131,7 +131,7 @@ public class GraphVizWriter : BaseRdfWriter, IPrettyPrintingWriter, ICollapseLit
 
     private static string ProcessNode(Triple t, TripleSegment segment, BaseWriterContext context, bool collapseLiterals)
     {
-        INode node = GetNode(t, segment);
+        var node = GetNode(t, segment);
 
         switch (node)
         {

@@ -71,7 +71,7 @@ public class IndexSearchTests
             provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
             var formatter = new NTriplesFormatter();
 
-            foreach (IFullTextSearchResult result in provider.Match("http"))
+            foreach (var result in provider.Match("http"))
             {
                 Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
             }
@@ -104,7 +104,7 @@ public class IndexSearchTests
             var formatter = new NTriplesFormatter();
 
             var i = 0;
-            foreach (IFullTextSearchResult result in provider.Match("http", 5))
+            foreach (var result in provider.Match("http", 5))
             {
                 i++;
                 Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
@@ -138,7 +138,7 @@ public class IndexSearchTests
             provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
             var formatter = new NTriplesFormatter();
 
-            foreach (IFullTextSearchResult result in provider.Match("http", 0.75d))
+            foreach (var result in provider.Match("http", 0.75d))
             {
                 Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
                 Assert.True(result.Score >= 0.75d, "Score should be higher than desired threshold");
@@ -172,7 +172,7 @@ public class IndexSearchTests
             var formatter = new NTriplesFormatter();
 
             var i = 0;
-            foreach (IFullTextSearchResult result in provider.Match("http", 1.0d, 5))
+            foreach (var result in provider.Match("http", 1.0d, 5))
             {
                 i++;
                 Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
@@ -207,7 +207,7 @@ public class IndexSearchTests
             provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
             var formatter = new NTriplesFormatter();
 
-            foreach (IFullTextSearchResult result in provider.Match("http"))
+            foreach (var result in provider.Match("http"))
             {
                 Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
             }
@@ -240,7 +240,7 @@ public class IndexSearchTests
             var formatter = new NTriplesFormatter();
 
             var i = 0;
-            foreach (IFullTextSearchResult result in provider.Match("http", 5))
+            foreach (var result in provider.Match("http", 5))
             {
                 i++;
                 Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
@@ -274,7 +274,7 @@ public class IndexSearchTests
             provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
             var formatter = new NTriplesFormatter();
 
-            foreach (IFullTextSearchResult result in provider.Match("http", 0.75d))
+            foreach (var result in provider.Match("http", 0.75d))
             {
                 Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
                 Assert.True(result.Score >= 0.75d, "Score should be higher than desired threshold");
@@ -308,7 +308,7 @@ public class IndexSearchTests
             var formatter = new NTriplesFormatter();
 
             var i = 0;
-            foreach (IFullTextSearchResult result in provider.Match("http", 1.0d, 5))
+            foreach (var result in provider.Match("http", 1.0d, 5))
             {
                 i++;
                 Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
@@ -343,7 +343,7 @@ public class IndexSearchTests
             provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
             var formatter = new NTriplesFormatter();
 
-            foreach (IFullTextSearchResult result in provider.Match("http"))
+            foreach (var result in provider.Match("http"))
             {
                 Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
             }
@@ -376,7 +376,7 @@ public class IndexSearchTests
             var formatter = new NTriplesFormatter();
 
             var i = 0;
-            foreach (IFullTextSearchResult result in provider.Match("http", 5))
+            foreach (var result in provider.Match("http", 5))
             {
                 i++;
                 Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
@@ -410,7 +410,7 @@ public class IndexSearchTests
             provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
             var formatter = new NTriplesFormatter();
 
-            foreach (IFullTextSearchResult result in provider.Match("http", 0.75d))
+            foreach (var result in provider.Match("http", 0.75d))
             {
                 Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
                 Assert.True(result.Score >= 0.75d, "Score should be higher than desired threshold");
@@ -444,7 +444,7 @@ public class IndexSearchTests
             var formatter = new NTriplesFormatter();
 
             var i = 0;
-            foreach (IFullTextSearchResult result in provider.Match("http", 1.0d, 5))
+            foreach (var result in provider.Match("http", 1.0d, 5))
             {
                 i++;
                 Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);

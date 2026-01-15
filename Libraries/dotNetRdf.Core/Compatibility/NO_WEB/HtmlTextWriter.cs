@@ -242,7 +242,7 @@ public class HtmlTextWriter : TextWriter, IDisposable
             _newline = false;
         }
         _writer.Write("<" + tagName.ToLower());
-        foreach (KeyValuePair<string, string> attr in _attributes)
+        foreach (var attr in _attributes)
         {
             _writer.Write(" " + attr.Key + "=\"" + attr.Value + "\"");
         }
@@ -251,7 +251,7 @@ public class HtmlTextWriter : TextWriter, IDisposable
         if (_styles.Count > 0)
         {
             _writer.Write(" style=\"");
-            foreach (KeyValuePair<string, string> style in _styles)
+            foreach (var style in _styles)
             {
                 _writer.Write(style.Key + ": " + EncodeStyle(style.Value) + ";");
             }

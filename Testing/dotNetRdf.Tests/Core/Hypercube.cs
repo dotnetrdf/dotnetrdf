@@ -65,15 +65,15 @@ class Hypercube
 
     public Hypercube Duplicate(int corner)
     {
-        INode n = _g.CreateBlankNode();
+        var n = _g.CreateBlankNode();
         AddTriple(corner, n);
         return this;
     }
 
     public Hypercube Toggle(int from, int to)
     {
-        INode f = _corners[from];
-        INode t = _corners[to];
+        var f = _corners[from];
+        var t = _corners[to];
 
         var triple = new Triple(f, _rdfValue, t);
         if (_g.ContainsTriple(triple))
@@ -129,7 +129,7 @@ class DiHypercube
 
     public DiHypercube Duplicate(int corner)
     {
-        INode n = _g.CreateBlankNode();
+        var n = _g.CreateBlankNode();
         for (var j = 0; j < _dim; j++)
         {
             var bit = 1 << j;

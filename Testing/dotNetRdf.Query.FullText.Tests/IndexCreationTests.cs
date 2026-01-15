@@ -118,7 +118,7 @@ public class IndexCreationTests
             Console.WriteLine("Prior to indexing search returns " + origCount + " result(s)");
 
             indexer = new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
-            IGraph g = GetTestData();
+            var g = GetTestData();
             indexer.Index(g);
             indexer.Dispose();
             indexer = null;
@@ -189,7 +189,7 @@ public class IndexCreationTests
             Console.WriteLine("Prior to indexing search returns " + origCount + " result(s)");
 
             indexer = new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
-            IGraph g = GetTestData();
+            var g = GetTestData();
             indexer.Index(g);
             indexer.Dispose();
             indexer = null;
@@ -260,7 +260,7 @@ public class IndexCreationTests
             Console.WriteLine("Prior to indexing search returns " + origCount + " result(s)");
 
             indexer = new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
-            IGraph g = GetTestData();
+            var g = GetTestData();
             indexer.Index(g);
             indexer.Dispose();
             indexer = null;
@@ -315,7 +315,7 @@ public class IndexCreationTests
             indexer = new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, new DefaultIndexSchema());
             
             var g = new Graph();
-            INode example = g.CreateLiteralNode("This is an example node which we'll index multiple times");
+            var example = g.CreateLiteralNode("This is an example node which we'll index multiple times");
 
             for (var i = 0; i < 10; i++)
             {

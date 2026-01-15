@@ -112,7 +112,7 @@ public class ImplicitJoinOptimiser
                             // Try to use the extend style optimization
                             var transformer = new VariableSubstitutionTransformer(rhsVar, lhsVar);
                             if (!equals || UnsafeOptimisation) transformer.CanReplaceObjects = true;
-                            ISparqlAlgebra extAlgebra = transformer.Optimise(f.InnerAlgebra);
+                            var extAlgebra = transformer.Optimise(f.InnerAlgebra);
                             return new Extend(extAlgebra, new VariableTerm(lhsVar), rhsVar);
                         }
                         catch
@@ -229,7 +229,7 @@ public class ImplicitJoinOptimiser
                 // Not a product if we've seen both variables already
                 if (vars.Contains(lhsVar) && vars.Contains(rhsVar)) return false;
 
-                ITriplePattern p = ps[i];
+                var p = ps[i];
                 switch (p.PatternType)
                 {
                     case TriplePatternType.Match:

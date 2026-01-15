@@ -77,7 +77,7 @@ public static class HandlerExtensions
                     if (!handler.HandleNamespace(prefix, g.NamespaceMap.GetNamespaceUri(prefix))) ParserHelper.Stop();
                 }
                 // Finally handle triples
-                foreach (Triple t in g.Triples)
+                foreach (var t in g.Triples)
                 {
                     if (!handler.HandleTriple(t))
                     {
@@ -109,7 +109,7 @@ public static class HandlerExtensions
         try
         {
             handler.StartRdf();
-            foreach (Triple t in ts)
+            foreach (var t in ts)
             {
                 if (!handler.HandleTriple(t))
                 {
@@ -150,7 +150,7 @@ public static class HandlerExtensions
                     {
                         if (!handler.HandleVariable(var)) ParserHelper.Stop();
                     }
-                    foreach (ISparqlResult r in results)
+                    foreach (var r in results)
                     {
                         if (!handler.HandleResult(r)) ParserHelper.Stop();
                     }

@@ -41,8 +41,8 @@ public class IndexingTests
     public void IndexingNodesInMultiDictionary1()
     {
         var g = new Graph();
-        ILiteralNode canonical = (1).ToLiteral(g);
-        ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+        var canonical = (1).ToLiteral(g);
+        var alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
         //Use a dud hash function to put everything into a single bucket
         var dictionary = new MultiDictionary<INode, int>(n => 1, false)
@@ -64,8 +64,8 @@ public class IndexingTests
     public void IndexingNodesInMultiDictionary2()
     {
         var g = new Graph();
-        ILiteralNode canonical = (1).ToLiteral(g);
-        ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+        var canonical = (1).ToLiteral(g);
+        var alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
         var dictionary = new MultiDictionary<INode, int>
         {
@@ -81,8 +81,8 @@ public class IndexingTests
     public void IndexingNodesInMultiDictionary3()
     {
         var g = new Graph();
-        ILiteralNode canonical = (1).ToLiteral(g);
-        ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+        var canonical = (1).ToLiteral(g);
+        var alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
         //Use a dud hash function to put everything into a single bucket and use
         //the FastNodeComparer
@@ -106,8 +106,8 @@ public class IndexingTests
     public void IndexingNodesInBinaryTree1()
     {
         var g = new Graph();
-        ILiteralNode canonical = (1).ToLiteral(g);
-        ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+        var canonical = (1).ToLiteral(g);
+        var alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
         var tree = new AvlTree<INode, int>();
         
@@ -131,8 +131,8 @@ public class IndexingTests
     public void IndexingNodesInBinaryTree2()
     {
         var g = new Graph();
-        ILiteralNode canonical = (1).ToLiteral(g);
-        ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+        var canonical = (1).ToLiteral(g);
+        var alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
         var tree = new AvlTree<INode, int>(new FastNodeComparer());
 
@@ -155,8 +155,8 @@ public class IndexingTests
     public void IndexingTriplesInBinaryTree1()
     {
         var g = new Graph();
-        ILiteralNode canonical = (1).ToLiteral(g);
-        ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+        var canonical = (1).ToLiteral(g);
+        var alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
         var a = new Triple(g.CreateVariableNode("s"), g.CreateVariableNode("p"), canonical);
         var b = new Triple(g.CreateVariableNode("s"), g.CreateVariableNode("p"), alternate);
 
@@ -182,8 +182,8 @@ public class IndexingTests
     public void IndexingTriplesInBinaryTree2()
     {
         var g = new Graph();
-        ILiteralNode canonical = 1.ToLiteral(g);
-        ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+        var canonical = 1.ToLiteral(g);
+        var alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
         var a = new Triple(g.CreateVariableNode("s"), g.CreateVariableNode("p"), canonical);
         var b = new Triple(g.CreateVariableNode("s"), g.CreateVariableNode("p"), alternate);
 

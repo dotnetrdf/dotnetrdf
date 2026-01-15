@@ -111,7 +111,7 @@ public class Having
     /// <returns></returns>
     public SparqlQuery ToQuery()
     {
-        SparqlQuery q = InnerAlgebra.ToQuery();
+        var q = InnerAlgebra.ToQuery();
         if (HavingClause != null)
         {
             q.Having = HavingClause;

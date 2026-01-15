@@ -67,7 +67,7 @@ public class IdentityFilterOptimiser
                     {
                         // Try to use the extend style optimization
                         var transformer = new VariableSubstitutionTransformer(var, term);
-                        ISparqlAlgebra extAlgebra = transformer.Optimise(f.InnerAlgebra);
+                        var extAlgebra = transformer.Optimise(f.InnerAlgebra);
                         return new Extend(extAlgebra, new ConstantTerm(term), var);
                     }
                     catch

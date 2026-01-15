@@ -148,7 +148,7 @@ public class GroupBy
     /// <returns></returns>
     public SparqlQuery ToQuery()
     {
-        SparqlQuery q = _pattern.ToQuery();
+        var q = _pattern.ToQuery();
         q.GroupBy = _grouping;
         return q;
     }

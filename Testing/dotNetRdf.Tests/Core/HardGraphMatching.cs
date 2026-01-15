@@ -52,8 +52,8 @@ public class HardGraphMatching
     [Fact]
     public void GraphHardMatch1()
     {
-        IGraph g = new Graph();
-        IGraph h = new Graph();
+        var g = new Graph();
+        var h = new Graph();
 
         var size = 1 << Dimension;
         var rnd = new Random();
@@ -85,8 +85,8 @@ public class HardGraphMatching
     [Fact]
     public void GraphHardMatch2()
     {
-        IGraph g = new Graph();
-        IGraph h = new Graph();
+        var g = new Graph();
+        var h = new Graph();
 
         var size = 1 << Dimension;
         var rnd = new Random();
@@ -122,8 +122,8 @@ public class HardGraphMatching
 
         for (var i = 0; i < Runs; i++)
         {
-            IGraph g = GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes));
-            IGraph h = GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes));
+            var g = GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes));
+            var h = GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes));
 
             if (i == 0)
             {
@@ -143,8 +143,8 @@ public class HardGraphMatching
 
         for (var i = 0; i < Runs; i++)
         {
-            IGraph g = GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes), CycleDropNodes);
-            IGraph h = GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes), CycleDropNodes);
+            var g = GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes), CycleDropNodes);
+            var h = GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes), CycleDropNodes);
 
             if (i == 0)
             {
@@ -161,8 +161,8 @@ public class HardGraphMatching
     public void GraphHardMatchCyclic3()
     {
         Console.WriteLine("This test is just to verify that our Cyclic Graph generation is working properly");
-        IGraph g = GenerateCyclicGraph(CycleNodes, 74, CycleDropNodes);
-        IGraph h = GenerateCyclicGraph(CycleNodes, 90, CycleDropNodes);
+        var g = GenerateCyclicGraph(CycleNodes, 74, CycleDropNodes);
+        var h = GenerateCyclicGraph(CycleNodes, 90, CycleDropNodes);
 
         Assert.Equal(g, h);
     }
@@ -172,8 +172,8 @@ public class HardGraphMatching
     {
         for (var i = 0; i < Runs; i++)
         {
-            IGraph g = GenerateStarGraph(StarNodes);
-            IGraph h = GenerateStarGraph(StarNodes);
+            var g = GenerateStarGraph(StarNodes);
+            var h = GenerateStarGraph(StarNodes);
 
             if (i == 0)
             {
@@ -196,7 +196,7 @@ public class HardGraphMatching
         var h = new Graph();
         h.LoadFromFile("resources/turtle11-unofficial/test-13.out", new NTriplesParser());
 
-        GraphDiffReport report = g.Difference(h);
+        var report = g.Difference(h);
         if (!report.AreEqual) TestTools.ShowDifferences(report);
         Assert.True(report.AreEqual);
     }
@@ -205,10 +205,10 @@ public class HardGraphMatching
     public void GraphMatchTrivial2()
     {
         var g = new Graph();
-        IBlankNode a = g.CreateBlankNode("b1");
-        IBlankNode b = g.CreateBlankNode("b2");
-        IBlankNode c = g.CreateBlankNode("b3");
-        INode pred = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
+        var a = g.CreateBlankNode("b1");
+        var b = g.CreateBlankNode("b2");
+        var c = g.CreateBlankNode("b3");
+        var pred = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
 
         g.Assert(a, pred, g.CreateLiteralNode("A"));
         g.Assert(a, pred, b);
@@ -218,10 +218,10 @@ public class HardGraphMatching
         g.Assert(c, pred, a);
 
         var h = new Graph();
-        IBlankNode a2 = h.CreateBlankNode("b4");
-        IBlankNode b2 = h.CreateBlankNode("b5");
-        IBlankNode c2 = h.CreateBlankNode("b3");
-        INode pred2 = h.CreateUriNode(UriFactory.Root.Create("http://predicate"));
+        var a2 = h.CreateBlankNode("b4");
+        var b2 = h.CreateBlankNode("b5");
+        var c2 = h.CreateBlankNode("b3");
+        var pred2 = h.CreateUriNode(UriFactory.Root.Create("http://predicate"));
 
         h.Assert(a2, pred2, h.CreateLiteralNode("A"));
         h.Assert(a2, pred2, b2);
@@ -230,7 +230,7 @@ public class HardGraphMatching
         h.Assert(c2, pred2, h.CreateLiteralNode("C"));
         h.Assert(c2, pred2, a2);
 
-        GraphDiffReport report = g.Difference(h);
+        var report = g.Difference(h);
         if (!report.AreEqual) TestTools.ShowDifferences(report);
         Assert.True(report.AreEqual);
     }
@@ -309,7 +309,7 @@ public class HardGraphMatching
         Console.WriteLine("Generating Cyclic Graph - Nodes " + nodes + " - Seed " + seed + " - Drop " + toDrop);
 
         var g = new Graph();
-        IUriNode rdfValue = g.CreateUriNode("rdf:value");
+        var rdfValue = g.CreateUriNode("rdf:value");
 
         if (seed >= nodes - toDrop - 1) seed = nodes - toDrop - 2;
 
@@ -350,7 +350,7 @@ public class HardGraphMatching
     private IGraph GenerateStarGraph(int nodes)
     {
         var g = new Graph();
-        IUriNode rdfValue = g.CreateUriNode("rdf:value");
+        var rdfValue = g.CreateUriNode("rdf:value");
 
         var bnodes = new List<IBlankNode>();
         for (var i = 0; i < nodes; i++)
@@ -374,9 +374,9 @@ public class HardGraphMatching
     public void GraphMatchBruteForce1()
     {
         var empty = new Dictionary<INode, INode>();
-        INode a = _factory.CreateBlankNode("a");
-        INode b1 = _factory.CreateBlankNode("b1");
-        INode b2 = _factory.CreateBlankNode("b2");
+        var a = _factory.CreateBlankNode("a");
+        var b1 = _factory.CreateBlankNode("b1");
+        var b2 = _factory.CreateBlankNode("b2");
 
         //For this test we have a single blank node with two possible mappings
         var possibles = new Dictionary<INode, List<INode>>
@@ -395,10 +395,10 @@ public class HardGraphMatching
     public void GraphMatchBruteForce2()
     {
         var empty = new Dictionary<INode, INode>();
-        INode a1 = _factory.CreateBlankNode("a1");
-        INode a2 = _factory.CreateBlankNode("a2");
-        INode b1 = _factory.CreateBlankNode("b1");
-        INode b2 = _factory.CreateBlankNode("b2");
+        var a1 = _factory.CreateBlankNode("a1");
+        var a2 = _factory.CreateBlankNode("a2");
+        var b1 = _factory.CreateBlankNode("b1");
+        var b2 = _factory.CreateBlankNode("b2");
 
         //For this test we have a two blank nodes with two possible mappings
         var possibles = new Dictionary<INode, List<INode>>
@@ -417,10 +417,10 @@ public class HardGraphMatching
     public void GraphMatchBruteForce3()
     {
         var empty = new Dictionary<INode, INode>();
-        INode a1 = _factory.CreateBlankNode("a1");
-        INode a2 = _factory.CreateBlankNode("a2");
-        INode b1 = _factory.CreateBlankNode("b1");
-        INode b2 = _factory.CreateBlankNode("b2");
+        var a1 = _factory.CreateBlankNode("a1");
+        var a2 = _factory.CreateBlankNode("a2");
+        var b1 = _factory.CreateBlankNode("b1");
+        var b2 = _factory.CreateBlankNode("b2");
 
         //For this test we have a two blank nodes where the first has a single mapping and the second two possible mappings
         var possibles = new Dictionary<INode, List<INode>>
@@ -439,10 +439,10 @@ public class HardGraphMatching
     public void GraphMatchBruteForce4()
     {
         var baseMapping = new Dictionary<INode, INode>();
-        INode a1 = _factory.CreateBlankNode("a1");
-        INode a2 = _factory.CreateBlankNode("a2");
-        INode b1 = _factory.CreateBlankNode("b1");
-        INode b2 = _factory.CreateBlankNode("b2");
+        var a1 = _factory.CreateBlankNode("a1");
+        var a2 = _factory.CreateBlankNode("a2");
+        var b1 = _factory.CreateBlankNode("b1");
+        var b2 = _factory.CreateBlankNode("b2");
 
         //For this test we have a two blank nodes where the first has a single mapping and the second two possible mappings
         //Our base mapping also already calls out the confirmed mapping
@@ -464,7 +464,7 @@ public class HardGraphMatching
         for (var i = 0; i < mappings.Count; i++)
         {
             Console.WriteLine("Mapping " + (i + 1) + " of " + mappings.Count);
-            foreach (KeyValuePair<INode, INode> kvp in mappings[i])
+            foreach (var kvp in mappings[i])
             {
                 Console.WriteLine(_formatter.Format(kvp.Key) + " => " + _formatter.Format(kvp.Value));
             }
@@ -496,7 +496,7 @@ public class HardGraphMatching
     [Fact]
     public void GraphMatchNull4()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         Assert.False(g.Equals((IGraph)null));
     }
 
