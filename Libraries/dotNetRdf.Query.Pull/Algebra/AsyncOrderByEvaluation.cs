@@ -38,7 +38,7 @@ internal class AsyncOrderByEvaluation(OrderBy orderBy, IAsyncEvaluation inner) :
         IComparer<ISet> comparer = new NoEqualityComparer<ISet>(MakeSetComparer(orderBy.Ordering, context, activeGraph), 1);
         var sorted = new SortedSet<ISet>(comparer);
         ISet? lastElem = null;
-        await foreach (ISet solution in inner.Evaluate(context, input, activeGraph, cancellationToken))
+        await foreach (var solution in inner.Evaluate(context, input, activeGraph, cancellationToken))
         {
             if (lastElem != null && comparer.Compare(solution, lastElem) > 0)
             {
@@ -51,7 +51,7 @@ internal class AsyncOrderByEvaluation(OrderBy orderBy, IAsyncEvaluation inner) :
             }
         }
 
-        foreach (ISet s in sorted) { yield return s;}
+        foreach (var s in sorted) { yield return s;}
     }
 
     private class NoEqualityComparer<T>(IComparer<T> inner, int valueIfEqual) : IComparer<T>
@@ -85,7 +85,7 @@ internal class AsyncOrderByEvaluation(OrderBy orderBy, IAsyncEvaluation inner) :
         
         public int Compare(ISet x, ISet y)
         {
-            INode xval = x[_ordering.Variable];
+            var xval = x[_ordering.Variable];
             if (xval == null)
             {
                 if (y[_ordering.Variable] == null)
@@ -132,7 +132,7 @@ internal class AsyncOrderByEvaluation(OrderBy orderBy, IAsyncEvaluation inner) :
 
             try
             {
-                INode a = _ordering.Expression.Accept(_context.ExpressionProcessor, _context, new ExpressionContext(x, _activeGraph));
+                var a = _ordering.Expression.Accept(_context.ExpressionProcessor, _context, new ExpressionContext(x, _activeGraph));
                 INode b;
                 try
                 {

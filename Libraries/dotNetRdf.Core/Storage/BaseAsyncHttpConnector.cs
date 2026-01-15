@@ -154,7 +154,7 @@ public abstract class BaseAsyncHttpConnector
             else
             {
 
-                HttpResponseMessage response = requestTask.Result;
+                var response = requestTask.Result;
                 if (!response.IsSuccessStatusCode)
                 {
                     // Return an empty graph on a 404
@@ -174,7 +174,7 @@ public abstract class BaseAsyncHttpConnector
                 {
                     try
                     {
-                        IRdfReader parser =
+                        var parser =
                             MimeTypesHelper.GetParser(response.Content.Headers.ContentType.MediaType);
                         response.Content.ReadAsStreamAsync().ContinueWith(readTask =>
                         {
@@ -216,7 +216,7 @@ public abstract class BaseAsyncHttpConnector
     /// <param name="cancellationToken"></param>
     protected internal async Task LoadGraphAsync(HttpRequestMessage request, IRdfHandler handler, CancellationToken cancellationToken)
     {
-        HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+        var response = await HttpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -230,9 +230,9 @@ public abstract class BaseAsyncHttpConnector
 
         try
         {
-            IRdfReader parser =
+            var parser =
                 MimeTypesHelper.GetParser(response.Content.Headers.ContentType.MediaType);
-            Stream data = await response.Content.ReadAsStreamAsync();
+            var data = await response.Content.ReadAsStreamAsync();
             parser.Load(handler, new StreamReader(data));
         }
         catch (RdfStorageException)
@@ -296,7 +296,7 @@ public abstract class BaseAsyncHttpConnector
                         new RdfStorageException("Operation was cancelled.")), state);
             }
 
-            HttpResponseMessage responseMessage = sendTask.Result;
+            var responseMessage = sendTask.Result;
             if (!responseMessage.IsSuccessStatusCode)
             {
                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g,
@@ -317,7 +317,7 @@ public abstract class BaseAsyncHttpConnector
     {
         try
         {
-            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            var response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "saving a Graph asynchronously to");
@@ -348,7 +348,7 @@ public abstract class BaseAsyncHttpConnector
         {
             try
             {
-                Stream reqStream = request.EndGetRequestStream(r);
+                var reqStream = request.EndGetRequestStream(r);
                 writer.Save(g, new StreamWriter(reqStream));
 
                 request.BeginGetResponse(r2 =>
@@ -427,7 +427,7 @@ public abstract class BaseAsyncHttpConnector
         {
             try
             {
-                Stream reqStream = request.EndGetRequestStream(r);
+                var reqStream = request.EndGetRequestStream(r);
                 writer.Save(g, new StreamWriter(reqStream));
 
                 request.BeginGetResponse(r2 =>
@@ -488,7 +488,7 @@ public abstract class BaseAsyncHttpConnector
             }
             else
             {
-                using HttpResponseMessage response = requestTask.Result;
+                using var response = requestTask.Result;
                 if (!response.IsSuccessStatusCode)
                 {
                     callback(this,
@@ -520,7 +520,7 @@ public abstract class BaseAsyncHttpConnector
         var g = new Graph();
         g.Assert(additions);
         request.Content = new GraphContent(g, writer);
-        HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+        var response = await HttpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             throw StorageHelper.HandleHttpError(response, "updating a graph asynchronously in");
@@ -620,7 +620,7 @@ public abstract class BaseAsyncHttpConnector
             }
             else
             {
-                HttpResponseMessage response = sendTask.Result;
+                var response = sendTask.Result;
                 if (response.IsSuccessStatusCode || (response.StatusCode == HttpStatusCode.NotFound && allow404))
                 {
                     callback(this,
@@ -647,7 +647,7 @@ public abstract class BaseAsyncHttpConnector
     /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
     protected internal async Task DeleteGraphAsync(HttpRequestMessage request, bool allow404, CancellationToken cancellationToken)
     {
-        HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+        var response = await HttpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             if (response.StatusCode == HttpStatusCode.NotFound && allow404) return;
@@ -769,7 +769,7 @@ public abstract class BaseAsyncHttpConnector
         object state)
     {
         var cts = new CancellationTokenSource();
-        Task[] requestTasks = requests.Select(r =>
+        var requestTasks = requests.Select(r =>
             HttpClient.SendAsync(r, cts.Token)
                 .ContinueWith(t =>
                 {

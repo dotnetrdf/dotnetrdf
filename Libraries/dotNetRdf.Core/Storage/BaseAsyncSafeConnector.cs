@@ -227,7 +227,7 @@ public abstract class BaseAsyncSafeConnector
     /// <param name="state">State to pass to the callback.</param>
     public void LoadGraph(IGraph g, string graphUri, AsyncStorageCallback callback, object state)
     {
-        Uri u = string.IsNullOrEmpty(graphUri) ? null : g.UriFactory.Create(graphUri);
+        var u = string.IsNullOrEmpty(graphUri) ? null : g.UriFactory.Create(graphUri);
         LoadGraph(g, u, callback, state);
     }
 
@@ -252,7 +252,7 @@ public abstract class BaseAsyncSafeConnector
     /// <param name="state">State to pass to the callback.</param>
     public void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
     {
-        Uri u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri);
+        var u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri);
         LoadGraph(handler, u, callback, state);
     }
 
@@ -308,7 +308,7 @@ public abstract class BaseAsyncSafeConnector
     /// <param name="state">State to pass to the callback.</param>
     public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
     {
-        Uri u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri);
+        var u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri);
         UpdateGraph(u, additions, removals, callback, state);
     }
 
@@ -338,7 +338,7 @@ public abstract class BaseAsyncSafeConnector
     /// <param name="state">State to pass to the callback.</param>
     public void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
     {
-        Uri u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri);
+        var u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri);
         DeleteGraph(u, callback, state);
     }
 
@@ -362,7 +362,7 @@ public abstract class BaseAsyncSafeConnector
     /// <inheritdoc />
     public async Task<IEnumerable<string>> ListGraphsAsync(CancellationToken cancellationToken)
     {
-        IEnumerable<string> graphUris = await Task.Run(ListGraphNames, cancellationToken);
+        var graphUris = await Task.Run(ListGraphNames, cancellationToken);
         cancellationToken.ThrowIfCancellationRequested();
         return graphUris;
     }

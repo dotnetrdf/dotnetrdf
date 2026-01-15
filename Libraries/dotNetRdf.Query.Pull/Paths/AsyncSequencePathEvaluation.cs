@@ -36,9 +36,9 @@ internal class AsyncSequencePathEvaluation(IAsyncPathEvaluation lhs, IAsyncPathE
     public async IAsyncEnumerable<PathResult> Evaluate(PatternItem pathStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        await foreach (PathResult leftResult in lhs.Evaluate(pathStart, context, input, activeGraph, cancellationToken))
+        await foreach (var leftResult in lhs.Evaluate(pathStart, context, input, activeGraph, cancellationToken))
         {
-            await foreach (PathResult rightResult in rhs.Evaluate(new NodeMatchPattern(leftResult.EndNode), context,
+            await foreach (var rightResult in rhs.Evaluate(new NodeMatchPattern(leftResult.EndNode), context,
                                input, activeGraph, cancellationToken))
             {
                 yield return new PathResult(leftResult.StartNode, rightResult.EndNode);

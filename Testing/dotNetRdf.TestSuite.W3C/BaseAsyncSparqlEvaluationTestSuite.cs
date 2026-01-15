@@ -101,7 +101,7 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
             tripleStore.Add(g);
         }
 
-        foreach (Uri graphUri in t.GraphData)
+        foreach (var graphUri in t.GraphData)
         {
             nodeFactory.FlushBlankNodeAssignments();
             var g = new Graph(new UriNode(graphUri), nodeFactory) { BaseUri = graphUri };
@@ -113,7 +113,7 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
         {
             DefaultBaseUri = t.Manifest.BaseUri
         };
-        SparqlQuery query = queryParser.ParseFromFile(queryInputPath);
+        var query = queryParser.ParseFromFile(queryInputPath);
         expectGraphResult = query.QueryType is SparqlQueryType.Construct or SparqlQueryType.Describe;
         var results = await ProcessQueryAsync(tripleStore, query);
         if (!expectGraphResult && expectedResultGraph != null)
@@ -127,14 +127,14 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
         {
             results.Should().BeAssignableTo<IGraph>();
             var graphDiff = new GraphDiff();
-            GraphDiffReport diffReport = graphDiff.Difference(expectedResultGraph, results as IGraph);
+            var diffReport = graphDiff.Difference(expectedResultGraph, results as IGraph);
             TestTools.ShowDifferences(diffReport, "Expected Results", "Actual Results", output);
             diffReport.AreEqual.Should().BeTrue();
         }
         else
         {
             // Expect to get a SPARQL results set
-            SparqlResultSet actualResults = results.Should().BeAssignableTo<SparqlResultSet>().Subject;
+            var actualResults = results.Should().BeAssignableTo<SparqlResultSet>().Subject;
             // Normalize expected and actual results to drop all unbound variables before comparison
             actualResults.Trim();
             expectedResultSet?.Trim();

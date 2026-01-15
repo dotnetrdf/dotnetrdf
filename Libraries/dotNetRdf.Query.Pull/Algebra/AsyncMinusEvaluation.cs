@@ -37,7 +37,7 @@ internal class AsyncMinusEvaluation : IAsyncEvaluation
     
     public AsyncMinusEvaluation(Minus minus, IAsyncEvaluation lhs, IAsyncEvaluation rhs)
     {
-        Minus minus1 = minus;
+        var minus1 = minus;
         _minusVars = minus1.Lhs.Variables.Intersect(minus1.Rhs.Variables).ToList();
         _lhs = lhs;
         _rhs = rhs;
@@ -46,8 +46,8 @@ internal class AsyncMinusEvaluation : IAsyncEvaluation
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         // TODO: Is there a way to optimise this to either avoid computing a full list of rhs bindings or to store them in an indexed structure to make IsCompatible more efficient?
-        List<ISet> rhsSolutions = await _rhs.Evaluate(context, input, activeGraph, cancellationToken).ToListAsync(cancellationToken);
-        await foreach (ISet? lhsSolution in _lhs.Evaluate(context, input, activeGraph, cancellationToken))
+        var rhsSolutions = await _rhs.Evaluate(context, input, activeGraph, cancellationToken).ToListAsync(cancellationToken);
+        await foreach (var lhsSolution in _lhs.Evaluate(context, input, activeGraph, cancellationToken))
         {
             if (rhsSolutions.Any(r => IsCompatible(lhsSolution, r, _minusVars)))
             {

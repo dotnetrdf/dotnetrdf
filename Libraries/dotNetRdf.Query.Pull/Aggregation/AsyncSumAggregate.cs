@@ -82,7 +82,7 @@ internal class AsyncSumAggregate : IAsyncAggregation
     public bool Accept(ExpressionContext expressionContext)
     {
         if (_error) return false;
-        IValuedNode? tmp = _expression.Accept(_context.ExpressionProcessor, _context, expressionContext);
+        var tmp = _expression.Accept(_context.ExpressionProcessor, _context, expressionContext);
         if (tmp == null) { 
             _error = true;
             return false;

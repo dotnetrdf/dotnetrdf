@@ -222,7 +222,7 @@ public abstract class BaseDataset
             // Multiple Graph URIs
             // Build a merged Graph of all the Graph URIs
             var g = new Graph();
-            foreach (IRefNode graphName in graphNames)
+            foreach (var graphName in graphNames)
             {
                 if (HasGraph(graphName))
                 {
@@ -316,7 +316,7 @@ public abstract class BaseDataset
             // Multiple Graph URIs
             // Build a merged Graph of all the Graph URIs
             var g = new Graph();
-            foreach (IRefNode graphName in graphNames)
+            foreach (var graphName in graphNames)
             {
                 if (HasGraph(graphName))
                 {
@@ -370,7 +370,7 @@ public abstract class BaseDataset
     {
         get
         {
-            foreach (IRefNode refNode in DefaultGraphNames)
+            foreach (var refNode in DefaultGraphNames)
             {
                 if (refNode is null) yield return null;
                 if (refNode is IUriNode uriNode) yield return uriNode.Uri;
@@ -399,7 +399,7 @@ public abstract class BaseDataset
     {
         get
         {
-            foreach (IRefNode n in ActiveGraphNames)
+            foreach (var n in ActiveGraphNames)
             {
                 if (n == null) yield return null;
                 if (n is IUriNode uriNode) yield return uriNode.Uri;
@@ -533,7 +533,7 @@ public abstract class BaseDataset
     {
         get
         {
-            foreach (IRefNode graphName in GraphNames)
+            foreach (var graphName in GraphNames)
             {
                 switch (graphName)
                 {

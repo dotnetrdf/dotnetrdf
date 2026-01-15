@@ -68,8 +68,8 @@ public abstract class BaseAsyncTests
 #pragma warning disable CS0618 // Type or member is obsolete
     protected void TestAsyncSaveLoad(IGraph g)
     {
-        IAsyncStorageProvider provider = GetAsyncProvider();
-        Uri graphName = (g.Name as IUriNode)?.Uri;
+        var provider = GetAsyncProvider();
+        var graphName = (g.Name as IUriNode)?.Uri;
         try
         {
             var signal = new ManualResetEvent(false);
@@ -104,7 +104,7 @@ public abstract class BaseAsyncTests
                 if (resArgs.WasSuccessful)
                 {
                     Console.WriteLine("Async LoadGraph() worked OK, checking for graph equality...");
-                    GraphDiffReport diff = g.Difference(resArgs.Graph);
+                    var diff = g.Difference(resArgs.Graph);
                     if (!diff.AreEqual) TestTools.ShowDifferences(diff);
                     Assert.True(diff.AreEqual, "[" + provider.GetType().Name + "] Graphs were not equal");
                 }
@@ -126,7 +126,7 @@ public abstract class BaseAsyncTests
 
     protected void TestAsyncDelete(IGraph g)
     {
-        IAsyncStorageProvider provider = GetAsyncProvider();
+        var provider = GetAsyncProvider();
         if (!provider.DeleteSupported)
         {
             Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
@@ -207,8 +207,8 @@ public abstract class BaseAsyncTests
 
     protected void TestAsyncDeleteTriples(IGraph g)
     {
-        IAsyncStorageProvider provider = GetAsyncProvider();
-        Uri graphName = (g.Name as IUriNode)?.Uri;
+        var provider = GetAsyncProvider();
+        var graphName = (g.Name as IUriNode)?.Uri;
         if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0)
         {
             Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
@@ -264,7 +264,7 @@ public abstract class BaseAsyncTests
                     if (resArgs.WasSuccessful)
                     {
                         Console.WriteLine("Async LoadGraph() worked OK, checking for triples removed...");
-                        foreach (Triple t in ts)
+                        foreach (var t in ts)
                         {
                             Assert.False(resArgs.Graph.ContainsTriple(t), "[" + provider.GetType().Name + "] Removed Triple " + t.ToString() + " is still present");
                         }
@@ -292,7 +292,7 @@ public abstract class BaseAsyncTests
 
     protected void TestAsyncAddTriples(IGraph g)
     {
-        IAsyncStorageProvider provider = GetAsyncProvider();
+        var provider = GetAsyncProvider();
         var graphUri = (g.Name as IUriNode)?.Uri;
         if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0)
         {
@@ -349,7 +349,7 @@ public abstract class BaseAsyncTests
                     if (resArgs.WasSuccessful)
                     {
                         Console.WriteLine("Async LoadGraph() worked OK, checking for triples added...");
-                        foreach (Triple t in ts)
+                        foreach (var t in ts)
                         {
                             Assert.True(resArgs.Graph.ContainsTriple(t), "[" + provider.GetType().Name + "] Added Triple " + t.ToString() + " is not present");
                         }
@@ -377,7 +377,7 @@ public abstract class BaseAsyncTests
 
     protected void TestAsyncListGraphs()
     {
-        IAsyncStorageProvider provider = GetAsyncProvider();
+        var provider = GetAsyncProvider();
         if (!provider.ListGraphsSupported)
         {
             Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
@@ -399,7 +399,7 @@ public abstract class BaseAsyncTests
             if (resArgs == null) Fail(provider, "ListGraphs() failed to return in 15s");
             if (resArgs.WasSuccessful)
             {
-                foreach (Uri u in resArgs.GraphUris)
+                foreach (var u in resArgs.GraphUris)
                 {
                     Console.WriteLine((u != null ? u.ToString() : "Default Graph"));
                 }
@@ -417,7 +417,7 @@ public abstract class BaseAsyncTests
 
     protected void TestAsyncQuery(IGraph g)
     {
-        IAsyncStorageProvider provider = GetAsyncProvider();
+        var provider = GetAsyncProvider();
         if (provider is not IAsyncQueryableStorage)
         {
             Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
@@ -532,13 +532,13 @@ public abstract class BaseAsyncTests
 
     protected async Task TestSaveLoadAsync(IGraph g)
     {
-        IAsyncStorageProvider provider = GetAsyncProvider();
+        var provider = GetAsyncProvider();
         try
         {
             await provider.SaveGraphAsync(g, CancellationToken.None);
             var h = new Graph();
             await provider.LoadGraphAsync(h, g.Name?.ToString(), CancellationToken.None);
-            GraphDiffReport diff = g.Difference(h);
+            var diff = g.Difference(h);
             if (!diff.AreEqual)
             {
                 TestTools.ShowDifferences(diff);
@@ -553,7 +553,7 @@ public abstract class BaseAsyncTests
 
     protected async Task TestDeleteGraphAsync(IGraph g)
     {
-        IAsyncStorageProvider provider = GetAsyncProvider();
+        var provider = GetAsyncProvider();
         if (!provider.DeleteSupported)
         {
             throw SkipException.ForSkip("[" + provider.GetType().Name +
@@ -579,7 +579,7 @@ public abstract class BaseAsyncTests
 
     protected async Task TestDeleteTriplesAsync(IGraph g)
     {
-        IAsyncStorageProvider provider = GetAsyncProvider();
+        var provider = GetAsyncProvider();
         if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0)
         {
             throw SkipException.ForSkip("[" + provider.GetType().Name +
@@ -595,7 +595,7 @@ public abstract class BaseAsyncTests
             var h = new Graph();
             await provider.LoadGraphAsync(h, g.Name?.ToString(), CancellationToken.None);
 
-            foreach (Triple t in ts)
+            foreach (var t in ts)
             {
                 Assert.False(h.ContainsTriple(t),
                     "[" + provider.GetType().Name + "] Removed Triple " + t + " is still present");
@@ -609,7 +609,7 @@ public abstract class BaseAsyncTests
 
     protected async Task TestAddTriplesAsync(IGraph g)
     {
-        IAsyncStorageProvider provider = GetAsyncProvider();
+        var provider = GetAsyncProvider();
         if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0)
         {
             throw SkipException.ForSkip(
@@ -628,7 +628,7 @@ public abstract class BaseAsyncTests
 
             var h = new Graph();
             await provider.LoadGraphAsync(h, AddTripleUri, CancellationToken.None);
-            foreach (Triple t in ts)
+            foreach (var t in ts)
             {
                 Assert.True(h.ContainsTriple(t),
                     $"[{provider.GetType().Name}] Added Triple {t} is not present");
@@ -642,7 +642,7 @@ public abstract class BaseAsyncTests
 
     protected async Task TestListGraphsAsync()
     {
-        IAsyncStorageProvider provider = GetAsyncProvider();
+        var provider = GetAsyncProvider();
         if (!provider.ListGraphsSupported)
         {
             throw SkipException.ForSkip("[" + provider.GetType().Name +
@@ -653,7 +653,7 @@ public abstract class BaseAsyncTests
         {
             var emptyGraph = new Graph(new UriNode(UriFactory.Root.Create(ListGraphsUri)));
             await provider.SaveGraphAsync(emptyGraph, CancellationToken.None);
-            IEnumerable<string> graphs = await provider.ListGraphsAsync(CancellationToken.None);
+            var graphs = await provider.ListGraphsAsync(CancellationToken.None);
             Assert.Contains(ListGraphsUri, graphs);
         }
         finally
@@ -664,7 +664,7 @@ public abstract class BaseAsyncTests
 
     protected async Task TestQueryAsync(IGraph g)
     {
-        IAsyncStorageProvider provider = GetAsyncProvider();
+        var provider = GetAsyncProvider();
         if (provider is not IAsyncQueryableStorage)
         {
             throw SkipException.ForSkip("[" + provider.GetType().Name +
@@ -678,7 +678,7 @@ public abstract class BaseAsyncTests
             var results = await ((IAsyncQueryableStorage)provider).QueryAsync(
                 "SELECT * WHERE { GRAPh <" + QueryGraphUri + "> { ?s a ?type } }", CancellationToken.None);
             Assert.NotNull(results);
-            SparqlResultSet resultSet = Assert.IsType<SparqlResultSet>(results, exactMatch: false);
+            var resultSet = Assert.IsType<SparqlResultSet>(results, exactMatch: false);
             foreach (SparqlResult r in resultSet)
             {
                 Assert.True(g.GetTriplesWithSubjectObject(r["s"], r["type"]).Any(),

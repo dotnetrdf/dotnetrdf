@@ -154,7 +154,7 @@ internal static class AsyncStorageExtensions
     {
         foreach (var graphName in storage.ListGraphNames())
         {
-            if (Uri.TryCreate(graphName, UriKind.Absolute, out Uri u))
+            if (Uri.TryCreate(graphName, UriKind.Absolute, out var u))
             {
                 yield return u;
             }

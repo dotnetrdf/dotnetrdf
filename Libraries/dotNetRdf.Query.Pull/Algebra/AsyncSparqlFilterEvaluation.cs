@@ -36,7 +36,7 @@ internal class AsyncSparqlFilterEvaluation(ISparqlFilter filter, IAsyncEvaluatio
 {
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        await foreach (ISet innerResult in inner.Evaluate(context, input, activeGraph, cancellationToken))
+        await foreach (var innerResult in inner.Evaluate(context, input, activeGraph, cancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             bool filterResult;

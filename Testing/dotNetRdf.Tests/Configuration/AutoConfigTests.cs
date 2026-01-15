@@ -60,14 +60,14 @@ public class AutoConfigTests
     private void ApplyStaticOptionsConfigure(Uri option, String value)
     {
         var g = new Graph();
-        INode configure = g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyConfigure));
+        var configure = g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyConfigure));
         g.Assert(g.CreateUriNode(option), configure, g.CreateLiteralNode(value));
         ApplyStaticOptionsConfigure(g);
     }
 
     private void ApplyStaticOptionsConfigure(IGraph g, Uri option, INode value)
     {
-        INode configure = g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyConfigure));
+        var configure = g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyConfigure));
         g.Assert(g.CreateUriNode(option), configure, value);
         ApplyStaticOptionsConfigure(g);
     }

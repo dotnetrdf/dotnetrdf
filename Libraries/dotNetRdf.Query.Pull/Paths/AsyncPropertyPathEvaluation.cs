@@ -35,7 +35,7 @@ internal class AsyncPropertyPathEvaluation(INode predicate, PatternItem pathEnd)
     public async IAsyncEnumerable<PathResult> Evaluate(PatternItem stepStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        foreach (Triple t in context.GetTriples(new TriplePattern(stepStart, new NodeMatchPattern(predicate), pathEnd),
+        foreach (var t in context.GetTriples(new TriplePattern(stepStart, new NodeMatchPattern(predicate), pathEnd),
                      input, activeGraph))
         {
             cancellationToken.ThrowIfCancellationRequested();

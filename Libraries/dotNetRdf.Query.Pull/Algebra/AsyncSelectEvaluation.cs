@@ -34,7 +34,7 @@ internal class AsyncSelectEvaluation(Select select, IAsyncEvaluation inner) : IA
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        await foreach (ISet innerResult in inner.Evaluate(context, input, activeGraph, cancellationToken))
+        await foreach (var innerResult in inner.Evaluate(context, input, activeGraph, cancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             yield return ProcessInnerResult(innerResult, context, activeGraph);
@@ -58,12 +58,12 @@ internal class AsyncSelectEvaluation(Select select, IAsyncEvaluation inner) : IA
         }
 
         var resultSet = new Set();
-        foreach (SparqlVariable sv in select.SparqlVariables)
+        foreach (var sv in select.SparqlVariables)
         {
             if (sv.IsResultVariable)
             {
                 if (sv.Name.StartsWith(context.AutoVarFactory.Prefix)) continue;
-                INode? variableBinding =
+                var variableBinding =
                     sv.IsProjection ? TryProcessProjection(sv, innerResult, context, activeGraph) :
                     innerResult.ContainsVariable(sv.Name) ? innerResult[sv.Name] : null;
                 resultSet.Add(sv.Name, variableBinding);

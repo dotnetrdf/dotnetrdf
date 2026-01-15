@@ -36,8 +36,8 @@ internal class AsyncZeroOrOnePathEvaluation(IAsyncEvaluation pathEvaluation, Pat
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var haveStartTerm = TryEvaluatePattern(pathStart, input, out INode? startTerm);
-        var haveEndTerm = TryEvaluatePattern(pathEnd, input, out INode? endTerm);
+        var haveStartTerm = TryEvaluatePattern(pathStart, input, out var startTerm);
+        var haveEndTerm = TryEvaluatePattern(pathEnd, input, out var endTerm);
         if (haveStartTerm && haveEndTerm && startTerm != null && endTerm != null)
         {
             if (startTerm.Equals(endTerm))
@@ -51,10 +51,10 @@ internal class AsyncZeroOrOnePathEvaluation(IAsyncEvaluation pathEvaluation, Pat
         }
         else if (haveStartTerm && pathEnd is VariablePattern vp)
         {
-            Set result = input == null ? new Set() : new Set(input);
+            var result = input == null ? new Set() : new Set(input);
             result.Add(vp.VariableName, startTerm);
             yield return result;
-            await foreach (ISet solution in pathEvaluation.Evaluate(context, input, activeGraph, cancellationToken).Distinct().WithCancellation(cancellationToken))
+            await foreach (var solution in pathEvaluation.Evaluate(context, input, activeGraph, cancellationToken).Distinct().WithCancellation(cancellationToken))
             {
                 if (startTerm == null || !startTerm.Equals(solution[vp.VariableName]))
                 {
@@ -67,7 +67,7 @@ internal class AsyncZeroOrOnePathEvaluation(IAsyncEvaluation pathEvaluation, Pat
             var result = new Set(input);
             result.Add(svp.VariableName, endTerm);
             yield return result;
-            await foreach (ISet solution in pathEvaluation.Evaluate(context, input, activeGraph, cancellationToken).Distinct().WithCancellation(cancellationToken))
+            await foreach (var solution in pathEvaluation.Evaluate(context, input, activeGraph, cancellationToken).Distinct().WithCancellation(cancellationToken))
             {
                 if (endTerm == null || !endTerm.Equals(solution[svp.VariableName]))
                 {
@@ -77,7 +77,7 @@ internal class AsyncZeroOrOnePathEvaluation(IAsyncEvaluation pathEvaluation, Pat
         }
         else
         {
-            await foreach (ISet solution in pathEvaluation.Evaluate(context, input, activeGraph, cancellationToken).Distinct().WithCancellation(cancellationToken))
+            await foreach (var solution in pathEvaluation.Evaluate(context, input, activeGraph, cancellationToken).Distinct().WithCancellation(cancellationToken))
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return solution;
@@ -93,7 +93,7 @@ internal class AsyncZeroOrOnePathEvaluation(IAsyncEvaluation pathEvaluation, Pat
                 {
                     if (input != null && input.ContainsVariable(vp.VariableName))
                     {
-                        INode? tmp = input[vp.VariableName];
+                        var tmp = input[vp.VariableName];
                         if (tmp != null)
                         {
                             node = tmp;
