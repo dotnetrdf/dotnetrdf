@@ -45,12 +45,12 @@ internal class ValuesImpl : ElementImpl, IValues
 
     public List<Dictionary<String, IResource>> getBindings()
     {
-        List<String> varNames = getVarNames();
+        var varNames = getVarNames();
         var bindings = new List<Dictionary<String, IResource>>();
-        List<IResource> outerList = getResource(SP.PropertyBindings).AsList();
+        var outerList = getResource(SP.PropertyBindings).AsList();
         if (outerList != null)
         {
-            foreach (IResource innerList in outerList)
+            foreach (var innerList in outerList)
             {
                 var binding = new Dictionary<String, IResource>();
                 bindings.Add(binding);
@@ -59,7 +59,7 @@ internal class ValuesImpl : ElementImpl, IValues
                 while (vars.MoveNext())
                 {
                     var varName = vars.Current;
-                    IResource value = values.Current;
+                    var value = values.Current;
                     if (!RDFUtil.sameTerm(SP.ClassPropertyUndef, value))
                     {
                         binding.Add(varName, value);
@@ -74,8 +74,8 @@ internal class ValuesImpl : ElementImpl, IValues
     public List<String> getVarNames()
     {
         var results = new List<String>();
-        List<IResource> list = getResource(SP.PropertyVarNames).AsList();
-        foreach (IResource member in list)
+        var list = getResource(SP.PropertyVarNames).AsList();
+        foreach (var member in list)
         {
             results.Add(((IValuedNode)member.getSource()).AsString());
         }
@@ -87,7 +87,7 @@ internal class ValuesImpl : ElementImpl, IValues
     {
         p.printKeyword("VALUES");
         p.print(" ");
-        List<String> varNames = getVarNames();
+        var varNames = getVarNames();
         if (varNames.Count == 1)
         {
             p.printVariable(varNames[0]);
@@ -108,7 +108,7 @@ internal class ValuesImpl : ElementImpl, IValues
         }
         p.print(" {");
         p.println();
-        foreach (Dictionary<String, IResource> binding in getBindings())
+        foreach (var binding in getBindings())
         {
             p.printIndentation(p.getIndentation() + 1);
             if (varNames.Count != 1)
@@ -119,7 +119,7 @@ internal class ValuesImpl : ElementImpl, IValues
             while (vit.MoveNext())
             {
                 var varName = vit.Current;
-                IResource value = binding[varName];
+                var value = binding[varName];
                 if (value == null)
                 {
                     p.printKeyword("UNDEF");

@@ -56,8 +56,8 @@ public class UpdateTests2
         var create1 = new CreateCommand(new UriNode(new Uri("http://example.org/1")));
         var create2 = new CreateCommand(new UriNode(new Uri("http://example.org/2")));
         var nodeFactory = new NodeFactory();
-        IUriNode g1 = nodeFactory.CreateUriNode(new Uri("http://example.org/1"));
-        IUriNode g2 = nodeFactory.CreateUriNode(new Uri("http://example.org/2"));
+        var g1 = nodeFactory.CreateUriNode(new Uri("http://example.org/1"));
+        var g2 = nodeFactory.CreateUriNode(new Uri("http://example.org/2"));
 
         store.ExecuteUpdate(create1);
         store.ExecuteUpdate(create2);
@@ -435,7 +435,7 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
         Assert.Equal(2, dataset.GraphNames.Count());
 
         var updates = "DELETE { GRAPH ?s { ?s ?p ?o } } WHERE { ?s ?p ?o }";
-        SparqlUpdateCommandSet commands = new SparqlUpdateParser().ParseFromString(updates);
+        var commands = new SparqlUpdateParser().ParseFromString(updates);
 
         var processor = new LeviathanUpdateProcessor(dataset);
         processor.ProcessCommandSet(commands);
@@ -476,7 +476,7 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
     {
         var dataset = new InMemoryDataset();
         var nodeFactory = new NodeFactory();
-        IUriNode egGraph = nodeFactory.CreateUriNode(new Uri("http://example.org/graph"));
+        var egGraph = nodeFactory.CreateUriNode(new Uri("http://example.org/graph"));
         dataset.HasGraph(egGraph).Should().BeFalse();
         var processor = new LeviathanUpdateProcessor(dataset);
         var cmdSet = new SparqlUpdateParser().ParseFromString(
@@ -495,7 +495,7 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
     {
         var dataset = new InMemoryDataset();
         var nodeFactory = new NodeFactory();
-        IUriNode egGraph = nodeFactory.CreateUriNode(new Uri("http://example.org/graph"));
+        var egGraph = nodeFactory.CreateUriNode(new Uri("http://example.org/graph"));
         dataset.HasGraph(egGraph).Should().BeFalse();
         var processor = new LeviathanUpdateProcessor(dataset);
         var cmdSet = new SparqlUpdateParser().ParseFromString(
@@ -514,7 +514,7 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
     {
         var dataset = new InMemoryDataset();
         var nodeFactory = new NodeFactory();
-        IUriNode egGraph = nodeFactory.CreateUriNode(new Uri("http://example.org/graph"));
+        var egGraph = nodeFactory.CreateUriNode(new Uri("http://example.org/graph"));
         dataset.HasGraph(egGraph).Should().BeFalse();
         var processor = new LeviathanUpdateProcessor(dataset);
         var cmdSet = new SparqlUpdateParser().ParseFromString(
@@ -537,7 +537,7 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
         var egGraph = new UriNode(new Uri("http://example.org/graph"));
         dataset.HasGraph(egGraph).Should().BeFalse();
         var processor = new LeviathanUpdateProcessor(dataset);
-        SparqlUpdateCommandSet cmdSet = new SparqlUpdateParser().ParseFromString(
+        var cmdSet = new SparqlUpdateParser().ParseFromString(
             "WITH <" + egGraph +
             "> DELETE { GRAPH <http://example.org/g2> { <http://example.org/s> <http://example.org/p> <http://example.org/o> }} WHERE {}");
         processor.ProcessCommandSet(cmdSet);

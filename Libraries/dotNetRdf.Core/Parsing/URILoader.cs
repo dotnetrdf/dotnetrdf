@@ -119,7 +119,7 @@ public static partial class UriLoader
     /// </remarks>
     public static bool IsCached(Uri u)
     {
-        Uri temp = Tools.StripUriFragment(u);
+        var temp = Tools.StripUriFragment(u);
         return _cache.HasLocalCopy(temp, false);
     }
     #endregion
@@ -393,7 +393,7 @@ public static partial class UriLoader
             // To do caching we ask the cache to give us a handler and then we tie it to
             if (CacheEnabled)
             {
-                IRdfHandler cacheHandler = _cache.ToCache(u, Tools.StripUriFragment(httpResponse.ResponseUri), httpResponse.Headers["ETag"]);
+                var cacheHandler = _cache.ToCache(u, Tools.StripUriFragment(httpResponse.ResponseUri), httpResponse.Headers["ETag"]);
                 if (cacheHandler != null)
                 {
                     // Note: We can ONLY use caching when we know that the Handler will accept all the data returned
@@ -596,7 +596,7 @@ public static partial class UriLoader
                     try
                     {
                         // If not a RDF Dataset format see if it is a Graph
-                        IRdfReader rdfParser = MimeTypesHelper.GetParser(httpResponse.ContentType);
+                        var rdfParser = MimeTypesHelper.GetParser(httpResponse.ContentType);
                         rdfParser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
                     }
                     catch (RdfParserSelectionException)
@@ -654,7 +654,7 @@ public static partial class UriLoader
     /// <param name="message">Warning Message.</param>
     static void RaiseWarning(string message)
     {
-        RdfReaderWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);
@@ -667,7 +667,7 @@ public static partial class UriLoader
     /// <param name="message">Warning Message.</param>
     static void RaiseStoreWarning(string message)
     {
-        StoreReaderWarning d = StoreWarning;
+        var d = StoreWarning;
         if (d != null)
         {
             d(message);

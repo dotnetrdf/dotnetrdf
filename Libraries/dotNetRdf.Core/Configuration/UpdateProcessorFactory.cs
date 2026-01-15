@@ -56,7 +56,7 @@ public class UpdateProcessorFactory
         INode storeObj;
         object temp;
 
-        INode propStorageProvider = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
+        var propStorageProvider = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
 
         switch (targetType.FullName)
         {
@@ -75,7 +75,7 @@ public class UpdateProcessorFactory
                 break;
 
             case LeviathanUpdateProcessor:
-                INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
+                var datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
                 if (datasetObj != null)
                 {
                     temp = ConfigurationLoader.LoadObject(g, datasetObj);
@@ -104,7 +104,7 @@ public class UpdateProcessorFactory
                 }
                 break;
             case GenericUpdateProcessor:
-                INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
+                var managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
                 if (managerObj == null) return false;
                 temp = ConfigurationLoader.LoadObject(g, managerObj);
                 if (temp is IStorageProvider storageProvider)

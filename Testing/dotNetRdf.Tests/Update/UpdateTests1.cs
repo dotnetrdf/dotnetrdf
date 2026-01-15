@@ -77,7 +77,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         _testOutputHelper.WriteLine();
         store.ExecuteUpdate(insert);
 
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             _testOutputHelper.WriteLine(t.ToString());
         }
@@ -100,7 +100,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         _testOutputHelper.WriteLine();
         store.ExecuteUpdate(insert);
 
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             _testOutputHelper.WriteLine(t.ToString());
         }
@@ -122,7 +122,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         Assert.NotEqual(g, h);
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet commands = parser.ParseFromString("ADD GRAPH <http://example.org/source> TO GRAPH <http://example.org/destination>");
+        var commands = parser.ParseFromString("ADD GRAPH <http://example.org/source> TO GRAPH <http://example.org/destination>");
 
         var processor = new LeviathanUpdateProcessor(store);
         processor.ProcessCommandSet(commands);
@@ -151,7 +151,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         Assert.NotEqual(g, h);
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet commands = parser.ParseFromString("ADD GRAPH <http://example.org/source> TO DEFAULT");
+        var commands = parser.ParseFromString("ADD GRAPH <http://example.org/source> TO DEFAULT");
 
         var processor = new LeviathanUpdateProcessor(store);
         processor.ProcessCommandSet(commands);
@@ -179,7 +179,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         Assert.NotEqual(g, h);
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet commands = parser.ParseFromString("ADD DEFAULT TO GRAPH <http://example.org/destination>");
+        var commands = parser.ParseFromString("ADD DEFAULT TO GRAPH <http://example.org/destination>");
 
         var processor = new LeviathanUpdateProcessor(store);
         processor.ProcessCommandSet(commands);
@@ -207,7 +207,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         Assert.NotEqual(g, h);
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet commands = parser.ParseFromString("COPY GRAPH <http://example.org/source> TO GRAPH <http://example.org/destination>");
+        var commands = parser.ParseFromString("COPY GRAPH <http://example.org/source> TO GRAPH <http://example.org/destination>");
 
         var processor = new LeviathanUpdateProcessor(store);
         processor.ProcessCommandSet(commands);
@@ -236,7 +236,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         Assert.NotEqual(g, h);
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet commands = parser.ParseFromString("COPY GRAPH <http://example.org/source> TO DEFAULT");
+        var commands = parser.ParseFromString("COPY GRAPH <http://example.org/source> TO DEFAULT");
 
         var processor = new LeviathanUpdateProcessor(store);
         processor.ProcessCommandSet(commands);
@@ -264,7 +264,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         Assert.NotEqual(g, h);
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet commands = parser.ParseFromString("COPY DEFAULT TO GRAPH <http://example.org/destination>");
+        var commands = parser.ParseFromString("COPY DEFAULT TO GRAPH <http://example.org/destination>");
 
         var processor = new LeviathanUpdateProcessor(store);
         processor.ProcessCommandSet(commands);
@@ -292,7 +292,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         Assert.NotEqual(g, h);
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet commands = parser.ParseFromString("MOVE GRAPH <http://example.org/source> TO GRAPH <http://example.org/destination>");
+        var commands = parser.ParseFromString("MOVE GRAPH <http://example.org/source> TO GRAPH <http://example.org/destination>");
 
         var processor = new LeviathanUpdateProcessor(store);
         processor.ProcessCommandSet(commands);
@@ -323,7 +323,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         Assert.NotEqual(g, h);
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet commands = parser.ParseFromString("MOVE GRAPH <http://example.org/source> TO DEFAULT");
+        var commands = parser.ParseFromString("MOVE GRAPH <http://example.org/source> TO DEFAULT");
 
         var processor = new LeviathanUpdateProcessor(store);
         processor.ProcessCommandSet(commands);
@@ -355,7 +355,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         Assert.NotEqual(g, h);
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet commands = parser.ParseFromString("MOVE DEFAULT TO GRAPH <http://example.org/destination>");
+        var commands = parser.ParseFromString("MOVE DEFAULT TO GRAPH <http://example.org/destination>");
 
         var processor = new LeviathanUpdateProcessor(store);
         processor.ProcessCommandSet(commands);
@@ -400,7 +400,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         {
             Assert.True(store.HasGraph(h.Name), "Did not find expected graph " + h.Name + " in updated store.");
             var g = store.Graphs[h.Name];
-            GraphDiffReport diff = h.Difference(g);
+            var diff = h.Difference(g);
             if (!diff.AreEqual)
             {
                 TestTools.ShowDifferences(diff, _testOutputHelper);
@@ -428,13 +428,13 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         store.Add(g);
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+        var cmds = parser.ParseFromString(command);
         var dataset = new InMemoryDataset(store);
         var processor = new LeviathanUpdateProcessor(dataset);
         dataset.SetDefaultGraph((IRefNode)null);
         processor.ProcessCommandSet(cmds);
 
-        IGraph def = store[(IRefNode)null];
+        var def = store[(IRefNode)null];
         TestTools.ShowGraph(def);
         Assert.True(def.IsEmpty, "Graph should be empty as the commands only used USING NAMED (so shouldn't have changed the dataset) and the Active Graph for the dataset was empty so there should have been nothing matched to generate insertions from");
     }
@@ -444,7 +444,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
     {
         var command = "WITH <http://example.org/> DELETE { ?s ?p ?o } WHERE {?s ?p ?o}";
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+        var cmds = parser.ParseFromString(command);
 
         var delete = (DeleteCommand)cmds[0];
 
@@ -459,7 +459,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         command.CommandText = "INSERT DATA { ex:a ex:b ex:c GRAPH <http://example.org/graph> { ex:a ex:b ex:c } }";
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+        var cmds = parser.ParseFromString(command);
 
         Assert.False(cmds.Commands.All(cmd => cmd.AffectsSingleGraph), "Commands should report that they do not affect a single Graph");
         Assert.True(cmds.Commands.All(cmd => cmd.AffectsGraph((IRefNode)null)), "Commands should report that they affect the Default Graph");
@@ -473,11 +473,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         g.NamespaceMap.Import(command.Namespaces);
         var t = new Triple(g.CreateUriNode("ex:a"), g.CreateUriNode("ex:b"), g.CreateUriNode("ex:c"));
 
-        IGraph def = dataset[(IRefNode)null];
+        var def = dataset[(IRefNode)null];
         Assert.Equal(1, def.Triples.Count);
         Assert.True(def.ContainsTriple(t), "Should have the inserted Triple in the Default Graph");
 
-        IGraph ex = dataset[new UriNode(new Uri("http://example.org/graph"))];
+        var ex = dataset[new UriNode(new Uri("http://example.org/graph"))];
         Assert.Equal(1, ex.Triples.Count);
         Assert.True(ex.ContainsTriple(t), "Should have the inserted Triple in the Named Graph");
 
@@ -491,7 +491,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         command.CommandText = "DELETE DATA { ex:a ex:b ex:c GRAPH <http://example.org/graph> { ex:a ex:b ex:c } }";
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+        var cmds = parser.ParseFromString(command);
 
         Assert.False(cmds.Commands.All(cmd => cmd.AffectsSingleGraph), "Commands should report that they do not affect a single Graph");
         Assert.True(cmds.Commands.All(cmd => cmd.AffectsGraph((IRefNode)null)), "Commands should report that they affect the Default Graph");
@@ -538,7 +538,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         command.CommandText = "INSERT { ?x foaf:mbox_sha1sum ?hash } WHERE { ?x foaf:mbox ?email . BIND(SHA1(STR(?email)) AS ?hash) }";
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+        var cmds = parser.ParseFromString(command);
 
         var dataset = new InMemoryDataset(store, g.Name);
         var processor = new LeviathanUpdateProcessor(dataset);
@@ -563,7 +563,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         command.CommandText = @"INSERT { ?x foaf:mbox_sha1sum ?email } WHERE { ?x foaf:mbox ?email . FILTER(REGEX(STR(?email), 'dotnetrdf.org')) }";
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+        var cmds = parser.ParseFromString(command);
 
         var dataset = new InMemoryDataset(store, g.Name);
         var processor = new LeviathanUpdateProcessor(dataset);
@@ -588,7 +588,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         command.CommandText = "DELETE { ?x foaf:mbox ?y } WHERE { ?x foaf:mbox ?email . BIND(?email AS ?y) }";
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+        var cmds = parser.ParseFromString(command);
 
         var dataset = new InMemoryDataset(store, g.Name);
         var processor = new LeviathanUpdateProcessor(dataset);
@@ -613,7 +613,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         command.CommandText = @"DELETE { ?x foaf:mbox ?email } WHERE { ?x foaf:mbox ?email . FILTER(REGEX(STR(?email), 'dotnetrdf\\.org')) }";
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+        var cmds = parser.ParseFromString(command);
 
         var dataset = new InMemoryDataset(store, g.Name);
         var processor = new LeviathanUpdateProcessor(dataset);
@@ -638,7 +638,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         command.CommandText = @"DELETE { ?x foaf:mbox ?email } WHERE { ?x foaf:mbox ?email }";
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+        var cmds = parser.ParseFromString(command);
         cmds.UpdateExecutionTime.Should().BeNull();
 
         var dataset = new InMemoryDataset(store, g.Name);

@@ -40,7 +40,7 @@ public class UriFactoryFactory : IObjectFactory
     {
         try
         {
-            INode parentNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
+            var parentNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
                 g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyWithParent)));
             IUriFactory parentFactory = null;
             if (parentNode != null)
@@ -63,10 +63,10 @@ public class UriFactoryFactory : IObjectFactory
     /// <inheritdoc />
     public bool CanLoadObject(Type t)
     {
-        Type iUriFactory = typeof(IUriFactory);
+        var iUriFactory = typeof(IUriFactory);
         if (t.GetInterfaces().Any(i => i == iUriFactory))
         {
-            ConstructorInfo ctor = t.GetConstructor([typeof(IUriFactory)]);
+            var ctor = t.GetConstructor([typeof(IUriFactory)]);
             return ctor != null && ctor.IsPublic;
         }
 

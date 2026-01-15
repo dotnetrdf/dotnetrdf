@@ -180,11 +180,11 @@ public class VariableSubstitutionTransformer
         {
             case TriplePatternType.Match:
                 var tp = (IMatchTriplePattern)p;
-                PatternItem subj = ApplySubstitution(tp.Subject);
+                var subj = ApplySubstitution(tp.Subject);
                 if (ReferenceEquals(subj, _replaceItem)) canReplaceObjects = (_canReplaceCustom ? _canReplaceObjects : true);
-                PatternItem pred = ApplySubstitution(tp.Predicate);
+                var pred = ApplySubstitution(tp.Predicate);
                 if (ReferenceEquals(pred, _replaceItem)) canReplaceObjects = (_canReplaceCustom ? _canReplaceObjects : true);
-                PatternItem obj = ApplySubstitution(tp.Object);
+                var obj = ApplySubstitution(tp.Object);
                 if (ReferenceEquals(obj, _replaceItem) && !canReplaceObjects) throw new Exception("Unable to substitute a variable into the object position in this scope");
                 return new TriplePattern(subj, pred, obj);
                 
@@ -267,7 +267,7 @@ public class VariableSubstitutionTransformer
         else if (expr is GraphPatternTerm)
         {
             var gp = (GraphPatternTerm)expr;
-            ISparqlAlgebra alg = gp.Pattern.ToAlgebra();
+            var alg = gp.Pattern.ToAlgebra();
             alg = Optimise(alg);
             return new GraphPatternTerm(alg.ToGraphPattern());
         }

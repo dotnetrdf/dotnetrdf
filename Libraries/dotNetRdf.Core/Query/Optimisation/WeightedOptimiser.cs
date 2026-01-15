@@ -115,24 +115,24 @@ class Weightings
 
         g.NamespaceMap.AddNamespace("opt", g.UriFactory.Create(SparqlOptimiser.OptimiserStatsNamespace));
 
-        INode optSubjCount = g.CreateUriNode("opt:subjectCount");
-        INode optPredCount = g.CreateUriNode("opt:predicateCount");
-        INode optObjCount = g.CreateUriNode("opt:objectCount");
-        INode optCount = g.CreateUriNode("opt:count");
+        var optSubjCount = g.CreateUriNode("opt:subjectCount");
+        var optPredCount = g.CreateUriNode("opt:predicateCount");
+        var optObjCount = g.CreateUriNode("opt:objectCount");
+        var optCount = g.CreateUriNode("opt:count");
 
-        foreach (Triple t in g.GetTriplesWithPredicate(optSubjCount))
+        foreach (var t in g.GetTriplesWithPredicate(optSubjCount))
         {
             SetSubjectCount(t.Subject, t.Object);
         }
-        foreach (Triple t in g.GetTriplesWithPredicate(optPredCount))
+        foreach (var t in g.GetTriplesWithPredicate(optPredCount))
         {
             SetPredicateCount(t.Subject, t.Object);
         }
-        foreach (Triple t in g.GetTriplesWithPredicate(optObjCount))
+        foreach (var t in g.GetTriplesWithPredicate(optObjCount))
         {
             SetObjectCount(t.Subject, t.Object);
         }
-        foreach (Triple t in g.GetTriplesWithPredicate(optCount))
+        foreach (var t in g.GetTriplesWithPredicate(optCount))
         {
             SetSubjectCount(t.Subject, t.Object);
             SetPredicateCount(t.Subject, t.Object);
@@ -202,7 +202,7 @@ class Weightings
 
     public double SubjectWeighting(INode n)
     {
-        long temp = 1;
+        var temp = 1L;
         if (_subjectWeightings.TryGetValue(n, out temp))
         {
             temp = Math.Max(1, temp);
@@ -216,7 +216,7 @@ class Weightings
 
     public double PredicateWeighting(INode n)
     {
-        long temp = 1;
+        var temp = 1L;
         if (_predicateWeightings.TryGetValue(n, out temp))
         {
             temp = Math.Max(1, temp);
@@ -230,7 +230,7 @@ class Weightings
 
     public double ObjectWeighting(INode n)
     {
-        long temp = 1;
+        var temp = 1L;
         if (_objectWeightings.TryGetValue(n, out temp))
         {
             temp = Math.Max(1, temp);

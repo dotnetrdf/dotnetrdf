@@ -67,7 +67,7 @@ public class VirtualNodeCache<TNodeID, TKey>
         }
         set
         {
-            TKey key = _keyGenerator(id);
+            var key = _keyGenerator(id);
             if (_mapping.ContainsKey(key))
             {
                 _mapping[key] = value;

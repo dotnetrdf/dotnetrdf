@@ -72,36 +72,36 @@ public class VariableClassificationTests
     [Fact]
     public void SparqlAlgebraVariableClassification1()
     {
-        TriplePattern tp = MakeTriplePattern(_s, _p, _o);
-        IBgp bgp = new Bgp(tp);
+        var tp = MakeTriplePattern(_s, _p, _o);
+        var bgp = new Bgp(tp);
         TestClassification(bgp, _emptyList, _emptyList);
     }
 
     [Fact]
     public void SparqlAlgebraVariableClassification2()
     {
-        TriplePattern tp = MakeTriplePattern(_factory.CreateVariableNode("s"), _p, _o);
-        IBgp bgp = new Bgp(tp);
+        var tp = MakeTriplePattern(_factory.CreateVariableNode("s"), _p, _o);
+        var bgp = new Bgp(tp);
         TestClassification(bgp, new String[] { "s" }, _emptyList);
     }
 
     [Fact]
     public void SparqlAlgebraVariableClassification3()
     {
-        TriplePattern tp = MakeTriplePattern(_factory.CreateVariableNode("s"), _rdfType, _factory.CreateVariableNode("type"));
-        IBgp lhs = new Bgp(tp);
+        var tp = MakeTriplePattern(_factory.CreateVariableNode("s"), _rdfType, _factory.CreateVariableNode("type"));
+        var lhs = new Bgp(tp);
         TestClassification(lhs, new String[] { "s", "type" }, _emptyList);
 
         tp = MakeTriplePattern(_factory.CreateVariableNode("s"), _factory.CreateVariableNode("p"), _factory.CreateVariableNode("o"));
-        IBgp rhs = new Bgp(tp);
+        var rhs = new Bgp(tp);
         TestClassification(rhs, new String[] { "s", "p", "o"}, _emptyList);
 
         // In a join everything should end up fixed since everything started as fixed
-        IJoin join = new Join(lhs, rhs);
+        var join = new Join(lhs, rhs);
         TestClassification(join, new String[] { "s", "type", "p", "o"}, _emptyList);
 
         // In the left join only the LHS variables should be fixed, others should be floating
-        ILeftJoin leftJoin = new LeftJoin(lhs, rhs);
+        var leftJoin = new LeftJoin(lhs, rhs);
         TestClassification(leftJoin, new String[] { "s", "type"}, ["p", "o"]);
         leftJoin = new LeftJoin(rhs, lhs);
         TestClassification(leftJoin, new String[] { "s", "p", "o" }, ["type"]);
@@ -114,20 +114,20 @@ public class VariableClassificationTests
     [Fact]
     public void SparqlAlgebraVariableClassification4()
     {
-        TriplePattern tp = MakeTriplePattern(_factory.CreateVariableNode("s"), _rdfType, _factory.CreateVariableNode("type"));
-        IBgp lhs = new Bgp(tp);
+        var tp = MakeTriplePattern(_factory.CreateVariableNode("s"), _rdfType, _factory.CreateVariableNode("type"));
+        var lhs = new Bgp(tp);
         tp = MakeTriplePattern(_factory.CreateVariableNode("s"), _factory.CreateVariableNode("p"), _factory.CreateVariableNode("o"));
-        IBgp rhs = new Bgp(tp);
+        var rhs = new Bgp(tp);
 
         // In the left join only the LHS variables should be fixed, others should be floating
-        ILeftJoin leftJoin = new LeftJoin(lhs, rhs);
+        var leftJoin = new LeftJoin(lhs, rhs);
         TestClassification(leftJoin, new String[] { "s", "type" }, ["p", "o"]);
 
         tp = MakeTriplePattern(_factory.CreateVariableNode("s"), _factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label")), _factory.CreateVariableNode("label"));
         var top = new Bgp(tp);
 
         // Everything in the RHS not fixed on the LHS is floating
-        ILeftJoin parentJoin = new LeftJoin(top, leftJoin);
+        var parentJoin = new LeftJoin(top, leftJoin);
         TestClassification(parentJoin, new String[] { "s", "label"}, ["p", "o", "type"]);
 
         parentJoin = new LeftJoin(leftJoin, top);

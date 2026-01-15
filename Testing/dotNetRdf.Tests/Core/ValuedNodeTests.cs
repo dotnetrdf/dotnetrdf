@@ -44,8 +44,8 @@ public class ValuedNodeTests : BaseTest
     [Fact]
     public void NodeAsValuedTimeSpan()
     {
-        INode orig = new TimeSpan(1, 0, 0).ToLiteral(_graph);
-        IValuedNode valued = orig.AsValuedNode();
+        var orig = new TimeSpan(1, 0, 0).ToLiteral(_graph);
+        var valued = orig.AsValuedNode();
 
         Assert.Equal(((ILiteralNode)orig).Value, ((ILiteralNode)valued).Value);
         Assert.True(EqualityHelper.AreUrisEqual(((ILiteralNode)orig).DataType, ((ILiteralNode)valued).DataType));
@@ -55,8 +55,8 @@ public class ValuedNodeTests : BaseTest
     [Fact]
     public void NodeAsValuedDateTime1()
     {
-        INode orig = DateTime.Now.ToLiteral(_graph);
-        IValuedNode valued = orig.AsValuedNode();
+        var orig = DateTime.Now.ToLiteral(_graph);
+        var valued = orig.AsValuedNode();
 
         Assert.Equal(((ILiteralNode)orig).Value, ((ILiteralNode)valued).Value);
         Assert.Equal(typeof(DateTimeNode), valued.GetType());
@@ -65,16 +65,16 @@ public class ValuedNodeTests : BaseTest
     [Fact]
     public void NodeAsValuedDateTime2()
     {
-        INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-        IValuedNode valued = orig.AsValuedNode();
+        var orig = _graph.CreateLiteralNode("2013-06-19T09:58:00", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        var valued = orig.AsValuedNode();
         Assert.Equal(DateTimeKind.Unspecified, valued.AsDateTime().Kind);
     }
 
     [Fact]
     public void NodeAsValuedDateTime3()
     {
-        INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00-07:00", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-        IValuedNode valued = orig.AsValuedNode();
+        var orig = _graph.CreateLiteralNode("2013-06-19T09:58:00-07:00", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        var valued = orig.AsValuedNode();
         Assert.Equal(16, valued.AsDateTime().Hour);
         Assert.Equal(DateTimeKind.Utc, valued.AsDateTime().Kind);
     }
@@ -166,8 +166,8 @@ public class ValuedNodeTests : BaseTest
         ILiteralNode literalNode = LiteralExtensions.ToLiteral(value, _graph);
 
         // when
-        IValuedNode valuedNode = literalNode.AsValuedNode();
-        T convertedBack = convertBack(valuedNode);
+        var valuedNode = literalNode.AsValuedNode();
+        var convertedBack = convertBack(valuedNode);
 
         // then
         Assert.Equal(value, convertedBack);

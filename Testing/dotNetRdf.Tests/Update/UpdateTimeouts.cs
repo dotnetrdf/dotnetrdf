@@ -45,7 +45,7 @@ public class UpdateTimeouts
     public void SparqlUpdateTimeout()
     {
         var update = $"CREATE GRAPH <http://example.org/1>; LOAD <{_serverFixture.UriFor("/slow/doap")}>; CREATE GRAPH <http://example.org/2>";
-        SparqlUpdateCommandSet commandSet = _parser.ParseFromString(update);
+        var commandSet = _parser.ParseFromString(update);
         commandSet.Timeout = 1;
 
         var store = new TripleStore();

@@ -90,7 +90,7 @@ public abstract class VirtualAlgebraOptimiser<TNodeID, TGraphID>
                 ISparqlAlgebra result = new Bgp();
                 var patterns = new List<ITriplePattern>();
                 var ps = new List<ITriplePattern>(current.TriplePatterns.ToList());
-                TNodeID nullID = _provider.NullID;
+                var nullID = _provider.NullID;
 
                 for (var i = 0; i < current.PatternCount; i++)
                 {
@@ -120,7 +120,7 @@ public abstract class VirtualAlgebraOptimiser<TNodeID, TGraphID>
                         PatternItem subj, pred, obj;
                         if (tp.Subject is NodeMatchPattern)
                         {
-                            TNodeID id = _provider.GetID(((NodeMatchPattern)tp.Subject).Node);
+                            var id = _provider.GetID(((NodeMatchPattern)tp.Subject).Node);
                             if (id == null || id.Equals(nullID))
                             {
                                 result = new NullOperator(current.Variables);
@@ -137,7 +137,7 @@ public abstract class VirtualAlgebraOptimiser<TNodeID, TGraphID>
                         }
                         if (tp.Predicate is NodeMatchPattern)
                         {
-                            TNodeID id = _provider.GetID(((NodeMatchPattern)tp.Predicate).Node);
+                            var id = _provider.GetID(((NodeMatchPattern)tp.Predicate).Node);
                             if (id == null || id.Equals(nullID))
                             {
                                 result = new NullOperator(current.Variables);
@@ -154,7 +154,7 @@ public abstract class VirtualAlgebraOptimiser<TNodeID, TGraphID>
                         }
                         if (tp.Object is NodeMatchPattern)
                         {
-                            TNodeID id = _provider.GetID(((NodeMatchPattern)tp.Object).Node);
+                            var id = _provider.GetID(((NodeMatchPattern)tp.Object).Node);
                             if (id == null || id.Equals(nullID))
                             {
                                 result = new NullOperator(current.Variables);
@@ -237,9 +237,9 @@ public abstract class VirtualAlgebraOptimiser<TNodeID, TGraphID>
     {
         if (expr is ConstantTerm term)
         {
-            TNodeID id = _provider.GetID(term.Node);
+            var id = _provider.GetID(term.Node);
             if (id == null || id.Equals(_provider.NullID)) throw new RdfQueryException("Cannot transform the Expression to use Virtual Nodes");
-            INode virt = CreateVirtualNode(id, term.Node);
+            var virt = CreateVirtualNode(id, term.Node);
             return new ConstantTerm(virt);
         }
         else

@@ -42,10 +42,10 @@ internal class VariableImpl : AbstractSPINResource, IVariable
 
     private void addTriplePatterns(INode predicate, HashSet<ITriplePattern> results)
     {
-        IEnumerator<Triple> it = getModel().GetTriplesWithPredicateObject(predicate, this).GetEnumerator();
+        var it = getModel().GetTriplesWithPredicateObject(predicate, this).GetEnumerator();
         while (it.MoveNext())
         {
-            IResource subject = Resource.Get(it.Current.Subject, Graph, getModel());
+            var subject = Resource.Get(it.Current.Subject, Graph, getModel());
             results.Add((TriplePatternImpl)subject.As(typeof(TriplePatternImpl)));
         }
     }

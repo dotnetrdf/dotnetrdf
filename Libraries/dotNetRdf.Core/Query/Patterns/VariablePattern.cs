@@ -87,7 +87,7 @@ public class VariablePattern
     /// <returns>The Node which is bound to this Variable in this Solution.</returns>
     public override INode Construct(ConstructContext context)
     {
-        INode value = context.Set[VariableName];
+        var value = context.Set[VariableName];
 
         if (value == null) throw new RdfQueryException("Unable to construct a Value for this Variable for this solution as it is bound to a null");
         return value.NodeType switch

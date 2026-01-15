@@ -420,7 +420,7 @@ public static partial class UriLoader
                                     try
                                     {
                                         // If not a RDF Dataset format see if it is a Graph
-                                        IRdfReader rdfParser = MimeTypesHelper.GetParser(response.ContentType);
+                                        var rdfParser = MimeTypesHelper.GetParser(response.ContentType);
                                         rdfParser.Load(handler, new StreamReader(response.GetResponseStream()));
                                     }
                                     catch (RdfParserSelectionException)

@@ -269,7 +269,7 @@ class UriLoaderCache
                     _etags.Remove(u.GetEnhancedHashCode());
                     // If we did remove an ETag then we need to rewrite our ETag cache file
                     using var writer = new StreamWriter(File.Open(_etagFile, FileMode.Create, FileAccess.Write), Encoding.UTF8);
-                    foreach (KeyValuePair<int, string> etag in _etags)
+                    foreach (var etag in _etags)
                     {
                         writer.WriteLine(etag.Key + "\t" + etag.Value);
                     }
@@ -326,8 +326,8 @@ class UriLoaderCache
                     if (requireFreshness)
                     {
                         // Check the freshness of the local copy
-                        DateTime created = File.GetCreationTime(graph);
-                        TimeSpan freshness = DateTime.Now - created;
+                        var created = File.GetCreationTime(graph);
+                        var freshness = DateTime.Now - created;
                         if (freshness > _cacheDuration)
                         {
                             // Local copy has expired

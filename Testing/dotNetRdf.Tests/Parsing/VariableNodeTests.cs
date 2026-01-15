@@ -42,7 +42,7 @@ public class VariableNodeTests
         var g = new Graph();
         StringParser.Parse(g, TestFragment, parser);
 
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             Console.WriteLine(t.ToString());
         }
