@@ -67,7 +67,7 @@ public class JsonLdWriter : BaseStoreWriter
     {
         if (store == null) throw new ArgumentNullException(nameof(store), "Cannot write a null store");
         if(output == null) throw new ArgumentNullException(nameof(output), "Cannot write to a null writer");
-        JArray jsonArray = SerializeStore(store);
+        var jsonArray = SerializeStore(store);
         output.Write(jsonArray.ToString(_options.JsonFormatting));
         output.Flush();
         if (!leaveOpen)
@@ -92,7 +92,7 @@ public class JsonLdWriter : BaseStoreWriter
         // 4 - Initialize compound literal subjects to an empty map.
         var compoundLiteralSubjects = new JObject();
         // 5 - For each graph in RDF dataset:
-        foreach (IGraph graph in store.Graphs)
+        foreach (var graph in store.Graphs)
         {
             // 5.1 - If graph is the default graph, set name to @default, otherwise to the graph name associated with graph.
             var name = graph.Name == null ? "@default" : graph.Name.ToString();
@@ -123,10 +123,10 @@ public class JsonLdWriter : BaseStoreWriter
             var nodeMap = graphMap[name] as JObject;
 
             // 5.6 - Reference the value of the name entry in compound literal subjects using the variable compound map.
-            JToken compoundMap = compoundLiteralSubjects[name];
+            var compoundMap = compoundLiteralSubjects[name];
 
             // 5.7 - For each triple in graph consisting of subject, predicate, and object:
-            foreach (Triple triple in graph.Triples)
+            foreach (var triple in graph.Triples)
             {
                 var subject = MakeNodeString(triple.Subject);
                 var predicate = MakeNodeString(triple.Predicate);
@@ -178,7 +178,7 @@ public class JsonLdWriter : BaseStoreWriter
                 }
 
                 // 5.7.6 - Initialize value to the result of using the RDF to Object Conversion algorithm, passing object, rdfDirection, and useNativeTypes.
-                JToken value = RdfToObject(triple.Object);
+                var value = RdfToObject(triple.Object);
 
                 // 5.7.7 -If node does not have a predicate entry, create one and initialize its value to an empty array.
                 if (!node.ContainsKey(predicate))
@@ -213,7 +213,7 @@ public class JsonLdWriter : BaseStoreWriter
         }
 
         // 6 - For each name and graph object in graph map:
-        foreach (KeyValuePair<string, JToken> gp in graphMap)
+        foreach (var gp in graphMap)
         {
             var name = gp.Key;
             var graphObject = gp.Value as JObject;
@@ -223,24 +223,24 @@ public class JsonLdWriter : BaseStoreWriter
             {
                 if (compoundLiteralSubjects[name] is JObject compoundMap)
                 {
-                    foreach (JProperty clProp in compoundMap.Properties())
+                    foreach (var clProp in compoundMap.Properties())
                     {
                         var cl = clProp.Name;
                         // 6.1.1 - Initialize cl entry to the value of cl in referenced once, continuing to the next cl if cl entry is not a map.
-                        Usage clEntry = referencedOnce[cl];
+                        var clEntry = referencedOnce[cl];
                         if (clEntry == null) continue;
                         // 6.1.2 - Initialize node to the value of node in cl entry.
                         // 6.1.3 - Initialize property to value of property in cl entry.
                         // 6.1.4 - Initialize value to value of value in cl entry.
-                        JObjectWithUsages node = clEntry.Node;
+                        var node = clEntry.Node;
                         var property = clEntry.Property;
-                        JToken value = clEntry.Value;
+                        var value = clEntry.Value;
                         // 6.1.5 - Initialize cl node to the value of cl in graph object, and remove that entry from graph object, continuing to the next cl if cl node is not a map.
                         var clNode = graphObject[cl] as JObject;
                         graphObject.Remove(cl);
                         if (clNode == null) continue;
                         // 6.1.6 - For each cl reference in the value of property in node where the value of @id in cl reference is cl:
-                        foreach (JObject clReference in node[property].OfType<JObject>()
+                        foreach (var clReference in node[property].OfType<JObject>()
                             .Where(n => cl.Equals(n["@id"].Value<string>())))
                         {
                             // 6.1.6.1 - Delete the @id entry in cl reference.
@@ -290,12 +290,12 @@ public class JsonLdWriter : BaseStoreWriter
 
             // 6.4 - For each item usage in the usages member of nil, perform the following steps:
 
-            foreach (Usage usage in nil.Usages)
+            foreach (var usage in nil.Usages)
             {
                 // 6.4.1 - Initialize node to the value of the value of the node entry of usage,
                 // property to the value of the property entry of usage,
                 // and head to the value of the value entry of usage.
-                JObjectWithUsages node = usage.Node;
+                var node = usage.Node;
                 var property = usage.Property;
                 var head = usage.Value as JObject;
                 // 6.4.2 - Initialize two empty arrays list and list nodes.
@@ -314,7 +314,7 @@ public class JsonLdWriter : BaseStoreWriter
                     // 6.4.3.2 - Append the value of the @id member of node to the list nodes array.
                     listNodes.Add(node["@id"]);
                     // 6.4.3.3 - Initialize node usage to the value of the entry of referenced once associated with the @id entry of node.
-                    Usage nodeUsage = referencedOnce[node["@id"].Value<string>()];
+                    var nodeUsage = referencedOnce[node["@id"].Value<string>()];
 
                     // 6.4.3.4 - Set node to the value of the node entry of node usage,
                     // property to the value of the property entry of node usage,
@@ -344,9 +344,9 @@ public class JsonLdWriter : BaseStoreWriter
         // 7 - Initialize an empty array result.
         var result = new JArray();
         // 8 - For each subject and node in default graph ordered lexicographically by subject if ordered is true:
-        IEnumerable<JProperty> defaultGraphProperties = defaultGraph.Properties();
+        var defaultGraphProperties = defaultGraph.Properties();
         if (_options.Ordered) defaultGraphProperties = defaultGraphProperties.OrderBy(x => x.Name, StringComparer.Ordinal);
-        foreach (JProperty defaultGraphProperty in defaultGraphProperties)
+        foreach (var defaultGraphProperty in defaultGraphProperties)
         {
             var subject = defaultGraphProperty.Name;
             var node = defaultGraphProperty.Value as JObject;
@@ -358,12 +358,12 @@ public class JsonLdWriter : BaseStoreWriter
                 node["@graph"] = graphArray;
                 // 8.1.2 - For each key-value pair s-n in the subject entry of graph map ordered lexicographically by s if ordered is true,
                 // append n to the @graph entry of node after removing its usages entry, unless the only remaining entry of n is @id.
-                IEnumerable<JProperty> subjectMapProperties = (graphMap[subject] as JObject).Properties();
+                var subjectMapProperties = (graphMap[subject] as JObject).Properties();
                 if (_options.Ordered)
                 {
                     subjectMapProperties = subjectMapProperties.OrderBy(x => x.Name, StringComparer.Ordinal);
                 }
-                foreach (JProperty subjectMapProperty in subjectMapProperties)
+                foreach (var subjectMapProperty in subjectMapProperties)
                 {
                     var s = subjectMapProperty.Name;
                     var n = subjectMapProperty.Value as JObject;
@@ -395,7 +395,7 @@ public class JsonLdWriter : BaseStoreWriter
         if (!RdfSpecsHelper.RdfListRest.Equals(property)) return false;
         var nodeId = node["@id"].Value<string>();
         if (nodeId == null || !JsonLdUtils.IsBlankNodeIdentifier(nodeId)) return false;
-        if (!nodeUsagesMap.TryGetValue(nodeId, out Usage usage)) return false;
+        if (!nodeUsagesMap.TryGetValue(nodeId, out var usage)) return false;
         if (usage == null) return false;
 
         var first = node[RdfSpecsHelper.RdfListFirst] as JArray;

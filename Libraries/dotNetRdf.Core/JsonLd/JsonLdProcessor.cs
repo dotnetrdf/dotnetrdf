@@ -100,7 +100,7 @@ public class JsonLdProcessor
         Uri contextBase = null;
         if (input.Type == JTokenType.String)
         {
-            RemoteDocument remoteDocument = LoadJson(new Uri(input.Value<string>()),
+            var remoteDocument = LoadJson(new Uri(input.Value<string>()),
                 new JsonLdLoaderOptions {ExtractAllScripts = _options.ExtractAllScripts}, _options);
             expandedInput = Expand(remoteDocument, remoteDocument.DocumentUrl,
                 new JsonLdLoaderOptions {ExtractAllScripts = false}, _options);
@@ -123,14 +123,14 @@ public class JsonLdProcessor
 
         var contextProcessor = new ContextProcessor(_options, Warnings);
 
-        JsonLdContext activeContext = contextProcessor.ProcessContext(new JsonLdContext(), context, contextBase);
+        var activeContext = contextProcessor.ProcessContext(new JsonLdContext(), context, contextBase);
         if (activeContext.Base == null)
         {
             activeContext.Base = _options?.Base ?? (_options.CompactToRelative ? remoteDocumentUrl : null);
         }
 
         var compactor = new CompactProcessor(_options, contextProcessor, Warnings);
-        JToken compactedOutput = compactor.CompactElement(activeContext, null, expandedInput, _options.CompactArrays,
+        var compactedOutput = compactor.CompactElement(activeContext, null, expandedInput, _options.CompactArrays,
             _options.Ordered);
         if (JsonLdUtils.IsEmptyArray(compactedOutput))
         {
@@ -160,7 +160,7 @@ public class JsonLdProcessor
     /// <returns>The expanded JSON-LD context.</returns>
     public static JArray Expand(Uri contextUrl, JsonLdProcessorOptions options = null, IList<JsonLdProcessorWarning> warnings = null)
     {
-        RemoteDocument parsedJson = LoadJson(contextUrl, null, options);
+        var parsedJson = LoadJson(contextUrl, null, options);
         var processor = new JsonLdProcessor(options);
         var expanded = processor.Expand(parsedJson, contextUrl, null, options);
         if (processor.Warnings.Any() && warnings is not null)
@@ -216,14 +216,14 @@ public class JsonLdProcessor
         }
 
         if (documentLocation == null) documentLocation = doc.DocumentUrl;
-        Uri contextBase = options?.Base ?? documentLocation;
-        JsonLdContext activeContext = contextBase != null ? new JsonLdContext(contextBase) : new JsonLdContext();
+        var contextBase = options?.Base ?? documentLocation;
+        var activeContext = contextBase != null ? new JsonLdContext(contextBase) : new JsonLdContext();
         var contextProcessor = new ContextProcessor(options, Warnings);
         if (options?.ExpandContext != null)
         {
             if (options.ExpandContext is JObject expandObject)
             {
-                JProperty contextProperty = expandObject.Property("@context");
+                var contextProperty = expandObject.Property("@context");
                 activeContext = contextProcessor.ProcessContext(activeContext,
                     contextProperty != null ? contextProperty.Value : expandObject,
                     activeContext.OriginalBase);
@@ -237,7 +237,7 @@ public class JsonLdProcessor
 
         if (doc.ContextUrl != null)
         {
-            RemoteDocument contextDoc = LoadJson(doc.ContextUrl, loaderOptions, options);
+            var contextDoc = LoadJson(doc.ContextUrl, loaderOptions, options);
             if (contextDoc.Document is string contextJson)
             {
                 contextDoc.Document = JToken.Parse(contextJson);
@@ -247,7 +247,7 @@ public class JsonLdProcessor
         }
         
         var expander = new ExpandProcessor(options, contextProcessor, Warnings);
-        JToken expandedOutput = expander.ExpandElement(activeContext, null, doc.Document as JToken,
+        var expandedOutput = expander.ExpandElement(activeContext, null, doc.Document as JToken,
             doc.DocumentUrl ?? options?.Base,
             options?.FrameExpansion ?? false,
             options?.Ordered ?? false);
@@ -293,10 +293,10 @@ public class JsonLdProcessor
             remoteDocument = LoadJson(remoteDocumentUri, loaderOptions, _options);
         }
 
-        JsonLdProcessorOptions expandOptions = _options.Clone();
+        var expandOptions = _options.Clone();
         expandOptions.Ordered = false;
 
-        JArray expandedInput = remoteDocument != null
+        var expandedInput = remoteDocument != null
             ? Expand(remoteDocument, remoteDocumentUri, loaderOptions, expandOptions)
             : Expand(input, expandOptions);
 
@@ -306,10 +306,10 @@ public class JsonLdProcessor
             remoteFrame = LoadJson(remoteFrameUri, loaderOptions, _options);
         }
 
-        JsonLdProcessorOptions frameExpansionOptions = _options.Clone();
+        var frameExpansionOptions = _options.Clone();
         frameExpansionOptions.Ordered = false;
         frameExpansionOptions.FrameExpansion = true;
-        JArray expandedFrame = remoteFrame != null
+        var expandedFrame = remoteFrame != null
             ? Expand(remoteFrame, remoteFrameUri, loaderOptions, frameExpansionOptions)
             : Expand(frame, frameExpansionOptions);
 
@@ -327,24 +327,24 @@ public class JsonLdProcessor
             haveContext = true;
         }
 
-        Uri contextBase = _options.Base;
+        var contextBase = _options.Base;
         if (remoteFrame?.DocumentUrl != null) contextBase = remoteFrame.DocumentUrl;
 
         var contextProcessor = new ContextProcessor(_options, Warnings);
 
         // 10 - Initialize active context to the result of the Context Processing algorithm passing a new empty context as active context context as local context, and context base as base URL.
-        JsonLdContext activeContext = contextProcessor.ProcessContext(new JsonLdContext(), context, contextBase);
+        var activeContext = contextProcessor.ProcessContext(new JsonLdContext(), context, contextBase);
 
         // 11 - Initialize an active context using context; the base IRI is set to the base option from options, if set; otherwise, if the compactToRelative option is true, to the IRI of the currently being processed document, if available; otherwise to null.
         // KA - Spec is a bit unclear here. I assume that it means that this step creates a separate active context potentially with a different base IRI for the reverse context creation in step 12
-        Uri reverseContextBase = _options.Base ??
+        var reverseContextBase = _options.Base ??
                                  (_options.CompactToRelative && remoteDocument != null
                                      ? remoteDocument.DocumentUrl
                                      : null);
-        JsonLdContext toReverse = contextProcessor.ProcessContext(new JsonLdContext(), context, reverseContextBase);
+        var toReverse = contextProcessor.ProcessContext(new JsonLdContext(), context, reverseContextBase);
 
         // 12 - Initialize inverse context to the result of performing the Inverse Context Creation algorithm.
-        JObject inverseContext = toReverse.InverseContext;
+        var inverseContext = toReverse.InverseContext;
 
         // 13 - If frame has a top-level property which expands to @graph set the frameDefault option to options with the value true.
         if (frame is JObject frameObject && frameObject.Properties()
@@ -354,11 +354,11 @@ public class JsonLdProcessor
         }
 
         // 14 - Initialize a new framing state (state) to an empty map. 
-        JObject graphMap = nodeMapGenerator.GenerateNodeMap(expandedInput);
+        var graphMap = nodeMapGenerator.GenerateNodeMap(expandedInput);
         if (!_options.FrameDefault)
         {
             // Add an @merged entry to graphMap
-            JObject mergedNodeMap = nodeMapGenerator.GenerateMergedNodeMap(graphMap);
+            var mergedNodeMap = nodeMapGenerator.GenerateMergedNodeMap(graphMap);
             graphMap["@merged"] = mergedNodeMap;
         }
 
@@ -381,7 +381,7 @@ public class JsonLdProcessor
 
         // 19 - Set compacted results to the result of using the compact method using active context, inverse context, null for active property, results as element,, and the compactArrays and ordered flags from options.
         var compactor = new CompactProcessor(_options, contextProcessor, Warnings);
-        JToken compactedResults =
+        var compactedResults =
             compactor.CompactElement(activeContext, null, results, _options.CompactArrays, _options.Ordered);
         var graphProperty = compactor.CompactIri(activeContext, "@graph", vocab: true);
         // 19.1 - If compacted results is an empty array, replace it with a new map.
@@ -413,7 +413,7 @@ public class JsonLdProcessor
                                    compactedResultsObject[graphProperty].Type != JTokenType.Array))
         {
             var g = new JObject();
-            foreach (JProperty property in compactedResultsObject.Properties().ToList())
+            foreach (var property in compactedResultsObject.Properties().ToList())
             {
                 if (!property.Name.Equals("@context") && !property.Name.Equals(graphProperty))
                 {
@@ -452,9 +452,9 @@ public class JsonLdProcessor
     public static JToken Flatten(JToken input, JToken context, JsonLdProcessorOptions options)
     {
         // Set expanded input to the result of using the expand method using input and options.
-        JArray expandedInput = Expand(input, options);
+        var expandedInput = Expand(input, options);
         var flattenProcessor = new FlattenProcessor();
-        JToken flattenedOutput = flattenProcessor.FlattenElement(expandedInput, options.Ordered);
+        var flattenedOutput = flattenProcessor.FlattenElement(expandedInput, options.Ordered);
         if (context != null)
         {
             flattenedOutput = Compact(flattenedOutput, context, options);
@@ -493,7 +493,7 @@ public class JsonLdProcessor
         switch (token)
         {
             case JObject o:
-                foreach (JProperty property in o.Properties())
+                foreach (var property in o.Properties())
                 {
                     switch (property.Value.Type)
                     {
@@ -515,7 +515,7 @@ public class JsonLdProcessor
             case JArray a:
                 for (var ix = 0; ix < a.Count; ix++)
                 {
-                    JToken item = a[ix];
+                    var item = a[ix];
                     switch (item.Type)
                     {
                         case JTokenType.String:
@@ -549,8 +549,8 @@ public class JsonLdProcessor
                 var o = token as JObject;
                 if (o["@preserve"] != null)
                 {
-                    JContainer parent = o.Parent;
-                    JToken preserveValue = o["@preserve"];
+                    var parent = o.Parent;
+                    var preserveValue = o["@preserve"];
                     if (preserveValue.Type == JTokenType.String && preserveValue.Value<string>().Equals("@null"))
                     {
                         if (parent is JArray)
@@ -568,7 +568,7 @@ public class JsonLdProcessor
                     }
                 }
 
-                foreach (KeyValuePair<string, JToken> p in o)
+                foreach (var p in o)
                 {
                     ReplacePreservedValues(p.Value, context, compactArrays);
                 }
@@ -576,7 +576,7 @@ public class JsonLdProcessor
                 break;
             case JTokenType.Array:
                 var a = token as JArray;
-                foreach (JToken item in a.ToList())
+                foreach (var item in a.ToList())
                 {
                     ReplacePreservedValues(item, context, compactArrays);
                 }
@@ -585,7 +585,7 @@ public class JsonLdProcessor
                 {
                     if (a.Parent is JProperty parentProperty)
                     {
-                        JsonLdTermDefinition termDefinition = context.GetTerm(parentProperty.Name);
+                        var termDefinition = context.GetTerm(parentProperty.Name);
                         var expandedName = termDefinition?.TypeMapping ?? parentProperty.Name;
                         if (expandedName != "@graph" &&
                             expandedName != "@list" &&
@@ -604,7 +604,7 @@ public class JsonLdProcessor
     {
         var objectMap = new Dictionary<string, BlankNodeMapEntry>();
         GenerateBlankNodeMap(objectMap, token, null);
-        foreach (KeyValuePair<string, BlankNodeMapEntry> mapEntry in objectMap)
+        foreach (var mapEntry in objectMap)
         {
             if (!mapEntry.Value.IsReferenced)
             {
@@ -621,7 +621,7 @@ public class JsonLdProcessor
         }
         else if (toUpdate.Value is JArray valueArray)
         {
-            foreach (JToken item in valueArray)
+            foreach (var item in valueArray)
             {
                 if (item.Value<string>().Equals(id))
                 {
@@ -647,7 +647,7 @@ public class JsonLdProcessor
                 var str = token.Value<string>();
                 if (JsonLdUtils.IsBlankNodeIdentifier(str))
                 {
-                    if (!objectMap.TryGetValue(str, out BlankNodeMapEntry mapEntry))
+                    if (!objectMap.TryGetValue(str, out var mapEntry))
                     {
                         mapEntry = new BlankNodeMapEntry();
                         objectMap[str] = mapEntry;
@@ -665,14 +665,14 @@ public class JsonLdProcessor
 
                 break;
             case JTokenType.Array:
-                foreach (JToken item in (token as JArray))
+                foreach (var item in (token as JArray))
                 {
                     GenerateBlankNodeMap(objectMap, item, activeProperty);
                 }
 
                 break;
             case JTokenType.Object:
-                foreach (JProperty p in (token as JObject).Properties())
+                foreach (var p in (token as JObject).Properties())
                 {
                     if (p.Name == "@value") continue;
                     GenerateBlankNodeMap(objectMap, p.Value, p);

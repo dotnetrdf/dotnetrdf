@@ -58,9 +58,9 @@ public class InversePath : BaseUnaryPath
     public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
     {
         // Swap the Subject and Object over
-        PatternItem tempObj = context.Object;
-        PatternItem tempSubj = context.Subject;
-        PatternItem tempEnd = context.End;
+        var tempObj = context.Object;
+        var tempSubj = context.Subject;
+        var tempEnd = context.End;
         context.Object = tempSubj;
         context.Subject = tempObj;
         context.End = tempSubj;

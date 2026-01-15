@@ -47,7 +47,7 @@ public static class InMemoryExtensions
         var ds = new InMemoryDataset(g);
         var processor = new LeviathanQueryProcessor(ds, options => options.UriFactory = new CachingUriFactory(g.UriFactory));
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(sparqlQuery);
+        var q = parser.ParseFromString(sparqlQuery);
         return processor.ProcessQuery(q);
     }
 
@@ -63,7 +63,7 @@ public static class InMemoryExtensions
         var ds = new InMemoryDataset(g);
         var processor = new LeviathanQueryProcessor(ds, options => options.UriFactory = new CachingUriFactory(g.UriFactory));
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(sparqlQuery);
+        var q = parser.ParseFromString(sparqlQuery);
         processor.ProcessQuery(rdfHandler, resultsHandler, q);
     }
 

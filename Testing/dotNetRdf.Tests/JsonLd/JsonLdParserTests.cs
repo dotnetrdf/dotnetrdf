@@ -36,7 +36,7 @@ public class JsonLdParserTests : IDisposable
     public void TestIssue122()
     {
         var jsonLdParser = new JsonLdParser();
-        ITripleStore tStore = new TripleStore();
+        var tStore = new TripleStore();
         _server.Given(Request.Create().WithPath("/contexts/person.jsonld"))
             .RespondWith(Response.Create()
                 .WithStatusCode(200)
@@ -89,7 +89,7 @@ public class JsonLdParserTests : IDisposable
     public void ItAddsListTriplesToTheGraphContainingTheList()
     {
         var jsonLdParser = new JsonLdParser();
-        ITripleStore tripleStore = new TripleStore();
+        var tripleStore = new TripleStore();
         using (var reader = new StringReader(@"{
             ""@id"": ""urn:graph:1"",
             ""@graph"": [
@@ -103,9 +103,9 @@ public class JsonLdParserTests : IDisposable
             jsonLdParser.Load(tripleStore, reader);
         }
 
-        IGraph defaultGraph = tripleStore.Graphs.FirstOrDefault(g=>g.Name == null);
+        var defaultGraph = tripleStore.Graphs.FirstOrDefault(g=>g.Name == null);
         Assert.True(defaultGraph == null || defaultGraph.IsEmpty);
-        IGraph contentGraph = tripleStore.Graphs[new UriNode(new Uri("urn:graph:1"))];
+        var contentGraph = tripleStore.Graphs[new UriNode(new Uri("urn:graph:1"))];
         Assert.NotNull(contentGraph);
         Assert.Equal(5, contentGraph.Triples.Count);
     }
@@ -170,7 +170,7 @@ public class JsonLdParserTests : IDisposable
     [MemberData(nameof(DateTimeValues))]
     public void RoundtripsDatetimeTypedLiterals(string dateTimeValue, string datatype)
     {
-        var isValidDateTime = DateTime.TryParse(dateTimeValue, null, DateTimeStyles.AdjustToUniversal, out DateTime parsedDateTime);
+        var isValidDateTime = DateTime.TryParse(dateTimeValue, null, DateTimeStyles.AdjustToUniversal, out var parsedDateTime);
         var isDateTimeDatatype = datatype == XmlSpecsHelper.XmlSchemaDataTypeDateTime;
 
         if (isValidDateTime && isDateTimeDatatype)
@@ -211,7 +211,7 @@ public class JsonLdParserTests : IDisposable
   'rdf:type': 'foo:Item'
 }";
         var jsonLdParser = new JsonLdParser();
-        ITripleStore tStore = new TripleStore();
+        var tStore = new TripleStore();
         using (var reader = new StringReader(jsonLd))
         {
             jsonLdParser.Load(tStore, reader);
@@ -236,7 +236,7 @@ public class JsonLdParserTests : IDisposable
     }
 }";
         var jsonLdParser = new JsonLdParser();
-        ITripleStore tStore = new TripleStore();
+        var tStore = new TripleStore();
         using (var reader = new StringReader(jsonLd))
         {
             jsonLdParser.Load(tStore, reader);
@@ -271,7 +271,7 @@ public class JsonLdParserTests : IDisposable
         var warnings = new List<string>();
         var jsonLdParser = new JsonLdParser();
         jsonLdParser.Warning += message => warnings.Add(message);
-        ITripleStore tStore = new TripleStore();
+        var tStore = new TripleStore();
         using (var reader = new StringReader(jsonLd))
         {
             jsonLdParser.Load(tStore, reader);
@@ -307,7 +307,7 @@ public class JsonLdParserTests : IDisposable
 
         var input = JToken.Parse(inputJson);
         var frame = JToken.Parse(frameJson);
-        JObject frameResult = JsonLdProcessor.Frame(input, frame, new JsonLdProcessorOptions());
+        var frameResult = JsonLdProcessor.Frame(input, frame, new JsonLdProcessorOptions());
         frameResult["@id"]?.ToString().Should()
             .Be("http://localhost:8080/outline/http%3A%2F%2Flocalhost%3A8080%2Fknowledge-graph%2Fengine_01");
         frameResult["@type"]?.Children().Count().Should().Be(2);

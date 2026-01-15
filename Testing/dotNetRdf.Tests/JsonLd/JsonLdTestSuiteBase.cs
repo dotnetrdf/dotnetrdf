@@ -26,7 +26,7 @@ public class JsonLdTestSuiteBase
         string expectedOutputPath, JsonLdErrorCode expectErrorCode, string baseIri,
         string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
     {
-        JsonLdProcessorOptions processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
+        var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
             compactArrays, rdfDirection);
         var inputJson = File.ReadAllText(inputPath);
         var inputElement = JToken.Parse(inputJson);
@@ -37,21 +37,21 @@ public class JsonLdTestSuiteBase
         switch (testType)
         {
             case JsonLdTestType.PositiveEvaluationTest:
-                JArray actualOutputElement = JsonLdProcessor.Expand(inputElement, processorOptions);
+                var actualOutputElement = JsonLdProcessor.Expand(inputElement, processorOptions);
                 var expectedOutputJson = File.ReadAllText(expectedOutputPath);
                 var expectedOutputElement = JToken.Parse(expectedOutputJson);
                 Assert.True(DeepEquals(actualOutputElement, expectedOutputElement),
                     $"Error processing expand test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
                 break;
             case JsonLdTestType.NegativeEvaluationTest:
-                JsonLdProcessorException exception =
+                var exception =
                     Assert.Throws<JsonLdProcessorException>(
                         () => JsonLdProcessor.Expand(inputElement, processorOptions));
                 Assert.Equal(expectErrorCode, exception.ErrorCode);
                 break;
             case JsonLdTestType.PositiveSyntaxTest:
                 // Expect test to run without throwing processing errors
-                JArray _ = JsonLdProcessor.Expand(inputElement, processorOptions);
+                var _ = JsonLdProcessor.Expand(inputElement, processorOptions);
                 break;
             case JsonLdTestType.NegativeSyntaxTest:
                 Assert.ThrowsAny<JsonLdProcessorException>(() => JsonLdProcessor.Expand(inputElement, processorOptions));
@@ -64,23 +64,23 @@ public class JsonLdTestSuiteBase
         string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
         string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
     {
-        JsonLdProcessorOptions processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
+        var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
             compactArrays, rdfDirection);
         var inputJson = File.ReadAllText(inputPath);
         var contextJson = contextPath == null ? null : File.ReadAllText(contextPath);
         var inputElement = JToken.Parse(inputJson);
-        JToken contextElement = contextJson == null ? new JObject() : JToken.Parse(contextJson);
+        var contextElement = contextJson == null ? new JObject() : JToken.Parse(contextJson);
         switch (testType)
         {
             case JsonLdTestType.PositiveEvaluationTest:
                 var expectedOutputJson = File.ReadAllText(expectedOutputPath);
                 var expectedOutputElement = JToken.Parse(expectedOutputJson);
-                JObject actualOutputElement = JsonLdProcessor.Compact(inputElement, contextElement, processorOptions);
+                var actualOutputElement = JsonLdProcessor.Compact(inputElement, contextElement, processorOptions);
                 Assert.True(DeepEquals(actualOutputElement, expectedOutputElement),
                     $"Error processing compact test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
                 break;
             case JsonLdTestType.NegativeEvaluationTest:
-                JsonLdProcessorException exception = Assert.Throws<JsonLdProcessorException>(() =>
+                var exception = Assert.Throws<JsonLdProcessorException>(() =>
                     JsonLdProcessor.Compact(inputElement, contextElement, processorOptions));
                 Assert.Equal(expectedErrorCode, exception.ErrorCode);
                 break;
@@ -94,12 +94,12 @@ public class JsonLdTestSuiteBase
         string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
         string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
     {
-        JsonLdProcessorOptions processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
+        var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
             compactArrays, rdfDirection);
         var inputJson = File.ReadAllText(inputPath);
         var contextJson = contextPath == null ? null : File.ReadAllText(contextPath);
         var inputElement = JToken.Parse(inputJson);
-        JToken contextElement = contextJson == null ? null : JToken.Parse(contextJson);
+        var contextElement = contextJson == null ? null : JToken.Parse(contextJson);
 
         switch (testType)
         {
@@ -107,12 +107,12 @@ public class JsonLdTestSuiteBase
                 var expectedOutputJson = File.ReadAllText(expectedOutputPath);
                 var expectedOutputElement = JToken.Parse(expectedOutputJson);
 
-                JToken actualOutputElement = JsonLdProcessor.Flatten(inputElement, contextElement, processorOptions);
+                var actualOutputElement = JsonLdProcessor.Flatten(inputElement, contextElement, processorOptions);
                 Assert.True(DeepEquals(actualOutputElement, expectedOutputElement),
                     $"Error processing flatten test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
                 break;
             case JsonLdTestType.NegativeEvaluationTest:
-                JsonLdProcessorException exception = Assert.Throws<JsonLdProcessorException>(() =>
+                var exception = Assert.Throws<JsonLdProcessorException>(() =>
                     JsonLdProcessor.Flatten(inputElement, contextElement, processorOptions));
                 Assert.Equal(expectedErrorCode, exception.ErrorCode);
                 break;
@@ -126,7 +126,7 @@ public class JsonLdTestSuiteBase
         string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
         string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
     {
-        JsonLdProcessorOptions processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
+        var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
             compactArrays, rdfDirection);
         var jsonldParser = new JsonLdParser(processorOptions);
         var actualStore = new TripleStore();
@@ -148,7 +148,7 @@ public class JsonLdTestSuiteBase
                 break;
 
             case JsonLdTestType.NegativeEvaluationTest:
-                JsonLdProcessorException exception =
+                var exception =
                     Assert.Throws<JsonLdProcessorException>(() => jsonldParser.Load(actualStore, inputPath));
                 Assert.Equal(expectedErrorCode, exception.ErrorCode);
                 break;
@@ -195,7 +195,7 @@ public class JsonLdTestSuiteBase
         {
             case JsonLdTestType.PositiveEvaluationTest:
             {
-                JArray actualOutput = jsonLdWriter.SerializeStore(input);
+                var actualOutput = jsonLdWriter.SerializeStore(input);
                 var expectedOutputJson = File.ReadAllText(expectedOutputPath);
                 var expectedOutput = JToken.Parse(expectedOutputJson);
 
@@ -213,12 +213,12 @@ public class JsonLdTestSuiteBase
             }
             case JsonLdTestType.NegativeEvaluationTest:
             {
-                JsonLdProcessorException exception = Assert.Throws<JsonLdProcessorException>(() => jsonLdWriter.SerializeStore(input));
+                var exception = Assert.Throws<JsonLdProcessorException>(() => jsonLdWriter.SerializeStore(input));
                 Assert.Equal(expectErrorCode, exception.ErrorCode);
                 break;
             }
             case JsonLdTestType.PositiveSyntaxTest:
-                JArray _ = jsonLdWriter.SerializeStore(input);
+                var _ = jsonLdWriter.SerializeStore(input);
                 break;
             case JsonLdTestType.NegativeSyntaxTest:
                 Assert.ThrowsAny<JsonLdProcessorException>(() => jsonLdWriter.SerializeStore(input));
@@ -232,7 +232,7 @@ public class JsonLdTestSuiteBase
     {
         var inputJson = File.ReadAllText(inputPath);
         var frameJson = File.ReadAllText(framePath);
-        JsonLdProcessingMode jsonLdProcessingMode = "json-ld-1.0".Equals(processingMode)
+        var jsonLdProcessingMode = "json-ld-1.0".Equals(processingMode)
             ? JsonLdProcessingMode.JsonLd10
             : JsonLdProcessingMode.JsonLd11FrameExpansion;
         var options = new JsonLdProcessorOptions
@@ -250,12 +250,12 @@ public class JsonLdTestSuiteBase
             case JsonLdTestType.PositiveEvaluationTest:
                 var expectedOutputJson = File.ReadAllText(expectedOutputPath);
                 var expectedOutputElement = JToken.Parse(expectedOutputJson);
-                JObject actualOutput = JsonLdProcessor.Frame(inputElement, frameElement, options);
+                var actualOutput = JsonLdProcessor.Frame(inputElement, frameElement, options);
                 Assert.True(DeepEquals(expectedOutputElement, actualOutput),
                     $"Test failed for input {Path.GetFileName(inputPath)}\nExpected:\n{expectedOutputElement}\nActual:\n{actualOutput}");
                 break;
             case JsonLdTestType.NegativeEvaluationTest:
-                JsonLdProcessorException exception = Assert.ThrowsAny<JsonLdProcessorException>(() =>
+                var exception = Assert.ThrowsAny<JsonLdProcessorException>(() =>
                     JsonLdProcessor.Frame(inputElement, frameElement, options));
                 Assert.Equal(expectErrorCode, exception.ErrorCode);
                 break;
@@ -297,7 +297,7 @@ public class JsonLdTestSuiteBase
             return !a1.Where((t, i) => !DeepEquals(t, a2[i], true)).Any();
         }
         var a2Clone = new JArray(a2);
-        foreach (JToken item in a1)
+        foreach (var item in a1)
         {
             var matched = false;
             for (var j = 0; j < a2Clone.Count; j++)
@@ -332,7 +332,7 @@ public class JsonLdTestSuiteBase
         {
             case JTokenType.Object:
                 if (!(token1 is JObject o1 && token2 is JObject o2)) return false;
-                foreach (JProperty p in o1.Properties())
+                foreach (var p in o1.Properties())
                 {
                     if (o2[p.Name] == null)
                     {
@@ -373,7 +373,7 @@ public class JsonLdTestSuiteBase
                     return true;
                 }
                 var unmatchedItems = (token2 as JArray).ToList();
-                foreach (JToken item1 in a1)
+                foreach (var item1 in a1)
                 {
                     if (unmatchedItems.Count == 0)
                     {
@@ -409,9 +409,9 @@ public class JsonLdTestSuiteBase
     private static void FixStringLiterals(ITripleStore store)
     {
         var xsdString = new Uri("http://www.w3.org/2001/XMLSchema#string");
-        foreach (IGraph graphToUpdate in store.Graphs)
+        foreach (var graphToUpdate in store.Graphs)
         {
-            foreach (Triple t in graphToUpdate.Triples.ToList())
+            foreach (var t in graphToUpdate.Triples.ToList())
             {
                 if (t.Object is ILiteralNode literalNode && string.IsNullOrEmpty(literalNode.Language) &&
                     literalNode.DataType == null)

@@ -164,7 +164,7 @@ public class InMemoryDataset
     {
         get 
         {
-            foreach (IRefNode n in GraphNames)
+            foreach (var n in GraphNames)
             {
                 switch (n)
                 {

@@ -57,7 +57,7 @@ public class InferencingStoreFactory : IObjectFactory
         g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAsync));
 
         // Check whether to use a specific Graph Collection
-        INode collectionNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraphCollection)));
+        var collectionNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraphCollection)));
 
         // Instantiate the Store Class
         switch (targetType.FullName)
@@ -82,11 +82,11 @@ public class InferencingStoreFactory : IObjectFactory
         // Read in additional data to be added to the Store
         if (store != null)
         {
-            IEnumerable<INode> sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
+            var sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
 
             // Read from Graphs
             object temp;
-            foreach (INode source in sources)
+            foreach (var source in sources)
             {
                 temp = ConfigurationLoader.LoadObject(g, source);
                 if (temp is IGraph graph)
@@ -101,7 +101,7 @@ public class InferencingStoreFactory : IObjectFactory
 
             // Load from Embedded Resources
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFromEmbedded)));
-            foreach (INode source in sources)
+            foreach (var source in sources)
             {
                 if (source.NodeType == NodeType.Literal)
                 {
@@ -115,7 +115,7 @@ public class InferencingStoreFactory : IObjectFactory
 
             // Read from Files - we assume these files are Dataset Files
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
-            foreach (INode source in sources)
+            foreach (var source in sources)
             {
                 if (source.NodeType == NodeType.Literal)
                 {
@@ -130,8 +130,8 @@ public class InferencingStoreFactory : IObjectFactory
             // Finally we'll apply any reasoners
             if (store is IInferencingTripleStore inferencingTripleStore)
             {
-                IEnumerable<INode> reasoners = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyReasoner)));
-                foreach (INode reasoner in reasoners)
+                var reasoners = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyReasoner)));
+                foreach (var reasoner in reasoners)
                 {
                     temp = ConfigurationLoader.LoadObject(g, reasoner);
                     if (temp is IInferenceEngine inferenceEngine)

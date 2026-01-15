@@ -205,7 +205,7 @@ internal class JsonLdUtils
         // The following would have been ideal, but returns false when the value is a relative IRI that contains a fragment identifier.
         //return Uri.IsWellFormedUriString(value, UriKind.RelativeOrAbsolute);
         if (IsBlankNodeIdentifier(value)) { return false; }
-        if (!Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out Uri parsed)) { return false; }
+        if (!Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var parsed)) { return false; }
         if (parsed.IsAbsoluteUri) { return parsed.IsWellFormedOriginalString(); }
         if (!value.Contains('#')) { return parsed.IsWellFormedOriginalString() || Uri.EscapeUriString(value).Equals(value); }
         if (value.StartsWith("#")) return false;
@@ -407,7 +407,7 @@ internal class JsonLdUtils
         if (value is JArray valueArray)
         {
             // Call this method to add each individual item
-            foreach (JToken item in valueArray)
+            foreach (var item in valueArray)
             {
                 AddValue(o, entry, item, asArray);
             }
@@ -462,7 +462,7 @@ internal class JsonLdUtils
             default:
             {
                 var array = new JArray();
-                foreach (JToken v in values) array.Add(v);
+                foreach (var v in values) array.Add(v);
                 subject[property] = array;
                 break;
             }
@@ -478,10 +478,10 @@ internal class JsonLdUtils
     /// <returns></returns>
     public static JArray ConcatenateValues(JToken token1, JToken token2)
     {
-        JArray result = EnsureArray(token1);
+        var result = EnsureArray(token1);
         if (token2 is JArray)
         {
-            foreach (JToken c in token2.Children()) result.Add(c);
+            foreach (var c in token2.Children()) result.Add(c);
         }
         else
         {
@@ -501,7 +501,7 @@ internal class JsonLdUtils
     /// <returns>The property value if found, null otherwise.</returns>
     public static JToken GetPropertyValue(JsonLdContext activeContext, JObject parent, string propertyName)
     {
-        if (parent.TryGetValue(propertyName, out JToken ret)) return ret;
+        if (parent.TryGetValue(propertyName, out var ret)) return ret;
         foreach (var alias in activeContext.GetAliases(propertyName))
         {
             if (parent.TryGetValue(alias, out ret)) return ret;

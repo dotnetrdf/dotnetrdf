@@ -79,8 +79,8 @@ public class Individual : OntologyResource
     /// </summary>
     private void IntialiseClasses() 
     {
-        IUriNode rdfType = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyType));
-        foreach (Triple t in _graph.GetTriplesWithSubjectPredicate(_resource, rdfType))
+        var rdfType = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyType));
+        foreach (var t in _graph.GetTriplesWithSubjectPredicate(_resource, rdfType))
         {
             var c = new OntologyClass(t.Object, _graph);
             _classes.Add(c);

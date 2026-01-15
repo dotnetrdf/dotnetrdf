@@ -117,7 +117,7 @@ public class Join
         get
         {
             // Floating variables are those floating on either side which are not fixed
-            IEnumerable<string> floating = _lhs.FloatingVariables.Concat(_rhs.FloatingVariables).Distinct();
+            var floating = _lhs.FloatingVariables.Concat(_rhs.FloatingVariables).Distinct();
             var fixedVars = new HashSet<string>(FixedVariables);
             return floating.Where(v => !fixedVars.Contains(v));
         }

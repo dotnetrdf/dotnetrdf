@@ -62,7 +62,7 @@ public class InferencingTripleStore : TripleStore, IInferencingTripleStore
             }
 
             // Apply inference
-            foreach (IInferenceEngine reasoner in _reasoners)
+            foreach (var reasoner in _reasoners)
             {
                 if (_storeInferencesExternally)
                 {
@@ -91,7 +91,7 @@ public class InferencingTripleStore : TripleStore, IInferencingTripleStore
             {
                 // Have to do a ToList() in case someone else inserts a Graph
                 // Which ApplyInference may do if the Inference information is stored in a special Graph
-                foreach (IGraph g in _graphs.ToList())
+                foreach (var g in _graphs.ToList())
                 {
                     ApplyInference(g);
                 }

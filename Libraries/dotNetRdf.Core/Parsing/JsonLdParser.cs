@@ -133,7 +133,7 @@ public class JsonLdParser : IStoreReader
             element = JToken.ReadFrom(reader);
         }
         var warnings = new List<JsonLdProcessorWarning>();
-        JArray expandedElement = JsonLdProcessor.Expand(element, ParserOptions, warnings);
+        var expandedElement = JsonLdProcessor.Expand(element, ParserOptions, warnings);
         if (warnings.Any())
         {
             foreach (var warning in warnings)
@@ -150,12 +150,12 @@ public class JsonLdParser : IStoreReader
         if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
         handler.StartRdf();
-        IUriNode rdfTypeNode = handler.CreateUriNode(uriFactory.Create(RdfNs + "type"));
+        var rdfTypeNode = handler.CreateUriNode(uriFactory.Create(RdfNs + "type"));
         try
         {
             var nodeMapGenerator = new NodeMapGenerator();
-            JObject nodeMap = nodeMapGenerator.GenerateNodeMap(input);
-            foreach (JProperty p in nodeMap.Properties())
+            var nodeMap = nodeMapGenerator.GenerateNodeMap(input);
+            foreach (var p in nodeMap.Properties())
             {
                 var graphName = p.Name;
                 var graph = p.Value as JObject;
@@ -171,7 +171,7 @@ public class JsonLdParser : IStoreReader
                     {
                         graphNode = handler.CreateBlankNode(graphName.Substring(2));
                     } 
-                    else if (Uri.TryCreate(graphName, UriKind.Absolute, out Uri graphIri) && graphIri.IsWellFormedOriginalString())
+                    else if (Uri.TryCreate(graphName, UriKind.Absolute, out var graphIri) && graphIri.IsWellFormedOriginalString())
                     {
                         graphNode = handler.CreateUriNode(graphIri);
                     }
@@ -180,7 +180,7 @@ public class JsonLdParser : IStoreReader
                         continue;
                     }
                 }
-                foreach (JProperty gp in graph.Properties())
+                foreach (var gp in graph.Properties())
                 {
                     var subject = gp.Name;
                     var node = gp.Value as JObject;
@@ -191,7 +191,7 @@ public class JsonLdParser : IStoreReader
                     }
                     else
                     {
-                        if (!(Uri.TryCreate(subject, UriKind.Absolute, out Uri subjectIri) &&
+                        if (!(Uri.TryCreate(subject, UriKind.Absolute, out var subjectIri) &&
                               subjectIri.IsWellFormedOriginalString()))
                         {
                             RaiseWarning(
@@ -200,15 +200,15 @@ public class JsonLdParser : IStoreReader
                         }
                         subjectNode = handler.CreateUriNode(subjectIri);
                     }
-                    foreach (JProperty np in node.Properties())
+                    foreach (var np in node.Properties())
                     {
                         var property = np.Name;
                         var values = np.Value as JArray;
                         if (property.Equals("@type"))
                         {
-                            foreach (JToken type in values)
+                            foreach (var type in values)
                             {
-                                INode typeNode = MakeNode(handler, type, graphNode);
+                                var typeNode = MakeNode(handler, type, graphNode);
                                 if (typeNode is null)
                                 {
                                     if (ParserOptions.SafeMode)
@@ -224,7 +224,7 @@ public class JsonLdParser : IStoreReader
                         else if ((JsonLdUtils.IsBlankNodeIdentifier(property) && ParserOptions.ProduceGeneralizedRdf) ||
                                  Uri.IsWellFormedUriString(property, UriKind.Absolute))
                         {
-                            foreach (JToken item in values)
+                            foreach (var item in values)
                             {
                                 var predicateNode = MakeNode(handler, property, graphNode) as IRefNode;
                                 if (ParserOptions.SafeMode && predicateNode is null)
@@ -233,7 +233,7 @@ public class JsonLdParser : IStoreReader
                                         $"Unable to generate a predicate node for property `{property}`. This property will be ignored.");
                                     continue;
                                 }
-                                INode objectNode = MakeNode(handler, item, graphNode);
+                                var objectNode = MakeNode(handler, item, graphNode);
                                 if (ParserOptions.SafeMode && objectNode is null)
                                 {
                                     RaiseWarning(
@@ -272,7 +272,7 @@ public class JsonLdParser : IStoreReader
             {
                 return handler.CreateBlankNode(stringValue.Substring(2));
             }
-            if (Uri.TryCreate(stringValue, allowRelativeIri ? UriKind.RelativeOrAbsolute : UriKind.Absolute, out Uri iri))
+            if (Uri.TryCreate(stringValue, allowRelativeIri ? UriKind.RelativeOrAbsolute : UriKind.Absolute, out var iri))
             {
                 if (!Uri.IsWellFormedUriString(stringValue, allowRelativeIri ? UriKind.RelativeOrAbsolute : UriKind.Absolute)) return null;
                 return handler.CreateUriNode(iri);
@@ -283,7 +283,7 @@ public class JsonLdParser : IStoreReader
         if (JsonLdUtils.IsValueObject(token) && token is JObject valueObject)
         {
             string literalValue;
-            JToken value = valueObject["@value"];
+            var value = valueObject["@value"];
             var datatype = valueObject.Property("@type")?.Value.Value<string>();
             var language = valueObject.Property("@language")?.Value.Value<string>();
             if (datatype == "@json")
@@ -337,8 +337,8 @@ public class JsonLdParser : IStoreReader
                     return handler.CreateLiteralNode(literalValue, new Uri(datatype));
                 }
                 // Otherwise direction mode is CompoundLiteral
-                IBlankNode literalNode = handler.CreateBlankNode();
-                Uri xsdString =
+                var literalNode = handler.CreateBlankNode();
+                var xsdString =
                     UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
                 handler.HandleQuad(new Triple(
                     literalNode,
@@ -395,20 +395,20 @@ public class JsonLdParser : IStoreReader
 
     private INode MakeRdfList(IRdfHandler handler, JArray list, IRefNode graphName)
     {
-        IUriNode rdfFirst = handler.CreateUriNode(new Uri(RdfNs + "first"));
-        IUriNode rdfRest = handler.CreateUriNode(new Uri(RdfNs + "rest"));
-        IUriNode rdfNil = handler.CreateUriNode(new Uri(RdfNs + "nil"));
+        var rdfFirst = handler.CreateUriNode(new Uri(RdfNs + "first"));
+        var rdfRest = handler.CreateUriNode(new Uri(RdfNs + "rest"));
+        var rdfNil = handler.CreateUriNode(new Uri(RdfNs + "nil"));
         if (list == null || list.Count == 0) return rdfNil;
         var bNodes = list.Select(x => handler.CreateBlankNode()).ToList();
         for(var ix = 0; ix < list.Count; ix++)
         {
-            IBlankNode subject = bNodes[ix];
-            INode obj = MakeNode(handler, list[ix], graphName);
+            var subject = bNodes[ix];
+            var obj = MakeNode(handler, list[ix], graphName);
             if (obj != null)
             {
                 handler.HandleQuad(new Triple(subject, rdfFirst, obj), graphName);
             }
-            INode rest = (ix + 1 < list.Count) ? bNodes[ix + 1] : (INode)rdfNil;
+            var rest = (ix + 1 < list.Count) ? bNodes[ix + 1] : (INode)rdfNil;
             handler.HandleQuad(new Triple(subject, rdfRest, rest), graphName);
         }
         return bNodes[0];

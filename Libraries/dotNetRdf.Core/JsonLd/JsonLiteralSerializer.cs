@@ -63,7 +63,7 @@ internal class JsonLiteralSerializer
         {
             case JTokenType.Object:
                 writer.WriteStartObject();
-                foreach (JProperty property in (token as JObject).Properties().OrderBy(p=>p.Name, StringComparer.Ordinal))
+                foreach (var property in (token as JObject).Properties().OrderBy(p=>p.Name, StringComparer.Ordinal))
                 {
                     writer.WritePropertyName(property.Name);
                     Serialize(writer, property.Value);
@@ -72,7 +72,7 @@ internal class JsonLiteralSerializer
                 break;
             case JTokenType.Array:
                 writer.WriteStartArray();
-                foreach (JToken item in (token as JArray))
+                foreach (var item in (token as JArray))
                 {
                     Serialize(writer, item);
                 }

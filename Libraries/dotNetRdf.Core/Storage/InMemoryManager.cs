@@ -97,7 +97,7 @@ public class InMemoryManager
     public override void LoadGraph(IRdfHandler handler, Uri graphUri)
     {
         IGraph g = null;
-        IRefNode graphName = graphUri == null ? null : new UriNode(graphUri);
+        var graphName = graphUri == null ? null : new UriNode(graphUri);
         if (_dataset.HasGraph(graphName))
         {
             g = _dataset[graphName];
@@ -172,7 +172,7 @@ public class InMemoryManager
     /// <param name="removals">Triples to be removed.</param>
     public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
     {
-        IRefNode graphName = graphUri == null ? null : new UriNode(graphUri);
+        var graphName = graphUri == null ? null : new UriNode(graphUri);
         UpdateGraph(graphName, additions, removals);
     }
 
@@ -211,7 +211,7 @@ public class InMemoryManager
 
         if ((addList != null && addList.Any()) || (removeList != null && removeList.Any()))
         {
-            IGraph g = _dataset.GetModifiableGraph(graphName);
+            var g = _dataset.GetModifiableGraph(graphName);
             if (addList != null && addList.Any()) g.Assert(addList);
             if (removeList != null && removeList.Any()) g.Retract(removeList);
         }
@@ -238,7 +238,7 @@ public class InMemoryManager
     {
         if (graphUri == null)
         {
-            IGraph g = _dataset.GetModifiableGraph((IRefNode)null);
+            var g = _dataset.GetModifiableGraph((IRefNode)null);
             g.Clear();
             g.Dispose();
         }
@@ -301,7 +301,7 @@ public class InMemoryManager
     /// </remarks>
     public override IEnumerable<string> ListGraphNames()
     {
-        foreach (IRefNode name in _dataset.GraphNames)
+        foreach (var name in _dataset.GraphNames)
         {
             if (name == null)
             {
@@ -363,7 +363,7 @@ public class InMemoryManager
     public object Query(string sparqlQuery)
     {
         _queryParser ??= new SparqlQueryParser();
-        SparqlQuery q = _queryParser.ParseFromString(sparqlQuery);
+        var q = _queryParser.ParseFromString(sparqlQuery);
 
         _queryProcessor ??= new LeviathanQueryProcessor(_dataset);
         return _queryProcessor.ProcessQuery(q);
@@ -379,7 +379,7 @@ public class InMemoryManager
     public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
     {
         _queryParser ??= new SparqlQueryParser();
-        SparqlQuery q = _queryParser.ParseFromString(sparqlQuery);
+        var q = _queryParser.ParseFromString(sparqlQuery);
 
         _queryProcessor ??= new LeviathanQueryProcessor(_dataset);
         _queryProcessor.ProcessQuery(rdfHandler, resultsHandler, q);
@@ -392,7 +392,7 @@ public class InMemoryManager
     public void Update(string sparqlUpdate)
     {
         _updateParser ??= new SparqlUpdateParser();
-        SparqlUpdateCommandSet commandSet = _updateParser.ParseFromString(sparqlUpdate);
+        var commandSet = _updateParser.ParseFromString(sparqlUpdate);
 
         _updateProcessor ??= new LeviathanUpdateProcessor(_dataset);
         _updateProcessor.ProcessCommandSet(commandSet);
@@ -505,10 +505,10 @@ public class InMemoryManager
     /// <param name="context">Configuration Serialization Context.</param>
     public void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode manager = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var manager = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
 
         context.Graph.Assert(manager, rdfType, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider)));
         context.Graph.Assert(manager, dnrType, context.Graph.CreateLiteralNode(GetType().ToString()));

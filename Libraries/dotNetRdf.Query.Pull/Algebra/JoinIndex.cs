@@ -32,17 +32,17 @@ internal class JoinIndex
         for (var i = 0; i < _joinVars.Length; i++)
         {
             var var = _joinVars[i];
-            MultiDictionary<INode, HashSet<int>> varIndex = _index[i];
+            var varIndex = _index[i];
             if (s.ContainsVariable(var))
             {
-                INode value = s[var];
+                var value = s[var];
                 if (value == null)
                 {
                     _nulls[i].Add(setIndex);
                 }
                 else
                 {
-                    if (!varIndex.TryGetValue(value, out HashSet<int>? sets))
+                    if (!varIndex.TryGetValue(value, out var sets))
                     {
                         sets = [];
                         varIndex.Add(value, sets);
@@ -66,13 +66,13 @@ internal class JoinIndex
         {
             return [];
         }
-        INode value = s[v];
+        var value = s[v];
         if (value == null)
         {
             return _nulls[varIx];
         }
         HashSet<int> results = matchNulls ? [.. _nulls[varIx]] : [];
-        if (_index[varIx].TryGetValue(value, out HashSet<int>? sets))
+        if (_index[varIx].TryGetValue(value, out var sets))
         {
             results.UnionWith(sets);
         }
