@@ -64,9 +64,9 @@ public class SparqlEndpointFactory
                 if (queryEndpointUri == null) return false;
 
                 // Get Default/Named Graphs if specified
-                IEnumerable<string> defaultGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
+                var defaultGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
                                                     select n.ToString();
-                IEnumerable<string> namedGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
+                var namedGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
                                                   select n.ToString();
                 endpoint = new SparqlRemoteEndpoint(g.UriFactory.Create(queryEndpointUri), defaultGraphs, namedGraphs);
                 break;
@@ -79,9 +79,9 @@ public class SparqlEndpointFactory
                 break;
 
             case FederatedEndpoint:
-                IEnumerable<INode> endpoints = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)))
+                var endpoints = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)))
                     .Concat(ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint))));
-                foreach (INode e in endpoints)
+                foreach (var e in endpoints)
                 {
                     var temp = ConfigurationLoader.LoadObject(g, e);
                     if (temp is SparqlRemoteEndpoint)
@@ -114,7 +114,7 @@ public class SparqlEndpointFactory
             }
 
             // Is there a Proxy Server specified
-            INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyProxy)));
+            var proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyProxy)));
             if (proxyNode != null)
             {
                 var proxy = ConfigurationLoader.LoadObject(g, proxyNode);

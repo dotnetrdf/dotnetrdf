@@ -45,7 +45,7 @@ public class SparqlCastBuilderTests
     public void ShouldAllowCastingAsInteger()
     {
         // when
-        NumericExpression<int> cast = _castCall.AsInteger();
+        var cast = _castCall.AsInteger();
 
         // then
         Assert.True(cast.Expression is IntegerCast);
@@ -56,7 +56,7 @@ public class SparqlCastBuilderTests
     public void ShouldAllowCastingAsFloat()
     {
         // when
-        NumericExpression<float> cast = _castCall.AsFloat();
+        var cast = _castCall.AsFloat();
 
         // then
         Assert.True(cast.Expression is FloatCast);
@@ -67,7 +67,7 @@ public class SparqlCastBuilderTests
     public void ShouldAllowCastingAsDateTime()
     {
         // when
-        LiteralExpression cast = _castCall.AsDateTime();
+        var cast = _castCall.AsDateTime();
 
         // then
         Assert.True(cast.Expression is DateTimeCast);
@@ -78,7 +78,7 @@ public class SparqlCastBuilderTests
     public void ShouldAllowCastingAsDecimal()
     {
         // when
-        NumericExpression<decimal> cast = _castCall.AsDecimal();
+        var cast = _castCall.AsDecimal();
 
         // then
         Assert.True(cast.Expression is DecimalCast);
@@ -89,7 +89,7 @@ public class SparqlCastBuilderTests
     public void ShouldAllowCastingAsDouble()
     {
         // when
-        NumericExpression<double> cast = _castCall.AsDouble();
+        var cast = _castCall.AsDouble();
 
         // then
         Assert.True(cast.Expression is DoubleCast);
@@ -100,7 +100,7 @@ public class SparqlCastBuilderTests
     public void ShouldAllowCastingAsString()
     {
         // when
-        LiteralExpression cast = _castCall.AsString();
+        var cast = _castCall.AsString();
 
         // then
         Assert.True(cast.Expression is StringCast);
@@ -111,7 +111,7 @@ public class SparqlCastBuilderTests
     public void ShouldAllowCastingAsBoolean()
     {
         // when
-        BooleanExpression cast = _castCall.AsBoolean();
+        var cast = _castCall.AsBoolean();
 
         // then
         Assert.True(cast.Expression is BooleanCast);

@@ -83,12 +83,12 @@ internal abstract class Sparql : Constraint
     {
         var queryString = new SparqlParameterizedString(Query);
 
-        foreach (PrefixDeclaration item in Prefixes)
+        foreach (var item in Prefixes)
         {
             queryString.Namespaces.AddNamespace(item.Prefix, item.Namespace);
         }
 
-        SparqlQuery query = new SparqlQueryParser().ParseFromString(queryString);
+        var query = new SparqlQueryParser().ParseFromString(queryString);
 
         Validate(query.RootGraphPattern);
 
@@ -100,7 +100,7 @@ internal abstract class Sparql : Constraint
             query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("shapesGraph", new ConstantTerm(Shape.Graph.Name)));
         }
 
-        foreach (KeyValuePair<string, INode> parameter in Parameters)
+        foreach (var parameter in Parameters)
         {
             query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern(parameter.Key, new ConstantTerm(parameter.Value)));
         }
@@ -114,12 +114,12 @@ internal abstract class Sparql : Constraint
     {
         pattern.TriplePatterns.Insert(0, new BindPattern("this", new ConstantTerm(focusNode)));
 
-        foreach (GraphPattern subPattern in pattern.ChildGraphPatterns)
+        foreach (var subPattern in pattern.ChildGraphPatterns)
         {
             BindFocusNode(subPattern, focusNode);
         }
 
-        foreach (SubQueryPattern subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
+        foreach (var subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
         {
             BindFocusNode(subQueryPattern.SubQuery.RootGraphPattern, focusNode);
         }
@@ -132,12 +132,12 @@ internal abstract class Sparql : Constraint
             throw new Exception("illegal clauses");
         }
 
-        foreach (GraphPattern subPattern in pattern.ChildGraphPatterns)
+        foreach (var subPattern in pattern.ChildGraphPatterns)
         {
             Validate(subPattern);
         }
 
-        foreach (SubQueryPattern subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
+        foreach (var subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
         {
             if (!subQueryPattern.Variables.Contains("this"))
             {

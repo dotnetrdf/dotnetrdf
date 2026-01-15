@@ -78,7 +78,7 @@ http://x a bad uri,http://y
         CheckVariables(results, "x", "y");
         Assert.Single(results.Results);
 
-        INode n = results.Results[0]["x"];
+        var n = results.Results[0]["x"];
         Assert.NotNull(n);
         Assert.Equal(NodeType.Literal, n.NodeType);
     }

@@ -52,7 +52,7 @@ public class SparqlCastTests : BaseTest
                 var cast = new DecimalCast(new ConstantTerm(3.4m.ToLiteral(_graph)));
 
                 // when
-                IValuedNode valuedNode = cast.Accept(_expressionProcessor, new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
+                var valuedNode = cast.Accept(_expressionProcessor, new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
 
                 // then
                 Assert.Equal(3.4m, valuedNode.AsDecimal());
@@ -71,7 +71,7 @@ public class SparqlCastTests : BaseTest
                 var cast = new DoubleCast(new ConstantTerm(3.4d.ToLiteral(_graph)));
 
                 // when
-                IValuedNode valuedNode = cast.Accept(_expressionProcessor, new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
+                var valuedNode = cast.Accept(_expressionProcessor, new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
 
                 // then
                 Assert.Equal(3.4d, valuedNode.AsDouble());
@@ -90,7 +90,7 @@ public class SparqlCastTests : BaseTest
                 var cast = new FloatCast(new ConstantTerm(3.4f.ToLiteral(_graph)));
 
                 // when
-                IValuedNode valuedNode = cast.Accept(_expressionProcessor, new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
+                var valuedNode = cast.Accept(_expressionProcessor, new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
 
                 // then
                 Assert.Equal(3.4f, valuedNode.AsFloat());

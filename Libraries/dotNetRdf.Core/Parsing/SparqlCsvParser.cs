@@ -166,7 +166,7 @@ public class SparqlCsvParser
             TryParseHeaderRow(context);
 
             // Then while not EOF try parse result rows
-            IToken next = context.Tokens.Peek();
+            var next = context.Tokens.Peek();
             while (next.TokenType != Token.EOF)
             {
                 TryParseResultRow(context);
@@ -189,7 +189,7 @@ public class SparqlCsvParser
 
     private void TryParseHeaderRow(TokenisingResultParserContext context)
     {
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         bool allowEOL = true, expectComma = false;
         while (true)
         {
@@ -235,7 +235,7 @@ public class SparqlCsvParser
 
     private void TryParseResultRow(TokenisingResultParserContext context)
     {
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         if (next.TokenType == Token.EOF)
         {
             context.Tokens.Dequeue();
@@ -254,7 +254,7 @@ public class SparqlCsvParser
                 case Token.BLANKNODEWITHID:
                     if (expectComma) throw ParserHelper.Error("Unexpected Blank Node, expected a comma between RDF Terms", next);
                     if (v >= context.Variables.Count) throw ParserHelper.Error("Too many RDF Terms, only expecting " + context.Variables.Count + " terms", next);
-                    INode blank = context.Handler.CreateBlankNode(next.Value.Substring(2));
+                    var blank = context.Handler.CreateBlankNode(next.Value.Substring(2));
                     result.SetValue(context.Variables[v], blank);
                     v++;
                     allowEOL = true;
@@ -344,7 +344,7 @@ public class SparqlCsvParser
 
     private void RaiseWarning(string message)
     {
-        SparqlWarning d = Warning;
+        var d = Warning;
         if (d != null) d(message);
     }
 

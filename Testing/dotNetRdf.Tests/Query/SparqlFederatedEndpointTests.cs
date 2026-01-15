@@ -23,7 +23,7 @@ public class SparqlFederatedEndpointTests : IClassFixture<FederatedEndpointFixtu
             new SparqlRemoteEndpoint(new Uri(_fixture.Server1.Urls[0] + "/query")),
                 new SparqlRemoteEndpoint(new Uri(_fixture.Server2.Urls[0] + "/query"))
         ]);
-        SparqlResultSet results = endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}");
+        var results = endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}");
         results.Should().NotBeNull().And.HaveCount(2);
     }
 
@@ -34,7 +34,7 @@ public class SparqlFederatedEndpointTests : IClassFixture<FederatedEndpointFixtu
             new SparqlRemoteEndpoint(new Uri(_fixture.Server1.Urls[0] + "/query2/combiner")), 
             new SparqlRemoteEndpoint(new Uri(_fixture.Server2.Urls[0] + "/query2/combiner"))
         ]);
-        IGraph resultGraph = endpoint.QueryWithResultGraph("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }");
+        var resultGraph = endpoint.QueryWithResultGraph("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }");
         resultGraph.Should().NotBeNull();
         resultGraph.Triples.Should().HaveCount(2);
     }
@@ -57,7 +57,7 @@ public class SparqlFederatedEndpointTests : IClassFixture<FederatedEndpointFixtu
                 new SparqlRemoteEndpoint(new Uri(_fixture.Server2.Urls[0] + "/fail"))
             ])
             {IgnoreFailedRequests = true};
-        SparqlResultSet results = endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}");
+        var results = endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}");
         results.Should().NotBeNull().And.HaveCount(1);
     }
 
@@ -81,7 +81,7 @@ public class SparqlFederatedEndpointTests : IClassFixture<FederatedEndpointFixtu
                 new SparqlRemoteEndpoint(new Uri(_fixture.Server2.Urls[0] + "/timeout"))
             ])
             { Timeout = 3000, IgnoreFailedRequests = true};
-        SparqlResultSet results = endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}");
+        var results = endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}");
         results.Should().NotBeNull().And.HaveCount(1);
     }
 }

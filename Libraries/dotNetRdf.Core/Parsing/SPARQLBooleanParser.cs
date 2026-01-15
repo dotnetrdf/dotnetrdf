@@ -169,7 +169,7 @@ public class SparqlBooleanParser : BaseSparqlResultsReader
     /// <param name="message">Warning Message.</param>
     private void RaiseWarning(string message)
     {
-        SparqlWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

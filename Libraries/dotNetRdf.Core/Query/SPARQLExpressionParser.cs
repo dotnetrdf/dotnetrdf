@@ -187,12 +187,12 @@ class SparqlExpressionParser
     private ISparqlExpression TryParseConditionalOrExpression(Queue<IToken> tokens)
     {
         // Get the first Term in the Expression
-        ISparqlExpression firstTerm = TryParseConditionalAndExpression(tokens);
+        var firstTerm = TryParseConditionalAndExpression(tokens);
 
         if (tokens.Count > 0) 
         {
             // Expect an || Token
-            IToken next = tokens.Dequeue();
+            var next = tokens.Dequeue();
             if (next.TokenType == Token.OR) 
             {
                 return new OrExpression(firstTerm, TryParseConditionalOrExpression(tokens));
@@ -211,12 +211,12 @@ class SparqlExpressionParser
     private ISparqlExpression TryParseConditionalAndExpression(Queue<IToken> tokens)
     {
         // Get the first Term in the Expression
-        ISparqlExpression firstTerm = TryParseValueLogical(tokens);
+        var firstTerm = TryParseValueLogical(tokens);
 
         if (tokens.Count > 0)
         {
             // Expect an && Token
-            IToken next = tokens.Peek();
+            var next = tokens.Peek();
             if (next.TokenType == Token.AND)
             {
                 tokens.Dequeue();
@@ -242,11 +242,11 @@ class SparqlExpressionParser
     private ISparqlExpression TryParseRelationalExpression(Queue<IToken> tokens)
     {
         // Get the First Term of this Expression
-        ISparqlExpression firstTerm = TryParseNumericExpression(tokens);
+        var firstTerm = TryParseNumericExpression(tokens);
 
         if (tokens.Count > 0)
         {
-            IToken next = tokens.Peek();
+            var next = tokens.Peek();
             switch (next.TokenType)
             {
                 case Token.EQUALS:
@@ -288,11 +288,11 @@ class SparqlExpressionParser
     private ISparqlExpression TryParseAdditiveExpression(Queue<IToken> tokens)
     {
         // Get the First Term of this Expression
-        ISparqlExpression firstTerm = TryParseMultiplicativeExpression(tokens);
+        var firstTerm = TryParseMultiplicativeExpression(tokens);
 
         while (tokens.Count > 0)
         {
-            IToken next = tokens.Peek();
+            var next = tokens.Peek();
             switch (next.TokenType)
             {
                 case Token.PLUS:
@@ -316,24 +316,24 @@ class SparqlExpressionParser
     private ISparqlExpression TryParseMultiplicativeExpression(Queue<IToken> tokens)
     {
         // Get the First Term of this Expression
-        ISparqlExpression firstTerm = TryParseUnaryExpression(tokens);
+        var firstTerm = TryParseUnaryExpression(tokens);
 
         while (tokens.Count > 0)
         {
-            IToken next = tokens.Peek();
+            var next = tokens.Peek();
             switch (next.TokenType)
             {
                 case Token.MULTIPLY:
                 {
                     tokens.Dequeue();
-                    ISparqlExpression rhs = TryParseUnaryExpression(tokens);
+                    var rhs = TryParseUnaryExpression(tokens);
                     firstTerm = new MultiplicationExpression(firstTerm, rhs);
                     break;
                 }
                 case Token.DIVIDE:
                 {
                     tokens.Dequeue();
-                    ISparqlExpression rhs = TryParseUnaryExpression(tokens);
+                    var rhs = TryParseUnaryExpression(tokens);
                     firstTerm = new DivisionExpression(firstTerm, rhs);
                     break;
                 }
@@ -347,7 +347,7 @@ class SparqlExpressionParser
 
     private ISparqlExpression TryParseUnaryExpression(Queue<IToken> tokens)
     {
-        IToken next = tokens.Peek();
+        var next = tokens.Peek();
 
         switch (next.TokenType)
         {
@@ -368,7 +368,7 @@ class SparqlExpressionParser
 
     private ISparqlExpression TryParsePrimaryExpression(Queue<IToken> tokens)
     {
-        IToken next = tokens.Peek();
+        var next = tokens.Peek();
 
         switch (next.TokenType)
         {
@@ -583,7 +583,7 @@ class SparqlExpressionParser
 
     private ISparqlExpression TryParseBuiltInCall(Queue<IToken> tokens)
     {
-        IToken next = tokens.Dequeue();
+        var next = tokens.Dequeue();
         bool comma = false, first = true;
         List<ISparqlExpression> args;
         ISparqlExpression strExpr;
@@ -722,11 +722,11 @@ class SparqlExpressionParser
             case Token.REPLACE:
                 // REPLACE may have 3/4 arguments
                 strExpr = TryParseBrackettedExpression(tokens);
-                ISparqlExpression patternExpr = TryParseBrackettedExpression(tokens, false);
-                ISparqlExpression replaceExpr = TryParseBrackettedExpression(tokens, false, out comma);
+                var patternExpr = TryParseBrackettedExpression(tokens, false);
+                var replaceExpr = TryParseBrackettedExpression(tokens, false, out comma);
                 if (comma)
                 {
-                    ISparqlExpression opsExpr = TryParseBrackettedExpression(tokens, false);
+                    var opsExpr = TryParseBrackettedExpression(tokens, false);
                     return new ReplaceFunction(strExpr, patternExpr, replaceExpr, opsExpr);
                 }
                 else
@@ -770,10 +770,10 @@ class SparqlExpressionParser
             case Token.SUBSTR:
                 // SUBSTR may have 2/3 arguments
                 strExpr = TryParseBrackettedExpression(tokens);
-                ISparqlExpression startExpr = TryParseBrackettedExpression(tokens, false, out comma);
+                var startExpr = TryParseBrackettedExpression(tokens, false, out comma);
                 if (comma)
                 {
-                    ISparqlExpression lengthExpr = TryParseBrackettedExpression(tokens, false);
+                    var lengthExpr = TryParseBrackettedExpression(tokens, false);
                     return new SubStrFunction(strExpr, startExpr, lengthExpr);
                 }
                 else
@@ -843,7 +843,7 @@ class SparqlExpressionParser
 
     private void TryParseNoArgs(Queue<IToken> tokens, string function)
     {
-        IToken next = tokens.Dequeue();
+        var next = tokens.Dequeue();
         if (next.TokenType != Token.LEFTBRACKET) throw Error("Expected a Left Bracket after a " + function + " keyword to call the " + function + "() function", next);
         next = tokens.Dequeue();
         if (next.TokenType != Token.RIGHTBRACKET) throw Error("Expected a Right Bracket after " + function + "( since the " + function + "() function does not take any arguments", next);
@@ -854,13 +854,13 @@ class SparqlExpressionParser
         var hasOptions = false;
 
         // Get Text and Pattern Expressions
-        ISparqlExpression textExpr = TryParseBrackettedExpression(tokens);
-        ISparqlExpression patternExpr = TryParseBrackettedExpression(tokens, false, out hasOptions);
+        var textExpr = TryParseBrackettedExpression(tokens);
+        var patternExpr = TryParseBrackettedExpression(tokens, false, out hasOptions);
 
         // Check whether we need to get an Options Expression
         if (hasOptions)
         {
-            ISparqlExpression optionExpr = TryParseBrackettedExpression(tokens, false);
+            var optionExpr = TryParseBrackettedExpression(tokens, false);
             return new RegexFunction(textExpr, patternExpr, optionExpr);
         }
         else
@@ -872,7 +872,7 @@ class SparqlExpressionParser
     private ISparqlExpression TryParseIriRefOrFunction(Queue<IToken> tokens)
     {
         // Get the Uri/QName Token
-        IToken first = tokens.Dequeue();
+        var first = tokens.Dequeue();
 
         // Resolve the Uri
         Uri u;
@@ -889,7 +889,7 @@ class SparqlExpressionParser
         // Get the Argument List (if any)
         if (tokens.Count > 0)
         {
-            IToken next = tokens.Peek();
+            var next = tokens.Peek();
             if (next.TokenType == Token.LEFTBRACKET)
             {
                 bool comma = false, semicolon = false;
@@ -915,7 +915,7 @@ class SparqlExpressionParser
                 }
 
                 // Return an Extension Function expression
-                ISparqlExpression expr = SparqlExpressionFactory.CreateExpression(u, args, _factories, AllowUnknownFunctions);
+                var expr = SparqlExpressionFactory.CreateExpression(u, args, _factories, AllowUnknownFunctions);
                 if (expr is AggregateTerm)
                 {
                     if (!AllowAggregates) throw new RdfParseException("Aggregate Expression '" + expr + "' encountered but aggregates are not permitted in this Expression");
@@ -938,12 +938,12 @@ class SparqlExpressionParser
     private ConstantTerm TryParseRdfLiteral(Queue<IToken> tokens)
     {
         // First Token will be the String value of this RDF Literal
-        IToken str = tokens.Dequeue();
+        var str = tokens.Dequeue();
 
         // Might have a Language Specifier/DataType afterwards
         if (tokens.Count > 0)
         {
-            IToken next = tokens.Peek();
+            var next = tokens.Peek();
             if (next.TokenType == Token.LANGSPEC)
             {
                 tokens.Dequeue();
@@ -1000,9 +1000,9 @@ class SparqlExpressionParser
 
     private TripleNodeTerm TryParseQuotedTripleExpression(Queue<IToken> tokens)
     {
-        INode subj = TryParseVarOrTerm(tokens);
-        INode pred = TryParseVerb(tokens);
-        INode obj = TryParseVarOrTerm(tokens);
+        var subj = TryParseVarOrTerm(tokens);
+        var pred = TryParseVerb(tokens);
+        var obj = TryParseVarOrTerm(tokens);
         var next = tokens.Peek();
         if (next.TokenType == Token.ENDQUOTE) { tokens.Dequeue();}
         else
@@ -1015,17 +1015,17 @@ class SparqlExpressionParser
 
     private INode TryParseVarOrTerm(Queue<IToken> tokens)
     {
-        IToken next = tokens.Peek();
+        var next = tokens.Peek();
         switch (next.TokenType)
         {
             case Token.URI:
                 tokens.Dequeue();
-                Uri u = UriFactory.Create(Tools.ResolveUri(next.Value, _baseUri?.AbsoluteUri ?? ""));
+                var u = UriFactory.Create(Tools.ResolveUri(next.Value, _baseUri?.AbsoluteUri ?? ""));
                 return new UriNode(u);
 
             case Token.QNAME:
                 tokens.Dequeue();
-                Uri qn = UriFactory.Create(Tools.ResolveQName(next.Value, _nsmapper, _baseUri));
+                var qn = UriFactory.Create(Tools.ResolveQName(next.Value, _nsmapper, _baseUri));
                 return new UriNode(qn);
 
             case Token.LITERAL:
@@ -1052,17 +1052,17 @@ class SparqlExpressionParser
 
     private INode TryParseVerb(Queue<IToken> tokens)
     {
-        IToken next = tokens.Peek();
+        var next = tokens.Peek();
         switch (next.TokenType)
         {
             case Token.URI:
                 tokens.Dequeue();
-                Uri u = UriFactory.Create(Tools.ResolveUri(next.Value, _baseUri?.AbsoluteUri ?? ""));
+                var u = UriFactory.Create(Tools.ResolveUri(next.Value, _baseUri?.AbsoluteUri ?? ""));
                 return new UriNode(u);
 
             case Token.QNAME:
                 tokens.Dequeue();
-                Uri qn = UriFactory.Create(Tools.ResolveQName(next.Value, _nsmapper, _baseUri));
+                var qn = UriFactory.Create(Tools.ResolveQName(next.Value, _nsmapper, _baseUri));
                 return new UriNode(qn);
 
             case Token.VARIABLE:
@@ -1083,7 +1083,7 @@ class SparqlExpressionParser
     private ConstantTerm TryParseBooleanOrNumericLiteral(Queue<IToken> tokens)
     {
         // First Token must be a Plain Literal
-        IToken lit = tokens.Dequeue();
+        var lit = tokens.Dequeue();
 
         if (lit.Value.Equals("true"))
         {
@@ -1138,7 +1138,7 @@ class SparqlExpressionParser
 
                 // Try to return a numeric expression, enforce the need for a valid numeric value where relevant
                 var lit = new LiteralNode(literal.Value, UriFactory.Create(dtUri), NormalizeLiteralValues);
-                IValuedNode value = lit.AsValuedNode();
+                var value = lit.AsValuedNode();
                 if (requireValidLexicalForm && value.NumericType == SparqlNumericType.NaN)
                 {
                     throw Error("The Literal '" + literal.Value + "' with Datatype URI '" + dtUri + "' is not a valid Integer, Decimal or Double", literal);
@@ -1152,7 +1152,7 @@ class SparqlExpressionParser
                 // Check if there's a Datatype following the Literal
                 if (tokens.Count > 0)
                 {
-                    IToken next = tokens.Peek();
+                    var next = tokens.Peek();
                     if (next.TokenType == Token.HATHAT)
                     {
                         tokens.Dequeue();
@@ -1192,7 +1192,7 @@ class SparqlExpressionParser
     {
         if (SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("Aggregates are not permitted in SPARQL 1.0");
 
-        IToken agg = tokens.Dequeue();
+        var agg = tokens.Dequeue();
         ISparqlExpression aggExpr = null;
         bool distinct = false, all = false;
         var scalarArgs = false;
@@ -1202,7 +1202,7 @@ class SparqlExpressionParser
         AllowAggregates = false;
 
         // Expect a Left Bracket next
-        IToken next = tokens.Dequeue();
+        var next = tokens.Dequeue();
         if (next.TokenType != Token.LEFTBRACKET)
         {
             throw Error("Unexpected Token '" + next.GetType() + "', expected a Left Bracket after an Aggregate Keyword", next);
@@ -1561,7 +1561,7 @@ class SparqlExpressionParser
 
     private ISparqlExpression TryParseSetExpression(ISparqlExpression expr, Queue<IToken> tokens)
     {
-        IToken next = tokens.Dequeue();
+        var next = tokens.Dequeue();
         var inSet = (next.TokenType == Token.IN);
         var expressions = new List<ISparqlExpression>();
 

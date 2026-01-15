@@ -617,7 +617,7 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
     /// <returns></returns>
     public IEnumerable<ITripleNode> GetQuotedTriples(QuotedTriplePattern qtp)
     {
-        TriplePattern triplePattern = qtp.QuotedTriple;
+        var triplePattern = qtp.QuotedTriple;
         INode s, p, o;
         switch (triplePattern.IndexType)
         {
@@ -677,9 +677,9 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
         if ( triplePattern.IndexType == TripleIndexType.NoVariables)
         {
             // If there are no variables then at least one Triple must match or we abort
-            INode s = ((NodeMatchPattern)triplePattern.Subject).Node;
-            INode p = ((NodeMatchPattern)triplePattern.Predicate).Node;
-            INode o = ((NodeMatchPattern)triplePattern.Object).Node;
+            var s = ((NodeMatchPattern)triplePattern.Subject).Node;
+            var p = ((NodeMatchPattern)triplePattern.Predicate).Node;
+            var o = ((NodeMatchPattern)triplePattern.Object).Node;
             if (Data.ContainsTriple(new Triple(s, p, o)))
             {
                 OutputMultiset = new IdentityMultiset();
@@ -691,9 +691,9 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
         }
         else
         {
-            foreach (Triple t in GetTriples(triplePattern))
+            foreach (var t in GetTriples(triplePattern))
             {
-                ISet result = triplePattern.Evaluate(this, t);
+                var result = triplePattern.Evaluate(this, t);
                 if (result != null) OutputMultiset.Add(result);
             }
         }
@@ -706,8 +706,8 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
     /// <inheritdoc />
     public IEnumerable<INode> GetNodes(INodeFactory factory)
     {
-        INamespaceMapper nsmap = (Query != null ? Query.NamespaceMap : new NamespaceMapper(true));
-        Uri baseUri = Query?.BaseUri;
+        var nsmap = (Query != null ? Query.NamespaceMap : new NamespaceMapper(true));
+        var baseUri = Query?.BaseUri;
 
         // Build a list of INodes to describe
         var nodes = new List<INode>();
@@ -716,7 +716,7 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
             return nodes;
         }
 
-        foreach (IToken t in Query.DescribeVariables)
+        foreach (var t in Query.DescribeVariables)
         {
             switch (t.TokenType)
             {
@@ -732,9 +732,9 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
                     var var = t.Value.Substring(1);
                     if (OutputMultiset.ContainsVariable(var))
                     {
-                        foreach (ISet s in OutputMultiset.Sets)
+                        foreach (var s in OutputMultiset.Sets)
                         {
-                            INode temp = s[var];
+                            var temp = s[var];
                             if (temp != null) nodes.Add(temp);
                         }
                     }

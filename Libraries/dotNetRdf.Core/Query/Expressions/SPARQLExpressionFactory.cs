@@ -122,7 +122,7 @@ public static class SparqlExpressionFactory
             }
 
             // One of the Supported XPath Cast functions
-            ISparqlExpression arg = args[0];
+            var arg = args[0];
             var cast = u.AbsoluteUri;
             if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
             {
@@ -161,7 +161,7 @@ public static class SparqlExpressionFactory
         {
             // Try to use the Global Custom Factories to generate the Expression
             ISparqlExpression expr = null;
-            foreach (ISparqlCustomExpressionFactory customFactory in CustomFactories)
+            foreach (var customFactory in CustomFactories)
             {
                 if (customFactory.TryCreateExpression(u, args, scalarArgs, out expr))
                 {
@@ -171,7 +171,7 @@ public static class SparqlExpressionFactory
             }
 
             // If we have any locally scoped factories then we can now use these to try and generate the Expression
-            foreach (ISparqlCustomExpressionFactory customFactory in factories)
+            foreach (var customFactory in factories)
             {
                 if (customFactory.TryCreateExpression(u, args, scalarArgs, out expr)) 
                 {

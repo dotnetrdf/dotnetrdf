@@ -246,11 +246,11 @@ public class SparqlConnector
     private void QueryWithRemoteEndpoint(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
     {
         // If we're skipping local parsing then we'll need to just make a raw query and process the response
-        using HttpWebResponse response = _endpoint.QueryRaw(sparqlQuery);
+        using var response = _endpoint.QueryRaw(sparqlQuery);
         try
         {
             // Is the Content Type referring to a Sparql Result Set format?
-            ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
+            var sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
             sparqlParser.Load(resultsHandler, new StreamReader(response.GetResponseStream()));
             response.Close();
         }
@@ -259,7 +259,7 @@ public class SparqlConnector
             // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
 
             // Is the Content Type referring to a RDF format?
-            IRdfReader rdfParser = MimeTypesHelper.GetParser(response.ContentType);
+            var rdfParser = MimeTypesHelper.GetParser(response.ContentType);
             rdfParser.Load(rdfHandler, new StreamReader(response.GetResponseStream()));
             response.Close();
         }
@@ -444,7 +444,7 @@ public class SparqlConnector
         {
             // Technically the ?s ?p ?o is unecessary here but we may not get the right results if we don't include this because some stores
             // won't interpret GRAPH ?g { } correctly
-            object results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+            var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
             if (results is SparqlResultSet resultSet)
             {
                 var graphs = new List<Uri>();
@@ -452,7 +452,7 @@ public class SparqlConnector
                 {
                     if (r.HasValue("g"))
                     {
-                        INode temp = r["g"];
+                        var temp = r["g"];
                         if (temp.NodeType == NodeType.Uri)
                         {
                             graphs.Add(((IUriNode)temp).Uri);
@@ -487,7 +487,7 @@ public class SparqlConnector
                 {
                     if (r.HasValue("g"))
                     {
-                        INode temp = r["g"];
+                        var temp = r["g"];
                         if (temp.NodeType == NodeType.Uri)
                         {
                             graphs.Add(((IUriNode)temp).Uri.AbsoluteUri);
@@ -564,13 +564,13 @@ public class SparqlConnector
     /// <param name="context">Configuration Serialization Context.</param>
     public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode manager = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
-        INode loadMode = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyLoadMode));
-        INode skipParsing = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertySkipParsing));
+        var manager = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+        var loadMode = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyLoadMode));
+        var skipParsing = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertySkipParsing));
 
         // Basic information
         context.Graph.Assert(new Triple(manager, rdfType, genericManager));
@@ -586,8 +586,8 @@ public class SparqlConnector
             // Use the indirect serialization method
 
             // Serialize the Endpoints Configuration
-            INode endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
-            INode endpointObj = context.Graph.CreateBlankNode();
+            var endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
+            var endpointObj = context.Graph.CreateBlankNode();
             context.NextSubject = endpointObj;
             ((IConfigurationSerializable)_endpoint).SerializeConfiguration(context);
 
@@ -599,8 +599,8 @@ public class SparqlConnector
             // Use the indirect serialization method
 
             // Serialize the Endpoints Configuration
-            INode endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
-            INode endpointObj = context.Graph.CreateBlankNode();
+            var endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
+            var endpointObj = context.Graph.CreateBlankNode();
             context.NextSubject = endpointObj;
             ((IConfigurationSerializable)QueryClient).SerializeConfiguration(context);
 
@@ -610,9 +610,9 @@ public class SparqlConnector
         else
         {
             // Use the direct serialization method
-            INode endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
-            INode defGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
-            INode namedGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
+            var endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
+            var defGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
+            var namedGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
 
             if (_endpoint != null)
             {

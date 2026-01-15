@@ -78,11 +78,11 @@ public class StaticSkosReasoner : IInferenceEngine
         var inferences = new List<Triple>();
         lock (_conceptMappings)
         {
-            foreach (Triple t in input.Triples)
+            foreach (var t in input.Triples)
             {
                 if (!(t.Predicate.Equals(_skosBroader) || t.Predicate.Equals(_skosNarrower)) && _conceptMappings.ContainsKey(t.Object))
                 {
-                    INode concept = t.Object;
+                    var concept = t.Object;
                     while (_conceptMappings.ContainsKey(concept))
                     {
                         if (_conceptMappings[concept] != null)
@@ -117,7 +117,7 @@ public class StaticSkosReasoner : IInferenceEngine
     {
         lock (_conceptMappings)
         {
-            foreach (Triple t in g.Triples)
+            foreach (var t in g.Triples)
             {
                 if (t.Predicate.Equals(_rdfType) && t.Object.Equals(_skosConcept))
                 {

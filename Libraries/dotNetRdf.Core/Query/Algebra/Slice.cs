@@ -130,7 +130,7 @@ public class Slice
     /// <returns></returns>
     public SparqlQuery ToQuery()
     {
-        SparqlQuery q = InnerAlgebra.ToQuery();
+        var q = InnerAlgebra.ToQuery();
         q.Limit = Limit;
         q.Offset = Offset;
         return q;

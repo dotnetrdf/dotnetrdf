@@ -59,7 +59,7 @@ public abstract class SkosResource
 
     internal IEnumerable<INode> GetObjects(string predicateUri)
     {
-        IUriNode predicate = Graph.CreateUriNode(Graph.UriFactory.Create(predicateUri));
+        var predicate = Graph.CreateUriNode(Graph.UriFactory.Create(predicateUri));
 
         return Graph
             .GetTriplesWithSubjectPredicate(Resource, predicate)

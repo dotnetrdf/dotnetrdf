@@ -81,7 +81,7 @@ public class SparqlDescriber
     /// <inheritdoc />
     public void Describe(IRdfHandler handler, ISparqlDescribeContext context)
     {
-        IEnumerable<INode> nodes = context.GetNodes(handler);
+        var nodes = context.GetNodes(handler);
         _describeAlgorithm.Describe(handler, context.TripleIndex, nodes, context.Query?.BaseUri,
             context.Query?.NamespaceMap);
     }

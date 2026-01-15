@@ -226,11 +226,11 @@ public class SparqlFormatter
             // Then add in FROM and FROM NAMED if not a sub-query
             if (!query.IsSubQuery)
             {
-                foreach (IRefNode defaultGraphName in query.DefaultGraphNames)
+                foreach (var defaultGraphName in query.DefaultGraphNames)
                 {
                     output.AppendLine("FROM " + Format(defaultGraphName));
                 }
-                foreach (IRefNode namedGraphName in query.NamedGraphNames)
+                foreach (var namedGraphName in query.NamedGraphNames)
                 {
                     output.AppendLine("FROM NAMED " + Format(namedGraphName));
                 }
@@ -318,7 +318,7 @@ public class SparqlFormatter
         {
             for (var i = 0; i < gp.ChildGraphPatterns.Count; i++)
             {
-                GraphPattern cgp = gp.ChildGraphPatterns[i];
+                var cgp = gp.ChildGraphPatterns[i];
                 if (cgp.HasModifier)
                 {
                     var formatted = Format(cgp);
@@ -414,11 +414,11 @@ public class SparqlFormatter
         if (gp.TriplePatterns.Count > 1 || gp.HasChildGraphPatterns || (gp.TriplePatterns.Count <= 1 && gp.Filter != null) || gp.UnplacedAssignments.Count() > 0 || gp.UnplacedFilters.Count() > 0 || gp.HasInlineData)
         {
             output.AppendLine("{");
-            foreach (ITriplePattern tp in gp.TriplePatterns)
+            foreach (var tp in gp.TriplePatterns)
             {
                 output.AppendLineIndented(Format(tp), 2);
             }
-            foreach (IAssignmentPattern ap in gp.UnplacedAssignments)
+            foreach (var ap in gp.UnplacedAssignments)
             {
                 output.AppendLineIndented(Format(ap), 2);
             }
@@ -426,11 +426,11 @@ public class SparqlFormatter
             {
                 output.AppendLineIndented(FormatInlineData(gp.InlineData), 2);
             }
-            foreach (GraphPattern child in gp.ChildGraphPatterns)
+            foreach (var child in gp.ChildGraphPatterns)
             {
                 output.AppendLineIndented(Format(child), 2);
             }
-            foreach (ISparqlFilter fp in gp.UnplacedFilters)
+            foreach (var fp in gp.UnplacedFilters)
             {
                 output.AppendIndented("FILTER(", 2);
                 output.Append(FormatExpression(fp.Expression));
@@ -545,7 +545,7 @@ public class SparqlFormatter
                 if (propFunc.SubjectArgs.Count() > 1)
                 {
                     output.Append("( ");
-                    foreach (PatternItem arg in propFunc.SubjectArgs)
+                    foreach (var arg in propFunc.SubjectArgs)
                     {
                         output.Append(Format(arg, TripleSegment.Subject));
                         output.Append(' ');
@@ -562,7 +562,7 @@ public class SparqlFormatter
                 if (propFunc.ObjectArgs.Count() > 1)
                 {
                     output.Append("( ");
-                    foreach (PatternItem arg in propFunc.ObjectArgs)
+                    foreach (var arg in propFunc.ObjectArgs)
                     {
                         output.Append(Format(arg, TripleSegment.Object));
                         output.Append(' ');
@@ -634,7 +634,7 @@ public class SparqlFormatter
         var onLine = 0;
         for (var i = 0; i < varList.Count; i++)
         {
-            SparqlVariable v = varList[i];
+            var v = varList[i];
             if (v.IsAggregate)
             {
                 onLine += 2;
@@ -687,7 +687,7 @@ public class SparqlFormatter
         var onLine = 0;
         for (var i = 0; i < tokenList.Count; i++)
         {
-            IToken t = tokenList[i];
+            var t = tokenList[i];
 
             switch (t.TokenType)
             {
@@ -765,8 +765,8 @@ public class SparqlFormatter
                     break;
 
                 case SparqlExpressionType.BinaryOperator:
-                    ISparqlExpression lhs = expr.Arguments.First();
-                    ISparqlExpression rhs = expr.Arguments.Skip(1).First();
+                    var lhs = expr.Arguments.First();
+                    var rhs = expr.Arguments.Skip(1).First();
 
                     // Format the Expression wrapping the LHS and/or RHS in brackets if required
                     // to ensure that ordering of operators is preserved
@@ -1052,12 +1052,12 @@ public class SparqlFormatter
             var negSet = (NegatedSet)path;
             output.Append('!');
             if (negSet.Properties.Count() + negSet.InverseProperties.Count() > 1) output.Append('(');
-            foreach (Property p in negSet.Properties)
+            foreach (var p in negSet.Properties)
             {
                 output.Append(FormatPath(p));
                 output.Append(" | ");
             }
-            foreach (Property p in negSet.InverseProperties)
+            foreach (var p in negSet.InverseProperties)
             {
                 output.Append(FormatPath(p));
                 output.Append(" | ");
@@ -1155,7 +1155,7 @@ public class SparqlFormatter
         output.Append('{');
         var multipleTuples = data.Tuples.Count() > 1;
         if (multipleTuples) output.AppendLine();
-        foreach (BindingTuple tuple in data.Tuples)
+        foreach (var tuple in data.Tuples)
         {
             if (tuple.IsEmpty)
             {

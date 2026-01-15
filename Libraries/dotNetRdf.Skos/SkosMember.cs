@@ -39,16 +39,16 @@ public abstract class SkosMember : SkosResource
 
     internal static SkosMember Create(INode node, IGraph graph)
     {
-        IUriNode a = graph.CreateUriNode(graph.UriFactory.Create(RdfSpecsHelper.RdfType));
-        IEnumerable<Triple> typeStatements = graph.GetTriplesWithSubjectPredicate(node, a);
+        var a = graph.CreateUriNode(graph.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var typeStatements = graph.GetTriplesWithSubjectPredicate(node, a);
 
-        IUriNode skosOrderedCollection = graph.CreateUriNode(graph.UriFactory.Create(SkosHelper.OrderedCollection));
+        var skosOrderedCollection = graph.CreateUriNode(graph.UriFactory.Create(SkosHelper.OrderedCollection));
         if (typeStatements.WithObject(skosOrderedCollection).Any())
         {
             return new SkosOrderedCollection(node, graph);
         }
 
-        IUriNode skosCollection = graph.CreateUriNode(graph.UriFactory.Create(SkosHelper.Collection));
+        var skosCollection = graph.CreateUriNode(graph.UriFactory.Create(SkosHelper.Collection));
         if (typeStatements.WithObject(skosCollection).Any())
         {
             return new SkosCollection(node, graph);
