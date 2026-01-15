@@ -204,7 +204,7 @@ public class SparqlTokeniser
                                 // Watch our for plain literals
                                 if (!_in.EndOfStream && char.IsDigit(Peek()))
                                 {
-                                    IToken temp = TryGetNumericLiteral();
+                                    var temp = TryGetNumericLiteral();
                                     if (temp is PlainLiteralToken)
                                     {
                                         LastTokenType = Token.PLAINLITERAL;
@@ -1731,14 +1731,14 @@ public class SparqlTokeniser
         if (next == '<')
         {
             // Uri specified DataType
-            IToken temp = TryGetUri();
+            var temp = TryGetUri();
             LastTokenType = Token.DATATYPE;
             return new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition, temp.EndPosition);
         }
         else if (char.IsLetter(next) || UnicodeSpecsHelper.IsLetter(next) || next == '_' || next == ':')
         {
             // QName specified Data Type
-            IToken temp = TryGetQName();
+            var temp = TryGetQName();
             if (temp.TokenType == Token.QNAME)
             {
                 LastTokenType = Token.DATATYPE;

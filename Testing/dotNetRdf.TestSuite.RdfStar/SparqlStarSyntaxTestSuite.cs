@@ -72,7 +72,7 @@ public class SparqlStarSyntaxTestSuite  : RdfTestSuite
     [Fact]
     public void RunSingle()
     {
-        ManifestTestData testData =
+        var testData =
             SparqlStarSyntaxTests.GetTestData(
                 new Uri("https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-1"));
         InvokeTestRunner(testData);

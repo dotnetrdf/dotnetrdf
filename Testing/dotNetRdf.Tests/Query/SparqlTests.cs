@@ -53,7 +53,7 @@ public class SparqlTests : IClassFixture<MockRemoteSparqlEndpointFixture>
     private object ExecuteQuery(IInMemoryQueryableStore store, string query)
     {
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
         var processor = new LeviathanQueryProcessor(store);
         return processor.ProcessQuery(q);
     }
@@ -203,7 +203,7 @@ public class SparqlTests : IClassFixture<MockRemoteSparqlEndpointFixture>
         FileLoader.Load(g, Path.Combine("resources", "json.owl"));
         store.Add(g);
 
-        object results = ExecuteQuery(store, query);
+        var results = ExecuteQuery(store, query);
         Assert.IsType<SparqlResultSet>(results, exactMatch: false);
         if (results is SparqlResultSet)
         {
@@ -268,7 +268,7 @@ SELECT * WHERE {
             _testOutputHelper.WriteLine(query.ToString());
             _testOutputHelper.WriteLine();
 
-            SparqlQuery q = parser.ParseFromString(query.ToString());
+            var q = parser.ParseFromString(query.ToString());
             Assert.Single(q.Variables);
         }
     }
@@ -313,7 +313,7 @@ SELECT * WHERE {
         cmdString.SetUri("graph", new Uri("http://example.org/graph"));
 
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString(cmdString);
+        var cmds = parser.ParseFromString(cmdString);
         cmds.ToString();
     }
 
@@ -361,13 +361,13 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
         FileLoader.Load(g, Path.Combine("resources", "anton.rdf"));
 
         var parser = new SparqlQueryParser();
-        SparqlQuery query = parser.ParseFromFile(Path.Combine("resources", "anton.rq"));
+        var query = parser.ParseFromFile(Path.Combine("resources", "anton.rq"));
 
         var results = g.ExecuteQuery(query);
         Assert.IsType<SparqlResultSet>(results, exactMatch: false);
         if (results is SparqlResultSet rset)
         {
-            foreach (ISparqlResult sparqlResult in rset)
+            foreach (var sparqlResult in rset)
             {
                 _testOutputHelper.WriteLine(sparqlResult.ToString());
             }
@@ -435,9 +435,9 @@ WHERE
         FileLoader.Load(store, Path.Combine("resources", "czech-royals.ttl"));
         const string sparqlQuery = "SELECT * WHERE {?s ?p ?o}";
         var sparqlParser = new SparqlQueryParser();
-        SparqlQuery query = sparqlParser.ParseFromString(sparqlQuery);
+        var query = sparqlParser.ParseFromString(sparqlQuery);
         var processor = new LeviathanQueryProcessor(store);
-        object results = processor.ProcessQuery(query);
+        var results = processor.ProcessQuery(query);
     }
 
     private readonly string[] _langSpecCaseQueries =
@@ -471,10 +471,10 @@ WHERE
     [Fact]
     public void SparqlLanguageSpecifierCase1()
     {
-        IGraph g = new Graph();
-        ILiteralNode lit = g.CreateLiteralNode("example", "en-gb");
-        INode s = g.CreateBlankNode();
-        INode p = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
+        var g = new Graph();
+        var lit = g.CreateLiteralNode("example", "en-gb");
+        var s = g.CreateBlankNode();
+        var p = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
 
         g.Assert(s, p, lit);
         TestLanguageSpecifierCase(g);
@@ -483,10 +483,10 @@ WHERE
     [Fact]
     public void SparqlLanguageSpecifierCase2()
     {
-        IGraph g = new Graph();
-        ILiteralNode lit = g.CreateLiteralNode("example", "en-GB");
-        INode s = g.CreateBlankNode();
-        INode p = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
+        var g = new Graph();
+        var lit = g.CreateLiteralNode("example", "en-GB");
+        var s = g.CreateBlankNode();
+        var p = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
 
         g.Assert(s, p, lit);
         TestLanguageSpecifierCase(g);
@@ -495,10 +495,10 @@ WHERE
     [Fact]
     public void SparqlLanguageSpecifierCase3()
     {
-        IGraph g = new Graph();
-        ILiteralNode lit = g.CreateLiteralNode("example", "EN-gb");
-        INode s = g.CreateBlankNode();
-        INode p = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
+        var g = new Graph();
+        var lit = g.CreateLiteralNode("example", "EN-gb");
+        var s = g.CreateBlankNode();
+        var p = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
 
         g.Assert(s, p, lit);
         TestLanguageSpecifierCase(g);
@@ -507,10 +507,10 @@ WHERE
     [Fact]
     public void SparqlLanguageSpecifierCase4()
     {
-        IGraph g = new Graph();
-        ILiteralNode lit = g.CreateLiteralNode("example", "EN-GB");
-        INode s = g.CreateBlankNode();
-        INode p = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
+        var g = new Graph();
+        var lit = g.CreateLiteralNode("example", "EN-GB");
+        var s = g.CreateBlankNode();
+        var p = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
 
         g.Assert(s, p, lit);
         TestLanguageSpecifierCase(g);
@@ -526,7 +526,7 @@ WHERE
 WHERE
 {}";
 
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
+        var q = new SparqlQueryParser().ParseFromString(queryStr);
         var dataset = new InMemoryDataset();
         var processor = new LeviathanQueryProcessor(dataset);
 
@@ -550,18 +550,18 @@ WHERE
     } LIMIT 3
   }
 }";
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
-        IGraph g = new Graph();
+        var q = new SparqlQueryParser().ParseFromString(queryStr);
+        var g = new Graph();
         g.NamespaceMap.AddNamespace("rdf", new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#"));
         g.NamespaceMap.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
-        IUriNode rdfType = g.CreateUriNode("rdf:type");
-        IUriNode person = g.CreateUriNode("foaf:Person");
-        IUriNode name = g.CreateUriNode("foaf:name");
-        IUriNode age = g.CreateUriNode("foaf:age");
+        var rdfType = g.CreateUriNode("rdf:type");
+        var person = g.CreateUriNode("foaf:Person");
+        var name = g.CreateUriNode("foaf:name");
+        var age = g.CreateUriNode("foaf:age");
         for (var i = 0; i < 3; i++)
         {
             // Create 3 statements for each instance of foaf:Person (including rdf:type statement)
-            IUriNode s = g.CreateUriNode(new Uri("http://example.com/people/" + i));
+            var s = g.CreateUriNode(new Uri("http://example.com/people/" + i));
             g.Assert(new Triple(s, rdfType, person));
             g.Assert(new Triple(s, name, g.CreateLiteralNode("Person " + i)));
             g.Assert(new Triple(s, age, g.CreateLiteralNode((20 + i).ToString(CultureInfo.InvariantCulture))));
@@ -622,9 +622,9 @@ WHERE  { ?s ?p ?o. BIND(?o / 2 AS ?a) }
 
         var queryProcessor = new LeviathanQueryProcessor(store);
         var queryParser = new SparqlQueryParser();
-        SparqlQuery q = queryParser.ParseFromString(query);
+        var q = queryParser.ParseFromString(query);
         var result = q.Process(queryProcessor) as SparqlResultSet;
-        INode oNode = result.First()["o"];
+        var oNode = result.First()["o"];
         Assert.Equal("0.5", ((ILiteralNode)oNode).Value);
 
         q = queryParser.ParseFromString("SELECT ?a WHERE { ?s ?p ?o. BIND(?o / 2 AS ?a) }");
@@ -658,7 +658,7 @@ WHERE  { ?s ?p ?o. BIND(?o / 2 AS ?a) }
         var store = new WebDemandTripleStore();
         var queryProcessor = new LeviathanQueryProcessor(store);
         var result = q.Process(queryProcessor);
-        SparqlResultSet resultSet = Assert.IsType<SparqlResultSet>(result, exactMatch: false);
+        var resultSet = Assert.IsType<SparqlResultSet>(result, exactMatch: false);
         Assert.Equal(2, resultSet.Count);
     }
 

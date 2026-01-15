@@ -69,7 +69,7 @@ public class SparqlStarEvaluationTestSuite : RdfTestSuite
         }
 
         var queryParser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_Star_1_1);
-        SparqlQuery query = queryParser.ParseFromFile(queryInputPath);
+        var query = queryParser.ParseFromFile(queryInputPath);
 
         var queryEngine = new LeviathanQueryProcessor(tripleStore, options =>
         {
@@ -84,7 +84,7 @@ public class SparqlStarEvaluationTestSuite : RdfTestSuite
         {
             results.Should().BeAssignableTo<IGraph>();
             var graphDiff = new GraphDiff();
-            GraphDiffReport diffReport = graphDiff.Difference(resultGraph, results as IGraph);
+            var diffReport = graphDiff.Difference(resultGraph, results as IGraph);
             TestTools.ShowDifferences(diffReport, "Expected Results", "Actual Results", _output);
             diffReport.AreEqual.Should().BeTrue();
         }
@@ -125,7 +125,7 @@ public class SparqlStarEvaluationTestSuite : RdfTestSuite
 #endif
         });
         var updateParser = new SparqlUpdateParser(SparqlQuerySyntax.Sparql_Star_1_1);
-        SparqlUpdateCommandSet updateCommandSet = updateParser.ParseFromFile(updateRequestPath);
+        var updateCommandSet = updateParser.ParseFromFile(updateRequestPath);
         updateEngine.ProcessCommandSet(updateCommandSet);
         TestTools.AssertEqual(resultStore, tripleStore, _output);
     }
@@ -133,7 +133,7 @@ public class SparqlStarEvaluationTestSuite : RdfTestSuite
     [Fact]
     public void RunSingle()
     {
-        ManifestTestData testData =
+        var testData =
             SparqlStarEvalTests.GetTestData(
                 new Uri("https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-expr-1"));
         InvokeTestRunner(testData);

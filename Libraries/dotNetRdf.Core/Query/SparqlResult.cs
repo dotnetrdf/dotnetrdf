@@ -54,7 +54,7 @@ public sealed class SparqlResult
     /// <param name="bindings">An enumeration of key-value pairs that bind a variable name to a node value.</param>
     public SparqlResult(IEnumerable<KeyValuePair<string, INode>> bindings)
     {
-        foreach (KeyValuePair<string, INode> binding in bindings)
+        foreach (var binding in bindings)
         {
             _variables.Add(binding.Key);
             _resultValues[binding.Key] = binding.Value;
@@ -259,7 +259,7 @@ public sealed class SparqlResult
             output.Append("?");
             output.Append(var);
             output.Append(" = ");
-            if (_resultValues.TryGetValue(var, out INode value) && value != null)
+            if (_resultValues.TryGetValue(var, out var value) && value != null)
             {
                 output.Append(value.ToString());
             }
@@ -294,7 +294,7 @@ public sealed class SparqlResult
             output.Append("?");
             output.Append(var);
             output.Append(" = ");
-            if (_resultValues.TryGetValue(var, out INode value) && value != null)
+            if (_resultValues.TryGetValue(var, out var value) && value != null)
             {
                 output.Append(value.ToString(formatter));
             }

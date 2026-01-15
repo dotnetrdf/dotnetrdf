@@ -258,7 +258,7 @@ public sealed class SparqlResultSet
         var otherResults = results.OrderByDescending(r => r.Variables.Count()).ToList();
         var localResults = new List<ISparqlResult>();
         var grCount = 0;
-        foreach (ISparqlResult result in Results.OrderByDescending(r => r.Variables.Count()))
+        foreach (var result in Results.OrderByDescending(r => r.Variables.Count()))
         {
             if (result.IsGroundResult)
             {
@@ -288,20 +288,20 @@ public sealed class SparqlResultSet
             other.AddVariable(var);
         }
 
-        foreach (ISparqlResult r in localResults)
+        foreach (var r in localResults)
         {
             local.AddResult(r);
         }
 
-        foreach (ISparqlResult r in otherResults)
+        foreach (var r in otherResults)
         {
             other.AddResult(r);
         }
 
         // Compare the two Graphs for equality
         var writer = new SparqlRdfWriter();
-        IGraph g = writer.GenerateOutput(local);
-        IGraph h = writer.GenerateOutput(other);
+        var g = writer.GenerateOutput(local);
+        var h = writer.GenerateOutput(other);
         return g.Equals(h);
     }
 
@@ -334,7 +334,7 @@ public sealed class SparqlResultSet
     {
         BaseTripleCollection tripleCollection = new TreeIndexedTripleCollection(fullTripleIndex);
 
-        foreach (ISparqlResult r in Results)
+        foreach (var r in Results)
         {
             // Must have values available for all three variables
             if (r.HasValue(subjVar) && r.HasValue(predVar) && r.HasValue(objVar))

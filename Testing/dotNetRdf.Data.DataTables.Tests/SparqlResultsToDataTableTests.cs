@@ -41,7 +41,7 @@ public class SparqlResultsToDataTableTests
     {
         var query = "SELECT * WHERE {?s ?p ?o}";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var g = new Graph();
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
@@ -55,9 +55,9 @@ public class SparqlResultsToDataTableTests
                 table.Columns.Add(new DataColumn(var, typeof(INode)));
             }
 
-            foreach (ISparqlResult r in resultSet)
+            foreach (var r in resultSet)
             {
-                DataRow row = table.NewRow();
+                var row = table.NewRow();
 
                 foreach (var var in resultSet.Variables)
                 {
@@ -87,7 +87,7 @@ public class SparqlResultsToDataTableTests
     {
         var query = "PREFIX ex: <http://example.org/vehicles/> SELECT * WHERE {?s a ex:Car . OPTIONAL { ?s ex:Speed ?speed }}";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var g = new Graph();
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
@@ -101,9 +101,9 @@ public class SparqlResultsToDataTableTests
                 table.Columns.Add(new DataColumn(var, typeof(INode)));
             }
 
-            foreach (ISparqlResult r in resultSet)
+            foreach (var r in resultSet)
             {
-                DataRow row = table.NewRow();
+                var row = table.NewRow();
 
                 foreach (var var in resultSet.Variables)
                 {
@@ -133,7 +133,7 @@ public class SparqlResultsToDataTableTests
     {
         var query = "SELECT * WHERE {?s ?p ?o}";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var g = new Graph();
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
@@ -156,7 +156,7 @@ public class SparqlResultsToDataTableTests
     {
         var query = "PREFIX ex: <http://example.org/vehicles/> SELECT * WHERE {?s a ex:Car . OPTIONAL { ?s ex:Speed ?speed }}";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var g = new Graph();
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
@@ -179,7 +179,7 @@ public class SparqlResultsToDataTableTests
     {
         var query = "ASK WHERE {?s ?p ?o}";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var g = new Graph();
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
@@ -204,7 +204,7 @@ public class SparqlResultsToDataTableTests
     {
         var query = "ASK WHERE {?s <http://example.org/noSuchPredicate> ?o}";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var g = new Graph();
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));

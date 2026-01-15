@@ -62,7 +62,7 @@ public class SparqlTests2
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var processor = new LeviathanQueryProcessor(AsDataset(store));
         var results = processor.ProcessQuery(q);
@@ -91,7 +91,7 @@ public class SparqlTests2
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
             "Should have been optimised to use a Lazy BGP");
@@ -125,7 +125,7 @@ public class SparqlTests2
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
             "Should have been optimised to use a Lazy BGP");
@@ -161,7 +161,7 @@ public class SparqlTests2
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
             "Should have been optimised to use a Lazy BGP");
@@ -226,7 +226,7 @@ public class SparqlTests2
         var parser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_0);
         Assert.Throws<RdfParseException>(() =>
         {
-            SparqlQuery _ = parser.ParseFromString(query);
+            var _ = parser.ParseFromString(query);
         });
     }
 
@@ -241,7 +241,7 @@ public class SparqlTests2
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        Assert.Throws<RdfParseException>(() => { SparqlQuery _ = parser.ParseFromString(query); });
+        Assert.Throws<RdfParseException>(() => { var _ = parser.ParseFromString(query); });
     }
 
     [Fact]
@@ -258,7 +258,7 @@ public class SparqlTests2
         var parser = new SparqlQueryParser();
         Assert.Throws<RdfParseException>(() =>
         {
-            SparqlQuery _ = parser.ParseFromString(query);
+            var _ = parser.ParseFromString(query);
         });
     }
 
@@ -338,11 +338,11 @@ WHERE
 }";
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         _output.WriteLine(q.ToString());
 
-        ISparqlAlgebra algebra = q.ToAlgebra();
+        var algebra = q.ToAlgebra();
         _output.WriteLine(algebra.ToString());
         Assert.IsType<Select>(algebra, exactMatch: false);
 
@@ -369,11 +369,11 @@ WHERE
 }";
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         _output.WriteLine(q.ToString());
 
-        ISparqlAlgebra algebra = q.ToAlgebra();
+        var algebra = q.ToAlgebra();
         _output.WriteLine(algebra.ToString());
         Assert.IsType<Select>(algebra, exactMatch: false);
 
@@ -381,10 +381,10 @@ WHERE
         Assert.IsType<Union>(algebra, exactMatch: false);
 
         IUnion union = (Union)algebra;
-        ISparqlAlgebra lhs = union.Lhs;
+        var lhs = union.Lhs;
         Assert.IsType<Extend>(lhs, exactMatch: false);
 
-        ISparqlAlgebra rhs = union.Rhs;
+        var rhs = union.Rhs;
         Assert.IsType<Join>(rhs, exactMatch: false);
     }
 
@@ -399,7 +399,7 @@ WHERE
         store.Add(g);
 
         var parser = new SparqlQueryParser(SparqlQuerySyntax.Extended);
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var processor = new LeviathanQueryProcessor(AsDataset(store));
         var results = processor.ProcessQuery(q);
@@ -427,7 +427,7 @@ WHERE
         var parser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
         Assert.Throws<RdfParseException>(() =>
         {
-            SparqlQuery _ = parser.ParseFromString(query);
+            var _ = parser.ParseFromString(query);
         });
     }
 
@@ -607,7 +607,7 @@ WHERE
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
@@ -635,7 +635,7 @@ WHERE
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
@@ -663,7 +663,7 @@ WHERE
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
@@ -691,7 +691,7 @@ WHERE
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
@@ -719,7 +719,7 @@ WHERE
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
@@ -747,7 +747,7 @@ WHERE
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
@@ -775,9 +775,9 @@ WHERE
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
-        ISparqlAlgebra algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers);
+        var algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers);
         Assert.True(algebra.ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
         ISparqlQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
@@ -808,11 +808,11 @@ WHERE
 
         //First do with Optimisation
         var timer = new Stopwatch();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
-        ISparqlDataset dataset = AsDataset(store);
+        var dataset = AsDataset(store);
         var processor = new LeviathanQueryProcessor(dataset);
         timer.Start();
         var results = processor.ProcessQuery(q);
@@ -857,7 +857,7 @@ WHERE
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
@@ -888,9 +888,9 @@ WHERE
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
-        ISparqlAlgebra algebra = q.ToAlgebra(true, optimisers);
+        var algebra = q.ToAlgebra(true, optimisers);
         Assert.True(algebra.ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
         var processor = new LeviathanQueryProcessor(AsDataset(store),
@@ -923,7 +923,7 @@ WHERE
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         _output.WriteLine(q.ToAlgebra().ToString());
         Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
@@ -959,7 +959,7 @@ WHERE
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
         q.Timeout = 0;
 
         Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
@@ -998,7 +998,7 @@ WHERE
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
             "Should have been optimised to use a Lazy BGP");
@@ -1034,7 +1034,7 @@ WHERE
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
             "Should have been optimised to use a Lazy BGP");
@@ -1069,8 +1069,8 @@ WHERE
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
-        SparqlQuery q2 = parser.ParseFromString(query2);
+        var q = parser.ParseFromString(query);
+        var q2 = parser.ParseFromString(query2);
 
         Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
             "Should have been optimised to use a Lazy BGP");
@@ -1119,7 +1119,7 @@ WHERE
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
         q.AlgebraOptimisers = optimisers;
         var processor = new LeviathanQueryProcessor(new InMemoryDataset(g),
             options => options.AlgebraOptimisers = optimisers);
@@ -1147,7 +1147,7 @@ WHERE
             FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
+            var q = parser.ParseFromString(query);
             var processor = new LeviathanQueryProcessor(new InMemoryDataset(g),
                 options => options.AlgebraOptimisers = optimisers);
             var results = processor.ProcessQuery(q);
@@ -1163,10 +1163,10 @@ WHERE
     [Fact]
     public void SparqlNestedOptionalCore406()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         g.LoadFromFile(Path.Combine("resources", "core-406.ttl"));
 
-        SparqlQuery query = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-406.rq"));
+        var query = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-406.rq"));
 
         var processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
         var results = processor.ProcessQuery(query) as SparqlResultSet;
@@ -1187,8 +1187,8 @@ WHERE
     {
         var store = new TripleStore();
         store.LoadFromFile(Path.Combine("resources", "core-416.trig"));
-        SparqlQuery q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-416.rq"));
-        ISparqlDataset dataset = AsDataset(store);
+        var q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-416.rq"));
+        var dataset = AsDataset(store);
         var processor = new LeviathanQueryProcessor(dataset,
             options => { options.UsePLinqEvaluation = false;});
         var total = new TimeSpan();
@@ -1216,12 +1216,12 @@ WHERE
         var store = new TripleStore();
         store.LoadFromFile(Path.Combine("resources", "core-416.trig"));
 
-        SparqlQuery q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-416.rq"));
+        var q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-416.rq"));
         _output.WriteLine(q.ToAlgebra().ToString());
         //SparqlFormatter formatter = new SparqlFormatter();
         //_output.WriteLine(formatter.Format(q));
 
-        ISparqlDataset dataset = AsDataset(store);
+        var dataset = AsDataset(store);
 
         //ExplainQueryProcessor processor = new ExplainQueryProcessor(dataset, ExplanationLevel.OutputToConsoleStdOut | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseNamedGraphs);
         var processor = new LeviathanQueryProcessor(dataset, options =>
@@ -1254,11 +1254,11 @@ WHERE
         var store = new TripleStore();
         store.LoadFromFile(Path.Combine("resources", "core-439", "data.trig"));
 
-        SparqlQuery q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-439", "bad-query.rq"));
+        var q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-439", "bad-query.rq"));
         //q.Timeout = 10000;
         _output.WriteLine(q.ToAlgebra().ToString());
 
-        ISparqlDataset dataset = AsDataset(store);
+        var dataset = AsDataset(store);
 
         var processor = new LeviathanQueryProcessor(dataset);
         var results = processor.ProcessQuery(q) as SparqlResultSet;
@@ -1274,11 +1274,11 @@ WHERE
         var store = new TripleStore();
         store.LoadFromFile(Path.Combine("resources", "core-439", "data.trig"));
 
-        SparqlQuery q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-439", "good-query.rq"));
+        var q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-439", "good-query.rq"));
         //q.Timeout = 3000;
         _output.WriteLine(q.ToAlgebra().ToString());
 
-        ISparqlDataset dataset = AsDataset(store);
+        var dataset = AsDataset(store);
 
         var processor = new LeviathanQueryProcessor(dataset);
         var results = processor.ProcessQuery(q) as SparqlResultSet;
@@ -1293,11 +1293,11 @@ WHERE
         var store = new TripleStore();
         store.LoadFromFile(Path.Combine("resources", "core-439", "data.trig"));
 
-        SparqlQuery q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-439", "from-query.rq"));
+        var q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-439", "from-query.rq"));
         //q.Timeout = 3000;
         _output.WriteLine(q.ToAlgebra().ToString());
 
-        ISparqlDataset dataset = AsDataset(store);
+        var dataset = AsDataset(store);
 
         var processor = new LeviathanQueryProcessor(dataset);
         var results = processor.ProcessQuery(q) as SparqlResultSet;
@@ -1313,7 +1313,7 @@ WHERE
         g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
         var dataset = new InMemoryDataset(g);
 
-        SparqlQuery q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-437.rq"));
+        var q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-437.rq"));
         var processor = new LeviathanQueryProcessor(dataset);
         var results = processor.ProcessQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
@@ -1327,7 +1327,7 @@ WHERE
         store.LoadFromFile(Path.Combine("resources", "core-457", "data.nq"));
         var dataset = new InMemoryDataset(store);
 
-        SparqlQuery q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources","core-457", query));
+        var q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources","core-457", query));
         q.Timeout = 15000;
         var processor = new LeviathanQueryProcessor(dataset,
             options => { options.UsePLinqEvaluation = usePLinq;});

@@ -85,7 +85,7 @@ HAVING (COUNT(?p) = 1)
         TestTools.ShowResults(resultSet);
         Assert.Equal(1, resultSet.Count);
 
-        ISparqlResult result = resultSet[0];
+        var result = resultSet[0];
         Assert.True(result.HasBoundValue("oo"));
         Assert.Equal(graph.CreateLiteralNode(literal), result["oo"]);
     }

@@ -69,9 +69,9 @@ public class SparqlResultsXml
 
         TestTools.ShowResults(results);
 
-        INode first = results[0]["test"];
-        INode second = results[1]["test"];
-        INode third = results[2]["test"];
+        var first = results[0]["test"];
+        var second = results[1]["test"];
+        var third = results[2]["test"];
 
         Assert.Equal(NodeType.Literal, first.NodeType);
         var firstLit = (ILiteralNode) first;

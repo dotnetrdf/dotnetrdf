@@ -170,7 +170,7 @@ public class SparqlRemoteUpdateEndpoint
                 {
                     try
                     {
-                        Stream stream = request.EndGetRequestStream(result);
+                        var stream = request.EndGetRequestStream(result);
                         using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                         {
                             writer.Write("update=");
@@ -235,11 +235,11 @@ public class SparqlRemoteUpdateEndpoint
     /// <param name="context">Serialization Context.</param>
     public override void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode endpoint = context.NextSubject;
-        INode endpointClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlUpdateEndpoint));
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
+        var endpoint = context.NextSubject;
+        var endpointClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlUpdateEndpoint));
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
 
         context.Graph.Assert(new Triple(endpoint, rdfType, endpointClass));
         context.Graph.Assert(new Triple(endpoint, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));

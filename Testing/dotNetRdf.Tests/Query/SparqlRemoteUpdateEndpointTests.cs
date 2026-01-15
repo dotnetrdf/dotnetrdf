@@ -55,7 +55,7 @@ public partial class SparqlRemoteUpdateEndpointTests : IClassFixture<MockRemoteU
     public void SparqlRemoteEndpointAsyncApiUpdate()
     {
 
-        SparqlRemoteUpdateEndpoint endpoint = GetUpdateEndpoint();
+        var endpoint = GetUpdateEndpoint();
         var signal = new ManualResetEvent(false);
         endpoint.Update("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/async/graph>", s =>
         {

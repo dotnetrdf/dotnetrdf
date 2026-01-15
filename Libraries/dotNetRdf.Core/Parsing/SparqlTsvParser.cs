@@ -166,7 +166,7 @@ public class SparqlTsvParser
             TryParseHeaderRow(context);
 
             // Then while not EOF try parse result rows
-            IToken next = context.Tokens.Peek();
+            var next = context.Tokens.Peek();
             while (next.TokenType != Token.EOF)
             {
                 TryParseResultRow(context);
@@ -189,7 +189,7 @@ public class SparqlTsvParser
 
     private void TryParseHeaderRow(TokenisingResultParserContext context)
     {
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         bool allowEOL = true, expectTab = false;
         while (true)
         {
@@ -234,7 +234,7 @@ public class SparqlTsvParser
 
     private void TryParseResultRow(TokenisingResultParserContext context)
     {
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         if (next.TokenType == Token.EOF)
         {
             context.Tokens.Dequeue();
@@ -252,7 +252,7 @@ public class SparqlTsvParser
                 case Token.URI:
                     if (expectTab) throw ParserHelper.Error("Unexpected URI, expected a Tab between RDF Terms", next);
                     if (v >= context.Variables.Count) throw ParserHelper.Error("Too many RDF Terms, only expecting " + context.Variables.Count + " terms", next);
-                    INode uri = ParserHelper.TryResolveUri(context, next);
+                    var uri = ParserHelper.TryResolveUri(context, next);
                     result.SetValue(context.Variables[v], uri);
                     v++;
                     allowEOL = true;
@@ -262,7 +262,7 @@ public class SparqlTsvParser
                 case Token.BLANKNODEWITHID:
                     if (expectTab) throw ParserHelper.Error("Unexpected Blank Node, expected a Tab between RDF Terms", next);
                     if (v >= context.Variables.Count) throw ParserHelper.Error("Too many RDF Terms, only expecting " + context.Variables.Count + " terms", next);
-                    INode blank = context.Handler.CreateBlankNode(next.Value.Substring(2));
+                    var blank = context.Handler.CreateBlankNode(next.Value.Substring(2));
                     result.SetValue(context.Variables[v], blank);
                     v++;
                     allowEOL = true;
@@ -274,7 +274,7 @@ public class SparqlTsvParser
                 case Token.PLAINLITERAL:
                     if (expectTab) throw ParserHelper.Error("Unexpected Blank Node, expected a Tab between RDF Terms", next);
                     if (v >= context.Variables.Count) throw ParserHelper.Error("Too many RDF Terms, only expecting " + context.Variables.Count + " terms", next);
-                    INode lit = TryParseLiteral(context, next);
+                    var lit = TryParseLiteral(context, next);
                     result.SetValue(context.Variables[v], lit);
                     v++;
                     allowEOL = true;
@@ -346,17 +346,17 @@ public class SparqlTsvParser
             }
             else
             {
-                Uri plUri = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)t, TurtleSyntax.Original);
+                var plUri = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)t, TurtleSyntax.Original);
                 return context.Handler.CreateLiteralNode(value, plUri);
             }
         }
 
         // Check for DataType/Language Specifier
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         if (next.TokenType == Token.DATATYPE)
         {
             next = context.Tokens.Dequeue();
-            Uri dtUri = context.UriFactory.Create(next.Value.Substring(1, next.Length - 2));
+            var dtUri = context.UriFactory.Create(next.Value.Substring(1, next.Length - 2));
             return context.Handler.CreateLiteralNode(value, dtUri);
         }
         else if (next.TokenType == Token.LANGSPEC)
@@ -377,7 +377,7 @@ public class SparqlTsvParser
 
     private void RaiseWarning(string message)
     {
-        SparqlWarning d = Warning;
+        var d = Warning;
         if (d != null) d(message);
     }
 

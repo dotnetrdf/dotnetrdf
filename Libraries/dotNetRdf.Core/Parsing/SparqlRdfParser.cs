@@ -233,20 +233,20 @@ public class SparqlRdfParser : BaseSparqlResultsReader
             // Create relevant Nodes
             context.Graph.NamespaceMap.AddNamespace("rdf", UriFactory.Root.Create(NamespaceMapper.RDF));
             context.Graph.NamespaceMap.AddNamespace("rs", UriFactory.Root.Create(SparqlRdfResultsNamespace));
-            IUriNode rdfType = context.Graph.CreateUriNode("rdf:type");
-            IUriNode resultSetClass = context.Graph.CreateUriNode("rs:ResultSet");
-            IUriNode resultVariable = context.Graph.CreateUriNode("rs:resultVariable");
-            IUriNode solution = context.Graph.CreateUriNode("rs:solution");
-            IUriNode binding = context.Graph.CreateUriNode("rs:binding");
-            IUriNode value = context.Graph.CreateUriNode("rs:value");
-            IUriNode variable = context.Graph.CreateUriNode("rs:variable");
-            IUriNode boolean = context.Graph.CreateUriNode("rs:boolean");
+            var rdfType = context.Graph.CreateUriNode("rdf:type");
+            var resultSetClass = context.Graph.CreateUriNode("rs:ResultSet");
+            var resultVariable = context.Graph.CreateUriNode("rs:resultVariable");
+            var solution = context.Graph.CreateUriNode("rs:solution");
+            var binding = context.Graph.CreateUriNode("rs:binding");
+            var value = context.Graph.CreateUriNode("rs:value");
+            var variable = context.Graph.CreateUriNode("rs:variable");
+            var boolean = context.Graph.CreateUriNode("rs:boolean");
 
             // Try to get a ResultSet object
-            Triple rset = context.Graph.Triples.WithPredicateObject(rdfType, resultSetClass).FirstOrDefault();
+            var rset = context.Graph.Triples.WithPredicateObject(rdfType, resultSetClass).FirstOrDefault();
             if (rset != null)
             {
-                INode rsetID = rset.Subject;
+                var rsetID = rset.Subject;
 
                 // Find the Variables the Result Set contains or the Boolean Value
                 var temp = context.Graph.Triples.WithSubjectPredicate(rsetID, boolean).ToList();
@@ -254,8 +254,8 @@ public class SparqlRdfParser : BaseSparqlResultsReader
                 {
                     if (temp.Count > 1) throw new RdfParseException("Result Set has more than one boolean result defined for it");
 
-                    Triple booleanResult = temp.First();
-                    INode result = booleanResult.Object;
+                    var booleanResult = temp.First();
+                    var result = booleanResult.Object;
                     if (result.NodeType == NodeType.Literal)
                     {
                         var lit = (ILiteralNode)result;
@@ -295,7 +295,7 @@ public class SparqlRdfParser : BaseSparqlResultsReader
                     temp = context.Graph.Triples.WithSubjectPredicate(rsetID, resultVariable).ToList();
                     if (temp.Count > 0)
                     {
-                        foreach (Triple t in temp)
+                        foreach (var t in temp)
                         {
                             if (t.Object.NodeType == NodeType.Literal)
                             {
@@ -315,23 +315,23 @@ public class SparqlRdfParser : BaseSparqlResultsReader
 
                     // Then we're expecting some Solutions
                     temp = context.Graph.Triples.WithSubjectPredicate(rsetID, solution).ToList();
-                    foreach (Triple slnTriple in temp)
+                    foreach (var slnTriple in temp)
                     {
                         // Each Solution has some Bindings
-                        INode slnID = slnTriple.Object;
+                        var slnID = slnTriple.Object;
                         var ok = false;
                         var r = new SparqlResult();
 
-                        foreach (Triple bindingTriple in context.Graph.Triples.WithSubjectPredicate(slnID, binding))
+                        foreach (var bindingTriple in context.Graph.Triples.WithSubjectPredicate(slnID, binding))
                         {
                             // Each Binding has a Variable and a Value
                             ok = true;
-                            INode bindingID = bindingTriple.Object;
+                            var bindingID = bindingTriple.Object;
                             var var = string.Empty;
                             INode val = null;
 
                             // Retrieve the Variable and the Bound Value
-                            foreach (Triple valueTriple in context.Graph.Triples.WithSubject(bindingID))
+                            foreach (var valueTriple in context.Graph.Triples.WithSubject(bindingID))
                             {
                                 if (valueTriple.Predicate.Equals(variable))
                                 {
@@ -397,7 +397,7 @@ public class SparqlRdfParser : BaseSparqlResultsReader
     /// <param name="message">Warning Message.</param>
     private void RaiseWarning(string message)
     {
-        SparqlWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

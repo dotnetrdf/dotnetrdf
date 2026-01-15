@@ -93,23 +93,23 @@ public class SparqlRdfWriter : ISparqlResultsWriter
     public IGraph GenerateOutput(SparqlResultSet results)
     {
         // Create the Graph for the Output
-        IGraph g = new Graph();
+        var g = new Graph();
 
         // Add the relevant namespaces
         g.NamespaceMap.AddNamespace("rs", g.UriFactory.Create(SparqlSpecsHelper.SparqlRdfResultsNamespace));
 
         // Create relevant Nodes
-        IUriNode rdfType = g.CreateUriNode("rdf:type");
-        IUriNode resultSetClass = g.CreateUriNode("rs:ResultSet");
-        IUriNode resultVariable = g.CreateUriNode("rs:resultVariable");
-        IUriNode solution = g.CreateUriNode("rs:solution");
-        IUriNode binding = g.CreateUriNode("rs:binding");
-        IUriNode value = g.CreateUriNode("rs:value");
-        IUriNode variable = g.CreateUriNode("rs:variable");
-        IUriNode boolean = g.CreateUriNode("rs:boolean");
+        var rdfType = g.CreateUriNode("rdf:type");
+        var resultSetClass = g.CreateUriNode("rs:ResultSet");
+        var resultVariable = g.CreateUriNode("rs:resultVariable");
+        var solution = g.CreateUriNode("rs:solution");
+        var binding = g.CreateUriNode("rs:binding");
+        var value = g.CreateUriNode("rs:value");
+        var variable = g.CreateUriNode("rs:variable");
+        var boolean = g.CreateUriNode("rs:boolean");
 
         // First we declare a Result Set
-        IBlankNode rset = g.CreateBlankNode();
+        var rset = g.CreateBlankNode();
         g.Assert(new Triple(rset, rdfType, resultSetClass));
 
         if (results.ResultsType == SparqlResultsType.VariableBindings)
@@ -123,7 +123,7 @@ public class SparqlRdfWriter : ISparqlResultsWriter
             // Then we're going to define a solution for each result
             foreach (SparqlResult r in results)
             {
-                IBlankNode sln = g.CreateBlankNode();
+                var sln = g.CreateBlankNode();
                 g.Assert(new Triple(rset, solution, sln));
 
                 foreach (var v in results.Variables)
@@ -131,14 +131,14 @@ public class SparqlRdfWriter : ISparqlResultsWriter
                     // Only define Bindings if there is a value and it is non-null
                     if (r.HasValue(v) && r[v] != null)
                     {
-                        IBlankNode bnd = g.CreateBlankNode();
+                        var bnd = g.CreateBlankNode();
                         g.Assert(new Triple(sln, binding, bnd));
                         g.Assert(new Triple(bnd, variable, g.CreateLiteralNode(v)));
                         switch (r[v].NodeType) 
                         {
                             case NodeType.Blank:
                                 var b = (IBlankNode)r[v];
-                                IBlankNode bMapped = g.CreateBlankNode(b.InternalID + "def");
+                                var bMapped = g.CreateBlankNode(b.InternalID + "def");
                                 //if (b.GraphUri == null)
                                 //{
                                 //    bMapped = g.CreateBlankNode(b.InternalID + "def");

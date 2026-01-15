@@ -1324,8 +1324,8 @@ public static class SparqlSpecsHelper
         if (x.NodeType == NodeType.Triple)
         {
             // Use the equality helper recursively on subject, predicate and object
-            Triple xt = (x as ITripleNode)?.Triple;
-            Triple yt = (y as ITripleNode)?.Triple;
+            var xt = (x as ITripleNode)?.Triple;
+            var yt = (y as ITripleNode)?.Triple;
             if (xt == null || yt == null) return false;
 
             return Equality(xt.Subject, yt.Subject) &&
@@ -1388,8 +1388,8 @@ public static class SparqlSpecsHelper
             else
             {
                 // Both have known types
-                SparqlNumericType xnumtype = NumericTypesHelper.GetNumericTypeFromDataTypeUri(xtype);
-                SparqlNumericType ynumtype = NumericTypesHelper.GetNumericTypeFromDataTypeUri(ytype);
+                var xnumtype = NumericTypesHelper.GetNumericTypeFromDataTypeUri(xtype);
+                var ynumtype = NumericTypesHelper.GetNumericTypeFromDataTypeUri(ytype);
                 var numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
                 if (numtype != SparqlNumericType.NaN)
                 {
@@ -1547,8 +1547,8 @@ public static class SparqlSpecsHelper
         if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date equality when one or both arguments are Null");
         try
         {
-            DateTime c = x.AsValuedNode().AsDateTime();
-            DateTime d = y.AsValuedNode().AsDateTime();
+            var c = x.AsValuedNode().AsDateTime();
+            var d = y.AsValuedNode().AsDateTime();
 
             switch (c.Kind)
             {
@@ -1596,13 +1596,13 @@ public static class SparqlSpecsHelper
         if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date equality when one or both arguments are Null");
         try
         {
-            IValuedNode a = x.AsValuedNode();
-            IValuedNode b = y.AsValuedNode();
+            var a = x.AsValuedNode();
+            var b = y.AsValuedNode();
 
             var strictEquals = (a.EffectiveType != b.EffectiveType);
 
-            DateTime c = a.AsDateTime();
-            DateTime d = b.AsDateTime();
+            var c = a.AsDateTime();
+            var d = b.AsDateTime();
 
             switch (c.Kind)
             {
@@ -1652,8 +1652,8 @@ public static class SparqlSpecsHelper
             var a = (ILiteralNode)x;
             var b = (ILiteralNode)y;
 
-            TimeSpan c = a.AsValuedNode().AsTimeSpan();
-            TimeSpan d = b.AsValuedNode().AsTimeSpan();
+            var c = a.AsValuedNode().AsTimeSpan();
+            var d = b.AsValuedNode().AsTimeSpan();
 
             return c.Equals(d);
         }

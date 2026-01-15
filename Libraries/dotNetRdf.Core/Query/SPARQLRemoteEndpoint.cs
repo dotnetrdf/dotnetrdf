@@ -292,7 +292,7 @@ public class SparqlRemoteEndpoint
         try
         {
             // Make the Query
-            HttpWebResponse httpResponse = QueryInternal(sparqlQuery, ResultsAcceptHeader);
+            var httpResponse = QueryInternal(sparqlQuery, ResultsAcceptHeader);
 
             // Parse into a ResultSet based on Content Type
             var ctype = httpResponse.ContentType;
@@ -302,7 +302,7 @@ public class SparqlRemoteEndpoint
                 ctype = ctype.Substring(0, ctype.IndexOf(";"));
             }
 
-            ISparqlResultsReader resultsParser = MimeTypesHelper.GetSparqlParser(ctype);
+            var resultsParser = MimeTypesHelper.GetSparqlParser(ctype);
             resultsParser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
             httpResponse.Close();
         }
@@ -346,10 +346,10 @@ public class SparqlRemoteEndpoint
         try
         {
             // Make the Query
-            using HttpWebResponse httpResponse = QueryInternal(sparqlQuery, RdfAcceptHeader);
+            using var httpResponse = QueryInternal(sparqlQuery, RdfAcceptHeader);
             // Parse into a Graph based on Content Type
             var ctype = httpResponse.ContentType;
-            IRdfReader parser = MimeTypesHelper.GetParser(ctype);
+            var parser = MimeTypesHelper.GetParser(ctype);
             parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
             httpResponse.Close();
         }
@@ -585,7 +585,7 @@ public class SparqlRemoteEndpoint
                 {
                     try
                     {
-                        Stream stream = request.EndGetRequestStream(result);
+                        var stream = request.EndGetRequestStream(result);
                         using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                         {
                             writer.Write("query=");
@@ -610,7 +610,7 @@ public class SparqlRemoteEndpoint
                                 try
                                 {
                                     using var response = (HttpWebResponse)request.EndGetResponse(innerResult);
-                                    ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
+                                    var parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
                                     var rset = new SparqlResultSet();
                                     parser.Load(rset, new StreamReader(response.GetResponseStream()));
 
@@ -680,7 +680,7 @@ public class SparqlRemoteEndpoint
                 {
                     try
                     {
-                        Stream stream = request.EndGetRequestStream(result);
+                        var stream = request.EndGetRequestStream(result);
                         using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                         {
                             writer.Write("query=");
@@ -705,7 +705,7 @@ public class SparqlRemoteEndpoint
                                 try
                                 {
                                     using var response = (HttpWebResponse)request.EndGetResponse(innerResult);
-                                    ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
+                                    var parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
                                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
 
                                     response.Close();
@@ -769,7 +769,7 @@ public class SparqlRemoteEndpoint
                 {
                     try
                     {
-                        Stream stream = request.EndGetRequestStream(result);
+                        var stream = request.EndGetRequestStream(result);
                         using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                         {
                             writer.Write("query=");
@@ -795,7 +795,7 @@ public class SparqlRemoteEndpoint
                                 {
 
                                     var response = (HttpWebResponse) request.EndGetResponse(innerResult);
-                                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                                    var parser = MimeTypesHelper.GetParser(response.ContentType);
                                     var g = new Graph();
                                     parser.Load(g, new StreamReader(response.GetResponseStream()));
 
@@ -862,7 +862,7 @@ public class SparqlRemoteEndpoint
         {
             try
             {
-                Stream stream = request.EndGetRequestStream(result);
+                var stream = request.EndGetRequestStream(result);
                 using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                 {
                     writer.Write("query=");
@@ -887,7 +887,7 @@ public class SparqlRemoteEndpoint
                         try
                         {
                             var response = (HttpWebResponse) request.EndGetResponse(innerResult);
-                            IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                            var parser = MimeTypesHelper.GetParser(response.ContentType);
                             parser.Load(handler, new StreamReader(response.GetResponseStream()));
 
                             callback(handler, null, state);
@@ -937,13 +937,13 @@ public class SparqlRemoteEndpoint
     /// <param name="context">Configuration Serialization Context.</param>
     public override void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode endpoint = context.NextSubject;
-        INode endpointClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlQueryEndpoint));
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
-        INode defGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
-        INode namedGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
+        var endpoint = context.NextSubject;
+        var endpointClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlQueryEndpoint));
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
+        var defGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
+        var namedGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
 
         context.Graph.Assert(new Triple(endpoint, rdfType, endpointClass));
         context.Graph.Assert(new Triple(endpoint, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));

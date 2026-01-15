@@ -149,7 +149,7 @@ public class SparqlServiceTests : IClassFixture<MockRemoteSparqlEndpointFixture>
     private static IGraph CreateGraph(int numberOfTriples)
     {
         var graph = new Graph();
-        for (int i = 0; i < numberOfTriples; i++)
+        for (var i = 0; i < numberOfTriples; i++)
         {
             graph.Assert(
                 graph.CreateUriNode(new Uri("http://example.org/s")),

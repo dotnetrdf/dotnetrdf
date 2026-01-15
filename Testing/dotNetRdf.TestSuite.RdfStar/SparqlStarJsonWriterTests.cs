@@ -28,7 +28,7 @@ public class SparqlStarJsonWriterTests
         var expectJson =
             @"{ type: 'triple', value: { subject: { type: 'uri', value: 'http://example.org/s' }, predicate: { type: 'uri', value: 'http://example.org/p' }, object: { type: 'literal', value: 'o' } } }";
         var expectJsonNode = JObject.Parse(expectJson);
-        JToken tripleNodeResult = jsonNode["results"]?["bindings"]?[0]?["x"];
+        var tripleNodeResult = jsonNode["results"]?["bindings"]?[0]?["x"];
         Assert.NotNull(tripleNodeResult);
         Assert.True(JToken.DeepEquals(expectJsonNode, tripleNodeResult));
     }

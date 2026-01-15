@@ -55,8 +55,8 @@ public class SparqlRemoteEndpointTests : IClassFixture<MockRemoteSparqlEndpointF
     [Fact]
     public void ItDefaultsToGetForShortQueries()
     {
-        SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
-        SparqlResultSet results = endpoint.QueryWithResultSet("SELECT * WHERE { ?s ?p ?o . }");
+        var endpoint = GetQueryEndpoint();
+        var results = endpoint.QueryWithResultSet("SELECT * WHERE { ?s ?p ?o . }");
         results.Should().NotBeNull().And.HaveCount(1);
         var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/sparql")).ToList();
         sparqlLogEntries.Should().HaveCount(1);
@@ -70,8 +70,8 @@ public class SparqlRemoteEndpointTests : IClassFixture<MockRemoteSparqlEndpointF
         input.AppendLine("SELECT * WHERE {?s ?p ?o}");
         input.AppendLine(new string('#', 2048));
 
-        SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
-        SparqlResultSet results = endpoint.QueryWithResultSet(input.ToString());
+        var endpoint = GetQueryEndpoint();
+        var results = endpoint.QueryWithResultSet(input.ToString());
         results.Should().HaveCount(1);
         var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/sparql")).ToList();
         sparqlLogEntries.Should().HaveCount(1);
@@ -83,10 +83,10 @@ public class SparqlRemoteEndpointTests : IClassFixture<MockRemoteSparqlEndpointF
     {
         var queryString = "SELECT * WHERE {?s ?p ?o}" + new string('#', 2048);
         _fixture.RegisterSelectQueryGetHandler(queryString);
-        SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
+        var endpoint = GetQueryEndpoint();
         endpoint.HttpMode = "GET";
 
-        SparqlResultSet results = endpoint.QueryWithResultSet(queryString);
+        var results = endpoint.QueryWithResultSet(queryString);
         results.Should().NotBeNull().And.HaveCount(1);
         var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/sparql")).ToList();
         sparqlLogEntries.Should().HaveCount(1);
@@ -98,10 +98,10 @@ public class SparqlRemoteEndpointTests : IClassFixture<MockRemoteSparqlEndpointF
     {
         var queryString = "SELECT * WHERE {?s ?p \"\u6E0B\u8c37\u99c5\"}";
         _fixture.RegisterSelectQueryGetHandler(queryString);
-        SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
+        var endpoint = GetQueryEndpoint();
         endpoint.HttpMode = "GET";
 
-        SparqlResultSet results = endpoint.QueryWithResultSet(queryString);
+        var results = endpoint.QueryWithResultSet(queryString);
         results.Should().NotBeNull().And.HaveCount(1);
         var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/sparql")).ToList();
         sparqlLogEntries.Should().HaveCount(1);
@@ -111,7 +111,7 @@ public class SparqlRemoteEndpointTests : IClassFixture<MockRemoteSparqlEndpointF
     [Fact]
     public void ItInvokesAnIRdfHandler()
     {
-        SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
+        var endpoint = GetQueryEndpoint();
         var handler= new CountHandler();
         endpoint.QueryWithResultGraph(handler, "CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}");
         handler.Count.Should().Be(1);
@@ -125,7 +125,7 @@ public class SparqlRemoteEndpointTests : IClassFixture<MockRemoteSparqlEndpointF
         resultsHandler.Setup(x => x.HandleResult(It.IsAny<SparqlResult>())).Returns(true);
         resultsHandler.Setup(x => x.HandleVariable(It.IsAny<string>())).Returns(true);
 
-        SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
+        var endpoint = GetQueryEndpoint();
         endpoint.QueryWithResultSet(resultsHandler.Object, "SELECT * WHERE { ?s ?p ?o . }");
 
         resultsHandler.Verify(x => x.StartResults());
@@ -139,7 +139,7 @@ public class SparqlRemoteEndpointTests : IClassFixture<MockRemoteSparqlEndpointF
     [Fact]
     public void SparqlRemoteEndpointAsyncApiQueryWithResultSet()
     {
-        SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
+        var endpoint = GetQueryEndpoint();
         var signal = new ManualResetEvent(false);
         var resultsCount = -1;
         endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}", (r, _) =>
@@ -157,7 +157,7 @@ public class SparqlRemoteEndpointTests : IClassFixture<MockRemoteSparqlEndpointF
     [Fact]
     public void SparqlRemoteEndpointAsyncApiQueryWithResultGraph()
     {
-        SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
+        var endpoint = GetQueryEndpoint();
         var signal = new ManualResetEvent(false);
         var resultsCount = -1;
         endpoint.QueryWithResultGraph(_fixture.ConstructQuery, (r, _) =>
