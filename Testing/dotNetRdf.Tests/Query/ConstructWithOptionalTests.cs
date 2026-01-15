@@ -63,7 +63,7 @@ public class ConstructWithOptionalTests
 
     private void TestConstruct(IInMemoryQueryableStore store, IGraph expected, String query)
     {
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         var processor = new LeviathanQueryProcessor(AsDataset(store));
         var results = processor.ProcessQuery(q);
@@ -73,14 +73,14 @@ public class ConstructWithOptionalTests
 
             var formatter = new NTriplesFormatter();
             Console.WriteLine("Result Data");
-            foreach (Triple t in result.Triples)
+            foreach (var t in result.Triples)
             {
                 Console.WriteLine(t.ToString(formatter));
             }
             Console.WriteLine();
 
             Console.WriteLine("Expected Data");
-            foreach (Triple t in expected.Triples)
+            foreach (var t in expected.Triples)
             {
                 Console.WriteLine(t.ToString(formatter));
             }
@@ -104,24 +104,24 @@ public class ConstructWithOptionalTests
 
     private void TestUpdate(IInMemoryQueryableStore store, IGraph expected, String update)
     {
-        SparqlUpdateCommandSet cmds = _updateParser.ParseFromString(update);
+        var cmds = _updateParser.ParseFromString(update);
 
         var processor = new LeviathanUpdateProcessor(store);
         processor.ProcessCommandSet(cmds);
 
         Assert.True(store.HasGraph((IRefNode)null), "Store should have a default unnamed Graph");
-        IGraph result = store[(IRefNode)null];
+        var result = store[(IRefNode)null];
         
         var formatter = new NTriplesFormatter();
         Console.WriteLine("Result Data");
-        foreach (Triple t in result.Triples)
+        foreach (var t in result.Triples)
         {
             Console.WriteLine(t.ToString(formatter));
         }
         Console.WriteLine();
 
         Console.WriteLine("Expected Data");
-        foreach (Triple t in expected.Triples)
+        foreach (var t in expected.Triples)
         {
             Console.WriteLine(t.ToString(formatter));
         }
@@ -148,7 +148,7 @@ public class ConstructWithOptionalTests
     [Fact]
     public void SparqlUpdateInsertWithOptional()
     {
-        IGraph g = GetNamedTestGraph();
+        var g = GetNamedTestGraph();
 
         var expected = new Graph();
         expected.Assert(g.GetTriplesWithPredicate(g.CreateUriNode("rdf:type")));
@@ -169,7 +169,7 @@ public class ConstructWithOptionalTests
     [Fact]
     public void SparqlUpdateDeleteWithOptional()
     {
-        IGraph g = GetNamedTestGraph();
+        var g = GetNamedTestGraph();
 
         var def = new Graph();
         def.Merge(g);

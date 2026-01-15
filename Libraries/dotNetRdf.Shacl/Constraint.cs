@@ -122,7 +122,7 @@ internal abstract class Constraint : GraphWrapperNode
             return true;
         }
 
-        foreach (INode invalidValue in invalidValues)
+        foreach (var invalidValue in invalidValues)
         {
             var result = Result.Create(report.Graph);
             result.SourceConstraintComponent = ConstraintComponent;
@@ -159,7 +159,7 @@ internal abstract class Constraint : GraphWrapperNode
             return true;
         }
 
-        foreach (Triple invalidValue in invalidValues)
+        foreach (var invalidValue in invalidValues)
         {
             var result = Result.Create(report.Graph);
             result.SourceConstraintComponent = ConstraintComponent;
@@ -223,7 +223,7 @@ internal abstract class Constraint : GraphWrapperNode
             return true;
         }
 
-        foreach (INode invalidValue in invalidValues)
+        foreach (var invalidValue in invalidValues)
         {
             var result = Result.Create(report.Graph);
             result.SourceConstraintComponent = ConstraintComponent;

@@ -56,7 +56,7 @@ public class CsvWriter
     /// <param name="output">Writer to save to.</param>
     protected override void SaveInternal(IGraph g, TextWriter output)
     {
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             GenerateNodeOutput(output, t.Subject, TripleSegment.Subject);
             output.Write(',');

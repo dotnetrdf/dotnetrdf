@@ -42,7 +42,7 @@ internal class ConstructImpl : QueryImpl, IConstruct
     public List<ITripleTemplate> getTemplates()
     {
         var results = new List<ITripleTemplate>();
-        foreach (IResource next in getList(SP.PropertyTemplates))
+        foreach (var next in getList(SP.PropertyTemplates))
         {
             if (next != null && !(next.isLiteral()))
             {
@@ -65,7 +65,7 @@ internal class ConstructImpl : QueryImpl, IConstruct
         context.printKeyword("CONSTRUCT");
         context.print(" {");
         context.println();
-        foreach (ITripleTemplate template in getTemplates())
+        foreach (var template in getTemplates())
         {
             context.printIndentation(context.getIndentation() + 1);
             template.Print(context);

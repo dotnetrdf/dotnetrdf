@@ -49,10 +49,10 @@ public abstract class CompressionTests
 
     protected void CheckCompressionRoundTrip(IGraph g)
     {
-        foreach (KeyValuePair<IRdfWriter, IRdfReader> kvp in _compressers)
+        foreach (var kvp in _compressers)
         {
 
-            IRdfWriter writer = kvp.Key;
+            var writer = kvp.Key;
             if (writer is ICompressingWriter)
             {
                 ((ICompressingWriter)writer).CompressionLevel = WriterCompressionLevel.High;
@@ -71,7 +71,7 @@ public abstract class CompressionTests
             var h = new Graph();
             StringParser.Parse(h, strWriter.ToString(), kvp.Value);
 
-            GraphDiffReport report = g.Difference(h);
+            var report = g.Difference(h);
             if (!report.AreEqual) TestTools.ShowDifferences(report);
             Assert.Equal(g, h);
         }

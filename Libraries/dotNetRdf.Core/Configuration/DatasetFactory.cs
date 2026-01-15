@@ -51,8 +51,8 @@ public class DatasetFactory
     {
         obj = null;
         var unionDefGraph = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUnionDefaultGraph)), false);
-        INode defaultGraphNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)));
-        Uri defaultGraph = (defaultGraphNode != null && defaultGraphNode.NodeType == NodeType.Uri ? ((IUriNode)defaultGraphNode).Uri : null);
+        var defaultGraphNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)));
+        var defaultGraph = (defaultGraphNode != null && defaultGraphNode.NodeType == NodeType.Uri ? ((IUriNode)defaultGraphNode).Uri : null);
 
         INode storeNode;
         switch (targetType.FullName)

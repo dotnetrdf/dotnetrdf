@@ -117,7 +117,7 @@ public class ConstructContext
     {
         _bnodeMap ??= [];
 
-        if (_bnodeMap.TryGetValue(id, out INode node)) return node;
+        if (_bnodeMap.TryGetValue(id, out var node)) return node;
 
         INode temp;
         if (Graph != null)
@@ -159,7 +159,7 @@ public class ConstructContext
     {
         _nodeMap ??= new MultiDictionary<INode, INode>(new FastVirtualNodeComparer());
 
-        if (_nodeMap.TryGetValue(n, out INode node)) return node;
+        if (_nodeMap.TryGetValue(n, out var node)) return node;
 
         INode temp;
         switch (n.NodeType)
@@ -201,9 +201,9 @@ public class ConstructContext
 
             case NodeType.Triple:
                 var t = (ITripleNode)n;
-                INode s = GetNode(t.Triple.Subject, true);
-                INode p = GetNode(t.Triple.Predicate, true);
-                INode o = GetNode(t.Triple.Object, true);
+                var s = GetNode(t.Triple.Subject, true);
+                var p = GetNode(t.Triple.Predicate, true);
+                var o = GetNode(t.Triple.Object, true);
                 var triple = new Triple(s, p, o);
                 temp = NodeFactory.CreateTripleNode(triple);
                 break;

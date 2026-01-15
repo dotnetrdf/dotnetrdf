@@ -54,7 +54,7 @@ public class ConfigurationTests
         Assert.NotNull(configNode);
         var loadedObject = ConfigurationLoader.LoadObject(configGraph, configNode);
         Assert.NotNull(loadedObject);
-        PullQueryProcessor processor = Assert.IsType<PullQueryProcessor>(loadedObject);
+        var processor = Assert.IsType<PullQueryProcessor>(loadedObject);
         Assert.True(processor.UnionDefaultGraph);
         Assert.Equal(60000ul, processor.QueryExecutionTimeout);
     }

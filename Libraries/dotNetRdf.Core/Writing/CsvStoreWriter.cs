@@ -74,7 +74,7 @@ public class CsvStoreWriter
         }
 
         // Queue the Graphs to be written
-        foreach (IGraph g in context.Store.Graphs)
+        foreach (var g in context.Store.Graphs)
         {
             context.Add(g.Name);
         }
@@ -94,7 +94,7 @@ public class CsvStoreWriter
         }
         catch (AggregateException ex)
         {
-            foreach (Exception innerEx in ex.InnerExceptions)
+            foreach (var innerEx in ex.InnerExceptions)
             {
                 outputEx.AddException(innerEx);
             }
@@ -117,10 +117,10 @@ public class CsvStoreWriter
     {
         try
         {
-            while (globalContext.TryGetNextGraphName(out IRefNode u))
+            while (globalContext.TryGetNextGraphName(out var u))
             {
                 // Get the Graph from the Store
-                IGraph g = globalContext.Store.Graphs[u];
+                var g = globalContext.Store.Graphs[u];
 
                 // Generate the Graph Output and add to Stream
                 var context = new BaseWriterContext(g, new System.IO.StringWriter());
@@ -158,7 +158,7 @@ public class CsvStoreWriter
         if (context.Graph.BaseUri != null)
         {
             // Named Graphs have a fourth context field added
-            foreach (Triple t in context.Graph.Triples)
+            foreach (var t in context.Graph.Triples)
             {
                 GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
                 context.Output.Write(',');
@@ -173,7 +173,7 @@ public class CsvStoreWriter
         else
         {
             // Default Graph has an empty field added
-            foreach (Triple t in context.Graph.Triples)
+            foreach (var t in context.Graph.Triples)
             {
                 GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
                 context.Output.Write(',');

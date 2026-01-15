@@ -54,9 +54,9 @@ public class ConfigSerializationTests
         var context = new ConfigurationSerializationContext(g);
         var nodes = new List<INode>();
 
-        foreach (ISparqlOperator op in ops)
+        foreach (var op in ops)
         {
-            INode opNode = g.CreateBlankNode();
+            var opNode = g.CreateBlankNode();
             context.NextSubject = opNode;
             nodes.Add(opNode);
 
@@ -65,7 +65,7 @@ public class ConfigSerializationTests
 
         for (var i = 0; i < ops.Count; i++)
         {
-            INode opNode = nodes[i];
+            var opNode = nodes[i];
             var resultOp = ConfigurationLoader.LoadObject(g, opNode) as ISparqlOperator;
             Assert.NotNull(resultOp);
             Assert.Equal(ops[i].GetType(), resultOp.GetType());

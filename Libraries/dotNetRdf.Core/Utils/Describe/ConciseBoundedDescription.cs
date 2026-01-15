@@ -55,10 +55,10 @@ public class ConciseBoundedDescription
         // Get Triples for this Subject
         var bnodes = new Queue<INode>();
         var expandedBNodes = new HashSet<INode>();
-        foreach (INode n in nodes)
+        foreach (var n in nodes)
         {
             // Get Triples where the Node is the Subject
-            foreach (Triple t in dataset.GetTriplesWithSubject(n).ToList())
+            foreach (var t in dataset.GetTriplesWithSubject(n).ToList())
             {
                 if (t.Object.NodeType == NodeType.Blank)
                 {
@@ -70,11 +70,11 @@ public class ConciseBoundedDescription
             // Compute the Blank Node Closure for this Subject
             while (bnodes.Count > 0)
             {
-                INode bsubj = bnodes.Dequeue();
+                var bsubj = bnodes.Dequeue();
                 if (expandedBNodes.Contains(bsubj)) continue;
                 expandedBNodes.Add(bsubj);
 
-                foreach (Triple t2 in dataset.GetTriplesWithSubject(bsubj).ToList())
+                foreach (var t2 in dataset.GetTriplesWithSubject(bsubj).ToList())
                 {
                     if (t2.Object.NodeType == NodeType.Blank)
                     {

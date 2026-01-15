@@ -63,7 +63,7 @@ _:a a dnr:Graph ;
         File.WriteAllText("ConfigurationImports1-a.ttl", graph1);
         File.WriteAllText("ConfigurationImports1-b.ttl", graph2);
 
-        IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports1-a.ttl");
+        var g = ConfigurationLoader.LoadConfiguration("ConfigurationImports1-a.ttl");
 
         TestTools.ShowGraph(g);
 
@@ -97,7 +97,7 @@ _:a a dnr:Graph ;
         File.WriteAllText("ConfigurationImports2-b.ttl", graph2);
         File.WriteAllText("ConfigurationImports2-c.ttl", graph3);
 
-        IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports2-a.ttl");
+        var g = ConfigurationLoader.LoadConfiguration("ConfigurationImports2-a.ttl");
 
         TestTools.ShowGraph(g);
 
@@ -129,7 +129,7 @@ _:a a dnr:Graph ;
         File.WriteAllText("ConfigurationImports3-b.ttl", graph2);
         File.WriteAllText("ConfigurationImports3-c.ttl", graph3);
 
-        IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports3-a.ttl");
+        var g = ConfigurationLoader.LoadConfiguration("ConfigurationImports3-a.ttl");
 
         TestTools.ShowGraph(g);
 
@@ -161,7 +161,7 @@ _:a a dnr:Graph ;
         File.WriteAllText("ConfigurationImports4-b.ttl", graph2);
         File.WriteAllText("ConfigurationImports4-c.ttl", graph3);
 
-        IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports4-a.ttl");
+        var g = ConfigurationLoader.LoadConfiguration("ConfigurationImports4-a.ttl");
 
         TestTools.ShowGraph(g);
 
@@ -179,7 +179,7 @@ _:a a dnr:Graph ;
         File.WriteAllText("ConfigurationImportsCircular1-a.ttl", graph1);
         File.WriteAllText("ConfigurationImportsCircular1-b.ttl", graph2);
 
-        IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImportsCircular1-a.ttl");
+        var g = ConfigurationLoader.LoadConfiguration("ConfigurationImportsCircular1-a.ttl");
         Assert.Equal(2, g.Triples.Count);
     }
 }

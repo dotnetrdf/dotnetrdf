@@ -36,17 +36,17 @@ internal static class ConstructorExtensions
     // TODO pass the 
     internal static IGraph RunConstructors(this SpinWrappedDataset dataset, List<Resource> usedClasses)
     {
-        IGraph outputGraph = new ThreadSafeGraph();
+        var outputGraph = new ThreadSafeGraph();
         if (usedClasses.Count > 0)
         {
             dataset.spinProcessor.SortClasses(usedClasses);
 
-            SpinWrappedDataset.QueryMode currentExecutionMode = dataset.QueryExecutionMode;
+            var currentExecutionMode = dataset.QueryExecutionMode;
             dataset.QueryExecutionMode = SpinWrappedDataset.QueryMode.SpinInferencing;
 
-            foreach (Resource classResource in usedClasses)
+            foreach (var classResource in usedClasses)
             {
-                IEnumerable<IUpdate> constructors = dataset.spinProcessor.GetConstructorsForClass(classResource);
+                var constructors = dataset.spinProcessor.GetConstructorsForClass(classResource);
                 if (constructors.Count() > 0)
                 {
                     outputGraph.Assert(dataset.ExecuteUpdate(constructors).Triples);

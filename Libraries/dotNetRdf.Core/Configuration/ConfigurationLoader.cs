@@ -405,15 +405,15 @@ public class ConfigurationLoader : IConfigurationLoader
     {
         // Add initial sources to already imported list
         var imported = new HashSet<INode>();
-        foreach (INode source in sources)
+        foreach (var source in sources)
         {
             imported.Add(source);
         }
 
         // Find initial imports
-        INode imports = g.CreateUriNode(g.UriFactory.Create(PropertyImports));
+        var imports = g.CreateUriNode(g.UriFactory.Create(PropertyImports));
         var importQueue = new Queue<INode>();
-        foreach (INode importData in g.GetTriplesWithPredicate(imports).Select(t => t.Object))
+        foreach (var importData in g.GetTriplesWithPredicate(imports).Select(t => t.Object))
         {
             importQueue.Enqueue(importData);
         }
@@ -421,7 +421,7 @@ public class ConfigurationLoader : IConfigurationLoader
         while (importQueue.Count > 0)
         {
             // Load data from imported configuration graph
-            INode importData = importQueue.Dequeue();
+            var importData = importQueue.Dequeue();
             var data = new Graph();
             switch (importData.NodeType)
             {
@@ -447,7 +447,7 @@ public class ConfigurationLoader : IConfigurationLoader
             }
 
             // Scan for nested imports
-            foreach (INode nestedImport in data.GetTriplesWithPredicate(imports).Select(t => t.Object))
+            foreach (var nestedImport in data.GetTriplesWithPredicate(imports).Select(t => t.Object))
             {
                 if (!imported.Contains(nestedImport)) importQueue.Enqueue(nestedImport);
             }
@@ -471,7 +471,7 @@ public class ConfigurationLoader : IConfigurationLoader
         AutoConfigureReadersAndWriters(g);
         AutoConfigureStaticOptions(g);
         AutoConfigureSparqlOperators(g);
-        foreach (Action<IGraph> autoConfigure in _extensions.SelectMany(ext=>ext.GetAutoConfigureActions()))
+        foreach (var autoConfigure in _extensions.SelectMany(ext=>ext.GetAutoConfigureActions()))
         {
             autoConfigure(g);
         }
@@ -483,10 +483,10 @@ public class ConfigurationLoader : IConfigurationLoader
     /// <param name="g">Configuration Graph.</param>
     public static void AutoConfigureObjectFactories(IGraph g)
     {
-        IUriNode rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode objLoader = g.CreateUriNode(g.UriFactory.Create(ClassObjectFactory));
+        var rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var objLoader = g.CreateUriNode(g.UriFactory.Create(ClassObjectFactory));
 
-        foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, objLoader).Select(t => t.Subject))
+        foreach (var objNode in g.GetTriplesWithPredicateObject(rdfType, objLoader).Select(t => t.Subject))
         {
             var temp = LoadObject(g, objNode);
             if (temp is IObjectFactory)
@@ -517,13 +517,13 @@ public class ConfigurationLoader : IConfigurationLoader
     /// </remarks>
     public static void AutoConfigureStaticOptions(IGraph g)
     {
-        IUriNode dnrConfigure = g.CreateUriNode(g.UriFactory.Create(PropertyConfigure));
+        var dnrConfigure = g.CreateUriNode(g.UriFactory.Create(PropertyConfigure));
 
-        foreach (Triple t in g.GetTriplesWithPredicate(dnrConfigure))
+        foreach (var t in g.GetTriplesWithPredicate(dnrConfigure))
         {
             if (t.Subject.NodeType == NodeType.Uri)
             {
-                Uri propertyUri = ((IUriNode)t.Subject).Uri;
+                var propertyUri = ((IUriNode)t.Subject).Uri;
                 if (propertyUri.Scheme.Equals(UriSchemeConfigureOptions))
                 {
                     // Parse the Class and Property out of the URI
@@ -532,20 +532,20 @@ public class ConfigurationLoader : IConfigurationLoader
                     var propName = propertyUri.Fragment.Substring(1);
 
                     // Get the Value we are setting to this property
-                    INode value = t.Object;
+                    var value = t.Object;
 
                     // Get the type whose static option we are attempting to change
                     var type = Type.GetType(className);
                     if (type == null) throw new DotNetRdfConfigurationException("Malformed Configure Options URI used as a subject for a dnr:configure triple, <" + propertyUri.AbsoluteUri + "> specifies a class '" + className + "' which could not be loaded.  Please ensure the type name is fully qualified");
 
                     // Get the property in question
-                    PropertyInfo property = type.GetProperty(propName);
+                    var property = type.GetProperty(propName);
                     if (property == null) throw new DotNetRdfConfigurationException("Malformed Configure Options URI used as a subject for a dnr:configure triple, <" + propertyUri.AbsoluteUri + "> specifies a property '" + propName + "' which does not exist or is not static");
                     if (!property.GetSetMethod().IsStatic) throw new DotNetRdfConfigurationException("Malformed Configure Options URI used as a subject for a dnr:configure triple, <" + propertyUri.AbsoluteUri + "> specifies a property '" + propName + "' which is not static");
-                    Type valueType = property.PropertyType;
+                    var valueType = property.PropertyType;
                     try
                     {
-                        IValuedNode valueNode = value.AsValuedNode();
+                        var valueNode = value.AsValuedNode();
                         if (valueType.Equals(typeof(int)))
                         {
                             var intValue = (int)valueNode.AsInteger();
@@ -567,7 +567,7 @@ public class ConfigurationLoader : IConfigurationLoader
                         }
                         else if (valueType.Equals(typeof(Uri)))
                         {
-                            Uri uriValue = (value.NodeType == NodeType.Uri ? ((IUriNode)value).Uri : g.UriFactory.Create(valueNode.AsString()));
+                            var uriValue = (value.NodeType == NodeType.Uri ? ((IUriNode)value).Uri : g.UriFactory.Create(valueNode.AsString()));
                             property.SetValue(null, uriValue, null);
                         }
                         else if (valueType.IsEnum)
@@ -602,15 +602,15 @@ public class ConfigurationLoader : IConfigurationLoader
     /// <param name="g">Configuration Graph.</param>
     public static void AutoConfigureReadersAndWriters(IGraph g)
     {
-        IUriNode rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode desiredType = g.CreateUriNode(g.UriFactory.Create(ClassRdfParser));
-        INode formatMimeType = g.CreateUriNode(g.UriFactory.Create("http://www.w3.org/ns/formats/media_type"));
-        INode formatExtension = g.CreateUriNode(g.UriFactory.Create("http://www.w3.org/ns/formats/preferred_suffix"));
+        var rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var desiredType = g.CreateUriNode(g.UriFactory.Create(ClassRdfParser));
+        var formatMimeType = g.CreateUriNode(g.UriFactory.Create("http://www.w3.org/ns/formats/media_type"));
+        var formatExtension = g.CreateUriNode(g.UriFactory.Create("http://www.w3.org/ns/formats/preferred_suffix"));
         object temp;
         string[] mimeTypes, extensions;
 
         // Load RDF Parsers
-        foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
+        foreach (var objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
         {
             temp = LoadObject(g, objNode);
             if (temp is IRdfReader)
@@ -631,7 +631,7 @@ public class ConfigurationLoader : IConfigurationLoader
 
         // Load Dataset parsers
         desiredType = g.CreateUriNode(g.UriFactory.Create(ClassDatasetParser));
-        foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
+        foreach (var objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
         {
             temp = LoadObject(g, objNode);
             if (temp is IStoreReader)
@@ -652,7 +652,7 @@ public class ConfigurationLoader : IConfigurationLoader
 
         // Load SPARQL Result parsers
         desiredType = g.CreateUriNode(g.UriFactory.Create(ClassSparqlResultsParser));
-        foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
+        foreach (var objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
         {
             temp = LoadObject(g, objNode);
             if (temp is ISparqlResultsReader)
@@ -673,7 +673,7 @@ public class ConfigurationLoader : IConfigurationLoader
 
         // Load RDF Writers
         desiredType = g.CreateUriNode(g.UriFactory.Create(ClassRdfWriter));
-        foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
+        foreach (var objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
         {
             temp = LoadObject(g, objNode);
             if (temp is IRdfWriter)
@@ -694,7 +694,7 @@ public class ConfigurationLoader : IConfigurationLoader
 
         // Load Dataset Writers
         desiredType = g.CreateUriNode(g.UriFactory.Create(ClassDatasetWriter));
-        foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
+        foreach (var objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
         {
             temp = LoadObject(g, objNode);
             if (temp is IStoreWriter)
@@ -715,7 +715,7 @@ public class ConfigurationLoader : IConfigurationLoader
 
         // Load SPARQL Result Writers
         desiredType = g.CreateUriNode(g.UriFactory.Create(ClassDatasetWriter));
-        foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
+        foreach (var objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
         {
             temp = LoadObject(g, objNode);
             if (temp is ISparqlResultsWriter)
@@ -745,7 +745,7 @@ public class ConfigurationLoader : IConfigurationLoader
             operatorClass = g.CreateUriNode(g.UriFactory.Create(ClassSparqlOperator)),
             enabled = g.CreateUriNode(g.UriFactory.Create(PropertyEnabled));
 
-        foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, operatorClass))
+        foreach (var t in g.GetTriplesWithPredicateObject(rdfType, operatorClass))
         {
             var temp = ConfigurationLoader.LoadObject(g, t.Subject);
             if (temp is ISparqlOperator)
@@ -869,7 +869,7 @@ public class ConfigurationLoader : IConfigurationLoader
     /// </returns>
     public static INode GetConfigurationNode(IGraph g, INode objNode, INode property)
     {
-        INode temp = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+        var temp = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
         return ResolveAppSetting(g, temp);
     }
 
@@ -903,13 +903,13 @@ public class ConfigurationLoader : IConfigurationLoader
     /// </returns>
     public static string GetConfigurationString(IGraph g, INode objNode, INode property)
     {
-        INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+        var n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
         if (n == null) return null;
         if (n.NodeType == NodeType.Literal)
         {
             return ((ILiteralNode)n).Value;
         }
-        INode temp = ResolveAppSetting(g, n);
+        var temp = ResolveAppSetting(g, n);
         if (temp == null) return null;
         if (temp.NodeType == NodeType.Literal)
         {
@@ -946,7 +946,7 @@ public class ConfigurationLoader : IConfigurationLoader
     /// <returns></returns>
     public static string GetConfigurationValue(IGraph g, INode objNode, INode property)
     {
-        INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+        var n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
         if (n == null) return null;
         switch (n.NodeType)
         {
@@ -955,7 +955,7 @@ public class ConfigurationLoader : IConfigurationLoader
             case NodeType.Literal:
                 return ((ILiteralNode)n).Value;
             case NodeType.Uri:
-                INode temp = ResolveAppSetting(g, n);
+                var temp = ResolveAppSetting(g, n);
                 if (temp == null) return null;
                 if (temp.NodeType == NodeType.Literal)
                 {
@@ -994,7 +994,7 @@ public class ConfigurationLoader : IConfigurationLoader
     /// </returns>
     public static bool GetConfigurationBoolean(IGraph g, INode objNode, INode property, bool defValue)
     {
-        INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+        var n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
         if (n == null) return defValue;
 
         // Resolve AppSettings
@@ -1027,9 +1027,9 @@ public class ConfigurationLoader : IConfigurationLoader
     /// </returns>
     public static bool GetConfigurationBoolean(IGraph g, INode objNode, IEnumerable<INode> properties, bool defValue)
     {
-        foreach (INode property in properties)
+        foreach (var property in properties)
         {
-            INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+            var n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
             if (n == null) continue;
 
             // Resolve AppSettings
@@ -1062,7 +1062,7 @@ public class ConfigurationLoader : IConfigurationLoader
     /// </returns>
     public static ulong GetConfigurationUInt64(IGraph g, INode objNode, INode property, ulong defValue)
     {
-        INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+        var n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
         if(n == null) return defValue;
         // Resolve AppSettings
         if (n.NodeType != NodeType.Literal)
@@ -1094,7 +1094,7 @@ public class ConfigurationLoader : IConfigurationLoader
     /// </returns>
     public static long GetConfigurationInt64(IGraph g, INode objNode, INode property, long defValue)
     {
-        INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+        var n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
         if (n == null) return defValue;
 
         // Resolve AppSettings
@@ -1127,9 +1127,9 @@ public class ConfigurationLoader : IConfigurationLoader
     /// </returns>
     public static long GetConfigurationInt64(IGraph g, INode objNode, IEnumerable<INode> properties, long defValue)
     {
-        foreach (INode property in properties)
+        foreach (var property in properties)
         {
-            INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+            var n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
             if (n == null) continue;
 
             // Resolve AppSettings
@@ -1162,7 +1162,7 @@ public class ConfigurationLoader : IConfigurationLoader
     /// </returns>
     public static int GetConfigurationInt32(IGraph g, INode objNode, INode property, int defValue)
     {
-        INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+        var n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
         if (n == null) return defValue;
 
         // Resolve AppSettings
@@ -1195,9 +1195,9 @@ public class ConfigurationLoader : IConfigurationLoader
     /// </returns>
     public static int GetConfigurationInt32(IGraph g, INode objNode, IEnumerable<INode> properties, int defValue)
     {
-        foreach (INode property in properties)
+        foreach (var property in properties)
         {
-            INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+            var n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
             if (n == null) continue;
 
             // Resolve AppSettings
@@ -1239,8 +1239,8 @@ public class ConfigurationLoader : IConfigurationLoader
         if ((user == null || pwd == null) && allowCredentials)
         {
             // Have they been specified as credentials instead?
-            INode propCredentials = g.CreateUriNode(g.UriFactory.Create(PropertyCredentials));
-            INode credObj = GetConfigurationNode(g, objNode, propCredentials);
+            var propCredentials = g.CreateUriNode(g.UriFactory.Create(PropertyCredentials));
+            var credObj = GetConfigurationNode(g, objNode, propCredentials);
             if (credObj != null)
             {
                 var credentials = (NetworkCredential)LoadObject(g, credObj, typeof(NetworkCredential));
@@ -1316,7 +1316,7 @@ public class ConfigurationLoader : IConfigurationLoader
         // Try and find an Object Loader that can load this object
         try
         {
-            foreach (IObjectFactory loader in _factories.Where(l=>l.CanLoadObject(targetType)))
+            foreach (var loader in _factories.Where(l=>l.CanLoadObject(targetType)))
             {
                 if (loader.TryLoadObject(g, objNode, targetType, out temp)) break;
             }
@@ -1388,8 +1388,8 @@ public class ConfigurationLoader : IConfigurationLoader
     /// </remarks>
     public static string GetDefaultType(IGraph g, INode objNode)
     {
-        IUriNode rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode declaredType = GetConfigurationNode(g, objNode, rdfType);
+        var rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var declaredType = GetConfigurationNode(g, objNode, rdfType);
         if (declaredType == null) return null; //Fixes Bug CORE-98
         if (declaredType.NodeType == NodeType.Uri)
         {
@@ -1458,7 +1458,7 @@ public class ConfigurationLoader : IConfigurationLoader
         if (n == null) return null;
         if (n.NodeType != NodeType.Uri) return n;
 
-        Uri uri = ((IUriNode)n).Uri;
+        var uri = ((IUriNode)n).Uri;
         if (!uri.Scheme.Equals(UriSchemeAppSettings)) return n;
 
         var strUri = uri.AbsoluteUri;
@@ -1566,7 +1566,7 @@ public class ConfigurationLoader : IConfigurationLoader
     /// </remarks>
     public object LoadObject(string blankNodeIdentifier)
     {
-        IBlankNode blankNode = _configGraph.GetBlankNode(blankNodeIdentifier);
+        var blankNode = _configGraph.GetBlankNode(blankNodeIdentifier);
         if (blankNode == null)
         {
             throw new ArgumentException(string.Format("Resource _:{0} was not found is configuration graph", blankNodeIdentifier));
@@ -1583,7 +1583,7 @@ public class ConfigurationLoader : IConfigurationLoader
     /// </remarks>
     public object LoadObject(Uri objectIdentifier)
     {
-        IUriNode uriNode = _configGraph.GetUriNode(objectIdentifier);
+        var uriNode = _configGraph.GetUriNode(objectIdentifier);
         if (uriNode == null)
         {
             throw new ArgumentException(string.Format("Resource <{0}> was not found is configuration graph", objectIdentifier));
@@ -1600,7 +1600,7 @@ public class ConfigurationLoader : IConfigurationLoader
     /// <param name="factory">Object Factory.</param>
     public static void AddObjectFactory(IObjectFactory factory)
     {
-        Type loaderType = factory.GetType();
+        var loaderType = factory.GetType();
         if (_factories.All(l => l.GetType() != loaderType))
         {
             _factories.Add(factory);
@@ -1623,8 +1623,8 @@ public class ConfigurationLoader : IConfigurationLoader
             return;
         }
 
-        IConfigurationExtension extension = Activator.CreateInstance<T>();
-        foreach (IObjectFactory f in extension.GetObjectFactories()) AddObjectFactory(f);
+        var extension = Activator.CreateInstance<T>();
+        foreach (var f in extension.GetObjectFactories()) AddObjectFactory(f);
         _extensions.Add(extension);
     }
 

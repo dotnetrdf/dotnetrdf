@@ -34,7 +34,7 @@ public class ConnegTests
 {
     private void TestSparqlWriterConneg(String header, Type expected, String contentType)
     {
-        ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter(header, out var ctype);
+        var writer = MimeTypesHelper.GetSparqlWriter(header, out var ctype);
         Assert.Equal(expected, writer.GetType());
         Assert.Equal(contentType, ctype);
     }

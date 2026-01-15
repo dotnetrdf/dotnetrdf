@@ -81,7 +81,7 @@ public class DatasetGraphCollection
         {
             if (mergeIfExists)
             {
-                IGraph temp = _dataset.GetModifiableGraph(g.Name);
+                var temp = _dataset.GetModifiableGraph(g.Name);
                 temp.Merge(g);
                 temp.Dispose();
                 _dataset.Flush();
@@ -114,7 +114,7 @@ public class DatasetGraphCollection
     {
         if (Contains(graphUri))
         {
-            IGraph temp = _dataset[graphUri];
+            var temp = _dataset[graphUri];
             var removed = _dataset.RemoveGraph(graphUri);
             _dataset.Flush();
             RaiseGraphRemoved(temp);
@@ -138,7 +138,7 @@ public class DatasetGraphCollection
             return false;
         }
 
-        IGraph temp = _dataset[graphName];
+        var temp = _dataset[graphName];
         var removed = _dataset.RemoveGraph(graphName);
         _dataset.Flush();
         RaiseGraphRemoved(temp);

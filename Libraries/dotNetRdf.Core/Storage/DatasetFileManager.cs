@@ -75,7 +75,7 @@ public class DatasetFileManager
     {
         try
         {
-            IStoreReader reader = MimeTypesHelper.GetStoreParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
+            var reader = MimeTypesHelper.GetStoreParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
             reader.Load(_store, filename);
 
             _ready = true;
@@ -95,7 +95,7 @@ public class DatasetFileManager
     {
         var queryProcessor = new LeviathanQueryProcessor(_store);
         var queryParser = new SparqlQueryParser();
-        SparqlQuery query = queryParser.ParseFromString(sparqlQuery);
+        var query = queryParser.ParseFromString(sparqlQuery);
         return queryProcessor.ProcessQuery(query);
     }
 
@@ -109,7 +109,7 @@ public class DatasetFileManager
     {
         var queryProcessor = new LeviathanQueryProcessor(_store);
         var queryParser = new SparqlQueryParser();
-        SparqlQuery query = queryParser.ParseFromString(sparqlQuery);
+        var query = queryParser.ParseFromString(sparqlQuery);
         queryProcessor.ProcessQuery(rdfHandler, resultsHandler, query);
     }
 
@@ -316,7 +316,7 @@ public class DatasetFileManager
     /// </remarks>
     public override IEnumerable<string> ListGraphNames()
     {
-        foreach (IRefNode name in _store.Graphs.GraphNames)
+        foreach (var name in _store.Graphs.GraphNames)
         {
             switch (name.NodeType)
             {
@@ -371,12 +371,12 @@ public class DatasetFileManager
     /// <param name="context">Configuration Serialization Context.</param>
     public void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode manager = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
-        INode file = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyFromFile));
+        var manager = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+        var file = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyFromFile));
 
         context.Graph.Assert(new Triple(manager, rdfType, genericManager));
         context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));

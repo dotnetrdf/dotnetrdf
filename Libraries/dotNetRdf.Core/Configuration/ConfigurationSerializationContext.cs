@@ -87,7 +87,7 @@ public class ConfigurationSerializationContext
     {
         get
         {
-            INode temp = _nextSubj;
+            var temp = _nextSubj;
             if (temp == null)
             {
                 // When not set generate a new blank node
