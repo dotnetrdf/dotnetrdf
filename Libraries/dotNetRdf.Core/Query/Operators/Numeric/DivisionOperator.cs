@@ -87,7 +87,7 @@ public class DivisionOperator
     private decimal Divide(IEnumerable<decimal> ls)
     {
         var first = true;
-        decimal total = 0;
+        var total = 0m;
         foreach (var l in ls)
         {
             if (first)
@@ -125,7 +125,7 @@ public class DivisionOperator
     private double Divide(IEnumerable<double> ls)
     {
         var first = true;
-        double total = 0;
+        var total = 0.0;
         foreach (var l in ls)
         {
             if (first)

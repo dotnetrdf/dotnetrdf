@@ -51,9 +51,9 @@ internal class Equals : Constraint
 
     internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
     {
-        IEnumerable<INode> values = this.ObjectsOf(focusNode, dataGraph);
+        var values = this.ObjectsOf(focusNode, dataGraph);
 
-        IEnumerable<INode> invalidValues = (
+        var invalidValues = (
             from valueNode in valueNodes
             where !values.Contains(valueNode)
             select valueNode)

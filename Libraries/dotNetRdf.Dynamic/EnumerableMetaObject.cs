@@ -41,7 +41,7 @@ internal class EnumerableMetaObject : DynamicMetaObject
 
     public override DynamicMetaObject BindInvokeMember(InvokeMemberBinder binder, DynamicMetaObject[] args)
     {
-        Expression expression = FindMethod(binder, args);
+        var expression = FindMethod(binder, args);
         var restrictions = BindingRestrictions.GetTypeRestriction(Expression, LimitType);
         var errorSuggestion = new DynamicMetaObject(expression, restrictions);
 
@@ -56,9 +56,9 @@ internal class EnumerableMetaObject : DynamicMetaObject
         {
             try
             {
-                Expression[] arguments = ((IEnumerable<Expression>)[Expression.Convert(Expression, RuntimeType)]).Union(args.Select(arg => arg.Expression)).ToArray();
-                Type[] typeArguments = Enumerable.Repeat(typeof(object), i).ToArray();
-                MethodCallExpression expression = Expression.Call(typeof(Enumerable), binder.Name, typeArguments, arguments);
+                var arguments = ((IEnumerable<Expression>)[Expression.Convert(Expression, RuntimeType)]).Union(args.Select(arg => arg.Expression)).ToArray();
+                var typeArguments = Enumerable.Repeat(typeof(object), i).ToArray();
+                var expression = Expression.Call(typeof(Enumerable), binder.Name, typeArguments, arguments);
 
                 return Expression.Convert(expression, binder.ReturnType);
             }

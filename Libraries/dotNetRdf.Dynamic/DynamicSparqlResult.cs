@@ -168,7 +168,7 @@ public class DynamicSparqlResult : IDictionary<string, object>, IDynamicMetaObje
     /// <inheritdoc/>
     bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
     {
-        if (!original.TryGetValue(item.Key, out INode value))
+        if (!original.TryGetValue(item.Key, out var value))
         {
             return false;
         }
@@ -228,7 +228,7 @@ public class DynamicSparqlResult : IDictionary<string, object>, IDynamicMetaObje
     /// <inheritdoc/>
     bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
     {
-        if (!original.TryGetValue(item.Key, out INode value))
+        if (!original.TryGetValue(item.Key, out var value))
         {
             return false;
         }
@@ -258,7 +258,7 @@ public class DynamicSparqlResult : IDictionary<string, object>, IDynamicMetaObje
             return false;
         }
 
-        if (!original.TryGetValue(variable, out INode originalValue))
+        if (!original.TryGetValue(variable, out var originalValue))
         {
             return false;
         }

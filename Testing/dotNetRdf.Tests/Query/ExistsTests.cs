@@ -47,7 +47,7 @@ WHERE
   FILTER EXISTS { ?s a ?type }
 }";
 
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
 
         var results = g.ExecuteQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
@@ -68,7 +68,7 @@ WHERE
   FILTER EXISTS { ?s ?property <" + ConfigurationLoader.ClassHttpHandler + @"> }
 }";
 
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
 
         var results = g.ExecuteQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
@@ -92,7 +92,7 @@ WHERE
         // If FILTER NOT EXISTS returns false, no results expected
         var query =
             $"SELECT (<http://example.org/foo> as ?subject) WHERE {{ {filter} }}";
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
         var results = g.ExecuteQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
         Assert.Equal(expectCount, results.Count);
@@ -109,7 +109,7 @@ WHERE
         // If FILTER NOT EXISTS returns false, no results expected
         var query =
             $"SELECT (<http://example.org/foo> as ?subject) WHERE {{ {filter} }}";
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
         var results = g.ExecuteQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
         Assert.Equal(expectCount, results.Count);

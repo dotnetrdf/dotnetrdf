@@ -162,7 +162,7 @@ public class ExistsFunction
     /// <returns></returns>
     public ISparqlExpression Transform(IExpressionTransformer transformer)
     {
-        ISparqlExpression temp = transformer.Transform(new GraphPatternTerm(Pattern));
+        var temp = transformer.Transform(new GraphPatternTerm(Pattern));
         if (temp is GraphPatternTerm)
         {
             return new ExistsFunction(((GraphPatternTerm)temp).Pattern, MustExist);

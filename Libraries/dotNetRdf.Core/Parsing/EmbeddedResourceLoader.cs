@@ -73,7 +73,7 @@ public static class EmbeddedResourceLoader
                 resourceName = resourceName.Substring(0, resource.IndexOf(',')).TrimEnd();
 
                 // Try to load this assembly
-                Assembly asm = assemblyName.Equals(_currAsmName) ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName);
+                var asm = assemblyName.Equals(_currAsmName) ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName);
                 if (asm != null)
                 {
                     // Resource is in the loaded assembly
@@ -152,7 +152,7 @@ public static class EmbeddedResourceLoader
             {
                 // Need to select a Parser or use StringParser
                 var ext = MimeTypesHelper.GetTrueResourceExtension(resource);
-                MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdf);
+                var def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdf);
                 if (def != null)
                 {
                     // Resource has an appropriate file extension and we've found a candidate parser for it
@@ -270,7 +270,7 @@ public static class EmbeddedResourceLoader
     private static void LoadDatasetInternal(IRdfHandler handler, Assembly asm, string resource, IStoreReader parser)
     {
         // Resource is in the given assembly
-        using Stream s = asm.GetManifestResourceStream(resource);
+        using var s = asm.GetManifestResourceStream(resource);
         if (s == null)
         {
             // Resource did not exist in this assembly
@@ -288,7 +288,7 @@ public static class EmbeddedResourceLoader
             {
                 // Need to select a Parser or use StringParser
                 var ext =  MimeTypesHelper.GetTrueResourceExtension(resource);
-                MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdfDatasets);
+                var def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdfDatasets);
                 if (def != null)
                 {
                     // Resource has an appropriate file extension and we've found a candidate parser for it
@@ -301,7 +301,7 @@ public static class EmbeddedResourceLoader
                     def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdf);
                     if (def != null)
                     {
-                        IRdfReader rdfParser = def.GetRdfParser();
+                        var rdfParser = def.GetRdfParser();
                         rdfParser.Load(handler, new StreamReader(s));
                     }
                     else

@@ -135,11 +135,11 @@ public class Examples
 ");
 
         var processor = new ShapesGraph(shapesGraph);
-        Report report = processor.Validate(dataGraph);
+        var report = processor.Validate(dataGraph);
 
         Assert.Single(report.Results);
         
-        Result result = report.Results.Single();
+        var result = report.Results.Single();
         Assert.Equal("test message", result.Message.Value);
     }
 }

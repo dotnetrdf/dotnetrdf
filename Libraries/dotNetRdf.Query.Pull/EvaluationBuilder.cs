@@ -67,8 +67,8 @@ internal class EvaluationBuilder
 
     private IAsyncEvaluation BuildLeftJoin(ILeftJoin leftJoin, PullEvaluationContext context)
     {
-        IAsyncEvaluation lhs = Build(leftJoin.Lhs, context);
-        IAsyncEvaluation rhs = Build(leftJoin.Rhs, context);
+        var lhs = Build(leftJoin.Lhs, context);
+        var rhs = Build(leftJoin.Rhs, context);
         var joinVars = new HashSet<string>(leftJoin.Lhs.Variables);
         joinVars.IntersectWith(new HashSet<string>(leftJoin.Rhs.Variables));
         if (joinVars.Count == 0)
@@ -125,8 +125,8 @@ internal class EvaluationBuilder
     {
         ISet<string> joinVars = new HashSet<string>(join.Lhs.Variables);
         joinVars.IntersectWith(join.Rhs.Variables);
-        IAsyncEvaluation lhs = Build(join.Lhs, context);
-        IAsyncEvaluation rhs = Build(join.Rhs, context);
+        var lhs = Build(join.Lhs, context);
+        var rhs = Build(join.Rhs, context);
         return joinVars.Count > 0 ? new AsyncJoinEvaluation(lhs, rhs, joinVars.ToArray()) : new AsyncCrossProductJoinEvaluation(lhs, rhs);
     }
 
@@ -137,10 +137,10 @@ internal class EvaluationBuilder
             return new IdentityEvaluation();
         }
         ISet<string> boundVars = new HashSet<string>(bgp.TriplePatterns[0].Variables);
-        IAsyncEvaluation result = BuildTriplePattern(bgp.TriplePatterns[0], context);
+        var result = BuildTriplePattern(bgp.TriplePatterns[0], context);
         for (var i = 1; i < bgp.TriplePatterns.Count; i++)
         {
-            ITriplePattern tp = bgp.TriplePatterns[i];
+            var tp = bgp.TriplePatterns[i];
             ISet<string> joinVars = new HashSet<string>(boundVars);
             joinVars.IntersectWith(tp.Variables);
             boundVars.UnionWith(tp.Variables);
@@ -238,7 +238,7 @@ internal class EvaluationBuilder
     private IAsyncEvaluation BuildGroupBy(GroupBy groupBy, PullEvaluationContext context)
     {
         var ret = new AsyncGroupByEvaluation(groupBy, Build(groupBy.InnerAlgebra, context));
-        foreach (SparqlVariable? aggregate in groupBy.Aggregates)
+        foreach (var aggregate in groupBy.Aggregates)
         {
             if (aggregate != null)
             {
@@ -281,8 +281,8 @@ internal class EvaluationBuilder
         {
             autoVarPrefix = "_" + autoVarPrefix;
         }
-        PullEvaluationContext subContext = context.MakeSubContext(subQuery.Query.DefaultGraphNames, subQuery.Query.NamedGraphNames);
-        ISparqlAlgebra? queryAlgebra = subQuery.Query.ToAlgebra(true, [new PushDownAggregatesOptimiser(autoVarPrefix)]);
+        var subContext = context.MakeSubContext(subQuery.Query.DefaultGraphNames, subQuery.Query.NamedGraphNames);
+        var queryAlgebra = subQuery.Query.ToAlgebra(true, [new PushDownAggregatesOptimiser(autoVarPrefix)]);
         return new AsyncSubQueryEvaluation(subQuery,Build(queryAlgebra, subContext), subContext);
     }
 
@@ -293,8 +293,8 @@ internal class EvaluationBuilder
         {
             autoVarPrefix = "_" + autoVarPrefix;
         }
-        PullEvaluationContext subContext = context.MakeSubContext(subQueryPattern.SubQuery.DefaultGraphNames, subQueryPattern.SubQuery.NamedGraphNames);
-        ISparqlAlgebra? queryAlgebra = subQueryPattern.SubQuery.ToAlgebra(true, [new PushDownAggregatesOptimiser(autoVarPrefix)]);
+        var subContext = context.MakeSubContext(subQueryPattern.SubQuery.DefaultGraphNames, subQueryPattern.SubQuery.NamedGraphNames);
+        var queryAlgebra = subQueryPattern.SubQuery.ToAlgebra(true, [new PushDownAggregatesOptimiser(autoVarPrefix)]);
         return new AsyncSubQueryEvaluation( subQueryPattern,Build(queryAlgebra, subContext), subContext);
     }
 
@@ -333,8 +333,8 @@ internal class EvaluationBuilder
 
     private IAsyncEvaluation BuildMinus(Minus minus, PullEvaluationContext context)
     {
-        IAsyncEvaluation lhsEval = Build(minus.Lhs, context);
-        IAsyncEvaluation rhsEval = Build(minus.Rhs, context);
+        var lhsEval = Build(minus.Lhs, context);
+        var rhsEval = Build(minus.Rhs, context);
         return new AsyncMinusEvaluation(minus, lhsEval, rhsEval);
     }
 }

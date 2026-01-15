@@ -197,7 +197,7 @@ public class Examples
         };
         blankNodeCollection["rdf:type"] = d.CreateUriNode(":BlankNodeCollection");
 
-        INode collection = g.AssertList(
+        var collection = g.AssertList(
         [
             g.CreateUriNode(":item1"),
             g.CreateUriNode(":item2"),
@@ -315,7 +315,7 @@ public class Examples
         var g = new Graph();
         g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
         dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
-        IUriNode expected = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var expected = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
 
         // See 1. for other key options
         dynamic actual = d["s"];
@@ -329,7 +329,7 @@ public class Examples
         var g = new Graph();
         g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
         dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
-        IUriNode expected = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+        var expected = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
 
         dynamic actual = d.s;
 
@@ -708,10 +708,10 @@ public class Examples
         var g = new Graph();
         g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
         var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         dynamic dynamicResults = results.AsDynamic();
         dynamic dynamicResult = dynamicResults.Single();
-        ILiteralNode expected = new NodeFactory(new NodeFactoryOptions()).CreateLiteralNode("o1");
+        var expected = new NodeFactory(new NodeFactoryOptions()).CreateLiteralNode("o1");
 
         // See 4. for other value options
         dynamicResult["o"] = "o1";
@@ -725,10 +725,10 @@ public class Examples
         var g = new Graph();
         g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
         var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         dynamic dynamicResults = results.AsDynamic();
         dynamic dynamicResult = dynamicResults.Single();
-        ILiteralNode expected = new NodeFactory(new NodeFactoryOptions()).CreateLiteralNode("o1");
+        var expected = new NodeFactory(new NodeFactoryOptions()).CreateLiteralNode("o1");
 
         // See 2. for other value options
         dynamicResult.o = "o1";
@@ -742,10 +742,10 @@ public class Examples
         var g = new Graph();
         g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
         var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         dynamic dynamicResults = results.AsDynamic();
         dynamic dynamicResult = dynamicResults.Single();
-        ILiteralNode expected = new NodeFactory(new NodeFactoryOptions()).CreateLiteralNode("y");
+        var expected = new NodeFactory(new NodeFactoryOptions()).CreateLiteralNode("y");
 
         // See 2. for other value options
         dynamicResult.Add("x", "y");
@@ -759,7 +759,7 @@ public class Examples
         var g = new Graph();
         g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
         var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         dynamic dynamicResults = results.AsDynamic();
         dynamic dynamicResult = dynamicResults.Single();
 
@@ -774,7 +774,7 @@ public class Examples
         var g = new Graph();
         g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
         var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-        ISparqlResult _ = results.Single();
+        var _ = results.Single();
         dynamic dynamicResults = results.AsDynamic();
         dynamic dynamicResult = dynamicResults.Single();
 
@@ -789,7 +789,7 @@ public class Examples
         var g = new Graph();
         g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
         var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         dynamic dynamicResults = results.AsDynamic();
         dynamic dynamicResult = dynamicResults.Single();
 

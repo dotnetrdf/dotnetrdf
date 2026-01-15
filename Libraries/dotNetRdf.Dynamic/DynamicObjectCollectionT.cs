@@ -100,12 +100,12 @@ public class DynamicObjectCollection<T> : DynamicObjectCollection, ICollection<T
 
     private T Convert(object value)
     {
-        Type type = typeof(T);
+        var type = typeof(T);
 
         if (type.IsSubclassOf(typeof(DynamicNode)))
         {
             // TODO: Exception handling
-            ConstructorInfo ctor = type.GetConstructor([typeof(INode), typeof(IGraph)]);
+            var ctor = type.GetConstructor([typeof(INode), typeof(IGraph)]);
             value = ctor.Invoke([value, _graph]);
         }
 

@@ -75,7 +75,7 @@ public class DomBasedEventGenerator : IRdfXmlPreProcessingEventGenerator
     public void GetAllEvents(RdfXmlParserContext context)
     {
         RootEvent root;
-        XmlNodeList nodes = _document.GetElementsByTagName("rdf:RDF");
+        var nodes = _document.GetElementsByTagName("rdf:RDF");
         if (nodes.Count == 0)
         {
             // Not using rdf:RDF
@@ -190,7 +190,7 @@ public class DomBasedEventGenerator : IRdfXmlPreProcessingEventGenerator
             }
 
             // Generate an Event for the Child Node
-            ElementEvent childEvent = GenerateEvents(context, child, element);
+            var childEvent = GenerateEvents(context, child, element);
             element.Children.Add(childEvent);
         }
 
@@ -353,7 +353,7 @@ public class DomBasedEventGenerator : IRdfXmlPreProcessingEventGenerator
         }
 
         // Validate generated Attributes for Namespace Confusion and URIRef encoding
-        foreach (AttributeEvent a in element.Attributes)
+        foreach (var a in element.Attributes)
         {
             // Namespace Confusion should only apply to Attributes without a Namespace specified
             if (a.Namespace.Equals(string.Empty) && element.NamespaceAttributes.All(na => na.Prefix != string.Empty) && !context.Namespaces.HasNamespace(string.Empty))
@@ -401,7 +401,7 @@ public class DomBasedEventGenerator : IRdfXmlPreProcessingEventGenerator
                     }
 
                     // Generate an Event for the Child Node
-                    ElementEvent childEvent = GenerateEvents(context, child, element);
+                    var childEvent = GenerateEvents(context, child, element);
                     element.Children.Add(childEvent);
                 }
             }
@@ -427,7 +427,7 @@ public class DomBasedEventGenerator : IRdfXmlPreProcessingEventGenerator
                 // Recurse on the single Child Node
                 if (!IsIgnorableNode(node.ChildNodes[0]))
                 {
-                    ElementEvent childEvent = GenerateEvents(context, node.ChildNodes[0], element);
+                    var childEvent = GenerateEvents(context, node.ChildNodes[0], element);
                     element.Children.Add(childEvent);
                 }
             }
@@ -496,7 +496,7 @@ public class DomBasedEventGenerator : IRdfXmlPreProcessingEventGenerator
             }
             if (element.Children.Count > 0)
             {
-                foreach (IRdfXmlEvent childEvent in element.Children)
+                foreach (var childEvent in element.Children)
                 {
                     FlattenEventTree(context, childEvent, nesting + 1);
                 }

@@ -58,7 +58,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.Throws<ArgumentNullException>(() =>
@@ -80,7 +80,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.Equal(UriFactory.Root.Create("urn:s"), d["s"]);
@@ -101,7 +101,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.Throws<ArgumentNullException>(() =>
@@ -123,10 +123,10 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
-        Uri s2 = UriFactory.Root.Create("urn:s2");
-        IUriNode expected = new NodeFactory(new NodeFactoryOptions()).CreateUriNode(s2);
+        var s2 = UriFactory.Root.Create("urn:s2");
+        var expected = new NodeFactory(new NodeFactoryOptions()).CreateUriNode(s2);
 
         d["s"] = s2;
 
@@ -148,7 +148,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.Equal(results.Variables, d.Keys);
@@ -168,7 +168,7 @@ WHERE {
     ?s ?p ?o .
 }
 ");
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.Equal(result.Select(pair => ((IUriNode)pair.Value).Uri), d.Values.Cast<Uri>());
@@ -189,7 +189,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.Equal(result.Count, d.Count);
@@ -210,7 +210,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.False(d.IsReadOnly);
@@ -231,7 +231,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.Throws<ArgumentNullException>(() =>
@@ -252,7 +252,7 @@ WHERE {
     ?s ?p ?o .
 }
 ");
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result)
         {
             { "x", "y" },
@@ -276,7 +276,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
 
         d.Add(new KeyValuePair<string, object>("x", "y"));
@@ -299,7 +299,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         d.Clear();
@@ -322,7 +322,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.DoesNotContain(new KeyValuePair<string, object>("x", null), d);
@@ -343,7 +343,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.Contains(new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:s")), d);
@@ -364,7 +364,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.False(d.ContainsKey(null));
@@ -385,7 +385,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.True(d.ContainsKey("s"));
@@ -406,7 +406,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
 
         var objects = new KeyValuePair<string, object>[5]; // +2 for padding on each side
@@ -438,11 +438,11 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
 
-        using IEnumerator<KeyValuePair<string, object>> actual = d.GetEnumerator();
-        using IEnumerator<KeyValuePair<string, INode>> expected = result.GetEnumerator();
+        using var actual = d.GetEnumerator();
+        using var expected = result.GetEnumerator();
         while (expected.MoveNext() | actual.MoveNext())
         {
             Assert.Equal(
@@ -468,11 +468,11 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
-        IEnumerator actual = d.GetEnumerator();
-        using IEnumerator<KeyValuePair<string, INode>> expected = result.GetEnumerator();
+        var actual = d.GetEnumerator();
+        using var expected = result.GetEnumerator();
         while (expected.MoveNext() | actual.MoveNext())
         {
             Assert.Equal(
@@ -498,7 +498,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.False(d.Remove(null));
@@ -519,7 +519,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.False(d.Remove("x"));
@@ -540,7 +540,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.True(d.Remove("s"));
@@ -562,7 +562,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
 
         Assert.False(d.Remove(new KeyValuePair<string, object>("x", null)));
@@ -583,7 +583,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
 
         Assert.False(d.Remove(new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:x"))));
@@ -605,7 +605,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
 
         Assert.True(d.Remove(new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:s"))));
@@ -627,7 +627,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.False(d.TryGetValue(null, out var value));
@@ -649,7 +649,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.False(d.TryGetValue("x", out var value));
@@ -671,7 +671,7 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
 
         Assert.True(d.TryGetValue("s", out var value));
@@ -693,10 +693,10 @@ WHERE {
 }
 ");
 
-        ISparqlResult result = results.Single();
+        var result = results.Single();
         var d = new DynamicSparqlResult(result);
         var p = (IDynamicMetaObjectProvider)d;
-        DynamicMetaObject mo = p.GetMetaObject(Expression.Empty());
+        var mo = p.GetMetaObject(Expression.Empty());
 
         Assert.NotNull(mo);
         Assert.IsType<DictionaryMetaObject>(mo);

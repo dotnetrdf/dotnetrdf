@@ -35,7 +35,7 @@ public class EmptyFileParsing
      {
          if (!File.Exists("empty.test"))
          {
-             FileStream temp = File.Create("empty.test");
+             var temp = File.Create("empty.test");
              temp.Close();
          }
 
@@ -49,7 +49,7 @@ public class EmptyFileParsing
      {
          if (!File.Exists("empty.test"))
          {
-             FileStream temp = File.Create("empty.test");
+             var temp = File.Create("empty.test");
              temp.Close();
          }
 

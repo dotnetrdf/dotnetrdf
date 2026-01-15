@@ -46,7 +46,7 @@ public partial class DynamicNode : IDictionary<INode, object>
     {
         get
         {
-            IEnumerable<IUriNode> predicates =
+            var predicates =
                 from t in Graph.GetTriplesWithSubject(this)
                 select (IUriNode)t.Predicate;
 

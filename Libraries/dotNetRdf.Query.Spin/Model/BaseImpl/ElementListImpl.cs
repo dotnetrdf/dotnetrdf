@@ -56,8 +56,8 @@ internal class ElementListImpl : ElementImpl, IElementList
             var secondPattern = (ITriplePattern)elements[i + 1];
             if (RDFUtil.sameTerm(RDF.PropertyFirst,firstPattern.getPredicate()) && RDFUtil.sameTerm(RDF.PropertyRest,secondPattern.getPredicate()))
             {
-                IResource firstSubject = firstPattern.getSubject();
-                IResource secondSubject = secondPattern.getSubject();
+                var firstSubject = firstPattern.getSubject();
+                var secondSubject = secondPattern.getSubject();
                 if (firstSubject is IVariable && secondSubject is IVariable)
                 {
                     var firstVar = (IVariable)firstSubject;
@@ -65,7 +65,7 @@ internal class ElementListImpl : ElementImpl, IElementList
                     if (firstVar.isBlankNodeVar() && firstVar.getName().Equals(secondVar.getName()))
                     {
                         members.Add(firstPattern.getObject());
-                        IResource secondObject = secondPattern.getObject();
+                        var secondObject = secondPattern.getObject();
                         i++;
                         if (RDFUtil.sameTerm(RDF.Nil, secondObject))
                         {
@@ -93,10 +93,10 @@ internal class ElementListImpl : ElementImpl, IElementList
         IEnumerator<IResource> it = AsList().GetEnumerator();
         while (it.MoveNext())
         {
-            IResource node = it.Current;
+            var node = it.Current;
             if (!(node.isLiteral()))
             {
-                IElement element = SPINFactory.asElement(node);
+                var element = SPINFactory.asElement(node);
                 if (element != null)
                 {
                     results.Add(element);
@@ -119,8 +119,8 @@ internal class ElementListImpl : ElementImpl, IElementList
             {
                 var nextPattern = (ITriplePattern)elements[i + 1];
                 var lastPattern = (ITriplePattern)elements[i + 2];
-                IResource nextSubject = nextPattern.getSubject();
-                IResource lastSubject = lastPattern.getSubject();
+                var nextSubject = nextPattern.getSubject();
+                var lastSubject = lastPattern.getSubject();
                 if (nextSubject is IVariable &&
                    lastSubject is IVariable &&
                         RDFUtil.sameTerm(RDF.PropertyFirst, nextPattern.getPredicate()) &&
@@ -141,7 +141,7 @@ internal class ElementListImpl : ElementImpl, IElementList
 
     override public void Print(ISparqlPrinter p)
     {
-        List<IElement> elements = getElements();
+        var elements = getElements();
 
         var oldI = -1;
         for (var i = 0; i < elements.Count; i++)
@@ -151,7 +151,7 @@ internal class ElementListImpl : ElementImpl, IElementList
                 break; // Prevent unknown endless loop conditions
             }
             oldI = i;
-            IElement element = elements[i];
+            var element = elements[i];
             p.printIndentation(p.getIndentation());
             if (element is IElementList && ((IElementList)element).getElements().Count > 1)
             {
@@ -243,7 +243,7 @@ internal class ElementListImpl : ElementImpl, IElementList
     private void printRDFList(ISparqlPrinter p, List<IResource> members)
     {
         p.print("(");
-        foreach (IResource node in members)
+        foreach (var node in members)
         {
             p.print(" ");
             TupleImpl.print(getModel(), node, p);

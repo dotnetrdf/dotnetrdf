@@ -138,7 +138,7 @@ public static class DynamicExtensions
 
     internal static IUriNode AsUriNode(this string key, IGraph graph, Uri baseUri)
     {
-        if (!TryResolveQName(key, graph, out Uri uri))
+        if (!TryResolveQName(key, graph, out var uri))
         {
             if (!Uri.TryCreate(key, UriKind.RelativeOrAbsolute, out uri))
             {
@@ -241,7 +241,7 @@ public static class DynamicExtensions
 
     internal static string AsName(this IUriNode node, Uri baseUri, INamespaceMapper nsMapper)
     {
-        Uri nodeUri = node.Uri;
+        var nodeUri = node.Uri;
 
         if (nsMapper.ReduceToQName(nodeUri.AbsoluteUri, out var qname))
         {

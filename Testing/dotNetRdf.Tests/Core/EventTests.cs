@@ -52,9 +52,9 @@ public class EventTests
         Assert.True(_graphAdded, "GraphAdded event of the Triple Store should have fired");
 
         //Assert a Triple
-        INode s = g.CreateBlankNode();
-        INode p = g.CreateUriNode("rdf:type");
-        INode o = g.CreateUriNode("rdfs:Class");
+        var s = g.CreateBlankNode();
+        var p = g.CreateUriNode("rdf:type");
+        var  o = g.CreateUriNode("rdfs:Class");
         var t = new Triple(s, p, o);
         g.Assert(t);
         Assert.True(_graphChanged, "GraphChanged event of the Triple Store should have fired");
