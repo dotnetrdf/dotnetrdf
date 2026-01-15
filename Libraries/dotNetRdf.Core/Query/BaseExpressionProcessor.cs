@@ -117,7 +117,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
             expr.LeftExpression.Accept(this, context, binding),
             expr.RightExpression.Accept(this, context, binding),
         ];
-        if (!SparqlOperators.TryGetOperator(operatorType, UseStrictOperators, out ISparqlOperator op, inputs))
+        if (!SparqlOperators.TryGetOperator(operatorType, UseStrictOperators, out var op, inputs))
         {
             throw new RdfQueryException($"Cannot apply operator {operatorType} to the given inputs.");
         }
@@ -155,9 +155,9 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public IValuedNode ProcessTripleNodeTerm(TripleNodeTerm tnTerm, TContext context, TBinding binding)
     {
-        INode s = BindNode(tnTerm.Node.Triple.Subject, context, binding);
-        INode p = BindNode(tnTerm.Node.Triple.Predicate, context, binding);
-        INode o = BindNode(tnTerm.Node.Triple.Object, context, binding);
+        var s = BindNode(tnTerm.Node.Triple.Subject, context, binding);
+        var p = BindNode(tnTerm.Node.Triple.Predicate, context, binding);
+        var o = BindNode(tnTerm.Node.Triple.Object, context, binding);
         return new TripleNode(new Triple(s, p, o)).AsValuedNode();
     }
 
@@ -179,7 +179,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessMinusExpression(MinusExpression minus, TContext context, TBinding binding)
     {
-        IValuedNode a = minus.InnerExpression.Accept(this, context, binding);
+        var a = minus.InnerExpression.Accept(this, context, binding);
         if (a == null) throw new RdfQueryException("Cannot apply unary minus to a null");
 
         switch (a.NumericType)
@@ -251,8 +251,8 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessEqualsExpression(EqualsExpression @equals, TContext context, TBinding binding)
     {
-        IValuedNode x = @equals.LeftExpression.Accept(this, context, binding);
-        IValuedNode y = @equals.RightExpression.Accept(this, context, binding);
+        var x = @equals.LeftExpression.Accept(this, context, binding);
+        var y = @equals.RightExpression.Accept(this, context, binding);
 
         return new BooleanNode(SparqlSpecsHelper.Equality(x, y));
     }
@@ -304,7 +304,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
         b = lt.RightExpression.Accept(this, context, binding);
 
         if (a == null) throw new RdfQueryException("Cannot evaluate a < when one argument is Null");
-        if (NodeComparer.TryCompare(a, b, out int compare))
+        if (NodeComparer.TryCompare(a, b, out var compare))
         {
             return new BooleanNode(compare < 0);
         }
@@ -314,8 +314,8 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessLessThanOrEqualToExpression(LessThanOrEqualToExpression lte, TContext context, TBinding binding)
     {
-        IValuedNode a = lte.LeftExpression.Accept(this, context, binding);
-        IValuedNode b = lte.RightExpression.Accept(this, context, binding);
+        var a = lte.LeftExpression.Accept(this, context, binding);
+        var b = lte.RightExpression.Accept(this, context, binding);
         if (a == null)
         {
             if (b == null)
@@ -331,8 +331,8 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessNotEqualsExpression(NotEqualsExpression ne, TContext context, TBinding binding)
     {
-        IValuedNode a = ne.LeftExpression.Accept(this, context, binding);
-        IValuedNode b = ne.RightExpression.Accept(this, context, binding);
+        var a = ne.LeftExpression.Accept(this, context, binding);
+        var b = ne.RightExpression.Accept(this, context, binding);
         return new BooleanNode(SparqlSpecsHelper.Inequality(a, b));
     }
 
@@ -396,7 +396,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessArqBNodeFunction(BNodeFunction bNode, TContext context, TBinding binding)
     {
-        INode temp = bNode.InnerExpression.Accept(this, context, binding);
+        var temp = bNode.InnerExpression.Accept(this, context, binding);
         if (temp != null)
         {
             if (temp.NodeType == NodeType.Blank)
@@ -422,7 +422,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessLocalNameFunction(LocalNameFunction localName, TContext context, TBinding binding)
     {
-        INode temp = localName.InnerExpression.Accept(this, context, binding);
+        var temp = localName.InnerExpression.Accept(this, context, binding);
         if (temp != null)
         {
             if (temp.NodeType == NodeType.Uri)
@@ -450,8 +450,8 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessMaxFunction(MaxFunction max, TContext context, TBinding binding)
     {
-        IValuedNode a = max.LeftExpression.Accept(this, context, binding);
-        IValuedNode b = max.RightExpression.Accept(this, context, binding);
+        var a = max.LeftExpression.Accept(this, context, binding);
+        var b = max.RightExpression.Accept(this, context, binding);
 
         var type = (SparqlNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
 
@@ -472,8 +472,8 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessMinFunction(MinFunction min, TContext context, TBinding binding)
     {
-        IValuedNode a = min.LeftExpression.Accept(this, context, binding);
-        IValuedNode b = min.RightExpression.Accept(this, context, binding);
+        var a = min.LeftExpression.Accept(this, context, binding);
+        var b = min.RightExpression.Accept(this, context, binding);
 
         var type = (SparqlNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
         switch (type)
@@ -493,7 +493,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessNamespaceFunction(NamespaceFunction ns, TContext context, TBinding binding)
     {
-        INode temp = ns.InnerExpression.Accept(this, context, binding);
+        var temp = ns.InnerExpression.Accept(this, context, binding);
         if (temp != null)
         {
             if (temp.NodeType == NodeType.Uri)
@@ -586,7 +586,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
         var output = new StringBuilder();
         for (var i = 0; i < stringJoin.Expressions.Count; i++)
         {
-            IValuedNode temp = stringJoin.Expressions[i].Accept(this, context, binding);
+            var temp = stringJoin.Expressions[i].Accept(this, context, binding);
             if (temp == null) throw new RdfQueryException("Cannot evaluate the ARQ string-join() function when an argument evaluates to a Null");
             switch (temp.NodeType)
             {
@@ -604,7 +604,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
                 }
                 else
                 {
-                    IValuedNode sep = stringJoin.SeparatorExpression.Accept(this, context, binding);
+                    var sep = stringJoin.SeparatorExpression.Accept(this, context, binding);
                     if (sep == null) throw new RdfQueryException("Cannot evaluate the ARQ strjoin() function when the separator expression evaluates to a Null");
                     if (sep.NodeType == NodeType.Literal)
                     {
@@ -624,11 +624,11 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
     public virtual IValuedNode ProcessSubstringFunction(SubstringFunction substring, TContext context, TBinding binding)
     {
         var input = (ILiteralNode)CheckArgument(substring.StringExpression, context, binding, XPathFunctionFactory.AcceptStringArguments);
-        IValuedNode start = CheckArgument(substring.StartExpression, context, binding, XPathFunctionFactory.AcceptNumericArguments);
+        var start = CheckArgument(substring.StartExpression, context, binding, XPathFunctionFactory.AcceptNumericArguments);
 
         if (substring.EndExpression != null)
         {
-            IValuedNode end = CheckArgument(substring.EndExpression, context, binding, XPathFunctionFactory.AcceptNumericArguments);
+            var end = CheckArgument(substring.EndExpression, context, binding, XPathFunctionFactory.AcceptNumericArguments);
 
             if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
 
@@ -714,7 +714,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessDegreesToRadiansFunction(DegreesToRadiansFunction degToRad, TContext context, TBinding binding)
     {
-        IValuedNode temp = degToRad.InnerExpression.Accept(this, context, binding);
+        var temp = degToRad.InnerExpression.Accept(this, context, binding);
 
         if (temp == null) throw new RdfQueryException("Cannot apply a numeric function to a null");
         if (temp.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot apply a numeric function to a non-numeric argument");
@@ -724,7 +724,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessRadiansToDegreesFunction(RadiansToDegreesFunction radToDeg, TContext context, TBinding binding)
     {
-        IValuedNode temp = radToDeg.InnerExpression.Accept(this, context, binding);
+        var temp = radToDeg.InnerExpression.Accept(this, context, binding);
 
         if (temp == null) throw new RdfQueryException("Cannot apply a numeric function to a null");
         if (temp.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot apply a numeric function to a non-numeric argument");
@@ -749,20 +749,20 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessCartesianFunction(CartesianFunction cart, TContext context, TBinding binding)
     {
-        IValuedNode x1 = cart.X1.Accept(this, context, binding);
+        var x1 = cart.X1.Accept(this, context, binding);
         if (x1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-        IValuedNode y1 = cart.Y1.Accept(this, context, binding);
+        var y1 = cart.Y1.Accept(this, context, binding);
         if (y1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-        IValuedNode x2 = cart.X2.Accept(this, context, binding);
+        var x2 = cart.X2.Accept(this, context, binding);
         if (x2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-        IValuedNode y2 = cart.Y2.Accept(this, context, binding);
+        var y2 = cart.Y2.Accept(this, context, binding);
         if (y2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
 
         if (cart.Is3D)
         {
-            IValuedNode z1 = cart.Z1.Accept(this, context, binding);
+            var z1 = cart.Z1.Accept(this, context, binding);
             if (z1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode z2 = cart.Z2.Accept(this, context, binding);
+            var z2 = cart.Z2.Accept(this, context, binding);
             if (z2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
 
             var dX = x2.AsDouble() - x1.AsDouble();
@@ -782,7 +782,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessCubeFunction(CubeFunction cube, TContext context, TBinding binding)
     {
-        IValuedNode temp = cube.InnerExpression.Accept(this, context, binding);
+        var temp = cube.InnerExpression.Accept(this, context, binding);
         if (temp == null) throw new RdfQueryException("Cannot square a null");
 
         switch (temp.NumericType)
@@ -807,7 +807,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessLeviathanEFunction(Expressions.Functions.Leviathan.Numeric.EFunction eFunction, TContext context, TBinding binding)
     {
-        IValuedNode temp = eFunction.InnerExpression.Accept(this, context, binding);
+        var temp = eFunction.InnerExpression.Accept(this, context, binding);
         if (temp == null) throw new RdfQueryException("Cannot square root a null");
 
         switch (temp.NumericType)
@@ -825,7 +825,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessFactorialFunction(FactorialFunction factorial, TContext context, TBinding binding)
     {
-        IValuedNode temp = factorial.InnerExpression.Accept(this, context, binding);
+        var temp = factorial.InnerExpression.Accept(this, context, binding);
         if (temp == null) throw new RdfQueryException("Cannot evaluate factorial of a null");
         var l = temp.AsInteger();
 
@@ -850,10 +850,10 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessLogFunction(LogFunction log, TContext context, TBinding binding)
     {
-        IValuedNode arg = log.LeftExpression.Accept(this, context, binding);
+        var arg = log.LeftExpression.Accept(this, context, binding);
         if (arg == null) throw new RdfQueryException("Cannot log a null");
 
-        IValuedNode logBase = log.RightExpression.Accept(this, context, binding);
+        var logBase = log.RightExpression.Accept(this, context, binding);
         if (logBase == null) throw new RdfQueryException("Cannot log to a null base");
 
         if (arg.NumericType == SparqlNumericType.NaN || logBase.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot log when one/both arguments are non-numeric");
@@ -863,7 +863,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessNaturalLogFunction(LeviathanNaturalLogFunction logn, TContext context, TBinding binding)
     {
-        IValuedNode temp = logn.InnerExpression.Accept(this, context, binding);
+        var temp = logn.InnerExpression.Accept(this, context, binding);
         if (temp == null) throw new RdfQueryException("Cannot square root a null");
 
         switch (temp.NumericType)
@@ -881,9 +881,9 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessPowerFunction(PowerFunction powFn, TContext context, TBinding binding)
     {
-        IValuedNode arg = powFn.LeftExpression.Accept(this, context, binding);
+        var arg = powFn.LeftExpression.Accept(this, context, binding);
         if (arg == null) throw new RdfQueryException("Cannot raise a null to a power");
-        IValuedNode pow = powFn.RightExpression.Accept(this, context, binding);
+        var pow = powFn.RightExpression.Accept(this, context, binding);
         if (pow == null) throw new RdfQueryException("Cannot raise to a null power");
 
         if (arg.NumericType == SparqlNumericType.NaN || pow.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot raise to a power when one/both arguments are non-numeric");
@@ -894,9 +894,9 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
     public virtual IValuedNode ProcessPythagoreanDistanceFunction(PythagoreanDistanceFunction pythagoreanDistance, TContext context,
         TBinding binding)
     {
-        IValuedNode x = pythagoreanDistance.LeftExpression.Accept(this, context, binding);
+        var x = pythagoreanDistance.LeftExpression.Accept(this, context, binding);
         if (x == null) throw new RdfQueryException("Cannot calculate distance of a null");
-        IValuedNode y = pythagoreanDistance.RightExpression.Accept(this, context, binding);
+        var y = pythagoreanDistance.RightExpression.Accept(this, context, binding);
         if (y == null) throw new RdfQueryException("Cannot calculate distance of a null");
 
         if (x.NumericType == SparqlNumericType.NaN || y.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot calculate distance when one/both arguments are non-numeric");
@@ -906,9 +906,9 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessRandomFunction(RandomFunction rand, TContext context, TBinding binding)
     {
-        IValuedNode min = rand.LeftExpression.Accept(this, context, binding);
+        var min = rand.LeftExpression.Accept(this, context, binding);
         if (min == null) throw new RdfQueryException("Cannot randomize with a null minimum");
-        IValuedNode max = rand.RightExpression.Accept(this, context, binding);
+        var max = rand.RightExpression.Accept(this, context, binding);
         if (max == null) throw new RdfQueryException("Cannot randomize with a null maximum");
 
         if (min.NumericType == SparqlNumericType.NaN || max.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot randomize when one/both arguments are non-numeric");
@@ -925,7 +925,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessReciprocalFunction(ReciprocalFunction reciprocal, TContext context, TBinding binding)
     {
-        IValuedNode temp = reciprocal.InnerExpression.Accept(this, context, binding);
+        var temp = reciprocal.InnerExpression.Accept(this, context, binding);
         if (temp == null) throw new RdfQueryException("Cannot evaluate reciprocal of a null");
         var d = temp.AsDouble();
         if (d == 0) throw new RdfQueryException("Cannot evaluate reciprocal of zero");
@@ -935,9 +935,9 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessRootFunction(RootFunction rootFn, TContext context, TBinding binding)
     {
-        IValuedNode arg = rootFn.LeftExpression.Accept(this, context, binding);
+        var arg = rootFn.LeftExpression.Accept(this, context, binding);
         if (arg == null) throw new RdfQueryException("Cannot root a null");
-        IValuedNode root = rootFn.RightExpression.Accept(this, context, binding);
+        var root = rootFn.RightExpression.Accept(this, context, binding);
         if (root == null) throw new RdfQueryException("Cannot root to a null root");
 
         if (arg.NumericType == SparqlNumericType.NaN || root.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot root when one/both arguments are non-numeric");
@@ -947,7 +947,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessSquareFunction(SquareFunction square, TContext context, TBinding binding)
     {
-        IValuedNode temp = square.InnerExpression.Accept(this, context, binding);
+        var temp = square.InnerExpression.Accept(this, context, binding);
         if (temp == null) throw new RdfQueryException("Cannot square a null");
 
         switch (temp.NumericType)
@@ -972,7 +972,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessSquareRootFunction(SquareRootFunction sqrt, TContext context, TBinding binding)
     {
-        IValuedNode temp = sqrt.InnerExpression.Accept(this, context, binding);
+        var temp = sqrt.InnerExpression.Accept(this, context, binding);
         if (temp == null) throw new RdfQueryException("Cannot square root a null");
 
         switch (temp.NumericType)
@@ -990,7 +990,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessTenFunction(TenFunction ten, TContext context, TBinding binding)
     {
-        IValuedNode temp = ten.InnerExpression.Accept(this, context, binding);
+        var temp = ten.InnerExpression.Accept(this, context, binding);
         if (temp == null) throw new RdfQueryException("Cannot square root a null");
 
         switch (temp.NumericType)
@@ -1015,19 +1015,19 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessIsBlankFunction(IsBlankFunction isBlank, TContext context, TBinding binding)
     {
-        INode result = isBlank.InnerExpression.Accept(this, context, binding);
+        var result = isBlank.InnerExpression.Accept(this, context, binding);
         return result == null ? new BooleanNode(false) : new BooleanNode(result.NodeType == NodeType.Blank);
     }
 
     public virtual IValuedNode ProcessIsIriFunction(IsIriFunction isIri, TContext context, TBinding binding)
     {
-        INode result = isIri.InnerExpression.Accept(this, context, binding);
+        var result = isIri.InnerExpression.Accept(this, context, binding);
         return result == null ? new BooleanNode(false) : new BooleanNode(result.NodeType == NodeType.Uri);
     }
 
     public virtual IValuedNode ProcessIsLiteralFunction(IsLiteralFunction isLiteral, TContext context, TBinding binding)
     {
-        INode result = isLiteral.InnerExpression.Accept(this, context, binding);
+        var result = isLiteral.InnerExpression.Accept(this, context, binding);
         return result == null ? new BooleanNode(false) : new BooleanNode(result.NodeType == NodeType.Literal);
 
     }
@@ -1035,20 +1035,20 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
     public virtual IValuedNode ProcessIsTripleFunction(IsTripleFunction isTriple, TContext context,
         TBinding binding)
     {
-        INode result = isTriple.InnerExpression.Accept(this, context, binding);
+        var result = isTriple.InnerExpression.Accept(this, context, binding);
         return result == null ? new BooleanNode(false) : new BooleanNode(result.NodeType == NodeType.Triple);
     }
 
     public virtual IValuedNode ProcessIsNumericFunction(IsNumericFunction isNumeric, TContext context, TBinding binding)
     {
-        IValuedNode result = isNumeric.InnerExpression.Accept(this, context, binding);
+        var result = isNumeric.InnerExpression.Accept(this, context, binding);
         return new BooleanNode(result.NumericType != SparqlNumericType.NaN);
     }
 
     public virtual IValuedNode ProcessLangMatchesFunction(LangMatchesFunction langMatches, TContext context, TBinding binding)
     {
-        INode result = langMatches.LeftExpression.Accept(this, context, binding);
-        INode langRange = langMatches.RightExpression.Accept(this, context, binding);
+        var result = langMatches.LeftExpression.Accept(this, context, binding);
+        var langRange = langMatches.RightExpression.Accept(this, context, binding);
 
         if (result == null)
         {
@@ -1079,7 +1079,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
     public virtual IValuedNode ProcessRegexFunction(RegexFunction regex, TContext context, TBinding binding)
     {
         // Configure Options
-        RegexOptions options = RegexOptions.None;
+        var options = RegexOptions.None;
         var pattern = string.Empty;
         if (regex.OptionsExpression != null && !regex.FixedOptions)
         {
@@ -1092,7 +1092,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
             // Regex is not pre-compiled
             if (regex.PatternExpression != null)
             {
-                IValuedNode p = regex.PatternExpression.Accept(this, context, binding);
+                var p = regex.PatternExpression.Accept(this, context, binding);
                 if (p != null)
                 {
                     if (p.NodeType == NodeType.Literal)
@@ -1120,7 +1120,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
         }
 
         // Execute the Regular Expression
-        IValuedNode textNode = regex.TextExpression.Accept(this, context, binding);
+        var textNode = regex.TextExpression.Accept(this, context, binding);
         if (textNode == null)
         {
             throw new RdfQueryException("Cannot evaluate a Regular Expression against a NULL");
@@ -1146,8 +1146,8 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessSameTermFunction(SameTermFunction sameTerm, TContext context, TBinding binding)
     {
-        INode a = sameTerm.LeftExpression.Accept(this, context, binding);
-        INode b = sameTerm.RightExpression.Accept(this, context, binding);
+        var a = sameTerm.LeftExpression.Accept(this, context, binding);
+        var b = sameTerm.RightExpression.Accept(this, context, binding);
 
         return a == null ? new BooleanNode(b == null) : new BooleanNode(a.Equals(b));
     }
@@ -1162,8 +1162,8 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessStrDtFunction(StrDtFunction strDt, TContext context, TBinding binding)
     {
-        INode s = strDt.LeftExpression.Accept(this, context, binding);
-        INode dt = strDt.RightExpression.Accept(this, context, binding);
+        var s = strDt.LeftExpression.Accept(this, context, binding);
+        var dt = strDt.RightExpression.Accept(this, context, binding);
 
         if (s == null)
         {
@@ -1205,8 +1205,8 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessStrLangFunction(StrLangFunction strLang, TContext context, TBinding binding)
     {
-        INode s = strLang.LeftExpression.Accept(this, context, binding);
-        INode lang = strLang.RightExpression.Accept(this, context, binding);
+        var s = strLang.LeftExpression.Accept(this, context, binding);
+        var lang = strLang.RightExpression.Accept(this, context, binding);
 
         if (s != null)
         {
@@ -1303,7 +1303,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessTimezoneFunction(TimezoneFunction timezone, TContext context, TBinding binding)
     {
-        IValuedNode temp = ProcessTimezoneFromDateTimeFunction(timezone, context, binding);
+        var temp = ProcessTimezoneFromDateTimeFunction(timezone, context, binding);
 
         if (temp == null)
         {
@@ -1317,10 +1317,10 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessTZFunction(TZFunction tz, TContext context, TBinding binding)
     {
-        IValuedNode temp = tz.InnerExpression.Accept(this, context, binding);
+        var temp = tz.InnerExpression.Accept(this, context, binding);
         if (temp != null)
         {
-            DateTimeOffset dt = temp.AsDateTimeOffset();
+            var dt = temp.AsDateTimeOffset();
             // Regex based check to see if the value has a Timezone component
             // If not then the result is a null
             if (!Regex.IsMatch(temp.AsString(), "(Z|[+-]\\d{2}:\\d{2})$")) return new StringNode(null, string.Empty);
@@ -1408,7 +1408,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessInFunction(InFunction inFn, TContext context, TBinding binding)
     {
-        IValuedNode result = inFn.InnerExpression.Accept(this, context, binding);
+        var result = inFn.InnerExpression.Accept(this, context, binding);
         if (result != null)
         {
             if (inFn.SetExpressions.Count == 0) return new BooleanNode(false);
@@ -1416,11 +1416,11 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
             // Have to use SPARQL Value Equality here
             // If any expressions error and nothing in the set matches then an error is thrown
             var errors = false;
-            foreach (ISparqlExpression expr in inFn.SetExpressions)
+            foreach (var expr in inFn.SetExpressions)
             {
                 try
                 {
-                    IValuedNode temp = expr.Accept(this, context, binding);
+                    var temp = expr.Accept(this, context, binding);
                     if (SparqlSpecsHelper.Equality(result, temp)) return new BooleanNode(true);
                 }
                 catch
@@ -1446,7 +1446,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessNotInFunction(NotInFunction notIn, TContext context, TBinding binding)
     {
-        INode result = notIn.InnerExpression.Accept(this, context, binding);
+        var result = notIn.InnerExpression.Accept(this, context, binding);
         if (result != null)
         {
             if (notIn.SetExpressions.Count == 0) return new BooleanNode(true);
@@ -1454,11 +1454,11 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
             // Have to use SPARQL Value Equality here
             // If any expressions error and nothing in the set matches then an error is thrown
             var errors = false;
-            foreach (ISparqlExpression expr in notIn.SetExpressions)
+            foreach (var expr in notIn.SetExpressions)
             {
                 try
                 {
-                    INode temp = expr.Accept(this, context, binding);
+                    var temp = expr.Accept(this, context, binding);
                     if (SparqlSpecsHelper.Equality(result, temp)) return new BooleanNode(false);
                 }
                 catch
@@ -1490,9 +1490,9 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
         var allSameTag = true;
 
         var output = new StringBuilder();
-        foreach (ISparqlExpression expr in concat.Arguments)
+        foreach (var expr in concat.Arguments)
         {
-            INode temp = expr?.Accept(this, context, binding) ?? new StringNode(String.Empty);
+            var temp = expr?.Accept(this, context, binding) ?? new StringNode(String.Empty);
             if (temp == null) throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument evaluates to a Null");
             if (temp is not ILiteralNode lit)
             {
@@ -1537,8 +1537,8 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
     private IValuedNode ProcessBinaryStringBooleanFunction(BaseBinaryStringFunction function, TContext context,
         TBinding binding, Func<ILiteralNode, ILiteralNode, bool> valueFunc)
     {
-        INode x = function.LeftExpression.Accept(this, context, binding);
-        INode y = function.RightExpression.Accept(this, context, binding);
+        var x = function.LeftExpression.Accept(this, context, binding);
+        var y = function.RightExpression.Accept(this, context, binding);
 
         if (x.NodeType == NodeType.Literal && y.NodeType == NodeType.Literal)
         {
@@ -1563,7 +1563,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
     private IValuedNode ProcessBinaryStringFunction(XPath.String.BaseBinaryStringFunction function, TContext context,
         TBinding binding, Func<ILiteralNode, ILiteralNode, IValuedNode> valueFunc)
     {
-        INode temp = function.LeftExpression.Accept(this, context, binding);
+        var temp = function.LeftExpression.Accept(this, context, binding);
         if (temp != null)
         {
             if (temp.NodeType == NodeType.Literal)
@@ -1591,7 +1591,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
             else
             {
                 // Need to validate the argument
-                INode tempArg = function.RightExpression.Accept(this, context, binding);
+                var tempArg = function.RightExpression.Accept(this, context, binding);
                 if (tempArg != null)
                 {
                     if (tempArg.NodeType == NodeType.Literal)
@@ -1659,7 +1659,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessDataTypeFunction(DataTypeFunction dataType, TContext context, TBinding binding)
     {
-        INode result = dataType.InnerExpression.Accept(this, context, binding);
+        var result = dataType.InnerExpression.Accept(this, context, binding);
         if (result == null)
         {
             throw new RdfQueryException("Cannot return the Data Type URI of a NULL");
@@ -1694,7 +1694,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessDataType11Function(DataType11Function dataType, TContext context, TBinding binding)
     {
-        INode result = dataType.InnerExpression.Accept(this, context, binding);
+        var result = dataType.InnerExpression.Accept(this, context, binding);
         if (result == null)
         {
             throw new RdfQueryException("Cannot return the Data Type URI of a NULL");
@@ -1723,7 +1723,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
     protected virtual IValuedNode ProcessUnaryStringFunction(BaseUnaryStringFunction function, TContext context,
         TBinding binding, Func<ILiteralNode, IValuedNode> valueFunc)
     {
-        IValuedNode temp = function.InnerExpression.Accept(this, context, binding);
+        var temp = function.InnerExpression.Accept(this, context, binding);
         if (temp == null)
         {
             throw new RdfQueryException("Unable to evaluate an XPath String function on a null input");
@@ -1755,7 +1755,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessLangFunction(LangFunction lang, TContext context, TBinding binding)
     {
-        INode result = lang.InnerExpression.Accept(this, context, binding);
+        var result = lang.InnerExpression.Accept(this, context, binding);
         if (result == null)
         {
             throw new RdfQueryException("Cannot return the Data Type URI of an NULL");
@@ -1781,7 +1781,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessReplaceFunction(ReplaceFunction replace, TContext context, TBinding binding)
     {
-        RegexOptions options = replace.FixedOptions
+        var options = replace.FixedOptions
             ? replace.Options
             : replace.GetOptions(replace.OptionsExpression.Accept(this, context, binding), true);
         string findPattern, replacePattern;
@@ -1793,7 +1793,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
         {
             if (replace.FindExpression != null)
             {
-                IValuedNode p = replace.FindExpression.Accept(this, context, binding);
+                var p = replace.FindExpression.Accept(this, context, binding);
                 if (p != null)
                 {
                     if (p.NodeType == NodeType.Literal)
@@ -1824,7 +1824,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
         {
             if (replace.ReplaceExpression != null)
             {
-                IValuedNode r = replace.ReplaceExpression.Accept(this, context, binding);
+                var r = replace.ReplaceExpression.Accept(this, context, binding);
                 if (r != null)
                 {
                     if (r.NodeType == NodeType.Literal)
@@ -1847,7 +1847,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
             }
         }
 
-        IValuedNode textNode = replace.TextExpression.Accept(this, context, binding);
+        var textNode = replace.TextExpression.Accept(this, context, binding);
         if (textNode == null)
         {
             throw new RdfQueryException("Cannot evaluate a Regular Expression against a NULL");
@@ -1886,7 +1886,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
             throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
         }
 
-        Uri datatype = input.DataType;//(input.DataType != null ? input.DataType : starts.DataType);
+        var datatype = input.DataType;//(input.DataType != null ? input.DataType : starts.DataType);
         var lang = input.Language;//(!input.Language.Equals(string.Empty) ? input.Language : starts.Language);
 
         if (input.Value.Contains(starts.Value))
@@ -1934,7 +1934,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
             throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
         }
 
-        Uri datatype = input.DataType;//(input.DataType != null ? input.DataType : ends.DataType);
+        var datatype = input.DataType;//(input.DataType != null ? input.DataType : ends.DataType);
         var lang = input.Language;// (!input.Language.Equals(string.Empty) ? input.Language : ends.Language);
 
         if (input.Value.Contains(ends.Value))
@@ -1980,7 +1980,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessStrFunction(StrFunction str, TContext context, TBinding binding)
     {
-        IValuedNode result = str.InnerExpression.Accept(this, context, binding);
+        var result = str.InnerExpression.Accept(this, context, binding);
         if (result == null)
         {
             throw new RdfQueryException("Cannot return the lexical value of an NULL");
@@ -2013,11 +2013,11 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
     public virtual IValuedNode ProcessSubStrFunction(SubStrFunction subStr, TContext context, TBinding binding)
     {
         var input = (ILiteralNode)CheckArgument(subStr.StringExpression, context, binding, XPathFunctionFactory.AcceptStringArguments);
-        IValuedNode start = CheckArgument(subStr.StartExpression, context, binding, XPathFunctionFactory.AcceptNumericArguments);
+        var start = CheckArgument(subStr.StartExpression, context, binding, XPathFunctionFactory.AcceptNumericArguments);
 
         if (subStr.LengthExpression != null)
         {
-            IValuedNode length = CheckArgument(subStr.LengthExpression, context, binding, XPathFunctionFactory.AcceptNumericArguments);
+            var length = CheckArgument(subStr.LengthExpression, context, binding, XPathFunctionFactory.AcceptNumericArguments);
 
             if (input.Value.Equals(string.Empty))
             {
@@ -2137,12 +2137,12 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
     {
         if (!call.Arguments.Any()) return null;
 
-        IValuedNode funcIdent = call.Arguments.First().Accept(this, context, binding);
+        var funcIdent = call.Arguments.First().Accept(this, context, binding);
         if (funcIdent == null) throw new RdfQueryException("Function identifier is unbound");
         if (funcIdent.NodeType != NodeType.Uri) throw new RdfQueryException("Function identifier is not a URI");
 
-        Uri funcUri = ((IUriNode)funcIdent).Uri;
-        if (!_functionCache.TryGetValue(funcUri.AbsoluteUri, out ISparqlExpression func))
+        var funcUri = ((IUriNode)funcIdent).Uri;
+        if (!_functionCache.TryGetValue(funcUri.AbsoluteUri, out var func))
         {
             try
             {
@@ -2165,12 +2165,12 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessCoalesceFunction(CoalesceFunction coalesce, TContext context, TBinding binding)
     {
-        foreach (ISparqlExpression expr in coalesce.InnerExpressions)
+        foreach (var expr in coalesce.InnerExpressions)
         {
             try
             {
                 // Test the expression
-                IValuedNode temp = expr.Accept(this, context, binding);
+                var temp = expr.Accept(this, context, binding);
                 if (temp != null) return temp;
             }
             catch (RdfQueryException)
@@ -2186,7 +2186,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessIfElseFunction(IfElseFunction ifElse, TContext context, TBinding binding)
     {
-        IValuedNode result = ifElse.ConditionExpression.Accept(this, context, binding);
+        var result = ifElse.ConditionExpression.Accept(this, context, binding);
 
         // Condition evaluated without error so we go to the appropriate branch of the IF ELSE
         // depending on whether it evaluated to true or false
@@ -2197,7 +2197,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public IValuedNode ProcessSubjectFunction(SubjectFunction subjectFunction, TContext context, TBinding binding)
     {
-        IValuedNode innerValue = subjectFunction.InnerExpression.Accept(this, context, binding);
+        var innerValue = subjectFunction.InnerExpression.Accept(this, context, binding);
         if (innerValue is ITripleNode tn) return tn.Triple.Subject.AsValuedNode();
         throw new RdfQueryException("Value passed to SUBJECT function is not a Triple Node. Received a " +
                                     innerValue.NodeType);
@@ -2205,7 +2205,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public IValuedNode ProcessPredicateFunction(PredicateFunction predicateFunction, TContext context, TBinding binding)
     {
-        IValuedNode innerValue = predicateFunction.InnerExpression.Accept(this, context, binding);
+        var innerValue = predicateFunction.InnerExpression.Accept(this, context, binding);
         if (innerValue is ITripleNode tn) return tn.Triple.Predicate.AsValuedNode();
         throw new RdfQueryException("Value passed to PREDICATE function is not a Triple Node. Received a " +
                                     innerValue.NodeType);
@@ -2213,7 +2213,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public IValuedNode ProcessObjectFunction(ObjectFunction objectFunction, TContext context, TBinding binding)
     {
-        IValuedNode innerValue = objectFunction.InnerExpression.Accept(this, context, binding);
+        var innerValue = objectFunction.InnerExpression.Accept(this, context, binding);
         if (innerValue is ITripleNode tn) return tn.Triple.Object.AsValuedNode();
         throw new RdfQueryException("Value passed to OBJECT function is not a Triple Node. Received a " +
                                     innerValue.NodeType);
@@ -2221,7 +2221,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessBooleanCast(BooleanCast cast, TContext context, TBinding binding)
     {
-        IValuedNode n = cast.InnerExpression.Accept(this, context, binding);//.CoerceToBoolean();
+        var n = cast.InnerExpression.Accept(this, context, binding);//.CoerceToBoolean();
 
         switch (n.NodeType)
         {
@@ -2262,7 +2262,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
                     }
 
                     // Cast based on Numeric Type
-                    SparqlNumericType type = NumericTypesHelper.GetNumericTypeFromDataTypeUri(dt);
+                    var type = NumericTypesHelper.GetNumericTypeFromDataTypeUri(dt);
 
                     switch (type)
                     {
@@ -2367,7 +2367,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessDateTimeCast(DateTimeCast cast, TContext context, TBinding binding)
     {
-        IValuedNode n = cast.InnerExpression.Accept(this, context, binding);//.CoerceToDateTime();
+        var n = cast.InnerExpression.Accept(this, context, binding);//.CoerceToDateTime();
 
         if (n == null)
         {
@@ -2397,7 +2397,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
                     if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                     {
                         // Already a xsd:dateTime
-                        if (DateTimeOffset.TryParse(lit.Value, out DateTimeOffset d))
+                        if (DateTimeOffset.TryParse(lit.Value, out var d))
                         {
                             // Parsed OK
                             return new DateTimeNode(d);
@@ -2410,7 +2410,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
                     }
                     else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                     {
-                        if (DateTimeOffset.TryParse(lit.Value, out DateTimeOffset d))
+                        if (DateTimeOffset.TryParse(lit.Value, out var d))
                         {
                             // Parsed OK
                             return new DateTimeNode(d);
@@ -2427,7 +2427,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
                 }
                 else
                 {
-                    if (DateTimeOffset.TryParse(lit.Value, out DateTimeOffset d))
+                    if (DateTimeOffset.TryParse(lit.Value, out var d))
                     {
                         // Parsed OK
                         return new DateTimeNode(d);
@@ -2444,7 +2444,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessDecimalCast(DecimalCast cast, TContext context, TBinding binding)
     {
-        IValuedNode n = cast.InnerExpression.Accept(this, context, binding);//.CoerceToDecimal();
+        var n = cast.InnerExpression.Accept(this, context, binding);//.CoerceToDecimal();
 
         if (n == null)
         {
@@ -2509,7 +2509,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessDoubleCast(DoubleCast cast, TContext context, TBinding binding)
     {
-        IValuedNode n = cast.InnerExpression.Accept(this, context, binding);//.CoerceToDouble();
+        var n = cast.InnerExpression.Accept(this, context, binding);//.CoerceToDouble();
 
         if (n == null)
         {
@@ -2586,7 +2586,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessFloatCast(FloatCast cast, TContext context, TBinding binding)
     {
-        IValuedNode n = cast.InnerExpression.Accept(this, context, binding);//.CoerceToFloat();
+        var n = cast.InnerExpression.Accept(this, context, binding);//.CoerceToFloat();
 
         if (n == null)
         {
@@ -2662,7 +2662,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessIntegerCast(IntegerCast cast, TContext context, TBinding binding)
     {
-        IValuedNode n = cast.InnerExpression.Accept(this, context, binding);//.CoerceToInteger();
+        var n = cast.InnerExpression.Accept(this, context, binding);//.CoerceToInteger();
 
         if (n == null)
         {
@@ -2739,7 +2739,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessStringCast(StringCast cast, TContext context, TBinding binding)
     {
-        IValuedNode n = cast.InnerExpression.Accept(this, context, binding);
+        var n = cast.InnerExpression.Accept(this, context, binding);
 
         if (n == null)
         {
@@ -2752,7 +2752,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
     private IValuedNode ProcessUnaryDateTimeFunction(BaseUnaryDateTimeFunction expr, TContext context,
         TBinding binding, Func<DateTimeOffset, IValuedNode> valueFunction)
     {
-        IValuedNode temp = expr.InnerExpression.Accept(this, context, binding);
+        var temp = expr.InnerExpression.Accept(this, context, binding);
         if (temp == null)
         {
             throw new RdfQueryException("Unable to evaluate an XPath Date Time function on a null argument");
@@ -2793,13 +2793,13 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
     public virtual IValuedNode ProcessTimezoneFromDateTimeFunction(TimezoneFromDateTimeFunction timezone, TContext context,
         TBinding binding)
     {
-        IValuedNode temp = timezone.InnerExpression.Accept(this, context, binding);
+        var temp = timezone.InnerExpression.Accept(this, context, binding);
         if (temp == null)
         {
             throw new RdfQueryException("Unable to evaluate an XPath Date Time function on a null argument");
         }
 
-        DateTimeOffset dt = temp.AsDateTimeOffset();
+        var dt = temp.AsDateTimeOffset();
         // Regex based check to see if the value has a Timezone component
         // If not then the result is a null
         if (!Regex.IsMatch(temp.AsString(), "(Z|[+-]\\d{2}:\\d{2})$")) return null;
@@ -2832,7 +2832,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessAbsFunction(XPath.Numeric.AbsFunction abs, TContext context, TBinding binding)
     {
-        IValuedNode a = abs.InnerExpression.Accept(this, context, binding);
+        var a = abs.InnerExpression.Accept(this, context, binding);
         if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
 
         switch (a.NumericType)
@@ -2867,7 +2867,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessCeilFunction(CeilingFunction ceil, TContext context, TBinding binding)
     {
-        IValuedNode a = ceil.InnerExpression.Accept(this, context, binding);
+        var a = ceil.InnerExpression.Accept(this, context, binding);
         if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
 
         switch (a.NumericType)
@@ -2913,7 +2913,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessFloorFunction(XPath.Numeric.FloorFunction floor, TContext context, TBinding binding)
     {
-        IValuedNode a = floor.InnerExpression.Accept(this, context, binding);
+        var a = floor.InnerExpression.Accept(this, context, binding);
         if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
 
         switch (a.NumericType)
@@ -2959,7 +2959,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessRoundFunction(Expressions.Functions.XPath.Numeric.RoundFunction round, TContext context, TBinding binding)
     {
-        IValuedNode a = round.InnerExpression.Accept(this, context, binding);
+        var a = round.InnerExpression.Accept(this, context, binding);
         if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
 
         switch (a.NumericType)
@@ -2995,13 +2995,13 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessRoundHalfToEvenFunction(RoundHalfToEvenFunction round, TContext context, TBinding binding)
     {
-        IValuedNode a = round.InnerExpression.Accept(this, context, binding);
+        var a = round.InnerExpression.Accept(this, context, binding);
         if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
 
         var p = 0;
         if (round.Precision != null)
         {
-            IValuedNode precision = round.Precision.Accept(this, context, binding);
+            var precision = round.Precision.Accept(this, context, binding);
             if (precision == null) throw new RdfQueryException("Cannot use a null precision for rounding");
             try
             {
@@ -3054,9 +3054,9 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
     public virtual IValuedNode ProcessConcatFunction(Expressions.Functions.XPath.String.ConcatFunction concat, TContext context, TBinding binding)
     {
         var output = new StringBuilder();
-        foreach (ISparqlExpression expr in concat.Expressions)
+        foreach (var expr in concat.Expressions)
         {
-            IValuedNode temp = expr.Accept(this, context, binding);
+            var temp = expr.Accept(this, context, binding);
             if (temp == null) throw new RdfQueryException("Cannot evaluate the XPath concat() function when an argument evaluates to a Null");
             switch (temp.NodeType)
             {
@@ -3199,7 +3199,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     public virtual IValuedNode ProcessReplaceFunction(Expressions.Functions.XPath.String.ReplaceFunction replace, TContext context, TBinding binding)
     {
-        RegexOptions options = replace.FixedOptions
+        var options = replace.FixedOptions
             ? replace.Options
             : replace.GetOptions(replace.OptionsExpression.Accept(this, context, binding), true);
         string findPattern, replacePattern;
@@ -3212,7 +3212,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
             // Regex is not pre-compiled
             if (replace.FindExpression != null)
             {
-                IValuedNode p = replace.FindExpression.Accept(this, context, binding);
+                var p = replace.FindExpression.Accept(this, context, binding);
                 if (p != null)
                 {
                     if (p.NodeType == NodeType.Literal)
@@ -3243,7 +3243,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
         {
             if (replace.ReplaceExpression != null)
             {
-                IValuedNode r = replace.ReplaceExpression.Accept(this, context, binding);
+                var r = replace.ReplaceExpression.Accept(this, context, binding);
                 if (r != null)
                 {
                     if (r.NodeType == NodeType.Literal)
@@ -3266,7 +3266,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
             }
         }
 
-        IValuedNode textNode = replace.TestExpression.Accept(this, context, binding);
+        var textNode = replace.TestExpression.Accept(this, context, binding);
         if (textNode == null)
         {
             throw new RdfQueryException("Cannot evaluate a Regular Expression against a NULL");
@@ -3375,11 +3375,11 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
     public virtual IValuedNode ProcessSubstringFunction(Expressions.Functions.XPath.String.SubstringFunction substring, TContext context, TBinding binding)
     {
         var input = (ILiteralNode)CheckArgument(substring.InnerExpression, context, binding, XPathFunctionFactory.AcceptStringArguments);
-        IValuedNode start = CheckArgument(substring.StartExpression, context, binding, XPathFunctionFactory.AcceptNumericArguments);
+        var start = CheckArgument(substring.StartExpression, context, binding, XPathFunctionFactory.AcceptNumericArguments);
 
         if (substring.LengthExpression != null)
         {
-            IValuedNode length = CheckArgument(substring.LengthExpression, context, binding, XPathFunctionFactory.AcceptNumericArguments);
+            var length = CheckArgument(substring.LengthExpression, context, binding, XPathFunctionFactory.AcceptNumericArguments);
 
             if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
 
@@ -3442,7 +3442,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     private IValuedNode CheckArgument(ISparqlExpression expr, TContext context, TBinding binding, Func<Uri, bool> argumentTypeValidator)
     {
-        IValuedNode temp = expr.Accept(this, context, binding);
+        var temp = expr.Accept(this, context, binding);
         if (temp != null)
         {
             if (temp.NodeType == NodeType.Literal)
@@ -3483,7 +3483,7 @@ abstract internal class BaseExpressionProcessor<TContext, TBinding>
 
     private IValuedNode ProcessTrigFunction(BaseTrigonometricFunction expr, Func<double, double> func, TContext context, TBinding binding)
     {
-        IValuedNode temp = expr.InnerExpression.Accept(this, context, binding);
+        var temp = expr.InnerExpression.Accept(this, context, binding);
         if (temp == null) throw new RdfQueryException("Cannot apply a trigonometric function to a null");
 
         if (temp.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot apply a trigonometric function to a non-numeric argument");

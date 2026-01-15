@@ -110,8 +110,8 @@ public abstract class BaseLuceneSearchProvider
     public virtual IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold, int limit)
     {
         EnsureCurrent();
-        LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
-        LucSearch.TopDocs docs = _searcher.Search(q, limit);
+        var q = _parser.Parse(text, _schema.IndexField);
+        var docs = _searcher.Search(q, limit);
 
         return from doc in docs.ScoreDocs
             where doc.Score > scoreThreshold
@@ -127,7 +127,7 @@ public abstract class BaseLuceneSearchProvider
     public virtual IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold)
     {
         EnsureCurrent();
-        LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
+        var q = _parser.Parse(text, _schema.IndexField);
         var collector = new DocCollector(scoreThreshold);
         _searcher.Search(q, collector);
         return from doc in collector.Documents
@@ -143,8 +143,8 @@ public abstract class BaseLuceneSearchProvider
     public virtual IEnumerable<IFullTextSearchResult> Match(string text, int limit)
     {
         EnsureCurrent();
-        LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
-        LucSearch.TopDocs docs = _searcher.Search(q, limit);
+        var q = _parser.Parse(text, _schema.IndexField);
+        var docs = _searcher.Search(q, limit);
 
         return from doc in docs.ScoreDocs
             select _searcher.Doc(doc.Doc).ToResult(doc.Score, _schema);
@@ -158,7 +158,7 @@ public abstract class BaseLuceneSearchProvider
     public virtual IEnumerable<IFullTextSearchResult> Match(string text)
     {
         EnsureCurrent();
-        LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
+        var q = _parser.Parse(text, _schema.IndexField);
         var collector = new DocCollector();
         _searcher.Search(q, collector);
         return (from doc in collector.Documents
@@ -177,11 +177,11 @@ public abstract class BaseLuceneSearchProvider
     public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold, int limit)
     {
         EnsureCurrent();
-        LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
+        var q = _parser.Parse(text, _schema.IndexField);
         var collector = new DocCollector();
         _searcher.Search(q, collector);
 
-        IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+        var results = from doc in collector.Documents
                                                      where doc.Value > scoreThreshold
                                                      select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
         return FilterByGraph(graphUris, results).Take(limit);
@@ -198,10 +198,10 @@ public abstract class BaseLuceneSearchProvider
     public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold)
     {
         EnsureCurrent();
-        LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
+        var q = _parser.Parse(text, _schema.IndexField);
         var collector = new DocCollector(scoreThreshold);
         _searcher.Search(q, collector);
-        IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+        var results = from doc in collector.Documents
                                                      select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
         return FilterByGraph(graphUris, results);
     }
@@ -217,11 +217,11 @@ public abstract class BaseLuceneSearchProvider
     public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, int limit)
     {
         EnsureCurrent();
-        LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
+        var q = _parser.Parse(text, _schema.IndexField);
         var collector = new DocCollector();
         _searcher.Search(q, collector);
 
-        IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+        var results = from doc in collector.Documents
                                                      select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
         return FilterByGraph(graphUris, results).Take(limit);
     }
@@ -236,10 +236,10 @@ public abstract class BaseLuceneSearchProvider
     public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text)
     {
         EnsureCurrent();
-        LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
+        var q = _parser.Parse(text, _schema.IndexField);
         var collector = new DocCollector();
         _searcher.Search(q, collector);
-        IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+        var results = from doc in collector.Documents
                                                      select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
         return FilterByGraph(graphUris, results);
     }
@@ -255,11 +255,11 @@ public abstract class BaseLuceneSearchProvider
     public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, double scoreThreshold, int limit)
     {
         EnsureCurrent();
-        LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
+        var q = _parser.Parse(text, _schema.IndexField);
         var collector = new DocCollector();
         _searcher.Search(q, collector);
 
-        IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+        var results = from doc in collector.Documents
             where doc.Value > scoreThreshold
             select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
         return FilterByGraph(graphUris, results).Take(limit);
@@ -274,10 +274,10 @@ public abstract class BaseLuceneSearchProvider
     public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, double scoreThreshold)
     {
         EnsureCurrent();
-        LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
+        var q = _parser.Parse(text, _schema.IndexField);
         var collector = new DocCollector(scoreThreshold);
         _searcher.Search(q, collector);
-        IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+        var results = from doc in collector.Documents
             select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
         return FilterByGraph(graphUris, results);
     }
@@ -291,11 +291,11 @@ public abstract class BaseLuceneSearchProvider
     public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, int limit)
     {
         EnsureCurrent();
-        LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
+        var q = _parser.Parse(text, _schema.IndexField);
         var collector = new DocCollector();
         _searcher.Search(q, collector);
 
-        IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+        var results = from doc in collector.Documents
             select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
         return FilterByGraph(graphUris, results).Take(limit);
     }
@@ -308,10 +308,10 @@ public abstract class BaseLuceneSearchProvider
     public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text)
     {
         EnsureCurrent();
-        LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
+        var q = _parser.Parse(text, _schema.IndexField);
         var collector = new DocCollector();
         _searcher.Search(q, collector);
-        IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+        var results = from doc in collector.Documents
             select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
         return FilterByGraph(graphUris, results);
     }
@@ -402,27 +402,27 @@ public abstract class BaseLuceneSearchProvider
     {
         context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
-        INode searcherObj = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode searcherClass = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.ClassSearcher));
-        INode index = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyIndex));
-        INode schema = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertySchema));
-        INode analyzer = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyAnalyzer));
-        INode indexSync = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyIndexSync));
+        var searcherObj = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var searcherClass = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.ClassSearcher));
+        var index = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyIndex));
+        var schema = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertySchema));
+        var analyzer = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyAnalyzer));
+        var indexSync = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyIndexSync));
 
         //Basic Properties
         context.Graph.Assert(searcherObj, rdfType, searcherClass);
         context.Graph.Assert(searcherObj, dnrType, context.Graph.CreateLiteralNode(GetType().FullName + ", dotNetRDF.Query.FullText"));
 
         //Serialize and link the Index
-        INode indexObj = context.Graph.CreateBlankNode();
+        var indexObj = context.Graph.CreateBlankNode();
         context.NextSubject = indexObj;
         _indexDir.SerializeConfiguration(context);
         context.Graph.Assert(searcherObj, index, indexObj);
 
         //Serialize and link the Schema
-        INode schemaObj = context.Graph.CreateBlankNode();
+        var schemaObj = context.Graph.CreateBlankNode();
         context.NextSubject = schemaObj;
         if (_schema is IConfigurationSerializable)
         {
@@ -435,7 +435,7 @@ public abstract class BaseLuceneSearchProvider
         context.Graph.Assert(searcherObj, schema, schemaObj);
 
         //Serialize and link the Analyzer
-        INode analyzerObj = context.Graph.CreateBlankNode();
+        var analyzerObj = context.Graph.CreateBlankNode();
         context.NextSubject = analyzerObj;
         _analyzer.SerializeConfiguration(context);
         context.Graph.Assert(searcherObj, index, analyzerObj);

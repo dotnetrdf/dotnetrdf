@@ -113,7 +113,7 @@ public abstract class BaseGZipResultsWriter
     /// <param name="message">Warning message.</param>
     private void RaiseWarning(string message)
     {
-        SparqlWarning d = Warning;
+        var d = Warning;
         if (d != null) d(message);
     }
 

@@ -81,7 +81,7 @@ public abstract class BaseDemandDataset
         // If the underlying dataset doesn't have the Graph can we load it on demand
         if (graphName.NodeType == NodeType.Uri)
         {
-            if (TryLoadGraph((graphName as IUriNode).Uri, out IGraph g))
+            if (TryLoadGraph((graphName as IUriNode).Uri, out var g))
             {
                 AddGraph(g);
                 return true;

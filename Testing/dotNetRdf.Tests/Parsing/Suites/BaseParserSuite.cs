@@ -102,7 +102,7 @@ public abstract class BaseParserSuite<TParser, TResult> where TParser : class
         switch (n.NodeType)
         {
             case NodeType.Uri:
-                Uri u = ((IUriNode)n).Uri;
+                var u = ((IUriNode)n).Uri;
                 if (u.IsFile)
                 {
                     return u.AbsolutePath;
@@ -198,7 +198,7 @@ WHERE
         {
             INode nameNode, commentNode, resultNode;
             var name = test.TryGetBoundValue("name", out nameNode) ? nameNode.ToString() : null;
-            INode inputNode = test["input"];
+            var inputNode = test["input"];
             var input = GetFile(inputNode);
             var comment = test.TryGetBoundValue("comment", out commentNode) ? commentNode.ToString() : null;
             var results = test.TryGetBoundValue("result", out resultNode) ? GetFile(resultNode) : null;
@@ -254,7 +254,7 @@ WHERE
         var tests = manifest.ExecuteQuery(findTests) as SparqlResultSet;
         Assert.NotNull(tests);
 
-        foreach (SparqlResult test in tests)
+        foreach (var test in tests)
         {
             INode nameNode, inputNode, commentNode, resultNode;
             var name = test.TryGetBoundValue("name", out nameNode) ? nameNode.ToString() : null;

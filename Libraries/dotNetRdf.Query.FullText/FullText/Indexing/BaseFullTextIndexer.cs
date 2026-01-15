@@ -81,7 +81,7 @@ public abstract class BaseFullTextIndexer
     /// <param name="g">Graph.</param>
     public virtual void Index(IGraph g)
     {
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             Index(g, t);
         }
@@ -94,9 +94,9 @@ public abstract class BaseFullTextIndexer
     /// <param name="dataset">Dataset.</param>
     public virtual void Index(ISparqlDataset dataset)
     {
-        foreach (IRefNode u in dataset.GraphNames)
+        foreach (var u in dataset.GraphNames)
         {
-            IGraph g = dataset[u];
+            var g = dataset[u];
             Index(g);
         }
     }
@@ -130,7 +130,7 @@ public abstract class BaseFullTextIndexer
     /// <param name="g">Graph.</param>
     public virtual void Unindex(IGraph g)
     {
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             Unindex(g, t);
         }
@@ -143,9 +143,9 @@ public abstract class BaseFullTextIndexer
     /// <param name="dataset">Dataset.</param>
     public virtual void Unindex(ISparqlDataset dataset)
     {
-        foreach (IRefNode u in dataset.GraphNames)
+        foreach (var u in dataset.GraphNames)
         {
-            IGraph g = dataset[u];
+            var g = dataset[u];
             Unindex(g);
         }
     }

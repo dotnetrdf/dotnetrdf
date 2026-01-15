@@ -175,7 +175,7 @@ public abstract class BaseGZipResultsParser
     /// <param name="message">Warning message.</param>
     private void RaiseWarning(string message)
     {
-        SparqlWarning d = Warning;
+        var d = Warning;
         d?.Invoke(message);
     }
 

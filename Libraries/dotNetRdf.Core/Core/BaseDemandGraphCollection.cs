@@ -66,7 +66,7 @@ public abstract class BaseDemandGraphCollection
             else
             {
                 // Try to do on-demand loading
-                IGraph g = LoadOnDemand(graphUri);
+                var g = LoadOnDemand(graphUri);
 
                 // Remember to set the Graph URI to the URI being asked for prior to adding it to the underlying collection
                 // in case the loading process sets it otherwise
@@ -100,7 +100,7 @@ public abstract class BaseDemandGraphCollection
             if (graphName is IUriNode uriNode)
             {
                 // Try to do on-demand loading
-                IGraph g = LoadOnDemand(uriNode.Uri);
+                var g = LoadOnDemand(uriNode.Uri);
 
                 // Remember to set the Graph URI to the URI being asked for prior to adding it to the underlying collection
                 // in case the loading process sets it otherwise

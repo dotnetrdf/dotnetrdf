@@ -102,15 +102,15 @@ public abstract class BaseMultiset
         }
 
         // First do a pass over the LHS Result to find all possible values for joined variables
-        foreach (ISet x in Sets)
+        foreach (var x in Sets)
         {
             var i = 0;
             foreach (var var in joinVars)
             {
-                INode value = x[var];
+                var value = x[var];
                 if (value != null)
                 {
-                    if (values[i].TryGetValue(value, out List<int> ids))
+                    if (values[i].TryGetValue(value, out var ids))
                     {
                         ids.Add(x.ID);
                     }
@@ -136,7 +136,7 @@ public abstract class BaseMultiset
         {
             // Use a serial join
             // Then do a pass over the RHS and work out the intersections
-            foreach (ISet y in other.Sets)
+            foreach (var y in other.Sets)
             {
                 EvalJoin(y, joinVars, values, nulls, joinedSet);
             }
@@ -150,7 +150,7 @@ public abstract class BaseMultiset
         var i = 0;
         foreach (var var in joinVars)
         {
-            INode value = y[var];
+            var value = y[var];
             if (value != null)
             {
                 if (values[i].ContainsKey(value))
@@ -216,13 +216,13 @@ public abstract class BaseMultiset
             // Do a serial Left Join Product
 
             // Calculate a Product filtering as we go
-            foreach (ISet x in Sets)
+            foreach (var x in Sets)
             {
                 var standalone = false;
                 var matched = false;
-                foreach (ISet y in other.Sets)
+                foreach (var y in other.Sets)
                 {
-                    ISet z = x.Join(y);
+                    var z = x.Join(y);
                     try
                     {
                         joinedSet.Add(z);
@@ -259,15 +259,15 @@ public abstract class BaseMultiset
             }
 
             // First do a pass over the RHS Result to find all possible values for joined variables
-            foreach (ISet y in other.Sets)
+            foreach (var y in other.Sets)
             {
                 var i = 0;
                 foreach (var var in joinVars)
                 {
-                    INode value = y[var];
+                    var value = y[var];
                     if (value != null)
                     {
-                        if (values[i].TryGetValue(value, out List<int> ids))
+                        if (values[i].TryGetValue(value, out var ids))
                         {
                             ids.Add(y.ID);
                         }
@@ -292,7 +292,7 @@ public abstract class BaseMultiset
             else
             {
                 // Use a Serial Left Join
-                foreach (ISet x in Sets)
+                foreach (var x in Sets)
                 {
                     EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr, expressionProcessor);
                 }
@@ -308,10 +308,10 @@ public abstract class BaseMultiset
         bool standalone = false, matched = false;
 
         var id = partitionedSet.GetNextBaseID();
-        foreach (ISet y in other.Sets)
+        foreach (var y in other.Sets)
         {
             id++;
-            ISet z = x.Join(y);
+            var z = x.Join(y);
             z.ID = id;
             try
             {
@@ -334,7 +334,7 @@ public abstract class BaseMultiset
         }
         if (standalone && !matched) {
             id++;
-            ISet z = x.Copy();
+            var z = x.Copy();
             z.ID = id;
             partitionedSet.Add(z);
         }
@@ -346,7 +346,7 @@ public abstract class BaseMultiset
         var i = 0;
         foreach (var var in joinVars)
         {
-            INode value = x[var];
+            var value = x[var];
             if (value != null)
             {
                 if (values[i].ContainsKey(value))
@@ -381,7 +381,7 @@ public abstract class BaseMultiset
         {
             if (other[poss].IsCompatibleWith(x, joinVars))
             {
-                ISet z = x.Join(other[poss]);
+                var z = x.Join(other[poss]);
                 joinedSet.Add(z);
                 try
                 {
@@ -460,15 +460,15 @@ public abstract class BaseMultiset
         }
 
         // First do a pass over the LHS Result to find all possible values for joined variables
-        foreach (ISet x in Sets)
+        foreach (var x in Sets)
         {
             var i = 0;
             foreach (var var in joinVars)
             {
-                INode value = x[var];
+                var value = x[var];
                 if (value != null)
                 {
-                    if (values[i].TryGetValue(value, out List<int> ids))
+                    if (values[i].TryGetValue(value, out var ids))
                     {
                         ids.Add(x.ID);
                     }
@@ -487,13 +487,13 @@ public abstract class BaseMultiset
 
         // Then do a pass over the RHS and work out the intersections
         var exists = new HashSet<int>();
-        foreach (ISet y in other.Sets)
+        foreach (var y in other.Sets)
         {
             IEnumerable<int> possMatches = null;
             var i = 0;
             foreach (var var in joinVars)
             {
-                INode value = y[var];
+                var value = y[var];
                 if (value != null)
                 {
                     if (values[i].ContainsKey(value))
@@ -543,7 +543,7 @@ public abstract class BaseMultiset
         else
         {
             // Otherwise iterate
-            foreach (ISet x in Sets)
+            foreach (var x in Sets)
             {
                 if (mustExist)
                 {
@@ -596,15 +596,15 @@ public abstract class BaseMultiset
         }
 
         // First do a pass over the LHS Result to find all possible values for joined variables
-        foreach (ISet x in Sets)
+        foreach (var x in Sets)
         {
             var i = 0;
             foreach (var var in joinVars)
             {
-                INode value = x[var];
+                var value = x[var];
                 if (value != null)
                 {
-                    if (values[i].TryGetValue(value, out List<int> ids))
+                    if (values[i].TryGetValue(value, out var ids))
                     {
                         ids.Add(x.ID);
                     }
@@ -623,13 +623,13 @@ public abstract class BaseMultiset
 
         // Then do a pass over the RHS and work out the intersections
         var toMinus = new HashSet<int>();
-        foreach (ISet y in other.Sets)
+        foreach (var y in other.Sets)
         {
             IEnumerable<int> possMatches = null;
             var i = 0;
             foreach (var var in joinVars)
             {
-                INode value = y[var];
+                var value = y[var];
                 if (value != null)
                 {
                     if (values[i].ContainsKey(value))
@@ -672,7 +672,7 @@ public abstract class BaseMultiset
         else
         {
             // Otherwise iterate
-            foreach (ISet x in Sets)
+            foreach (var x in Sets)
             {
                 if (!toMinus.Contains(x.ID))
                 {
@@ -716,9 +716,9 @@ public abstract class BaseMultiset
         {
             // Use serial calculation which is likely to really suck for big products
             var productSet = new Multiset();
-            foreach (ISet x in Sets)
+            foreach (var x in Sets)
             {
-                foreach (ISet y in other.Sets)
+                foreach (var y in other.Sets)
                 {
                     productSet.Add(x.Join(y));
                 }
@@ -730,10 +730,10 @@ public abstract class BaseMultiset
     private void EvalProduct(ISet x, BaseMultiset other, PartitionedMultiset productSet)
     {
         var id = productSet.GetNextBaseID();
-        foreach (ISet y in other.Sets)
+        foreach (var y in other.Sets)
         {
             id++;
-            ISet z = x.Join(y);
+            var z = x.Join(y);
             z.ID = id;
             productSet.Add(z);
         }
@@ -750,7 +750,7 @@ public abstract class BaseMultiset
         if (other is NullMultiset) return this;
         if (other.IsEmpty) return this;
 
-        foreach (ISet s in other.Sets)
+        foreach (var s in other.Sets)
         {
             Add(s.Copy());
         }

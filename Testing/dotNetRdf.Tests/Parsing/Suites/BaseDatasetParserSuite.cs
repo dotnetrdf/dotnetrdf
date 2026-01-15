@@ -69,14 +69,14 @@ public abstract class BaseDatasetParserSuite : BaseParserSuite<IStoreReader, Tri
             return false;
         }
 
-        foreach (IRefNode expectGraphName in expected.Graphs.GraphNames)
+        foreach (var expectGraphName in expected.Graphs.GraphNames)
         {
             if (!actual.HasGraph(expectGraphName))
             {
                 Console.WriteLine("Expected Graph {0} missing", expectGraphName);
                 return false;
             }
-            GraphDiffReport diff = expected[expectGraphName].Difference(actual[expectGraphName]);
+            var diff = expected[expectGraphName].Difference(actual[expectGraphName]);
             if (!diff.AreEqual)
             {
                 Console.WriteLine("Expected Graph {0} not as expected", expectGraphName);

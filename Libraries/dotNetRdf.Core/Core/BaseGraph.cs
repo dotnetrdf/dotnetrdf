@@ -589,11 +589,11 @@ public abstract class BaseGraph : IGraph
             // Prepare a mapping of Blank Nodes to Blank Nodes
             var mapping = new Dictionary<INode, IBlankNode>();
 
-            foreach (Triple t in g.Triples)
+            foreach (var t in g.Triples)
             {
-                INode s = MapBlankNode(t.Subject, mapping);
-                INode p = MapBlankNode(t.Predicate, mapping);
-                INode o = MapBlankNode(t.Object, mapping);
+                var s = MapBlankNode(t.Subject, mapping);
+                var p = MapBlankNode(t.Predicate, mapping);
+                var o = MapBlankNode(t.Object, mapping);
                 Assert(new Triple(s, p, o, t.Context));
             }
         }
@@ -615,8 +615,8 @@ public abstract class BaseGraph : IGraph
                         MapBlankNode(tn.Triple.Object, mapping)));
 
             case NodeType.Blank:
-                if (mapping.TryGetValue(node, out IBlankNode mapped)) return mapped;
-                IBlankNode tmp = CreateBlankNode();
+                if (mapping.TryGetValue(node, out var mapped)) return mapped;
+                var tmp = CreateBlankNode();
                 mapping.Add(node, tmp);
                 return tmp;
          
@@ -688,7 +688,7 @@ public abstract class BaseGraph : IGraph
     /// <returns></returns>
     public bool IsSubGraphOf(IGraph g)
     {
-        return IsSubGraphOf(g, out Dictionary<INode, INode> _);
+        return IsSubGraphOf(g, out var _);
     }
 
     /// <summary>
@@ -844,8 +844,8 @@ public abstract class BaseGraph : IGraph
     /// <param name="t">Triple.</param>
     protected void RaiseTripleAsserted(Triple t)
     {
-        TripleEventHandler d = TripleAsserted;
-        GraphEventHandler e = Changed;
+        var d = TripleAsserted;
+        var e = Changed;
         if (d != null || e != null)
         {
             var args = new TripleEventArgs(t, this);
@@ -870,7 +870,7 @@ public abstract class BaseGraph : IGraph
     /// <param name="args"></param>
     protected void RaiseTripleRetracted(TripleEventArgs args)
     {
-        TripleEventHandler d = TripleRetracted;
+        var d = TripleRetracted;
         args.Graph = this;
         d?.Invoke(this, args);
         RaiseGraphChanged(args);
@@ -882,8 +882,8 @@ public abstract class BaseGraph : IGraph
     /// <param name="t">Triple.</param>
     protected void RaiseTripleRetracted(Triple t)
     {
-        TripleEventHandler d = TripleRetracted;
-        GraphEventHandler e = Changed;
+        var d = TripleRetracted;
+        var e = Changed;
         if (d != null || e != null)
         {
             var args = new TripleEventArgs(t, this, false);
@@ -915,7 +915,7 @@ public abstract class BaseGraph : IGraph
     /// <returns>True if the operation can continue, false if it should be aborted.</returns>
     protected bool RaiseClearRequested()
     {
-        CancellableGraphEventHandler d = ClearRequested;
+        var d = ClearRequested;
         if (d != null)
         {
             var args = new CancellableGraphEventArgs(this);
@@ -942,7 +942,7 @@ public abstract class BaseGraph : IGraph
     /// <returns>True if the operation can continue, false if it should be aborted.</returns>
     protected bool RaiseMergeRequested()
     {
-        CancellableGraphEventHandler d = MergeRequested;
+        var d = MergeRequested;
         if (d != null)
         {
             var args = new CancellableGraphEventArgs(this);

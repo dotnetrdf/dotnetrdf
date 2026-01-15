@@ -139,7 +139,7 @@ public abstract class BaseRdfAEvent
         : base(eventType, pos)
     {
         _attributes = [];
-        foreach (KeyValuePair<string, string> attr in attributes)
+        foreach (var attr in attributes)
         {
             _attributes.Add(attr.Key, attr.Value);
         }

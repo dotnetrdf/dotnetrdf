@@ -219,7 +219,7 @@ public abstract class BaseQuadDataset
     {
         get 
         {
-            foreach (IRefNode name in DefaultGraphNames)
+            foreach (var name in DefaultGraphNames)
             {
                 if (name == null) yield return null;
                 if (name is IUriNode uriNode) yield return uriNode.Uri;
@@ -255,7 +255,7 @@ public abstract class BaseQuadDataset
     {
         get 
         {
-            foreach (IRefNode name in ActiveGraphNames)
+            foreach (var name in ActiveGraphNames)
             {
                 if (name == null) yield return null;
                 if (name is IUriNode uriNode) yield return uriNode.Uri;
@@ -321,7 +321,7 @@ public abstract class BaseQuadDataset
     public virtual bool AddGraph(IGraph g)
     {
         var added = false;
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             added = AddQuad(g.Name, t) || added;
         }

@@ -67,8 +67,8 @@ public abstract class BaseOperator
     /// <param name="context">Serialization Context.</param>
     public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode op = context.NextSubject;
-        INode opClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlOperator));
+        var op = context.NextSubject;
+        var opClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlOperator));
 
         context.Graph.Assert(op, context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType)), opClass);
         context.Graph.Assert(op, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType)), context.Graph.CreateLiteralNode(GetType().AssemblyQualifiedName));

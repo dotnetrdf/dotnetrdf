@@ -279,16 +279,16 @@ public abstract class BaseEndpoint
     {
         if (Credentials != null && UseCredentialsForProxy)
         {
-            INode useCreds = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy));
+            var useCreds = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy));
             context.Graph.Assert(new Triple(endpoint, useCreds, UseCredentialsForProxy.ToLiteral(context.Graph)));
         }
         if (Proxy is WebProxy webProxy)
         {
-            INode proxy = context.NextSubject;
-            INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode usesProxy = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyProxy));
-            INode proxyType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassProxy));
-            INode server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
+            var proxy = context.NextSubject;
+            var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+            var usesProxy = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyProxy));
+            var proxyType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassProxy));
+            var server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
 
             context.Graph.Assert(new Triple(endpoint, usesProxy, proxy));
             context.Graph.Assert(new Triple(proxy, rdfType, proxyType));
@@ -351,9 +351,9 @@ public abstract class BaseEndpoint
     {
         if (Credentials != null || Proxy != null)
         {
-            INode endpoint = context.NextSubject;
-            INode user = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUser));
-            INode pwd = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPassword));
+            var endpoint = context.NextSubject;
+            var user = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUser));
+            var pwd = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPassword));
 
             if (Credentials != null)
             {

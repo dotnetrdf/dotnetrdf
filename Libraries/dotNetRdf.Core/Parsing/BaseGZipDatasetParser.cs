@@ -154,7 +154,7 @@ public abstract class BaseGZipDatasetParser
     /// <param name="message">Warning Message.</param>
     private void RaiseWarning(string message)
     {
-        StoreReaderWarning d = Warning;
+        var d = Warning;
         if (d != null) d(message);
     }
 

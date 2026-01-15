@@ -205,7 +205,7 @@ public abstract class BaseGraphLiteralNode
         output.Append("{");
 
         // Add all the Triples in the sub-graph
-        foreach (Triple t in SubGraph.Triples)
+        foreach (var t in SubGraph.Triples)
         {
             output.Append(t);
         }

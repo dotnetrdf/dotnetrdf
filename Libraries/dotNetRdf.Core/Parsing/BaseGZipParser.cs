@@ -196,7 +196,7 @@ public abstract class BaseGZipParser
     /// <param name="message"></param>
     private void RaiseWarning(string message)
     {
-        RdfReaderWarning d = Warning;
+        var d = Warning;
         if (d != null) d(message);
     }
 
