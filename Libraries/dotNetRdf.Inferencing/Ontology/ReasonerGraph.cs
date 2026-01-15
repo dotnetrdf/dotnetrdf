@@ -79,7 +79,7 @@ public class ReasonerGraph
     private void Initialise()
     {
         // Apply the reasoners
-        foreach (IInferenceEngine reasoner in _reasoners)
+        foreach (var reasoner in _reasoners)
         {
             reasoner.Apply(_baseGraph, this);
         }

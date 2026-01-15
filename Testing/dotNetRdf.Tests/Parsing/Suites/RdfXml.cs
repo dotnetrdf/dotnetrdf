@@ -74,7 +74,7 @@ public class RdfXmlDomParser
     [Fact]
     public void ParsingRdfXmlIDsDom()
     {
-        IGraph g = new Graph
+        var g = new Graph
         {
             BaseUri = BaseUri
         };
@@ -119,7 +119,7 @@ public class RdfXmlStreamingParser
     [Fact]
     public void ParsingRdfXmlIDsStreaming()
     {
-        IGraph g = new Graph
+        var g = new Graph
         {
             BaseUri = BaseUri
         };

@@ -64,7 +64,7 @@ public class RegexFunction
         if (pattern is ConstantTerm constantPattern)
         {
             // If the Pattern is a Node Expression Term then it is a fixed Pattern
-            INode n = constantPattern.Node;
+            var n = constantPattern.Node;
             if (n.NodeType == NodeType.Literal)
             {
                 // Try to parse as a Regular Expression
@@ -145,7 +145,7 @@ public class RegexFunction
     public  static RegexOptions GetOptions(INode n, bool throwErrors)
     {
         // Start by resetting to no options
-        RegexOptions options = RegexOptions.None;
+        var options = RegexOptions.None;
 
         if (n == null)
         {

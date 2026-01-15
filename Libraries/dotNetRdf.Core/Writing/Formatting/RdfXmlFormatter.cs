@@ -214,7 +214,7 @@ public class RdfXmlFormatter
         switch (t.Predicate.NodeType)
         {
             case NodeType.Uri:
-                Uri u = ((IUriNode)t.Predicate).Uri;
+                var u = ((IUriNode)t.Predicate).Uri;
                 GetQName(u, out qName, out var ns);
                 output.Append('\t');
                 if (ns.Equals(string.Empty))

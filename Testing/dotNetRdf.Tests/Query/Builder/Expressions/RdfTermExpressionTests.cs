@@ -44,10 +44,10 @@ public class SparqlExpressionTests
     public void CanCreateInFunction()
     {
         // given
-        SparqlExpression rdfTerm = new TestingSparqlExpression(new VariableTerm("x"));
+        var rdfTerm = new TestingSparqlExpression(new VariableTerm("x"));
 
         // when
-        BooleanExpression expression = rdfTerm.In();
+        var expression = rdfTerm.In();
 
         // then
         Assert.True(expression.Expression is InFunction);

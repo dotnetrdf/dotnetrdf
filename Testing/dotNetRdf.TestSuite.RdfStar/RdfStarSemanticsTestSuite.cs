@@ -55,7 +55,7 @@ public class RdfStarSemanticsTestSuite : RdfTestSuite
         IGraph resultGraph = new Graph();
         resultGraph.LoadFromFile(resultPath, new TurtleParser(TurtleSyntax.Rdf11Star, false));
 
-        SparqlQuery query = MakeEntailmentQuery(resultGraph);
+        var query = MakeEntailmentQuery(resultGraph);
         var queryResult = inputGraph.ExecuteQuery(query) as SparqlResultSet;
         Assert.NotNull(queryResult);
         if (expectEntailment)
@@ -71,7 +71,7 @@ public class RdfStarSemanticsTestSuite : RdfTestSuite
     [Fact]
     public void RunSingle()
     {
-        ManifestTestData testData =
+        var testData =
             RdfStarSemantics.GetTestData(
                 new Uri("https://w3c.github.io/rdf-star/tests/semantics#constrained-bnodes-in-quoted-object"));
         InvokeTestRunner(testData);
@@ -82,7 +82,7 @@ public class RdfStarSemanticsTestSuite : RdfTestSuite
         var builder = new StringBuilder();
         var formatter = new SparqlFormatter();
         builder.Append("ASK WHERE {\n");
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             builder.Append(formatter.Format(MapNode(t.Subject)));
             builder.Append(" ");

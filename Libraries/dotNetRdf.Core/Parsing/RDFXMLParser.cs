@@ -342,7 +342,7 @@ public class RdfXmlParser
     /// <param name="warning">Warning Message.</param>
     private void RaiseWarning(string warning)
     {
-        RdfReaderWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(warning);
@@ -401,7 +401,7 @@ public class RdfXmlParser
     private void ProcessEventQueue(RdfXmlParserContext context)
     {
         // Get First Event
-        IRdfXmlEvent first = context.Events.Dequeue();
+        var first = context.Events.Dequeue();
         var setBaseUri = (context.BaseUri == null);
         Uri baseUri;
 
@@ -510,7 +510,7 @@ public class RdfXmlParser
         GrammarProductionNodeElementList(context, subevents);
 
         // Next Event in queue should be an EndElementEvent or we Error
-        IRdfXmlEvent next = context.Events.Dequeue();
+        var next = context.Events.Dequeue();
         if (next is not EndElementEvent)
         {
             throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', an EndElementEvent was expected", "RDF", element);
@@ -577,7 +577,7 @@ public class RdfXmlParser
         }
 
         // Get First Event in the Queue
-        IRdfXmlEvent first = eventlist.Dequeue();
+        var first = eventlist.Dequeue();
 
         // Check it's an ElementEvent
         if (first is not ElementEvent)
@@ -599,7 +599,7 @@ public class RdfXmlParser
         // Check the set of Attributes is Valid
         var limitedAttributesFound = 0;
         var ID = string.Empty;
-        foreach (AttributeEvent attr in element.Attributes)
+        foreach (var attr in element.Attributes)
         {
             if (RdfXmlSpecsHelper.IsIDAttribute(attr, context.Namespaces))
             {
@@ -709,7 +709,7 @@ public class RdfXmlParser
         }
 
         // Go back over Attributes looking for property attributes
-        foreach (AttributeEvent attr in element.Attributes)
+        foreach (var attr in element.Attributes)
         {
             if (RdfXmlSpecsHelper.IsPropertyAttribute(attr, context.Namespaces))
             {
@@ -760,7 +760,7 @@ public class RdfXmlParser
         if (children.Count > 0) GrammarProductionPropertyElementList(context, children, element);
 
         // Check Last Event in queue is an EndElement event
-        IRdfXmlEvent last = eventlist.Dequeue();
+        var last = eventlist.Dequeue();
         if (last is not EndElementEvent)
         {
             throw ParserHelper.Error("Unexpected Event '" + last.GetType() + "', expected an EndElement Event", "NodeElement", last);
@@ -829,7 +829,7 @@ public class RdfXmlParser
         }
 
         // Get first thing from the Queue
-        IRdfXmlEvent first = eventlist.Dequeue();
+        var first = eventlist.Dequeue();
         ElementEvent element;
 
         // Must be an ElementEvent
@@ -854,12 +854,12 @@ public class RdfXmlParser
         // List Expansion
         if (RdfXmlSpecsHelper.IsLiElement(element, context.Namespaces))
         {
-            UriReferenceEvent u = ListExpand(parent, context.Namespaces);
+            var u = ListExpand(parent, context.Namespaces);
             element.SetUri(u, context.Namespaces);
         }
 
         // Need to select what to do based on the Type of Property Element
-        IRdfXmlEvent next = eventlist.Peek();
+        var next = eventlist.Peek();
 
         // This call inserts the first element back at the head of the queue
         // Most of the sub-productions here need this
@@ -939,8 +939,8 @@ public class RdfXmlParser
         // Cast to an ElementEvent
         // We don't validate type here since we know this will be an ElementEvent because the calling function
         // will have done this validation previously
-        IRdfXmlEvent first = eventlist.Dequeue();
-        IRdfXmlEvent next = eventlist.Peek();
+        var first = eventlist.Dequeue();
+        var next = eventlist.Peek();
         var element = (ElementEvent)first;
         if (_traceparsing) ProductionTracePartial(element);
 
@@ -980,7 +980,7 @@ public class RdfXmlParser
         GrammarProductionNodeElement(context, subevents);
 
         // Check Last is an EndElementEvent
-        IRdfXmlEvent last = eventlist.Dequeue();
+        var last = eventlist.Dequeue();
         if (last is not EndElementEvent)
         {
             throw ParserHelper.Error("Unexpected Event '" + last.GetType() + "', expected an EndElement Event", last);
@@ -1021,9 +1021,9 @@ public class RdfXmlParser
             // Must be an rdf:ID attribute as we've validated this earlier
 
             // Get the Attribute Event and generate a Uri from it
-            AttributeEvent attr = element.Attributes.First();
+            var attr = element.Attributes.First();
             var uriref = new UriReferenceEvent("#" + attr.Value, attr.SourceXml);
-            IUriNode uri = Resolve(context, uriref, element.BaseUri);
+            var uri = Resolve(context, uriref, element.BaseUri);
 
             Reify(context, uri, subj, pred, obj);
         }
@@ -1081,7 +1081,7 @@ public class RdfXmlParser
         else
         {
             // Only rdf:ID and rdf:datatype allowed
-            foreach (AttributeEvent a in element.Attributes)
+            foreach (var a in element.Attributes)
             {
                 if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces)) {
                     ID = "#" + a.Value;
@@ -1132,7 +1132,7 @@ public class RdfXmlParser
 
             // Resolve the Datatype Uri
             var dtref = new UriReferenceEvent(datatype, string.Empty);
-            IUriNode dturi = Resolve(context, dtref, element.BaseUri);
+            var dturi = Resolve(context, dtref, element.BaseUri);
 
             obj = context.Handler.CreateLiteralNode(text.Value, dturi.Uri);
         }
@@ -1145,7 +1145,7 @@ public class RdfXmlParser
         {
             // Resolve the Uri
             var uriref = new UriReferenceEvent(ID, string.Empty);
-            IUriNode uri = Resolve(context, uriref,element.BaseUri);
+            var uri = Resolve(context, uriref,element.BaseUri);
 
             Reify(context, uri, subj, pred, obj);
         }
@@ -1170,7 +1170,7 @@ public class RdfXmlParser
 
         // Get the first Event, should be an ElementEvent
         // Type checking is done by the Parent Production
-        IRdfXmlEvent first = eventlist.Dequeue();
+        var first = eventlist.Dequeue();
         var element = (ElementEvent)first;
         if (_traceparsing) ProductionTracePartial(element);
 
@@ -1187,7 +1187,7 @@ public class RdfXmlParser
         else
         {
             // Check the attributes that do exist
-            foreach (AttributeEvent a in element.Attributes)
+            foreach (var a in element.Attributes)
             {
                 if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces))
                 {
@@ -1207,7 +1207,7 @@ public class RdfXmlParser
 
         // Get the next event in the Queue which should be a TypedLiteralEvent
         // Validate this
-        IRdfXmlEvent lit = eventlist.Dequeue();
+        var lit = eventlist.Dequeue();
         if (lit is not TypedLiteralEvent)
         {
             throw ParserHelper.Error("Unexpected Event '" + lit.GetType() + "', expected a TypedLiteralEvent after a Property Element with Parse Type 'Literal'", "Parse Type Literal Property Element", lit);
@@ -1242,13 +1242,13 @@ public class RdfXmlParser
         {
             // Resolve the Uri
             var uriref = new UriReferenceEvent(ID, string.Empty);
-            IUriNode uri = Resolve(context, uriref,element.BaseUri);
+            var uri = Resolve(context, uriref,element.BaseUri);
 
             Reify(context, uri, subj, pred, obj);
         }
 
         // Check for the last thing being an EndElement Event
-        IRdfXmlEvent next = eventlist.Dequeue();
+        var next = eventlist.Dequeue();
         if (next is not EndElementEvent)
         {
             throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an EndElementEvent to terminate a Parse Type Literal Property Element!", "Parse Type Literal Property Element", next);
@@ -1274,7 +1274,7 @@ public class RdfXmlParser
 
         // Get the first Event, should be an ElementEvent
         // Type checking is done by the Parent Production
-        IRdfXmlEvent first = eventlist.Dequeue();
+        var first = eventlist.Dequeue();
         var element = (ElementEvent)first;
         if (_traceparsing) ProductionTracePartial(element);
 
@@ -1291,7 +1291,7 @@ public class RdfXmlParser
         else
         {
             // Check the attributes that do exist
-            foreach (AttributeEvent a in element.Attributes)
+            foreach (var a in element.Attributes)
             {
                 if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces))
                 {
@@ -1336,14 +1336,14 @@ public class RdfXmlParser
         {
             // Resolve the Uri
             var uriref = new UriReferenceEvent(ID, string.Empty);
-            IUriNode uri = Resolve(context, uriref,element.BaseUri);
+            var uri = Resolve(context, uriref,element.BaseUri);
 
             Reify(context, uri, subj, pred, obj);
         }
 
         // Get the next event in the Queue which should be either an Element Event or a End Element Event
         // Validate this
-        IRdfXmlEvent next = eventlist.Dequeue();
+        var next = eventlist.Dequeue();
         if (next is EndElementEvent)
         {
             // Content is Empty so nothing else to do
@@ -1409,7 +1409,7 @@ public class RdfXmlParser
 
         // Get the first Event, should be an ElementEvent
         // Type checking is done by the Parent Production
-        IRdfXmlEvent first = eventlist.Dequeue();
+        var first = eventlist.Dequeue();
         var element = (ElementEvent)first;
         if (_traceparsing) ProductionTracePartial(element);
 
@@ -1426,7 +1426,7 @@ public class RdfXmlParser
         else
         {
             // Check the attributes that do exist
-            foreach (AttributeEvent a in element.Attributes)
+            foreach (var a in element.Attributes)
             {
                 if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces))
                 {
@@ -1521,7 +1521,7 @@ public class RdfXmlParser
             {
                 // Resolve the Uri
                 var uriref = new UriReferenceEvent(ID, string.Empty);
-                IUriNode uri = Resolve(context, uriref, element.BaseUri);
+                var uri = Resolve(context, uriref, element.BaseUri);
 
                 Reify(context, uri, subj, pred, b1);
             }
@@ -1565,7 +1565,7 @@ public class RdfXmlParser
             {
                 // Resolve the Uri
                 var uriref = new UriReferenceEvent(ID, string.Empty);
-                IUriNode uri = Resolve(context, uriref, element.BaseUri);
+                var uri = Resolve(context, uriref, element.BaseUri);
 
                 Reify(context, uri, subj, pred, obj);
             }
@@ -1635,7 +1635,7 @@ public class RdfXmlParser
 
                 // Resolve the Uri
                 var uriref = new UriReferenceEvent("#" + element.Attributes[0].Value, string.Empty);
-                IUriNode uri = Resolve(context, uriref, element.BaseUri);
+                var uri = Resolve(context, uriref, element.BaseUri);
 
                 Reify(context, uri, subj, pred, obj);
             }
@@ -1659,7 +1659,7 @@ public class RdfXmlParser
             // Check through attributes to decide the Subject of the Triple(s)
             var ID = string.Empty;
             var limitedAttributes = 0;
-            foreach (AttributeEvent a in element.Attributes)
+            foreach (var a in element.Attributes)
             {
                 if (RdfXmlSpecsHelper.IsResourceAttribute(a, context.Namespaces))
                 {
@@ -1742,13 +1742,13 @@ public class RdfXmlParser
             {
                 // Resolve the Uri
                 var uriref = new UriReferenceEvent(ID, string.Empty);
-                IUriNode uri = Resolve(context, uriref, element.BaseUri);
+                var uri = Resolve(context, uriref, element.BaseUri);
 
                 Reify(context, uri, parentEl.SubjectNode, pred, subj);
             }
 
             // Process the rest of the Attributes
-            foreach (AttributeEvent a in element.Attributes)
+            foreach (var a in element.Attributes)
             {
                 if (RdfXmlSpecsHelper.IsTypeAttribute(a, context.Namespaces))
                 {
@@ -1818,11 +1818,11 @@ public class RdfXmlParser
         context.Namespaces.IncrementNesting();
         if (!evt.BaseUri.Equals(string.Empty))
         {
-            Uri baseUri = context.UriFactory.Create(Tools.ResolveUri(evt.BaseUri, context.BaseUri?.AbsoluteUri ?? ""));
+            var baseUri = context.UriFactory.Create(Tools.ResolveUri(evt.BaseUri, context.BaseUri?.AbsoluteUri ?? ""));
             context.BaseUri = baseUri;
             if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
         }
-        foreach (NamespaceAttributeEvent ns in evt.NamespaceAttributes)
+        foreach (var ns in evt.NamespaceAttributes)
         {
             if (!context.Namespaces.HasNamespace(ns.Prefix) || !context.Namespaces.GetNamespaceUri(ns.Prefix).AbsoluteUri.Equals(ns.Uri))
             {
@@ -1851,7 +1851,7 @@ public class RdfXmlParser
             if (baseUri.Equals(string.Empty)) baseUri = context.BaseUri?.AbsoluteUri ?? "";
             if (string.Empty.Equals(uriref.Identifier))
                 baseUri = Tools.StripUriFragment(context.UriFactory.Create(baseUri))?.AbsoluteUri ?? "";
-            IUriNode u = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(uriref.Identifier, baseUri)));
+            var u = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(uriref.Identifier, baseUri)));
             return u;
         }
         catch (Exception ex)
@@ -1866,7 +1866,7 @@ public class RdfXmlParser
     {
         try
         {
-            IUriNode u = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveQName(el.QName, context.Namespaces, null)));
+            var u = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveQName(el.QName, context.Namespaces, null)));
             return u;
         }
         catch (Exception ex)
@@ -1906,7 +1906,7 @@ public class RdfXmlParser
             temp.Push(eventlist.Dequeue());
         }
 
-        foreach (IRdfXmlEvent e in temp.Reverse())
+        foreach (var e in temp.Reverse())
         {
             eventlist.Enqueue(e);
         }

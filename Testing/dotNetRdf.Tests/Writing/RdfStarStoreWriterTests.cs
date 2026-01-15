@@ -54,8 +54,8 @@ public abstract class RdfStarStoreWriterTests
     {
         var store = new TripleStore();
         var stringWriter = new System.IO.StringWriter();
-        IStoreWriter writer = GetWriter();
-        IStoreReader reader = GetReader();
+        var writer = GetWriter();
+        var reader = GetReader();
 
         store.LoadFromString(input, new NQuadsParser(NQuadsSyntax.Rdf11Star));
         writer.Save(store, stringWriter);

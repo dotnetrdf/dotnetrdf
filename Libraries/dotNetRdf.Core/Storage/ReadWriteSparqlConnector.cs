@@ -241,7 +241,7 @@ public class ReadWriteSparqlConnector
         updates.AppendLine("{");
 
         // Serialize triples
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             updates.AppendLine(" " + _formatter.Format(t));
         }
@@ -288,7 +288,7 @@ public class ReadWriteSparqlConnector
                 updates.AppendLine("{");
 
                 // Serialize triples
-                foreach (Triple t in additions)
+                foreach (var t in additions)
                 {
                     updates.AppendLine(" " + _formatter.Format(t));
                 }
@@ -313,7 +313,7 @@ public class ReadWriteSparqlConnector
                 }
 
                 // Serialize triples
-                foreach (Triple t in removals)
+                foreach (var t in removals)
                 {
                     if (!t.IsGroundTriple) throw new RdfStorageException("The ReadWriteSparqlConnector does not support the deletion of blank node containing triples");
                     updates.AppendLine("  " + _formatter.Format(t));
@@ -364,7 +364,7 @@ public class ReadWriteSparqlConnector
     public override void SerializeConfiguration(ConfigurationSerializationContext context)
     {
         // Call base SerializeConfiguration() first
-        INode manager = context.NextSubject;
+        var manager = context.NextSubject;
         context.NextSubject = manager;
         base.SerializeConfiguration(context);
         context.NextSubject = manager;
@@ -374,8 +374,8 @@ public class ReadWriteSparqlConnector
             // Use the indirect serialization method
 
             // Serialize the Endpoints Configuration
-            INode endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint));
-            INode endpointObj = context.Graph.CreateBlankNode();
+            var endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint));
+            var endpointObj = context.Graph.CreateBlankNode();
             context.NextSubject = endpointObj;
             UpdateClient.SerializeConfiguration(context);
 
@@ -387,8 +387,8 @@ public class ReadWriteSparqlConnector
             // Use the indirect serialization method
 
             // Serialize the Endpoints Configuration
-            INode endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint));
-            INode endpointObj = context.Graph.CreateBlankNode();
+            var endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint));
+            var endpointObj = context.Graph.CreateBlankNode();
             context.NextSubject = endpointObj;
             ((IConfigurationSerializable)_updateEndpoint).SerializeConfiguration(context);
 
@@ -398,7 +398,7 @@ public class ReadWriteSparqlConnector
         else
         {
             // Use the direct serialization method
-            INode endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
+            var endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
 
             context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(_endpoint.Uri.AbsoluteUri)));
         }

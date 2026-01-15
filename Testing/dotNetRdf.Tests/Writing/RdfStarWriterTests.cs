@@ -44,8 +44,8 @@ public abstract class RdfStarWriterTests
     {
         var g = new Graph();
         var stringWriter = new System.IO.StringWriter();
-        IRdfWriter writer = GetWriter();
-        IRdfReader reader = GetReader();
+        var writer = GetWriter();
+        var reader = GetReader();
 
         g.LoadFromString(input, new NTriplesParser(NTriplesSyntax.Rdf11Star));
         g.NamespaceMap.AddNamespace("ex", UriFactory.Root.Create("http://example.org/"));
@@ -57,7 +57,7 @@ public abstract class RdfStarWriterTests
         h.LoadFromString(stringWriter.ToString(), reader);
         
         var comparer = new GraphDiff();
-        GraphDiffReport report = comparer.Difference(g, h);
+        var report = comparer.Difference(g, h);
         TestTools.ShowDifferences(report);
         report.AreEqual.Should().Be(true);
     }

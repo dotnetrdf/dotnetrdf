@@ -231,7 +231,7 @@ public static class RdfXmlSpecsHelper
     {
         if (nsMapper.HasNamespace(e.Namespace))
         {
-            Uri nsUri = nsMapper.GetNamespaceUri(e.Namespace);
+            var nsUri = nsMapper.GetNamespaceUri(e.Namespace);
             // Not allowed to be a Core Syntax Term, rdf:Description or an Old Syntax Term
             if (IsCoreSyntaxTerm(nsUri, e.LocalName) ||
                 IsOldTerm(nsUri, e.LocalName) ||

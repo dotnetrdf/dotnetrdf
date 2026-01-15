@@ -46,7 +46,7 @@ namespace VDS.RDF.Parsing;
             new RdfXmlWriter(),
             new PrettyRdfXmlWriter()
         };
-        IRdfReader parser = new RdfXmlParser();
+        var parser = new RdfXmlParser();
 
         var g = new Graph
         {
@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing;
         g.Assert(new Triple(g.CreateUriNode(), g.CreateUriNode(new Uri("http://example.org/property")), g.CreateUriNode(new Uri("http://example.org/a&b"))));
         g.Assert(new Triple(g.CreateUriNode(), g.CreateUriNode(new Uri("http://example.org/property")), g.CreateLiteralNode("A & B")));
 
-        foreach (IRdfWriter writer in writers)
+        foreach (var writer in writers)
         {
                 Console.WriteLine(writer.GetType().ToString());
                 var temp = StringWriter.Write(g, writer);
@@ -145,7 +145,7 @@ namespace VDS.RDF.Parsing;
     [Fact]
     public void ParsingRdfXmlStreamingDoesNotExhaustMemory()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         var graphHandler = new GraphHandler(g);
         var paging = new PagingHandler(graphHandler, 1000);
         var counter = new CountHandler();
@@ -163,7 +163,7 @@ namespace VDS.RDF.Parsing;
     [Fact]
     public void ParsingRdfXmlStackOverflow1()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         var parser = new RdfXmlParser();
         parser.Load(g, Path.Combine("resources", "cogapp.rdf"));
 
@@ -192,7 +192,7 @@ namespace VDS.RDF.Parsing;
     [Fact]
     public void ParsingRdfXmlResetDefaultNamespace()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         var parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
         parser.Load(g, Path.Combine("resources", "rdfxml-defaultns-scope.xml"));
         var resourceNode = g.CreateUriNode(UriFactory.Root.Create("http://example.org/thing/1"));
@@ -260,7 +260,7 @@ namespace VDS.RDF.Parsing;
 
         Console.WriteLine("DOM Parser parsed OK");
 
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             Console.WriteLine(t.ToString(formatter));
         }
@@ -272,7 +272,7 @@ namespace VDS.RDF.Parsing;
 
         Console.WriteLine("Streaming Parser parsed OK");
 
-        foreach (Triple t in h.Triples)
+        foreach (var t in h.Triples)
         {
             Console.WriteLine(t.ToString(formatter));
         }
@@ -289,7 +289,7 @@ namespace VDS.RDF.Parsing;
         var g = new Graph();
         domParser.Load(g, Path.Combine("resources", "urlencodes-in-rdfxml.rdf"));
 
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             Console.WriteLine(t.ToString(formatter));
         }
@@ -299,12 +299,12 @@ namespace VDS.RDF.Parsing;
 
         Assert.False(EqualityHelper.AreUrisEqual(encoded, unencoded), "URIs should not be equivalent because %40 encodes a reserved character and per RFC 3986 decoding this can change the meaning of the URI");
 
-        IUriNode encodedNode = g.GetUriNode(encoded);
+        var encodedNode = g.GetUriNode(encoded);
         Assert.NotNull(encodedNode);
-        IUriNode unencodedNode = g.GetUriNode(unencoded);
+        var unencodedNode = g.GetUriNode(unencoded);
         Assert.NotNull(unencodedNode);
 
-        IUriNode pred = g.CreateUriNode(new Uri("http://example.org/schema/encoded"));
+        var pred = g.CreateUriNode(new Uri("http://example.org/schema/encoded"));
         Assert.True(g.ContainsTriple(new Triple(encodedNode, pred, g.CreateLiteralNode("true"))), "The encoded node should have the property 'true' from the file");
         Assert.True(g.ContainsTriple(new Triple(unencodedNode, pred, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
     }
@@ -321,12 +321,12 @@ namespace VDS.RDF.Parsing;
         var encoded = new Uri("http://example.com/some%20encoded%2FUri");
         var unencoded = new Uri("http://example.com/some encoded/Uri");
 
-        IUriNode encodedNode = g.GetUriNode(encoded);
+        var encodedNode = g.GetUriNode(encoded);
         Assert.NotNull(encodedNode);
-        IUriNode unencodedNode = g.GetUriNode(unencoded);
+        var unencodedNode = g.GetUriNode(unencoded);
         Assert.NotNull(unencodedNode);
 
-        IUriNode pred = g.CreateUriNode(new Uri("http://example.org/schema/encoded"));
+        var pred = g.CreateUriNode(new Uri("http://example.org/schema/encoded"));
         Assert.True(g.ContainsTriple(new Triple(encodedNode, pred, g.CreateLiteralNode("true"))), "The encoded node should have the property 'true' from the file");
         Assert.True(g.ContainsTriple(new Triple(unencodedNode, pred, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
 

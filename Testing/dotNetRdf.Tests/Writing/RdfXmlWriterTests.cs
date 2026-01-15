@@ -57,7 +57,7 @@ public class RdfXmlWriterTests
 
     private void CheckRoundTrip(IGraph g, IEnumerable<Type> exceptions)
     {
-        foreach (IRdfWriter writer in _writers)
+        foreach (var writer in _writers)
         {
             _output.WriteLine("Checking round trip with " + writer.GetType().Name);
             var strWriter = new System.IO.StringWriter();
@@ -107,13 +107,13 @@ public class RdfXmlWriterTests
     private void CheckFailure(IGraph g)
     {
         _output.WriteLine("Original Triples:");
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             _output.WriteLine(t.ToString(_formatter));
         }
         _output.WriteLine(string.Empty);
 
-        foreach (IRdfWriter writer in _writers)
+        foreach (var writer in _writers)
         {
             _output.WriteLine("Checking for Failure with " + writer.GetType().Name);
             var failed = false;
@@ -140,9 +140,9 @@ public class RdfXmlWriterTests
     public void WritingRdfXmlLiteralsWithLanguageTags()
     {
         var g = new Graph();
-        INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
-        INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
-        INode o = g.CreateLiteralNode("string", "en");
+        var s = g.CreateUriNode(new Uri("http://example.org/subject"));
+        var p = g.CreateUriNode(new Uri("http://example.org/predicate"));
+        var o = g.CreateLiteralNode("string", "en");
         g.Assert(s, p, o);
 
         CheckRoundTrip(g);
@@ -152,9 +152,9 @@ public class RdfXmlWriterTests
     public void WritingRdfXmlLiteralsWithReservedCharacters()
     {
         var g = new Graph();
-        INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
-        INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
-        INode o = g.CreateLiteralNode("<tag>");
+        var s = g.CreateUriNode(new Uri("http://example.org/subject"));
+        var p = g.CreateUriNode(new Uri("http://example.org/predicate"));
+        var o = g.CreateLiteralNode("<tag>");
         g.Assert(s, p, o);
 
         CheckRoundTrip(g);
@@ -164,9 +164,9 @@ public class RdfXmlWriterTests
     public void WritingRdfXmlLiteralsWithReservedCharacters2()
     {
         var g = new Graph();
-        INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
-        INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
-        INode o = g.CreateLiteralNode("&lt;tag>");
+        var s = g.CreateUriNode(new Uri("http://example.org/subject"));
+        var p = g.CreateUriNode(new Uri("http://example.org/predicate"));
+        var o = g.CreateLiteralNode("&lt;tag>");
         g.Assert(s, p, o);
 
         CheckRoundTrip(g, [typeof(PrettyRdfXmlWriter)]);
@@ -176,9 +176,9 @@ public class RdfXmlWriterTests
     public void WritingRdfXmlLiteralsWithReservedCharacters3()
     {
         var g = new Graph();
-        INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
-        INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
-        INode o = g.CreateLiteralNode("string", new Uri("http://example.org/object?a=b&c=d"));
+        var s = g.CreateUriNode(new Uri("http://example.org/subject"));
+        var p = g.CreateUriNode(new Uri("http://example.org/predicate"));
+        var o = g.CreateLiteralNode("string", new Uri("http://example.org/object?a=b&c=d"));
         g.Assert(s, p, o);
 
         CheckRoundTrip(g);
@@ -188,9 +188,9 @@ public class RdfXmlWriterTests
     public void WritingRdfXmlLiterals()
     {
         var g = new Graph();
-        INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
-        INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
-        INode o = g.CreateLiteralNode("<tag />", new Uri(RdfSpecsHelper.RdfXmlLiteral));
+        var s = g.CreateUriNode(new Uri("http://example.org/subject"));
+        var p = g.CreateUriNode(new Uri("http://example.org/predicate"));
+        var o = g.CreateLiteralNode("<tag />", new Uri(RdfSpecsHelper.RdfXmlLiteral));
         g.Assert(s, p, o);
 
         CheckRoundTrip(g);
@@ -200,9 +200,9 @@ public class RdfXmlWriterTests
     public void WritingRdfXmlLiterals2()
     {
         var g = new Graph();
-        INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
-        INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
-        INode o = g.CreateLiteralNode("<tag>this &amp; that</tag>", new Uri(RdfSpecsHelper.RdfXmlLiteral));
+        var s = g.CreateUriNode(new Uri("http://example.org/subject"));
+        var p = g.CreateUriNode(new Uri("http://example.org/predicate"));
+        var o = g.CreateLiteralNode("<tag>this &amp; that</tag>", new Uri(RdfSpecsHelper.RdfXmlLiteral));
         g.Assert(s, p, o);
 
         CheckRoundTrip(g);
@@ -212,9 +212,9 @@ public class RdfXmlWriterTests
     public void WritingRdfXmlUrisWithReservedCharacters()
     {
         var g = new Graph();
-        INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
-        INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
-        INode o = g.CreateUriNode(new Uri("http://example.org/object?a=b&c=d"));
+        var s = g.CreateUriNode(new Uri("http://example.org/subject"));
+        var p = g.CreateUriNode(new Uri("http://example.org/predicate"));
+        var o = g.CreateUriNode(new Uri("http://example.org/object?a=b&c=d"));
         g.Assert(s, p, o);
 
         CheckRoundTrip(g);

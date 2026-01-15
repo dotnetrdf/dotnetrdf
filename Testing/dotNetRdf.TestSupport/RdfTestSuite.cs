@@ -14,7 +14,7 @@ public class RdfTestSuite
     protected RdfTestSuite()
     {
         _runners = [];
-        foreach (MethodInfo m in GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic|BindingFlags.Public))
+        foreach (var m in GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic|BindingFlags.Public))
         {
             if (m.GetCustomAttribute(typeof(ManifestTestRunnerAttribute)) is ManifestTestRunnerAttribute runnerAttr)
             {
@@ -32,7 +32,7 @@ public class RdfTestSuite
     protected void InvokeTestRunner(ManifestTestData t)
     {
         Assert.True(_runners.ContainsKey(t.Type.AbsoluteUri), "No runner found for test of type " + t.Type.AbsoluteUri);
-        MethodInfo runner = _runners[t.Type.AbsoluteUri];
+        var runner = _runners[t.Type.AbsoluteUri];
         runner.Invoke(this, [t]);
     }
 }

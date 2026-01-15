@@ -66,7 +66,7 @@ public class ReadWriteSparqlTests
         g.BaseUri = new Uri("http://example.org/readWriteTest");
 
         //Save Graph to ReadWriteSparql
-        ReadWriteSparqlConnector readWrite = GetConnection();
+        var readWrite = GetConnection();
         readWrite.SaveGraph(g);
         _testOutputHelper.WriteLine("Graph saved to ReadWriteSparql OK");
 
@@ -75,7 +75,7 @@ public class ReadWriteSparqlTests
         readWrite.LoadGraph(h, "http://example.org/readWriteTest");
 
         _testOutputHelper.WriteLine();
-        foreach (Triple t in h.Triples)
+        foreach (var t in h.Triples)
         {
             _testOutputHelper.WriteLine(t.ToString(_formatter));
         }
@@ -91,7 +91,7 @@ public class ReadWriteSparqlTests
         g.BaseUri = null;
 
         //Save Graph to ReadWriteSparql
-        ReadWriteSparqlConnector readWrite = GetConnection();
+        var readWrite = GetConnection();
         readWrite.SaveGraph(g);
         _testOutputHelper.WriteLine("Graph saved to ReadWriteSparql OK");
 
@@ -100,7 +100,7 @@ public class ReadWriteSparqlTests
         readWrite.LoadGraph(h, (Uri)null);
 
         _testOutputHelper.WriteLine();
-        foreach (Triple t in h.Triples)
+        foreach (var t in h.Triples)
         {
             _testOutputHelper.WriteLine(t.ToString(_formatter));
         }
@@ -117,7 +117,7 @@ public class ReadWriteSparqlTests
         g.BaseUri = null;
 
         //Save Graph to ReadWriteSparql
-        ReadWriteSparqlConnector readWrite = GetConnection();
+        var readWrite = GetConnection();
         readWrite.SaveGraph(g);
         _testOutputHelper.WriteLine("Graph saved to ReadWriteSparql OK");
 
@@ -126,7 +126,7 @@ public class ReadWriteSparqlTests
         readWrite.LoadGraph(h, (String)null);
 
         _testOutputHelper.WriteLine();
-        foreach (Triple t in h.Triples)
+        foreach (var t in h.Triples)
         {
             _testOutputHelper.WriteLine(t.ToString(_formatter));
         }
@@ -146,13 +146,13 @@ public class ReadWriteSparqlTests
         g.BaseUri = new Uri("http://example.org/readWriteTest");
 
         //Try to load the relevant Graph back from the Store
-        ReadWriteSparqlConnector readWrite = GetConnection();
+        var readWrite = GetConnection();
 
         var h = new Graph();
         readWrite.LoadGraph(h, "http://example.org/readWriteTest");
 
         _testOutputHelper.WriteLine();
-        foreach (Triple t in h.Triples)
+        foreach (var t in h.Triples)
         {
             _testOutputHelper.WriteLine(t.ToString(_formatter));
         }
@@ -165,7 +165,7 @@ public class ReadWriteSparqlTests
     {
         StorageReadWriteSparqlSaveGraph();
 
-        ReadWriteSparqlConnector readWrite = GetConnection();
+        var readWrite = GetConnection();
         readWrite.DeleteGraph("http://example.org/readWriteTest");
 
         var g = new Graph();
@@ -189,7 +189,7 @@ public class ReadWriteSparqlTests
     {
         StorageReadWriteSparqlSaveDefaultGraph();
 
-        ReadWriteSparqlConnector readWrite = GetConnection();
+        var readWrite = GetConnection();
         readWrite.DeleteGraph((Uri)null);
 
         var g = new Graph();
@@ -213,7 +213,7 @@ public class ReadWriteSparqlTests
     {
         StorageReadWriteSparqlSaveDefaultGraph();
 
-        ReadWriteSparqlConnector readWrite = GetConnection();
+        var readWrite = GetConnection();
         readWrite.DeleteGraph((String)null);
 
         var g = new Graph();
@@ -245,7 +245,7 @@ public class ReadWriteSparqlTests
                 g.CreateUriNode(new Uri("http://example.org/object")))
         };
 
-        ReadWriteSparqlConnector readWrite = GetConnection();
+        var readWrite = GetConnection();
         readWrite.UpdateGraph("http://example.org/readWriteTest", ts, null);
 
         readWrite.LoadGraph(g, "http://example.org/readWriteTest");
@@ -265,7 +265,7 @@ public class ReadWriteSparqlTests
                 g.CreateUriNode(new Uri("http://example.org/object")))
         };
 
-        ReadWriteSparqlConnector readWrite = GetConnection();
+        var readWrite = GetConnection();
         readWrite.UpdateGraph("http://example.org/readWriteTest", null, ts);
 
         readWrite.LoadGraph(g, "http://example.org/readWriteTest");
@@ -275,7 +275,7 @@ public class ReadWriteSparqlTests
     [Fact]
     public void StorageReadWriteSparqlQuery()
     {
-        ReadWriteSparqlConnector readWrite = GetConnection();
+        var readWrite = GetConnection();
 
         var results = readWrite.Query("SELECT * WHERE { {?s ?p ?o} UNION { GRAPH ?g {?s ?p ?o} } }");
         if (results is SparqlResultSet)
@@ -294,17 +294,17 @@ public class ReadWriteSparqlTests
         Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
             "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-        ReadWriteSparqlConnector readWrite = GetConnection();
+        var readWrite = GetConnection();
 
         //Try doing a SPARQL Update LOAD command
         var command = "LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/Ilson>";
         readWrite.Update(command);
 
         //Then see if we can retrieve the newly loaded graph
-        IGraph g = new Graph();
+        var g = new Graph();
         readWrite.LoadGraph(g, "http://example.org/Ilson");
         Assert.False(g.IsEmpty, "Graph should be non-empty");
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             _testOutputHelper.WriteLine(t.ToString(_formatter));
         }
@@ -323,7 +323,7 @@ public class ReadWriteSparqlTests
     [Fact]
     public void StorageReadWriteSparqlDescribe()
     {
-        ReadWriteSparqlConnector readWrite = GetConnection();
+        var readWrite = GetConnection();
 
         var results = readWrite.Query("DESCRIBE <http://example.org/vehicles/FordFiesta>");
         if (results is IGraph graph)
@@ -339,9 +339,9 @@ public class ReadWriteSparqlTests
     [Fact]
     public void StorageReadWriteSparqlConfigSerialization1()
     {
-        ReadWriteSparqlConnector connector = GetConnection();
+        var connector = GetConnection();
         var g = new Graph();
-        INode n = g.CreateBlankNode();
+        var n = g.CreateBlankNode();
         var context = new ConfigurationSerializationContext(g)
         {
             NextSubject = n

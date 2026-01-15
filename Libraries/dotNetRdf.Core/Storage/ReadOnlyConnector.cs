@@ -294,11 +294,11 @@ public class ReadOnlyConnector
     /// <param name="context">Configuration Serialization Context.</param>
     public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode manager = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode storageProvider = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
+        var manager = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var storageProvider = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
 
         context.Graph.Assert(manager, rdfType, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider)));
         context.Graph.Assert(manager, dnrType, context.Graph.CreateLiteralNode(GetType().ToString()));
@@ -306,7 +306,7 @@ public class ReadOnlyConnector
 
         if (_manager is IConfigurationSerializable serializable)
         {
-            INode managerObj = context.Graph.CreateBlankNode();
+            var managerObj = context.Graph.CreateBlankNode();
             context.NextSubject = managerObj;
             serializable.SerializeConfiguration(context);
             context.Graph.Assert(manager, storageProvider, managerObj);

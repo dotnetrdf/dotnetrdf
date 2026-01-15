@@ -55,7 +55,7 @@ public class ReasonerFactory : IObjectFactory
         switch (targetType.FullName)
         {
             case OwlReasonerWrapperType:
-                INode reasonerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyOwlReasoner)));
+                var reasonerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyOwlReasoner)));
                 if (reasonerNode == null) return false;
                 var reasoner = ConfigurationLoader.LoadObject(g, reasonerNode);
                 if (reasoner is IOwlReasoner)
@@ -87,8 +87,8 @@ public class ReasonerFactory : IObjectFactory
             if (output is IInferenceEngine)
             {
                 // Now initialise with any specified Graphs
-                IEnumerable<INode> rulesGraphs = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
-                foreach (INode rulesGraph in rulesGraphs)
+                var rulesGraphs = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
+                foreach (var rulesGraph in rulesGraphs)
                 {
                     var temp = ConfigurationLoader.LoadObject(g, rulesGraph);
                     if (temp is IGraph)
@@ -114,12 +114,12 @@ public class ReasonerFactory : IObjectFactory
     /// <returns></returns>
     public bool CanLoadObject(Type t)
     {
-        Type ireasoner = typeof(IInferenceEngine);
+        var ireasoner = typeof(IInferenceEngine);
 
         // We can load any object which implements IInferenceEngine and has a public unparameterized constructor
         if (t.GetInterfaces().Any(i => i.Equals(ireasoner)))
         {
-            ConstructorInfo c = t.GetConstructor([]);
+            var c = t.GetConstructor([]);
             if (c != null)
             {
                 if (c.IsPublic) return true;

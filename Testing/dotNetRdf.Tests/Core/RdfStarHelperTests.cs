@@ -28,7 +28,7 @@ public class RdfStarHelperTests
         expectGraph.LoadFromFile(Path.Combine("resources", "rdfstar", outputPath), new TurtleParser(TurtleSyntax.W3C, true));
         inputGraph.Unstar();
         var graphDiff = new GraphDiff();
-        GraphDiffReport diffReport = graphDiff.Difference(expectGraph, inputGraph);
+        var diffReport = graphDiff.Difference(expectGraph, inputGraph);
         TestTools.ShowDifferences(diffReport, outputPath, $"unstar('{inputPath}')", _output);
         Assert.True(diffReport.AreEqual, $"Expected unstar('{inputPath}') to be the same as '{outputPath}', but differences where found.");
     }

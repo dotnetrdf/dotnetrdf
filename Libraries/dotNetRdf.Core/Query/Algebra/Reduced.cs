@@ -100,7 +100,7 @@ public class Reduced
     /// <returns></returns>
     public SparqlQuery ToQuery()
     {
-        SparqlQuery q = InnerAlgebra.ToQuery();
+        var q = InnerAlgebra.ToQuery();
         switch (q.QueryType)
         {
             case SparqlQueryType.Select:
