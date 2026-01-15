@@ -66,7 +66,7 @@ public class ComparerPerformanceTests
     public void NodeCompareSpeed1()
     {
         //Generate 10,000 node list of random integer nodes
-        List<INode> ns = GenerateIntegerNodes(10000);
+        var ns = GenerateIntegerNodes(10000);
 
         TestSpeed(ns, new FastNodeComparer(), true);
     }
@@ -76,7 +76,7 @@ public class ComparerPerformanceTests
     public void NodeCompareSpeed2()
     {
         //Generate 100,000 node list of random integer nodes
-        List<INode> ns = GenerateIntegerNodes(100000);
+        var ns = GenerateIntegerNodes(100000);
 
         TestSpeed(ns, new FastNodeComparer(), true);
     }
@@ -87,7 +87,7 @@ public class ComparerPerformanceTests
     public void NodeCompareSpeed3()
     {
         //Generate 1,000,000 node list of random integer nodes
-        List<INode> ns = GenerateIntegerNodes(1000000);
+        var ns = GenerateIntegerNodes(1000000);
 
         TestSpeed(ns, new FastNodeComparer(), true);
     }

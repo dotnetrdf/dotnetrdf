@@ -33,9 +33,9 @@ public class BindingsPatternAssertions : ReferenceTypeAssertions<BindingsPattern
 
     public AndConstraint<BindingsPatternAssertions> ContainTuples(IEnumerable<BindingTuple> tuples)
     {
-        IEnumerable<string> variables = Subject.Variables;
+        var variables = Subject.Variables;
 
-        foreach (BindingTuple tuple in tuples)
+        foreach (var tuple in tuples)
         {
             //Execute.Assertion
             _chain

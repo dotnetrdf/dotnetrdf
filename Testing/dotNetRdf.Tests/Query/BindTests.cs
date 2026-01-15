@@ -44,9 +44,9 @@ public class BindTests
         var queryStr = new SparqlParameterizedString(query);
         queryStr.Namespaces.AddNamespace("rdfs", UriFactory.Root.Create(NamespaceMapper.RDFS));
 
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
+        var q = new SparqlQueryParser().ParseFromString(queryStr);
 
-        IGraph g = new Graph();
+        var g = new Graph();
         g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
         var results = g.ExecuteQuery(q) as SparqlResultSet;
@@ -69,9 +69,9 @@ public class BindTests
         var queryStr = new SparqlParameterizedString(query);
         queryStr.Namespaces.AddNamespace("rdfs", UriFactory.Root.Create(NamespaceMapper.RDFS));
 
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
+        var q = new SparqlQueryParser().ParseFromString(queryStr);
 
-        IGraph g = new Graph();
+        var g = new Graph();
         g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
         var results = g.ExecuteQuery(q) as SparqlResultSet;
@@ -86,9 +86,9 @@ public class BindTests
     public void SparqlBindOverEmptyFilter1()
     {
         var query = "SELECT * WHERE { FILTER(false). BIND('test' AS ?test) }";
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
 
-        IGraph g = new Graph();
+        var g = new Graph();
         var results = g.ExecuteQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
 
@@ -100,9 +100,9 @@ public class BindTests
     public void SparqlBindOverEmptyFilter2()
     {
         var query = "SELECT * WHERE { FILTER(true). BIND('test' AS ?test) }";
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
 
-        IGraph g = new Graph();
+        var g = new Graph();
         var results = g.ExecuteQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
 
@@ -115,9 +115,9 @@ public class BindTests
     public void SparqlBindEmpty1()
     {
         var query = "SELECT * WHERE { ?s ?p ?o . BIND('test' AS ?test) }";
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
 
-        IGraph g = new Graph();
+        var g = new Graph();
         var results = g.ExecuteQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
 
@@ -129,9 +129,9 @@ public class BindTests
     public void SparqlBindEmpty2()
     {
         var query = "SELECT * WHERE { BIND('test' AS ?test) }";
-        SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+        var q = new SparqlQueryParser().ParseFromString(query);
 
-        IGraph g = new Graph();
+        var g = new Graph();
         var results = g.ExecuteQuery(q) as SparqlResultSet;
         Assert.NotNull(results);
 

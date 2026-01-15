@@ -93,7 +93,7 @@ public class BlankNodeMapper
         } 
         else if (_idmap.ContainsKey(id))
         {
-            BlankNodeIDAssigment idinfo = _idmap[id];
+            var idinfo = _idmap[id];
             if (idinfo.AutoAssigned)
             {
                 // This ID has been auto-assigned so remap to something else
@@ -123,7 +123,7 @@ public class BlankNodeMapper
     public void FlushBlankNodeAssignments()
     {
         var newMap = new Dictionary<string, BlankNodeIDAssigment>();
-        foreach (KeyValuePair<string, BlankNodeIDAssigment> kvp in _idmap)
+        foreach (var kvp in _idmap)
         {
             newMap[kvp.Key] = new BlankNodeIDAssigment(kvp.Value.ID, true);
         }

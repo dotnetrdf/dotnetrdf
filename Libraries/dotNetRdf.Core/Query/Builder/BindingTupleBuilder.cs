@@ -44,7 +44,7 @@ internal class BindingTupleBuilder : IBindingTupleBuilder
 
     public IBindingTupleBuilder Value(object literal)
     {
-        ILiteralNode node = LiteralExpressionExtensions.ToLiteral(literal);
+        var node = LiteralExpressionExtensions.ToLiteral(literal);
         _patternItems.Add(_patternItemFactory.CreateNodeMatchPattern(node));
         return this;
     }

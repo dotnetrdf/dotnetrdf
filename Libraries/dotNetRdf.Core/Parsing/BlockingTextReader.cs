@@ -61,7 +61,7 @@ public abstract class ParsingTextReader
                 return parsingTextReader;
             case StreamReader streamReader:
             {
-                Stream s = streamReader.BaseStream;
+                var s = streamReader.BaseStream;
                 if (s is FileStream || s is MemoryStream)
                 {
                     return new NonBlockingTextReader(streamReader, bufferSize);

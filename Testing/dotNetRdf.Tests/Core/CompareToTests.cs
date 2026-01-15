@@ -63,8 +63,8 @@ public class CompareToTests
         {
             for (var j = 0; j < nodes.Count; j++)
             {
-                INode a = nodes[i];
-                INode b = nodes[j];
+                var a = nodes[i];
+                var b = nodes[j];
                 if (i == j || ReferenceEquals(a, b))
                 {
                     Assert.Equal(0, a.CompareTo(b));
@@ -111,8 +111,8 @@ public class CompareToTests
         {
             for (var j = 0; j < nodes.Count; j++)
             {
-                T a = nodes[i];
-                T b = nodes[j];
+                var a = nodes[i];
+                var b = nodes[j];
                 if (i == j || ReferenceEquals(a, b))
                 {
                     Assert.Equal(0, comparer.Compare(a, b));
@@ -149,7 +149,7 @@ public class CompareToTests
     {
         _output.WriteLine("Standard Ordering");
         var formatter = new NTriplesFormatter();
-        foreach (INode n in nodes.OrderBy(x => x))
+        foreach (var n in nodes.OrderBy(x => x))
         {
             _output.WriteLine(n.ToString(formatter));
         }
@@ -157,7 +157,7 @@ public class CompareToTests
         _output.WriteLine(string.Empty);
 
         _output.WriteLine("SPARQL Ordering");
-        foreach (INode n in nodes.OrderBy(x => x, new SparqlOrderingComparer(CultureInfo.InvariantCulture, compareOptions)))
+        foreach (var n in nodes.OrderBy(x => x, new SparqlOrderingComparer(CultureInfo.InvariantCulture, compareOptions)))
         {
             _output.WriteLine(n.ToString(formatter));
         }
@@ -169,7 +169,7 @@ public class CompareToTests
     {
         _output.WriteLine("Standard Ordering");
         var formatter = new NTriplesFormatter();
-        foreach (INode n in nodes.OrderBy(x => x))
+        foreach (var n in nodes.OrderBy(x => x))
         {
             _output.WriteLine(n.ToString(formatter));
         }
@@ -177,7 +177,7 @@ public class CompareToTests
         _output.WriteLine(string.Empty);
 
         _output.WriteLine(comparer.GetType().Name + " Ordering");
-        foreach (INode n in nodes.OrderBy(x => x, comparer))
+        foreach (var n in nodes.OrderBy(x => x, comparer))
         {
             _output.WriteLine(n.ToString(formatter));
         }
@@ -191,7 +191,7 @@ public class CompareToTests
         var g = new Graph();
         var h = new Graph();
 
-        IBlankNode b = g.CreateBlankNode();
+        var b = g.CreateBlankNode();
         var nodes = new List<INode>()
         {
             b,
@@ -214,7 +214,7 @@ public class CompareToTests
     {
         var g = new Graph();
 
-        ILiteralNode plain = g.CreateLiteralNode("plain");
+        var plain = g.CreateLiteralNode("plain");
         var nodes = new List<INode>()
         {
             plain,
@@ -666,7 +666,7 @@ public class CompareToTests
     {
         var g = new Graph();
 
-        IUriNode u = g.CreateUriNode("rdf:type");
+        var u = g.CreateUriNode("rdf:type");
         var nodes = new List<INode>()
         {
             u,
@@ -735,10 +735,10 @@ public class CompareToTests
         var g = new Graph();
         var h = new Graph();
 
-        IBlankNode b = g.CreateBlankNode();
-        ILiteralNode plain = g.CreateLiteralNode("plain");
-        IUriNode u = g.CreateUriNode("rdf:type");
-        ITripleNode t = g.CreateTripleNode(new Triple(b, u, plain));
+        var b = g.CreateBlankNode();
+        var plain = g.CreateLiteralNode("plain");
+        var u = g.CreateUriNode("rdf:type");
+        var t = g.CreateTripleNode(new Triple(b, u, plain));
         var nodes = new List<INode>()
         {
             b,
@@ -784,9 +784,9 @@ public class CompareToTests
         var g = new Graph();
         var h = new Graph();
 
-        IBlankNode b = g.CreateBlankNode();
-        ILiteralNode plain = g.CreateLiteralNode("plain");
-        IUriNode u = g.CreateUriNode("rdf:type");
+        var b = g.CreateBlankNode();
+        var plain = g.CreateLiteralNode("plain");
+        var u = g.CreateUriNode("rdf:type");
         var nodes = new List<INode>()
         {
             b,
@@ -847,10 +847,10 @@ public class CompareToTests
     public void NodeCompareToMixedNodes2()
     {
         var g = new Graph();
-        IBlankNode b = g.CreateBlankNode();
-        ILiteralNode l = g.CreateLiteralNode("literal", "en");
-        IUriNode u = g.CreateUriNode(new Uri("http://example.org"));
-        IVariableNode v = g.CreateVariableNode("var");
+        var b = g.CreateBlankNode();
+        var l = g.CreateLiteralNode("literal", "en");
+        var u = g.CreateUriNode(new Uri("http://example.org"));
+        var v = g.CreateVariableNode("var");
 
         var c = b.CompareTo(l);
         Assert.Equal(c * -1, l.CompareTo(b));
@@ -916,8 +916,8 @@ public class CompareToTests
     public void NodeCompareToEquivalentLiterals1()
     {
         var g = new Graph();
-        ILiteralNode canonical = (1).ToLiteral(g);
-        ILiteralNode alternate =
+        var canonical = (1).ToLiteral(g);
+        var alternate =
             g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
         var ns = new List<INode>()
@@ -939,8 +939,8 @@ public class CompareToTests
     public void NodeCompareToEquivalentLiterals2()
     {
         var g = new Graph();
-        ILiteralNode canonical = (true).ToLiteral(g);
-        ILiteralNode alternate =
+        var canonical = (true).ToLiteral(g);
+        var alternate =
             g.CreateLiteralNode("TRUE", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
 
         var ns = new List<INode>()
@@ -962,8 +962,8 @@ public class CompareToTests
     public void NodeCompareToEquivalentLiterals3()
     {
         var g = new Graph();
-        ILiteralNode canonical = (1d).ToLiteral(g);
-        ILiteralNode alternate =
+        var canonical = (1d).ToLiteral(g);
+        var alternate =
             g.CreateLiteralNode("1.00000", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble));
 
         var ns = new List<INode>()

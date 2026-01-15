@@ -88,7 +88,7 @@ public class ChainFilter : ISparqlFilter
     public override string ToString()
     {
         var output = new StringBuilder();
-        foreach (ISparqlFilter filter in _filters)
+        foreach (var filter in _filters)
         {
             output.Append(filter + " ");
         }

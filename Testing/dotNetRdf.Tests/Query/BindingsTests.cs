@@ -92,8 +92,8 @@ public class BindingsTests
     private void TestBindings(ISparqlDataset data, String queryWithBindings, String queryWithoutBindings)
     {
         var processor = new LeviathanQueryProcessor(data);
-        SparqlQuery bindingsQuery = _parser.ParseFromString(queryWithBindings);
-        SparqlQuery noBindingsQuery = _parser.ParseFromString(queryWithoutBindings);
+        var bindingsQuery = _parser.ParseFromString(queryWithBindings);
+        var noBindingsQuery = _parser.ParseFromString(queryWithoutBindings);
 
         var bindingsResults = processor.ProcessQuery(bindingsQuery) as SparqlResultSet;
         var noBindingsResults = processor.ProcessQuery(noBindingsQuery) as SparqlResultSet;
@@ -114,7 +114,7 @@ public class BindingsTests
     private void TestBindings(ISparqlDataset data, String queryWithBindings)
     {
         var processor = new LeviathanQueryProcessor(data);
-        SparqlQuery bindingsQuery = _parser.ParseFromString(queryWithBindings);
+        var bindingsQuery = _parser.ParseFromString(queryWithBindings);
 
         var bindingsResults = processor.ProcessQuery(bindingsQuery) as SparqlResultSet;
 

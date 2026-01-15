@@ -48,8 +48,8 @@ public class CollectionCompressionTests
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
-        INode n = g.CreateBlankNode();
-        INode rdfType = g.CreateUriNode("rdf:type");
+        var n = g.CreateBlankNode();
+        var rdfType = g.CreateUriNode("rdf:type");
 
         g.Assert(n, rdfType, g.CreateUriNode("ex:Obj"));
         g.Assert(n, rdfType, g.CreateUriNode("ex:Test"));
@@ -66,28 +66,28 @@ public class CollectionCompressionTests
     public void WritingCollectionCompressionNamedListNodes3()
     {
         var g = new Graph();
-        INode data1 = g.CreateBlankNode();
+        var data1 = g.CreateBlankNode();
         g.Assert(data1, g.CreateUriNode(new Uri("http://property")), g.CreateLiteralNode("test1"));
-        INode data2 = g.CreateBlankNode();
+        var data2 = g.CreateBlankNode();
         g.Assert(data2, g.CreateUriNode(new Uri("http://property")), g.CreateLiteralNode("test2"));
 
-        INode listEntry1 = g.CreateUriNode(new Uri("http://test/1"));
-        INode rdfFirst = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
-        INode rdfRest = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
-        INode rdfNil = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
+        var listEntry1 = g.CreateUriNode(new Uri("http://test/1"));
+        var rdfFirst = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
+        var rdfRest = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
+        var rdfNil = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
         g.Assert(listEntry1, rdfFirst, data1);
         g.Assert(listEntry1, rdfRest, rdfNil);
 
-        INode listEntry2 = g.CreateUriNode(new Uri("http://test/2"));
+        var listEntry2 = g.CreateUriNode(new Uri("http://test/2"));
         g.Assert(listEntry2, rdfFirst, data2);
         g.Assert(listEntry2, rdfRest, listEntry1);
 
-        INode root = g.CreateUriNode(new Uri("http://root"));
+        var root = g.CreateUriNode(new Uri("http://root"));
         g.Assert(root, g.CreateUriNode(new Uri("http://list")), listEntry2);
 
         var formatter = new NTriplesFormatter();
         _output.WriteLine("Original Graph");
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             _output.WriteLine(t.ToString(formatter));
         }
@@ -115,7 +115,7 @@ public class CollectionCompressionTests
         var parser = new TurtleParser();
         StringParser.Parse(h, strWriter.ToString());
         _output.WriteLine("Graph after Round Trip to Compressed Turtle");
-        foreach (Triple t in h.Triples)
+        foreach (var t in h.Triples)
         {
             _output.WriteLine(t.ToString(formatter));
         }
@@ -129,9 +129,9 @@ public class CollectionCompressionTests
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
         g.NamespaceMap.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
-        INode a = g.CreateBlankNode();
-        INode b = g.CreateBlankNode();
-        INode c = g.CreateBlankNode();
+        var a = g.CreateBlankNode();
+        var b = g.CreateBlankNode();
+        var c = g.CreateBlankNode();
 
         var pred = g.CreateUriNode("ex:pred");
 
@@ -155,12 +155,12 @@ public class CollectionCompressionTests
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
         g.NamespaceMap.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
-        INode a = g.CreateBlankNode();
-        INode b = g.CreateBlankNode();
-        INode c = g.CreateBlankNode();
-        INode d = g.CreateBlankNode();
+        var a = g.CreateBlankNode();
+        var b = g.CreateBlankNode();
+        var c = g.CreateBlankNode();
+        var d = g.CreateBlankNode();
 
-        INode pred = g.CreateUriNode("ex:pred");
+        var pred = g.CreateUriNode("ex:pred");
 
         g.Assert(d, pred, a);
         g.Assert(d, pred, g.CreateLiteralNode("D"));
@@ -184,13 +184,13 @@ public class CollectionCompressionTests
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
         g.NamespaceMap.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
-        INode a = g.CreateBlankNode();
-        INode b = g.CreateBlankNode();
-        INode c = g.CreateBlankNode();
-        INode d = g.CreateBlankNode();
-        INode e = g.CreateBlankNode();
+        var a = g.CreateBlankNode();
+        var b = g.CreateBlankNode();
+        var c = g.CreateBlankNode();
+        var d = g.CreateBlankNode();
+        var e = g.CreateBlankNode();
 
-        INode pred = g.CreateUriNode("ex:pred");
+        var pred = g.CreateUriNode("ex:pred");
 
         g.Assert(d, pred, a);
         g.Assert(d, pred, g.CreateLiteralNode("D"));
@@ -214,7 +214,7 @@ public class CollectionCompressionTests
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
-        INode n = g.CreateBlankNode();
+        var n = g.CreateBlankNode();
 
         g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), n);
 
@@ -231,7 +231,7 @@ public class CollectionCompressionTests
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
-        INode rdfType = g.CreateUriNode("rdf:type");
+        var rdfType = g.CreateUriNode("rdf:type");
 
         g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), g.CreateUriNode("rdf:nil"));
 
@@ -247,8 +247,8 @@ public class CollectionCompressionTests
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
-        INode n = g.CreateBlankNode();
-        INode rdfType = g.CreateUriNode("rdf:type");
+        var n = g.CreateBlankNode();
+        var rdfType = g.CreateUriNode("rdf:type");
 
         g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), n);
         g.Assert(n, rdfType, g.CreateUriNode("ex:BlankNode"));
@@ -275,8 +275,8 @@ public class CollectionCompressionTests
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
-        INode n = g.CreateBlankNode();
-        INode rdfType = g.CreateUriNode("rdf:type");
+        var n = g.CreateBlankNode();
+        var rdfType = g.CreateUriNode("rdf:type");
 
         g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), n);
         g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred2"), n);
@@ -294,11 +294,11 @@ public class CollectionCompressionTests
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
-        INode n = g.CreateBlankNode();
-        INode rdfType = g.CreateUriNode("rdf:type");
-        INode rdfFirst = g.CreateUriNode("rdf:first");
-        INode rdfRest = g.CreateUriNode("rdf:rest");
-        INode rdfNil = g.CreateUriNode("rdf:nil");
+        var n = g.CreateBlankNode();
+        var rdfType = g.CreateUriNode("rdf:type");
+        var rdfFirst = g.CreateUriNode("rdf:first");
+        var rdfRest = g.CreateUriNode("rdf:rest");
+        var rdfNil = g.CreateUriNode("rdf:nil");
 
         g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), n);
         g.Assert(n, rdfFirst, g.CreateLiteralNode("first"));
@@ -316,11 +316,11 @@ public class CollectionCompressionTests
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
-        INode n = g.CreateBlankNode();
-        INode rdfType = g.CreateUriNode("rdf:type");
-        INode rdfFirst = g.CreateUriNode("rdf:first");
-        INode rdfRest = g.CreateUriNode("rdf:rest");
-        INode rdfNil = g.CreateUriNode("rdf:nil");
+        var n = g.CreateBlankNode();
+        var rdfType = g.CreateUriNode("rdf:type");
+        var rdfFirst = g.CreateUriNode("rdf:first");
+        var rdfRest = g.CreateUriNode("rdf:rest");
+        var rdfNil = g.CreateUriNode("rdf:nil");
 
         g.Assert(n, rdfFirst, g.CreateLiteralNode("first"));
         g.Assert(n, rdfRest, rdfNil);
@@ -337,11 +337,11 @@ public class CollectionCompressionTests
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
-        INode n = g.CreateBlankNode();
-        INode rdfType = g.CreateUriNode("rdf:type");
-        INode rdfFirst = g.CreateUriNode("rdf:first");
-        INode rdfRest = g.CreateUriNode("rdf:rest");
-        INode rdfNil = g.CreateUriNode("rdf:nil");
+        var n = g.CreateBlankNode();
+        var rdfType = g.CreateUriNode("rdf:type");
+        var rdfFirst = g.CreateUriNode("rdf:first");
+        var rdfRest = g.CreateUriNode("rdf:rest");
+        var rdfNil = g.CreateUriNode("rdf:nil");
 
         g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), n);
         g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred2"), n);
@@ -360,8 +360,8 @@ public class CollectionCompressionTests
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
-        INode n = g.CreateBlankNode();
-        INode rdfType = g.CreateUriNode("rdf:type");
+        var n = g.CreateBlankNode();
+        var rdfType = g.CreateUriNode("rdf:type");
 
         g.Assert(n, rdfType, g.CreateUriNode("ex:Obj"));
 
@@ -381,7 +381,7 @@ public class CollectionCompressionTests
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
         g.NamespaceMap.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
-        INode n = g.CreateBlankNode();
+        var n = g.CreateBlankNode();
 
         g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("dnr:genericManager"), n);
         var sContext = new ConfigurationSerializationContext(g)
@@ -407,11 +407,11 @@ public class CollectionCompressionTests
         WriterHelper.FindCollections(context);
 
         var formatter = new NTriplesFormatter();
-        foreach (KeyValuePair<INode, OutputRdfCollection> kvp in context.Collections)
+        foreach (var kvp in context.Collections)
         {
             _output.WriteLine("Collection Root - " + kvp.Key.ToString(formatter));
             _output.WriteLine("Collection Triples (" + kvp.Value.Triples.Count + ")");
-            foreach (Triple t in kvp.Value.Triples)
+            foreach (var t in kvp.Value.Triples)
             {
                 _output.WriteLine(t.ToString(formatter));
             }
@@ -426,11 +426,11 @@ public class CollectionCompressionTests
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
-        INode n = g.CreateUriNode("ex:list");
-        INode rdfType = g.CreateUriNode("rdf:type");
-        INode rdfFirst = g.CreateUriNode("rdf:first");
-        INode rdfRest = g.CreateUriNode("rdf:rest");
-        INode rdfNil = g.CreateUriNode("rdf:nil");
+        var n = g.CreateUriNode("ex:list");
+        var rdfType = g.CreateUriNode("rdf:type");
+        var rdfFirst = g.CreateUriNode("rdf:first");
+        var rdfRest = g.CreateUriNode("rdf:rest");
+        var rdfNil = g.CreateUriNode("rdf:nil");
 
         g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), n);
         g.Assert(n, rdfFirst, g.CreateLiteralNode("first"));
@@ -448,12 +448,12 @@ public class CollectionCompressionTests
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
-        INode n = g.CreateUriNode("ex:listRoot");
-        INode m = g.CreateUriNode("ex:listItem");
-        INode rdfType = g.CreateUriNode("rdf:type");
-        INode rdfFirst = g.CreateUriNode("rdf:first");
-        INode rdfRest = g.CreateUriNode("rdf:rest");
-        INode rdfNil = g.CreateUriNode("rdf:nil");
+        var n = g.CreateUriNode("ex:listRoot");
+        var m = g.CreateUriNode("ex:listItem");
+        var rdfType = g.CreateUriNode("rdf:type");
+        var rdfFirst = g.CreateUriNode("rdf:first");
+        var rdfRest = g.CreateUriNode("rdf:rest");
+        var rdfNil = g.CreateUriNode("rdf:nil");
 
         g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), n);
         g.Assert(n, rdfFirst, g.CreateLiteralNode("first"));
@@ -472,14 +472,14 @@ public class CollectionCompressionTests
     public void WritingBlankNodeCollectionIssue279()
     {
         var g = new Graph();
-        INode b1 = g.CreateBlankNode("b1");
-        INode b2 = g.CreateBlankNode("b2");
-        INode b3 = g.CreateBlankNode("b3");
-        INode b4 = g.CreateBlankNode("b4");
-        INode rdfType = g.CreateUriNode("rdf:type");
-        INode rdfFirst = g.CreateUriNode("rdf:first");
-        INode rdfRest = g.CreateUriNode("rdf:rest");
-        INode rdfNil = g.CreateUriNode("rdf:nil");
+        var b1 = g.CreateBlankNode("b1");
+        var b2 = g.CreateBlankNode("b2");
+        var b3 = g.CreateBlankNode("b3");
+        var b4 = g.CreateBlankNode("b4");
+        var rdfType = g.CreateUriNode("rdf:type");
+        var rdfFirst = g.CreateUriNode("rdf:first");
+        var rdfRest = g.CreateUriNode("rdf:rest");
+        var rdfNil = g.CreateUriNode("rdf:nil");
 
         g.Assert(b1, rdfType, b2);
         g.Assert(b2, rdfFirst, b3);
@@ -495,15 +495,15 @@ public class CollectionCompressionTests
     public void WritingBlankNodeCollection2()
     {
         var g = new Graph();
-        INode b1 = g.CreateBlankNode("b1");
-        INode b2 = g.CreateBlankNode("b2");
-        INode b3 = g.CreateBlankNode("b3");
-        INode b4 = g.CreateBlankNode("b4");
-        INode b5 = g.CreateBlankNode("b5");
-        INode rdfType = g.CreateUriNode("rdf:type");
-        INode rdfFirst = g.CreateUriNode("rdf:first");
-        INode rdfRest = g.CreateUriNode("rdf:rest");
-        INode rdfNil = g.CreateUriNode("rdf:nil");
+        var b1 = g.CreateBlankNode("b1");
+        var b2 = g.CreateBlankNode("b2");
+        var b3 = g.CreateBlankNode("b3");
+        var b4 = g.CreateBlankNode("b4");
+        var b5 = g.CreateBlankNode("b5");
+        var rdfType = g.CreateUriNode("rdf:type");
+        var rdfFirst = g.CreateUriNode("rdf:first");
+        var rdfRest = g.CreateUriNode("rdf:rest");
+        var rdfNil = g.CreateUriNode("rdf:nil");
 
         g.Assert(b1, rdfType, b2);
         g.Assert(b2, rdfFirst, b3);
@@ -521,15 +521,15 @@ public class CollectionCompressionTests
     public void WritingBlankNodeCollection3()
     {
         var g = new Graph();
-        INode b1 = g.CreateBlankNode("b1");
-        INode b2 = g.CreateBlankNode("b2");
-        INode b3 = g.CreateBlankNode("b3");
-        INode b4 = g.CreateBlankNode("b4");
-        INode b5 = g.CreateBlankNode("b5");
-        INode rdfType = g.CreateUriNode("rdf:type");
-        INode rdfFirst = g.CreateUriNode("rdf:first");
-        INode rdfRest = g.CreateUriNode("rdf:rest");
-        INode rdfNil = g.CreateUriNode("rdf:nil");
+        var b1 = g.CreateBlankNode("b1");
+        var b2 = g.CreateBlankNode("b2");
+        var b3 = g.CreateBlankNode("b3");
+        var b4 = g.CreateBlankNode("b4");
+        var b5 = g.CreateBlankNode("b5");
+        var rdfType = g.CreateUriNode("rdf:type");
+        var rdfFirst = g.CreateUriNode("rdf:first");
+        var rdfRest = g.CreateUriNode("rdf:rest");
+        var rdfNil = g.CreateUriNode("rdf:nil");
 
         g.Assert(b1, rdfType, b2);
         g.Assert(b2, rdfFirst, b3);
@@ -547,16 +547,16 @@ public class CollectionCompressionTests
     public void WritingBlankNodeCollection4()
     {
         var g = new Graph();
-        INode b1 = g.CreateBlankNode("b1");
-        INode b2 = g.CreateBlankNode("b2");
-        INode b3 = g.CreateBlankNode("b3");
-        INode b4 = g.CreateBlankNode("b4");
-        INode b5 = g.CreateBlankNode("b5");
-        INode b6 = g.CreateBlankNode("b6");
-        INode rdfType = g.CreateUriNode("rdf:type");
-        INode rdfFirst = g.CreateUriNode("rdf:first");
-        INode rdfRest = g.CreateUriNode("rdf:rest");
-        INode rdfNil = g.CreateUriNode("rdf:nil");
+        var b1 = g.CreateBlankNode("b1");
+        var b2 = g.CreateBlankNode("b2");
+        var b3 = g.CreateBlankNode("b3");
+        var b4 = g.CreateBlankNode("b4");
+        var b5 = g.CreateBlankNode("b5");
+        var b6 = g.CreateBlankNode("b6");
+        var rdfType = g.CreateUriNode("rdf:type");
+        var rdfFirst = g.CreateUriNode("rdf:first");
+        var rdfRest = g.CreateUriNode("rdf:rest");
+        var rdfNil = g.CreateUriNode("rdf:nil");
 
         g.Assert(b1, rdfType, b2);
         g.Assert(b2, rdfFirst, b3);

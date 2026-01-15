@@ -37,7 +37,7 @@ public class CompressingTurtleWriterTests
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", UriFactory.Create("http://example.org/"));
-        INode listNode = g.AssertList([g.CreateUriNode("ex:a"), g.CreateUriNode("ex:b"), g.CreateUriNode("ex:c")]);
+        var listNode = g.AssertList([g.CreateUriNode("ex:a"), g.CreateUriNode("ex:b"), g.CreateUriNode("ex:c")]);
         g.Assert(g.CreateUriNode("ex:s"), g.CreateUriNode("ex:p"), listNode);
         var writer = new CompressingTurtleWriter(TurtleSyntax.W3C) { PrettyPrintMode = true };
         var stringWriter = new System.IO.StringWriter();

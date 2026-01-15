@@ -56,7 +56,7 @@ internal class Closed : Boolean
             return true;
         }
 
-        IEnumerable<Triple> invalidValues =
+        var invalidValues =
             from valueNode in valueNodes
             from outgoing in dataGraph.GetTriplesWithSubject(valueNode)
             let property = outgoing.Predicate

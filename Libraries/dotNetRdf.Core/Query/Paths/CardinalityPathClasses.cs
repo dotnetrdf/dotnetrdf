@@ -249,8 +249,8 @@ public class ZeroOrOne
     {
         var lhsContext = new PathTransformContext(context);
         var rhsContext = new PathTransformContext(context);
-        ISparqlAlgebra lhs = new ZeroLengthPath(lhsContext.Subject, lhsContext.Object, _path);
-        ISparqlAlgebra rhs = _path.ToAlgebra(rhsContext);
+        var lhs = new ZeroLengthPath(lhsContext.Subject, lhsContext.Object, _path);
+        var rhs = _path.ToAlgebra(rhsContext);
 
         return new Distinct(new Union(lhs, rhs));
     }
@@ -367,7 +367,7 @@ public class NOrMore : Cardinality
     /// <returns></returns>
     public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
     {
-        PatternItem tempVar = context.GetNextTemporaryVariable();
+        var tempVar = context.GetNextTemporaryVariable();
         context.AddTriplePattern(new PropertyPathPattern(context.Subject, new FixedCardinality(_path, _n), tempVar));
         context.AddTriplePattern(new PropertyPathPattern(tempVar, new ZeroOrMore(_path), context.Object));
         return context.ToAlgebra();

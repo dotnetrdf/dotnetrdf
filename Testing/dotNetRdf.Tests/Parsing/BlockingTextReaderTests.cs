@@ -55,7 +55,7 @@ public class BlockingTextReaderTests : BaseTest
     public void ParsingTextReaderCreation1()
     {
         File.WriteAllText("ParsingTextReaderCreation1.txt", "ParsingTextReaderCreation1");
-        using StreamReader stream = File.OpenText("ParsingTextReaderCreation1.txt");
+        using var stream = File.OpenText("ParsingTextReaderCreation1.txt");
         var reader = ParsingTextReader.Create(stream);
         Assert.IsType<NonBlockingTextReader>(reader);
         stream.Close();
@@ -75,7 +75,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         using var client = new WebClient();
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-        using (Stream stream = client.OpenRead(new Uri("http://www.dotnetrdf.org")))
+        using (var stream = client.OpenRead(new Uri("http://www.dotnetrdf.org")))
         {
             var reader = ParsingTextReader.Create(stream);
             Assert.IsType<BlockingTextReader>(reader);
@@ -101,7 +101,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         var strReader = new StringReader(TestData);
 
-        BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
+        var reader = ParsingTextReader.CreateBlocking(strReader);
 
         var output = new StringBuilder();
         while (!reader.EndOfStream)
@@ -123,7 +123,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         var strReader = new StringReader(TestData);
 
-        BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
+        var reader = ParsingTextReader.CreateBlocking(strReader);
 
         var cs = new char[100];
         var read = reader.Read(cs, 0, cs.Length);
@@ -144,7 +144,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         var strReader = new StringReader(TestData);
 
-        BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
+        var reader = ParsingTextReader.CreateBlocking(strReader);
 
         var cs = new char[100];
         var read = reader.ReadBlock(cs, 0, cs.Length);
@@ -164,7 +164,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         var strReader = new StringReader(TestData);
 
-        BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
+        var reader = ParsingTextReader.CreateBlocking(strReader);
 
         var s = reader.ReadToEnd();
         Assert.Equal(TestData, s);
@@ -179,7 +179,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         var strReader = new StringReader(TestData);
 
-        BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
+        var reader = ParsingTextReader.CreateBlocking(strReader);
 
         var s = reader.ReadLine();
         Assert.Equal(TestData, s);
@@ -194,7 +194,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         var strReader = new StringReader(TestData2);
 
-        BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
+        var reader = ParsingTextReader.CreateBlocking(strReader);
 
         var s = reader.ReadLine();
         Assert.Equal(TestData2.Substring(0, 26), s);
@@ -211,7 +211,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         var strReader = new StringReader(TestData3);
 
-        BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
+        var reader = ParsingTextReader.CreateBlocking(strReader);
 
         var s = reader.ReadLine();
         Assert.Equal(TestData3.Substring(0, 26), s);
@@ -228,7 +228,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         var strReader = new StringReader(TestData4);
 
-        BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
+        var reader = ParsingTextReader.CreateBlocking(strReader);
 
         var s = reader.ReadLine();
         Assert.Equal(TestData4.Substring(0, 26), s);
@@ -247,7 +247,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         var strReader = new StringReader(TestData5);
 
-        BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
+        var reader = ParsingTextReader.CreateBlocking(strReader);
 
         var s = reader.ReadLine();
         Assert.Equal(TestData5.Substring(0, 26), s);
@@ -264,7 +264,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         var strReader = new StringReader(TestData);
 
-        BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
+        var reader = ParsingTextReader.CreateBlocking(strReader);
 
         for (var i = 1; i <= 100; i++)
         {
@@ -283,7 +283,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         var strReader = new StringReader(TestData);
 
-        BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
+        var reader = ParsingTextReader.CreateBlocking(strReader);
 
         var cs = new char[10];
         var start = 0;
@@ -307,7 +307,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         var strReader = new StringReader(TestData);
 
-        BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader, 5);
+        var reader = ParsingTextReader.CreateBlocking(strReader, 5);
 
         var cs = new char[10];
         var start = 0;
@@ -333,7 +333,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         var strReader = new StringReader(TestData);
 
-        BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader, 5);
+        var reader = ParsingTextReader.CreateBlocking(strReader, 5);
 
         var cs = new char[8];
         var start = 0;
@@ -359,7 +359,7 @@ public class BlockingTextReaderTests : BaseTest
     {
         var strReader = new StringReader(TestData);
 
-        BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader, 2);
+        var reader = ParsingTextReader.CreateBlocking(strReader, 2);
 
         var cs = new char[10];
         var start = 0;
@@ -392,7 +392,7 @@ public class BlockingTextReaderTests : BaseTest
         var loader = new Loader(_serverFixture.Client);
         var g = new Graph();
         var parser = parserType.GetConstructor([]).Invoke([]) as IRdfReader;
-        Uri uri = _serverFixture.UriFor("/doap#");
+        var uri = _serverFixture.UriFor("/doap#");
         loader.LoadGraph(g, uri, parser);
         g.Triples.Count.Should().BeGreaterThan(0);
     }
@@ -402,8 +402,8 @@ public class BlockingTextReaderTests : BaseTest
     {
         if (!File.Exists(Path.Combine("resources", "nio.ttl")))
         {
-            using StreamWriter writer = File.CreateText(Path.Combine("resources", "nio.ttl"));
-            using (StreamReader reader = File.OpenText(Path.Combine("resources", "dataset_50.ttl.gz")))
+            using var writer = File.CreateText(Path.Combine("resources", "nio.ttl"));
+            using (var reader = File.OpenText(Path.Combine("resources", "dataset_50.ttl.gz")))
             {
                 var line = reader.ReadLine();
                 while (line != null)
@@ -433,7 +433,7 @@ public class BlockingTextReaderTests : BaseTest
             timer.Reset();
 
             //Test Blocking
-            BlockingTextReader blocking = ParsingTextReader.CreateBlocking(File.OpenText(Path.Combine("resources", "nio.ttl")));
+            var blocking = ParsingTextReader.CreateBlocking(File.OpenText(Path.Combine("resources", "nio.ttl")));
             timer.Start();
             var totalBlocking = 0;
             int read;
@@ -452,7 +452,7 @@ public class BlockingTextReaderTests : BaseTest
             timer.Reset();
             var totalNonBlocking = 0;
 
-            NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(File.OpenText(Path.Combine("resources", "nio.ttl")));
+            var nonBlocking = ParsingTextReader.CreateNonBlocking(File.OpenText(Path.Combine("resources", "nio.ttl")));
             timer.Start();
             while (!nonBlocking.EndOfStream)
             {
@@ -489,7 +489,7 @@ public class BlockingTextReaderTests : BaseTest
             timer.Reset();
 
             //Test Blocking
-            BlockingTextReader blocking = ParsingTextReader.CreateBlocking(File.OpenText(Path.Combine("resources", "nio.ttl")), 4096);
+            var blocking = ParsingTextReader.CreateBlocking(File.OpenText(Path.Combine("resources", "nio.ttl")), 4096);
             timer.Start();
             var totalBlocking = 0;
             int read;
@@ -508,7 +508,7 @@ public class BlockingTextReaderTests : BaseTest
             timer.Reset();
             var totalNonBlocking = 0;
 
-            NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(File.OpenText(Path.Combine("resources", "nio.ttl")), 4096);
+            var nonBlocking = ParsingTextReader.CreateNonBlocking(File.OpenText(Path.Combine("resources", "nio.ttl")), 4096);
             timer.Start();
             while (!nonBlocking.EndOfStream)
             {
@@ -547,7 +547,7 @@ public class BlockingTextReaderTests : BaseTest
                 timer.Reset();
 
                 //Test Blocking
-                BlockingTextReader blocking = ParsingTextReader.CreateBlocking(File.OpenText(Path.Combine("resources", "nio.ttl")), 4096);
+                var blocking = ParsingTextReader.CreateBlocking(File.OpenText(Path.Combine("resources", "nio.ttl")), 4096);
                 timer.Start();
                 var totalBlocking = 0;
                 int read;
@@ -564,7 +564,7 @@ public class BlockingTextReaderTests : BaseTest
                 timer.Reset();
                 var totalNonBlocking = 0;
 
-                NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(File.OpenText(Path.Combine("resources", "nio.ttl")), 4096);
+                var nonBlocking = ParsingTextReader.CreateNonBlocking(File.OpenText(Path.Combine("resources", "nio.ttl")), 4096);
                 timer.Start();
                 while (!nonBlocking.EndOfStream)
                 {
@@ -603,7 +603,7 @@ public class BlockingTextReaderTests : BaseTest
             timer.Reset();
 
             //Test Blocking
-            BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new JitterReader(File.OpenText(Path.Combine("resources", "nio.ttl"))));
+            var blocking = ParsingTextReader.CreateBlocking(new JitterReader(File.OpenText(Path.Combine("resources", "nio.ttl"))));
             timer.Start();
             var totalBlocking = 0;
             int read;
@@ -622,7 +622,7 @@ public class BlockingTextReaderTests : BaseTest
             timer.Reset();
             var totalNonBlocking = 0;
 
-            NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new JitterReader(File.OpenText(Path.Combine("resources", "nio.ttl"))));
+            var nonBlocking = ParsingTextReader.CreateNonBlocking(new JitterReader(File.OpenText(Path.Combine("resources", "nio.ttl"))));
             timer.Start();
             while (!nonBlocking.EndOfStream)
             {
@@ -659,7 +659,7 @@ public class BlockingTextReaderTests : BaseTest
             timer.Reset();
 
             //Test Blocking
-            BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new JitterReader(File.OpenText(Path.Combine("resources", "nio.ttl")), 50));
+            var blocking = ParsingTextReader.CreateBlocking(new JitterReader(File.OpenText(Path.Combine("resources", "nio.ttl")), 50));
             timer.Start();
             var totalBlocking = 0;
             int read;
@@ -678,7 +678,7 @@ public class BlockingTextReaderTests : BaseTest
             timer.Reset();
             var totalNonBlocking = 0;
 
-            NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new JitterReader(File.OpenText(Path.Combine("resources", "nio.ttl")), 50));
+            var nonBlocking = ParsingTextReader.CreateNonBlocking(new JitterReader(File.OpenText(Path.Combine("resources", "nio.ttl")), 50));
             timer.Start();
             while (!nonBlocking.EndOfStream)
             {

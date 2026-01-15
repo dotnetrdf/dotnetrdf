@@ -58,7 +58,7 @@ internal class Component : Constraint
         {
             if (Shape is Shapes.Node)
             {
-                INode nodeValidator = Vocabulary.NodeValidator.ObjectsOf(this).SingleOrDefault();
+                var nodeValidator = Vocabulary.NodeValidator.ObjectsOf(this).SingleOrDefault();
 
                 if (nodeValidator != null)
                 {
@@ -68,7 +68,7 @@ internal class Component : Constraint
 
             if (Shape is Shapes.Property)
             {
-                INode propertyValidator = Vocabulary.PropertyValidator.ObjectsOf(this).SingleOrDefault();
+                var propertyValidator = Vocabulary.PropertyValidator.ObjectsOf(this).SingleOrDefault();
 
                 if (propertyValidator != null)
                 {
@@ -82,9 +82,9 @@ internal class Component : Constraint
 
     internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
     {
-        Constraint validator = Validator;
+        var validator = Validator;
 
-        IEnumerable<INode> invalidValues =
+        var invalidValues =
             from valueNode in valueNodes
             where !validator.Validate(dataGraph, focusNode, [valueNode], null)
             select valueNode;

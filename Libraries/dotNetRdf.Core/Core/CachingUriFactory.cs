@@ -75,14 +75,14 @@ public class CachingUriFactory : IUriFactory
         }
 
         // First see if the value is in our cache
-        ITrieNode<char, Uri> node = _uris.MoveToNode(uri);
+        var node = _uris.MoveToNode(uri);
         if (node.HasValue)
         {
             return node.Value;
         }
 
         // If we have a parent factory see if that has the value cached.
-        if (_parent != null && _parent.TryGetUri(uri, out Uri value))
+        if (_parent != null && _parent.TryGetUri(uri, out var value))
         {
             return value;
         }
@@ -124,7 +124,7 @@ public class CachingUriFactory : IUriFactory
             return false;
         }
 
-        ITrieNode<char, Uri> node = _uris.MoveToNode(uri);
+        var node = _uris.MoveToNode(uri);
         if (node.HasValue)
         {
             value = node.Value;

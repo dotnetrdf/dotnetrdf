@@ -180,7 +180,7 @@ public class CompressingTurtleWriter
             context.CompressionLevel = WriterCompressionLevel.Minimal;
             context.NodeFormatter = _syntax == TurtleSyntax.Rdf11Star ? new UncompressedTurtleStarFormatter() :  new UncompressedTurtleFormatter();
 
-            foreach (Triple t in context.Graph.Triples)
+            foreach (var t in context.Graph.Triples)
             {
                 context.Output.WriteLine(GenerateTripleOutput(context, t));
             }
@@ -203,7 +203,7 @@ public class CompressingTurtleWriter
             int subjIndent = 0, predIndent = 0;
             string temp;
 
-            foreach (Triple t in ts)
+            foreach (var t in ts)
             {
                 if (lastSubj == null || !t.Subject.Equals(lastSubj))
                 {
@@ -432,8 +432,8 @@ public class CompressingTurtleWriter
         WriterHelper.SortTriplesBySubjectPredicate(annotationTriples);
         INode lastPred = null;
         indent += 3;
-        int predIndent = 0;
-        foreach (Triple t in annotationTriples)
+        var predIndent = 0;
+        foreach (var t in annotationTriples)
         {
             if (lastPred == null || !lastPred.Equals(t.Predicate))
             {
