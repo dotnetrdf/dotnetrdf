@@ -148,7 +148,7 @@ public class RemoteUpdateProcessor : ISparqlUpdateProcessor
     /// <param name="commands">Command Set.</param>
     public void ProcessCommandSet(SparqlUpdateCommandSet commands)
     {
-        DateTime start = DateTime.Now;
+        var start = DateTime.Now;
         commands.UpdateExecutionTime = null;
         try
         {
@@ -163,7 +163,7 @@ public class RemoteUpdateProcessor : ISparqlUpdateProcessor
         }
         finally
         {
-            TimeSpan elapsed = (DateTime.Now - start);
+            var elapsed = (DateTime.Now - start);
             commands.UpdateExecutionTime = elapsed;
         }
     }

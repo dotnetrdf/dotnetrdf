@@ -151,8 +151,8 @@ public class Select
     /// <returns></returns>
     public SparqlQuery ToQuery()
     {
-        SparqlQuery q = _pattern.ToQuery();
-        foreach (SparqlVariable var in _variables)
+        var q = _pattern.ToQuery();
+        foreach (var var in _variables)
         {
             q.AddVariable(var);
         }

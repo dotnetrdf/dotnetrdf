@@ -41,7 +41,7 @@ public static class ResultsHandlerExtensions
         {
             handler.StartResults();
 
-            SparqlQuery q = context.Query;
+            var q = context.Query;
             SparqlQueryType type;
             if (q == null)
             {
@@ -75,7 +75,7 @@ public static class ResultsHandlerExtensions
                 {
                     if (!handler.HandleVariable(var)) ParserHelper.Stop();
                 }
-                foreach (ISet s in context.OutputMultiset.Sets)
+                foreach (var s in context.OutputMultiset.Sets)
                 {
                     if (!handler.HandleResult(context.Options.SparqlResultFactory.MakeResult(s))) ParserHelper.Stop();
                 }

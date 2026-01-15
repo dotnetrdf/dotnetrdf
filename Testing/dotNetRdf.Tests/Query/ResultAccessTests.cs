@@ -60,7 +60,7 @@ public class ResultAccessTests
 
     private SparqlResultSet GetResults(SparqlQuery query)
     {
-        object results = _processor.ProcessQuery(query);
+        var results = _processor.ProcessQuery(query);
         Assert.IsType<SparqlResultSet>(results, exactMatch: false);
         return results as SparqlResultSet;
     }
@@ -69,8 +69,8 @@ public class ResultAccessTests
     public void SparqlResultAccessByName()
     {
         var query = "SELECT * WHERE { ?s a ?type ; rdfs:comment ?comment }";
-        SparqlQuery q = CreateQuery(query);
-        SparqlResultSet results = GetResults(q);
+        var q = CreateQuery(query);
+        var results = GetResults(q);
 
         foreach (SparqlResult r in results)
         {
@@ -85,8 +85,8 @@ public class ResultAccessTests
     {
         var query =
             "PREFIX ex: <http://example.org/> SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:range ?range } }";
-        SparqlQuery q = CreateQuery(query);
-        SparqlResultSet results = GetResults(q);
+        var q = CreateQuery(query);
+        var results = GetResults(q);
 
         foreach (SparqlResult r in results)
         {
@@ -98,8 +98,8 @@ public class ResultAccessTests
     public void SparqlResultAccessByNameSafeHasValue()
     {
         var query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
-        SparqlQuery q = CreateQuery(query);
-        SparqlResultSet results = GetResults(q);
+        var q = CreateQuery(query);
+        var results = GetResults(q);
 
         var vars = results.Variables.ToList();
         foreach (SparqlResult r in results)
@@ -118,15 +118,15 @@ public class ResultAccessTests
     public void SparqlResultAccessByNameSafeTryGetValue()
     {
         var query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
-        SparqlQuery q = CreateQuery(query);
-        SparqlResultSet results = GetResults(q);
+        var q = CreateQuery(query);
+        var results = GetResults(q);
 
         var vars = results.Variables.ToList();
         foreach (SparqlResult r in results)
         {
             foreach (var var in vars)
             {
-                if (r.TryGetValue(var, out INode value) && value != null)
+                if (r.TryGetValue(var, out var value) && value != null)
                 {
                     Assert.NotNull(value.ToString(_formatter));
                 }
@@ -138,15 +138,15 @@ public class ResultAccessTests
     public void SparqlResultAccessByNameSafeTryGetBoundValue()
     {
         var query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
-        SparqlQuery q = CreateQuery(query);
-        SparqlResultSet results = GetResults(q);
+        var q = CreateQuery(query);
+        var results = GetResults(q);
 
         var vars = results.Variables.ToList();
         foreach (SparqlResult r in results)
         {
             foreach (var var in vars)
             {
-                if (r.TryGetBoundValue(var, out INode value))
+                if (r.TryGetBoundValue(var, out var value))
                 {
                     Assert.NotNull(value);
                 }
@@ -158,8 +158,8 @@ public class ResultAccessTests
     public void SparqlResultAccessByIndex()
     {
         var query = "SELECT * WHERE { ?s a ?type ; rdfs:comment ?comment }";
-        SparqlQuery q = CreateQuery(query);
-        SparqlResultSet results = GetResults(q);
+        var q = CreateQuery(query);
+        var results = GetResults(q);
 
         var vars = results.Variables.ToList();
         foreach (SparqlResult r in results)
@@ -175,8 +175,8 @@ public class ResultAccessTests
     public void SparqlResultSetVariableOrder4()
     {
         var query = "SELECT ?comment ?type WHERE { ?s a ?type ; rdfs:comment ?comment }";
-        SparqlQuery q = CreateQuery(query);
-        SparqlResultSet results = GetResults(q);
+        var q = CreateQuery(query);
+        var results = GetResults(q);
 
         TestVariableOrder(results, ["comment", "type"]);
     }

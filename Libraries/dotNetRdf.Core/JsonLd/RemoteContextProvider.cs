@@ -52,13 +52,13 @@ public class RemoteContextProvider: IRemoteContextProvider
     /// <inheritdoc />
     public JsonLdRemoteContext GetRemoteContext(Uri reference)
     {
-        if (_remoteContextCache.TryGetValue(reference, out JsonLdRemoteContext cachedContext)) return cachedContext;
+        if (_remoteContextCache.TryGetValue(reference, out var cachedContext)) return cachedContext;
         try
         {
-            RemoteDocument remoteDoc = LoadJson(reference,
+            var remoteDoc = LoadJson(reference,
                 new JsonLdLoaderOptions
                     { Profile = JsonLdVocabulary.Context, RequestProfile = JsonLdVocabulary.Context }, _options);
-            JToken jsonRepresentation = GetJsonRepresentation(remoteDoc);
+            var jsonRepresentation = GetJsonRepresentation(remoteDoc);
             if (jsonRepresentation is not JObject remoteJsonObject)
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext,

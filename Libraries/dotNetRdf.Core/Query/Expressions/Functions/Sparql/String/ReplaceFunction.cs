@@ -103,7 +103,7 @@ public class ReplaceFunction
         if (find is ConstantTerm constantFind)
         {
             // If the Pattern is a Node Expression Term then it is a fixed Pattern
-            IValuedNode n = constantFind.Node;
+            var n = constantFind.Node;
             if (n.NodeType == NodeType.Literal)
             {
                 // Try to parse as a Regular Expression
@@ -128,7 +128,7 @@ public class ReplaceFunction
         if (replace is ConstantTerm constantReplace)
         {
             // If the Replace is a Node Expression Term then it is a fixed Pattern
-            IValuedNode n = constantReplace.Node;
+            var n = constantReplace.Node;
             if (n.NodeType == NodeType.Literal)
             {
                 Replace = n.AsString();
@@ -161,7 +161,7 @@ public class ReplaceFunction
     public RegexOptions GetOptions(INode n, bool throwErrors)
     {
         // Start by resetting to no options
-        RegexOptions options = RegexOptions.None;
+        var options = RegexOptions.None;
 
         if (n == null)
         {

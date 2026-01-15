@@ -94,7 +94,7 @@ internal class Select : Sparql
             var result = Result.Create(report.Graph);
             result.FocusNode = solution["this"];
 
-            if (solution.TryGetBoundValue("path", out INode pathValue) && pathValue.NodeType == NodeType.Uri)
+            if (solution.TryGetBoundValue("path", out var pathValue) && pathValue.NodeType == NodeType.Uri)
             {
                 result.ResultPath = new Predicate(pathValue, result.Graph);
             }
@@ -147,12 +147,12 @@ internal class Select : Sparql
             pattern.TriplePatterns.Insert(i, new PropertyPathPattern(triplePattern.Subject, path, triplePattern.Object));
         }
 
-        foreach (GraphPattern subPattern in pattern.ChildGraphPatterns)
+        foreach (var subPattern in pattern.ChildGraphPatterns)
         {
             BindPath(subPattern, path);
         }
 
-        foreach (SubQueryPattern subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
+        foreach (var subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
         {
             BindPath(subQueryPattern.SubQuery.RootGraphPattern, path);
         }

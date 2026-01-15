@@ -77,7 +77,7 @@ public class ScalarArgumentsTests
 
     private void CheckQueryParsesIn11(String query)
     {
-            SparqlQuery q = _parser11.ParseFromString(query);
+            var q = _parser11.ParseFromString(query);
             Console.WriteLine("Query Parses under SPARQL 1.1 as expected");
     }
 
@@ -85,7 +85,7 @@ public class ScalarArgumentsTests
     {
         try
         {
-            SparqlQuery q = _parser11.ParseFromString(query);
+            var q = _parser11.ParseFromString(query);
             Assert.Fail("Query Parsed under SPARQL 1.1 when it should have failed to parse");
         }
         catch (Exception)
@@ -96,7 +96,7 @@ public class ScalarArgumentsTests
 
     private void CheckQueryParsesInExtended(String query)
     {
-            SparqlQuery q = _parserExt.ParseFromString(query);
+            var q = _parserExt.ParseFromString(query);
             Console.WriteLine("Query Parses under SPARQL 1.1 with Extensions as expected");
     }
 
@@ -104,7 +104,7 @@ public class ScalarArgumentsTests
     {
         try
         {
-            SparqlQuery q = _parserExt.ParseFromString(query);
+            var q = _parserExt.ParseFromString(query);
             Assert.Fail("Query Parsed under SPARQL 1.1 with Extensions when it should have failed to parse");
         }
         catch (Exception)

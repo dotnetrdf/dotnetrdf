@@ -61,7 +61,7 @@ public class RemoteEndpoints
         input.AppendLine("SELECT * WHERE {?s ?p ?o}");
         input.AppendLine(new String('#', 2048));
 
-        SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
+        var endpoint = RemoteEndpoints.GetQueryEndpoint();
         Object results = endpoint.QueryWithResultSet(input.ToString());
         Assert.IsType<SparqlResultSet>(results, exactMatch: false);
         if (results is SparqlResultSet)
@@ -80,14 +80,14 @@ public class RemoteEndpoints
         input.AppendLine("LOAD <http://dbpedia.org/resource/Ilkeston>");
         input.AppendLine(new String('#', 2048));
 
-        SparqlRemoteUpdateEndpoint endpoint = RemoteEndpoints.GetUpdateEndpoint();
+        var endpoint = RemoteEndpoints.GetUpdateEndpoint();
         endpoint.Update(input.ToString());
     }
 
     [Fact]
     public void SparqlRemoteEndpointCountHandler()
     {
-        SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
+        var endpoint = RemoteEndpoints.GetQueryEndpoint();
         var handler = new CountHandler();
         endpoint.QueryWithResultGraph(handler, "CONSTRUCT { ?s ?p ?o } WHERE { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
 
@@ -98,7 +98,7 @@ public class RemoteEndpoints
     [Fact]
     public void SparqlRemoteEndpointResultCountHandler()
     {
-        SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
+        var endpoint = RemoteEndpoints.GetQueryEndpoint();
         var handler = new ResultCountHandler();
         endpoint.QueryWithResultSet(handler, "SELECT * WHERE { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
 
@@ -125,7 +125,7 @@ results.Dispose()
         GC.GetTotalMemory(true);
 
         //First off make sure to load some data into the some
-        SparqlRemoteUpdateEndpoint updateEndpoint = RemoteEndpoints.GetUpdateEndpoint();
+        var updateEndpoint = RemoteEndpoints.GetUpdateEndpoint();
         updateEndpoint.Update("DROP ALL; INSERT DATA { <http://subject> <http://predicate> <http://object> . }");
 
         var totalRuns = 10000;
@@ -133,13 +133,13 @@ results.Dispose()
         //Loop over making queries to try and reproduce the memory leak
         for (var i = 1; i <= totalRuns; i++)
         {
-            SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
+            var endpoint = RemoteEndpoints.GetQueryEndpoint();
             var queryString = new SparqlParameterizedString
             {
                 CommandText = "SELECT * WHERE { ?s ?p ?o }"
             };
 
-            SparqlResultSet results = endpoint.QueryWithResultSet(queryString.ToString());
+            var results = endpoint.QueryWithResultSet(queryString.ToString());
             Assert.Equal(1, results.Count);
             foreach (SparqlResult result in results)
             {
@@ -162,7 +162,7 @@ results.Dispose()
         GC.GetTotalMemory(true);
 
         //First off make sure to load some data into the some
-        SparqlRemoteUpdateEndpoint updateEndpoint = RemoteEndpoints.GetUpdateEndpoint();
+        var updateEndpoint = RemoteEndpoints.GetUpdateEndpoint();
         updateEndpoint.Update("DROP ALL");
 
         var totalRuns = 10000;
@@ -175,7 +175,7 @@ results.Dispose()
             //Add new data each time around
             updateEndpoint.Update("INSERT DATA { <http://subject/" + (i % subjects) + "> <http://predicate/" + (i % predicates) + "> <http://object/" + i + "> . }");
 
-            SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
+            var endpoint = RemoteEndpoints.GetQueryEndpoint();
             var queryString = new SparqlParameterizedString
             {
                 CommandText = "SELECT * WHERE { <http://subject/" + (i % 1000) + "> ?p ?o }"
@@ -196,7 +196,7 @@ results.Dispose()
     [Fact]
     public void SparqlRemoteEndpointWriteThroughHandler()
     {
-        SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
+        var endpoint = RemoteEndpoints.GetQueryEndpoint();
         var handler = new WriteThroughHandler(typeof(NTriplesFormatter), Console.Out, false);
         endpoint.QueryWithResultGraph(handler, "CONSTRUCT WHERE { ?s ?p ?o }");
     }
@@ -204,7 +204,7 @@ results.Dispose()
     [Fact]
     public void SparqlRemoteEndpointAsyncApiQueryWithResultSet()
     {
-        SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
+        var endpoint = RemoteEndpoints.GetQueryEndpoint();
         var signal = new ManualResetEvent(false);
         endpoint.QueryWithResultSet("SELECT * WHERE { ?s ?p ?o }", (r, s) =>
         {
@@ -220,7 +220,7 @@ results.Dispose()
     [Fact]
     public void SparqlRemoteEndpointAsyncApiQueryWithResultGraph()
     {
-        SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
+        var endpoint = RemoteEndpoints.GetQueryEndpoint();
         var signal = new ManualResetEvent(false);
         endpoint.QueryWithResultGraph("CONSTRUCT WHERE { ?s ?p ?o }", (r, s) =>
         {
@@ -239,7 +239,7 @@ results.Dispose()
         Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
             "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-        SparqlRemoteUpdateEndpoint endpoint = RemoteEndpoints.GetUpdateEndpoint();
+        var endpoint = RemoteEndpoints.GetUpdateEndpoint();
         var signal = new ManualResetEvent(false);
         endpoint.Update("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/async/graph>", s =>
         {
@@ -251,8 +251,8 @@ results.Dispose()
         Assert.True(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
 
         //Check that the Graph was really loaded
-        SparqlRemoteEndpoint queryEndpoint = RemoteEndpoints.GetQueryEndpoint();
-        IGraph g = queryEndpoint.QueryWithResultGraph("CONSTRUCT FROM <http://example.org/async/graph> WHERE { ?s ?p ?o }");
+        var queryEndpoint = RemoteEndpoints.GetQueryEndpoint();
+        var g = queryEndpoint.QueryWithResultGraph("CONSTRUCT FROM <http://example.org/async/graph> WHERE { ?s ?p ?o }");
         Assert.False(g.IsEmpty, "Graph should not be empty");
     }
 
@@ -263,7 +263,7 @@ results.Dispose()
             "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
         String query;
-        using (StreamReader reader = File.OpenText("resources\\dbpedia-query-time.rq"))
+        using (var reader = File.OpenText("resources\\dbpedia-query-time.rq"))
         {
             query = reader.ReadToEnd();
             reader.Close();
@@ -315,7 +315,7 @@ results.Dispose()
     public void SparqlRemoteEndpointSyncVsAsyncTimeOpenLinkLOD()
     {
         String query;
-        using (StreamReader reader = File.OpenText("resources\\dbpedia-query-time.rq"))
+        using (var reader = File.OpenText("resources\\dbpedia-query-time.rq"))
         {
             query = reader.ReadToEnd();
             reader.Close();
@@ -370,7 +370,7 @@ results.Dispose()
     public void SparqlRemoteEndpointSyncVsAsyncTimeFactforge()
     {
         String query;
-        using (StreamReader reader = File.OpenText("resources\\dbpedia-query-time.rq"))
+        using (var reader = File.OpenText("resources\\dbpedia-query-time.rq"))
         {
             query = reader.ReadToEnd();
             reader.Close();
@@ -425,13 +425,13 @@ results.Dispose()
     public void SparqlRemoteEndpointSyncVsAsyncTimeLocal()
     {
         String query;
-        using (StreamReader reader = File.OpenText(Path.Combine("resources", "dbpedia-query-time.rq")))
+        using (var reader = File.OpenText(Path.Combine("resources", "dbpedia-query-time.rq")))
         {
             query = reader.ReadToEnd();
             reader.Close();
         }
 
-        SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
+        var endpoint = RemoteEndpoints.GetQueryEndpoint();
         var timer = new Stopwatch();
         timer.Start();
         var syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
@@ -480,7 +480,7 @@ results.Dispose()
             "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
         String query;
-        using (StreamReader reader = File.OpenText("dbpedia-query-time.rq"))
+        using (var reader = File.OpenText("dbpedia-query-time.rq"))
         {
             query = reader.ReadToEnd();
             reader.Close();

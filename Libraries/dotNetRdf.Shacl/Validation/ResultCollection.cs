@@ -77,7 +77,7 @@ public class ResultCollection : ICollection<Result>
 
     void ICollection<Result>.Clear()
     {
-        foreach (Result result in Results.ToList())
+        foreach (var result in Results.ToList())
         {
             ((ICollection<Result>)this).Remove(result);
         }

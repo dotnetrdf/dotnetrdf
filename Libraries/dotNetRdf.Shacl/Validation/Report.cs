@@ -49,7 +49,7 @@ public class Report : GraphWrapperNode
     {
         get
         {
-            INode conforms = Vocabulary.Conforms.ObjectsOf(this).SingleOrDefault();
+            var conforms = Vocabulary.Conforms.ObjectsOf(this).SingleOrDefault();
 
             if (conforms is null)
             {
@@ -61,7 +61,7 @@ public class Report : GraphWrapperNode
 
         internal set
         {
-            foreach (INode conforms in Vocabulary.Conforms.ObjectsOf(this).ToList())
+            foreach (var conforms in Vocabulary.Conforms.ObjectsOf(this).ToList())
             {
                 Graph.Retract(this, Vocabulary.Conforms, conforms);
             }
@@ -77,7 +77,7 @@ public class Report : GraphWrapperNode
     {
         get
         {
-            IEnumerable<INode> reportNodes = Graph.GetTriplesWithPredicateObject(Vocabulary.RdfType, Vocabulary.ValidationReport)
+            var reportNodes = Graph.GetTriplesWithPredicateObject(Vocabulary.RdfType, Vocabulary.ValidationReport)
                 .Select(t => t.Subject);
             var describer = new ReportDescribeAlgorithm();
             return describer.Describe(Graph, reportNodes);
@@ -121,7 +121,7 @@ WHERE {
 
         set
         {
-            foreach (INode type in Vocabulary.RdfType.ObjectsOf(this).ToList())
+            foreach (var type in Vocabulary.RdfType.ObjectsOf(this).ToList())
             {
                 Graph.Retract(this, Vocabulary.RdfType, type);
             }

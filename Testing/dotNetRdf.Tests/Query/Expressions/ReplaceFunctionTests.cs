@@ -39,9 +39,9 @@ public class ReplaceFunctionTests
     public void SparqlParsingReplaceExpression()
     {
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString("SELECT (REPLACE(?term, 'find', 'replace') AS ?test) { }");
+        var q = parser.ParseFromString("SELECT (REPLACE(?term, 'find', 'replace') AS ?test) { }");
 
-        ISparqlExpression expr = q.Variables.First().Projection;
+        var expr = q.Variables.First().Projection;
         Assert.IsType<ReplaceFunction>(expr);
     }
 

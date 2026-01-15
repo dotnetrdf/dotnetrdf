@@ -45,7 +45,7 @@ sealed class SelectAssignmentVariableNamePart<TExpression> : AssignmentVariableN
     {
         _selectBuilder.And(mapper =>
         {
-            TExpression assignmentExpression = BuildAssignmentExpression(mapper);
+            var assignmentExpression = BuildAssignmentExpression(mapper);
 
             if (assignmentExpression is ISparqlAggregate)
             {

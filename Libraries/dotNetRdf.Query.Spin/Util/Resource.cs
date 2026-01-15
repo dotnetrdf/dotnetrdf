@@ -134,7 +134,7 @@ internal class Resource : WrapperNode, IResource, IComparable<IResource>, IEquat
     {
         var result = new List<IResource>();
         INode listRoot = this;
-        Triple step = _model.GetTriplesWithSubjectPredicate(listRoot, RDF.PropertyFirst).FirstOrDefault();
+        var step = _model.GetTriplesWithSubjectPredicate(listRoot, RDF.PropertyFirst).FirstOrDefault();
         if (step != null)
         {
             while (step != null)
@@ -212,7 +212,7 @@ internal class Resource : WrapperNode, IResource, IComparable<IResource>, IEquat
 
     public IResource getObject(INode property)
     {
-        Triple t = getProperty(property);
+        var t = getProperty(property);
         if (t != null)
         {
             return Resource.Get(t.Object, Graph, _model);
@@ -225,7 +225,7 @@ internal class Resource : WrapperNode, IResource, IComparable<IResource>, IEquat
 
     public IResource getResource(INode property)
     {
-        IResource obj = getObject(property);
+        var obj = getObject(property);
         if (obj != null && !obj.isLiteral())
         {
             return obj;
@@ -235,7 +235,7 @@ internal class Resource : WrapperNode, IResource, IComparable<IResource>, IEquat
 
     public ILiteralNode getLiteral(INode property)
     {
-        IResource obj = getObject(property);
+        var obj = getObject(property);
         if (obj != null && obj.isLiteral())
         {
             return (ILiteralNode)obj.getSource();
@@ -245,7 +245,7 @@ internal class Resource : WrapperNode, IResource, IComparable<IResource>, IEquat
 
     public bool? getBoolean(INode property)
     {
-        ILiteralNode obj = getLiteral(property);
+        var obj = getLiteral(property);
         if (obj is IValuedNode valuedNode)
         {
             return valuedNode.AsBoolean();
@@ -255,7 +255,7 @@ internal class Resource : WrapperNode, IResource, IComparable<IResource>, IEquat
 
     public int? getInteger(INode property)
     {
-        ILiteralNode obj = getLiteral(property);
+        var obj = getLiteral(property);
         if (obj is IValuedNode valuedNode)
         {
             return (int)valuedNode.AsInteger();
@@ -264,7 +264,7 @@ internal class Resource : WrapperNode, IResource, IComparable<IResource>, IEquat
     }
     public long? getLong(INode property)
     {
-        ILiteralNode obj = getLiteral(property);
+        var obj = getLiteral(property);
         if (obj is IValuedNode valuedNode)
         {
             return valuedNode.AsInteger();
@@ -274,14 +274,14 @@ internal class Resource : WrapperNode, IResource, IComparable<IResource>, IEquat
 
     public string getString(INode property)
     {
-        ILiteralNode obj = getLiteral(property);
+        var obj = getLiteral(property);
         return obj?.Value;
     }
 
 
     public IResource inferRDFNode(INode property)
     {
-        IResource existing = getObject(property);
+        var existing = getObject(property);
         return existing;
     }
 

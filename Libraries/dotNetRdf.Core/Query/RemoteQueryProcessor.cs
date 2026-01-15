@@ -70,7 +70,7 @@ public class RemoteQueryProcessor
     public object ProcessQuery(SparqlQuery query)
     {
         query.QueryExecutionTime = null;
-        DateTime start = DateTime.Now;
+        var start = DateTime.Now;
         try
         {
             object temp;
@@ -103,7 +103,7 @@ public class RemoteQueryProcessor
         }
         finally
         {
-            TimeSpan elapsed = DateTime.Now - start;
+            var elapsed = DateTime.Now - start;
             query.QueryExecutionTime = elapsed;
         }
     }
@@ -117,7 +117,7 @@ public class RemoteQueryProcessor
     public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
     {
         query.QueryExecutionTime = null;
-        DateTime start = DateTime.Now;
+        var start = DateTime.Now;
         try
         {
             switch (query.QueryType)
@@ -161,7 +161,7 @@ public class RemoteQueryProcessor
         }
         finally
         {
-            TimeSpan elapsed = DateTime.Now - start;
+            var elapsed = DateTime.Now - start;
             query.QueryExecutionTime = elapsed;
         }
     }
@@ -180,7 +180,7 @@ public class RemoteQueryProcessor
         object state)
     {
         query.QueryExecutionTime = null;
-        DateTime start = DateTime.Now;
+        var start = DateTime.Now;
         try
         {
             switch (query.QueryType)
@@ -258,7 +258,7 @@ public class RemoteQueryProcessor
         }
         finally
         {
-            TimeSpan elapsed = DateTime.Now - start;
+            var elapsed = DateTime.Now - start;
             query.QueryExecutionTime = elapsed;
         }
     }
@@ -278,7 +278,7 @@ public class RemoteQueryProcessor
         QueryCallback callback, object state)
     {
         query.QueryExecutionTime = null;
-        DateTime start = DateTime.Now;
+        var start = DateTime.Now;
         try
         {
             switch (query.QueryType)
@@ -360,7 +360,7 @@ public class RemoteQueryProcessor
         }
         finally
         {
-            TimeSpan elapsed = (DateTime.Now - start);
+            var elapsed = (DateTime.Now - start);
             query.QueryExecutionTime = elapsed;
         }
     }
@@ -369,7 +369,7 @@ public class RemoteQueryProcessor
     public async Task<object> ProcessQueryAsync(SparqlQuery query)
     {
         query.QueryExecutionTime = null;
-        DateTime start = DateTime.Now;
+        var start = DateTime.Now;
         try
         {
             switch (query.QueryType)
@@ -412,7 +412,7 @@ public class RemoteQueryProcessor
         finally
 
         {
-            TimeSpan elapsed = (DateTime.Now - start);
+            var elapsed = (DateTime.Now - start);
             query.QueryExecutionTime = elapsed;
         }
     }
@@ -421,7 +421,7 @@ public class RemoteQueryProcessor
     public Task ProcessQueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
     {
         query.QueryExecutionTime = null;
-        DateTime start = DateTime.Now;
+        var start = DateTime.Now;
         try
         {
             switch (query.QueryType)
@@ -464,7 +464,7 @@ public class RemoteQueryProcessor
         finally
 
         {
-            TimeSpan elapsed = (DateTime.Now - start);
+            var elapsed = (DateTime.Now - start);
             query.QueryExecutionTime = elapsed;
         }
     }

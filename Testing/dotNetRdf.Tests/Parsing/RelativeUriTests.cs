@@ -48,11 +48,11 @@ public class NamespaceTests
         //Expect a non-empty grpah with a single triple
         Assert.False(g.IsEmpty);
         Assert.Equal(1, g.Triples.Count);
-        Triple t = g.Triples.First();
+        var t = g.Triples.First();
 
         //Object should get it's relative URI resolved into
         //a File URI
-        Uri obj = ((IUriNode)t.Object).Uri;
+        var obj = ((IUriNode)t.Object).Uri;
         Assert.True(obj.IsFile);
         Assert.Equal("relative", obj.Segments[obj.Segments.Length - 1]);
     }
@@ -73,11 +73,11 @@ public class NamespaceTests
         //Expect a non-empty grpah with a single triple
         Assert.False(g.IsEmpty);
         Assert.Equal(1, g.Triples.Count);
-        Triple t = g.Triples.First();
+        var t = g.Triples.First();
 
         //Object should get it's relative URI resolved into
         //the correct HTTP URI
-        Uri obj = ((IUriNode)t.Object).Uri;
+        var obj = ((IUriNode)t.Object).Uri;
         Assert.Equal("http", obj.Scheme);
         Assert.Equal("example.org", obj.Host);
         Assert.Equal("relative", obj.Segments[1]);
@@ -121,11 +121,11 @@ public class NamespaceTests
         //Expect a non-empty grpah with a single triple
         Assert.False(g.IsEmpty);
         Assert.Equal(1, g.Triples.Count);
-        Triple t = g.Triples.First();
+        var t = g.Triples.First();
 
         //Predicate should get it's relative URI resolved into
         //the correct HTTP URI
-        Uri obj = ((IUriNode)t.Object).Uri;
+        var obj = ((IUriNode)t.Object).Uri;
         Assert.Equal("http", obj.Scheme);
         Assert.Equal("example.org", obj.Host);
         Assert.Equal("relative", obj.Segments[1]);

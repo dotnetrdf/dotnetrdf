@@ -42,9 +42,9 @@ internal class ReportDescribeAlgorithm : BaseDescribeAlgorithm
 
         void process(INode originalSubject, INode mappedSubject = null)
         {
-            foreach (Triple t in index.GetTriplesWithSubject(originalSubject))
+            foreach (var t in index.GetTriplesWithSubject(originalSubject))
             {
-                INode @object = t.Object;
+                var @object = t.Object;
                 if (@object.NodeType == NodeType.Blank && !done.Contains(@object))
                 {
                     if (Vocabulary.PredicatesToExpandInReport.Contains(t.Predicate))
@@ -62,17 +62,17 @@ internal class ReportDescribeAlgorithm : BaseDescribeAlgorithm
             }
         }
 
-        foreach (INode node in nodes)
+        foreach (var node in nodes)
         {
             process(node);
 
             while (outstanding.Any())
             {
-                INode mappedSubject = outstanding.Dequeue();
+                var mappedSubject = outstanding.Dequeue();
 
                 if (done.Add(mappedSubject))
                 {
-                    if (map.TryGetValue(mappedSubject, out INode originalSubject))
+                    if (map.TryGetValue(mappedSubject, out var originalSubject))
                     {
                         process(originalSubject, mappedSubject);
                     }

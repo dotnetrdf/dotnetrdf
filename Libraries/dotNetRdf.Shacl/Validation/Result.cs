@@ -52,7 +52,7 @@ public class Result : GraphWrapperNode
 
         set
         {
-            foreach (INode severity in Vocabulary.ResultSeverity.ObjectsOf(this).ToList())
+            foreach (var severity in Vocabulary.ResultSeverity.ObjectsOf(this).ToList())
             {
                 Graph.Retract(this, Vocabulary.ResultSeverity, severity);
             }
@@ -78,7 +78,7 @@ public class Result : GraphWrapperNode
 
         set
         {
-            foreach (INode focusNode in Vocabulary.FocusNode.ObjectsOf(this).ToList())
+            foreach (var focusNode in Vocabulary.FocusNode.ObjectsOf(this).ToList())
             {
                 Graph.Retract(this, Vocabulary.FocusNode, focusNode);
             }
@@ -104,7 +104,7 @@ public class Result : GraphWrapperNode
 
         set
         {
-            foreach (INode valueNode in Vocabulary.Value.ObjectsOf(this).ToList())
+            foreach (var valueNode in Vocabulary.Value.ObjectsOf(this).ToList())
             {
                 Graph.Retract(this, Vocabulary.Value, valueNode);
             }
@@ -130,7 +130,7 @@ public class Result : GraphWrapperNode
 
         set
         {
-            foreach (INode sourceShape in Vocabulary.SourceShape.ObjectsOf(this).ToList())
+            foreach (var sourceShape in Vocabulary.SourceShape.ObjectsOf(this).ToList())
             {
                 Graph.Retract(this, Vocabulary.SourceShape, sourceShape);
             }
@@ -157,7 +157,7 @@ public class Result : GraphWrapperNode
 
         set
         {
-            foreach (INode sourceShape in Vocabulary.ResultMessage.ObjectsOf(this).ToList())
+            foreach (var sourceShape in Vocabulary.ResultMessage.ObjectsOf(this).ToList())
             {
                 Graph.Retract(this, Vocabulary.ResultMessage, sourceShape);
             }
@@ -183,7 +183,7 @@ public class Result : GraphWrapperNode
 
         set
         {
-            foreach (INode sourceConstraintComponent in Vocabulary.SourceConstraintComponent.ObjectsOf(this).ToList())
+            foreach (var sourceConstraintComponent in Vocabulary.SourceConstraintComponent.ObjectsOf(this).ToList())
             {
                 Graph.Retract(this, Vocabulary.SourceConstraintComponent, sourceConstraintComponent);
             }
@@ -209,7 +209,7 @@ public class Result : GraphWrapperNode
 
         set
         {
-            foreach (INode sourceConstraintComponent in Vocabulary.ResultPath.ObjectsOf(this).ToList())
+            foreach (var sourceConstraintComponent in Vocabulary.ResultPath.ObjectsOf(this).ToList())
             {
                 Graph.Retract(this, Vocabulary.ResultPath, sourceConstraintComponent);
             }
@@ -235,7 +235,7 @@ public class Result : GraphWrapperNode
 
         set
         {
-            foreach (INode sourceConstraint in Vocabulary.SourceConstraint.ObjectsOf(this).ToList())
+            foreach (var sourceConstraint in Vocabulary.SourceConstraint.ObjectsOf(this).ToList())
             {
                 Graph.Retract(this, Vocabulary.SourceConstraint, sourceConstraint);
             }
@@ -258,7 +258,7 @@ public class Result : GraphWrapperNode
 
         set
         {
-            foreach (INode type in Vocabulary.RdfType.ObjectsOf(this).ToList())
+            foreach (var type in Vocabulary.RdfType.ObjectsOf(this).ToList())
             {
                 Graph.Retract(this, Vocabulary.RdfType, type);
             }
