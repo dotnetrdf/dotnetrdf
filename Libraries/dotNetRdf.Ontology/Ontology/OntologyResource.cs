@@ -116,8 +116,8 @@ public class OntologyResource
     /// <param name="requireLiteral">Whether only Literal values are acceptable.</param>
     protected void IntialiseProperty(string propertyUri, bool requireLiteral)
     {
-        IUriNode prop = _graph.CreateUriNode(_graph.UriFactory.Create(propertyUri));
-        foreach (Triple t in _graph.GetTriplesWithSubjectPredicate(_resource, prop))
+        var prop = _graph.CreateUriNode(_graph.UriFactory.Create(propertyUri));
+        foreach (var t in _graph.GetTriplesWithSubjectPredicate(_resource, prop))
         {
             if (requireLiteral)
             {
@@ -224,7 +224,7 @@ public class OntologyResource
     /// <param name="persist">Whether the removed values are removed from the Graph.</param>
     public bool ClearLiteralProperty(string propertyUri, bool persist)
     {
-        if (!_literalProperties.TryGetValue(propertyUri, out List<ILiteralNode> literals))
+        if (!_literalProperties.TryGetValue(propertyUri, out var literals))
         {
             return false;
         }
@@ -253,7 +253,7 @@ public class OntologyResource
     /// <param name="persist">Whether the removed values are removed from the Graph.</param>
     public bool ClearResourceProperty(string propertyUri, bool persist)
     {
-        if (!_resourceProperties.TryGetValue(propertyUri, out HashSet<INode> resources))
+        if (!_resourceProperties.TryGetValue(propertyUri, out var resources))
         {
             return false;
         }
@@ -459,7 +459,7 @@ public class OntologyResource
     /// <returns></returns>
     public bool ClearDifferentFrom()
     {
-        INode diffFrom = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyDifferentFrom));
+        var diffFrom = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyDifferentFrom));
         _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, diffFrom).ToList());
         _graph.Retract(_graph.GetTriplesWithPredicateObject(diffFrom, _resource).ToList());
         return ClearResourceProperty(OntologyHelper.PropertyDifferentFrom, true);
@@ -671,7 +671,7 @@ public class OntologyResource
     /// <returns></returns>
     public bool ClearSameAs()
     {
-        INode sameAs = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertySameAs));
+        var sameAs = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertySameAs));
         _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, sameAs).ToList());
         _graph.Retract(_graph.GetTriplesWithPredicateObject(sameAs, _resource).ToList());
         return ClearResourceProperty(OntologyHelper.PropertySameAs, true);
@@ -900,7 +900,7 @@ public class OntologyResource
     /// <returns></returns>
     public IEnumerable<ILiteralNode> GetLiteralProperty(string propertyUri)
     {
-        return _literalProperties.TryGetValue(propertyUri, out List<ILiteralNode> literals) ? literals : Enumerable.Empty<ILiteralNode>();
+        return _literalProperties.TryGetValue(propertyUri, out var literals) ? literals : Enumerable.Empty<ILiteralNode>();
     }
 
     /// <summary>
@@ -921,7 +921,7 @@ public class OntologyResource
     /// <returns></returns>
     public IEnumerable<INode> GetResourceProperty(string propertyUri)
     {
-        return _resourceProperties.TryGetValue(propertyUri, out HashSet<INode> resources) ? resources : Enumerable.Empty<INode>();
+        return _resourceProperties.TryGetValue(propertyUri, out var resources) ? resources : Enumerable.Empty<INode>();
     }
 
     /// <summary>
@@ -1127,7 +1127,7 @@ public class OntologyResource
     public static explicit operator Graph(OntologyResource resource)
     {
         var describe = new ConciseBoundedDescription();
-        IGraph results = describe.Describe(resource.Graph, new List<INode> {resource.Resource});
+        var results = describe.Describe(resource.Graph, new List<INode> {resource.Resource});
 
         if (results is Graph graph)
         {

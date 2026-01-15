@@ -64,7 +64,7 @@ public class OrderByVariable
     public override IComparer<Triple> GetComparer(IMatchTriplePattern pattern, ISparqlNodeComparer nodeComparer)
     {
         var comparer = new SparqlOrderingComparer(nodeComparer);
-        IComparer<Triple> child = Child?.GetComparer(pattern, nodeComparer);
+        var child = Child?.GetComparer(pattern, nodeComparer);
         Func<Triple, Triple, int> compareFunc = null;
             
         if (Variable.Equals(pattern.Subject.Variables.FirstOrDefault()))

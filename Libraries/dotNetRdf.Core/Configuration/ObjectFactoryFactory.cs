@@ -74,12 +74,12 @@ public class ObjectFactoryFactory
     /// <returns></returns>
     public bool CanLoadObject(Type t)
     {
-        Type iobjloader = typeof(IObjectFactory);
+        var iobjloader = typeof(IObjectFactory);
 
         // We can load any object which implements IObjectLoader and has a public unparameterized constructor
         if (t.GetInterfaces().Any(i => i.Equals(iobjloader)))
         {
-            ConstructorInfo c = t.GetConstructor([]);
+            var c = t.GetConstructor([]);
             if (c != null)
             {
                 return c.IsPublic;

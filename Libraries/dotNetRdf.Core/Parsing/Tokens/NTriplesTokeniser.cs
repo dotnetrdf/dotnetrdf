@@ -445,7 +445,7 @@ public class NTriplesTokeniser
         if (next == '<')
         {
             // Uri for Data Type
-            IToken temp = TryGetUri();
+            var temp = TryGetUri();
             return new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition - 3, temp.EndPosition + 1);
         }
         throw UnexpectedCharacter(next, "expected a < to start a URI to specify a Data Type for a Typed Literal");

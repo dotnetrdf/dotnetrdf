@@ -188,7 +188,7 @@ public class OperatorTests
             new LongNode(1),
             new LongNode(2)
         };
-        IValuedNode expected = new LongNode(3);
+        var expected = new LongNode(3);
         TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
     }
 
@@ -200,7 +200,7 @@ public class OperatorTests
             new LongNode(1),
             new DecimalNode(2)
         };
-        IValuedNode expected = new DecimalNode(3);
+        var expected = new DecimalNode(3);
         TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
     }
 
@@ -212,7 +212,7 @@ public class OperatorTests
             new LongNode(1),
             new FloatNode(2)
         };
-        IValuedNode expected = new FloatNode(3);
+        var expected = new FloatNode(3);
         TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
     }
 
@@ -224,7 +224,7 @@ public class OperatorTests
             new LongNode(1),
             new DoubleNode(2)
         };
-        IValuedNode expected = new DoubleNode(3);
+        var expected = new DoubleNode(3);
         TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
     }
 
@@ -236,7 +236,7 @@ public class OperatorTests
             new DecimalNode(1),
             new DecimalNode(2)
         };
-        IValuedNode expected = new DecimalNode(3);
+        var expected = new DecimalNode(3);
         TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
     }
 
@@ -248,7 +248,7 @@ public class OperatorTests
             new FloatNode(1),
             new DecimalNode(2)
         };
-        IValuedNode expected = new FloatNode(3);
+        var expected = new FloatNode(3);
         TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
     }
 
@@ -260,7 +260,7 @@ public class OperatorTests
             new DoubleNode(1),
             new DecimalNode(2)
         };
-        IValuedNode expected = new DoubleNode(3);
+        var expected = new DoubleNode(3);
         TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
     }
 
@@ -272,7 +272,7 @@ public class OperatorTests
             new FloatNode(1),
             new FloatNode(2)
         };
-        IValuedNode expected = new FloatNode(3);
+        var expected = new FloatNode(3);
         TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
     }
 
@@ -284,7 +284,7 @@ public class OperatorTests
             new FloatNode(1),
             new DoubleNode(2)
         };
-        IValuedNode expected = new DoubleNode(3);
+        var expected = new DoubleNode(3);
         TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
     }
 
@@ -296,7 +296,7 @@ public class OperatorTests
             new DoubleNode(1),
             new DoubleNode(2)
         };
-        IValuedNode expected = new DoubleNode(3);
+        var expected = new DoubleNode(3);
         TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
     }
 
@@ -308,7 +308,7 @@ public class OperatorTests
             new LongNode(1),
             new LongNode(2)
         };
-        IValuedNode expected = new LongNode(-1);
+        var expected = new LongNode(-1);
         TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
     }
 
@@ -320,7 +320,7 @@ public class OperatorTests
             new DecimalNode(1),
             new LongNode(2)
         };
-        IValuedNode expected = new DecimalNode(-1);
+        var expected = new DecimalNode(-1);
         TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
     }
 
@@ -332,7 +332,7 @@ public class OperatorTests
             new LongNode(1),
             new FloatNode(2)
         };
-        IValuedNode expected = new FloatNode(-1);
+        var expected = new FloatNode(-1);
         TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
     }
 
@@ -344,7 +344,7 @@ public class OperatorTests
             new LongNode(1),
             new DoubleNode(2)
         };
-        IValuedNode expected = new DoubleNode(-1);
+        var expected = new DoubleNode(-1);
         TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
     }
 
@@ -356,7 +356,7 @@ public class OperatorTests
             new DecimalNode(1),
             new DecimalNode(2)
         };
-        IValuedNode expected = new DecimalNode(-1);
+        var expected = new DecimalNode(-1);
         TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
     }
 
@@ -368,7 +368,7 @@ public class OperatorTests
             new DecimalNode(1),
             new FloatNode(2)
         };
-        IValuedNode expected = new FloatNode(-1);
+        var expected = new FloatNode(-1);
         TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
     }
 
@@ -380,7 +380,7 @@ public class OperatorTests
             new DecimalNode(1),
             new DoubleNode(2)
         };
-        IValuedNode expected = new DoubleNode(-1);
+        var expected = new DoubleNode(-1);
         TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
     }
 
@@ -392,7 +392,7 @@ public class OperatorTests
             new FloatNode(1),
             new FloatNode(2)
         };
-        IValuedNode expected = new FloatNode(-1);
+        var expected = new FloatNode(-1);
         TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
     }
 
@@ -404,7 +404,7 @@ public class OperatorTests
             new FloatNode(1),
             new DoubleNode(2)
         };
-        IValuedNode expected = new DoubleNode(-1);
+        var expected = new DoubleNode(-1);
         TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
     }
 
@@ -416,7 +416,7 @@ public class OperatorTests
             new DoubleNode(1),
             new DoubleNode(2)
         };
-        IValuedNode expected = new DoubleNode(-1);
+        var expected = new DoubleNode(-1);
         TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
     }
 
@@ -428,7 +428,7 @@ public class OperatorTests
             new LongNode(1),
             new LongNode(2)
         };
-        IValuedNode expected = new DecimalNode(0.5m);
+        var expected = new DecimalNode(0.5m);
         TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
     }
 
@@ -440,7 +440,7 @@ public class OperatorTests
             new LongNode(1),
             new DecimalNode(2)
         };
-        IValuedNode expected = new DecimalNode(0.5m);
+        var expected = new DecimalNode(0.5m);
         TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
     }
 
@@ -452,7 +452,7 @@ public class OperatorTests
             new LongNode(1),
             new FloatNode(2)
         };
-        IValuedNode expected = new FloatNode(0.5f);
+        var expected = new FloatNode(0.5f);
         TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
     }
 
@@ -464,7 +464,7 @@ public class OperatorTests
             new LongNode(1),
             new DoubleNode(2)
         };
-        IValuedNode expected = new DoubleNode(0.5d);
+        var expected = new DoubleNode(0.5d);
         TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
     }
 
@@ -476,7 +476,7 @@ public class OperatorTests
             new DecimalNode(1),
             new DecimalNode(2)
         };
-        IValuedNode expected = new DecimalNode(0.5m);
+        var expected = new DecimalNode(0.5m);
         TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
     }
 
@@ -488,7 +488,7 @@ public class OperatorTests
             new DecimalNode(1),
             new FloatNode(2)
         };
-        IValuedNode expected = new FloatNode(0.5f);
+        var expected = new FloatNode(0.5f);
         TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
     }
 
@@ -500,7 +500,7 @@ public class OperatorTests
             new DecimalNode(1),
             new DoubleNode(2)
         };
-        IValuedNode expected = new DoubleNode(0.5d);
+        var expected = new DoubleNode(0.5d);
         TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
     }
 
@@ -512,7 +512,7 @@ public class OperatorTests
             new FloatNode(1),
             new FloatNode(2)
         };
-        IValuedNode expected = new FloatNode(0.5f);
+        var expected = new FloatNode(0.5f);
         TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
     }
 
@@ -524,7 +524,7 @@ public class OperatorTests
             new FloatNode(1),
             new DoubleNode(2)
         };
-        IValuedNode expected = new DoubleNode(0.5d);
+        var expected = new DoubleNode(0.5d);
         TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
     }
 
@@ -536,7 +536,7 @@ public class OperatorTests
             new DoubleNode(1),
             new DoubleNode(2)
         };
-        IValuedNode expected = new DoubleNode(0.5d);
+        var expected = new DoubleNode(0.5d);
         TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
     }
 
@@ -548,7 +548,7 @@ public class OperatorTests
             new LongNode(3),
             new LongNode(6)
         };
-        IValuedNode expected = new LongNode(18);
+        var expected = new LongNode(18);
         TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
     }
 
@@ -560,7 +560,7 @@ public class OperatorTests
             new LongNode(3),
             new DecimalNode(6)
         };
-        IValuedNode expected = new DecimalNode(18);
+        var expected = new DecimalNode(18);
         TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
     }
 
@@ -572,7 +572,7 @@ public class OperatorTests
             new LongNode(3),
             new FloatNode(6)
         };
-        IValuedNode expected = new FloatNode(18);
+        var expected = new FloatNode(18);
         TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
     }
 
@@ -584,7 +584,7 @@ public class OperatorTests
             new LongNode(3),
             new DoubleNode(6)
         };
-        IValuedNode expected = new DoubleNode(18);
+        var expected = new DoubleNode(18);
         TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
     }
 
@@ -596,7 +596,7 @@ public class OperatorTests
             new DecimalNode(3),
             new DecimalNode(6)
         };
-        IValuedNode expected = new DecimalNode(18);
+        var expected = new DecimalNode(18);
         TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
     }
 
@@ -608,7 +608,7 @@ public class OperatorTests
             new DecimalNode(3),
             new FloatNode(6)
         };
-        IValuedNode expected = new FloatNode(18);
+        var expected = new FloatNode(18);
         TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
     }
 
@@ -620,7 +620,7 @@ public class OperatorTests
             new DecimalNode(3),
             new DoubleNode(6)
         };
-        IValuedNode expected = new DoubleNode(18);
+        var expected = new DoubleNode(18);
         TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
     }
 
@@ -632,7 +632,7 @@ public class OperatorTests
             new FloatNode(3),
             new FloatNode(6)
         };
-        IValuedNode expected = new FloatNode(18);
+        var expected = new FloatNode(18);
         TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
     }
 
@@ -644,7 +644,7 @@ public class OperatorTests
             new FloatNode(3),
             new DoubleNode(6)
         };
-        IValuedNode expected = new DoubleNode(18);
+        var expected = new DoubleNode(18);
         TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
     }
 
@@ -656,20 +656,20 @@ public class OperatorTests
             new DoubleNode(3),
             new DoubleNode(6)
         };
-        IValuedNode expected = new DoubleNode(18);
+        var expected = new DoubleNode(18);
         TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
     }
 
     [Fact]
     public void SparqlOperatorApplicationAddDateTime1()
     {
-        DateTimeOffset now = DateTimeOffset.Now;
+        var now = DateTimeOffset.Now;
         var ns = new List<IValuedNode>()
         {
             new DateTimeNode(now),
             new TimeSpanNode(new TimeSpan(1, 0, 0))
         };
-        IValuedNode expected = new DateTimeNode(now.AddHours(1));
+        var expected = new DateTimeNode(now.AddHours(1));
         TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         TestStrictApplication(SparqlOperatorType.Add, ns, expected, true);
     }
@@ -677,13 +677,13 @@ public class OperatorTests
     [Fact]
     public void SparqlOperatorApplicationSubtractDateTime1()
     {
-        DateTimeOffset now = DateTimeOffset.Now;
+        var now = DateTimeOffset.Now;
         var ns = new List<IValuedNode>()
         {
             new DateTimeNode(now),
             new TimeSpanNode(new TimeSpan(1, 0, 0))
         };
-        IValuedNode expected = new DateTimeNode(now.AddHours(-1));
+        var expected = new DateTimeNode(now.AddHours(-1));
         TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         TestStrictApplication(SparqlOperatorType.Subtract, ns, expected, true);
     }

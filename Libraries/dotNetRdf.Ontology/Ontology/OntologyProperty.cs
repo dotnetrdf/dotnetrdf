@@ -64,10 +64,10 @@ public class OntologyProperty
         IntialiseProperty(OntologyHelper.PropertyInverseOf, false);
 
         // Find derived properties
-        IUriNode subPropertyOf = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertySubPropertyOf));
+        var subPropertyOf = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertySubPropertyOf));
         _resourceProperties.Add(PropertyDerivedProperty, []);
         _resourceProperties.Add(PropertyDirectSubProperty, []);
-        foreach (Triple t in _graph.GetTriplesWithPredicateObject(subPropertyOf, _resource))
+        foreach (var t in _graph.GetTriplesWithPredicateObject(subPropertyOf, _resource))
         {
             _resourceProperties[PropertyDerivedProperty].Add(t.Subject);
             _resourceProperties[PropertyDirectSubProperty].Add(t.Subject);
@@ -77,9 +77,9 @@ public class OntologyProperty
         do
         {
             c = _resourceProperties[PropertyDerivedProperty].Count;
-            foreach (INode n in _resourceProperties[PropertyDerivedProperty].ToList())
+            foreach (var n in _resourceProperties[PropertyDerivedProperty].ToList())
             {
-                foreach (Triple t in _graph.GetTriplesWithPredicateObject(subPropertyOf, n))
+                foreach (var t in _graph.GetTriplesWithPredicateObject(subPropertyOf, n))
                 {
                     _resourceProperties[PropertyDerivedProperty].Add(t.Subject);
                 }
@@ -90,7 +90,7 @@ public class OntologyProperty
         _resourceProperties.Add(PropertyDirectSuperProperty, []);
         if (_resourceProperties.ContainsKey(OntologyHelper.PropertySubPropertyOf))
         {
-            foreach (INode node in _resourceProperties[OntologyHelper.PropertySubPropertyOf])
+            foreach (var node in _resourceProperties[OntologyHelper.PropertySubPropertyOf])
             {
                 _resourceProperties[PropertyDirectSuperProperty].Add(node);
             }
@@ -98,9 +98,9 @@ public class OntologyProperty
             do
             {
                 c = _resourceProperties[OntologyHelper.PropertySubPropertyOf].Count;
-                foreach (INode n in _resourceProperties[OntologyHelper.PropertySubPropertyOf].ToList())
+                foreach (var n in _resourceProperties[OntologyHelper.PropertySubPropertyOf].ToList())
                 {
-                    foreach (Triple t in _graph.GetTriplesWithSubjectPredicate(n, subPropertyOf))
+                    foreach (var t in _graph.GetTriplesWithSubjectPredicate(n, subPropertyOf))
                     {
                         _resourceProperties[OntologyHelper.PropertySubPropertyOf].Add(t.Object);
                     }
@@ -111,7 +111,7 @@ public class OntologyProperty
         // Find additional inverses
         if (!_resourceProperties.ContainsKey(OntologyHelper.PropertyInverseOf))
             _resourceProperties.Add(OntologyHelper.PropertyInverseOf, []);
-        foreach (Triple t in _graph.GetTriplesWithPredicateObject(
+        foreach (var t in _graph.GetTriplesWithPredicateObject(
             graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyInverseOf)), _resource))
         {
             _resourceProperties[OntologyHelper.PropertyInverseOf].Add(t.Subject);
@@ -315,7 +315,7 @@ public class OntologyProperty
     /// <returns></returns>
     public bool ClearEquivalentProperties()
     {
-        INode equivProp = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyEquivalentProperty));
+        var equivProp = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyEquivalentProperty));
         _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, equivProp).ToList());
         _graph.Retract(_graph.GetTriplesWithPredicateObject(equivProp, _resource).ToList());
         return ClearResourceProperty(OntologyHelper.PropertyEquivalentProperty, true);
@@ -417,7 +417,7 @@ public class OntologyProperty
     /// <returns></returns>
     public bool ClearInverseProperties()
     {
-        INode inverseOf = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyInverseOf));
+        var inverseOf = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyInverseOf));
         _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, inverseOf).ToList());
         _graph.Retract(_graph.GetTriplesWithPredicateObject(inverseOf, _resource).ToList());
         return ClearResourceProperty(OntologyHelper.PropertyInverseOf, true);

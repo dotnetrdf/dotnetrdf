@@ -64,7 +64,7 @@ public class OptimiserFactory
                 break;
 
             case QueryOptimiserWeighted:
-                INode statsObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
+                var statsObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
                 if (statsObj != null)
                 {
                     temp = ConfigurationLoader.LoadObject(g, statsObj);
@@ -122,7 +122,7 @@ public class OptimiserFactory
             case QueryOptimiserWeighted:
                 return true;
             default:
-                Type algOptType = typeof(IAlgebraOptimiser);
+                var algOptType = typeof(IAlgebraOptimiser);
                 return t.GetInterfaces().Any(i => i.Equals(algOptType));
         }
     }

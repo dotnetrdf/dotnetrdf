@@ -126,7 +126,7 @@ public class OrderBy
     /// <returns></returns>
     public SparqlQuery ToQuery()
     {
-        SparqlQuery q = _pattern.ToQuery();
+        var q = _pattern.ToQuery();
         if (_ordering != null)
         {
             q.OrderBy = _ordering;

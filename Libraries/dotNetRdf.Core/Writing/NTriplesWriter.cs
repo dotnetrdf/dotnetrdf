@@ -116,7 +116,7 @@ public class NTriplesWriter
         var ts = g.Triples.ToList();
         if (_sort) ts.Sort(new FullTripleComparer(new FastNodeComparer()));
 
-        foreach (Triple t in ts)
+        foreach (var t in ts)
         {
             output.WriteLine(TripleToNTriples(context, t));
         }
@@ -195,7 +195,7 @@ public class NTriplesWriter
     /// <param name="message">Warning Message.</param>
     private void RaiseWarning(string message)
     {
-        RdfWriterWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

@@ -62,10 +62,10 @@ public class OntologyClass
         IntialiseProperty(OntologyHelper.PropertyDisjointWith, false);
 
         // Find derived classes
-        IUriNode subClassOf = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertySubClassOf));
+        var subClassOf = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertySubClassOf));
         _resourceProperties.Add(PropertyDerivedClass, []);
         _resourceProperties.Add(PropertyDirectSubClass, []);
-        foreach (Triple t in _graph.GetTriplesWithPredicateObject(subClassOf, _resource))
+        foreach (var t in _graph.GetTriplesWithPredicateObject(subClassOf, _resource))
         {
             _resourceProperties[PropertyDerivedClass].Add(t.Subject);
             _resourceProperties[PropertyDirectSubClass].Add(t.Subject);
@@ -75,9 +75,9 @@ public class OntologyClass
         do
         {
             c = _resourceProperties[PropertyDerivedClass].Count;
-            foreach (INode n in _resourceProperties[PropertyDerivedClass].ToList())
+            foreach (var n in _resourceProperties[PropertyDerivedClass].ToList())
             {
-                foreach (Triple t in _graph.GetTriplesWithPredicateObject(subClassOf, n))
+                foreach (var t in _graph.GetTriplesWithPredicateObject(subClassOf, n))
                 {
                     _resourceProperties[PropertyDerivedClass].Add(t.Subject);
                 }
@@ -88,7 +88,7 @@ public class OntologyClass
         _resourceProperties.Add(PropertyDirectSuperClass, []);
         if (_resourceProperties.ContainsKey(OntologyHelper.PropertySubClassOf))
         {
-            foreach (INode node in _resourceProperties[OntologyHelper.PropertySubClassOf])
+            foreach (var node in _resourceProperties[OntologyHelper.PropertySubClassOf])
             {
                 _resourceProperties[PropertyDirectSuperClass].Add(node);
             }
@@ -96,9 +96,9 @@ public class OntologyClass
             do
             {
                 c = _resourceProperties[OntologyHelper.PropertySubClassOf].Count;
-                foreach (INode n in _resourceProperties[OntologyHelper.PropertySubClassOf].ToList())
+                foreach (var n in _resourceProperties[OntologyHelper.PropertySubClassOf].ToList())
                 {
-                    foreach (Triple t in _graph.GetTriplesWithSubjectPredicate(n, subClassOf))
+                    foreach (var t in _graph.GetTriplesWithSubjectPredicate(n, subClassOf))
                     {
                         _resourceProperties[OntologyHelper.PropertySubClassOf].Add(t.Object);
                     }
@@ -358,7 +358,7 @@ public class OntologyClass
     /// <returns></returns>
     public bool ClearEquivalentClasses()
     {
-        INode equivClass = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyEquivalentClass));
+        var equivClass = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyEquivalentClass));
         _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, equivClass).ToList());
         _graph.Retract(_graph.GetTriplesWithPredicateObject(equivClass, _resource).ToList());
         return ClearResourceProperty(OntologyHelper.PropertyEquivalentClass, true);
@@ -457,7 +457,7 @@ public class OntologyClass
     /// <returns></returns>
     public bool ClearDisjointClasses()
     {
-        INode disjointClass = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyDisjointWith));
+        var disjointClass = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyDisjointWith));
         _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, disjointClass).ToList());
         _graph.Retract(_graph.GetTriplesWithPredicateObject(disjointClass, _resource).ToList());
         return ClearResourceProperty(OntologyHelper.PropertyDisjointWith, true);
@@ -633,7 +633,7 @@ public class OntologyClass
     {
         get
         {
-            INode domain = _graph.CreateUriNode(_graph.UriFactory.Create(NamespaceMapper.RDFS + "domain"));
+            var domain = _graph.CreateUriNode(_graph.UriFactory.Create(NamespaceMapper.RDFS + "domain"));
             return (from t in _graph.GetTriplesWithPredicateObject(domain, _resource)
                     select new OntologyProperty(t.Subject, _graph));
         }
@@ -646,7 +646,7 @@ public class OntologyClass
     {
         get
         {
-            INode range = _graph.CreateUriNode(_graph.UriFactory.Create(NamespaceMapper.RDFS + "range"));
+            var range = _graph.CreateUriNode(_graph.UriFactory.Create(NamespaceMapper.RDFS + "range"));
             return (from t in _graph.GetTriplesWithPredicateObject(range, _resource)
                     select new OntologyProperty(t.Subject, _graph));
         }

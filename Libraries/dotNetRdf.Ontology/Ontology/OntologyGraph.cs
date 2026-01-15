@@ -233,7 +233,7 @@ public class OntologyGraph : Graph
     /// <returns>Enumeration of classes.</returns>
     public IEnumerable<OntologyClass> GetClasses(INode classType)
     {
-        INode rdfType = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfType = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
         return (from t in GetTriplesWithPredicateObject(rdfType, classType)
                 select CreateOntologyClass(t.Subject));
     }
@@ -311,7 +311,7 @@ public class OntologyGraph : Graph
     /// <returns>Enumeration of properties.</returns>
     public IEnumerable<OntologyProperty> GetProperties(INode propertyType)
     {
-        INode rdfType = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfType = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
         return (from t in GetTriplesWithPredicateObject(rdfType, propertyType)
                 select CreateOntologyProperty(t.Subject));
     }

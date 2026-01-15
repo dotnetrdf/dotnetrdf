@@ -72,7 +72,7 @@ public class NumericExpressionTests : SparqlExpressionTestsBase
     public void ShouldAllowArithmeticOperatorsWithGenericAndNongenericNumericExpressions()
     {
         var left = new NumericExpression(Left);
-        NumericExpression right = new NumericExpression<int>(15);
+        var right = new NumericExpression<int>(15);
         Right = right.Expression;
 
         AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);
@@ -85,7 +85,7 @@ public class NumericExpressionTests : SparqlExpressionTestsBase
     public void ShouldAllowArithmeticOperatorsWithGenericAndNongenericNumericExpressionsReversed()
     {
         var left = new NumericExpression(Left);
-        NumericExpression right = new NumericExpression<int>(15);
+        var right = new NumericExpression<int>(15);
         Right = right.Expression;
 
         AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);

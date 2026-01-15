@@ -51,30 +51,30 @@ public class OntologyTests
         g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
         //Get the class of Ground Vehicles
-        OntologyClass groundVehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/GroundVehicle"));
+        var groundVehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/GroundVehicle"));
         _output.WriteLine("Got the class of Ground Vehicles");
-        foreach (OntologyClass c in groundVehicle.SuperClasses)
+        foreach (var c in groundVehicle.SuperClasses)
         {
             _output.WriteLine("Super Class: " + c.Resource.ToString());
         }
-        foreach (OntologyClass c in groundVehicle.SubClasses)
+        foreach (var c in groundVehicle.SubClasses)
         {
             _output.WriteLine("Sub Class: " + c.Resource.ToString());
         }
         _output.WriteLine(string.Empty);
 
         //Get the class of Cars
-        OntologyClass car = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
+        var car = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
         _output.WriteLine("Got the class of Cars");
-        foreach (OntologyClass c in car.SuperClasses)
+        foreach (var c in car.SuperClasses)
         {
             _output.WriteLine("Super Class: " + c.Resource.ToString());
         }
-        foreach (OntologyClass c in car.SubClasses)
+        foreach (var c in car.SubClasses)
         {
             _output.WriteLine("Sub Class: " + c.Resource.ToString());
         }
-        foreach (OntologyResource r in car.Instances)
+        foreach (var r in car.Instances)
         {
             _output.WriteLine("Instance: " + r.Resource.ToString());
         }
@@ -91,7 +91,7 @@ public class OntologyTests
         //Try and get a non-existent individual, should fail
         try
         {
-            Individual i = g.CreateIndividual(new Uri("http://example.org/noSuchThing"));
+            var i = g.CreateIndividual(new Uri("http://example.org/noSuchThing"));
             Assert.Fail("Attempting to create a none-existent Individual should fail");
         }
         catch (RdfOntologyException)
@@ -104,9 +104,9 @@ public class OntologyTests
         //Try and get an actual individual
         try
         {
-            Individual i = g.CreateIndividual(new Uri("http://example.org/vehicles/FordFiesta"));
+            var i = g.CreateIndividual(new Uri("http://example.org/vehicles/FordFiesta"));
             _output.WriteLine("Got an existing individual OK");
-            foreach (Triple t in i.Triples)
+            foreach (var t in i.Triples)
             {
                 _output.WriteLine(t.ToString());
             }
@@ -120,10 +120,10 @@ public class OntologyTests
         //Try and create a new individual
         try
         {
-            Individual i = g.CreateIndividual(new Uri("http://example.org/vehicles/MazdaMX5"), new Uri("http://example.org/vehicles/Car"));
+            var i = g.CreateIndividual(new Uri("http://example.org/vehicles/MazdaMX5"), new Uri("http://example.org/vehicles/Car"));
             _output.WriteLine("Created a new individual OK");
             _output.WriteLine("Graph now contains the following");
-            foreach (Triple t in g.Triples)
+            foreach (var t in g.Triples)
             {
                 _output.WriteLine(t.ToString());
             }
@@ -142,30 +142,30 @@ public class OntologyTests
         var g = new OntologyGraph();
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
-        OntologyProperty speed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/Speed"));
+        var speed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/Speed"));
         _output.WriteLine("Ranges");
-        foreach (OntologyClass c in speed.Ranges)
+        foreach (var c in speed.Ranges)
         {
             _output.WriteLine(c.Resource.ToString());
         }
         _output.WriteLine("Domains");
-        foreach (OntologyClass c in speed.Domains)
+        foreach (var c in speed.Domains)
         {
             _output.WriteLine(c.Resource.ToString());
         }
         _output.WriteLine("Sub-properties");
-        foreach (OntologyProperty p in speed.SubProperties)
+        foreach (var p in speed.SubProperties)
         {
             _output.WriteLine(p.Resource.ToString());
         }
         _output.WriteLine("Super-properties");
-        foreach (OntologyProperty p in speed.SuperProperties)
+        foreach (var p in speed.SuperProperties)
         {
             _output.WriteLine(p.Resource.ToString());
         }
         _output.WriteLine(string.Empty);
         _output.WriteLine("Used By");
-        foreach (OntologyResource r in speed.UsedBy)
+        foreach (var r in speed.UsedBy)
         {
             _output.WriteLine(r.Resource.ToString());
         }
@@ -182,9 +182,9 @@ public class OntologyTests
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
         //Get the eg:FordFiesta resource
-        OntologyResource resource = g.CreateOntologyResource(new Uri("http://example.org/vehicles/FordFiesta"));
-        IGraph h = (Graph)resource;
-        foreach (Triple t in h.Triples)
+        var resource = g.CreateOntologyResource(new Uri("http://example.org/vehicles/FordFiesta"));
+        var h = (Graph)resource;
+        foreach (var t in h.Triples)
         {
             _output.WriteLine(t.ToString());
         }
@@ -197,7 +197,7 @@ public class OntologyTests
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
         //Get the Class of interest
-        OntologyClass cls = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Vehicle"));
+        var cls = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Vehicle"));
 
         //Find Triples where Predicate is rdfs:range or rdfs:domain and the Object is the Class
         var ranges = cls.IsRangeOf.ToList();
@@ -206,13 +206,13 @@ public class OntologyTests
         //Do whatever you want with the Ranges and Domains...
 
         _output.WriteLine("Ranges");
-        foreach (OntologyProperty range in ranges)
+        foreach (var range in ranges)
         {
             _output.WriteLine(range.ToString());
         }
         _output.WriteLine(string.Empty);
         _output.WriteLine("Domains");
-        foreach (OntologyProperty domain in domains)
+        foreach (var domain in domains)
         {
             _output.WriteLine(domain.ToString());
         }
@@ -225,14 +225,14 @@ public class OntologyTests
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
         //Get the Class of interest
-        OntologyClass cls = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Vehicle"));
+        var cls = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Vehicle"));
 
         //Find Triples where Predicate is rdfs:range or rdfs:domain and the Object is the Class
-        IUriNode rdfsRange = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
-        IUriNode rdfsDomain = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain"));
+        var rdfsRange = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
+        var rdfsDomain = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain"));
         var ranges = new List<OntologyProperty>();
         var domains = new List<OntologyProperty>();
-        foreach (Triple t in cls.TriplesWithObject)
+        foreach (var t in cls.TriplesWithObject)
         {
             if (t.Predicate.Equals(rdfsRange))
             {
@@ -247,13 +247,13 @@ public class OntologyTests
         //Do whatever you want with the Ranges and Domains...
 
         _output.WriteLine("Ranges");
-        foreach (OntologyProperty range in ranges)
+        foreach (var range in ranges)
         {
             _output.WriteLine(range.ToString());
         }
         _output.WriteLine(string.Empty);
         _output.WriteLine("Domains");
-        foreach (OntologyProperty domain in domains)
+        foreach (var domain in domains)
         {
             _output.WriteLine(domain.ToString());
         }
@@ -268,7 +268,7 @@ public class OntologyTests
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
         //Get the class of Ground Vehicles
-        OntologyClass groundVehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/GroundVehicle"));
+        var groundVehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/GroundVehicle"));
         _output.WriteLine("Got the class of Ground Vehicles");
 
         //Check counts of super classes
@@ -291,7 +291,7 @@ public class OntologyTests
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
         //Get the class of Cars
-        OntologyClass car = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
+        var car = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
 
         //Get siblings
         var siblings = car.Siblings.ToList();
@@ -308,17 +308,17 @@ public class OntologyTests
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
         //Get the class of Vehicles
-        OntologyClass vehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Vehicle"));
+        var vehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Vehicle"));
         Assert.True(vehicle.IsTopClass);
         Assert.False(vehicle.IsBottomClass);
 
         //Get the class of cars
-        OntologyClass car = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
+        var car = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
         Assert.False(car.IsTopClass);
         Assert.False(car.IsBottomClass);
 
         //Get the class of sports cars
-        OntologyClass sportsCar = g.CreateOntologyClass(new Uri("http://example.org/vehicles/SportsCar"));
+        var sportsCar = g.CreateOntologyClass(new Uri("http://example.org/vehicles/SportsCar"));
         Assert.False(sportsCar.IsTopClass);
         Assert.True(sportsCar.IsBottomClass);
     }
@@ -332,7 +332,7 @@ public class OntologyTests
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
         //Get the property of Ground Speed
-        OntologyProperty groundSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/GroundSpeed"));
+        var groundSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/GroundSpeed"));
 
         //Check counts of super properties
         Assert.Single(groundSpeed.SuperProperties);
@@ -340,7 +340,7 @@ public class OntologyTests
         Assert.Empty(groundSpeed.IndirectSuperProperty);
 
         //Check counts of sub-properties
-        OntologyProperty speed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/Speed"));
+        var speed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/Speed"));
         Assert.Equal(3, speed.SubProperties.Count());
         Assert.Equal(3, speed.DirectSubProperties.Count());
         Assert.Empty(speed.IndirectSubProperties);
@@ -355,12 +355,12 @@ public class OntologyTests
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
         //Get the property Speed
-        OntologyProperty speed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/Speed"));
+        var speed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/Speed"));
         Assert.True(speed.IsTopProperty);
         Assert.False(speed.IsBottomProperty);
 
         //Get the property AirSpeed
-        OntologyProperty airSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/AirSpeed"));
+        var airSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/AirSpeed"));
         Assert.False(airSpeed.IsTopProperty);
         Assert.True(airSpeed.IsBottomProperty);
     }
@@ -374,7 +374,7 @@ public class OntologyTests
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
         //Get the property LimitedSpeed
-        OntologyProperty limitedSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/LimitedSpeed"));
+        var limitedSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/LimitedSpeed"));
 
         //Get siblings
         var siblings = limitedSpeed.Siblings.ToList();
@@ -433,12 +433,12 @@ public class OntologyTests
         g.LoadFromFile(Path.Combine("resources", "swrc.owl"));
         Assert.False(g.IsEmpty);
 
-        OntologyClass classOfClasses = g.CreateOntologyClass(g.CreateUriNode("owl:Class"));
+        var classOfClasses = g.CreateOntologyClass(g.CreateUriNode("owl:Class"));
         var count = 0;
         var resources = new HashSet<INode>();
 
         //This iterates over the things that are a class
-        foreach (OntologyResource c in classOfClasses.Instances)
+        foreach (var c in classOfClasses.Instances)
         {
             count++;
             resources.Add(c.Resource);

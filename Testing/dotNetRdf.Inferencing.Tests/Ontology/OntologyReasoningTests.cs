@@ -24,18 +24,18 @@ public class OntologyReasoningTests
         var g = new OntologyGraph();
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
-        OntologyClass c = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
+        var c = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
         _output.WriteLine("Things which are cars in an Ontology Graph");
-        foreach (OntologyResource r in c.Instances)
+        foreach (var r in c.Instances)
         {
             _output.WriteLine(r.Resource.ToString());
         }
         _output.WriteLine(string.Empty);
 
         var g2 = new ReasonerGraph(g, new RdfsReasoner());
-        OntologyClass c2 = g2.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
+        var c2 = g2.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
         _output.WriteLine("Things which are cars in a Reasoner Graph using an RDFS Reasoner");
-        foreach (OntologyResource r in c2.Instances)
+        foreach (var r in c2.Instances)
         {
             _output.WriteLine(r.Resource.ToString());
         }
@@ -49,15 +49,15 @@ public class OntologyReasoningTests
         _output.WriteLine(string.Empty);
 
         _output.WriteLine("Going to do a GetTriplesWithSubject() call on both Graphs to see if ReasonerGraph behaves as expected");
-        IUriNode fiesta = g.CreateUriNode(new Uri("http://example.org/vehicles/FordFiesta"));
+        var fiesta = g.CreateUriNode(new Uri("http://example.org/vehicles/FordFiesta"));
         _output.WriteLine("Original Graph:");
-        foreach (Triple t in g.GetTriplesWithSubject(fiesta))
+        foreach (var t in g.GetTriplesWithSubject(fiesta))
         {
             _output.WriteLine(t.ToString());
         }
         _output.WriteLine(string.Empty);
         _output.WriteLine("Reasoner Graph:");
-        foreach (Triple t in g2.GetTriplesWithSubject(fiesta))
+        foreach (var t in g2.GetTriplesWithSubject(fiesta))
         {
             _output.WriteLine(t.ToString());
         }

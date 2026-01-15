@@ -49,7 +49,7 @@ public class OwlOneOf
 
         //Dump as NTriples to the Console
         var formatter = new NTriplesFormatter();
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             Console.WriteLine(t.ToString(formatter));
         }
@@ -96,7 +96,7 @@ public class OwlOneOf
 
             //Dump as NTriples to the Console
             var formatter = new NTriplesFormatter();
-            foreach (Triple t in g.Triples)
+            foreach (var t in g.Triples)
             {
                 Console.WriteLine(t.ToString(formatter));
             }
@@ -131,16 +131,16 @@ public class OwlOneOf
 
     protected static void thingOneOf(IGraph graph, IUriNode[] listInds)
     {
-        IBlankNode oneOfNode = graph.CreateBlankNode();
-        IBlankNode chainA = graph.CreateBlankNode();
-        IUriNode rdfType = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-        IUriNode rdfFirst = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
-        IUriNode rdfRest = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
-        IUriNode rdfNil = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
-        IUriNode owlClass = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "Class"));
-        IUriNode owlOneOf = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "oneOf"));
-        IUriNode owlThing = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "Thing"));
-        IUriNode owlEquivClass = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "equivalentClass"));
+        var oneOfNode = graph.CreateBlankNode();
+        var chainA = graph.CreateBlankNode();
+        var rdfType = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+        var rdfFirst = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
+        var rdfRest = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
+        var rdfNil = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
+        var owlClass = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "Class"));
+        var owlOneOf = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "oneOf"));
+        var owlThing = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "Thing"));
+        var owlEquivClass = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "equivalentClass"));
 
         graph.Assert(new Triple(oneOfNode, rdfType, owlClass));
         graph.Assert(new Triple(oneOfNode, owlOneOf, chainA));
@@ -149,7 +149,7 @@ public class OwlOneOf
         for (var i = 0; i < listInds.Length; i++)
         {
             graph.Assert(new Triple(chainA, rdfFirst, listInds[i]));
-            IBlankNode chainB = graph.CreateBlankNode();
+            var chainB = graph.CreateBlankNode();
 
             if (i < listInds.Length - 1)
             {

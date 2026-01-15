@@ -44,7 +44,7 @@ public class PagingHandlerTests
         h.Retract(h.Triples.Where(t => !t.IsGroundTriple).ToList());
 
         var formatter = new NTriplesFormatter();
-        foreach (Triple t in h.Triples)
+        foreach (var t in h.Triples)
         {
             Console.WriteLine(t.ToString(formatter));
         }
@@ -58,7 +58,7 @@ public class PagingHandlerTests
         parser.Load(handler, tempFile);
         i.Retract(i.Triples.Where(t => !t.IsGroundTriple));
 
-        foreach (Triple t in i.Triples)
+        foreach (var t in i.Triples)
         {
             Console.WriteLine(t.ToString(formatter));
         }
@@ -67,7 +67,7 @@ public class PagingHandlerTests
         Assert.False(i.IsEmpty, "Graph should not be empty");
         Assert.True(i.Triples.Count <= 25, "Graphs should have <= 25 Triples");
 
-        GraphDiffReport report = h.Difference(i);
+        var report = h.Difference(i);
         Assert.False(report.AreEqual, "Graphs should not be equal");
         Assert.Equal(i.Triples.Count, report.AddedTriples.Count());
         Assert.Equal(h.Triples.Count, report.RemovedTriples.Count());

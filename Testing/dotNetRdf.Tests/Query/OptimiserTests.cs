@@ -58,7 +58,7 @@ SELECT * WHERE
   ?s rdfs:label ?label .
 }";
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -77,7 +77,7 @@ SELECT * WHERE
   ?s <http://example.org/predicate> ?value .
   ?value rdfs:label ?label .
 }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -100,7 +100,7 @@ SELECT * WHERE
   }
 }";
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -120,7 +120,7 @@ SELECT * WHERE
   FILTER (LANGMATCHES(LANG(?label), 'en'))
 }
 ";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -142,7 +142,7 @@ SELECT * WHERE
   FILTER (SAMETERM(?type, rdfs:Class))
 }
 ";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -170,7 +170,7 @@ SELECT * WHERE
   }
 }
 ";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -199,7 +199,7 @@ SELECT * WHERE
   }
 }
 ";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -250,7 +250,7 @@ ASK WHERE
   ?s rdfs:label ?label .
 }";
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
         
@@ -270,7 +270,7 @@ ASK WHERE
   { ?s rdfs:label ?label }
 }";
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -290,7 +290,7 @@ SELECT * WHERE
   ?s rdfs:label ?label .
 } LIMIT 10";
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -310,7 +310,7 @@ SELECT * WHERE
   { ?s rdfs:label ?label }
 } LIMIT 10";
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -324,7 +324,7 @@ SELECT * WHERE
     public void LeviathanOptimiserAlgebraImplicitJoinSimple1()
     {
         var query = "SELECT * WHERE { ?x a ?type . ?y a ?type . FILTER(?x = ?y) }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -338,7 +338,7 @@ SELECT * WHERE
     public void LeviathanOptimiserAlgebraImplicitJoinSimple2()
     {
         var query = "SELECT * WHERE { ?x a ?type . ?y a ?type . FILTER(SAMETERM(?x, ?y)) }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -352,7 +352,7 @@ SELECT * WHERE
     public void LeviathanOptimiserAlgebraImplicitJoinSimple3()
     {
         var query = "SELECT * WHERE { ?x a ?a . ?y a ?b . FILTER(?a = ?b) }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -366,7 +366,7 @@ SELECT * WHERE
     public void LeviathanOptimiserAlgebraImplicitJoinSimple4()
     {
         var query = "SELECT * WHERE { ?x a ?a . ?y a ?b . FILTER(SAMETERM(?a, ?b)) }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -380,7 +380,7 @@ SELECT * WHERE
     public void LeviathanOptimiserAlgebraImplicitJoinComplex1()
     {
         var query = "SELECT * WHERE { ?x a ?type . { SELECT ?y WHERE { ?y a ?type } }. FILTER(?x = ?y) }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -393,7 +393,7 @@ SELECT * WHERE
     public void LeviathanOptimiserAlgebraImplicitJoinComplex2()
     {
         var query = "SELECT * WHERE { ?x a ?type . OPTIONAL { ?y a ?type } . FILTER(?x = ?y) }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -416,7 +416,7 @@ WHERE
   }
 }";
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -437,7 +437,7 @@ WHERE
     FILTER(?o1 = ?o2)
 }";
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -458,7 +458,7 @@ WHERE
     FILTER(?o1 + ?o2 = 4)
 }";
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -479,7 +479,7 @@ WHERE
     FILTER(?o1 = ?o2)
 }";
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -500,7 +500,7 @@ WHERE
     FILTER(?o1 + ?o2 = 4)
 }";
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         _output.WriteLine(_formatter.Format(q));
 
@@ -514,7 +514,7 @@ WHERE
     public void SparqlOptimiserAlgebraOrderByDistinct1()
     {
         var query = "SELECT DISTINCT ?p WHERE { ?s ?p ?o } ORDER BY ?p";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         var algebra = q.ToAlgebra().ToString();
         _output.WriteLine(algebra);
@@ -525,7 +525,7 @@ WHERE
     public void SparqlOptimiserAlgebraOrderByDistinct2()
     {
         var query = "SELECT DISTINCT ?s ?p WHERE { ?s ?p ?o } ORDER BY CONCAT(?s, ?p)";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         var algebra = q.ToAlgebra().ToString();
         _output.WriteLine(algebra);
@@ -536,7 +536,7 @@ WHERE
     public void SparqlOptimiserAlgebraOrderByDistinct3()
     {
         var query = "SELECT DISTINCT * WHERE { ?s ?p ?o } ORDER BY ?p";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         var algebra = q.ToAlgebra().ToString();
         _output.WriteLine(algebra);
@@ -549,7 +549,7 @@ WHERE
     public void SparqlOptimiserAlgebraOrderByReduced1()
     {
         var query = "SELECT REDUCED ?p WHERE { ?s ?p ?o } ORDER BY ?p";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         var algebra = q.ToAlgebra().ToString();
         _output.WriteLine(algebra);
@@ -560,7 +560,7 @@ WHERE
     public void SparqlOptimiserAlgebraOrderByReduced2()
     {
         var query = "SELECT REDUCED ?s ?p WHERE { ?s ?p ?o } ORDER BY CONCAT(?s, ?p)";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         var algebra = q.ToAlgebra().ToString();
         _output.WriteLine(algebra);
@@ -571,7 +571,7 @@ WHERE
     public void SparqlOptimiserAlgebraOrderByReduced3()
     {
         var query = "SELECT REDUCED * WHERE { ?s ?p ?o } ORDER BY ?p";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         var algebra = q.ToAlgebra().ToString();
         _output.WriteLine(algebra);

@@ -61,7 +61,7 @@ public class OrderByExpression
     {
         if (_expr is VariableTerm)
         {
-            IComparer<Triple> child = Child?.GetComparer(pattern, nodeComparer);
+            var child = Child?.GetComparer(pattern, nodeComparer);
             Func<Triple, Triple, int> compareFunc = null;
             var var = _expr.Variables.First();
             var comparer = new SparqlOrderingComparer(nodeComparer);
