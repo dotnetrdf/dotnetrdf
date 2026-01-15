@@ -59,8 +59,8 @@ public class FullTextConfigTests
     [Fact]
     public void FullTextConfigSchemaDefault()
     {
-        IGraph g = GetBaseGraph();
-        INode obj = g.CreateBlankNode();
+        var g = GetBaseGraph();
+        var obj = g.CreateBlankNode();
         g.Assert(obj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Schema"));
         g.Assert(obj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("VDS.RDF.Query.FullText.Schema.DefaultIndexSchema, dotNetRDF.Query.FullText"));
 
@@ -76,8 +76,8 @@ public class FullTextConfigTests
     [Fact]
     public void FullTextConfigAnalyzerLuceneStandard()
     {
-        IGraph g = GetBaseGraph();
-        INode obj = g.CreateBlankNode();
+        var g = GetBaseGraph();
+        var obj = g.CreateBlankNode();
         g.Assert(obj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Analyzer"));
         g.Assert(obj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net.Analysis.Common"));
 
@@ -93,8 +93,8 @@ public class FullTextConfigTests
     [Fact]
     public void FullTextConfigAnalyzerLuceneStandardWithVersion()
     {
-        IGraph g = GetBaseGraph();
-        INode obj = g.CreateBlankNode();
+        var g = GetBaseGraph();
+        var obj = g.CreateBlankNode();
         g.Assert(obj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Analyzer"));
         g.Assert(obj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net.Analysis.Common"));
         g.Assert(obj, g.CreateUriNode("dnr-ft:version"), (2400).ToLiteral(g));
@@ -111,8 +111,8 @@ public class FullTextConfigTests
     [Fact]
     public void FullTextConfigIndexLuceneRAM()
     {
-        IGraph g = GetBaseGraph();
-        INode obj = g.CreateBlankNode();
+        var g = GetBaseGraph();
+        var obj = g.CreateBlankNode();
         g.Assert(obj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Index"));
         g.Assert(obj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Store.RAMDirectory, Lucene.Net"));
 
@@ -128,8 +128,8 @@ public class FullTextConfigTests
     [Fact]
     public void FullTextConfigIndexLuceneFS()
     {
-        IGraph g = GetBaseGraph();
-        INode obj = g.CreateBlankNode();
+        var g = GetBaseGraph();
+        var obj = g.CreateBlankNode();
         g.Assert(obj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Index"));
         g.Assert(obj, g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyType)), g.CreateLiteralNode("Lucene.Net.Store.FSDirectory, Lucene.Net"));
         g.Assert(obj, g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyFromFile)), g.CreateLiteralNode("test"));
@@ -148,8 +148,8 @@ public class FullTextConfigTests
     public void FullTextConfigIndexerLuceneSubjects()
     {
         //Add and test the Index Configuration
-        IGraph g = GetBaseGraph();
-        INode indexObj = g.CreateBlankNode();
+        var g = GetBaseGraph();
+        var indexObj = g.CreateBlankNode();
         g.Assert(indexObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Index"));
         g.Assert(indexObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Store.RAMDirectory, Lucene.Net"));
 
@@ -160,7 +160,7 @@ public class FullTextConfigTests
         Assert.True(temp is Directory, "Should have returned a Directory Instance");
 
         //Add and Test the analyzer Config
-        INode analyzerObj = g.CreateBlankNode();
+        var analyzerObj = g.CreateBlankNode();
         g.Assert(analyzerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Analyzer"));
         g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net.Analysis.Common"));
 
@@ -171,7 +171,7 @@ public class FullTextConfigTests
         Assert.True(temp is Analyzer, "Should have returned an Analyzer Instance");
 
         //Add and Test the schema config
-        INode schemaObj = g.CreateBlankNode();
+        var schemaObj = g.CreateBlankNode();
         g.Assert(schemaObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Schema"));
         g.Assert(schemaObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("VDS.RDF.Query.FullText.Schema.DefaultIndexSchema, dotNetRDF.Query.FullText"));
 
@@ -182,7 +182,7 @@ public class FullTextConfigTests
         Assert.True(temp is IFullTextIndexSchema, "Should have returned a IFullTextIndexSchema Instance");
 
         //Finally add the Indexer config which ties all the above together
-        INode indexerObj = g.CreateBlankNode();
+        var indexerObj = g.CreateBlankNode();
         g.Assert(indexerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Indexer"));
         g.Assert(indexerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("VDS.RDF.Query.FullText.Indexing.Lucene.LuceneSubjectsIndexer, dotNetRDF.Query.FullText"));
         g.Assert(indexerObj, g.CreateUriNode("dnr-ft:index"), indexObj);
@@ -200,8 +200,8 @@ public class FullTextConfigTests
     public void FullTextConfigIndexerLuceneObjects()
     {
         //Add and test the Index Configuration
-        IGraph g = GetBaseGraph();
-        INode indexObj = g.CreateBlankNode();
+        var g = GetBaseGraph();
+        var indexObj = g.CreateBlankNode();
         g.Assert(indexObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Index"));
         g.Assert(indexObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Store.RAMDirectory, Lucene.Net"));
 
@@ -212,7 +212,7 @@ public class FullTextConfigTests
         Assert.True(temp is Directory, "Should have returned a Directory Instance");
 
         //Add and Test the analyzer Config
-        INode analyzerObj = g.CreateBlankNode();
+        var analyzerObj = g.CreateBlankNode();
         g.Assert(analyzerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Analyzer"));
         g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net.Analysis.Common"));
 
@@ -223,7 +223,7 @@ public class FullTextConfigTests
         Assert.True(temp is Analyzer, "Should have returned an Analyzer Instance");
 
         //Add and Test the schema config
-        INode schemaObj = g.CreateBlankNode();
+        var schemaObj = g.CreateBlankNode();
         g.Assert(schemaObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Schema"));
         g.Assert(schemaObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("VDS.RDF.Query.FullText.Schema.DefaultIndexSchema, dotNetRDF.Query.FullText"));
 
@@ -234,7 +234,7 @@ public class FullTextConfigTests
         Assert.True(temp is IFullTextIndexSchema, "Should have returned a IFullTextIndexSchema Instance");
 
         //Finally add the Indexer config which ties all the above together
-        INode indexerObj = g.CreateBlankNode();
+        var indexerObj = g.CreateBlankNode();
         g.Assert(indexerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Indexer"));
         g.Assert(indexerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("VDS.RDF.Query.FullText.Indexing.Lucene.LuceneObjectsIndexer, dotNetRDF.Query.FullText"));
         g.Assert(indexerObj, g.CreateUriNode("dnr-ft:index"), indexObj);
@@ -252,8 +252,8 @@ public class FullTextConfigTests
     public void FullTextConfigIndexerLucenePredicates()
     {
         //Add and test the Index Configuration
-        IGraph g = GetBaseGraph();
-        INode indexObj = g.CreateBlankNode();
+        var g = GetBaseGraph();
+        var indexObj = g.CreateBlankNode();
         g.Assert(indexObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Index"));
         g.Assert(indexObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Store.RAMDirectory, Lucene.Net"));
 
@@ -264,7 +264,7 @@ public class FullTextConfigTests
         Assert.True(temp is Directory, "Should have returned a Directory Instance");
 
         //Add and Test the analyzer Config
-        INode analyzerObj = g.CreateBlankNode();
+        var analyzerObj = g.CreateBlankNode();
         g.Assert(analyzerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Analyzer"));
         g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net.Analysis.Common"));
 
@@ -275,7 +275,7 @@ public class FullTextConfigTests
         Assert.True(temp is Analyzer, "Should have returned an Analyzer Instance");
 
         //Add and Test the schema config
-        INode schemaObj = g.CreateBlankNode();
+        var schemaObj = g.CreateBlankNode();
         g.Assert(schemaObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Schema"));
         g.Assert(schemaObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("VDS.RDF.Query.FullText.Schema.DefaultIndexSchema, dotNetRDF.Query.FullText"));
 
@@ -286,7 +286,7 @@ public class FullTextConfigTests
         Assert.True(temp is IFullTextIndexSchema, "Should have returned a IFullTextIndexSchema Instance");
 
         //Finally add the Indexer config which ties all the above together
-        INode indexerObj = g.CreateBlankNode();
+        var indexerObj = g.CreateBlankNode();
         g.Assert(indexerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Indexer"));
         g.Assert(indexerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("VDS.RDF.Query.FullText.Indexing.Lucene.LucenePredicatesIndexer, dotNetRDF.Query.FullText"));
         g.Assert(indexerObj, g.CreateUriNode("dnr-ft:index"), indexObj);
@@ -304,8 +304,8 @@ public class FullTextConfigTests
     public void FullTextConfigSearchProviderLucene()
     {
         //Add and test the Index Configuration
-        IGraph g = GetBaseGraph();
-        INode indexObj = g.CreateBlankNode();
+        var g = GetBaseGraph();
+        var indexObj = g.CreateBlankNode();
         g.Assert(indexObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Index"));
         g.Assert(indexObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Store.RAMDirectory, Lucene.Net"));
         g.Assert(indexObj, g.CreateUriNode("dnr-ft:ensureIndex"), (true).ToLiteral(g));
@@ -317,7 +317,7 @@ public class FullTextConfigTests
         Assert.True(temp is Directory, "Should have returned a Directory Instance");
 
         //Add and Test the analyzer Config
-        INode analyzerObj = g.CreateBlankNode();
+        var analyzerObj = g.CreateBlankNode();
         g.Assert(analyzerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Analyzer"));
         g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net.Analysis.Common"));
 
@@ -328,7 +328,7 @@ public class FullTextConfigTests
         Assert.True(temp is Analyzer, "Should have returned an Analyzer Instance");
 
         //Add and Test the schema config
-        INode schemaObj = g.CreateBlankNode();
+        var schemaObj = g.CreateBlankNode();
         g.Assert(schemaObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Schema"));
         g.Assert(schemaObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("VDS.RDF.Query.FullText.Schema.DefaultIndexSchema, dotNetRDF.Query.FullText"));
 
@@ -339,7 +339,7 @@ public class FullTextConfigTests
         Assert.True(temp is IFullTextIndexSchema, "Should have returned a IFullTextIndexSchema Instance");
 
         //Finally add the Searcher config which ties all the above together
-        INode searcherObj = g.CreateBlankNode();
+        var searcherObj = g.CreateBlankNode();
         g.Assert(searcherObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Searcher"));
         g.Assert(searcherObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("VDS.RDF.Query.FullText.Search.Lucene.LuceneSearchProvider, dotNetRDF.Query.FullText"));
         g.Assert(searcherObj, g.CreateUriNode("dnr-ft:index"), indexObj);
@@ -357,24 +357,24 @@ public class FullTextConfigTests
     public void FullTextConfigSearchProviderLuceneWithBuildIndex()
     {
         //Add and test the Index Configuration
-        IGraph g = GetBaseGraph();
-        INode indexObj = g.CreateBlankNode();
+        var g = GetBaseGraph();
+        var indexObj = g.CreateBlankNode();
         g.Assert(indexObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Index"));
         g.Assert(indexObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Store.RAMDirectory, Lucene.Net"));
         g.Assert(indexObj, g.CreateUriNode("dnr-ft:ensureIndex"), (true).ToLiteral(g));
 
         //Add and Test the analyzer Config
-        INode analyzerObj = g.CreateBlankNode();
+        var analyzerObj = g.CreateBlankNode();
         g.Assert(analyzerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Analyzer"));
         g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net.Analysis.Common"));
 
         //Add and Test the schema config
-        INode schemaObj = g.CreateBlankNode();
+        var schemaObj = g.CreateBlankNode();
         g.Assert(schemaObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Schema"));
         g.Assert(schemaObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("VDS.RDF.Query.FullText.Schema.DefaultIndexSchema, dotNetRDF.Query.FullText"));
 
         //Add the Searcher config which ties all the above together
-        INode searcherObj = g.CreateBlankNode();
+        var searcherObj = g.CreateBlankNode();
         g.Assert(searcherObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Searcher"));
         g.Assert(searcherObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("VDS.RDF.Query.FullText.Search.Lucene.LuceneSearchProvider, dotNetRDF.Query.FullText"));
         g.Assert(searcherObj, g.CreateUriNode("dnr-ft:index"), indexObj);
@@ -382,12 +382,12 @@ public class FullTextConfigTests
         g.Assert(searcherObj, g.CreateUriNode("dnr-ft:schema"), schemaObj);
 
         //Now add the Graph we want to get auto-indexed
-        INode graphObj = g.CreateBlankNode();
+        var graphObj = g.CreateBlankNode();
         g.Assert(graphObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr:Graph"));
         g.Assert(graphObj, g.CreateUriNode("dnr:fromEmbedded"), g.CreateLiteralNode("VDS.RDF.Configuration.configuration.ttl"));
 
         //Then add the Indexer for use by the auto-indexing  
-        INode indexerObj = g.CreateBlankNode();
+        var indexerObj = g.CreateBlankNode();
         g.Assert(indexerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Indexer"));
         g.Assert(indexerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("VDS.RDF.Query.FullText.Indexing.Lucene.LuceneSubjectsIndexer, dotNetRDF.Query.FullText"));
         g.Assert(indexerObj, g.CreateUriNode("dnr-ft:index"), indexObj);
@@ -410,7 +410,7 @@ public class FullTextConfigTests
         try
         {
             var i = 0;
-            foreach (IFullTextSearchResult result in provider.Match("http"))
+            foreach (var result in provider.Match("http"))
             {
                 Console.WriteLine(result.Node.ToString() + " - " + result.Score.ToString());
                 i++;
@@ -429,7 +429,7 @@ public class FullTextConfigTests
     {
         var schema = new DefaultIndexSchema();
         var context = new ConfigurationSerializationContext();
-        INode obj = context.Graph.CreateBlankNode();
+        var obj = context.Graph.CreateBlankNode();
         context.NextSubject = obj;
         schema.SerializeConfiguration(context);
 
@@ -446,7 +446,7 @@ public class FullTextConfigTests
     {
         var directory = new RAMDirectory();
         var context = new ConfigurationSerializationContext();
-        INode obj = context.Graph.CreateBlankNode();
+        var obj = context.Graph.CreateBlankNode();
         context.NextSubject = obj;
         directory.SerializeConfiguration(context);
 
@@ -463,7 +463,7 @@ public class FullTextConfigTests
     {
         var directory = FSDirectory.Open(new DirInfo("test"));
         var context = new ConfigurationSerializationContext();
-        INode obj = context.Graph.CreateBlankNode();
+        var obj = context.Graph.CreateBlankNode();
         context.NextSubject = obj;
         directory.SerializeConfiguration(context);
         directory.Dispose();
@@ -481,7 +481,7 @@ public class FullTextConfigTests
     {
         var analyzer = new StandardAnalyzer(LuceneTestHarness.LuceneVersion);
         var context = new ConfigurationSerializationContext();
-        INode obj = context.Graph.CreateBlankNode();
+        var obj = context.Graph.CreateBlankNode();
         context.NextSubject = obj;
         analyzer.SerializeConfiguration(context);
         
@@ -499,7 +499,7 @@ public class FullTextConfigTests
         var testHarness = new LuceneTestHarness();
         var indexer = new LuceneSubjectsIndexer(testHarness.Index, testHarness.Analyzer, testHarness.Schema);
         var context = new ConfigurationSerializationContext();
-        INode obj = context.Graph.CreateBlankNode();
+        var obj = context.Graph.CreateBlankNode();
         context.NextSubject = obj;
         indexer.SerializeConfiguration(context);
         indexer.Dispose();
@@ -518,7 +518,7 @@ public class FullTextConfigTests
         var testHarness = new LuceneTestHarness();
         var indexer = new LuceneObjectsIndexer(testHarness.Index, testHarness.Analyzer, testHarness.Schema);
         var context = new ConfigurationSerializationContext();
-        INode obj = context.Graph.CreateBlankNode();
+        var obj = context.Graph.CreateBlankNode();
         context.NextSubject = obj;
         indexer.SerializeConfiguration(context);
         indexer.Dispose();
@@ -537,7 +537,7 @@ public class FullTextConfigTests
         var testHarness = new LuceneTestHarness();
         var indexer = new LucenePredicatesIndexer(testHarness.Index, testHarness.Analyzer, testHarness.Schema);
         var context = new ConfigurationSerializationContext();
-        INode obj = context.Graph.CreateBlankNode();
+        var obj = context.Graph.CreateBlankNode();
         context.NextSubject = obj;
         indexer.SerializeConfiguration(context);
         indexer.Dispose();
@@ -561,7 +561,7 @@ public class FullTextConfigTests
 
             var optimiser = new FullTextOptimiser(new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, testHarness.Index, testHarness.Schema));
             var context = new ConfigurationSerializationContext();
-            INode obj = context.Graph.CreateBlankNode();
+            var obj = context.Graph.CreateBlankNode();
             context.NextSubject = obj;
             optimiser.SerializeConfiguration(context);
 

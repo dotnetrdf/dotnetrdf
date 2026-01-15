@@ -50,7 +50,7 @@ public class FourStoreTest
         var g = new Graph(new Uri("http://example.org/4storeTest"));
         FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-        FourStoreConnector fourstore = GetConnection();
+        var fourstore = GetConnection();
         fourstore.SaveGraph(g);
 
         var h = new Graph();
@@ -67,7 +67,7 @@ public class FourStoreTest
         var g = new Graph(new Uri("http://example.org/4storeTest"));
         FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-        FourStoreConnector fourstore = GetConnection();
+        var fourstore = GetConnection();
 
         var h = new Graph();
         fourstore.LoadGraph(h, "http://example.org/4storeTest");
@@ -80,7 +80,7 @@ public class FourStoreTest
     {
         StorageFourStoreSaveGraph();
 
-        FourStoreConnector fourstore = GetConnection();
+        var fourstore = GetConnection();
         fourstore.DeleteGraph("http://example.org/4storeTest");
 
         var g = new Graph();
@@ -101,7 +101,7 @@ public class FourStoreTest
             new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))),
         };
 
-        FourStoreConnector fourstore = GetConnection();
+        var fourstore = GetConnection();
         fourstore.UpdateGraph("http://example.org/4storeTest", ts, null);
 
         fourstore.LoadGraph(g, "http://example.org/4storeTest");
@@ -116,7 +116,7 @@ public class FourStoreTest
         var nodeFactory = new NodeFactory(new NodeFactoryOptions());
         var g = new Graph(nodeFactory.CreateUriNode(new Uri("http://example.org/4storeRemoveTriples")));
 
-        FourStoreConnector fourstore = GetConnection();
+        var fourstore = GetConnection();
         fourstore.DeleteGraph("http://example.org/4storeRemoveTriples");
 
         g.Assert(
@@ -141,7 +141,7 @@ public class FourStoreTest
     [Fact]
     public void StorageFourStoreUpdate()
     {
-        FourStoreConnector fourstore = GetConnection();
+        var fourstore = GetConnection();
         fourstore.Update("CREATE SILENT GRAPH <http://example.org/update>; INSERT DATA { GRAPH <http://example.org/update> { <http://example.org/subject> <http://example.org/predicate> <http://example.org/object> } }");
 
         var g = new Graph();

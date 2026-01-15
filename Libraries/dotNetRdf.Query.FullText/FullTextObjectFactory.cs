@@ -79,12 +79,12 @@ public class FullTextObjectFactory
     {
         obj = null;
 
-        INode index = g.CreateUriNode(g.UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "index"));
-        INode indexerProperty = g.CreateUriNode(g.UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "indexer"));
-        INode searcher = g.CreateUriNode(g.UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "searcher"));
-        INode analyzer = g.CreateUriNode(g.UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "analyzer"));
-        INode schema = g.CreateUriNode(g.UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "schema"));
-        INode version = g.CreateUriNode(g.UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "version"));
+        var index = g.CreateUriNode(g.UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "index"));
+        var indexerProperty = g.CreateUriNode(g.UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "indexer"));
+        var searcher = g.CreateUriNode(g.UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "searcher"));
+        var analyzer = g.CreateUriNode(g.UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "analyzer"));
+        var schema = g.CreateUriNode(g.UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "schema"));
+        var version = g.CreateUriNode(g.UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "version"));
 
         Object tempIndex, tempAnalyzer, tempSchema;
         var ver = DefaultVersion;
@@ -99,13 +99,13 @@ public class FullTextObjectFactory
 
             case FullTextIndexedDataset:
                 //Need to get the inner dataset
-                INode datasetNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
+                var datasetNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
                 if (datasetNode == null) throw new DotNetRdfConfigurationException("Unable to load the Full Text Indexed Dataset specified by the Node '" + objNode.ToString() + "' as there was no value specified for the required dnr:usingDataset property");
                 var tempDataset = ConfigurationLoader.LoadObject(g, datasetNode);
                 if (tempDataset is ISparqlDataset sparqlDataset)
                 {
                     //Then load the indexer associated with the dataset
-                    INode indexerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, indexerProperty);
+                    var indexerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, indexerProperty);
                     if (indexerNode == null) throw new DotNetRdfConfigurationException("Unable to load the Full Text Indexed Dataset specified by the Node '" + objNode.ToString() + " as there was no value specified for the required dnr-ft:indexer property");
                     var tempIndexer = ConfigurationLoader.LoadObject(g, indexerNode);
                     if (tempIndexer is IFullTextIndexer fullTextIndexer)
@@ -126,7 +126,7 @@ public class FullTextObjectFactory
 
             case FullTextOptimiser:
                 //Need to get the Search Provider
-                INode providerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, searcher);
+                var providerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, searcher);
                 if (providerNode == null) throw new DotNetRdfConfigurationException("Unable to load the Full Text Optimiser specified by the Node '" + objNode.ToString() + "' as there was no value specified for the required dnr-ft:searcher property");
                 var tempSearcher = ConfigurationLoader.LoadObject(g, providerNode);
                 if (tempSearcher is IFullTextSearchProvider fullTextSearchProvider)
@@ -181,7 +181,7 @@ public class FullTextObjectFactory
                                     if (sources.Count > 0)
                                     {
                                         //If there are sources to index ensure we have an indexer to index with
-                                        INode indexerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "buildIndexWith")));
+                                        var indexerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "buildIndexWith")));
                                         if (indexerNode == null) throw new DotNetRdfConfigurationException("Unable to load the Lucene Search Provider specified by the Node '" + objNode.ToString() + "' as there were values specified for the dnr-ft:buildIndexFor property but no dnr-ft:buildIndexWith property was found");
                                         var indexer = ConfigurationLoader.LoadObject(g, indexerNode) as IFullTextIndexer;
                                         if (indexer == null) throw new DotNetRdfConfigurationException("Unable to load the Lucene Search Provider specified by the Node '" + objNode.ToString() + "' as the value given for the dnr-ft:buildIndexWith property pointed to an Object which could not be loaded as a type that implements the required IFullTextIndexer interface");
@@ -189,7 +189,7 @@ public class FullTextObjectFactory
                                         try 
                                         {
                                             //For Each Source load it and Index it
-                                            foreach (INode sourceNode in sources)
+                                            foreach (var sourceNode in sources)
                                             {
                                                 var source = ConfigurationLoader.LoadObject(g, sourceNode);
                                                 switch (source)
@@ -199,7 +199,7 @@ public class FullTextObjectFactory
                                                         break;
                                                     case ITripleStore store:
                                                         {
-                                                            foreach (IGraph graph in store.Graphs)
+                                                            foreach (var graph in store.Graphs)
                                                             {
                                                                 indexer.Index(graph);
                                                             }
@@ -269,7 +269,7 @@ public class FullTextObjectFactory
                             }
                             catch
                             {
-                                MethodInfo method = targetType.GetMethod("Open", [typeof(DirInfo)]);
+                                var method = targetType.GetMethod("Open", [typeof(DirInfo)]);
                                 if (method != null)
                                 {
                                     obj = method.Invoke(null, [new DirInfo(ConfigurationLoader.ResolvePath(dir))]);

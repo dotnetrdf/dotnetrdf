@@ -53,15 +53,15 @@ public class FullTextHelperTests
 
             var queryString = new SparqlParameterizedString(query);
             queryString.Namespaces.AddNamespace("pf", new Uri(FullTextHelper.FullTextMatchNamespace));
-            SparqlQuery q = _parser.ParseFromString(queryString);
+            var q = _parser.ParseFromString(queryString);
             var formatter = new SparqlFormatter(queryString.Namespaces);
 
             Console.WriteLine(formatter.Format(q));
             Console.WriteLine();
 
-            List<IPropertyFunctionPattern> ps = PropertyFunctionHelper.ExtractPatterns(q.RootGraphPattern.TriplePatterns);
+            var ps = PropertyFunctionHelper.ExtractPatterns(q.RootGraphPattern.TriplePatterns);
             Console.WriteLine(ps.Count + " Pattern(s) extracted");
-            foreach (IPropertyFunctionPattern propFunc in ps.Where(p => p.PropertyFunction is FullTextMatchPropertyFunction))
+            foreach (var propFunc in ps.Where(p => p.PropertyFunction is FullTextMatchPropertyFunction))
             {
                 Console.WriteLine("Match Variable: " + propFunc.SubjectArgs.First().ToString());
                 Console.WriteLine("Score Variable: " + (propFunc.SubjectArgs.Count() > 1 ? propFunc.SubjectArgs.Skip(1).First().ToString() : "N/A"));

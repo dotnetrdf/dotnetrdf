@@ -47,12 +47,12 @@ internal class FunctionCallImpl : ModuleCallImpl, IFunctionCall
 
     public List<IResource> getArguments()
     {
-        Dictionary<IResource, IResource> values = getArgumentsMap();
-        IResource[] ps = getArgumentProperties(values);
+        var values = getArgumentsMap();
+        var ps = getArgumentProperties(values);
         var results = new List<IResource>(ps.Length);
-        foreach (IResource key in ps)
+        foreach (var key in ps)
         {
-            IResource node = values[key];
+            var node = values[key];
             results.Add(SPINFactory.asExpression(node));
         }
         return results;
@@ -63,7 +63,7 @@ internal class FunctionCallImpl : ModuleCallImpl, IFunctionCall
     {
         var ps = new IResource[values.Count];
         var others = new List<IResource>();
-        foreach (IResource p in values.Keys)
+        foreach (var p in values.Keys)
         {
             if (p.Uri.ToString().StartsWith(SP_ARG) && !RDFUtil.sameTerm(p, SP.PropertyArg))
             {
@@ -100,10 +100,10 @@ internal class FunctionCallImpl : ModuleCallImpl, IFunctionCall
     {
         /*sealed*/
         var values = new Dictionary<IResource, IResource>();
-        IEnumerator<Triple> it = listProperties().GetEnumerator();
+        var it = listProperties().GetEnumerator();
         while (it.MoveNext())
         {
-            Triple s = it.Current;
+            var s = it.Current;
             if (!RDFUtil.sameTerm(RDF.PropertyType, s.Predicate))
             {
                 values[Resource.Get(s.Predicate, Graph, getModel())] = Resource.Get(s.Object, Graph, getModel());
@@ -120,13 +120,13 @@ internal class FunctionCallImpl : ModuleCallImpl, IFunctionCall
         // Return the most specific type, i.e. the one that does not have
         // any subclasses
         IResource type = null;
-        IEnumerator<Triple> it = listProperties(RDF.PropertyType).GetEnumerator();
+        var it = listProperties(RDF.PropertyType).GetEnumerator();
         while (it.MoveNext())
         {
-            Triple s = it.Current;
+            var s = it.Current;
             if (s.Object is IUriNode)
             {
-                IResource candidate = Resource.Get(s.Object, Graph, getModel());
+                var candidate = Resource.Get(s.Object, Graph, getModel());
                 if (type == null)
                 {
                     type = candidate;
@@ -146,7 +146,7 @@ internal class FunctionCallImpl : ModuleCallImpl, IFunctionCall
             }
             else
             {
-                IResource global = SPINModuleRegistry.getFunction(type.Uri, null);
+                var global = SPINModuleRegistry.getFunction(type.Uri, null);
                 if (global != null)
                 {
                     return global;
@@ -166,7 +166,7 @@ internal class FunctionCallImpl : ModuleCallImpl, IFunctionCall
 
     override public IModule getModule()
     {
-        IResource function = getFunction();
+        var function = getFunction();
         if (function != null)
         {
             return (IModule)function.As(typeof(FunctionImpl));
@@ -196,8 +196,8 @@ internal class FunctionCallImpl : ModuleCallImpl, IFunctionCall
 
     override public void Print(ISparqlPrinter p)
     {
-        IResource function = getFunction();
-        List<IResource> args = getArguments();
+        var function = getFunction();
+        var args = getArguments();
 
         var symbol = getSymbol(function);
         //TODO implement isLetter
@@ -273,7 +273,7 @@ internal class FunctionCallImpl : ModuleCallImpl, IFunctionCall
         IEnumerator<IResource> it = args.GetEnumerator();
         while (it.MoveNext())
         {
-            IResource param = it.Current;
+            var param = it.Current;
             printNestedExpressionString(p, param);
             if (it.MoveNext())
             {

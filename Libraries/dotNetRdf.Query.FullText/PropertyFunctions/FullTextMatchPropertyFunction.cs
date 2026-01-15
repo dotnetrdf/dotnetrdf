@@ -78,9 +78,9 @@ public class FullTextMatchPropertyFunction
             case 1:
                 break;
             case 2:
-                PatternItem arg = info.ObjectArgs[1];
+                var arg = info.ObjectArgs[1];
                 if (!arg.IsFixed) throw new RdfQueryException("Cannot use a variable as the limit/score threshold for full text queries, must use a numeric constant");
-                IValuedNode n = ((NodeMatchPattern)arg).Node.AsValuedNode();
+                var n = ((NodeMatchPattern)arg).Node.AsValuedNode();
                 switch (n.NumericType)
                 {
                     case SparqlNumericType.Integer:
@@ -96,17 +96,17 @@ public class FullTextMatchPropertyFunction
                 }
                 break;
             default:
-                PatternItem arg1 = info.ObjectArgs[1];
-                PatternItem arg2 = info.ObjectArgs[2];
+                var arg1 = info.ObjectArgs[1];
+                var arg2 = info.ObjectArgs[2];
                 if (!arg1.IsFixed || !arg2.IsFixed) throw new RdfQueryException("Cannot use a variable as the limit/score threshold for full text queries, must use a numeric constant");
-                IValuedNode n1 = ((NodeMatchPattern)arg1).Node.AsValuedNode();
+                var n1 = ((NodeMatchPattern)arg1).Node.AsValuedNode();
                 _threshold = n1.NumericType switch
                 {
                     SparqlNumericType.NaN => throw new RdfQueryException(
                         "Cannot use a non-numeric constant as the score threshold for full text queries, must use a numeric constant"),
                     _ => n1.AsDouble()
                 };
-                IValuedNode n2 = ((NodeMatchPattern)arg2).Node.AsValuedNode();
+                var n2 = ((NodeMatchPattern)arg2).Node.AsValuedNode();
                 _limit = n2.NumericType switch
                 {
                     SparqlNumericType.NaN => throw new RdfQueryException(
@@ -186,20 +186,20 @@ public class FullTextMatchPropertyFunction
 
         //Next ensure that the search text is a node and not a variable
         if (!_searchVar.IsFixed) throw new FullTextQueryException("Queries using full text search must provide a constant value for the search term");
-        INode searchNode = ((NodeMatchPattern)_searchVar).Node;
+        var searchNode = ((NodeMatchPattern)_searchVar).Node;
         if (searchNode.NodeType != NodeType.Literal) throw new FullTextQueryException("Queries using full text search must use a literal value for the search term");
         var search = ((ILiteralNode)searchNode).Value;
 
         //Determine which graphs we are operating over
-        IEnumerable<IRefNode> graphUris = context.Data.ActiveGraphNames;
+        var graphUris = context.Data.ActiveGraphNames;
 
         //Now we can use the full text search provider to start getting results
         context.OutputMultiset = new Multiset();
-        IEnumerable<IFullTextSearchResult> results = applyLimitDirect ? GetResults(graphUris, provider, search, _limit.Value) : GetResults(graphUris, provider, search);
+        var results = applyLimitDirect ? GetResults(graphUris, provider, search, _limit.Value) : GetResults(graphUris, provider, search);
         var r = 0;
         var matchVar = _matchVar.Variables.First();
         var scoreVar = _scoreVar?.Variables.FirstOrDefault();
-        foreach (IFullTextSearchResult result in results)
+        foreach (var result in results)
         {
             if (matchConstant != null)
             {

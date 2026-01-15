@@ -58,7 +58,7 @@ internal class FlattenProcessor
         // 1 = Initialize node map to a map consisting of a single member whose key is @default
         // and whose value is an empty map.
         // 2 - Perform the Node Map Generation algorithm, passing element and node map.
-        JObject nodeMap = _nodeMapGenerator.GenerateNodeMap(element);
+        var nodeMap = _nodeMapGenerator.GenerateNodeMap(element);
 
         // 3 - Initialize default graph to the value of the @default member of node map,
         // which is a map representing the default graph.
@@ -66,9 +66,9 @@ internal class FlattenProcessor
 
         // 4 - For each key-value pair graph name-graph in node map where graph name is not @default,
         // ordered lexicographically by graph name if ordered is true, perform the following steps: 
-        IEnumerable<JProperty> properties = nodeMap.Properties().Where(p => !p.Name.Equals("@default"));
+        var properties = nodeMap.Properties().Where(p => !p.Name.Equals("@default"));
         if (ordered) properties = properties.OrderBy(p => p.Name);
-        foreach (JProperty p in properties)
+        foreach (var p in properties)
         {
             var graphName = p.Name;
             var graph = p.Value as JObject;
@@ -92,7 +92,7 @@ internal class FlattenProcessor
         // 5 - Initialize an empty array flattened.
         // 6 - For each id-node pair in default graph ordered lexicographically by id if ordered is true,
         // add node to flattened, unless the only entry of node is @id.
-        JArray flattened = FlattenGraph(defaultGraph, ordered);
+        var flattened = FlattenGraph(defaultGraph, ordered);
 
 
         // 7 - return flattened.
@@ -102,9 +102,9 @@ internal class FlattenProcessor
     private static JArray FlattenGraph(JObject graphObject, bool ordered)
     {
         var flattened = new JArray();
-        IEnumerable<JProperty> graphProperties = graphObject.Properties();
+        var graphProperties = graphObject.Properties();
         if (ordered) graphProperties = graphProperties.OrderBy(p => p.Name);
-        foreach (JProperty p in graphProperties)
+        foreach (var p in graphProperties)
         {
             var node = p.Value as JObject;
             if (node.Count > 1 || node.Properties().Any(x => !x.Name.Equals("@id")))

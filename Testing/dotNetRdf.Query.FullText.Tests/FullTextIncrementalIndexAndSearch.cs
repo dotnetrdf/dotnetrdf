@@ -51,7 +51,7 @@ public class FullTextIncrementalIndexAndSearch
     public void FullTextIncrementalIndexingLucene1()
     {
         //Lucene Index
-        Directory dir = new RAMDirectory();
+        var dir = new RAMDirectory();
         var indexer = new LuceneSubjectsIndexer(dir, new StandardAnalyzer(LuceneTestHarness.LuceneVersion), new DefaultIndexSchema());
 
         //Test Graph
@@ -95,7 +95,7 @@ public class FullTextIncrementalIndexAndSearch
     public void FullTextIncrementalIndexingLucene2()
     {
         //Lucene Index
-        Directory dir = new RAMDirectory();
+        var dir = new RAMDirectory();
         var indexer = new LuceneSubjectsIndexer(dir, new StandardAnalyzer(LuceneTestHarness.LuceneVersion), new DefaultIndexSchema());
         indexer.Flush();
         var searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, dir);

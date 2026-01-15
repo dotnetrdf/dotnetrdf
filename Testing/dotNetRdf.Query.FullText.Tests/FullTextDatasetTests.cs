@@ -48,7 +48,7 @@ public class FullTextDatasetTests
     public void FullTextDatasetLucene1()
     {
         //Lucene Index
-        Directory dir = new RAMDirectory();
+        var dir = new RAMDirectory();
         var indexer = new LuceneSubjectsIndexer(dir, new StandardAnalyzer(LuceneTestHarness.LuceneVersion), new DefaultIndexSchema());
 
         //Test Dataset
@@ -64,12 +64,12 @@ public class FullTextDatasetTests
 
         //Now do a search to check all the triples got indexed
         var searchTerm = "http";
-        IEnumerable<Triple> searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && ((ILiteralNode)t.Object).Value.Contains("http"));
+        var searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && ((ILiteralNode)t.Object).Value.Contains("http"));
         var searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, dir);
-        foreach (Triple searchTriple in searchTriples)
+        foreach (var searchTriple in searchTriples)
         {
-            INode targetNode = searchTriple.Subject;
-            IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
+            var targetNode = searchTriple.Subject;
+            var results = searcher.Match(searchTerm);
             Assert.True(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node " + targetNode.ToString(_formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
             Console.WriteLine();
         }
@@ -78,10 +78,10 @@ public class FullTextDatasetTests
         dataset.RemoveGraph(g.Name);
 
         //Repeat the search to check all the triples got unindexed
-        foreach (Triple searchTriple in searchTriples)
+        foreach (var searchTriple in searchTriples)
         {
-            INode targetNode = searchTriple.Subject;
-            IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
+            var targetNode = searchTriple.Subject;
+            var results = searcher.Match(searchTerm);
             Assert.False(results.Any(r => r.Node.Equals(targetNode)), "Found unexpected node " + targetNode.ToString(_formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
             Console.WriteLine();
         }
@@ -94,7 +94,7 @@ public class FullTextDatasetTests
     public void FullTextDatasetLucene2()
     {
         //Lucene Index
-        Directory dir = new RAMDirectory();
+        var dir = new RAMDirectory();
         var indexer = new LuceneSubjectsIndexer(dir, new StandardAnalyzer(LuceneTestHarness.LuceneVersion), new DefaultIndexSchema());
         indexer.Flush();
         var searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, dir);
@@ -112,11 +112,11 @@ public class FullTextDatasetTests
 
         //Now do a search to check all the triples got indexed
         var searchTerm = "http";
-        IEnumerable<Triple> searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && ((ILiteralNode)t.Object).Value.Contains("http"));
-        foreach (Triple searchTriple in searchTriples)
+        var searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && ((ILiteralNode)t.Object).Value.Contains("http"));
+        foreach (var searchTriple in searchTriples)
         {
-            INode targetNode = searchTriple.Subject;
-            IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
+            var targetNode = searchTriple.Subject;
+            var results = searcher.Match(searchTerm);
             Assert.True(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node " + targetNode.ToString(_formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
             Console.WriteLine();
         }
@@ -125,10 +125,10 @@ public class FullTextDatasetTests
         dataset.RemoveGraph(g.Name);
 
         //Repeat the search to check all the triples got unindexed
-        foreach (Triple searchTriple in searchTriples)
+        foreach (var searchTriple in searchTriples)
         {
-            INode targetNode = searchTriple.Subject;
-            IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
+            var targetNode = searchTriple.Subject;
+            var results = searcher.Match(searchTerm);
             Assert.False(results.Any(r => r.Node.Equals(targetNode)), "Found unexpected node " + targetNode.ToString(_formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
             Console.WriteLine();
         }

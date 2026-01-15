@@ -84,7 +84,7 @@ public class FullTextSparqlTests
         {
             Namespaces = GetQueryNamespaces()
         };
-        SparqlQuery q = _parser.ParseFromString(queryString);
+        var q = _parser.ParseFromString(queryString);
 
         var formatter = new SparqlFormatter(q.NamespaceMap);
         Console.WriteLine("Parsed Query:");

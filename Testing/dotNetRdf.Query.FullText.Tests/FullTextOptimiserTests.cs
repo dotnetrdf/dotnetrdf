@@ -60,7 +60,7 @@ public class FullTextOptimiserTests
     private SparqlQuery TestOptimisation(String query)
     {
         query = "PREFIX pf: <http://jena.hpl.hp.com/ARQ/property#>\n" + query;
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
         _output.WriteLine(_formatter.Format(q));
 
         _output.WriteLine("Normal Algebra: " + q.ToAlgebra());
@@ -115,17 +115,17 @@ public class FullTextOptimiserTests
     [Fact]
     public void FullTextOptimiserComplex3()
     {
-        SparqlQuery q = TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
-        ISparqlAlgebra algebra = q.ToAlgebra();
+        var q = TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
+        var algebra = q.ToAlgebra();
         Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
     }
 
     [Fact]
     public void FullTextOptimiserComplex4()
     {
-        SparqlQuery q =
+        var q =
             TestOptimisation("SELECT * WHERE { (?s ?score) pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
-        ISparqlAlgebra algebra = q.ToAlgebra();
+        var algebra = q.ToAlgebra();
         Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
     }
 
@@ -149,8 +149,8 @@ SELECT DISTINCT ?result ?isWebSite WHERE {
        ?result a my:Organization .
        ?result rdfs:label ?label .
     } ORDER BY DESC(?isWebSite) DESC(?score) ASC(?label)";
-        SparqlQuery q = TestOptimisation(query);
-        ISparqlAlgebra algebra = q.ToAlgebra();
+        var q = TestOptimisation(query);
+        var algebra = q.ToAlgebra();
         Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
     }
 }

@@ -96,14 +96,14 @@ public class FullTextOptimiser
     {
         context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
-        INode optObj = context.NextSubject;
+        var optObj = context.NextSubject;
 
         context.Graph.Assert(optObj, context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType)), context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassAlgebraOptimiser)));
         context.Graph.Assert(optObj, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType)), context.Graph.CreateLiteralNode(GetType().FullName + ", dotNetRDF.Query.FullText"));
 
         if (_provider is IConfigurationSerializable serializable)
         {
-            INode searcherObj = context.Graph.CreateBlankNode();
+            var searcherObj = context.Graph.CreateBlankNode();
             context.NextSubject = searcherObj;
             serializable.SerializeConfiguration(context);
             context.Graph.Assert(optObj, context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertySearcher)), searcherObj);

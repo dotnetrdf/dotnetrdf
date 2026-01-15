@@ -62,23 +62,23 @@ public class FormattingTests
         var dtXmlLiteral = new Uri(RdfSpecsHelper.RdfXmlLiteral);
 
         //Create Nodes used for our test Triples
-        IBlankNode subjBnode = g.CreateBlankNode();
-        IUriNode subjUri = g.CreateUriNode(new Uri("http://example.org/subject"));
-        IUriNode subjUri2 = g.CreateUriNode(new Uri("http://example.org/123"));
-        IUriNode predUri = g.CreateUriNode(new Uri("http://example.org/vocab#predicate"));
-        IUriNode predType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-        IBlankNode objBnode = g.CreateBlankNode();
-        IUriNode objUri = g.CreateUriNode(new Uri("http://example.org/object"));
-        ILiteralNode objString = g.CreateLiteralNode("This is a literal");
-        ILiteralNode objStringLang = g.CreateLiteralNode("This is a literal with a language specifier", "en");
-        ILiteralNode objInt = g.CreateLiteralNode("123", dtInt);
-        ILiteralNode objFloat = g.CreateLiteralNode("12.3e4", dtFloat);
-        ILiteralNode objDouble = g.CreateLiteralNode("12.3e4", dtDouble);
-        ILiteralNode objDecimal = g.CreateLiteralNode("12.3", dtDecimal);
-        ILiteralNode objTrue = g.CreateLiteralNode("true", dtBoolean);
-        ILiteralNode objFalse = g.CreateLiteralNode("false", dtBoolean);
-        ILiteralNode objUnknown = g.CreateLiteralNode("This is a literal with an unknown type", dtUnknown);
-        ILiteralNode objXmlLiteral = g.CreateLiteralNode("<strong>XML Literal</strong>", dtXmlLiteral);
+        var subjBnode = g.CreateBlankNode();
+        var subjUri = g.CreateUriNode(new Uri("http://example.org/subject"));
+        var subjUri2 = g.CreateUriNode(new Uri("http://example.org/123"));
+        var predUri = g.CreateUriNode(new Uri("http://example.org/vocab#predicate"));
+        var predType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+        var objBnode = g.CreateBlankNode();
+        var objUri = g.CreateUriNode(new Uri("http://example.org/object"));
+        var objString = g.CreateLiteralNode("This is a literal");
+        var objStringLang = g.CreateLiteralNode("This is a literal with a language specifier", "en");
+        var objInt = g.CreateLiteralNode("123", dtInt);
+        var objFloat = g.CreateLiteralNode("12.3e4", dtFloat);
+        var objDouble = g.CreateLiteralNode("12.3e4", dtDouble);
+        var objDecimal = g.CreateLiteralNode("12.3", dtDecimal);
+        var objTrue = g.CreateLiteralNode("true", dtBoolean);
+        var objFalse = g.CreateLiteralNode("false", dtBoolean);
+        var objUnknown = g.CreateLiteralNode("This is a literal with an unknown type", dtUnknown);
+        var objXmlLiteral = g.CreateLiteralNode("<strong>XML Literal</strong>", dtXmlLiteral);
 
         var formatters = new List<ITripleFormatter>()
         {
@@ -121,12 +121,12 @@ public class FormattingTests
         };
         var testTriples = (from s in subjects from p in predicates from o in objects select new Triple(s, p, o)).ToList();
 
-        foreach (Triple t in testTriples)
+        foreach (var t in testTriples)
         {
             _testOutputHelper.WriteLine("Raw Triple:");
             _testOutputHelper.WriteLine(t.ToString());
             _testOutputHelper.WriteLine();
-            foreach (ITripleFormatter f in formatters)
+            foreach (var f in formatters)
             {
                 _testOutputHelper.WriteLine(f.GetType().ToString());
                 _testOutputHelper.WriteLine(f.Format(t));
@@ -167,15 +167,15 @@ public class FormattingTests
 
         for (var i = 0; i < formatters.Count; i++)
         {
-            IGraphFormatter formatter = formatters[i];
+            var formatter = formatters[i];
             _testOutputHelper.WriteLine("Using Formatter " + formatter.GetType());
 
-            foreach (IGraph graph in graphs)
+            foreach (var graph in graphs)
             {
                 //Console.WriteLine("Testing Graph " + (graph.BaseUri != null ? graph.BaseUri.ToString() : String.Empty));
                 var output = new StringBuilder();
                 output.AppendLine(formatter.FormatGraphHeader(graph));
-                foreach (Triple t in graph.Triples)
+                foreach (var t in graph.Triples)
                 {
                     output.AppendLine(formatter.Format(t));
                 }
@@ -185,10 +185,10 @@ public class FormattingTests
 
                 //Try parsing to check it round trips
                 var h = new Graph();
-                IRdfReader parser = parsers[i];
+                var parser = parsers[i];
                 parser.Load(h, new StringReader(output.ToString()));
 
-                GraphDiffReport diff = graph.Difference(h);
+                var diff = graph.Difference(h);
                 if (!diff.AreEqual)
                 {
                     TestTools.ShowDifferences(diff);
@@ -221,11 +221,11 @@ public class FormattingTests
         _testOutputHelper.WriteLine("Using Formatter " + formatters.GetType());
         for (var i = 0; i < formatters.Count; i++)
         {
-            IResultSetFormatter formatter = formatters[i];
+            var formatter = formatters[i];
 
             var output = new StringBuilder();
             output.AppendLine(formatter.FormatResultSetHeader(expected.Variables));
-            foreach (ISparqlResult r in expected)
+            foreach (var r in expected)
             {
                 output.AppendLine(formatter.Format(r));
             }
@@ -235,7 +235,7 @@ public class FormattingTests
 
             //Try parsing to check it round trips
             var actual = new SparqlResultSet();
-            ISparqlResultsReader parser = parsers[i];
+            var parser = parsers[i];
             parser.Load(actual, new StringReader(output.ToString()));
 
             Assert.Equal(expected, actual);

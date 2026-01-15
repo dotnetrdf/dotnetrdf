@@ -75,14 +75,14 @@ public class FullTextSparqlTests2
         {
             Namespaces = GetQueryNamespaces()
         };
-        SparqlQuery q = _parser.ParseFromString(queryString);
+        var q = _parser.ParseFromString(queryString);
 
         var formatter = new SparqlFormatter(q.NamespaceMap);
         Console.WriteLine("Parsed Query:");
         Console.WriteLine(formatter.Format(q));
 
         Console.WriteLine("Expected Results:");
-        foreach (INode n in expected)
+        foreach (var n in expected)
         {
             Console.WriteLine(n.ToString(formatter));
         }
@@ -98,7 +98,7 @@ public class FullTextSparqlTests2
             {
                 TestTools.ShowResults(results);
 
-                foreach (INode n in expected)
+                foreach (var n in expected)
                 {
                     Assert.True(results.Any(r => r.HasValue("match") && r["match"] != null && r["match"].Equals(n)), "Did not get expected ?match => " + formatter.Format(n));
                 }

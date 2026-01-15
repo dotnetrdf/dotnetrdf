@@ -64,20 +64,20 @@ internal static class FramingProcessor
         var frame = frameObjectOrArray as JObject;
 
         // 2 - Initialize flags embed, explicit, and requireAll from object embed flag, explicit inclusion flag, and require all flag in state overriding from any property values for @embed, @explicit, and @requireAll in frame.
-        JsonLdEmbed embed = GetEmbedOption(frame, state.Embed, processingMode);
+        var embed = GetEmbedOption(frame, state.Embed, processingMode);
         var explicitFlag = GetBooleanOption(frame, "@explicit", state.ExplicitInclusion);
         var requireAll = GetBooleanOption(frame, "@requireAll", state.RequireAll);
 
         // 3 - Create a list of matched subjects by filtering subjects against frame using the Frame Matching algorithm with state, subjects, frame, and requireAll.
-        Dictionary<string, JObject> matchedSubjects = MatchFrame(state, subjects, frame, requireAll);
+        var matchedSubjects = MatchFrame(state, subjects, frame, requireAll);
 
         // 5 - For each id and associated node object node from the set of matched subjects, ordered lexicographically by id if the optional ordered flag is true:
         var matches = (IEnumerable<KeyValuePair<string, JObject>>) matchedSubjects;
         if (ordered) matches = matches.OrderBy(x => x.Key, StringComparer.Ordinal);
-        foreach (KeyValuePair<string, JObject> match in matches)
+        foreach (var match in matches)
         {
             var id = match.Key;
-            JObject node = match.Value;
+            var node = match.Value;
 
             // Set up tracking for embedded nodes, clearing the value for each top-level property
             state.TrackEmbeddedNodes(activeProperty == null);
@@ -177,15 +177,15 @@ internal static class FramingProcessor
             {
                 var oldEmbedded = state.Embedded;
                 state.Embedded = false;
-                JToken includeFrame = frame["@included"];
+                var includeFrame = frame["@included"];
                 ProcessFrame(state, subjects, includeFrame, output, "@included", ordered, idStack);
                 state.Embedded = oldEmbedded;
             }
 
             // 4.7 - For each property and objects in node, ordered by property:
-            IEnumerable<JProperty> nodeProperties = node.Properties();
+            var nodeProperties = node.Properties();
             if (ordered) nodeProperties = nodeProperties.OrderBy(p => p.Name, StringComparer.Ordinal);
-            foreach (JProperty p in nodeProperties)
+            foreach (var p in nodeProperties)
             {
                 var property = p.Name;
                 var objects =p.Value as JArray;
@@ -204,7 +204,7 @@ internal static class FramingProcessor
                 }
 
                 // 4.7.3 - For each item in objects:
-                foreach (JToken item in objects)
+                foreach (var item in objects)
                 {
                     // 4.7.3.1 - If item is a dictionary with the property @list, 
                     // then each listitem in the list is processed in sequence and 
@@ -214,7 +214,7 @@ internal static class FramingProcessor
                         var list = new JObject();
                         output[property] =
                             new JArray(list); // KA: Not sure what the correct key is for the list object
-                        foreach (JToken listItem in item["@list"] as JArray)
+                        foreach (var listItem in item["@list"] as JArray)
                         {
                             // 4.7.3.1.1 - If listitem is a node reference, invoke the recursive algorithm using state, 
                             // the value of @id from listitem as the sole member of a new subjects array, 
@@ -263,7 +263,7 @@ internal static class FramingProcessor
                     // If frame does not exist, create a new frame using a new map with properties for @embed, @explicit and @requireAll taken from embed, explicit and requireAll.
                     else if (JsonLdUtils.IsNodeReference(item))
                     {
-                        JObject newFrame = ((frameObjectOrArray[property] as JArray)?[0]) as JObject ??
+                        var newFrame = ((frameObjectOrArray[property] as JArray)?[0]) as JObject ??
                                            MakeFrameObject(embed, explicitFlag, requireAll);
                         var oldEmbedded = state.Embedded;
                         state.Embedded = true;
@@ -292,7 +292,7 @@ internal static class FramingProcessor
             }
 
             // 4.7.4 - For each non-keyword property and objects in frame (other than `@type) that is not in output: 
-            foreach (JProperty frameProperty in frame.Properties())
+            foreach (var frameProperty in frame.Properties())
             {
                 var property = frameProperty.Name;
                 if (property.Equals("@type"))
@@ -313,11 +313,11 @@ internal static class FramingProcessor
                 }
 
                 // 4.7.4.1 - Let item be the first element in objects, which must be a frame object.
-                JToken item = objects[0];
+                var item = objects[0];
                 ValidateFrame(item);
 
                 // 4.7.4.2 - Set property frame to the first item in objects or a newly created frame object if value is objects. property frame must be a dictionary.
-                JObject propertyFrame = objects[0] as JObject ?? MakeFrameObject(embed, explicitFlag, requireAll); // KA - incomplete as I can't make sense of the spec algorithm here
+                var propertyFrame = objects[0] as JObject ?? MakeFrameObject(embed, explicitFlag, requireAll); // KA - incomplete as I can't make sense of the spec algorithm here
                 // 4.7.4.3 - Skip property and property frame if property frame contains @omitDefault with a value of true, or does not contain @omitDefault and the value of the omit default flag is true.
                 var frameOmitDefault = GetBooleanOption(propertyFrame, "@omitDefault", state.OmitDefault);
                 if (frameOmitDefault)
@@ -326,7 +326,7 @@ internal static class FramingProcessor
                 }
 
                 // 4.7.4.4 - Add property to output with a new dictionary having a property @preserve and a value that is a copy of the value of @default in frame if it exists, or the string @null otherwise.
-                JArray defaultValue = JsonLdUtils.EnsureArray(propertyFrame["@default"]) ?? new JArray("@null");
+                var defaultValue = JsonLdUtils.EnsureArray(propertyFrame["@default"]) ?? new JArray("@null");
                 output[property] = new JObject(new JProperty("@preserve", defaultValue));
                 //if (!(defaultValue is JArray)) defaultValue = new JArray(defaultValue);
                 //FramingAppend(output, new JObject(new JProperty("@preserve", defaultValue)), property);
@@ -336,16 +336,16 @@ internal static class FramingProcessor
             // 4.7.5 - If frame has the property @reverse, then for each reverse property and sub frame that are the values of @reverse in frame:
             if (frame.ContainsKey("@reverse"))
             {
-                foreach (JProperty rp in (frame["@reverse"] as JObject).Properties())
+                foreach (var rp in (frame["@reverse"] as JObject).Properties())
                 {
                     var reverseProperty = rp.Name;
-                    JToken subFrame = rp.Value;
+                    var subFrame = rp.Value;
                     // 4.7.5.1 - Create a @reverse property in output with a new dictionary reverse dict as its value.
                     output["@reverse"] ??= new JObject();
-                    JToken reverseDict = output["@reverse"];
+                    var reverseDict = output["@reverse"];
 
                     // 4.7.5.2 - For each reverse id and node in the map of flattened subjects that has the property reverse property containing a node reference with an @id of id:
-                    foreach (JProperty p in state.Subjects.Properties())
+                    foreach (var p in state.Subjects.Properties())
                     {
                         var n = p.Value as JObject;
                         if (n[reverseProperty] is not JArray reversePropertyValues) continue;
@@ -460,10 +460,10 @@ internal static class FramingProcessor
         JObject frame, bool requireAll)
     {
         var matches = new Dictionary<string, JObject>();
-        JArray idMatches = frame.ContainsKey("@id") ? JsonLdUtils.EnsureArray(frame["@id"]) : null;
-        JArray typeMatches = frame.ContainsKey("@type") ? JsonLdUtils.EnsureArray(frame["@type"]) : null;
+        var idMatches = frame.ContainsKey("@id") ? JsonLdUtils.EnsureArray(frame["@id"]) : null;
+        var typeMatches = frame.ContainsKey("@type") ? JsonLdUtils.EnsureArray(frame["@type"]) : null;
         var propertyMatches = new Dictionary<string, JArray>();
-        foreach (KeyValuePair<string, JToken> p in frame)
+        foreach (var p in frame)
         {
             if (JsonLdUtils.IsKeyword(p.Key)) continue;
             propertyMatches[p.Key] = JsonLdUtils.EnsureArray(p.Value);
@@ -488,7 +488,7 @@ internal static class FramingProcessor
             }
             if (typeMatches != null)
             {
-                JArray nodeTypes = node.ContainsKey("@type") ? JsonLdUtils.EnsureArray(node["@type"]) : null;
+                var nodeTypes = node.ContainsKey("@type") ? JsonLdUtils.EnsureArray(node["@type"]) : null;
                 var hasTypeMatch =
                     IsMatchNone(typeMatches) && (nodeTypes == null || nodeTypes.Count == 0) ||
                     IsWildcard(typeMatches) && nodeTypes != null && nodeTypes.Count > 0 ||
@@ -530,9 +530,9 @@ internal static class FramingProcessor
             // If !requireAll, assume there is no match and break when disproven
             var match = requireAll;
             var hasNonDefaultMatch = false;
-            foreach (KeyValuePair<string, JArray> pm in propertyMatches)
+            foreach (var pm in propertyMatches)
             {
-                MatchType propertyMatch = MatchProperty(state, node, pm.Key, pm.Value, requireAll);
+                var propertyMatch = MatchProperty(state, node, pm.Key, pm.Value, requireAll);
                 if (propertyMatch == MatchType.Abort)
                 {
                     match = false;
@@ -604,9 +604,9 @@ internal static class FramingProcessor
         if (JsonLdUtils.IsValueObject(frameArray[0]))
         {
             // frameArray is a value pattern array
-            foreach (JToken valuePattern in frameArray)
+            foreach (var valuePattern in frameArray)
             {
-                foreach (JToken value in nodeValues)
+                foreach (var value in nodeValues)
                 {
                     if (ValuePatternMatch(valuePattern, value))
                     {
@@ -619,10 +619,10 @@ internal static class FramingProcessor
 
         if (JsonLdUtils.IsListObject(frameArray[0]))
         {
-            JToken frameListValue = frameArray[0]["@list"][0];
+            var frameListValue = frameArray[0]["@list"][0];
             if (JsonLdUtils.IsListObject(nodeValues[0]))
             {
-                JToken nodeListValues = nodeValues[0]["@list"];
+                var nodeListValues = nodeValues[0]["@list"];
                 if (JsonLdUtils.IsValueObject(frameListValue))
                 {
                     if (nodeListValues.Any(v => ValuePatternMatch(frameListValue, v)))
@@ -643,9 +643,9 @@ internal static class FramingProcessor
         var valueSubjects = nodeValues.Where(x => x["@id"] != null).Select(x => x["@id"].Value<string>()).ToList();
         if (valueSubjects.Any())
         {
-            foreach (JToken subframe in frameArray)
+            foreach (var subframe in frameArray)
             {
-                Dictionary<string, JObject> matchedSubjects = MatchFrame(state, valueSubjects, subframe as JObject, requireAll);
+                var matchedSubjects = MatchFrame(state, valueSubjects, subframe as JObject, requireAll);
                 if (matchedSubjects.Any()) return MatchType.Match;
             }
         }
@@ -656,7 +656,7 @@ internal static class FramingProcessor
     private static bool NodePatternMatch(FramingState state, JObject frame, JToken value, bool requireAll)
     {
         if (value is not JObject valueObject || !valueObject.ContainsKey("@id")) return false;
-        Dictionary<string, JObject> matches = MatchFrame(state, [valueObject["@id"].Value<string>()], frame, requireAll);
+        var matches = MatchFrame(state, [valueObject["@id"].Value<string>()], frame, requireAll);
         return matches.Any();
 
     }
@@ -672,12 +672,12 @@ internal static class FramingProcessor
             // Pattern is wildcard
             return true;
         }
-        JToken v1 = valueObject["@value"];
-        JToken t1 = valueObject["@type"];
-        JToken l1 = valueObject["@language"];
-        JToken v2 = valuePatternObject["@value"];
-        JToken t2 = valuePatternObject["@type"];
-        JToken l2 = valuePatternObject["@language"];
+        var v1 = valueObject["@value"];
+        var t1 = valueObject["@type"];
+        var l1 = valueObject["@language"];
+        var v2 = valuePatternObject["@value"];
+        var t2 = valuePatternObject["@type"];
+        var l2 = valuePatternObject["@language"];
         return ValuePatternTokenMatch(v2, v1) && ValuePatternTokenMatch(t2, t1) && ValuePatternTokenMatch(l2, l1, true);
     }
 
@@ -776,7 +776,7 @@ internal static class FramingProcessor
         // value, a valid IRI or an array where all values are valid IRIs.
         if (obj.ContainsKey("@id"))
         {
-            JToken idValue = obj["@id"];
+            var idValue = obj["@id"];
             if (!(IsEmptyMapArray(idValue) || JsonLdUtils.IsIri(idValue) || JsonLdUtils.IsArray(idValue, JsonLdUtils.IsIri)))
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidFrame,
@@ -790,7 +790,7 @@ internal static class FramingProcessor
         // values are valid IRIs.
         if (obj.ContainsKey("@type"))
         {
-            JToken typeValue = obj["@type"];
+            var typeValue = obj["@type"];
             if (!(IsEmptyMapArray(typeValue) || IsDefaultObjectArray(typeValue) || JsonLdUtils.IsIri(typeValue) ||
                   JsonLdUtils.IsArray(typeValue, JsonLdUtils.IsIri)))
             {
@@ -841,16 +841,16 @@ internal static class FramingProcessor
 
     private static void RemoveEmbed(FramingState state, string id)
     {
-        Tuple<JToken, string> embed = state.GetEmbeddedNode(id);
+        var embed = state.GetEmbeddedNode(id);
         if (embed == null) return;
-        JToken parent = embed.Item1;
+        var parent = embed.Item1;
         var property = embed.Item2;
         var subject = new JObject(new JProperty("@id", id));
         if (parent is JArray parentArray)
         {
             for(var i = 0; i < parentArray.Count; i++)
             {
-                JToken item = parentArray[i];
+                var item = parentArray[i];
                 if (item is JObject itemObject && itemObject.ContainsKey("@id") && itemObject["@id"].Value<string>().Equals(id))
                 {
                     parent[i] = subject;

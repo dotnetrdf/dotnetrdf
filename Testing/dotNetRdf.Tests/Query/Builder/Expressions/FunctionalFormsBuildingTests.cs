@@ -37,7 +37,7 @@ public partial class ExpressionBuilderTests
     public void CanCreateBoundFunctionUsingVariableTerm()
     {
         // when
-        BooleanExpression bound = Builder.Bound("person");
+        var bound = Builder.Bound("person");
 
         // then
         Assert.True(bound.Expression is BoundFunction);
@@ -51,7 +51,7 @@ public partial class ExpressionBuilderTests
         var variableTerm = new VariableExpression("person");
 
         // when
-        BooleanExpression bound = Builder.Bound(variableTerm);
+        var bound = Builder.Bound(variableTerm);
 
         // then
         Assert.True(bound.Expression is BoundFunction);
@@ -63,11 +63,11 @@ public partial class ExpressionBuilderTests
     {
         // given
         var ifExpr = new BooleanExpression(new VariableTerm("if"));
-        SparqlExpression thenExpr = new TypedLiteralExpression<string>("then this");
-        SparqlExpression elseExpr = new TypedLiteralExpression<string>("else that");
+        var thenExpr = new TypedLiteralExpression<string>("then this");
+        var elseExpr = new TypedLiteralExpression<string>("else that");
 
         // when
-        RdfTermExpression expression = Builder.If(ifExpr).Then(thenExpr).Else(elseExpr);
+        var expression = Builder.If(ifExpr).Then(thenExpr).Else(elseExpr);
 
         // then
         Assert.True(expression.Expression is IfElseFunction);
@@ -81,11 +81,11 @@ public partial class ExpressionBuilderTests
     {
         // given
         var ifExpr = new VariableExpression("if");
-        SparqlExpression thenExpr = new VariableExpression("then this");
-        SparqlExpression elseExpr = new VariableExpression("else that");
+        var thenExpr = new VariableExpression("then this");
+        var elseExpr = new VariableExpression("else that");
 
         // when
-        RdfTermExpression expression = Builder.If(ifExpr).Then(thenExpr).Else(elseExpr);
+        var expression = Builder.If(ifExpr).Then(thenExpr).Else(elseExpr);
 
         // then
         Assert.True(expression.Expression is IfElseFunction);
@@ -98,13 +98,13 @@ public partial class ExpressionBuilderTests
     public void CanCreateTheCoalesceFunctionCall()
     {
         // given
-        SparqlExpression expr1 = new VariableExpression("x");
-        SparqlExpression expr2 = new TypedLiteralExpression<string>("str");
-        SparqlExpression expr3 = new NumericExpression<int>(10);
-        SparqlExpression expr4 = new NumericExpression<float>(10.5f) / new NumericExpression<float>(0);
+        var expr1 = new VariableExpression("x");
+        var expr2 = new TypedLiteralExpression<string>("str");
+        var expr3 = new NumericExpression<int>(10);
+        var expr4 = new NumericExpression<float>(10.5f) / new NumericExpression<float>(0);
 
         // when
-        RdfTermExpression coalesce = Builder.Coalesce(expr1, expr2, expr3, expr4);
+        var coalesce = Builder.Coalesce(expr1, expr2, expr3, expr4);
 
         // then
         Assert.True(coalesce.Expression is CoalesceFunction);

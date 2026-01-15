@@ -57,7 +57,7 @@ public class FullTextIndexedDataset
         _indexNow = indexNow;
         if (indexNow)
         {
-            foreach (IGraph g in Graphs)
+            foreach (var g in Graphs)
             {
                 _indexer.Index(g);
             }
@@ -124,7 +124,7 @@ public class FullTextIndexedDataset
         //Use Events to pick up Triple Level changes in the Modifiable Graph
         //because writing a Graph wrapper for this seems like overkill when
         //there are just events we can hook into
-        IGraph g = base.GetModifiableGraph(graphUri);
+        var g = base.GetModifiableGraph(graphUri);
         g.TripleAsserted += HandleTripleAdded;
         g.TripleRetracted += HandleTripleRemoved;
         return g;
@@ -137,7 +137,7 @@ public class FullTextIndexedDataset
     /// <returns></returns>
     public override IGraph GetModifiableGraph(IRefNode graphName)
     {
-        IGraph g  = base.GetModifiableGraph(graphName);
+        var g  = base.GetModifiableGraph(graphName);
         g.TripleAsserted += HandleTripleAdded;
         g.TripleRetracted += HandleTripleRemoved;
         return g;
@@ -193,7 +193,7 @@ public class FullTextIndexedDataset
         {
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
-            INode dataset = context.NextSubject;
+            var dataset = context.NextSubject;
             context.NextSubject = dataset;
 
             //First get the base class to serialize the main configuration
@@ -202,7 +202,7 @@ public class FullTextIndexedDataset
             //Then add additional configuration to the serialization
             if (_indexer is IConfigurationSerializable)
             {
-                INode indexer = context.NextSubject;
+                var indexer = context.NextSubject;
                 context.NextSubject = indexer;
                 context.Graph.Assert(dataset, context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyIndexer)), indexer);
                 context.Graph.Assert(dataset, context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyIndexNow)), _indexNow.ToLiteral(context.Graph));

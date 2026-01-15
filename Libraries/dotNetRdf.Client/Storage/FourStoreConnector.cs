@@ -288,7 +288,7 @@ public class FourStoreConnector
                 ContentLengthRequired = true,
             },
         };
-        HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+        var response = HttpClient.SendAsync(request).Result;
         if (!response.IsSuccessStatusCode)
         {
             throw StorageHelper.HandleHttpError(response, "saving a Graph to");
@@ -354,7 +354,7 @@ public class FourStoreConnector
                         // Build up the DELETE command and execute
                         delete.AppendLine("DELETE DATA");
                         delete.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
-                        foreach (Triple t in removals)
+                        foreach (var t in removals)
                         {
                             delete.AppendLine(t.ToString(_formatter));
                         }
@@ -370,7 +370,7 @@ public class FourStoreConnector
                         // Build up the INSERT command and execute
                         insert.AppendLine("INSERT DATA");
                         insert.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
-                        foreach (Triple t in additions)
+                        foreach (var t in additions)
                         {
                             insert.AppendLine(t.ToString(_formatter));
                         }
@@ -465,7 +465,7 @@ public class FourStoreConnector
         }
 
         var requestUri = _baseUri + "data/" + Uri.EscapeUriString(graphUri);
-        HttpResponseMessage response = HttpClient.DeleteAsync(requestUri).Result;
+        var response = HttpClient.DeleteAsync(requestUri).Result;
         if (!response.IsSuccessStatusCode)
         {
             StorageHelper.HandleHttpError(response, "deleting a Graph from");
@@ -485,7 +485,7 @@ public class FourStoreConnector
                 var graphs = new List<Uri>();
                 foreach (SparqlResult r in resultSet.Where(x=>x.HasValue("g")))
                 {
-                    INode temp = r["g"];
+                    var temp = r["g"];
                     if (temp.NodeType == NodeType.Uri)
                     {
                         graphs.Add(((IUriNode)temp).Uri);
@@ -520,7 +520,7 @@ public class FourStoreConnector
                 var graphs = new List<string>();
                 foreach (SparqlResult r in resultSet.Where(x => x.HasValue("g")))
                 {
-                    INode temp = r["g"];
+                    var temp = r["g"];
                     if (temp.NodeType == NodeType.Uri)
                     {
                         graphs.Add(((IUriNode)temp).Uri.AbsoluteUri);
@@ -561,14 +561,14 @@ public class FourStoreConnector
     /// <param name="state">State to pass to the callback.</param>
     public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
     {
-        HttpRequestMessage request = MakeSaveGraphRequestMessage(g);
+        var request = MakeSaveGraphRequestMessage(g);
         SaveGraphAsync(request, g, callback, state);
     }
 
     /// <inheritdoc />
     public override Task SaveGraphAsync(IGraph g, CancellationToken cancellationToken)
     {
-        HttpRequestMessage request = MakeSaveGraphRequestMessage(g);
+        var request = MakeSaveGraphRequestMessage(g);
         return SaveGraphAsync(request, cancellationToken);
     }
 
@@ -670,9 +670,9 @@ public class FourStoreConnector
         {
             try
             {
-                StringBuilder delete = MakeDeleteCommand(graphUri, removals);
+                var delete = MakeDeleteCommand(graphUri, removals);
 
-                StringBuilder insert = MakeInsertCommand(graphUri, additions);
+                var insert = MakeInsertCommand(graphUri, additions);
 
                 // Use Update() method to send the updates
                 if (delete.Length > 0)
@@ -726,8 +726,8 @@ public class FourStoreConnector
             throw new RdfStorageException("Cannot update a Graph without a Graph URI on a 4store Server");
         }
 
-        StringBuilder delete = MakeDeleteCommand(graphUri, removals);
-        StringBuilder insert = MakeInsertCommand(graphUri, additions);
+        var delete = MakeDeleteCommand(graphUri, removals);
+        var insert = MakeInsertCommand(graphUri, additions);
         if (delete.Length > 0)
         {
             return insert.Length > 0 ? UpdateAsync(delete + "\n;\n" + insert, cancellationToken) : UpdateAsync(delete.ToString(), cancellationToken);
@@ -746,7 +746,7 @@ public class FourStoreConnector
                 // Build up the INSERT command and execute
                 insert.AppendLine("INSERT DATA");
                 insert.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
-                foreach (Triple t in additions)
+                foreach (var t in additions)
                 {
                     insert.AppendLine(t.ToString(_formatter));
                 }
@@ -768,7 +768,7 @@ public class FourStoreConnector
                 // Build up the DELETE command and execute
                 delete.AppendLine("DELETE DATA");
                 delete.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
-                foreach (Triple t in removals)
+                foreach (var t in removals)
                 {
                     delete.AppendLine(t.ToString(_formatter));
                 }
@@ -930,13 +930,13 @@ public class FourStoreConnector
     /// <param name="context"></param>
     public void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode manager = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
-        INode server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
-        INode enableUpdates = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyEnableUpdates));
+        var manager = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+        var server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
+        var enableUpdates = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyEnableUpdates));
 
         context.Graph.Assert(new Triple(manager, rdfType, genericManager));
         context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));

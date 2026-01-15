@@ -58,7 +58,7 @@ static class FullTextExtensions
     internal static IFullTextSearchResult ToResult(this Document doc, double score, IFullTextIndexSchema schema)
     {
         //First get the node type
-        IIndexableField nodeTypeField = doc.GetField(schema.NodeTypeField);
+        var nodeTypeField = doc.GetField(schema.NodeTypeField);
         if (nodeTypeField == null) throw new RdfQueryException("Node Type field " + schema.NodeTypeField + " not present on a retrieved document.  Please check you have configured the Index Schema correctly");
         NodeType nodeType;
         try 
@@ -71,14 +71,14 @@ static class FullTextExtensions
         }
 
         //Get the Graph
-        IIndexableField graphField = doc.GetField(schema.GraphField);
+        var graphField = doc.GetField(schema.GraphField);
         IRefNode graphName = graphField == null ? null :
             graphField.GetStringValue().StartsWith("_:") ? 
             NodeFactory.CreateBlankNode(graphField.GetStringValue()) :
             NodeFactory.CreateUriNode(NodeFactory.UriFactory.Create(graphField.GetStringValue()));
 
         //Then get the node value
-        IIndexableField nodeValueField = doc.GetField(schema.NodeValueField);
+        var nodeValueField = doc.GetField(schema.NodeValueField);
         if (nodeValueField == null) throw new RdfQueryException("Node Value field " + schema.NodeValueField + " not present on a retrieved document.  Please check you have configured the Index Schema correctly");
         var nodeValue = nodeValueField.GetStringValue();
 
@@ -91,7 +91,7 @@ static class FullTextExtensions
 
             case NodeType.Literal:
                 //Need to get Meta field to determine whether we have a language or datatype present
-                IIndexableField nodeMetaField = doc.GetField(schema.NodeMetaField);
+                var nodeMetaField = doc.GetField(schema.NodeMetaField);
                 if (nodeMetaField == null)
                 {
                     //Assume a Plain Literal
@@ -197,10 +197,10 @@ static class FullTextExtensions
     {
         context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode indexClass = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.ClassIndex));
-        INode dirObj = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var indexClass = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.ClassIndex));
+        var dirObj = context.NextSubject;
 
         context.Graph.Assert(dirObj, rdfType, indexClass);
         context.Graph.Assert(dirObj, context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyEnsureIndex)), (true).ToLiteral(context.Graph));
@@ -223,12 +223,12 @@ static class FullTextExtensions
     {
         context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode analyzerClass = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.ClassAnalyzer));
-        INode analyzerObj = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var analyzerClass = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.ClassAnalyzer));
+        var analyzerObj = context.NextSubject;
 
-        Type t = analyzer.GetType();
+        var t = analyzer.GetType();
         if (t.GetConstructor(Type.EmptyTypes) != null || t.GetConstructor([typeof(Lucene.Net.Util.LuceneVersion)]) != null)
         {
             context.Graph.Assert(analyzerObj, rdfType, analyzerClass);
@@ -267,8 +267,8 @@ static class FullTextExtensions
     /// <param name="factoryType">Factory Type.</param>
     internal static void EnsureObjectFactory(this ConfigurationSerializationContext context, Type factoryType)
     {
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
         var assembly = Assembly.GetAssembly(factoryType).FullName;
         if (assembly.Contains(',')) assembly = assembly.Substring(0, assembly.IndexOf(','));
 
@@ -278,7 +278,7 @@ static class FullTextExtensions
         factoryCheck.CommandText = "ASK WHERE { ?factory a dnr:ObjectFactory ; dnr:type '" + factoryType.FullName + ", " + assembly + "' . }";
         if (context.Graph.ExecuteQuery(factoryCheck) is SparqlResultSet { Result: false })
         {
-            INode factory = context.Graph.CreateBlankNode();
+            var factory = context.Graph.CreateBlankNode();
             context.Graph.Assert(new Triple(factory, rdfType, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassObjectFactory))));
             context.Graph.Assert(new Triple(factory, dnrType, context.Graph.CreateLiteralNode(factoryType.FullName + ", " + assembly)));
         }
