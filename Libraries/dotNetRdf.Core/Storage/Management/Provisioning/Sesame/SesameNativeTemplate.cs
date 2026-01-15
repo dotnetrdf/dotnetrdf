@@ -91,23 +91,23 @@ public class SesameNativeTemplate
     /// <returns>Template Graph.</returns>
     public override IGraph GetTemplateGraph()
     {
-        IGraph g = GetBaseTemplateGraph();
-        INode impl = g.CreateBlankNode();
+        var g = GetBaseTemplateGraph();
+        var impl = g.CreateBlankNode();
         g.Assert(ContextNode, g.CreateUriNode("rep:repositoryImpl"), impl);
         g.Assert(impl, g.CreateUriNode("rep:repositoryType"), g.CreateLiteralNode("openrdf:SailRepository"));
-        INode sailImpl = g.CreateBlankNode();
+        var sailImpl = g.CreateBlankNode();
         g.Assert(impl, g.CreateUriNode("sr:sailImpl"), sailImpl);
 
         if (DirectTypeHierarchyInferencing)
         {
-            INode sailDelegate = g.CreateBlankNode();
+            var sailDelegate = g.CreateBlankNode();
             g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:DirectTypeHierarchyInferencer"));
             g.Assert(sailImpl, g.CreateUriNode("sail:delegate"), sailDelegate);
             sailImpl = sailDelegate;
         }
         if (RdfSchemaInferencing)
         {
-            INode sailDelegate = g.CreateBlankNode();
+            var sailDelegate = g.CreateBlankNode();
             g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:ForwardChainingRDFSInferencer"));
             g.Assert(sailImpl, g.CreateUriNode("sail:delegate"), sailDelegate);
             sailImpl = sailDelegate;

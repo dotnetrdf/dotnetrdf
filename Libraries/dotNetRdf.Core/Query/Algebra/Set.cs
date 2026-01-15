@@ -105,7 +105,7 @@ public sealed class Set
     internal Set(BindingTuple tuple)
     {
         _values = [];
-        foreach (KeyValuePair<string, PatternItem> binding in tuple.Values)
+        foreach (var binding in tuple.Values)
         {
             Add(binding.Key, tuple[binding.Key]);
         }
@@ -138,7 +138,7 @@ public sealed class Set
     /// <param name="value">Value.</param>
     public override void Add(string variable, INode value)
     {
-        if (!_values.TryGetValue(variable, out INode existingValue))
+        if (!_values.TryGetValue(variable, out var existingValue))
         {
             _values.Add(variable, value);
         }

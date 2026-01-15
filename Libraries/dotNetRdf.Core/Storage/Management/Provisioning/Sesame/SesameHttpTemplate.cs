@@ -88,8 +88,8 @@ public class SesameHttpTemplate
     /// <returns></returns>
     public override IGraph GetTemplateGraph()
     {
-        IGraph g = GetBaseTemplateGraph();
-        INode impl = g.CreateBlankNode();
+        var g = GetBaseTemplateGraph();
+        var impl = g.CreateBlankNode();
         g.Assert(ContextNode, g.CreateUriNode("rep:repositoryImpl"), impl);
         g.Assert(impl, g.CreateUriNode("rep:repositoryType"), g.CreateLiteralNode("openrdf:HTTPRepository"));
 

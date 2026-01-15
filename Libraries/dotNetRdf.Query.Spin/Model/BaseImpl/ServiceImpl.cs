@@ -43,10 +43,10 @@ internal class ServiceImpl : ElementImpl, IService
 
     public Uri getServiceURI()
     {
-        IResource s = getResource(SP.PropertyServiceURI);
+        var s = getResource(SP.PropertyServiceURI);
         if (s != null && s.isUri())
         {
-            IVariable variable = SPINFactory.asVariable(s);
+            var variable = SPINFactory.asVariable(s);
             if (variable == null)
             {
                 return s.Uri;
@@ -58,10 +58,10 @@ internal class ServiceImpl : ElementImpl, IService
 
     public IVariable getServiceVariable()
     {
-        IResource s = getResource(SP.PropertyServiceURI);
+        var s = getResource(SP.PropertyServiceURI);
         if (s != null)
         {
-            IVariable variable = SPINFactory.asVariable(s);
+            var variable = SPINFactory.asVariable(s);
             if (variable != null)
             {
                 return variable;
@@ -74,7 +74,7 @@ internal class ServiceImpl : ElementImpl, IService
     override public void Print(ISparqlPrinter p)
     {
         p.printKeyword("SERVICE");
-        IVariable var = getServiceVariable();
+        var var = getServiceVariable();
         if (var != null)
         {
             p.print(" ");
@@ -82,7 +82,7 @@ internal class ServiceImpl : ElementImpl, IService
         }
         else
         {
-            Uri uri = getServiceURI();
+            var uri = getServiceURI();
             if (uri != null)
             {
                 p.print(" ");

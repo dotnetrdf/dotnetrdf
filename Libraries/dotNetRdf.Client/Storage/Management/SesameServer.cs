@@ -155,7 +155,7 @@ public class SesameServer
     {
         var templates = new List<IStoreTemplate>();
         object[] args = [id];
-        foreach (Type t in TemplateTypes)
+        foreach (var t in TemplateTypes)
         {
             try
             {
@@ -195,16 +195,16 @@ public class SesameServer
             if (template.Validate().Any())
                 throw new RdfStorageException(
                     "Template is not valid, call Validate() on the template to see the list of errors");
-            IGraph g = sesameTemplate.GetTemplateGraph();
+            var g = sesameTemplate.GetTemplateGraph();
 
             // Firstly we need to save the Repository Template as a new Context to Sesame
             createParams.Add("context", sesameTemplate.ContextNode.ToString());
-            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements",
+            var request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements",
                 "*/*", HttpMethod.Post, createParams);
             var ntWriter = new NTriplesWriter();
             request.Content = new GraphContent(g, ntWriter);
 
-            using (HttpResponseMessage response = HttpClient.SendAsync(request).Result)
+            using (var response = HttpClient.SendAsync(request).Result)
             {
                 // If we get then it was OK
                 if (!response.IsSuccessStatusCode)
@@ -255,7 +255,7 @@ public class SesameServer
     {
         try
         {
-            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, HttpMethod.Delete, []);
+            var request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, HttpMethod.Delete, []);
 
             using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
@@ -272,9 +272,9 @@ public class SesameServer
     /// <inheritdoc />
     public virtual async Task DeleteStoreAsync(string storeId, CancellationToken cancellationToken)
     {
-        HttpRequestMessage request = CreateRequest(_repositoriesPrefix + storeId, MimeTypesHelper.Any, HttpMethod.Delete, []);
+        var request = CreateRequest(_repositoriesPrefix + storeId, MimeTypesHelper.Any, HttpMethod.Delete, []);
 
-        using HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+        using var response = await HttpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             throw StorageHelper.HandleHttpError(response, $"deleting the Store '{storeId}' from");
@@ -289,10 +289,10 @@ public class SesameServer
     {
         try
         {
-            HttpRequestMessage request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], HttpMethod.Get, []);
+            var request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], HttpMethod.Get, []);
 
             var handler = new ListStringsHandler("id");
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "listing Stores from");
@@ -337,7 +337,7 @@ public class SesameServer
     {
         var templates = new List<IStoreTemplate>();
         object[] args = [id];
-        foreach (Type t in TemplateTypes)
+        foreach (var t in TemplateTypes)
         {
             try
             {
@@ -384,9 +384,9 @@ public class SesameServer
                 return;
             }
 
-            IGraph g = sesameTemplate.GetTemplateGraph();
+            var g = sesameTemplate.GetTemplateGraph();
             createParams.Add("context", sesameTemplate.ContextNode.ToString());
-            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements", "*/*", HttpMethod.Post, createParams);
+            var request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements", "*/*", HttpMethod.Post, createParams);
             request.Content = new GraphContent(g, MimeTypesHelper.NTriples[0]);
             EnsureSystemConnection();
             _sysConnection.SaveGraphAsync(request, g, (sender, args, st) =>
@@ -434,10 +434,10 @@ public class SesameServer
 
         try
         {
-            IGraph g = sesameTemplate.GetTemplateGraph();
+            var g = sesameTemplate.GetTemplateGraph();
             var createParams =
                 new Dictionary<string, string>() {{"context", sesameTemplate.ContextNode.ToString()}};
-            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements",
+            var request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements",
                 "*/*", HttpMethod.Post, createParams);
             request.Content = new GraphContent(g, MimeTypesHelper.NTriples[0]);
             EnsureSystemConnection();
@@ -492,7 +492,7 @@ public class SesameServer
     {
         try
         {
-            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, HttpMethod.Delete, []);
+            var request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, HttpMethod.Delete, []);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
                 if (requestTask.IsCanceled || requestTask.IsFaulted)
@@ -507,7 +507,7 @@ public class SesameServer
                 }
                 else
                 {
-                    using HttpResponseMessage response = requestTask.Result;
+                    using var response = requestTask.Result;
                     if (!response.IsSuccessStatusCode)
                     {
                         callback(this,
@@ -534,16 +534,16 @@ public class SesameServer
     {
         try
         {
-            HttpRequestMessage request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0],
+            var request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0],
                 HttpMethod.Get, []);
             var handler = new ListStringsHandler("id");
-            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            var response = await HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "listing stores from");
             }
 
-            Stream data = await response.Content.ReadAsStreamAsync();
+            var data = await response.Content.ReadAsStreamAsync();
             var parser = new SparqlXmlParser();
             parser.Load(handler, new StreamReader(data));
             return handler.Strings;
@@ -562,7 +562,7 @@ public class SesameServer
     [Obsolete("This method is obsolete and will be removed in a future release. Replaced by ListStoresAsync")]
     public virtual void ListStores(AsyncStorageCallback callback, object state)
     {
-        HttpRequestMessage request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], HttpMethod.Get, []);
+        var request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], HttpMethod.Get, []);
         var handler = new ListStringsHandler("id");
         try
         {
@@ -579,7 +579,7 @@ public class SesameServer
                 }
                 else
                 {
-                    using HttpResponseMessage response = requestTask.Result;
+                    using var response = requestTask.Result;
                     if (!response.IsSuccessStatusCode)
                     {
                         callback(this,
@@ -723,12 +723,12 @@ public class SesameServer
     /// <param name="context">Configuration Serialization Context.</param>
     public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode manager = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode storageServer = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageServer));
-        INode server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
+        var manager = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var storageServer = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageServer));
+        var server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
 
         context.Graph.Assert(new Triple(manager, rdfType, storageServer));
         context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
@@ -737,8 +737,8 @@ public class SesameServer
 
         if (_username != null && _pwd != null)
         {
-            INode username = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUser));
-            INode pwd = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPassword));
+            var username = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUser));
+            var pwd = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPassword));
             context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(_username)));
             context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(_pwd)));
         }

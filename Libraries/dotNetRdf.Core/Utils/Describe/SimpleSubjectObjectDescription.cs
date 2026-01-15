@@ -53,15 +53,15 @@ public class SimpleSubjectObjectDescription
         var bnodeMapping = new Dictionary<string, INode>();
 
         // Get Triples for this Subject
-        foreach (INode n in nodes)
+        foreach (var n in nodes)
         {
             // Get Triples where the Node is the Subject
-            foreach (Triple t in dataset.GetTriplesWithSubject(n).ToList())
+            foreach (var t in dataset.GetTriplesWithSubject(n).ToList())
             {
                 if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
             }
             // Get Triples where the Node is the Object
-            foreach (Triple t in dataset.GetTriplesWithObject(n).ToList())
+            foreach (var t in dataset.GetTriplesWithObject(n).ToList())
             {
                 if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
             }

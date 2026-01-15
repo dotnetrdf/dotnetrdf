@@ -50,7 +50,7 @@ public class SesameTests
         FileLoader.Load(g, "resources\\InferenceTest.ttl");
         g.BaseUri = new Uri("http://example.org/SesameTest");
 
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
         sesame.SaveGraph(g);
 
         //Options.HttpDebugging = true;
@@ -71,7 +71,7 @@ public class SesameTests
             BaseUri = new Uri("http://example.org/Sesame/empty")
         };
 
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
         sesame.SaveGraph(g);
 
         var h = new Graph();
@@ -84,7 +84,7 @@ public class SesameTests
     [Fact]
     public void StorageSesameSaveEmptyGraph2()
     {
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
         var graphUri = new Uri("http://example.org/Sesame/empty2");
         Console.WriteLine("Deleting any existing graph");
         sesame.DeleteGraph(graphUri);
@@ -125,7 +125,7 @@ public class SesameTests
     [Fact]
     public void StorageSesameSaveEmptyGraph3()
     {
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
         Uri graphUri = null;
         Console.WriteLine("Deleting any existing graph");
         sesame.DeleteGraph(graphUri);
@@ -170,7 +170,7 @@ public class SesameTests
         FileLoader.Load(g, "resources\\InferenceTest.ttl");
         g.BaseUri = new Uri("http://example.org/SesameTest");
 
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
         sesame.SaveGraph(g);
 
         //Delete all Triples about the Ford Fiesta
@@ -200,7 +200,7 @@ public class SesameTests
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/ns#"));
         g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), g.CreateUriNode("ex:obj"));
 
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
         sesame.SaveGraph(g);
 
         //Delete the single triple
@@ -222,7 +222,7 @@ public class SesameTests
     [Fact]
     public void StorageSesameDeleteTriples3()
     {
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
         var g = new Graph
         {
             BaseUri = new Uri("http://example.org/sesame/chinese")
@@ -254,7 +254,7 @@ public class SesameTests
     [Fact]
     public void StorageSesameDeleteGraph1()
     {
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
         var graphUri = new Uri("http://example.org/Sesame/delete");
 
         var g = new Graph();
@@ -279,7 +279,7 @@ public class SesameTests
     [Fact]
     public void StorageSesameDeleteGraph2()
     {
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
         Uri graphUri = null;
         sesame.DeleteGraph(graphUri);
 
@@ -305,7 +305,7 @@ public class SesameTests
     [Fact]
     public void StorageSesameCyrillic()
     {
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
         var g = new Graph
         {
             BaseUri = new Uri("http://example.org/sesame/cyrillic")
@@ -326,7 +326,7 @@ public class SesameTests
     [Fact]
     public void StorageSesameChinese()
     {
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
         var g = new Graph
         {
             BaseUri = new Uri("http://example.org/sesame/chinese")
@@ -347,7 +347,7 @@ public class SesameTests
     [Fact]
     public void StorageSesameAsk()
     {
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
 
         var ask = "ASK WHERE { ?s ?p ?o }";
 
@@ -358,7 +358,7 @@ public class SesameTests
     [Fact]
     public void StorageSesameDescribe()
     {
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
 
         var describe = "DESCRIBE <http://example.org/vehicles/FordFiesta>";
 
@@ -371,7 +371,7 @@ public class SesameTests
     {
         Assert.SkipUnless(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
         sesame.Update(@"DROP GRAPH <http://example.org/sparqlUpdateLoad>;
 LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/sparqlUpdateLoad>;
 DELETE WHERE 
@@ -388,7 +388,7 @@ DELETE WHERE
         var actual = new Graph();
         sesame.LoadGraph(actual, "http://example.org/sparqlUpdateLoad");
 
-        GraphDiffReport diff = orig.Difference(actual);
+        var diff = orig.Difference(actual);
         Assert.True(diff.AreEqual);
 
         Assert.Equal(orig, actual);
@@ -397,7 +397,7 @@ DELETE WHERE
     [Fact]
     public void StorageSesameSparqlUpdate2()
     {
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
         var g = new Graph();
         g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
         g.BaseUri = new Uri("http://example.org/sparqlUpdateDeleteWhere");
@@ -407,14 +407,14 @@ DELETE WHERE
 
         var h = new Graph();
         sesame.LoadGraph(h, "http://example.org/sparqlUpdateDeleteWhere");
-        INode rdfType = h.CreateUriNode("rdf:type");
+        var rdfType = h.CreateUriNode("rdf:type");
         Assert.False(h.GetTriplesWithPredicate(rdfType).Any(), "Should not be any rdf:type triples after SPARQL Update operation");
     }
 
     [Fact]
     public void StorageSesameSparqlUpdate3()
     {
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
 
         // Ensure required graph is present
         var g = new Graph
@@ -451,11 +451,11 @@ DELETE WHERE
     public void StorageSesameSparqlUpdate4()
     {
         // Test case adapted from CORE-374 sample update
-        SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+        var sesame = SesameTests.GetConnection();
 
         // Insert the Data
         var updates = new StringBuilder();
-        using (StreamReader reader = File.OpenText(@"resources\core-374.ru"))
+        using (var reader = File.OpenText(@"resources\core-374.ru"))
         {
             updates.Append(reader.ReadToEnd());
             reader.Close();

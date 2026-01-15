@@ -38,8 +38,8 @@ public class SetTests
     [Fact]
     public void SparqlSetHashCodes1()
     {
-        INode a = _factory.CreateLiteralNode("a");
-        INode b = _factory.CreateLiteralNode("b");
+        var a = _factory.CreateLiteralNode("a");
+        var b = _factory.CreateLiteralNode("b");
 
         var x = new Set();
         x.Add("a", a);
@@ -58,8 +58,8 @@ public class SetTests
     [Fact]
     public void SparqlSetHashCodes2()
     {
-        INode a = _factory.CreateLiteralNode("a");
-        INode b = _factory.CreateLiteralNode("b");
+        var a = _factory.CreateLiteralNode("a");
+        var b = _factory.CreateLiteralNode("b");
 
         var x = new Set();
         x.Add("a", a);
@@ -72,8 +72,8 @@ public class SetTests
         Assert.NotEqual(x, y);
         Assert.NotEqual(x.GetHashCode(), y.GetHashCode());
 
-        ISet z1 = x.Join(y);
-        ISet z2 = y.Join(x);
+        var z1 = x.Join(y);
+        var z2 = y.Join(x);
 
         Assert.Equal(z1, z2);
         Assert.Equal(z1.GetHashCode(), z2.GetHashCode());
@@ -82,9 +82,9 @@ public class SetTests
     [Fact]
     public void SparqlSetDistinct1()
     {
-        INode a = _factory.CreateBlankNode();
-        INode b1 = (1).ToLiteral(_factory);
-        INode b2 = (2).ToLiteral(_factory);
+        var a = _factory.CreateBlankNode();
+        var b1 = (1).ToLiteral(_factory);
+        var b2 = (2).ToLiteral(_factory);
 
         var x = new Set();
         x.Add("a", a);
@@ -108,7 +108,7 @@ public class SetTests
         //are stripped
         var context = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
         var processor = new LeviathanQueryProcessor(new InMemoryDataset());
-        BaseMultiset results = distinct.Accept(processor, context);
+        var results = distinct.Accept(processor, context);
         Assert.Equal(1, results.Count);
         Assert.False(results.ContainsVariable("_:b"));
     }
@@ -116,9 +116,9 @@ public class SetTests
     [Fact]
     public void SparqlSetDistinct2()
     {
-        INode a = _factory.CreateBlankNode();
-        INode b1 = (1).ToLiteral(_factory);
-        INode b2 = (2).ToLiteral(_factory);
+        var a = _factory.CreateBlankNode();
+        var b1 = (1).ToLiteral(_factory);
+        var b2 = (2).ToLiteral(_factory);
 
         var x = new Set();
         x.Add("a", a);
@@ -142,7 +142,7 @@ public class SetTests
         //be present
         var context = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
         var processor = new LeviathanQueryProcessor(new InMemoryDataset());
-        BaseMultiset results = distinct.Accept(processor, context);
+        var results = distinct.Accept(processor, context);
         Assert.Equal(2, results.Count);
         Assert.True(results.ContainsVariable("_:b"));
     }

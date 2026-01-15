@@ -48,17 +48,17 @@ public class SequenceTests
         var queryProcessor = new LeviathanQueryProcessor(dataset);
         Assert.Single(dataset.Graphs);
 
-        SparqlUpdateCommandSet updates = _updateParser.ParseFromFile(
+        var updates = _updateParser.ParseFromFile(
             Path.Combine("resources", "sparql", "protocol", "update_dataset_default_graph.ru"));
         updateProcessor.ProcessCommandSet(updates);
 
         Assert.Equal(3, dataset.Graphs.Count());
         Assert.Single(dataset[new UriNode(UriFactory.Root.Create("http://example.org/protocol-update-dataset-test/"))].Triples);
 
-        SparqlQuery query = _queryParser.ParseFromFile(
+        var query = _queryParser.ParseFromFile(
             Path.Combine("resources", "sparql", "protocol", "update_dataset_default_graph.rq"));
 
-        ISparqlAlgebra algebra = query.ToAlgebra();
+        var algebra = query.ToAlgebra();
 
         var results = queryProcessor.ProcessQuery(query) as SparqlResultSet;
         Assert.NotNull(results);
@@ -74,14 +74,14 @@ public class SequenceTests
         var queryProcessor = new LeviathanQueryProcessor(dataset);
         Assert.Single(dataset.Graphs);
 
-        SparqlUpdateCommandSet updates = _updateParser.ParseFromFile(
+        var updates = _updateParser.ParseFromFile(
             Path.Combine("resources", "sparql", "protocol", "update_dataset_default_graphs.ru"));
         updateProcessor.ProcessCommandSet(updates);
 
         Assert.Equal(5, dataset.Graphs.Count());
         Assert.Equal(2, dataset[new UriNode(UriFactory.Root.Create("http://example.org/protocol-update-dataset-graphs-test/"))].Triples.Count());
 
-        SparqlQuery query = _queryParser.ParseFromFile(
+        var query = _queryParser.ParseFromFile(
             Path.Combine("resources", "sparql", "protocol", "update_dataset_default_graphs.rq"));
 
         var results = queryProcessor.ProcessQuery(query) as SparqlResultSet;
@@ -98,17 +98,17 @@ public class SequenceTests
         var queryProcessor = new LeviathanQueryProcessor(dataset);
         Assert.Single(dataset.Graphs);
 
-        SparqlUpdateCommandSet updates = _updateParser.ParseFromFile(
+        var updates = _updateParser.ParseFromFile(
             Path.Combine("resources", "sparql", "protocol", "update_dataset_named_graphs.ru"));
         updateProcessor.ProcessCommandSet(updates);
 
         Assert.Equal(5, dataset.Graphs.Count());
         Assert.Equal(2, dataset[new UriNode(UriFactory.Root.Create("http://example.org/protocol-update-dataset-named-graphs-test/"))].Triples.Count());
 
-        SparqlQuery query = _queryParser.ParseFromFile(
+        var query = _queryParser.ParseFromFile(
             Path.Combine("resources", "sparql", "protocol", "update_dataset_named_graphs.rq"));
 
-        ISparqlAlgebra algebra = query.ToAlgebra();
+        var algebra = query.ToAlgebra();
         Console.WriteLine(algebra.ToString());
 
         var results = queryProcessor.ProcessQuery(query) as SparqlResultSet;
@@ -125,7 +125,7 @@ public class SequenceTests
         var queryProcessor = new LeviathanQueryProcessor(dataset);
         Assert.Single(dataset.Graphs);
 
-        SparqlUpdateCommandSet updates = _updateParser.ParseFromFile(
+        var updates = _updateParser.ParseFromFile(
             Path.Combine("resources", "sparql", "protocol", "update_dataset_full.ru"));
         updateProcessor.ProcessCommandSet(updates);
 
@@ -134,10 +134,10 @@ public class SequenceTests
         Assert.Equal(5, dataset.Graphs.Count());
         Assert.Equal(2, dataset[new UriNode(UriFactory.Root.Create("http://example.org/protocol-update-dataset-full-test/"))].Triples.Count());
 
-        SparqlQuery query = _queryParser.ParseFromFile(
+        var query = _queryParser.ParseFromFile(
             Path.Combine("resources", "sparql", "protocol", "update_dataset_full.rq"));
 
-        ISparqlAlgebra algebra = query.ToAlgebra();
+        var algebra = query.ToAlgebra();
         Console.WriteLine(algebra.ToString());
 
         var results = queryProcessor.ProcessQuery(query) as SparqlResultSet;

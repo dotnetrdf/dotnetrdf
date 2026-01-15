@@ -44,9 +44,9 @@ internal sealed class SelectBuilder : QueryBuilder, ISelectBuilder
     /// </summary>
     public ISelectBuilder And(params SparqlVariable[] variables)
     {
-        foreach (SparqlVariable sparqlVariable in variables)
+        foreach (var sparqlVariable in variables)
         {
-            SparqlVariable variablelocalCopy = sparqlVariable;
+            var variablelocalCopy = sparqlVariable;
             _buildSelectVariables.Add(prefixes => EnsureIsResultVariable(variablelocalCopy));
         }
         return this;
@@ -126,9 +126,9 @@ internal sealed class SelectBuilder : QueryBuilder, ISelectBuilder
 
     private void BuildReturnVariables(SparqlQuery query)
     {
-        IEnumerable<SparqlVariable> variables = _buildSelectVariables.Select(buildSelectVariable => buildSelectVariable(Prefixes));
+        var variables = _buildSelectVariables.Select(buildSelectVariable => buildSelectVariable(Prefixes));
 
-        foreach (SparqlVariable selectVariable in variables)
+        foreach (var selectVariable in variables)
         {
             query.AddVariable(selectVariable);
         }

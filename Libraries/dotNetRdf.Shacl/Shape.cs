@@ -102,9 +102,9 @@ internal abstract class Shape : GraphWrapperNode
                 from target in type.ObjectsOf(this)
                 select Target.Parse(type, target);
 
-            IEnumerable<Target> targets = Vocabulary.Targets.SelectMany(selectTargets);
+            var targets = Vocabulary.Targets.SelectMany(selectTargets);
 
-            IEnumerable<Target> implicitClassTargets =
+            var implicitClassTargets =
                 from shape in (IEnumerable<GraphWrapperNode>)[this]
                 where isClass(shape) && isShape(shape)
                 select Target.Parse(Vocabulary.TargetClass, shape);
@@ -154,7 +154,7 @@ internal abstract class Shape : GraphWrapperNode
 
     protected virtual bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
     {
-        IEnumerable<Constraint> components = (
+        var components = (
             from component in Graph.ConstraintComponents
             where component.Matches(this)
             select component.Constraints(this))

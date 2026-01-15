@@ -101,8 +101,8 @@ public class SkosGraph : WrapperGraph
 
     private IEnumerable<INode> GetInstances(string typeUri)
     {
-        IUriNode a = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-        IUriNode type = CreateUriNode(UriFactory.Create(typeUri));
+        var a = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+        var type = CreateUriNode(UriFactory.Create(typeUri));
 
         return 
             GetTriplesWithPredicateObject(a, type)

@@ -43,7 +43,7 @@ internal class SelectImpl : QueryImpl, ISelect
     public List<IResource> getResultVariables()
     {
         var results = new List<IResource>();
-        foreach (IResource node in getList(SP.PropertyResultVariables))
+        foreach (var node in getList(SP.PropertyResultVariables))
         {
             results.Add(SPINFactory.asExpression(node));
         }
@@ -79,7 +79,7 @@ internal class SelectImpl : QueryImpl, ISelect
             p.printKeyword("REDUCED");
             p.print(" ");
         }
-        List<IResource> vars = getResultVariables();
+        var vars = getResultVariables();
         if (vars.Count == 0)
         {
             p.print("*");
@@ -88,7 +88,7 @@ internal class SelectImpl : QueryImpl, ISelect
         {
             for (IEnumerator<IResource> vit = vars.GetEnumerator(); vit.MoveNext(); )
             {
-                IResource var = vit.Current;
+                var var = vit.Current;
                 if (var is IVariable)
                 {
                     if (getModel().ContainsTriple(var, SP.PropertyExpression, null))
@@ -128,7 +128,7 @@ internal class SelectImpl : QueryImpl, ISelect
 
     private void printGroupBy(ISparqlPrinter p)
     {
-        List<IResource> groupBy = getList(SP.PropertyGroupBy);
+        var groupBy = getList(SP.PropertyGroupBy);
         if (groupBy.Count > 0)
         {
             IEnumerator<IResource> it = groupBy.GetEnumerator();
@@ -138,7 +138,7 @@ internal class SelectImpl : QueryImpl, ISelect
             while (it.MoveNext())
             {
                 p.print(" ");
-                IResource node = it.Current;
+                var node = it.Current;
                 printNestedExpressionString(p, node);
             }
         }
@@ -147,7 +147,7 @@ internal class SelectImpl : QueryImpl, ISelect
 
     private void printHaving(ISparqlPrinter p)
     {
-        List<IResource> havings = getList(SP.PropertyHaving);
+        var havings = getList(SP.PropertyHaving);
         if (havings.Count > 0)
         {
             IEnumerator<IResource> it = havings.GetEnumerator();
@@ -166,7 +166,7 @@ internal class SelectImpl : QueryImpl, ISelect
     private void printProjectExpression(ISparqlPrinter p, IVariable var)
     {
         p.print("((");
-        IResource expr = var.getResource(SP.PropertyExpression);
+        var expr = var.getResource(SP.PropertyExpression);
         var expression = (IPrintable)SPINFactory.asExpression(expr);
         expression.Print(p);
         p.print(") ");

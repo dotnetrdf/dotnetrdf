@@ -328,7 +328,7 @@ public abstract class BaseSesameHttpProtocolConnector
             // Create the Request
             // For Sesame we always POST queries because using GET doesn't always work (CORE-374)
             var queryParams = new Dictionary<string, string>();
-            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _queryPath, accept,
+            var request = CreateRequest(_repositoriesPrefix + _store + _queryPath, accept,
                 HttpMethod.Post, queryParams);
 
             // Build the Post Data and add to the Request Body
@@ -348,7 +348,7 @@ public abstract class BaseSesameHttpProtocolConnector
             try
             {
                 // Is the Content Type referring to a Sparql Result Set format?
-                ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, isAsk);
+                var resreader = MimeTypesHelper.GetSparqlParser(ctype, isAsk);
                 resreader.Load(resultsHandler, data);
             }
             catch (RdfParserSelectionException)
@@ -359,7 +359,7 @@ public abstract class BaseSesameHttpProtocolConnector
                 {
                     try
                     {
-                        ISparqlResultsReader resreader =
+                        var resreader =
                             MimeTypesHelper.GetSparqlParser("application/sparql-results+xml");
                         resreader.Load(resultsHandler, data);
 
@@ -371,7 +371,7 @@ public abstract class BaseSesameHttpProtocolConnector
                 }
 
                 // Is the Content Type referring to a RDF format?
-                IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                var rdfreader = MimeTypesHelper.GetParser(ctype);
                 if (q != null && (SparqlSpecsHelper.IsSelectQuery(q.QueryType) ||
                                   q.QueryType == SparqlQueryType.Ask))
                 {
@@ -493,14 +493,14 @@ public abstract class BaseSesameHttpProtocolConnector
                 serviceParams.Add("context", "null");
             }
 
-            HttpRequestMessage request = CreateRequest(requestUri, RdfAcceptHeader, HttpMethod.Get, serviceParams);
+            var request = CreateRequest(requestUri, RdfAcceptHeader, HttpMethod.Get, serviceParams);
 
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "load a Graph from");
             }
-            IRdfReader parser = MimeTypesHelper.GetParser(response.Content.Headers.ContentType.MediaType);
+            var parser = MimeTypesHelper.GetParser(response.Content.Headers.ContentType.MediaType);
             parser.Load(handler, new StreamReader(response.Content.ReadAsStreamAsync().Result));
         }
         catch (Exception ex)
@@ -540,10 +540,10 @@ public abstract class BaseSesameHttpProtocolConnector
                 request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Post, serviceParams);
             }
 
-            IRdfWriter rdfWriter = CreateRdfWriter();
+            var rdfWriter = CreateRdfWriter();
             request.Content = new GraphContent(g, rdfWriter);
 
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "save a Graph to");
@@ -608,8 +608,8 @@ public abstract class BaseSesameHttpProtocolConnector
     {
         HttpRequestMessage request;
         HttpResponseMessage response;
-        Dictionary<string, string> serviceParams = MakeServiceParams(graphName);
-        IRdfWriter rdfWriter = CreateRdfWriter();
+        var serviceParams = MakeServiceParams(graphName);
+        var rdfWriter = CreateRdfWriter();
 
         if (removals != null)
         {
@@ -620,7 +620,7 @@ public abstract class BaseSesameHttpProtocolConnector
                 serviceParams.Add("obj", null);
 
                 // Have to do a DELETE for each individual Triple
-                foreach (Triple t in removals.Distinct())
+                foreach (var t in removals.Distinct())
                 {
                     serviceParams["subj"] = _formatter.Format(t.Subject);
                     serviceParams["pred"] = _formatter.Format(t.Predicate);
@@ -678,11 +678,11 @@ public abstract class BaseSesameHttpProtocolConnector
     {
         try
         {
-            Dictionary<string, string> serviceParams = MakeServiceParams(graphUri);
+            var serviceParams = MakeServiceParams(graphUri);
 
-            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Delete, serviceParams);
+            var request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Delete, serviceParams);
 
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "deleting a Graph from");
@@ -709,7 +709,7 @@ public abstract class BaseSesameHttpProtocolConnector
                 {
                     if (r.HasValue("g"))
                     {
-                        INode temp = r["g"];
+                        var temp = r["g"];
                         if (temp.NodeType == NodeType.Uri)
                         {
                             graphs.Add(((IUriNode)temp).Uri);
@@ -747,7 +747,7 @@ public abstract class BaseSesameHttpProtocolConnector
                 {
                     if (r.HasValue("g"))
                     {
-                        INode temp = r["g"];
+                        var temp = r["g"];
                         if (temp.NodeType == NodeType.Uri)
                         {
                             graphs.Add(((IUriNode)temp).Uri.AbsoluteUri);
@@ -780,7 +780,7 @@ public abstract class BaseSesameHttpProtocolConnector
                 {
                     if (r.HasValue("g"))
                     {
-                        INode temp = r["g"];
+                        var temp = r["g"];
                         if (temp.NodeType == NodeType.Uri)
                         {
                             graphs.Add(((IUriNode)temp).Uri.AbsoluteUri);
@@ -826,7 +826,7 @@ public abstract class BaseSesameHttpProtocolConnector
     /// <param name="state">State to pass to the callback.</param>
     public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
     {
-        HttpRequestMessage request = MakeSaveGraphRequestMessage(g);
+        var request = MakeSaveGraphRequestMessage(g);
         base.SaveGraphAsync(request, g, callback, state);
     }
 
@@ -856,7 +856,7 @@ public abstract class BaseSesameHttpProtocolConnector
     /// <inheritdoc />
     public override Task SaveGraphAsync(IGraph g, CancellationToken cancellationToken)
     {
-        HttpRequestMessage request = MakeSaveGraphRequestMessage(g);
+        var request = MakeSaveGraphRequestMessage(g);
         return SaveGraphAsync(request, cancellationToken);
     }
 
@@ -898,14 +898,14 @@ public abstract class BaseSesameHttpProtocolConnector
     /// <param name="state">State to pass to the callback.</param>
     public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
     {
-        HttpRequestMessage request = MakeLoadGraphRequestMessage(graphUri);
+        var request = MakeLoadGraphRequestMessage(graphUri);
         LoadGraphAsync(request, handler, callback, state);
     }
 
     /// <inheritdoc />
     public override Task LoadGraphAsync(IRdfHandler handler, string graphName, CancellationToken cancellationToken)
     {
-        HttpRequestMessage request = MakeLoadGraphRequestMessage(graphName);
+        var request = MakeLoadGraphRequestMessage(graphName);
         return LoadGraphAsync(request, handler, cancellationToken);
     }
 
@@ -919,7 +919,7 @@ public abstract class BaseSesameHttpProtocolConnector
             serviceParams.Add("context", "<" + graphUri + ">");
         }
 
-        HttpRequestMessage request =
+        var request =
             CreateRequest(requestUri, RdfAcceptHeader, HttpMethod.Get, serviceParams);
         return request;
     }
@@ -936,7 +936,7 @@ public abstract class BaseSesameHttpProtocolConnector
     {
         HttpRequestMessage request;
         Dictionary<string, string> serviceParams;
-        IRdfWriter rdfWriter = CreateRdfWriter();
+        var rdfWriter = CreateRdfWriter();
 
         if (removals != null)
         {
@@ -946,7 +946,7 @@ public abstract class BaseSesameHttpProtocolConnector
                 var requests = new Queue<HttpRequestMessage>();
 
                 // Have to do a DELETE for each individual Triple
-                foreach (Triple t in removals.Distinct())
+                foreach (var t in removals.Distinct())
                 {
                     // Prep Service Params
                     serviceParams = [];
@@ -1065,7 +1065,7 @@ public abstract class BaseSesameHttpProtocolConnector
             serviceParams.Add("context", "null");
         }
 
-        HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Delete, serviceParams);
+        var request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Delete, serviceParams);
         DeleteGraphAsync(request, false, graphUri, callback, state);
     }
 
@@ -1076,7 +1076,7 @@ public abstract class BaseSesameHttpProtocolConnector
         {
             {"context", string.IsNullOrEmpty(graphName) ? "null" : $"<{graphName}>"},
         };
-        HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Delete, serviceParams);
+        var request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Delete, serviceParams);
         return DeleteGraphAsync(request, false, cancellationToken);
     }
 
@@ -1115,7 +1115,7 @@ public abstract class BaseSesameHttpProtocolConnector
     {
         try
         {
-            HttpRequestMessage request = MakeQueryRequestMessage(sparqlQuery, out var isAsk, out SparqlQuery q);
+            var request = MakeQueryRequestMessage(sparqlQuery, out var isAsk, out var q);
 
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
@@ -1129,7 +1129,7 @@ public abstract class BaseSesameHttpProtocolConnector
                 }
                 else
                 {
-                    HttpResponseMessage response = requestTask.Result;
+                    var response = requestTask.Result;
                     if (!response.IsSuccessStatusCode)
                     {
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler,
@@ -1155,7 +1155,7 @@ public abstract class BaseSesameHttpProtocolConnector
                                 try
                                 {
                                     // Is the Content Type referring to a Sparql Result Set format?
-                                    ISparqlResultsReader resreader =
+                                    var resreader =
                                         MimeTypesHelper.GetSparqlParser(contentType, isAsk);
                                     resreader.Load(resultsHandler, data);
                                     callback(this,
@@ -1170,7 +1170,7 @@ public abstract class BaseSesameHttpProtocolConnector
                                     {
                                         try
                                         {
-                                            ISparqlResultsReader resreader =
+                                            var resreader =
                                                 MimeTypesHelper.GetSparqlParser("application/sparql-results+xml");
                                             resreader.Load(resultsHandler, data);
                                             callback(this,
@@ -1186,7 +1186,7 @@ public abstract class BaseSesameHttpProtocolConnector
                                     }
 
                                     // Is the Content Type referring to a RDF format?
-                                    IRdfReader rdfreader = MimeTypesHelper.GetParser(contentType);
+                                    var rdfreader = MimeTypesHelper.GetParser(contentType);
                                     if (q != null && (SparqlSpecsHelper.IsSelectQuery(q.QueryType) ||
                                                       q.QueryType == SparqlQueryType.Ask))
                                     {
@@ -1246,7 +1246,7 @@ public abstract class BaseSesameHttpProtocolConnector
 
         // Create the Request, for simplicity async requests are always POST
         var queryParams = new Dictionary<string, string>();
-        HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _queryPath, accept,
+        var request = CreateRequest(_repositoriesPrefix + _store + _queryPath, accept,
             HttpMethod.Post, queryParams);
 
         // Build the Post Data and add to the Request Body
@@ -1268,9 +1268,9 @@ public abstract class BaseSesameHttpProtocolConnector
     public async Task QueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery,
         CancellationToken cancellationToken)
     {
-        HttpRequestMessage request =
-            MakeQueryRequestMessage(sparqlQuery, out bool isAsk, out SparqlQuery parsedQuery);
-        HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+        var request =
+            MakeQueryRequestMessage(sparqlQuery, out var isAsk, out var parsedQuery);
+        var response = await HttpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             throw StorageHelper.HandleHttpQueryError(response);
@@ -1280,7 +1280,7 @@ public abstract class BaseSesameHttpProtocolConnector
         try
         {
             // Is the Content Type referring to a Sparql Result Set format?
-            ISparqlResultsReader resultsReader =
+            var resultsReader =
                 MimeTypesHelper.GetSparqlParser(contentType, isAsk);
             resultsReader.Load(resultsHandler, data);
         }
@@ -1292,7 +1292,7 @@ public abstract class BaseSesameHttpProtocolConnector
             {
                 try
                 {
-                    ISparqlResultsReader resreader =
+                    var resreader =
                         MimeTypesHelper.GetSparqlParser("application/sparql-results+xml");
                     resreader.Load(resultsHandler, data);
                 }
@@ -1303,7 +1303,7 @@ public abstract class BaseSesameHttpProtocolConnector
             }
 
             // Is the Content Type referring to a RDF format?
-            IRdfReader rdfReader = MimeTypesHelper.GetParser(contentType);
+            var rdfReader = MimeTypesHelper.GetParser(contentType);
             if (parsedQuery != null && (SparqlSpecsHelper.IsSelectQuery(parsedQuery.QueryType) ||
                               parsedQuery.QueryType == SparqlQueryType.Ask))
             {
@@ -1398,13 +1398,13 @@ public abstract class BaseSesameHttpProtocolConnector
     /// <param name="context">Configuration Serialization Context.</param>
     public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        INode manager = context.NextSubject;
-        INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-        INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-        INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-        INode genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
-        INode server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
-        INode store = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyStore));
+        var manager = context.NextSubject;
+        var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+        var rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+        var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+        var genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+        var server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
+        var store = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyStore));
 
         context.Graph.Assert(new Triple(manager, rdfType, genericManager));
         context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
@@ -1414,8 +1414,8 @@ public abstract class BaseSesameHttpProtocolConnector
 
         if (HttpClientHandler?.Credentials is NetworkCredential networkCredential)
         {
-            INode username = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUser));
-            INode pwd = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPassword));
+            var username = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUser));
+            var pwd = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPassword));
             context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(networkCredential.UserName)));
             context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(networkCredential.Password)));
         }
@@ -1571,7 +1571,7 @@ public class SesameHttpProtocolVersion6Connector
         try
         {
             // Create the Request
-            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _updatePath,
+            var request = CreateRequest(_repositoriesPrefix + _store + _updatePath,
                 MimeTypesHelper.Any, HttpMethod.Post, []);
 
             // Build the Post Data and add to the Request Body
@@ -1579,7 +1579,7 @@ public class SesameHttpProtocolVersion6Connector
                 new FormUrlEncodedContent([new KeyValuePair<string, string>("update", sparqlUpdate)]);
 
             // Get the Response and process based on the Content Type
-            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            using var response = HttpClient.SendAsync(request).Result;
             if (!response.IsSuccessStatusCode)
             {
                 throw StorageHelper.HandleHttpError(response, "updating");
@@ -1602,7 +1602,7 @@ public class SesameHttpProtocolVersion6Connector
         try
         {
             // Create the Request
-            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _updatePath,
+            var request = CreateRequest(_repositoriesPrefix + _store + _updatePath,
                 MimeTypesHelper.Any, HttpMethod.Post, []);
 
             // Build the Post Data and add to the Request Body
@@ -1621,7 +1621,7 @@ public class SesameHttpProtocolVersion6Connector
                 }
                 else
                 {
-                    HttpResponseMessage response = requestTask.Result;
+                    var response = requestTask.Result;
                     if (!response.IsSuccessStatusCode)
                     {
                         callback(this,

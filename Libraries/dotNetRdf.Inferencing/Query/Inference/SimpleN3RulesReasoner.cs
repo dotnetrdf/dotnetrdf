@@ -107,7 +107,7 @@ public class SimpleN3RulesReasoner : IInferenceEngine
             }
             ruleText.AppendLine(rule[1]);
 
-            ISyntaxValidationResults results = _validator.Validate(ruleText.ToString());
+            var results = _validator.Validate(ruleText.ToString());
             if (results.IsValid)
             {
                 store.ExecuteUpdate((SparqlUpdateCommandSet)results.Result);
@@ -121,9 +121,9 @@ public class SimpleN3RulesReasoner : IInferenceEngine
     /// <param name="g">Rules Graph.</param>
     public void Initialise(IGraph g)
     {
-        INode implies = g.CreateUriNode(g.UriFactory.Create("http://www.w3.org/2000/10/swap/log#implies"));
+        var implies = g.CreateUriNode(g.UriFactory.Create("http://www.w3.org/2000/10/swap/log#implies"));
 
-        foreach (Triple t in g.GetTriplesWithPredicate(implies))
+        foreach (var t in g.GetTriplesWithPredicate(implies))
         {
             if (t.Subject.NodeType == NodeType.GraphLiteral && t.Object.NodeType == NodeType.GraphLiteral)
             {
@@ -149,7 +149,7 @@ public class SimpleN3RulesReasoner : IInferenceEngine
         // Generate the INSERT part of the Command
         output.AppendLine("INSERT");
         output.AppendLine("{");
-        foreach (Triple x in ((IGraphLiteralNode)t.Object).SubGraph.Triples)
+        foreach (var x in ((IGraphLiteralNode)t.Object).SubGraph.Triples)
         {
             if (vars == null)
             {
@@ -208,7 +208,7 @@ public class SimpleN3RulesReasoner : IInferenceEngine
         output = new StringBuilder();
         output.AppendLine("WHERE");
         output.AppendLine("{");
-        foreach (Triple x in ((IGraphLiteralNode)t.Subject).SubGraph.Triples)
+        foreach (var x in ((IGraphLiteralNode)t.Subject).SubGraph.Triples)
         {
             if (vars == null)
             {
@@ -263,7 +263,7 @@ public class SimpleN3RulesReasoner : IInferenceEngine
         output.AppendLine("}");
         rule[1] = output.ToString();
         
-        ISyntaxValidationResults results = _validator.Validate(rule[0] + rule[1]);
+        var results = _validator.Validate(rule[0] + rule[1]);
         if (results.IsValid)
         {
             _rules.Add(rule);
