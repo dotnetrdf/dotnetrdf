@@ -128,7 +128,7 @@ public class TurtleWriter
             // Writes everything as individual Triples
             RaiseWarning("High Speed Write Mode in use - minimal syntax compressions will be used");
             context.NodeFormatter = new UncompressedTurtleFormatter();
-            foreach (Triple t in context.Graph.Triples)
+            foreach (var t in context.Graph.Triples)
             {
                 context.Output.Write(GenerateNodeOutput(context, t.Subject, TripleSegment.Subject));
                 context.Output.Write(" ");
@@ -142,7 +142,7 @@ public class TurtleWriter
         {
 
             // Get the Triples as a Sorted List
-            List<Triple> ts = WriterHelper.GetTriplesSortedBySubjectPredicate(context.Graph);
+            var ts = WriterHelper.GetTriplesSortedBySubjectPredicate(context.Graph);
 
             // Variables we need to track our writing
             INode lastSubj, lastPred;
@@ -152,7 +152,7 @@ public class TurtleWriter
 
             for (var i = 0; i < ts.Count; i++)
             {
-                Triple t = ts[i];
+                var t = ts[i];
                 if (lastSubj == null || !t.Subject.Equals(lastSubj))
                 {
                     // Terminate previous Triples
@@ -264,7 +264,7 @@ public class TurtleWriter
     /// <param name="message">Warning Message.</param>
     private void RaiseWarning(string message)
     {
-        RdfWriterWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

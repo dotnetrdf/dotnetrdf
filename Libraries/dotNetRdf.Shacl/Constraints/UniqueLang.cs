@@ -56,7 +56,7 @@ internal class UniqueLang : Boolean
             return true;
         }
 
-        IEnumerable<ILiteralNode> invalidValues =
+        var invalidValues =
             from valueNode in valueNodes
             where valueNode.NodeType == NodeType.Literal
             let literal = (ILiteralNode)valueNode

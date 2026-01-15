@@ -41,10 +41,10 @@ internal class UnionImpl : ElementImpl, IUnion
 
     override public void Print(ISparqlPrinter p)
     {
-        List<IElement> elements = getElements();
+        var elements = getElements();
         for (IEnumerator<IElement> it = elements.GetEnumerator(); it.MoveNext(); )
         {
-            IElement element = it.Current;
+            var element = it.Current;
             p.print("{");
             p.println();
             p.setIndentation(p.getIndentation() + 1);

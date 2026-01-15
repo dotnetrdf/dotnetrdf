@@ -296,9 +296,9 @@ public class TriXParser
         }
 
         // Parse XML Nodes into RDF Nodes
-        INode subj = TryParseNode(reader, handler, TripleSegment.Subject, uriFactory);
-        INode pred = TryParseNode(reader, handler, TripleSegment.Predicate, uriFactory);
-        INode obj = TryParseNode(reader, handler, TripleSegment.Object, uriFactory);
+        var subj = TryParseNode(reader, handler, TripleSegment.Subject, uriFactory);
+        var pred = TryParseNode(reader, handler, TripleSegment.Predicate, uriFactory);
+        var obj = TryParseNode(reader, handler, TripleSegment.Object, uriFactory);
 
         if (reader.NodeType != XmlNodeType.EndElement)
         {
@@ -311,7 +311,7 @@ public class TriXParser
         }
 
         // Assert the resulting Triple
-        IRefNode graphName = graphUri == null ? null : handler.CreateUriNode(graphUri);
+        var graphName = graphUri == null ? null : handler.CreateUriNode(graphUri);
         if (!handler.HandleQuad(new Triple(subj, pred, obj), graphName))
         {
             ParserHelper.Stop();
@@ -419,13 +419,13 @@ public class TriXParser
             {
                 using var xmlReader = XmlReader.Create(input, XmlReaderSettings);
                 var source = XDocument.Load(xmlReader);
-                foreach (XProcessingInstruction pi in source.Nodes().OfType<XProcessingInstruction>()
+                foreach (var pi in source.Nodes().OfType<XProcessingInstruction>()
                              .Where(pi => pi.Target.Equals("xml-stylesheet")))
                 {
                     source = ApplyTransform(source, pi);
                 }
 
-                using XmlReader transformedXmlReader = source.CreateReader();
+                using var transformedXmlReader = source.CreateReader();
                 TryParseGraphset(transformedXmlReader, handler, uriFactory);
             }
             catch (XmlException xmlEx)
@@ -442,13 +442,13 @@ public class TriXParser
 
     private XDocument ApplyTransform(XDocument input, XProcessingInstruction pi)
     {
-        Match match = Regex.Match(pi.Data, @"href\s*=\s*""([^""]*)""");
+        var match = Regex.Match(pi.Data, @"href\s*=\s*""([^""]*)""");
         if (match == null) throw new RdfParseException("Expected href value in xml-stylesheet PI");
         var xslRef = match.Groups[1].Value;
         var xslt = new XslCompiledTransform();
         xslt.Load(XmlReader.Create(new StreamReader(xslRef), XmlReaderSettings));
         var output = new XDocument();
-        using XmlWriter writer = output.CreateWriter();
+        using var writer = output.CreateWriter();
         xslt.Transform(input.CreateReader(), writer);
         return output;
     }

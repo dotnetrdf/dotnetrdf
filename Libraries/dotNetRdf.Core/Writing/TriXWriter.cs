@@ -73,7 +73,7 @@ public class TriXWriter
             writer.WriteEndAttribute();
 
             // Output Graphs as XML <graph> elements
-            foreach (IGraph g in store.Graphs)
+            foreach (var g in store.Graphs)
             {
                 GraphToTriX(g, writer);
             }
@@ -137,7 +137,7 @@ public class TriXWriter
         }
 
         // Output the Triples
-        foreach (Triple t in g.Triples)
+        foreach (var t in g.Triples)
         {
             writer.WriteStartElement("triple");
 

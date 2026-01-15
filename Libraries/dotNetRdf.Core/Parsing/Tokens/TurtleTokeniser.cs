@@ -647,7 +647,7 @@ public class TurtleTokeniser
                                 if (!anycharallowed)
                                 {
                                     // Start of a Blank Node QName
-                                    IToken temp = TryGetQNameToken();
+                                    var temp = TryGetQNameToken();
                                     if (temp is BlankNodeToken || temp is BlankNodeWithIDToken)
                                     {
                                         return temp;
@@ -666,7 +666,7 @@ public class TurtleTokeniser
                                 if (!anycharallowed)
                                 {
                                     // Start of a Default Namespace QName
-                                    IToken temp = TryGetQNameToken();
+                                    var temp = TryGetQNameToken();
                                     if (temp is QNameToken)
                                     {
                                         return temp;
@@ -1147,7 +1147,7 @@ public class TurtleTokeniser
     {
         var next = Peek();
         var colonoccurred = false;
-        StringComparison comparison = (_syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+        var comparison = (_syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
 
         if (startNewToken)
         {
@@ -1441,7 +1441,7 @@ public class TurtleTokeniser
         else
         {
             // DataType is specified by a QName
-            IToken temp = TryGetQNameToken();
+            var temp = TryGetQNameToken();
             if (temp is QNameToken)
             {
                 // Turn into a DataTypeToken

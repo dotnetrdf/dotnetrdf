@@ -48,7 +48,7 @@ internal abstract class TupleImpl : AbstractSPINResource
 
     public IResource getObjectResource()
     {
-        IResource node = getRDFNodeOrVariable(SP.PropertyObject);
+        var node = getRDFNodeOrVariable(SP.PropertyObject);
         if (node is not IVariable)
         {
             return node;
@@ -68,10 +68,10 @@ internal abstract class TupleImpl : AbstractSPINResource
 
     protected IResource getRDFNodeOrVariable(INode predicate)
     {
-        IResource node = getResource(predicate);
+        var node = getResource(predicate);
         if (node != null)
         {
-            IVariable var = SPINFactory.asVariable(node);
+            var var = SPINFactory.asVariable(node);
             if (var != null)
             {
                 return var;

@@ -130,7 +130,7 @@ public class TurtleSpecsHelper
     /// <returns></returns>
     public static bool IsValidPlainLiteral(string value, TurtleSyntax syntax)
     {
-        StringComparison comparison = (syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+        var comparison = (syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
         if (value.Equals("true", comparison) || value.Equals("false", comparison))
         {
             return true;
@@ -151,7 +151,7 @@ public class TurtleSpecsHelper
     public static bool IsValidPlainLiteral(string value, Uri dt, TurtleSyntax syntax)
     {
         var dtUri = dt?.AbsoluteUri ?? "";
-        StringComparison comparison = (syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+        var comparison = (syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
         if ((value.Equals("true", comparison) || value.Equals("false", comparison)) && dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
         {
             return true;
@@ -660,7 +660,7 @@ public class TurtleSpecsHelper
     public static Uri InferPlainLiteralType(PlainLiteralToken p, TurtleSyntax syntax)
     {
         var value = p.Value;
-        StringComparison comparison = (syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+        var comparison = (syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
 
         if (value.Equals("true", comparison) || value.Equals("false", comparison))
         {

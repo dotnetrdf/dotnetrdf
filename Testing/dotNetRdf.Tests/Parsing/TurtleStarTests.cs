@@ -15,7 +15,7 @@ public class TurtleStarTests: NTriplesStarTests
     [InlineData("ex:s ex:p ex:o {| ex:a ex:b |} .", 2, 1)]
     public void TurtlePositiveSyntaxTests(string inputString, int expectAssertCount, int expectQuoteCount)
     {
-        IRdfReader parser = GetParser();
+        var parser = GetParser();
         var g = new Graph();
         inputString = "@prefix ex: <http://example.org/> .\n" + inputString;
         parser.Load(g, new StringReader(inputString));
@@ -37,7 +37,7 @@ PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
                     ]
           |} .
 ";
-        IRdfReader parser = GetParser();
+        var parser = GetParser();
         var g = new Graph();
         parser.Load(g, new StringReader(inputString));
         g.Triples.Count.Should().Be(7);

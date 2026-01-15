@@ -381,7 +381,7 @@ public class TripleStore
     [Obsolete("Replaced by GetTriplesWithSubject(List<IRefNode>, INode)")]
     public IEnumerable<Triple> GetTriplesWithSubject(List<Uri> graphUris, INode n)
     {
-        IEnumerable<Triple> ts = from g in _graphs
+        var ts = from g in _graphs
                                  where graphUris.Contains(g.BaseUri)
                                  from t in g.GetTriplesWithSubject(n)
                                  select t;
@@ -454,7 +454,7 @@ public class TripleStore
     public void ExecuteUpdate(string update)
     {
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet commandSet = parser.ParseFromString(update);
+        var commandSet = parser.ParseFromString(update);
         ExecuteUpdate(commandSet);
     }
 

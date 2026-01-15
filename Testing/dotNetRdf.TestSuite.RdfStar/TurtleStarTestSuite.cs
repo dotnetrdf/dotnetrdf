@@ -63,7 +63,7 @@ public class TurtleStarTestSuite : RdfTestSuite
         var ntParser = new NTriplesParser(NTriplesSyntax.Rdf11Star);
         var h = new Graph();
         ntParser.Load(h, t.Manifest.ResolveResourcePath(t.Result));
-        GraphDiffReport diffReport = g.Difference(h);
+        var diffReport = g.Difference(h);
         if (!diffReport.AreEqual) TestTools.ShowDifferences(diffReport, _output);
         Assert.True(diffReport.AreEqual);
     }

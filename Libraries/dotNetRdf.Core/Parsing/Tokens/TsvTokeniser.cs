@@ -516,7 +516,7 @@ public class TsvTokeniser
         if (next == '<')
         {
             // Uri for Data Type
-            IToken temp = TryGetUri();
+            var temp = TryGetUri();
             return new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition - 3, temp.EndPosition + 1);
         }
         else

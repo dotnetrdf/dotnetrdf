@@ -277,7 +277,7 @@ public class TurtleParser
             // Initialise Buffer and start parsing
             context.Tokens.InitialiseBuffer(10);
 
-            IToken next = context.Tokens.Dequeue();
+            var next = context.Tokens.Dequeue();
             if (next.TokenType != Token.BOF)
             {
                 throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a BOF Token", next);
@@ -368,17 +368,17 @@ public class TurtleParser
         if (turtleStyle) context.Tokens.Dequeue();
 
         // Then we expect either a Base Directive/Prefix Directive
-        IToken directive = context.Tokens.Dequeue();
+        var directive = context.Tokens.Dequeue();
         if (directive.TokenType == Token.BASEDIRECTIVE)
         {
             // Then expect a Uri for the Base Uri
-            IToken u = context.Tokens.Dequeue();
+            var u = context.Tokens.Dequeue();
             if (u.TokenType == Token.URI)
             {
                 // Set the Base Uri resolving against the current Base if any
                 try
                 {
-                    Uri baseUri = context.UriFactory.Create(Tools.ResolveUri(u.Value, context.BaseUri?.AbsoluteUri ?? ""));
+                    var baseUri = context.UriFactory.Create(Tools.ResolveUri(u.Value, context.BaseUri?.AbsoluteUri ?? ""));
                     context.BaseUri = baseUri;
                     if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
                 }
@@ -395,16 +395,16 @@ public class TurtleParser
         else if (directive.TokenType == Token.PREFIXDIRECTIVE)
         {
             // Expect a Prefix then a Uri
-            IToken pre = context.Tokens.Dequeue();
+            var pre = context.Tokens.Dequeue();
             if (pre.TokenType == Token.PREFIX)
             {
-                IToken ns = context.Tokens.Dequeue();
+                var ns = context.Tokens.Dequeue();
                 if (ns.TokenType == Token.URI)
                 {
                     // Register a Namespace resolving the Namespace Uri against the Base Uri
                     try
                     {
-                        Uri nsUri = context.UriFactory.Create(Tools.ResolveUri(ns.Value, context.BaseUri?.AbsoluteUri ?? ""));
+                        var nsUri = context.UriFactory.Create(Tools.ResolveUri(ns.Value, context.BaseUri?.AbsoluteUri ?? ""));
                         var nsPrefix = (pre.Value.Length > 1) ? pre.Value.Substring(0, pre.Value.Length - 1) : string.Empty;
                         context.Namespaces.AddNamespace(nsPrefix, nsUri);
                         if (!context.Handler.HandleNamespace(nsPrefix, nsUri)) ParserHelper.Stop();
@@ -430,7 +430,7 @@ public class TurtleParser
         }
 
         // Turtle sytle declarations are terminated with a Dot
-        IToken terminator = context.Tokens.Peek();
+        var terminator = context.Tokens.Peek();
         if (terminator.TokenType != Token.DOT)
         {
             // If Turtle style the terminating . is required
@@ -455,7 +455,7 @@ public class TurtleParser
             Console.WriteLine("Attempting to parse a quoted triple.");
         }
 
-        IToken subjToken = context.Tokens.Dequeue();
+        var subjToken = context.Tokens.Dequeue();
         INode subj = subjToken.TokenType switch
         {
             Token.BLANKNODE => context.Handler.CreateBlankNode(),
@@ -469,8 +469,8 @@ public class TurtleParser
                 subjToken)
         };
 
-        IToken predToken = context.Tokens.Dequeue();
-        INode pred = predToken.TokenType switch
+        var predToken = context.Tokens.Dequeue();
+        var pred = predToken.TokenType switch
         {
             Token.KEYWORDA =>
                 context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "type")),
@@ -480,8 +480,8 @@ public class TurtleParser
                 $"Unexpected Token '{predToken.GetType()}' encountered, this Token is not valid as the predicate of a quoted triple", predToken)
         };
 
-        IToken objToken = context.Tokens.Dequeue();
-        INode obj = objToken.TokenType switch
+        var objToken = context.Tokens.Dequeue();
+        var obj = objToken.TokenType switch
         {
             Token.BLANKNODE => context.Handler.CreateBlankNode(),
             Token.BLANKNODEWITHID => context.Handler.CreateBlankNode(objToken.Value.Substring(2)),
@@ -496,7 +496,7 @@ public class TurtleParser
                 objToken)
         };
 
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         if (next.TokenType != Token.ENDQUOTE)
         {
             throw ParserHelper.Error(
@@ -512,7 +512,7 @@ public class TurtleParser
     private IBlankNode TryParseAnonBlankNode(TokenisingParserContext context)
     {
         // Start of a Blank Node collection?
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         if (next.TokenType != Token.RIGHTSQBRACKET)
         {
             throw ParserHelper.Error(
@@ -529,7 +529,7 @@ public class TurtleParser
     /// <param name="context">Parser Context.</param>
     private void TryParseTriples(TurtleParserContext context)
     {
-        IToken subjToken = context.Tokens.Dequeue();
+        var subjToken = context.Tokens.Dequeue();
         IToken next;
         INode subj;
 
@@ -679,7 +679,7 @@ public class TurtleParser
                     if (_syntax == TurtleSyntax.Original) goto default;
 
                     // May get a sequence of semicolons
-                    IToken next = context.Tokens.Peek();
+                    var next = context.Tokens.Peek();
                     while (next.TokenType == Token.SEMICOLON)
                     {
                         context.Tokens.Dequeue();
@@ -928,11 +928,11 @@ public class TurtleParser
     {
         // The opening bracket of the collection will already have been discarded when we get called
         IToken next;
-        INode subj = firstSubj;
+        var subj = firstSubj;
         INode obj = null, nextSubj;
-        INode rdfFirst = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
-        INode rdfRest = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListRest));
-        INode rdfNil = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListNil));
+        var rdfFirst = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+        var rdfRest = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListRest));
+        var rdfNil = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListNil));
 
         do
         {
@@ -972,7 +972,7 @@ public class TurtleParser
 
                 case Token.LEFTSQBRACKET:
                     // Allowed Blank Node Collections as part of a Collection
-                    IToken temp = context.Tokens.Peek();
+                    var temp = context.Tokens.Peek();
                     if (temp.TokenType == Token.RIGHTSQBRACKET)
                     {
                         // Anonymous Blank Node
@@ -1142,7 +1142,7 @@ public class TurtleParser
     /// <param name="message"></param>
     private void RaiseWarning(string message)
     {
-        RdfReaderWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

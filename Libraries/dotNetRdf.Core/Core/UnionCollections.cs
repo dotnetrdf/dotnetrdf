@@ -136,7 +136,7 @@ public class UnionTripleCollection
     {
         get 
         {
-            foreach (BaseTripleCollection c in _collections)
+            foreach (var c in _collections)
             {
                 if (c.Contains(t))
                 {

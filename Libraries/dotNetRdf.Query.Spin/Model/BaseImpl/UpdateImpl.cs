@@ -43,7 +43,7 @@ internal abstract class UpdateImpl : AbstractSPINResource, IUpdate
 
     public IElementList getWhere()
     {
-        IResource whereS = getResource(SP.PropertyWhere);
+        var whereS = getResource(SP.PropertyWhere);
         if (whereS != null)
         {
             return (IElementList)SPINFactory.asElement(whereS);
@@ -79,7 +79,7 @@ internal abstract class UpdateImpl : AbstractSPINResource, IUpdate
 
     protected void printGraphDefaultNamedOrAll(ISparqlPrinter p)
     {
-        IResource graph = getResource(SP.PropertyGraphIRI);
+        var graph = getResource(SP.PropertyGraphIRI);
         if (graph != null)
         {
             p.printKeyword("GRAPH");
@@ -105,10 +105,10 @@ internal abstract class UpdateImpl : AbstractSPINResource, IUpdate
     {
         var graphIRIs = new List<String>();
         {
-            IEnumerator<Triple> it = listProperties(SP.PropertyGraphIRI).GetEnumerator();
+            var it = listProperties(SP.PropertyGraphIRI).GetEnumerator();
             while (it.MoveNext())
             {
-                Triple s = it.Current;
+                var s = it.Current;
                 if (s.Object is IUriNode)
                 {
                     graphIRIs.Add(((IUriNode)s.Object).Uri.ToString());
@@ -141,9 +141,9 @@ internal abstract class UpdateImpl : AbstractSPINResource, IUpdate
 
     protected bool printTemplates(ISparqlPrinter p, INode predicate, String keyword, bool force, IResource graphIRI)
     {
-        IResource resource = getResource(predicate);
+        var resource = getResource(predicate);
         if (resource == null) return false;
-        List<IResource> nodes = resource.AsList();
+        var nodes = resource.AsList();
         if (nodes.Count > 0 || force)
         {
             if (keyword != null)
@@ -163,7 +163,7 @@ internal abstract class UpdateImpl : AbstractSPINResource, IUpdate
                 p.print(" {");
                 p.println();
             }
-            foreach (IResource node in nodes)
+            foreach (var node in nodes)
             {
                 p.printIndentation(p.getIndentation() + 1);
                 if (node.canAs(SP.ClassNamedGraph))

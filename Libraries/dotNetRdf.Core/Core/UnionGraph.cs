@@ -122,7 +122,7 @@ public class UnionGraph
         if (!RaiseClearRequested()) return;
 
         _default.Clear();
-        foreach (IGraph g in _graphs)
+        foreach (var g in _graphs)
         {
             g.Clear();
         }

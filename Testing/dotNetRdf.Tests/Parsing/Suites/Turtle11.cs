@@ -75,9 +75,9 @@ public class Turtle11
         //Nodes for positive and negative tests
         var g = new Graph();
         g.NamespaceMap.AddNamespace("rdft", UriFactory.Root.Create("http://www.w3.org/ns/rdftest#"));
-        INode posSyntaxTest = g.CreateUriNode("rdft:TestTurtlePositiveSyntax");
-        INode negSyntaxTest = g.CreateUriNode("rdft:TestTurtleNegativeSyntax");
-        INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
+        var posSyntaxTest = g.CreateUriNode("rdft:TestTurtlePositiveSyntax");
+        var negSyntaxTest = g.CreateUriNode("rdft:TestTurtleNegativeSyntax");
+        var negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
 
         //Run manifests
         RunManifest(Path.Combine("resources", "turtle11", "manifest.ttl"), [posSyntaxTest], [negSyntaxTest, negEvalTest]);
@@ -209,7 +209,7 @@ public class Turtle11
         g.LoadFromFile(Path.Combine("resources", "turtle11", "literal_with_escaped_BACKSPACE.ttl"));
         Assert.False(g.IsEmpty);
         Assert.Equal(1, g.Triples.Count);
-        Triple t = g.Triples.First();
+        var t = g.Triples.First();
         Assert.Equal(NodeType.Literal, t.Object.NodeType);
         var lit = (ILiteralNode)t.Object;
         Assert.Equal(1, lit.Value.Length);
@@ -452,9 +452,9 @@ public class TurtleStar11 : BaseRdfParserSuite
         //Nodes for positive and negative tests
         var g = new Graph();
         g.NamespaceMap.AddNamespace("rdft", UriFactory.Root.Create("http://www.w3.org/ns/rdftest#"));
-        INode posSyntaxTest = g.CreateUriNode("rdft:TestTurtlePositiveSyntax");
-        INode negSyntaxTest = g.CreateUriNode("rdft:TestTurtleNegativeSyntax");
-        INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
+        var posSyntaxTest = g.CreateUriNode("rdft:TestTurtlePositiveSyntax");
+        var negSyntaxTest = g.CreateUriNode("rdft:TestTurtleNegativeSyntax");
+        var negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
 
         //Run manifests
         RunManifest(Path.Combine("resources", "turtle11", "manifest.ttl"), [posSyntaxTest], [negSyntaxTest, negEvalTest]);

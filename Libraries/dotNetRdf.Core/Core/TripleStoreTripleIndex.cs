@@ -77,9 +77,9 @@ public class TripleStoreTripleIndex : ITripleIndex
     /// <inheritdoc />
     public IEnumerable<Triple> GetTriples(INode n)
     {
-        foreach (IGraph g in _graphs)
+        foreach (var g in _graphs)
         {
-            foreach (Triple t in g.GetTriplesWithSubject(n).Union(g.GetTriplesWithPredicate(n))
+            foreach (var t in g.GetTriplesWithSubject(n).Union(g.GetTriplesWithPredicate(n))
                          .Union(g.GetTriplesWithObject(n)))
             {
                 yield return t;
