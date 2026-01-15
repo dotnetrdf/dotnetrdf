@@ -56,7 +56,7 @@ internal class MinCount : Numeric
             return true;
         }
 
-        IEnumerable<INode> invalidValues =
+        var invalidValues =
             from valueNode in (IEnumerable<INode>)[focusNode]
             where !valueNodes.Skip(NumericValue - 1).Any()
             select valueNode;

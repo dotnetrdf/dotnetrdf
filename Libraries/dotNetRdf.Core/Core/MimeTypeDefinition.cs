@@ -407,7 +407,7 @@ public sealed class MimeTypeDefinition
     private bool EnsureObjectParserInterface(Type t, Type obj)
     {
         var ok = false;
-        foreach (Type i in t.GetInterfaces())
+        foreach (var i in t.GetInterfaces())
         {
             if (i.IsGenericType)
             {
@@ -762,7 +762,7 @@ public sealed class MimeTypeDefinition
     /// <returns></returns>
     public Type GetObjectParserType<T>()
     {
-        Type t = typeof(T);
+        var t = typeof(T);
         Type result;
         if (_objectParserTypes.TryGetValue(t, out result))
         {
@@ -781,7 +781,7 @@ public sealed class MimeTypeDefinition
     /// <param name="parserType">Parser Type.</param>
     public void SetObjectParserType<T>(Type parserType)
     {
-        Type t = typeof(T);
+        var t = typeof(T);
         if (_objectParserTypes.ContainsKey(t))
         {
             if (parserType == null)
@@ -814,7 +814,7 @@ public sealed class MimeTypeDefinition
     {
         if (_objectParserTypes.ContainsKey(typeof(T)))
         {
-            Type parserType = _objectParserTypes[typeof(T)];
+            var parserType = _objectParserTypes[typeof(T)];
             return (IObjectParser<T>)Activator.CreateInstance(parserType);
         }
         else

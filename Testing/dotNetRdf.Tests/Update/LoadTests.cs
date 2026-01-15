@@ -40,7 +40,7 @@ public class LoadTests
     public void SparqlUpdateLoadQuads1()
     {
         var tripleStore = new TripleStore();
-        SparqlUpdateCommandSet cmds = _parser.ParseFromFile(Path.Combine("resources", "core-421", "test.ru"));
+        var cmds = _parser.ParseFromFile(Path.Combine("resources", "core-421", "test.ru"));
 
         tripleStore.ExecuteUpdate(cmds);
         Assert.Equal(3, tripleStore.Triples.Count());
@@ -59,7 +59,7 @@ public class LoadTests
     public void SparqlUpdateLoadQuads2()
     {
         var tripleStore = new TripleStore();
-        SparqlUpdateCommandSet cmds = _parser.ParseFromFile(Path.Combine("resources", "core-421", "test2.ru"));
+        var cmds = _parser.ParseFromFile(Path.Combine("resources", "core-421", "test2.ru"));
 
         tripleStore.ExecuteUpdate(cmds);
         Assert.Equal(3, tripleStore.Triples.Count());
@@ -78,7 +78,7 @@ public class LoadTests
     public void SparqlUpdateLoadQuads3()
     {
         var tripleStore = new TripleStore();
-        SparqlUpdateCommandSet cmds = _parser.ParseFromFile(Path.Combine("resources", "core-421", "test3.ru"));
+        var cmds = _parser.ParseFromFile(Path.Combine("resources", "core-421", "test3.ru"));
 
         tripleStore.ExecuteUpdate(cmds);
         Assert.Equal(3, tripleStore.Triples.Count());

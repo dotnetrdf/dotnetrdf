@@ -203,7 +203,7 @@ public class NamespaceMapper : INamespaceMapper
             // If the existing Uri is the same as the old one no change is needed
             if (!_uris[prefix].AbsoluteUri.Equals(uri.AbsoluteUri, StringComparison.Ordinal))
             {
-                Uri oldUri = _uris[prefix];
+                var oldUri = _uris[prefix];
 
                 // Overwrite the prefix-to-uri mapping
                 _uris[prefix] = uri;
@@ -241,7 +241,7 @@ public class NamespaceMapper : INamespaceMapper
         // Check the Namespace is defined
         if (_uris.ContainsKey(prefix))
         {
-            Uri u = _uris[prefix];
+            var u = _uris[prefix];
 
             // Remove the Prefix to Uri Mapping
             _uris.Remove(prefix);
@@ -310,7 +310,7 @@ public class NamespaceMapper : INamespaceMapper
     public virtual bool ReduceToQName(string uri, out string qname, Func<string, bool> validationFunction = null)
     {
         validationFunction ??= DefaultQNameValidationFunction;
-        foreach (Uri u in _uris.Values)
+        foreach (var u in _uris.Values)
         {
             var baseuri = u.AbsoluteUri;
 
@@ -351,9 +351,9 @@ public class NamespaceMapper : INamespaceMapper
     /// </remarks>
     public virtual void Import(INamespaceMapper nsmap)
     {
-        string tempPrefix = "ns0";
-        int tempPrefixID = 0;
-        foreach (string prefix in nsmap.Prefixes)
+        var tempPrefix = "ns0";
+        var tempPrefixID = 0;
+        foreach (var prefix in nsmap.Prefixes)
         {
             if (!_uris.ContainsKey(prefix))
             {
@@ -399,7 +399,7 @@ public class NamespaceMapper : INamespaceMapper
     /// <param name="uri">Namespace Uri.</param>
     protected virtual void OnNamespaceAdded(string prefix, Uri uri)
     {
-        NamespaceChanged handler = NamespaceAdded;
+        var handler = NamespaceAdded;
         if (handler != null)
         {
             handler(prefix, uri);
@@ -413,7 +413,7 @@ public class NamespaceMapper : INamespaceMapper
     /// <param name="uri">Namespace Uri.</param>
     protected virtual void OnNamespaceModified(string prefix, Uri uri)
     {
-        NamespaceChanged handler = NamespaceModified;
+        var handler = NamespaceModified;
         if (handler != null)
         {
             handler(prefix, uri);
@@ -427,7 +427,7 @@ public class NamespaceMapper : INamespaceMapper
     /// <param name="uri">Namespace Uri.</param>
     protected virtual void OnNamespaceRemoved(string prefix, Uri uri)
     {
-        NamespaceChanged handler = NamespaceRemoved;
+        var handler = NamespaceRemoved;
         if (handler != null)
         {
             handler(prefix, uri);
@@ -493,7 +493,7 @@ public class QNameOutputMapper
     public override bool ReduceToQName(string uri, out string qname, Func<string, bool> validationFunction = null)
     {
         // See if we've cached this mapping
-        if (Mapping.TryGetValue(uri, out QNameMapping mapping))
+        if (Mapping.TryGetValue(uri, out var mapping))
         {
             qname = mapping.QName;
             return true;
@@ -501,7 +501,7 @@ public class QNameOutputMapper
         mapping = new QNameMapping(uri);
 
         validationFunction ??= DefaultQNameValidationFunction;
-        foreach (Uri u in _uris.Values)
+        foreach (var u in _uris.Values)
         {
             var baseUri = u.AbsoluteUri;
 
@@ -549,7 +549,7 @@ public class QNameOutputMapper
         tempNamespace = string.Empty;
 
         // See if we've cached this mapping
-        if (Mapping.TryGetValue(uri, out QNameMapping mapping))
+        if (Mapping.TryGetValue(uri, out var mapping))
         {
             qName = mapping.QName;
             return true;
@@ -557,7 +557,7 @@ public class QNameOutputMapper
         mapping = new QNameMapping(uri);
 
         // Try and find a Namespace URI that is the prefix of the URI
-        foreach (Uri u in _uris.Values)
+        foreach (var u in _uris.Values)
         {
             var baseUri = u.AbsoluteUri;
 

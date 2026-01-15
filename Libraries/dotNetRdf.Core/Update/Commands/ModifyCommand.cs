@@ -262,14 +262,14 @@ public class ModifyCommand
         output.AppendLine(_insertPattern.ToString());
         if (_usingUris != null)
         {
-            foreach (Uri u in _usingUris)
+            foreach (var u in _usingUris)
             {
                 output.AppendLine("USING <" + u.AbsoluteUri.Replace(">", "\\>") + ">");
             }
         }
         if (_usingNamedUris != null)
         {
-            foreach (Uri u in _usingNamedUris)
+            foreach (var u in _usingNamedUris)
             {
                 output.AppendLine("USING NAMED <" + u.AbsoluteUri.Replace(">", "\\>") + ">");
             }

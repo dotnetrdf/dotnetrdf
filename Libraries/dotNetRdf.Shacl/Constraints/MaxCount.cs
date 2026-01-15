@@ -51,7 +51,7 @@ internal class MaxCount : Numeric
 
     internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
     {
-        IEnumerable<INode> invalidValues = valueNodes.Skip(NumericValue);
+        var invalidValues = valueNodes.Skip(NumericValue);
 
         return ReportFocusNode(focusNode, invalidValues, report);
     }

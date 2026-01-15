@@ -25,14 +25,14 @@ public class ManifestTestDataProvider : IEnumerable<object[]>
 
     public ManifestTestData GetTestData(Uri testUri)
     {
-        IUriNode testNode = _manifest.Graph.GetUriNode(testUri);
+        var testNode = _manifest.Graph.GetUriNode(testUri);
         Assert.NotNull(testNode);
         return new ManifestTestData(_manifest, testNode);
     }
 
     public ManifestTestData GetTestData(string testId)
     {
-        ManifestTestData data = _manifest.GetTestData().SingleOrDefault(x => x.Id == testId);
+        var data = _manifest.GetTestData().SingleOrDefault(x => x.Id == testId);
         Assert.NotNull(data);
         return data;
     }

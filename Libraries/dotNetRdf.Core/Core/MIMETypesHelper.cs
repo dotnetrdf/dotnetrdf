@@ -321,7 +321,7 @@ public static class MimeTypesHelper
         Init();
         lock (_initLock)
         {
-            foreach (MimeTypeDefinition mimeType in mimeTypes)
+            foreach (var mimeType in mimeTypes)
             {
                 var existing = _mimeTypes.FindIndex(x => x.SyntaxName.Equals(mimeType.SyntaxName));
                 if (existing >= 0) _mimeTypes.RemoveAt(existing);
@@ -478,8 +478,8 @@ public static class MimeTypesHelper
         if (!mimeTypes.Any()) throw new RdfException("Cannot register a parser without specifying at least 1 MIME Type");
 
         // Get any existing defintions that are to be altered
-        IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
-        foreach (MimeTypeDefinition def in existing)
+        var existing = GetDefinitions(mimeTypes);
+        foreach (var def in existing)
         {
             foreach (var type in mimeTypes)
             {
@@ -493,7 +493,7 @@ public static class MimeTypesHelper
         }
 
         // Create any new defintions
-        IEnumerable<string> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+        var newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
         if (newTypes.Any())
         {
             var newDef = new MimeTypeDefinition(string.Empty, newTypes, fileExtensions);
@@ -515,8 +515,8 @@ public static class MimeTypesHelper
         if (!mimeTypes.Any()) throw new RdfException("Cannot register a parser without specifying at least 1 MIME Type");
 
         // Get any existing defintions that are to be altered
-        IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
-        foreach (MimeTypeDefinition def in existing)
+        var existing = GetDefinitions(mimeTypes);
+        foreach (var def in existing)
         {
             foreach (var type in mimeTypes)
             {
@@ -530,7 +530,7 @@ public static class MimeTypesHelper
         }
 
         // Create any new defintions
-        IEnumerable<string> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+        var newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
         if (newTypes.Any())
         {
             var newDef = new MimeTypeDefinition(string.Empty, newTypes, fileExtensions);
@@ -552,8 +552,8 @@ public static class MimeTypesHelper
         if (!mimeTypes.Any()) throw new RdfException("Cannot register a parser without specifying at least 1 MIME Type");
 
         // Get any existing defintions that are to be altered
-        IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
-        foreach (MimeTypeDefinition def in existing)
+        var existing = GetDefinitions(mimeTypes);
+        foreach (var def in existing)
         {
             foreach (var type in mimeTypes)
             {
@@ -567,7 +567,7 @@ public static class MimeTypesHelper
         }
 
         // Create any new defintions
-        IEnumerable<string> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+        var newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
         if (newTypes.Any())
         {
             var newDef = new MimeTypeDefinition(string.Empty, newTypes, fileExtensions);
@@ -589,8 +589,8 @@ public static class MimeTypesHelper
         if (!mimeTypes.Any()) throw new RdfException("Cannot register a writer without specifying at least 1 MIME Type");
 
         // Get any existing defintions that are to be altered
-        IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
-        foreach (MimeTypeDefinition def in existing)
+        var existing = GetDefinitions(mimeTypes);
+        foreach (var def in existing)
         {
             foreach (var type in mimeTypes)
             {
@@ -604,7 +604,7 @@ public static class MimeTypesHelper
         }
 
         // Create any new defintions
-        IEnumerable<string> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+        var newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
         if (newTypes.Any())
         {
             var newDef = new MimeTypeDefinition(string.Empty, newTypes, fileExtensions);
@@ -626,8 +626,8 @@ public static class MimeTypesHelper
         if (!mimeTypes.Any()) throw new RdfException("Cannot register a writer without specifying at least 1 MIME Type");
 
         // Get any existing defintions that are to be altered
-        IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
-        foreach (MimeTypeDefinition def in existing)
+        var existing = GetDefinitions(mimeTypes);
+        foreach (var def in existing)
         {
             foreach (var type in mimeTypes)
             {
@@ -641,7 +641,7 @@ public static class MimeTypesHelper
         }
 
         // Create any new defintions
-        IEnumerable<string> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+        var newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
         if (newTypes.Any())
         {
             var newDef = new MimeTypeDefinition(string.Empty, newTypes, fileExtensions);
@@ -663,8 +663,8 @@ public static class MimeTypesHelper
         if (!mimeTypes.Any()) throw new RdfException("Cannot register a writer without specifying at least 1 MIME Type");
 
         // Get any existing defintions that are to be altered
-        IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
-        foreach (MimeTypeDefinition def in existing)
+        var existing = GetDefinitions(mimeTypes);
+        foreach (var def in existing)
         {
             foreach (var type in mimeTypes)
             {
@@ -678,7 +678,7 @@ public static class MimeTypesHelper
         }
 
         // Create any new defintions
-        IEnumerable<string> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+        var newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
         if (newTypes.Any())
         {
             var newDef = new MimeTypeDefinition(string.Empty, newTypes, fileExtensions);
@@ -715,7 +715,7 @@ public static class MimeTypesHelper
 
         if (!_init) Init();
 
-        IEnumerable<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(mimeTypes);
+        var selectors = MimeTypeSelector.CreateSelectors(mimeTypes);
         return (from selector in selectors
                 from definition in Definitions
                 where definition.SupportsMimeType(selector)
@@ -749,7 +749,7 @@ public static class MimeTypesHelper
             if (!_init) Init();
 
             HashSet<MediaTypeWithQualityHeaderValue> accept = [];
-            foreach (MimeTypeDefinition definition in Definitions)
+            foreach (var definition in Definitions)
             {
                 if (definition.CanParseRdf)
                 {
@@ -772,8 +772,8 @@ public static class MimeTypesHelper
 
             accept.Add(new MediaTypeWithQualityHeaderValue("*/*", .5));
 
-            HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> header = new HttpRequestMessage().Headers.Accept;
-            foreach (MediaTypeWithQualityHeaderValue headerValue in accept)
+            var header = new HttpRequestMessage().Headers.Accept;
+            foreach (var headerValue in accept)
             {
                 header.Add(headerValue);
             }
@@ -793,7 +793,7 @@ public static class MimeTypesHelper
             if (!_init) Init();
 
             HashSet<MediaTypeWithQualityHeaderValue> accept = [];
-            foreach (MimeTypeDefinition definition in Definitions)
+            foreach (var definition in Definitions)
             {
                 if (definition.CanParseSparqlResults)
                 {
@@ -813,8 +813,8 @@ public static class MimeTypesHelper
                     }
                 }
             }
-            HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> header = new HttpRequestMessage().Headers.Accept;
-            foreach (MediaTypeWithQualityHeaderValue headerValue in accept)
+            var header = new HttpRequestMessage().Headers.Accept;
+            foreach (var headerValue in accept)
             {
                 header.Add(headerValue);
             }
@@ -832,9 +832,9 @@ public static class MimeTypesHelper
         {
             if (!_init) Init();
 
-            HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> header = new HttpRequestMessage().Headers.Accept;
+            var header = new HttpRequestMessage().Headers.Accept;
 
-            foreach (MimeTypeDefinition definition in Definitions)
+            foreach (var definition in Definitions)
             {
                 if (definition.CanParseRdf || definition.CanParseSparqlResults)
                 {
@@ -870,7 +870,7 @@ public static class MimeTypesHelper
         {
             if (!_init) Init();
 
-            HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> header = new HttpRequestMessage().Headers.Accept;
+            var header = new HttpRequestMessage().Headers.Accept;
             var mimeTypes =
                 new HashSet<string>(Definitions.Where(d => d.CanParseRdfDatasets).SelectMany(d => d.MimeTypes));
             foreach (var mimeType in mimeTypes)
@@ -890,7 +890,7 @@ public static class MimeTypesHelper
         {
             if (!_init) Init();
 
-            HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> header = new HttpRequestMessage().Headers.Accept;
+            var header = new HttpRequestMessage().Headers.Accept;
             var mimeTypes =
                 new HashSet<string>(Definitions.Where(d => d.CanParseRdf || d.CanParseRdfDatasets).SelectMany(d => d.MimeTypes));
             foreach (var mimeType in mimeTypes)
@@ -964,8 +964,8 @@ public static class MimeTypesHelper
     {
         if (!_init) Init();
 
-        Type requiredType = parser.GetType();
-        foreach (MimeTypeDefinition definition in Definitions)
+        var requiredType = parser.GetType();
+        foreach (var definition in Definitions)
         {
             if (requiredType.Equals(definition.RdfParserType))
             {
@@ -984,8 +984,8 @@ public static class MimeTypesHelper
     {
         if (!_init) Init();
 
-        Type requiredType = parser.GetType();
-        foreach (MimeTypeDefinition definition in Definitions)
+        var requiredType = parser.GetType();
+        foreach (var definition in Definitions)
         {
             if (requiredType.Equals(definition.RdfDatasetParserType))
             {
@@ -1005,8 +1005,8 @@ public static class MimeTypesHelper
     {
         if (writer == null) throw new ArgumentNullException(nameof(writer));
         if (!_init) Init();
-        Type requiredType = writer.GetType();
-        foreach (MimeTypeDefinition definition in Definitions)
+        var requiredType = writer.GetType();
+        foreach (var definition in Definitions)
         {
             if (requiredType == definition.RdfWriterType)
             {
@@ -1122,7 +1122,7 @@ public static class MimeTypesHelper
         var filter = string.Empty;
         var exts = new List<string>();
 
-        foreach (MimeTypeDefinition def in Definitions.Where(typeSelector))
+        foreach (var def in Definitions.Where(typeSelector))
         {
             exts.AddRange(def.FileExtensions);
             filter += def.SyntaxName + " Files|*." + string.Join(";*.", def.FileExtensions.ToArray()) + "|";
@@ -1217,12 +1217,12 @@ public static class MimeTypesHelper
         if (ctypes != null)
         {
             // See if there are any MIME Type Definitions for the given MIME Types
-            foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
+            foreach (var definition in GetDefinitions(ctypes))
             {
                 // If so return the Writer from the first match found
                 if (definition.CanWriteRdf)
                 {
-                    IRdfWriter writer = definition.GetRdfWriter();
+                    var writer = definition.GetRdfWriter();
                     ApplyWriterOptions(writer, compressionLevel, useDtd, useMultipleThreads);
                     contentType = definition.CanonicalMimeType;
                     return writer;
@@ -1232,7 +1232,7 @@ public static class MimeTypesHelper
 
         // Default to Turtle
         contentType = Turtle[0];
-        IRdfWriter defaultWriter = new CompressingTurtleWriter();
+        var defaultWriter = new CompressingTurtleWriter();
         ApplyWriterOptions(defaultWriter, compressionLevel, useDtd, useMultipleThreads);
         return defaultWriter;
     }
@@ -1330,12 +1330,12 @@ public static class MimeTypesHelper
         if (fileExt == null) throw new ArgumentNullException(nameof(fileExt), "File extension cannot be null");
 
         // See if there are any MIME Type Definition for the file extension
-        foreach (MimeTypeDefinition definition in GetDefinitionsByFileExtension(fileExt))
+        foreach (var definition in GetDefinitionsByFileExtension(fileExt))
         {
             // If so return the Writer from the first match found
             if (definition.CanWriteRdf)
             {
-                IRdfWriter writer = definition.GetRdfWriter();
+                var writer = definition.GetRdfWriter();
                 ApplyWriterOptions(writer, compressionLevel, useDtd, useMultipleThreads);
                 contentType = definition.CanonicalMimeType;
                 return writer;
@@ -1358,11 +1358,11 @@ public static class MimeTypesHelper
     {
         if (ctypes != null)
         {
-            foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
+            foreach (var definition in GetDefinitions(ctypes))
             {
                 if (definition.CanParseRdf)
                 {
-                    IRdfReader parser = definition.GetRdfParser();
+                    var parser = definition.GetRdfParser();
                     ApplyParserOptions(parser, tokenQueueMode);
                     return parser;
                 }
@@ -1394,11 +1394,11 @@ public static class MimeTypesHelper
     {
         if (fileExt == null) throw new ArgumentNullException(nameof(fileExt), "File extension cannot be null");
 
-        foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
+        foreach (var def in GetDefinitionsByFileExtension(fileExt))
         {
             if (def.CanParseRdf)
             {
-                IRdfReader parser = def.GetRdfParser();
+                var parser = def.GetRdfParser();
                 ApplyParserOptions(parser, tokenQueueMode);
                 return parser;
             }
@@ -1415,18 +1415,18 @@ public static class MimeTypesHelper
     /// <returns></returns>
     public static ISparqlResultsReader GetSparqlParser(IEnumerable<string> ctypes, bool allowPlainTextResults)
     {
-        foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
+        foreach (var definition in GetDefinitions(ctypes))
         {
             if (definition.CanParseSparqlResults)
             {
-                ISparqlResultsReader parser = definition.GetSparqlResultsParser();
+                var parser = definition.GetSparqlResultsParser();
                 return parser;
             }
         }
 
         if (allowPlainTextResults && (ctypes.Contains("text/plain") || ctypes.Contains("text/boolean")))
         {
-            ISparqlResultsReader bParser = new SparqlBooleanParser();
+            var bParser = new SparqlBooleanParser();
             return bParser;
         }
         else
@@ -1466,11 +1466,11 @@ public static class MimeTypesHelper
     {
         if (fileExt == null) throw new ArgumentNullException(nameof(fileExt), "File Extension cannot be null");
 
-        foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
+        foreach (var def in GetDefinitionsByFileExtension(fileExt))
         {
             if (def.CanParseSparqlResults)
             {
-                ISparqlResultsReader parser = def.GetSparqlResultsParser();
+                var parser = def.GetSparqlResultsParser();
                 return parser;
             }
         }
@@ -1510,19 +1510,19 @@ public static class MimeTypesHelper
     /// </remarks>
     public static ISparqlResultsWriter GetSparqlWriter(IEnumerable<string> ctypes, out string contentType)
     {
-        foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
+        foreach (var definition in GetDefinitions(ctypes))
         {
             if (definition.CanWriteSparqlResults)
             {
                 contentType = definition.CanonicalMimeType;
-                ISparqlResultsWriter writer = definition.GetSparqlResultsWriter();
+                var writer = definition.GetSparqlResultsWriter();
                 return writer;
             }
         }
 
         // Default to SPARQL XML Output
         contentType = SparqlResultsXml[0];
-        ISparqlResultsWriter defaultWriter = new SparqlXmlWriter();
+        var defaultWriter = new SparqlXmlWriter();
         return defaultWriter;
     }
 
@@ -1598,11 +1598,11 @@ public static class MimeTypesHelper
     {
         if (fileExt == null) throw new ArgumentNullException(nameof(fileExt), "File Extension cannot be null");
 
-        foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
+        foreach (var def in GetDefinitionsByFileExtension(fileExt))
         {
             if (def.CanWriteSparqlResults)
             {
-                ISparqlResultsWriter writer = def.GetSparqlResultsWriter();
+                var writer = def.GetSparqlResultsWriter();
                 contentType = def.CanonicalMimeType;
                 return writer;
             }
@@ -1619,11 +1619,11 @@ public static class MimeTypesHelper
     /// <returns></returns>
     public static IStoreReader GetStoreParser(IEnumerable<string> ctypes, TokenQueueMode tokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing)
     {
-        foreach (MimeTypeDefinition def in GetDefinitions(ctypes))
+        foreach (var def in GetDefinitions(ctypes))
         {
             if (def.CanParseRdfDatasets)
             {
-                IStoreReader parser = def.GetRdfDatasetParser();
+                var parser = def.GetRdfDatasetParser();
                 ApplyParserOptions(parser, tokenQueueMode);
                 return parser;
             }
@@ -1654,11 +1654,11 @@ public static class MimeTypesHelper
     {
         if (fileExt == null) throw new ArgumentNullException(nameof(fileExt), "File Extension cannot be null");
 
-        foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
+        foreach (var def in GetDefinitionsByFileExtension(fileExt))
         {
             if (def.CanParseRdfDatasets)
             {
-                IStoreReader parser = def.GetRdfDatasetParser();
+                var parser = def.GetRdfDatasetParser();
                 ApplyParserOptions(parser, tokenQueueMode);
                 return parser;
             }
@@ -1701,19 +1701,19 @@ public static class MimeTypesHelper
     /// </remarks>
     public static IStoreWriter GetStoreWriter(IEnumerable<string> ctypes, out string contentType, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true, bool useMultipleThreads = false)
     {
-        foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
+        foreach (var definition in GetDefinitions(ctypes))
         {
             if (definition.CanWriteRdfDatasets)
             {
                 contentType = definition.CanonicalMimeType;
-                IStoreWriter writer = definition.GetRdfDatasetWriter();
+                var writer = definition.GetRdfDatasetWriter();
                 ApplyWriterOptions(writer, compressionLevel, useDtd, useMultipleThreads);
                 return writer;
             }
         }
 
         contentType = NQuads[0];
-        IStoreWriter defaultWriter = new NQuadsWriter();
+        var defaultWriter = new NQuadsWriter();
         ApplyWriterOptions(defaultWriter, compressionLevel, useDtd, useMultipleThreads);
         return defaultWriter;
     }
@@ -1784,11 +1784,11 @@ public static class MimeTypesHelper
     {
         if (fileExt == null) throw new ArgumentNullException(nameof(fileExt), "File Extension cannot be null");
 
-        foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
+        foreach (var def in GetDefinitionsByFileExtension(fileExt))
         {
             if (def.CanWriteRdfDatasets)
             {
-                IStoreWriter writer = def.GetRdfDatasetWriter();
+                var writer = def.GetRdfDatasetWriter();
                 ApplyWriterOptions(writer, compressionLevel, useDtd, useMultipleThreads);
                 contentType = def.CanonicalMimeType;
                 return writer;
@@ -1807,7 +1807,7 @@ public static class MimeTypesHelper
     public static string GetMimeType(string fileExt)
     {
         if (!_init) Init();
-        foreach (MimeTypeDefinition definition in Definitions)
+        foreach (var definition in Definitions)
         {
             if (definition.SupportsFileExtension(fileExt))
             {
@@ -1829,7 +1829,7 @@ public static class MimeTypesHelper
     {
         if (!_init) Init();
         var types = new List<string>();
-        foreach (MimeTypeDefinition definition in Definitions)
+        foreach (var definition in Definitions)
         {
             if (definition.SupportsFileExtension(fileExt))
             {
@@ -1925,7 +1925,7 @@ public static class MimeTypesHelper
     {
         if (!_init) Init();
         var selector = MimeTypeSelector.Create(mimeType, 1);
-        foreach (MimeTypeDefinition definition in Definitions)
+        foreach (var definition in Definitions)
         {
             if (definition.SupportsMimeType(selector))
             {
@@ -1944,8 +1944,8 @@ public static class MimeTypesHelper
     public static string GetFileExtension(IRdfWriter writer)
     {
         if (!_init) Init();
-        Type requiredType = writer.GetType();
-        foreach (MimeTypeDefinition definition in Definitions)
+        var requiredType = writer.GetType();
+        foreach (var definition in Definitions)
         {
             if (requiredType.Equals(definition.RdfWriterType))
             {
@@ -1964,8 +1964,8 @@ public static class MimeTypesHelper
     public static string GetFileExtension(IStoreWriter writer)
     {
         if (!_init) Init();
-        Type requiredType = writer.GetType();
-        foreach (MimeTypeDefinition definition in Definitions)
+        var requiredType = writer.GetType();
+        foreach (var definition in Definitions)
         {
             if (requiredType.Equals(definition.RdfDatasetWriterType))
             {

@@ -50,9 +50,9 @@ public class MinimalSpanningGraph
         // Get Triples for this Subject
         var bnodes = new Queue<INode>();
         var expandedBNodes = new HashSet<INode>();
-        foreach (INode n in nodes)
+        foreach (var n in nodes)
         {
-            foreach (Triple t in dataset.GetTriplesWithSubject(n).ToList())
+            foreach (var t in dataset.GetTriplesWithSubject(n).ToList())
             {
                 if (t.Object.NodeType == NodeType.Blank)
                 {
@@ -62,7 +62,7 @@ public class MinimalSpanningGraph
             }
             if (n.NodeType == NodeType.Blank)
             {
-                foreach (Triple t in dataset.GetTriplesWithPredicate(n).ToList())
+                foreach (var t in dataset.GetTriplesWithPredicate(n).ToList())
                 {
                     if (t.Subject.NodeType == NodeType.Blank)
                     {
@@ -75,7 +75,7 @@ public class MinimalSpanningGraph
                     if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
                 }
             }
-            foreach (Triple t in dataset.GetTriplesWithObject(n).ToList())
+            foreach (var t in dataset.GetTriplesWithObject(n).ToList())
             {
                 if (t.Subject.NodeType == NodeType.Blank)
                 {
@@ -88,11 +88,11 @@ public class MinimalSpanningGraph
         // Expand BNodes
         while (bnodes.Count > 0)
         {
-            INode n = bnodes.Dequeue();
+            var n = bnodes.Dequeue();
             if (expandedBNodes.Contains(n)) continue;
             expandedBNodes.Add(n);
 
-            foreach (Triple t in dataset.GetTriplesWithSubject(n).ToList())
+            foreach (var t in dataset.GetTriplesWithSubject(n).ToList())
             {
                 if (t.Object.NodeType == NodeType.Blank)
                 {
@@ -102,7 +102,7 @@ public class MinimalSpanningGraph
             }
             if (n.NodeType == NodeType.Blank)
             {
-                foreach (Triple t in dataset.GetTriplesWithPredicate(n).ToList())
+                foreach (var t in dataset.GetTriplesWithPredicate(n).ToList())
                 {
                     if (t.Subject.NodeType == NodeType.Blank)
                     {
@@ -115,7 +115,7 @@ public class MinimalSpanningGraph
                     if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
                 }
             }
-            foreach (Triple t in dataset.GetTriplesWithObject(n).ToList())
+            foreach (var t in dataset.GetTriplesWithObject(n).ToList())
             {
                 if (t.Subject.NodeType == NodeType.Blank)
                 {

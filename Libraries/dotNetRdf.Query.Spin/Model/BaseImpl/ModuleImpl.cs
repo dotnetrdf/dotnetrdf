@@ -49,13 +49,13 @@ internal class ModuleImpl : AbstractSPINResource, IModule
         //JenaUtil.setGraphReadOptimization(true);
         try
         {
-            IEnumerable<IResource> classes = getModel().GetAllSuperClasses(this, true);
-            foreach (IResource cls in classes)
+            var classes = getModel().GetAllSuperClasses(this, true);
+            foreach (var cls in classes)
             {
                 it =cls.listProperties(SPIN.PropertyConstraint).GetEnumerator();
                 while (it.MoveNext())
                 {
-                    Triple s = it.Current;
+                    var s = it.Current;
                     addArgumentFromConstraint(s, results);
                 }
             }
@@ -73,8 +73,8 @@ internal class ModuleImpl : AbstractSPINResource, IModule
         {
             results.Sort(delegate(IArgument o1, IArgument o2)
             {
-                IResource p1 = o1.getPredicate();
-                IResource p2 = o2.getPredicate();
+                var p1 = o1.getPredicate();
+                var p2 = o2.getPredicate();
                 if (p1 != null && p2 != null)
                 {
                     return RDFUtil.uriComparer.Compare(p1.Uri, p2.Uri);
@@ -100,10 +100,10 @@ internal class ModuleImpl : AbstractSPINResource, IModule
         if (constraint.Object is IBlankNode)
         {
             // Optimized case to avoid walking up class hierarchy
-            IEnumerator<Triple> types = Resource.Get(constraint.Object, Graph, getModel()).listProperties(RDF.PropertyType).GetEnumerator();
+            var types = Resource.Get(constraint.Object, Graph, getModel()).listProperties(RDF.PropertyType).GetEnumerator();
             while (types.MoveNext())
             {
-                Triple typeS = types.Current;
+                var typeS = types.Current;
                 if (typeS.Object is IUriNode)
                 {
                     if (RDFUtil.sameTerm(SPL.ClassArgument, typeS.Object))
@@ -130,9 +130,9 @@ internal class ModuleImpl : AbstractSPINResource, IModule
     public Dictionary<String, IArgument> getArgumentsMap()
     {
         var results = new Dictionary<String, IArgument>();
-        foreach (IArgument argument in getArguments(false))
+        foreach (var argument in getArguments(false))
         {
-            IResource property = argument.getPredicate();
+            var property = argument.getPredicate();
             if (property != null)
             {
                 results[property.Uri.ToString().Replace(SP.BASE_URI, "")] = argument;

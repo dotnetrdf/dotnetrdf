@@ -50,12 +50,12 @@ public class NamedGraphDescription
 
         if (dataset is ISparqlDataset sparqlDataset)
         {
-            foreach (INode n in nodes)
+            foreach (var n in nodes)
             {
                 if (n.NodeType is NodeType.Uri or NodeType.Blank)
                 {
-                    IGraph g = sparqlDataset[(IRefNode)n];
-                    foreach (Triple t in g.Triples.ToList())
+                    var g = sparqlDataset[(IRefNode)n];
+                    foreach (var t in g.Triples.ToList())
                     {
                         if (!handler.HandleTriple(RewriteDescribeBNodes(t, bnodeMapping, handler)))
                             ParserHelper.Stop();

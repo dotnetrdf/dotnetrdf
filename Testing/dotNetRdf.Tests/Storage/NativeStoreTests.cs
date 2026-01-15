@@ -57,13 +57,13 @@ public class NativeStoreTests
         };
 
         //Save the Graph to each Manager
-        foreach (IStorageProvider manager in managers)
+        foreach (var manager in managers)
         {
             manager.SaveGraph(g);
         }
 
         //Load Back from each Manager
-        foreach (IStorageProvider manager in managers)
+        foreach (var manager in managers)
         {
             var native = new StoreGraphPersistenceWrapper(manager, g.Name);
             Assert.False(native.IsEmpty, "Retrieved Graph should contain Triples");

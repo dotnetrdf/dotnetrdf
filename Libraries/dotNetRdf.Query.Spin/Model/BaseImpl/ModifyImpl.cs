@@ -61,9 +61,9 @@ internal class ModifyImpl : UpdateImpl, IModify
         printComment(p);
         printPrefixes(p);
 
-        IResource iri = getResource(SP.PropertyGraphIRI);
+        var iri = getResource(SP.PropertyGraphIRI);
 
-        IResource with = getResource(SP.PropertyWith);
+        var with = getResource(SP.PropertyWith);
         if (with != null)
         {
             p.printIndentation(p.getIndentation());
@@ -83,7 +83,7 @@ internal class ModifyImpl : UpdateImpl, IModify
             p.print("\n");
         }
 
-        IEnumerable<INode> usings = getUsing();
+        var usings = getUsing();
         if (usings.Count() == 0)
         {
             usings = p.Dataset.DefaultGraphs;

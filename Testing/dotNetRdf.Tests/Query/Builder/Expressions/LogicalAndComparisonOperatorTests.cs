@@ -104,7 +104,7 @@ public class LogicalAndComparisonOperatorTests
     {
         // given
         var v1 = new VariableExpression("v1");
-        LiteralExpression lit = new TypedLiteralExpression<string>("text");
+        var lit = new TypedLiteralExpression<string>("text");
 
         // when
         var areEqual = (v1 == lit).Expression;
@@ -149,7 +149,7 @@ public class LogicalAndComparisonOperatorTests
     public void CanCreateEqualityComparisonBetweenUntypedLiteralAndConcreteValue()
     {
         // given
-        LiteralExpression lit = new TypedLiteralExpression<string>("text");
+        var lit = new TypedLiteralExpression<string>("text");
 
         // when
         var areEqual = ("some value" == lit).Expression;
@@ -164,7 +164,7 @@ public class LogicalAndComparisonOperatorTests
     public void CanCreateEqualityComparisonBetweenUntypedLiteralAndConcreteValueReversed()
     {
         // given
-        LiteralExpression lit = new TypedLiteralExpression<string>("text");
+        var lit = new TypedLiteralExpression<string>("text");
 
         // when
         var areEqual = ("some value" == lit).Expression;
@@ -180,7 +180,7 @@ public class LogicalAndComparisonOperatorTests
     {
         // given
         var v1 = new VariableExpression("v1");
-        LiteralExpression lit = new TypedLiteralExpression<string>("text");
+        var lit = new TypedLiteralExpression<string>("text");
 
         // when
         var areEqual = (lit == v1).Expression;
@@ -212,7 +212,7 @@ public class LogicalAndComparisonOperatorTests
     {
         // given
         var v1 = new VariableExpression("v1");
-        LiteralExpression literal = new NumericExpression<int>(10);
+        var literal = new NumericExpression<int>(10);
 
         // when
         var areEqual = (v1 > literal).Expression;

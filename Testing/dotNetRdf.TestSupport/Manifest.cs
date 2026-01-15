@@ -38,7 +38,7 @@ public class Manifest
     private void LoadManifest(string manifestPath)
     {
         Graph.LoadFromFile(manifestPath);
-        Triple includeTriple = Graph.GetTriplesWithPredicate(_mfInclude).FirstOrDefault();
+        var includeTriple = Graph.GetTriplesWithPredicate(_mfInclude).FirstOrDefault();
         while (includeTriple != null)
         {
             switch (includeTriple.Object)
@@ -51,7 +51,7 @@ public class Manifest
                     }
                 case IBlankNode manifestList:
                     {
-                        foreach (IUriNode manifestItem in Graph.GetListItems(manifestList).OfType<IUriNode>())
+                        foreach (var manifestItem in Graph.GetListItems(manifestList).OfType<IUriNode>())
                         {
                             _childManifests.Add(new Manifest(manifestItem.Uri, ResolveResourcePath(manifestItem.Uri), _testNodeFilter));
                         }
@@ -66,22 +66,22 @@ public class Manifest
     
     public string ResolveResourcePath(Uri resourcePath)
     {
-        Uri relPath = BaseUri.MakeRelativeUri(resourcePath);
+        var relPath = BaseUri.MakeRelativeUri(resourcePath);
         return new Uri(LocalManifestUri, relPath).LocalPath;
     }
 
     public IEnumerable<ManifestTestData> GetTestData()
     {
-        INode testApproval = Graph.CreateUriNode("test:approval");
-        INode testWithdrawn = Graph.CreateUriNode("test:withdrawn");
-        INode rdfType = Graph.CreateUriNode("rdf:type");
-        IEnumerable<INode> manifests = Graph.GetTriplesWithPredicateObject(Graph.CreateUriNode("rdf:type"), Graph.CreateUriNode("mf:Manifest")).Select(t => t.Subject);
-        foreach (INode manifest in manifests)
+        var testApproval = Graph.CreateUriNode("test:approval");
+        var testWithdrawn = Graph.CreateUriNode("test:withdrawn");
+        var rdfType = Graph.CreateUriNode("rdf:type");
+        var manifests = Graph.GetTriplesWithPredicateObject(Graph.CreateUriNode("rdf:type"), Graph.CreateUriNode("mf:Manifest")).Select(t => t.Subject);
+        foreach (var manifest in manifests)
         {
-            IEnumerable<INode> testLists = Graph.GetTriplesWithSubjectPredicate(manifest, Graph.CreateUriNode("mf:entries")).Select(t => t.Object);
-            foreach (INode testList in testLists)
+            var testLists = Graph.GetTriplesWithSubjectPredicate(manifest, Graph.CreateUriNode("mf:entries")).Select(t => t.Object);
+            foreach (var testList in testLists)
             {
-                foreach (IUriNode testNode in Graph.GetListItems(testList).OfType<IUriNode>())
+                foreach (var testNode in Graph.GetListItems(testList).OfType<IUriNode>())
                 {
                     if (!Graph.ContainsTriple(new Triple(testNode, testApproval, testWithdrawn))
                         && Graph.Triples.WithSubjectPredicate(testNode, rdfType).Any()
@@ -93,7 +93,7 @@ public class Manifest
             }
         }
 
-        foreach (ManifestTestData childTest in _childManifests.SelectMany(childManifest => childManifest.GetTestData()))
+        foreach (var childTest in _childManifests.SelectMany(childManifest => childManifest.GetTestData()))
         {
             yield return childTest;
         }

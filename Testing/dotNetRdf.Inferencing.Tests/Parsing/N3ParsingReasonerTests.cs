@@ -27,7 +27,7 @@ public class N3ParsingReasonerTests
 
         _testOutputHelper.WriteLine("Original Graph - " + data.Triples.Count + " Triples");
         var origCount = data.Triples.Count;
-        foreach (Triple t in data.Triples)
+        foreach (var t in data.Triples)
         {
             Console.WriteLine(t.ToString());
         }
@@ -38,7 +38,7 @@ public class N3ParsingReasonerTests
         reasoner.Apply(data);
 
         _testOutputHelper.WriteLine("Graph after Reasoner application - " + data.Triples.Count + " Triples");
-        foreach (Triple t in data.Triples)
+        foreach (var t in data.Triples)
         {
             _testOutputHelper.WriteLine(t.ToString());
         }
@@ -62,7 +62,7 @@ public class N3ParsingReasonerTests
 
         _testOutputHelper.WriteLine("Original Graph - " + data.Triples.Count + " Triples");
         var origCount = data.Triples.Count;
-        foreach (Triple t in data.Triples)
+        foreach (var t in data.Triples)
         {
             _testOutputHelper.WriteLine(t.ToString());
         }
@@ -73,7 +73,7 @@ public class N3ParsingReasonerTests
         reasoner.Apply(data);
 
         _testOutputHelper.WriteLine("Graph after Reasoner application - " + data.Triples.Count + " Triples");
-        foreach (Triple t in data.Triples)
+        foreach (var t in data.Triples)
         {
             _testOutputHelper.WriteLine(t.ToString());
         }

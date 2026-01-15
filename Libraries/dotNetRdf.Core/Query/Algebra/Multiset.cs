@@ -93,7 +93,7 @@ public class Multiset
         {
             AddVariable(var);
         }
-        foreach (ISet s in multiset.Sets)
+        foreach (var s in multiset.Sets)
         {
             Add(s.Copy());
         }
@@ -253,7 +253,7 @@ public class Multiset
         {
             if (var.StartsWith("_:"))
             {
-                foreach (ISet s in _sets.Values)
+                foreach (var s in _sets.Values)
                 {
                     s.Remove(var);
                 }
@@ -271,7 +271,7 @@ public class Multiset
         if (variable == null) return;
         if (_variables.Remove(variable))
         {
-            foreach (ISet s in _sets.Values)
+            foreach (var s in _sets.Values)
             {
                 s.Remove(variable);
             }

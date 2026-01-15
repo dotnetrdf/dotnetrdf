@@ -44,10 +44,10 @@ internal class NamedGraphImpl : ElementImpl, INamedGraph
 
     public IResource getNameNode()
     {
-        IResource r = getObject(SP.PropertyGraphNameNode);
+        var r = getObject(SP.PropertyGraphNameNode);
         if (r != null)
         {
-            IVariable variable = SPINFactory.asVariable(r);
+            var variable = SPINFactory.asVariable(r);
             if (variable != null)
             {
                 return variable;
