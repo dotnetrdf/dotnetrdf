@@ -192,7 +192,7 @@ public class Notation3Writer
             context.CompressionLevel = WriterCompressionLevel.Minimal;
             context.NodeFormatter = new UncompressedNotation3Formatter();
 
-            foreach (Triple t in context.Graph.Triples)
+            foreach (var t in context.Graph.Triples)
             {
                 if (!contextWritten && t.Context != null && t.Context is VariableContext)
                 {
@@ -221,7 +221,7 @@ public class Notation3Writer
 
             for (var i = 0; i < ts.Count; i++)
             {
-                Triple t = ts[i];
+                var t = ts[i];
 
                 if (lastSubj == null || !t.Subject.Equals(lastSubj) || (t.Context != null && t.Context is VariableContext))
                 {
@@ -347,7 +347,7 @@ public class Notation3Writer
                 var contextWritten = false;
 
                 // Write Triples 1 at a Time on a single line
-                foreach (Triple t in subcontext.Graph.Triples) 
+                foreach (var t in subcontext.Graph.Triples) 
                 {
                     if (!contextWritten && t.Context != null && t.Context is VariableContext)
                     {
@@ -471,7 +471,7 @@ public class Notation3Writer
         {
             context.Output.Write("@forAll ");
         }
-        foreach (INode var in varContext.Variables)
+        foreach (var var in varContext.Variables)
         {
             context.Output.Write(context.NodeFormatter.Format(var));
             context.Output.Write(' ');
@@ -491,7 +491,7 @@ public class Notation3Writer
     /// <param name="message">Warning Message.</param>
     private void RaiseWarning(string message)
     {
-        RdfWriterWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

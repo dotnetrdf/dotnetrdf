@@ -51,7 +51,7 @@ internal class Node : Constraint
 
     internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
     {
-        IEnumerable<INode> invalidValues =
+        var invalidValues =
             from valueNode in valueNodes
             let shape = new Shapes.Node(this, this.Graph)
             where !shape.Validate(dataGraph, valueNode, [valueNode])

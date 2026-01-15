@@ -93,8 +93,8 @@ public class NegatedSet : ISparqlPath
             var rhsContext = new PathTransformContext(context);
             lhsContext.AddTriplePattern(new PropertyPathPattern(lhsContext.Subject, new NegatedSet(_properties, []), lhsContext.Object));
             rhsContext.AddTriplePattern(new PropertyPathPattern(rhsContext.Subject, new NegatedSet([], _inverseProperties), rhsContext.Object));
-            ISparqlAlgebra lhs = lhsContext.ToAlgebra();
-            ISparqlAlgebra rhs = rhsContext.ToAlgebra();
+            var lhs = lhsContext.ToAlgebra();
+            var rhs = rhsContext.ToAlgebra();
             return new Union(lhs, rhs);
         }
     }

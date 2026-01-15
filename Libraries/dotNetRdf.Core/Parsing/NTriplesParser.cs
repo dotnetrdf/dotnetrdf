@@ -300,14 +300,14 @@ public class NTriplesParser
             context.Tokens.InitialiseBuffer(10);
 
             // Expect a BOF
-            IToken start = context.Tokens.Dequeue();
+            var start = context.Tokens.Dequeue();
             if (start.TokenType != Token.BOF)
             {
                 throw Error("Unexpected Token '" + start.GetType() + "' encountered, expected a Beginning of File Token", start);
             }
 
             // Expect Triples
-            IToken next = context.Tokens.Peek();
+            var next = context.Tokens.Peek();
             while (next.TokenType != Token.EOF)
             {
                 // Discard Comments
@@ -341,9 +341,9 @@ public class NTriplesParser
     private void TryParseTriple(TokenisingParserContext context)
     {
         // Get the Subject, Predicate and Object
-        INode subj = TryParseSubject(context);
-        INode pred = TryParsePredicate(context);
-        INode obj = TryParseObject(context);
+        var subj = TryParseSubject(context);
+        var pred = TryParsePredicate(context);
+        var obj = TryParseObject(context);
 
         // Ensure we're terminated by a DOT
         TryParseLineTerminator(context);
@@ -357,7 +357,7 @@ public class NTriplesParser
 
     internal static INode TryParseSubject(TokenisingParserContext context)
     {
-        IToken subjToken = context.Tokens.Dequeue();
+        var subjToken = context.Tokens.Dequeue();
 
         // Discard Comments
         while (subjToken.TokenType == Token.COMMENT)
@@ -386,7 +386,7 @@ public class NTriplesParser
 
     internal static INode TryParsePredicate(TokenisingParserContext context)
     {
-        IToken predToken = context.Tokens.Dequeue();
+        var predToken = context.Tokens.Dequeue();
 
         // Discard Comments
         while (predToken.TokenType == Token.COMMENT)
@@ -412,7 +412,7 @@ public class NTriplesParser
 
     internal static INode TryParseObject(TokenisingParserContext context)
     {
-        IToken objToken = context.Tokens.Dequeue();
+        var objToken = context.Tokens.Dequeue();
 
         // Discard Comments
         while (objToken.TokenType == Token.COMMENT)
@@ -435,7 +435,7 @@ public class NTriplesParser
             case Token.LITERALWITHLANG:
                 return context.Handler.CreateLiteralNode(objToken.Value, ((LiteralWithLanguageSpecifierToken) objToken).Language);
             case Token.LITERAL:
-                IToken next = context.Tokens.Peek();
+                var next = context.Tokens.Peek();
                 // Is there a Language Specifier or Data Type?
                 switch (next.TokenType)
                 {
@@ -461,7 +461,7 @@ public class NTriplesParser
 
     private static void TryParseLineTerminator(TokenisingParserContext context)
     {
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
 
         // Discard Comments
         while (next.TokenType == Token.COMMENT)
@@ -486,7 +486,7 @@ public class NTriplesParser
     {
         try
         {
-            IUriNode n = context.Handler.CreateUriNode(context.UriFactory.Create(uri));
+            var n = context.Handler.CreateUriNode(context.UriFactory.Create(uri));
             if (!n.Uri.IsAbsoluteUri)
                 throw new RdfParseException("NTriples does not permit relative URIs");
             return n;
@@ -504,9 +504,9 @@ public class NTriplesParser
     /// <returns>Triple node if parsed successfully.</returns>
     private static ITripleNode TryParseQuotedTriple(TokenisingParserContext context)
     {
-        INode subj = TryParseSubject(context);
-        INode pred = TryParsePredicate(context);
-        INode obj = TryParseObject(context);
+        var subj = TryParseSubject(context);
+        var pred = TryParsePredicate(context);
+        var obj = TryParseObject(context);
         TryParseEndQuote(context);
         return new TripleNode(new Triple(subj, pred, obj));
     }
@@ -517,7 +517,7 @@ public class NTriplesParser
     /// <param name="context">Context.</param>
     private static void TryParseEndQuote(ITokenisingParserContext context)
     {
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
 
         // Ensure we finish with an end quote
         if (next.TokenType != Token.ENDQUOTE)

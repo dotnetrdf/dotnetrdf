@@ -117,7 +117,7 @@ public class NQuadsWriter
             if (UseMultiThreadedWriting)
             {
                 // Queue the Graphs to be written
-                foreach (IGraph g in context.Store.Graphs)
+                foreach (var g in context.Store.Graphs)
                 {
                     context.Add(g.Name);
                 }
@@ -138,7 +138,7 @@ public class NQuadsWriter
                 {
                     var outputException =
                         new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TSV"));
-                    foreach (Exception innerException in ex.InnerExceptions)
+                    foreach (var innerException in ex.InnerExceptions)
                     {
                         outputException.AddException(innerException);
                     }
@@ -150,10 +150,10 @@ public class NQuadsWriter
             }
             else
             {
-                foreach (IGraph g in context.Store.Graphs)
+                foreach (var g in context.Store.Graphs)
                 {
                     var graphContext = new NTriplesWriterContext(g, context.Output, NQuadsParser.AsNTriplesSyntax(Syntax));
-                    foreach (Triple t in g.Triples)
+                    foreach (var t in g.Triples)
                     {
                         context.Output.WriteLine(TripleToNQuads(graphContext, t, g.Name));
                     }
@@ -188,7 +188,7 @@ public class NQuadsWriter
         {
             context.Output.WriteLine("# Graph: " + context.Graph.BaseUri.AbsoluteUri);
         }
-        foreach (Triple t in context.Graph.Triples)
+        foreach (var t in context.Graph.Triples)
         {
             context.Output.WriteLine(TripleToNQuads(context, t, context.Graph.Name));
         }
@@ -268,10 +268,10 @@ public class NQuadsWriter
     {
         try
         {
-            while (globalContext.TryGetNextGraphName(out IRefNode u))
+            while (globalContext.TryGetNextGraphName(out var u))
             {
                 // Get the Graph from the Store
-                IGraph g = globalContext.Store.Graphs[u];
+                var g = globalContext.Store.Graphs[u];
 
                 // Generate the Graph Output and add to Stream
                 var context = new NTriplesWriterContext(g, new System.IO.StringWriter(), NQuadsParser.AsNTriplesSyntax(Syntax), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);

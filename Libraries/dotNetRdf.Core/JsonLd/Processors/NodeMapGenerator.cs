@@ -57,7 +57,7 @@ public class NodeMapGenerator : INodeMapGenerator
         // 1 - If element is an array, process each item in element as follows and then return:
         if (element is JArray elementArray)
         {
-            foreach (JToken item in elementArray)
+            foreach (var item in elementArray)
             {
                 // 1.1 - Run this algorithm recursively by passing item for element, node map, active graph, active subject, active property, and list.
                 GenerateNodeMapAlgorithm(item, nodeMap, activeGraph, activeSubject, activeProperty, list);
@@ -222,7 +222,7 @@ public class NodeMapGenerator : INodeMapGenerator
                 {
                     node["@type"] = new JArray();
                 }
-                foreach (JToken item in JsonLdUtils.EnsureArray(elementObject["@type"]))
+                foreach (var item in JsonLdUtils.EnsureArray(elementObject["@type"]))
                 {
                     AppendUniqueElement(item, node["@type"] as JArray);
                 }
@@ -251,12 +251,12 @@ public class NodeMapGenerator : INodeMapGenerator
                 // 6.9.2 - Initialize reverse map to the value of the @reverse entry of element.
                 var reverseMap = elementObject["@reverse"] as JObject;
                 // 6.9.3 - For each key-value pair property-values in reverse map:
-                foreach (JProperty p in reverseMap.Properties())
+                foreach (var p in reverseMap.Properties())
                 {
                     var property = p.Name;
                     var values = p.Value as JArray;
                     // 6.9.3.1 - For each value of values:
-                    foreach (JToken value in values)
+                    foreach (var value in values)
                     {
                         // 6.9.3.1.1 - Recursively invoke this algorithm passing value for element, node map,
                         // active graph, referenced node for active subject, and property for active property.
@@ -288,10 +288,10 @@ public class NodeMapGenerator : INodeMapGenerator
                 elementObject.Remove("@included");
             }
             // 6.12 - Finally, for each key-value pair property-value in element ordered by property perform the following steps:
-            foreach (JProperty p in elementObject.Properties().OrderBy(p => p.Name).ToList())
+            foreach (var p in elementObject.Properties().OrderBy(p => p.Name).ToList())
             {
                 var property = p.Name;
-                JToken value = p.Value;
+                var value = p.Value;
                 // 6.12.1 - If property is a blank node identifier, replace it with a newly generated blank node identifier passing property for identifier.
                 if (JsonLdUtils.IsBlankNodeIdentifier(property))
                 {
@@ -312,11 +312,11 @@ public class NodeMapGenerator : INodeMapGenerator
     public JObject GenerateMergedNodeMap(JObject graphMap)
     {
         var result = new JObject();
-        foreach (JProperty p in graphMap.Properties())
+        foreach (var p in graphMap.Properties())
         {
             var graphName = p.Name;
             var nodeMap = p.Value as JObject;
-            foreach (JProperty np in nodeMap.Properties())
+            foreach (var np in nodeMap.Properties())
             {
                 var id = np.Name;
                 var node = np.Value as JObject;
@@ -324,7 +324,7 @@ public class NodeMapGenerator : INodeMapGenerator
                 {
                     result[id] = mergedNode = new JObject(new JProperty("@id", id));
                 }
-                foreach (JProperty nodeProperty in node.Properties())
+                foreach (var nodeProperty in node.Properties())
                 {
                     if (!JsonLdUtils.IsKeyword(nodeProperty.Name) || nodeProperty.Name.Equals("@type"))
                     {
@@ -350,7 +350,7 @@ public class NodeMapGenerator : INodeMapGenerator
         var target = parent[property] as JArray;
         if (values is JArray)
         {
-            foreach (JToken item in (values as JArray))
+            foreach (var item in (values as JArray))
             {
                 target.Add(item);
             }

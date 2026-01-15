@@ -153,9 +153,9 @@ public class NegationTests
     [Fact]
     public void SparqlNegationFullMinued()
     {
-        SparqlQuery lhsQuery = _parser.ParseFromFile(Path.Combine("resources", "full-minuend-lhs.rq"));
-        SparqlQuery rhsQuery = _parser.ParseFromFile(Path.Combine("resources", "full-minuend-rhs.rq"));
-        SparqlQuery query = _parser.ParseFromFile(Path.Combine("resources", "full-minuend.rq"));
+        var lhsQuery = _parser.ParseFromFile(Path.Combine("resources", "full-minuend-lhs.rq"));
+        var rhsQuery = _parser.ParseFromFile(Path.Combine("resources", "full-minuend-rhs.rq"));
+        var query = _parser.ParseFromFile(Path.Combine("resources", "full-minuend.rq"));
         var g = new Graph();
         g.LoadFromFile(Path.Combine("resources", "full-minuend.ttl"));
         var processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(g));
@@ -193,8 +193,8 @@ public class NegationTests
     private void TestNegation(ISparqlDataset data, String queryWithNegation, String queryWithoutNegation)
     {
         var processor = new LeviathanQueryProcessor(data);
-        SparqlQuery negQuery = _parser.ParseFromString(queryWithNegation);
-        SparqlQuery noNegQuery = _parser.ParseFromString(queryWithoutNegation);
+        var negQuery = _parser.ParseFromString(queryWithNegation);
+        var noNegQuery = _parser.ParseFromString(queryWithoutNegation);
 
         var negResults = processor.ProcessQuery(negQuery) as SparqlResultSet;
         var noNegResults = processor.ProcessQuery(noNegQuery) as SparqlResultSet;
@@ -215,7 +215,7 @@ public class NegationTests
     private void TestNegation(ISparqlDataset data, String queryWithNegation)
     {
         var processor = new LeviathanQueryProcessor(data);
-        SparqlQuery negQuery = _parser.ParseFromString(queryWithNegation);
+        var negQuery = _parser.ParseFromString(queryWithNegation);
 
         var negResults = processor.ProcessQuery(negQuery) as SparqlResultSet;
 
@@ -304,12 +304,12 @@ WHERE
 
     private static void Test(string query, bool isNamedGraph, int expectedCount)
     {
-        IGraph graph = isNamedGraph ? new Graph(new UriNode(new Uri("http://g"))) : new Graph();
+        var graph = isNamedGraph ? new Graph(new UriNode(new Uri("http://g"))) : new Graph();
         new TurtleParser().Load(graph, new StringReader(TestData));
 
-        IInMemoryQueryableStore store = new TripleStore();
+        var store = new TripleStore();
         store.Add(graph);
-        IQueryableStorage storage = new InMemoryManager(store);
+        var storage = new InMemoryManager(store);
 
         using var resultSet = (SparqlResultSet)storage.Query(query);
         Assert.Equal(expectedCount, resultSet.Count);

@@ -116,8 +116,8 @@ public class NTriples11
         //Nodes for positive and negative tests
         var g = new Graph();
         g.NamespaceMap.AddNamespace("rdft", UriFactory.Root.Create("http://www.w3.org/ns/rdftest#"));
-        INode posSyntaxTest = g.CreateUriNode("rdft:TestNTriplesPositiveSyntax");
-        INode negSyntaxTest = g.CreateUriNode("rdft:TestNTriplesNegativeSyntax");
+        var posSyntaxTest = g.CreateUriNode("rdft:TestNTriplesPositiveSyntax");
+        var negSyntaxTest = g.CreateUriNode("rdft:TestNTriplesNegativeSyntax");
 
         //Run manifests
         RunManifest(Path.Combine("resources", "ntriples11", "manifest.ttl"), posSyntaxTest, negSyntaxTest);
@@ -183,8 +183,8 @@ public class NTriplesStar : BaseRdfParserSuite
         //Nodes for positive and negative tests
         var g = new Graph();
         g.NamespaceMap.AddNamespace("rdft", UriFactory.Root.Create("http://www.w3.org/ns/rdftest#"));
-        INode posSyntaxTest = g.CreateUriNode("rdft:TestNTriplesPositiveSyntax");
-        INode negSyntaxTest = g.CreateUriNode("rdft:TestNTriplesNegativeSyntax");
+        var posSyntaxTest = g.CreateUriNode("rdft:TestNTriplesPositiveSyntax");
+        var negSyntaxTest = g.CreateUriNode("rdft:TestNTriplesNegativeSyntax");
 
         //Run manifests
         RunManifest(Path.Combine("resources", "ntriples11", "manifest.ttl"), posSyntaxTest, negSyntaxTest);

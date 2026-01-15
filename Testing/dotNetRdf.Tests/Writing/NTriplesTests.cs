@@ -40,7 +40,7 @@ public class NTriplesTests
 {
     private void Test(String literal, IRdfWriter writer, IRdfReader parser)
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Root.Create("http://example/"));
         g.Assert(g.CreateUriNode(":subj"), g.CreateUriNode(":pred"), g.CreateLiteralNode(literal));
 
@@ -49,7 +49,7 @@ public class NTriplesTests
 
         Console.WriteLine(strWriter.ToString());
 
-        IGraph h = new Graph();
+        var h = new Graph();
         parser.Load(h, new StringReader(strWriter.ToString()));
 
         Assert.Equal(g, h);
@@ -398,7 +398,7 @@ public class NTriplesTests
                     g.CreateUriNode(":c")))));
         var writer = new NTriplesWriter(NTriplesSyntax.Rdf11);
         var strWriter = new System.IO.StringWriter();
-        RdfOutputException ex = Assert.Throws<RdfOutputException>(() => writer.Save(g, strWriter));
+        var ex = Assert.Throws<RdfOutputException>(() => writer.Save(g, strWriter));
         ex.Message.Should().Be(WriterErrorMessages.TripleNodesUnserializable("NTriples (RDF 1.1)"));
     }
 
@@ -415,7 +415,7 @@ public class NTriplesTests
         var g = new Graph();
 
         // Simple IDs which are valid in Original NTriples and RDF 1.1 NTriples
-        IBlankNode b = g.CreateBlankNode("simple");
+        var b = g.CreateBlankNode("simple");
         TestBNodeFormatting(b, formatter, "_:simple");
         b = g.CreateBlankNode("simple1234");
         TestBNodeFormatting(b, formatter, "_:simple1234");
@@ -441,7 +441,7 @@ public class NTriplesTests
         var g = new Graph();
 
         // Simple IDs which are valid in Original NTriples and RDF 1.1 NTriples
-        IBlankNode b = g.CreateBlankNode("simple");
+        var b = g.CreateBlankNode("simple");
         TestBNodeFormatting(b, formatter, "_:simple");
         b = g.CreateBlankNode("simple1234");
         TestBNodeFormatting(b, formatter, "_:simple1234");

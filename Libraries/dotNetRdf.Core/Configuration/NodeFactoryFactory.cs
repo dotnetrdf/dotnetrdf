@@ -61,10 +61,10 @@ public class NodeFactoryFactory : IObjectFactory
     /// <inheritdoc />
     public bool CanLoadObject(Type t)
     {
-        Type nodeFactoryType = typeof(INodeFactory);
+        var nodeFactoryType = typeof(INodeFactory);
         if (t.GetInterfaces().Any(i => i == nodeFactoryType))
         {
-            ConstructorInfo c = t.GetConstructor([]);
+            var c = t.GetConstructor([]);
             return c != null && c.IsPublic;
         }
         return false;
@@ -72,7 +72,7 @@ public class NodeFactoryFactory : IObjectFactory
 
     private static void ConfigureBaseUri(IGraph g, INode objNode, INodeFactory nodeFactory)
     {
-        INode baseUriNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAssignUri)));
+        var baseUriNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAssignUri)));
         switch (baseUriNode)
         {
             case null:
@@ -122,7 +122,7 @@ public class NodeFactoryFactory : IObjectFactory
 
     private static void ConfigureUriFactory(IGraph g, INode objNode, INodeFactory nodeFactory)
     {
-        INode uriFactoryNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
+        var uriFactoryNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
             g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingUriFactory)));
         if (uriFactoryNode != null)
         {

@@ -63,7 +63,7 @@ public class UncompressedNotation3Formatter
 
         var output = new StringBuilder();
         output.Append("{");
-        foreach (Triple t in glit.SubGraph.Triples)
+        foreach (var t in glit.SubGraph.Triples)
         {
             output.Append(Format(t));
         }
@@ -135,7 +135,7 @@ public class Notation3Formatter
 
         var output = new StringBuilder();
         output.Append("{");
-        foreach (Triple t in glit.SubGraph.Triples)
+        foreach (var t in glit.SubGraph.Triples)
         {
             output.Append(Format(t));
         }

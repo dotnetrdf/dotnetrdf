@@ -1083,14 +1083,14 @@ public class Notation3Tokeniser
         if (next == '<')
         {
             // Uri specified DataType
-            IToken temp = TryGetUri();
+            var temp = TryGetUri();
             LastTokenType = Token.DATATYPE;
             return new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition, temp.EndPosition);
         }
         else if (char.IsLetter(next) || UnicodeSpecsHelper.IsLetter(next) || next == '_')
         {
             // QName specified Data Type
-            IToken temp = TryGetQName();
+            var temp = TryGetQName();
             if (temp.TokenType == Token.QNAME)
             {
                 LastTokenType = Token.DATATYPE;

@@ -52,7 +52,7 @@ internal class NodeKind : Constraint
 
     internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
     {
-        IEnumerable<INode> invalidValues =
+        var invalidValues =
             from valueNode in valueNodes
             let kinds = Convert(valueNode.NodeType)
             where !kinds.Contains(this)

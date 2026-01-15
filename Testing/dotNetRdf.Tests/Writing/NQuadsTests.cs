@@ -115,7 +115,7 @@ public class NQuadsTests
         store.Add(g);
         var writer = new NQuadsWriter(NQuadsSyntax.Rdf11);
         var strWriter = new System.IO.StringWriter();
-        RdfOutputException ex = Assert.Throws<RdfOutputException>(() => writer.Save(store, strWriter));
+        var ex = Assert.Throws<RdfOutputException>(() => writer.Save(store, strWriter));
         ex.Message.Should().Be(WriterErrorMessages.TripleNodesUnserializable("NQuads (RDF 1.1)"));
     }
 }

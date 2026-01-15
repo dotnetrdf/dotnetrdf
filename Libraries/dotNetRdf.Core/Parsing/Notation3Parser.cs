@@ -261,7 +261,7 @@ public class Notation3Parser
             // Initialise Buffer and start parsing
             context.Tokens.InitialiseBuffer(10);
 
-            IToken next = context.Tokens.Dequeue();
+            var next = context.Tokens.Dequeue();
             if (next.TokenType != Token.BOF)
             {
                 throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a BOF Token", next);
@@ -347,15 +347,15 @@ public class Notation3Parser
         }
 
         // We expect either a Base Directive/Prefix/Keywords Directive
-        IToken directive = context.Tokens.Dequeue();
+        var directive = context.Tokens.Dequeue();
         if (directive.TokenType == Token.BASEDIRECTIVE)
         {
             // Then expect a Uri for the Base Uri
-            IToken u = context.Tokens.Dequeue();
+            var u = context.Tokens.Dequeue();
             if (u.TokenType == Token.URI)
             {
                 // Set the Base Uri resolving against the current Base if any
-                Uri baseUri = ((IUriNode)ParserHelper.TryResolveUri(context, u, true)).Uri;
+                var baseUri = ((IUriNode)ParserHelper.TryResolveUri(context, u, true)).Uri;
                 context.BaseUri = baseUri;
                 if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
             }
@@ -367,14 +367,14 @@ public class Notation3Parser
         else if (directive.TokenType == Token.PREFIXDIRECTIVE)
         {
             // Expect a Prefix then a Uri
-            IToken pre = context.Tokens.Dequeue();
+            var pre = context.Tokens.Dequeue();
             if (pre.TokenType == Token.PREFIX)
             {
-                IToken ns = context.Tokens.Dequeue();
+                var ns = context.Tokens.Dequeue();
                 if (ns.TokenType == Token.URI)
                 {
                     // Register a Namespace resolving the Namespace Uri against the Base Uri
-                    Uri nsUri = ((IUriNode)ParserHelper.TryResolveUri(context, ns, true)).Uri;
+                    var nsUri = ((IUriNode)ParserHelper.TryResolveUri(context, ns, true)).Uri;
                     var nsPrefix = (pre.Value.Length > 1) ? pre.Value.Substring(0, pre.Value.Length-1) : string.Empty;
                     context.Namespaces.AddNamespace(nsPrefix, nsUri);
                     if (!context.Handler.HandleNamespace(pre.Value.Substring(0, pre.Value.Length - 1), nsUri)) ParserHelper.Stop();
@@ -394,7 +394,7 @@ public class Notation3Parser
             // Expect zero/more keywords followed by a dot
             context.KeywordsMode = true;
 
-            IToken next = context.Tokens.Dequeue();
+            var next = context.Tokens.Dequeue();
             while (next.TokenType != Token.DOT)
             {
                 // Error if not a Keyword Definition
@@ -419,7 +419,7 @@ public class Notation3Parser
         }
 
         // All declarations are terminated with a Dot
-        IToken terminator = context.Tokens.Dequeue();
+        var terminator = context.Tokens.Dequeue();
         if (terminator.TokenType != Token.DOT)
         {
             throw ParserHelper.Error("Unexpected Token '" + terminator.GetType() + "' encountered, expected a Dot Line Terminator to terminate a Prefix/Base Directive", terminator);
@@ -446,7 +446,7 @@ public class Notation3Parser
         }
 
         context.Tokens.Dequeue();
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         while (next.TokenType != Token.DOT)
         {
             // Get Variables
@@ -491,7 +491,7 @@ public class Notation3Parser
         }
 
         context.Tokens.Dequeue();
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         while (next.TokenType != Token.DOT)
         {
             // Get Variables
@@ -524,7 +524,7 @@ public class Notation3Parser
     /// <param name="context">Parser Context.</param>
     private void TryParseTriples(Notation3ParserContext context)
     {
-        IToken subjToken = context.Tokens.Dequeue();
+        var subjToken = context.Tokens.Dequeue();
         IToken next;
         INode subj;
 
@@ -1029,11 +1029,11 @@ public class Notation3Parser
     {
         // The opening bracket of the collection will already have been discarded when we get called
         IToken next, temp;
-        INode subj = firstSubj;
+        var subj = firstSubj;
         INode obj = null, nextSubj;
-        INode rdfFirst = context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "first"));
-        INode rdfRest = context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "rest"));
-        INode rdfNil = context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "nil"));
+        var rdfFirst = context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "first"));
+        var rdfRest = context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "rest"));
+        var rdfNil = context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "nil"));
 
         do
         {
@@ -1186,7 +1186,7 @@ public class Notation3Parser
         // This counter starts as zero since the last right curly bracket will be discarded by the 
         // parser when it stops parsing the Graph Literal in one of the other functions
         var nesting = 1;
-        IToken next = context.Tokens.Peek();
+        var next = context.Tokens.Peek();
         while (next.TokenType == Token.LEFTCURLYBRACKET)
         {
             context.Tokens.Dequeue();
@@ -1221,7 +1221,7 @@ public class Notation3Parser
             next = context.Tokens.Peek();
         } while (next.TokenType != Token.RIGHTCURLYBRACKET);
 
-        IGraph subgraph = context.SubGraph;
+        var subgraph = context.SubGraph;
         context.PopGraph();
 
         // Expect the correct number of closing brackets
@@ -1245,8 +1245,8 @@ public class Notation3Parser
         var forward = (context.Tokens.LastTokenType == Token.EXCLAMATION);
 
         // Actual path is represented by a new Blank Node
-        INode path = context.Handler.CreateBlankNode();
-        INode pathHead = path;
+        var path = context.Handler.CreateBlankNode();
+        var pathHead = path;
 
         do
         {
@@ -1422,7 +1422,7 @@ public class Notation3Parser
     /// <param name="message"></param>
     private void RaiseWarning(string message)
     {
-        RdfReaderWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

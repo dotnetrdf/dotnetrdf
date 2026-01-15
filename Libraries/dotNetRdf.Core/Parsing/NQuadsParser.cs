@@ -298,7 +298,7 @@ public class NQuadsParser
             context.Tokens.InitialiseBuffer(10);
 
             // Expect a BOF token at start
-            IToken next = context.Tokens.Dequeue();
+            var next = context.Tokens.Dequeue();
             if (next.TokenType != Token.BOF)
             {
                 throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a BOF token at the start of the input", next);
@@ -338,10 +338,10 @@ public class NQuadsParser
 
     private void TryParseQuad(TokenisingParserContext context)
     {
-        INode subj = NTriplesParser.TryParseSubject(context);
-        INode predicate = NTriplesParser.TryParsePredicate(context);
-        INode obj = NTriplesParser.TryParseObject(context);
-        IRefNode graphName = TryParseContext(context);
+        var subj = NTriplesParser.TryParseSubject(context);
+        var predicate = NTriplesParser.TryParsePredicate(context);
+        var obj = NTriplesParser.TryParseObject(context);
+        var graphName = TryParseContext(context);
         if (!context.Handler.HandleQuad(new Triple(subj as IRefNode, predicate as IRefNode, obj), graphName))
         {
             ParserHelper.Stop();
@@ -351,7 +351,7 @@ public class NQuadsParser
 
     private IRefNode TryParseContext(TokenisingParserContext context)
     {
-        IToken next = context.Tokens.Dequeue();
+        var next = context.Tokens.Dequeue();
         if (next.TokenType == Token.DOT)
         {
             return null;
@@ -369,7 +369,7 @@ public class NQuadsParser
                 if (Syntax != NQuadsSyntax.Original) throw new RdfParseException("Only a Blank Node/URI may be used as the graph name in RDF NQuads 1.1");
 
                 // Check for Datatype/Language
-                IToken temp = context.Tokens.Peek();
+                var temp = context.Tokens.Peek();
                 switch (temp.TokenType)
                 {
                     case Token.LANGSPEC:
@@ -414,7 +414,7 @@ public class NQuadsParser
     /// <param name="message">Warning message.</param>
     private void RaiseWarning(string message)
     {
-        StoreReaderWarning d = Warning;
+        var d = Warning;
         if (d != null)
         {
             d(message);

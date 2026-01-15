@@ -240,11 +240,11 @@ public class NestedNamespaceMapper : INestedNamespaceMapper
             {
                 _prefixes[u].RemoveAll(m => m.Level > _level);
             }
-            foreach (KeyValuePair<string, List<NestedMapping>> mapping in _uris.ToList())
+            foreach (var mapping in _uris.ToList())
             {
                 if (mapping.Value.Count == 0) _uris.Remove(mapping.Key);
             }
-            foreach (KeyValuePair<int, List<NestedMapping>> mapping in _prefixes.ToList())
+            foreach (var mapping in _prefixes.ToList())
             {
                 if (mapping.Value.Count == 0) _prefixes.Remove(mapping.Key);
             }
@@ -284,7 +284,7 @@ public class NestedNamespaceMapper : INestedNamespaceMapper
     /// <param name="uri">Namespace Uri.</param>
     protected virtual void RaiseNamespaceAdded(string prefix, Uri uri)
     {
-        NamespaceChanged handler = NamespaceAdded;
+        var handler = NamespaceAdded;
         if (handler != null)
         {
             handler(prefix, uri);
@@ -298,7 +298,7 @@ public class NestedNamespaceMapper : INestedNamespaceMapper
     /// <param name="uri">Namespace Uri.</param>
     protected virtual void RaiseNamespaceModified(string prefix, Uri uri)
     {
-        NamespaceChanged handler = NamespaceModified;
+        var handler = NamespaceModified;
         if (handler != null)
         {
             handler(prefix, uri);
@@ -312,7 +312,7 @@ public class NestedNamespaceMapper : INestedNamespaceMapper
     /// <param name="uri">Namespace Uri.</param>
     protected virtual void OnNamespaceRemoved(string prefix, Uri uri)
     {
-        NamespaceChanged handler = NamespaceRemoved;
+        var handler = NamespaceRemoved;
         if (handler != null)
         {
             handler(prefix, uri);
@@ -340,7 +340,7 @@ public class NestedNamespaceMapper : INestedNamespaceMapper
     public bool ReduceToQName(string uri, out string qname, Func<string, bool> validationFunction = null)
     {
         validationFunction ??= NamespaceMapper.DefaultQNameValidationFunction;
-        foreach (Uri u in _uris.Values.Select(l => l.Last().Uri))
+        foreach (var u in _uris.Values.Select(l => l.Last().Uri))
         {
             var baseuri = u.AbsoluteUri;
 
@@ -375,7 +375,7 @@ public class NestedNamespaceMapper : INestedNamespaceMapper
                 // If it's registered on this nesting level will be the last thing registered
                 _uris[prefix].RemoveAt(_uris[prefix].Count - 1);
                 if (_uris[prefix].Count == 0) _uris.Remove(prefix);
-                Uri nsUri = GetNamespaceUri(prefix);
+                var nsUri = GetNamespaceUri(prefix);
                 var hash = nsUri.GetEnhancedHashCode();
                 _prefixes[hash].RemoveAt(_prefixes[hash].Count - 1);
                 if (_prefixes[hash].Count == 0) _prefixes.Remove(hash);
