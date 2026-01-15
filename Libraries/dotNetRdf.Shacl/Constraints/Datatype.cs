@@ -65,7 +65,7 @@ internal class Datatype : Constraint
 
     internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
     {
-        IEnumerable<INode> invalidValues =
+        var invalidValues =
             from valueNode in valueNodes
             where IsInvalid(valueNode)
             select valueNode;
@@ -81,11 +81,11 @@ internal class Datatype : Constraint
         }
 
         var literal = (ILiteralNode)n;
-        Uri xsd_string = UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
+        var xsd_string = UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
 
-        Uri rdf_langString = UriFactory.Root.Create(RdfSpecsHelper.RdfLangString);
-        Uri stringDatatype = string.IsNullOrEmpty(literal.Language) ? xsd_string : rdf_langString;
-        Uri datatype = literal.DataType ?? stringDatatype;
+        var rdf_langString = UriFactory.Root.Create(RdfSpecsHelper.RdfLangString);
+        var stringDatatype = string.IsNullOrEmpty(literal.Language) ? xsd_string : rdf_langString;
+        var datatype = literal.DataType ?? stringDatatype;
 
         if (!EqualityHelper.AreUrisEqual(datatype, DataTypeParameter))
         {
@@ -97,7 +97,7 @@ internal class Datatype : Constraint
             return false;
         }
 
-        IEnumerable<string> supportedDatatypes = SparqlSpecsHelper.SupportedCastFunctions.Union(NumericTypesHelper.IntegerDataTypes);
+        var supportedDatatypes = SparqlSpecsHelper.SupportedCastFunctions.Union(NumericTypesHelper.IntegerDataTypes);
 
         if (!supportedDatatypes.Contains(literal.DataType.AbsoluteUri))
         {
@@ -112,7 +112,7 @@ internal class Datatype : Constraint
     private static bool IsIllformed(ILiteralNode literal)
     {
         var type = literal.DataType.AbsoluteUri.Replace(XmlSpecsHelper.NamespaceXmlSchema, string.Empty);
-        XmlSchemaSet schemas = GenerateSchema(type);
+        var schemas = GenerateSchema(type);
 
         var isIllformed = false;
         void handler(object sender, ValidationEventArgs e)

@@ -41,9 +41,9 @@ internal class DescribeImpl : QueryImpl, IDescribe
     public List<IResource> getResultNodes()
     {
         var results = new List<IResource>();
-        foreach (IResource node in getList(SP.PropertyResultNodes))
+        foreach (var node in getList(SP.PropertyResultNodes))
         {
-            IVariable variable = SPINFactory.asVariable(node);
+            var variable = SPINFactory.asVariable(node);
             if (variable != null)
             {
                 results.Add(variable);
@@ -63,7 +63,7 @@ internal class DescribeImpl : QueryImpl, IDescribe
         printPrefixes(context);
         context.printKeyword("DESCRIBE");
         context.print(" ");
-        List<IResource> nodes = getResultNodes();
+        var nodes = getResultNodes();
         if (nodes.Count == 0)
         {
             context.print("*");
@@ -72,7 +72,7 @@ internal class DescribeImpl : QueryImpl, IDescribe
         {
             for (IEnumerator<IResource> nit = nodes.GetEnumerator(); nit.MoveNext(); )
             {
-                IResource node = nit.Current;
+                var node = nit.Current;
                 if (node is IVariable)
                 {
                     context.print(node.ToString());

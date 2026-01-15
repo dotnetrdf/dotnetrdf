@@ -63,10 +63,10 @@ public class DateTimeAddition
         if (ns.Length != 2) throw new RdfQueryException("Incorrect number of arguments");
         if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply operator when one/more arguments are null");
 
-        DateTimeOffset dateTime = ns[0].AsDateTimeOffset();
-        TimeSpan addition = ns[1].AsTimeSpan();
+        var dateTime = ns[0].AsDateTimeOffset();
+        var addition = ns[1].AsTimeSpan();
 
-        DateTimeOffset result = dateTime.Add(addition);
+        var result = dateTime.Add(addition);
         return new DateTimeNode(result);
     }
 }

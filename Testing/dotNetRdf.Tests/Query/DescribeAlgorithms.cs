@@ -73,7 +73,7 @@ public class DescribeAlgorithms : IDisposable
     [InlineData(typeof(LabelledDescription))]
     public void SparqlDescribeAlgorithms(Type describerType)
     {
-        SparqlQuery q = GetQuery();
+        var q = GetQuery();
         var processor = new LeviathanQueryProcessor(_data,
             options => options.Describer =
                 new SparqlDescriber((IDescribeAlgorithm)Activator.CreateInstance(describerType)));
@@ -90,7 +90,7 @@ public class DescribeAlgorithms : IDisposable
     {
         var dataset = new InMemoryDataset();
 
-        IGraph g = new Graph(new UriNode(new Uri("http://graph")));
+        var g = new Graph(new UriNode(new Uri("http://graph")));
         g.Assert(g.CreateUriNode(UriFactory.Root.Create("http://subject")), g.CreateUriNode(UriFactory.Root.Create("http://predicate")), g.CreateUriNode(UriFactory.Root.Create("http://object")));
         dataset.AddGraph(g);
 
@@ -105,7 +105,7 @@ public class DescribeAlgorithms : IDisposable
     {
         var dataset = new InMemoryDataset();
 
-        IGraph g = new Graph(new UriNode(UriFactory.Root.Create("http://graph")));
+        var g = new Graph(new UriNode(UriFactory.Root.Create("http://graph")));
         g.Assert(g.CreateUriNode(UriFactory.Root.Create("http://subject")), g.CreateUriNode(UriFactory.Root.Create("http://predicate")), g.CreateUriNode(UriFactory.Root.Create("http://object")));
         dataset.AddGraph(g);
 
@@ -120,7 +120,7 @@ public class DescribeAlgorithms : IDisposable
     {
         var dataset = new InMemoryDataset();
 
-        IGraph g = new Graph(new UriNode(UriFactory.Root.Create("http://graph")));
+        var g = new Graph(new UriNode(UriFactory.Root.Create("http://graph")));
         g.Assert(g.CreateUriNode(UriFactory.Root.Create("http://subject")), g.CreateUriNode(UriFactory.Root.Create("http://predicate")), g.CreateUriNode(UriFactory.Root.Create("http://object")));
         dataset.AddGraph(g);
 
@@ -135,7 +135,7 @@ public class DescribeAlgorithms : IDisposable
     {
         var dataset = new InMemoryDataset();
 
-        IGraph g = new Graph(new UriNode(UriFactory.Root.Create("http://graph")));
+        var g = new Graph(new UriNode(UriFactory.Root.Create("http://graph")));
         g.Assert(g.CreateUriNode(UriFactory.Root.Create("http://subject")), g.CreateUriNode(UriFactory.Root.Create("http://predicate")), g.CreateUriNode(UriFactory.Root.Create("http://object")));
         dataset.AddGraph(g);
 

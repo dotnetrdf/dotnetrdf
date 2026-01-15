@@ -44,9 +44,9 @@ public class DateTimeTests
     [InlineData("2013-07-05T12:00:00Z", "2013-07-05T12:00:00+14:00", false)]
     public void SparqlDateTimeEquality(String x, String y, bool equals)
     {
-        IGraph g = new Graph();
-        INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-        INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        var g = new Graph();
+        var dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        var dateTime2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
 
         if (equals)
         {
@@ -76,9 +76,9 @@ public class DateTimeTests
     [InlineData("2006-08-23", "2001-01-01Z", false)]
     public void SparqlDateEquality(String x, String y, bool equals)
     {
-        IGraph g = new Graph();
-        INode date1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
-        INode date2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
+        var g = new Graph();
+        var date1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
+        var date2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
 
         if (equals)
         {
@@ -102,9 +102,9 @@ public class DateTimeTests
     [InlineData("2006-08-23T09:00:00+01:00", "2006-08-23Z", false)]
     public void SparqlDateTimeMixedEquality(String x, String y, bool equals)
     {
-        IGraph g = new Graph();
-        INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-        INode date2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        var g = new Graph();
+        var dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        var date2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
 
         if (equals)
         {
@@ -128,9 +128,9 @@ public class DateTimeTests
     [InlineData("2013-07-05T12:00:00", "2013-07-05T12:00:00Z")]
     public void SparqlDateTimeIncomparable(String x, String y)
     {
-        IGraph g = new Graph();
-        INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-        INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        var g = new Graph();
+        var dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        var dateTime2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
 
         Assert.Throws<RdfQueryException>(() => SparqlSpecsHelper.DateTimeEquality(dateTime1, dateTime2));
     }
@@ -139,9 +139,9 @@ public class DateTimeTests
     [InlineData(null, null)]
     public void SparqlDateIncomparable(String x, String y)
     {
-        IGraph g = new Graph();
-        INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
-        INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
+        var g = new Graph();
+        var dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
+        var dateTime2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
 
         Assert.Throws<RdfQueryException>(() => SparqlSpecsHelper.DateEquality(dateTime1, dateTime2));
     }
@@ -150,9 +150,9 @@ public class DateTimeTests
     [InlineData("2006-08-23T09:00:00+01:00", "2006-08-23")]
     public void SparqlDateTimeMixedIncomparable(String x, String y)
     {
-        IGraph g = new Graph();
-        INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-        INode date2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
+        var g = new Graph();
+        var dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        var date2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
 
         Assert.Throws<RdfQueryException>(() => SparqlSpecsHelper.DateTimeEquality(dateTime1, date2));
     }
@@ -160,11 +160,11 @@ public class DateTimeTests
     [Fact]
     public void SparqlDateTimeInequality()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         g.LoadFromFile(Path.Combine("resources", "sparql", "data-3.ttl"));
         Assert.False(g.IsEmpty);
 
-        SparqlQuery q = _parser.ParseFromFile(Path.Combine("resources", "sparql", "date-2.rq"));
+        var q = _parser.ParseFromFile(Path.Combine("resources", "sparql", "date-2.rq"));
         var actual = g.ExecuteQuery(q) as SparqlResultSet;
         Assert.NotNull(actual);
 
@@ -177,11 +177,11 @@ public class DateTimeTests
     [Fact]
     public void SparqlDateTimeGreaterThan()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         g.LoadFromFile(Path.Combine("resources", "sparql", "data-3.ttl"));
         Assert.False(g.IsEmpty);
 
-        SparqlQuery q = _parser.ParseFromFile(Path.Combine("resources", "sparql", "date-3.rq"));
+        var q = _parser.ParseFromFile(Path.Combine("resources", "sparql", "date-3.rq"));
         var actual = g.ExecuteQuery(q) as SparqlResultSet;
         Assert.NotNull(actual);
 
@@ -197,9 +197,9 @@ public class DateTimeTests
     [InlineData("2013-01-01T12:00:00", "2013-01-01T12:00:00-08:00")]
     public void SparqlDateTimeCompare(String x, String y)
     {
-        IGraph g = new Graph();
-        INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-        INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        var g = new Graph();
+        var dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        var dateTime2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
 
         var comparer = new SparqlOrderingComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
 
@@ -218,7 +218,7 @@ public class DateTimeTests
     [InlineData(new String[] { "2013-01-01T12:00:00Z", "2013-01-01T12:00:00-08:00" }, new String[] { "2013-01-01T12:00:00Z", "2013-01-01T12:00:00-08:00" })]
     public void SparqlDateTimeSorting(String[] input, String[] output)
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         var orig =
             input.Select(x => g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)))
                  .OfType<INode>().ToList();

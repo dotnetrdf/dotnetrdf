@@ -39,7 +39,7 @@ public class DefaultGraphTests2
     private ISparqlDataset GetDataset(IEnumerable<IGraph> gs, bool unionDefaultGraph)
     {
         var store = new TripleStore();
-        foreach (IGraph g in gs)
+        foreach (var g in gs)
         {
             store.Add(g, false);
         }
@@ -50,7 +50,7 @@ public class DefaultGraphTests2
     private ISparqlDataset GetDataset(IEnumerable<IGraph> gs, Uri defaultGraphUri)
     {
         var store = new TripleStore();
-        foreach (IGraph g in gs)
+        foreach (var g in gs)
         {
             store.Add(g, false);
         }
@@ -69,12 +69,12 @@ public class DefaultGraphTests2
         h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
         gs.Add(h);
 
-        ISparqlDataset dataset = GetDataset(gs, true);
+        var dataset = GetDataset(gs, true);
         var query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
         var processor = new LeviathanQueryProcessor(dataset);
 
-        object results = processor.ProcessQuery(q);
+        var results = processor.ProcessQuery(q);
         if (results is IGraph resultGraph)
         {
             Assert.Equal(g.Triples.Count + h.Triples.Count, resultGraph.Triples.Count);
@@ -98,12 +98,12 @@ public class DefaultGraphTests2
         h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
         gs.Add(h);
 
-        ISparqlDataset dataset = GetDataset(gs, true);
+        var dataset = GetDataset(gs, true);
         var query = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/unknown> { ?s ?p ?o } }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
         var processor = new LeviathanQueryProcessor(dataset);
 
-        object results = processor.ProcessQuery(q);
+        var results = processor.ProcessQuery(q);
         if (results is IGraph r)
         {
             Assert.Equal(0, r.Triples.Count);
@@ -127,9 +127,9 @@ public class DefaultGraphTests2
         h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
         gs.Add(h);
 
-        ISparqlDataset dataset = GetDataset(gs, false);
+        var dataset = GetDataset(gs, false);
         var query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
         var processor = new LeviathanQueryProcessor(dataset);
 
         var results = processor.ProcessQuery(q);
@@ -157,9 +157,9 @@ public class DefaultGraphTests2
         h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
         gs.Add(h);
 
-        ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/1"));
+        var dataset = GetDataset(gs, new Uri("http://example.org/1"));
         var query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
         var processor = new LeviathanQueryProcessor(dataset);
 
         var results = processor.ProcessQuery(q);
@@ -187,9 +187,9 @@ public class DefaultGraphTests2
         h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
         gs.Add(h);
 
-        ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/1"));
+        var dataset = GetDataset(gs, new Uri("http://example.org/1"));
         var query = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/2> { ?s ?p ?o } }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
         var processor = new LeviathanQueryProcessor(dataset);
 
         var results = processor.ProcessQuery(q);
@@ -217,9 +217,9 @@ public class DefaultGraphTests2
         h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
         gs.Add(h);
 
-        ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/2"));
+        var dataset = GetDataset(gs, new Uri("http://example.org/2"));
         var query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
         var processor = new LeviathanQueryProcessor(dataset);
 
         var results = processor.ProcessQuery(q);
@@ -247,9 +247,9 @@ public class DefaultGraphTests2
         h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
         gs.Add(h);
 
-        ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/2"));
+        var dataset = GetDataset(gs, new Uri("http://example.org/2"));
         var query = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/1> { ?s ?p ?o } }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
         var processor = new LeviathanQueryProcessor(dataset);
 
         var results = processor.ProcessQuery(q);
@@ -277,9 +277,9 @@ public class DefaultGraphTests2
         h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
         gs.Add(h);
 
-        ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/unknown"));
+        var dataset = GetDataset(gs, new Uri("http://example.org/unknown"));
         var query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
         var processor = new LeviathanQueryProcessor(dataset);
 
         var results = processor.ProcessQuery(q);
@@ -307,9 +307,9 @@ public class DefaultGraphTests2
         h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
         gs.Add(h);
 
-        ISparqlDataset dataset = GetDataset(gs, null);
+        var dataset = GetDataset(gs, null);
         var query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
         var processor = new LeviathanQueryProcessor(dataset);
 
         var results = processor.ProcessQuery(q);

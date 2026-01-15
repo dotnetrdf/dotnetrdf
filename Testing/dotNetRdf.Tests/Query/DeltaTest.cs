@@ -123,7 +123,7 @@ WHERE
 
     private void TestQuery(IInMemoryQueryableStore store, string query, int differences)
     {
-        SparqlQuery q = _sparqlParser.ParseFromString(query);
+        var q = _sparqlParser.ParseFromString(query);
         var processor = new LeviathanQueryProcessor(store);
         using var resultSet = processor.ProcessQuery(q) as SparqlResultSet;
         Assert.NotNull(resultSet);
@@ -159,8 +159,8 @@ WHERE
     [InlineData(TestData, TestData4, 0)]
     public void SparqlGraphDeltas(string graphAData, string graphBData, int difference)
     {
-        IGraph a = new Graph(new UriNode(new Uri("http://a")));
-        IGraph b = new Graph(new UriNode(new Uri("http://b")));
+        var a = new Graph(new UriNode(new Uri("http://a")));
+        var b = new Graph(new UriNode(new Uri("http://b")));
         if (graphAData != null) _parser.Load(a, new StringReader(graphAData));
         if (graphBData != null) _parser.Load(b, new StringReader(graphBData));
         TestDeltas(a, b, difference);

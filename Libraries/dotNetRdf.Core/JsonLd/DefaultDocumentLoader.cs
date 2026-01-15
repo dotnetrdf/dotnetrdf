@@ -96,10 +96,10 @@ public static class DefaultDocumentLoader
     /// <exception cref="WebException">Raised if an error was encountered when retrieving content from the remote server.</exception>
     public static RemoteDocument LoadJson(Uri remoteRef, JsonLdLoaderOptions loaderOptions)
     {
-        HttpResponseMessage responseMessage = Client.GetAsync(remoteRef).Result;
+        var responseMessage = Client.GetAsync(remoteRef).Result;
         var responseData = responseMessage.Content.ReadAsByteArrayAsync().Result;
-        MediaTypeHeaderValue contentType = responseMessage.Content.Headers.ContentType;
-        responseMessage.Content.Headers.TryGetValues("Link", out IEnumerable<string> linkHeaders);
+        var contentType = responseMessage.Content.Headers.ContentType;
+        responseMessage.Content.Headers.TryGetValues("Link", out var linkHeaders);
 
         var matchesContentType =
             contentType != null &&
@@ -113,8 +113,8 @@ public static class DefaultDocumentLoader
         string contextLink = null;
         if (!matchesContentType)
         {
-            IEnumerable<WebLink> contextLinks = ParseLinkHeaders(linkHeaders);
-            WebLink alternateLink = contextLinks.FirstOrDefault(link =>
+            var contextLinks = ParseLinkHeaders(linkHeaders);
+            var alternateLink = contextLinks.FirstOrDefault(link =>
                 link.RelationTypes.Contains("alternate") && link.MediaTypes.Contains("application/ld+json"));
             if (alternateLink != null)
             {
@@ -143,7 +143,7 @@ public static class DefaultDocumentLoader
         }
 
         // Use the content of the response decoded according to the charset specified in the content-type header (or UTF-8 if not specified)
-        Encoding responseEncoding = Encoding.UTF8;
+        var responseEncoding = Encoding.UTF8;
         try
         {
             if (!string.IsNullOrEmpty(contentType.CharSet))
@@ -172,7 +172,7 @@ public static class DefaultDocumentLoader
         if (linkHeaderValues == null) yield break;
         foreach (var linkHeaderValue in linkHeaderValues)
         {
-            if (WebLink.TryParse(linkHeaderValue, out WebLink link)) yield return link;
+            if (WebLink.TryParse(linkHeaderValue, out var link)) yield return link;
         }
     }
 }

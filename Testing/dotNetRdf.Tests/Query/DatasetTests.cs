@@ -54,7 +54,7 @@ public class DatasetTests
     private void RunTest(string query, string[] expected, int expectedCount)
     {
         //Parse the query
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
         Console.WriteLine(query);
 
         //Then execute the query

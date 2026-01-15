@@ -82,7 +82,7 @@ public class DataTableHandler
     /// </remarks>
     protected override bool HandleTripleInternal(Triple t)
     {
-        DataRow row = _table.NewRow();
+        var row = _table.NewRow();
         row[_subjCol] = t.Subject;
         row[_predCol] = t.Predicate;
         row[_objCol] = t.Object;

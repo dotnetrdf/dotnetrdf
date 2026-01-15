@@ -55,7 +55,7 @@ internal sealed class DescribeBuilder : QueryBuilder, IDescribeBuilder
     /// </summary>
     public IDescribeBuilder And(params Uri[] uris)
     {
-        foreach (Uri uri in uris)
+        foreach (var uri in uris)
         {
             _describeVariables.Add(new UriToken(string.Format("<{0}>", uri), 0, 0, 0));
         }
@@ -64,7 +64,7 @@ internal sealed class DescribeBuilder : QueryBuilder, IDescribeBuilder
 
     protected override SparqlQuery BuildQuery(SparqlQuery query)
     {
-        foreach (IToken describeVariable in _describeVariables)
+        foreach (var describeVariable in _describeVariables)
         {
             query.AddDescribeVariable(describeVariable);
         }

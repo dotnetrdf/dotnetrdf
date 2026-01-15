@@ -256,7 +256,7 @@ public class DateTimeNode
         else
         {
             // Create the offset
-            _offsetValue = DateTimeOffset.TryParse(Value, null, DateTimeStyles.AssumeUniversal, out DateTimeOffset offset)
+            _offsetValue = DateTimeOffset.TryParse(Value, null, DateTimeStyles.AssumeUniversal, out var offset)
                                     ? offset
                                     : new DateTimeOffset(_value);
             return _offsetValue.Value;

@@ -51,7 +51,7 @@ internal class Disjoint : Constraint
 
     internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
     {
-        IEnumerable<INode> invalidValues =
+        var invalidValues =
             from valueNode in valueNodes
             from sibling in this.ObjectsOf(focusNode, dataGraph)
             where valueNode.Equals(sibling)

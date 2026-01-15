@@ -164,13 +164,13 @@ public static class DataUriLoader
             if (mimeSet)
             {
                 // If the MIME Type was explicitly set then we'll try and get a parser and use it
-                IRdfReader reader = MimeTypesHelper.GetParser(mimetype);
+                var reader = MimeTypesHelper.GetParser(mimetype);
                 reader.Load(handler, new StringReader(data));
             }
             else
             {
                 // If the MIME Type was not explicitly set we'll let the StringParser guess the format
-                IRdfReader reader = StringParser.GetParser(data);
+                var reader = StringParser.GetParser(data);
                 reader.Load(handler, new StringReader(data));
             }
         }
@@ -179,14 +179,14 @@ public static class DataUriLoader
             try
             {
                 // See if the mime type specifies a dataset parser
-                IStoreReader reader = MimeTypesHelper.GetStoreParser(mimetype);
+                var reader = MimeTypesHelper.GetStoreParser(mimetype);
                 reader.Load(handler, new StringReader(data));
             }
             catch (RdfParserSelectionException)
             {
 
                 // If we still fail to get a parser then we'll let the StringParser guess the format
-                IRdfReader reader = StringParser.GetParser(data);
+                var reader = StringParser.GetParser(data);
                 reader.Load(handler, new StringReader(data));
             }
         }

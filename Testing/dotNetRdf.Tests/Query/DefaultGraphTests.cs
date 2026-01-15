@@ -41,7 +41,7 @@ public class DefaultGraphTests
     private object ExecuteQuery(IInMemoryQueryableStore store, string query)
     {
         var parser = new SparqlQueryParser();
-        SparqlQuery parsedQuery = parser.ParseFromString(query);
+        var parsedQuery = parser.ParseFromString(query);
         var processor = new LeviathanQueryProcessor(store);
         return processor.ProcessQuery(parsedQuery);
     }
@@ -54,7 +54,7 @@ public class DefaultGraphTests
         g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
         store.Add(g);
 
-        object results = ExecuteQuery(store, "ASK WHERE { GRAPH ?g { ?s ?p ?o }}");
+        var results = ExecuteQuery(store, "ASK WHERE { GRAPH ?g { ?s ?p ?o }}");
         if (results is SparqlResultSet)
         {
             Assert.False(((SparqlResultSet)results).Result);
@@ -73,7 +73,7 @@ public class DefaultGraphTests
         g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
         store.Add(g);
 
-        object results = ExecuteQuery(store, "ASK WHERE { GRAPH <dotnetrdf:default-graph> { ?s ?p ?o }}");
+        var results = ExecuteQuery(store, "ASK WHERE { GRAPH <dotnetrdf:default-graph> { ?s ?p ?o }}");
         if (results is SparqlResultSet)
         {
             Assert.False(((SparqlResultSet)results).Result);
@@ -98,9 +98,9 @@ public class DefaultGraphTests
         dataset.SetDefaultGraph(h.Name);
         var processor = new LeviathanQueryProcessor(dataset);
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
+        var q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
 
-        object results = processor.ProcessQuery(q);
+        var results = processor.ProcessQuery(q);
         if (results is SparqlResultSet resultSet)
         {
             TestTools.ShowResults(resultSet);
@@ -126,9 +126,9 @@ public class DefaultGraphTests
         dataset.SetDefaultGraph(g.Name);
         var processor = new LeviathanQueryProcessor(dataset);
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
+        var q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
 
-        object results = processor.ProcessQuery(q);
+        var results = processor.ProcessQuery(q);
         if (results is SparqlResultSet resultSet)
         {
             TestTools.ShowResults(resultSet);
@@ -152,7 +152,7 @@ public class DefaultGraphTests
         var dataset = new InMemoryDataset(store, h.Name);
         var processor = new LeviathanUpdateProcessor(dataset);
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#>");
+        var cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#>");
 
         processor.ProcessCommandSet(cmds);
 
@@ -172,7 +172,7 @@ public class DefaultGraphTests
         var dataset = new InMemoryDataset(store, h.Name);
         var processor = new LeviathanUpdateProcessor(dataset);
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <http://example.org/graph>");
+        var cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <http://example.org/graph>");
 
         processor.ProcessCommandSet(cmds);
 
@@ -192,7 +192,7 @@ public class DefaultGraphTests
         var dataset = new InMemoryDataset(store, h.Name);
         var processor = new LeviathanUpdateProcessor(dataset);
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <http://example.org/graph>; LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <http://example.org/someOtherGraph>");
+        var cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <http://example.org/graph>; LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <http://example.org/someOtherGraph>");
 
         processor.ProcessCommandSet(cmds);
 
@@ -213,7 +213,7 @@ public class DefaultGraphTests
         var dataset = new InMemoryDataset(store, h.Name);
         var processor = new LeviathanUpdateProcessor(dataset);
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#>; WITH <http://example.org/graph> INSERT { ?s a ?type } USING <http://example.org/someOtherGraph> WHERE { ?s a ?type }");
+        var cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#>; WITH <http://example.org/graph> INSERT { ?s a ?type } USING <http://example.org/someOtherGraph> WHERE { ?s a ?type }");
 
         processor.ProcessCommandSet(cmds);
 
@@ -234,7 +234,7 @@ public class DefaultGraphTests
         var dataset = new InMemoryDataset(store, h.Name);
         var processor = new LeviathanUpdateProcessor(dataset);
         var parser = new SparqlUpdateParser();
-        SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#>; WITH <http://example.org/graph> INSERT { ?s a ?type } USING <http://example.org/someOtherGraph> WHERE { ?s a ?type }; DELETE WHERE { ?s a ?type }");
+        var cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#>; WITH <http://example.org/graph> INSERT { ?s a ?type } USING <http://example.org/someOtherGraph> WHERE { ?s a ?type }; DELETE WHERE { ?s a ?type }");
 
         processor.ProcessCommandSet(cmds);
 
@@ -248,7 +248,7 @@ public class DefaultGraphTests
     {
         var query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var dataset = new InMemoryDataset();
         IGraph ex = new Graph(new UriNode(new Uri("http://example.org/graph")));
@@ -260,7 +260,7 @@ public class DefaultGraphTests
         dataset.SetDefaultGraph(def.Name);
 
         var processor = new LeviathanQueryProcessor(dataset);
-        object results = processor.ProcessQuery(q);
+        var results = processor.ProcessQuery(q);
         if (results is SparqlResultSet resultSet)
         {
             TestTools.ShowResults(resultSet);
@@ -277,7 +277,7 @@ public class DefaultGraphTests
     {
         var query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var dataset = new InMemoryDataset();
         IGraph ex = new Graph(new UriNode(new Uri("http://example.org/graph")));
@@ -288,7 +288,7 @@ public class DefaultGraphTests
         dataset.AddGraph(def);
 
         var processor = new LeviathanQueryProcessor(dataset);
-        object results = processor.ProcessQuery(q);
+        var results = processor.ProcessQuery(q);
         if (results is SparqlResultSet resultSet)
         {
             TestTools.ShowResults(resultSet);
@@ -305,7 +305,7 @@ public class DefaultGraphTests
     {
         var query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var dataset = new InMemoryDataset(false);
         IGraph ex = new Graph(new UriNode(new Uri("http://example.org/graph")));
@@ -317,7 +317,7 @@ public class DefaultGraphTests
         dataset.SetDefaultGraph(def.Name);
 
         var processor = new LeviathanQueryProcessor(dataset);
-        object results = processor.ProcessQuery(q);
+        var results = processor.ProcessQuery(q);
         if (results is SparqlResultSet resultSet)
         {
             TestTools.ShowResults(resultSet);
@@ -334,7 +334,7 @@ public class DefaultGraphTests
     {
         var query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var dataset = new InMemoryDataset(false);
         IGraph ex = new Graph(new UriNode(new Uri("http://example.org/graph")));
@@ -345,7 +345,7 @@ public class DefaultGraphTests
         dataset.AddGraph(def);
 
         var processor = new LeviathanQueryProcessor(dataset);
-        object results = processor.ProcessQuery(q);
+        var results = processor.ProcessQuery(q);
         if (results is SparqlResultSet resultSet)
         {
             TestTools.ShowResults(resultSet);
@@ -362,7 +362,7 @@ public class DefaultGraphTests
     {
         var query = "SELECT * FROM NAMED <http://example.org/named> WHERE { GRAPH <http://example.org/other> { ?s ?p ?o } }";
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(query);
+        var q = parser.ParseFromString(query);
 
         var store = new TripleStore();
         IGraph ex = new Graph(new UriNode(new Uri("http://example.org/named")));
@@ -376,7 +376,7 @@ public class DefaultGraphTests
         var dataset = new InMemoryDataset(store);
 
         var processor = new LeviathanQueryProcessor(dataset);
-        object results = processor.ProcessQuery(q);
+        var results = processor.ProcessQuery(q);
         if (results is SparqlResultSet resultSet)
         {
             TestTools.ShowResults(resultSet);

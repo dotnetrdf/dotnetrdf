@@ -43,27 +43,27 @@ internal class DescriberContext(
 
     public IEnumerable<INode> GetNodes(INodeFactory nodeFactory)
     {
-        INodeFactory factory = evaluationContext.NodeFactory;
-        INamespaceMapper nsmap = evaluationContext.NodeFactory.NamespaceMap;
-        Uri? baseUri = evaluationContext.BaseUri;
-        foreach (IToken? t in _query.DescribeVariables.Where(t=>t.TokenType == Token.QNAME || t.TokenType == Token.URI))
+        var factory = evaluationContext.NodeFactory;
+        var nsmap = evaluationContext.NodeFactory.NamespaceMap;
+        var baseUri = evaluationContext.BaseUri;
+        foreach (var t in _query.DescribeVariables.Where(t=>t.TokenType == Token.QNAME || t.TokenType == Token.URI))
         {
             yield return factory.CreateUriNode(
                 UriFactory.Create(Tools.ResolveUriOrQName(t, nsmap, baseUri)));
         }
-        List<string> descVars =
+        var descVars =
             _query.QueryType == SparqlQueryType.DescribeAll ? 
                 _query.Variables.Select(v=>v.Name).ToList() :
                 _query.DescribeVariables.Where(v=>v.TokenType == Token.VARIABLE).Select(t=>t.Value.Substring(1)).ToList();
         if (descVars.Any())
         {
-            foreach (ISet? solution in solutionBindings.ToEnumerable()) // TODO: Eliminate sync over async
+            foreach (var solution in solutionBindings.ToEnumerable()) // TODO: Eliminate sync over async
             {
                 if (solution != null)
                 {
                     foreach (var dv in descVars)
                     {
-                        INode? tmp = solution[dv];
+                        var tmp = solution[dv];
                         if (tmp != null) yield return tmp;
                     }
                 }
