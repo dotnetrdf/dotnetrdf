@@ -159,7 +159,7 @@ public class LeviathanUpdateProcessor
             if (context.Data.HasGraph(cmd.SourceGraphName))
             {
                 // Get the Source Graph
-                IGraph source = context.Data.GetModifiableGraph(cmd.SourceGraphName);
+                var source = context.Data.GetModifiableGraph(cmd.SourceGraphName);
 
                 // Get the Destination Graph
                 IGraph dest;
@@ -225,7 +225,7 @@ public class LeviathanUpdateProcessor
                     }
                     break;
                 case ClearMode.Named:
-                    foreach (IRefNode u in context.Data.GraphNames)
+                    foreach (var u in context.Data.GraphNames)
                     {
                         if (u != null)
                         {
@@ -234,7 +234,7 @@ public class LeviathanUpdateProcessor
                     }
                     break;
                 case ClearMode.All:
-                    foreach (IRefNode u in context.Data.GraphNames)
+                    foreach (var u in context.Data.GraphNames)
                     {
                         context.Data.GetModifiableGraph(u).Clear();
                     }
@@ -271,7 +271,7 @@ public class LeviathanUpdateProcessor
                 if (EqualityHelper.AreRefNodesEqual(cmd.SourceGraphName, cmd.DestinationGraphName)) return;
 
                 // Get the Source Graph
-                IGraph source = context.Data.GetModifiableGraph(cmd.SourceGraphName);
+                var source = context.Data.GetModifiableGraph(cmd.SourceGraphName);
 
                 // Create/Delete/Clear the Destination Graph
                 IGraph dest;
@@ -378,7 +378,7 @@ public class LeviathanUpdateProcessor
         if (autoCommit) Flush();
 
         // Then if possible attempt to get the lock and determine whether it needs releasing
-        ReaderWriterLockSlim currLock =
+        var currLock =
             (_dataset is IThreadSafeDataset) ? ((IThreadSafeDataset) _dataset).Lock : _lock;
         var mustRelease = false;
         try
@@ -469,11 +469,11 @@ public class LeviathanUpdateProcessor
         commands.UpdateExecutionTime = null;
 
         // Then create an Evaluation Context
-        SparqlUpdateEvaluationContext context = GetContext(commands);
+        var context = GetContext(commands);
 
         // Remember to handle the Thread Safety
         // If the Dataset is Thread Safe use its own lock otherwise use our local lock
-        ReaderWriterLockSlim currLock = (_dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)_dataset).Lock : _lock;
+        var currLock = (_dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)_dataset).Lock : _lock;
         try
         {
             currLock.EnterWriteLock();
@@ -558,7 +558,7 @@ public class LeviathanUpdateProcessor
             }
 
             // First evaluate the WHERE pattern to get the affected bindings
-            ISparqlAlgebra where = cmd.WherePattern.ToAlgebra();
+            var where = cmd.WherePattern.ToAlgebra();
             if (context.Commands != null)
             {
                 where = context.Commands.ApplyAlgebraOptimisers(where);
@@ -588,12 +588,12 @@ public class LeviathanUpdateProcessor
 
 
             // var query = new SparqlQuery();
-            SparqlQuery query = QueryBuilder.SelectAll().BuildQuery();
-            foreach (Uri u in cmd.UsingUris)
+            var query = QueryBuilder.SelectAll().BuildQuery();
+            foreach (var u in cmd.UsingUris)
             {
                 query.AddDefaultGraph(new UriNode(u));
             }
-            foreach (Uri u in cmd.UsingNamedUris)
+            foreach (var u in cmd.UsingNamedUris)
             {
                 query.AddNamedGraph(new UriNode(u));
             }
@@ -606,7 +606,7 @@ public class LeviathanUpdateProcessor
                 context.Data.SetActiveGraph(activeGraphs);
                 datasetOk = true;
             }
-            BaseMultiset results = queryContext.Evaluate(where);
+            var results = queryContext.Evaluate(where);
             if (results is IdentityMultiset) results = new SingletonMultiset(results.Variables);
             if (cmd.UsingUris.Any())
             {
@@ -626,10 +626,10 @@ public class LeviathanUpdateProcessor
             }
 
             // Get the Graph from which we are deleting
-            IGraph g = context.Data.HasGraph(cmd.WithGraphName) ? context.Data.GetModifiableGraph(cmd.WithGraphName) : null;
+            var g = context.Data.HasGraph(cmd.WithGraphName) ? context.Data.GetModifiableGraph(cmd.WithGraphName) : null;
 
             // Delete the Triples for each Solution
-            foreach (ISet s in results.Sets)
+            foreach (var s in results.Sets)
             {
                 var deletedTriples = new List<Triple>();
 
@@ -639,7 +639,7 @@ public class LeviathanUpdateProcessor
                     try
                     {
                         var constructContext = new ConstructContext(g, true){Set = s};
-                        foreach (IConstructTriplePattern p in cmd.DeletePattern.TriplePatterns
+                        foreach (var p in cmd.DeletePattern.TriplePatterns
                             .OfType<IConstructTriplePattern>())
                         {
                             try
@@ -663,7 +663,7 @@ public class LeviathanUpdateProcessor
                 }
 
                 // Triples from GRAPH clauses
-                foreach (GraphPattern gp in cmd.DeletePattern.ChildGraphPatterns)
+                foreach (var gp in cmd.DeletePattern.ChildGraphPatterns)
                 {
                     deletedTriples.Clear();
                     try
@@ -678,7 +678,7 @@ public class LeviathanUpdateProcessor
                                 var graphVar = gp.GraphSpecifier.Value.Substring(1);
                                 if (s.ContainsVariable(graphVar))
                                 {
-                                    INode temp = s[graphVar];
+                                    var temp = s[graphVar];
                                     if (temp == null)
                                     {
                                         // If the Variable is not bound then skip
@@ -713,9 +713,9 @@ public class LeviathanUpdateProcessor
                         if (!context.Data.HasGraph(graphName)) continue;
 
                         // Do the actual Deletions
-                        IGraph h = context.Data.GetModifiableGraph(graphName);
+                        var h = context.Data.GetModifiableGraph(graphName);
                         var constructContext = new ConstructContext(h, true){Set = s};
-                        foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
+                        foreach (var p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                         {
                             try
                             {
@@ -783,7 +783,7 @@ public class LeviathanUpdateProcessor
             return;
         }
 
-        foreach (GraphPattern pattern in patterns)
+        foreach (var pattern in patterns)
         {
             if (!DeleteDataCommand.IsValidDataPattern(pattern, false))
             {
@@ -819,7 +819,7 @@ public class LeviathanUpdateProcessor
             INode subj, pred, obj;
 
             var constructContext = new ConstructContext(target, false);
-            foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
+            foreach (var p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
             {
                 subj = p.Subject.Construct(constructContext);
                 pred = p.Predicate.Construct(constructContext);
@@ -874,7 +874,7 @@ public class LeviathanUpdateProcessor
                     break;
 
                 case ClearMode.Named:
-                    foreach (IRefNode u in context.Data.GraphNames.ToList())
+                    foreach (var u in context.Data.GraphNames.ToList())
                     {
                         if (u != null)
                         {
@@ -883,7 +883,7 @@ public class LeviathanUpdateProcessor
                     }
                     break;
                 case ClearMode.All:
-                    foreach (IRefNode u in context.Data.GraphNames.ToList())
+                    foreach (var u in context.Data.GraphNames.ToList())
                     {
                         if (u != null)
                         {
@@ -928,7 +928,7 @@ public class LeviathanUpdateProcessor
         try
         {
             // First evaluate the WHERE pattern to get the affected bindings
-            ISparqlAlgebra where = cmd.WherePattern.ToAlgebra();
+            var where = cmd.WherePattern.ToAlgebra();
             if (context.Commands != null)
             {
                 where = context.Commands.ApplyAlgebraOptimisers(where);
@@ -956,13 +956,13 @@ public class LeviathanUpdateProcessor
             // URIs available to it which it gets from the Query property of the Context
             // object
             //var query = new SparqlQuery();
-            SparqlQuery query = QueryBuilder.SelectAll().BuildQuery();
+            var query = QueryBuilder.SelectAll().BuildQuery();
 
-            foreach (Uri u in cmd.UsingUris)
+            foreach (var u in cmd.UsingUris)
             {
                 query.AddDefaultGraph(new UriNode(u));
             }
-            foreach (Uri u in cmd.UsingNamedUris)
+            foreach (var u in cmd.UsingNamedUris)
             {
                 query.AddNamedGraph(new UriNode(u));
             }
@@ -974,7 +974,7 @@ public class LeviathanUpdateProcessor
                 datasetOk = true;
             }
             queryContext.StartExecution(context.RemainingTimeout);
-            BaseMultiset results = queryContext.Evaluate(where);
+            var results = queryContext.Evaluate(where);
             queryContext.EndExecution();
             if (results is IdentityMultiset) results = new SingletonMultiset(results.Variables);
             if (cmd.UsingUris.Any())
@@ -1017,7 +1017,7 @@ public class LeviathanUpdateProcessor
             var graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : 0), true, new UriComparer(), MultiDictionaryMode.Avl);
 
             // Insert the Triples for each Solution
-            foreach (ISet s in results.Sets)
+            foreach (var s in results.Sets)
             {
                 var insertedTriples = new List<Triple>();
 
@@ -1029,7 +1029,7 @@ public class LeviathanUpdateProcessor
                     // Triples from raw Triple Patterns
                     if (cmd.InsertPattern.TriplePatterns.Count > 0)
                     {
-                        foreach (IConstructTriplePattern p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                        foreach (var p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
                         {
                             try
                             {
@@ -1045,7 +1045,7 @@ public class LeviathanUpdateProcessor
                     }
 
                     // Triples from GRAPH clauses
-                    foreach (GraphPattern gp in cmd.InsertPattern.ChildGraphPatterns)
+                    foreach (var gp in cmd.InsertPattern.ChildGraphPatterns)
                     {
                         insertedTriples.Clear();
                         try
@@ -1060,7 +1060,7 @@ public class LeviathanUpdateProcessor
                                     var graphVar = gp.GraphSpecifier.Value.Substring(1);
                                     if (s.ContainsVariable(graphVar))
                                     {
-                                        INode temp = s[graphVar];
+                                        var temp = s[graphVar];
                                         if (temp == null)
                                         {
                                             // If the Variable is not bound then skip
@@ -1089,8 +1089,8 @@ public class LeviathanUpdateProcessor
 
                             // Ensure the Graph we're inserting to exists in the dataset creating it if necessary
                             IGraph h;
-                            Uri destUri = UriFactory.Root.Create(graphUri);
-                            IRefNode destName = new UriNode(destUri);
+                            var destUri = UriFactory.Root.Create(graphUri);
+                            var destName = new UriNode(destUri);
                             if (graphs.ContainsKey(destUri))
                             {
                                 h = graphs[destUri];
@@ -1112,11 +1112,11 @@ public class LeviathanUpdateProcessor
                             }
 
                             // Do the actual Insertions
-                            foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
+                            foreach (var p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try
                                 {
-                                    Triple t = p.Construct(constructContext);
+                                    var t = p.Construct(constructContext);
                                     t = new Triple(t.Subject, t.Predicate, t.Object);
                                     insertedTriples.Add(t);
                                 }
@@ -1189,7 +1189,7 @@ public class LeviathanUpdateProcessor
         }
 
         var constructContext = new ConstructContext(false);
-        foreach (GraphPattern pattern in patterns)
+        foreach (var pattern in patterns)
         {
             if (!InsertDataCommand.IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate a INSERT DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or any of the GRAPH clauses have nested Graph Patterns");
 
@@ -1225,11 +1225,11 @@ public class LeviathanUpdateProcessor
             }
 
             // Insert the actual Triples
-            foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
+            foreach (var p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
             {
-                INode subj = p.Subject.Construct(constructContext);
-                INode pred = p.Predicate.Construct(constructContext);
-                INode obj = p.Object.Construct(constructContext);
+                var subj = p.Subject.Construct(constructContext);
+                var pred = p.Predicate.Construct(constructContext);
+                var obj = p.Object.Construct(constructContext);
 
                 target.Assert(new Triple(subj, pred, obj));
             }
@@ -1307,7 +1307,7 @@ public class LeviathanUpdateProcessor
         try
         {
             // First evaluate the WHERE pattern to get the affected bindings
-            ISparqlAlgebra where = cmd.WherePattern.ToAlgebra();
+            var where = cmd.WherePattern.ToAlgebra();
             if (context.Commands != null)
             {
                 where = context.Commands.ApplyAlgebraOptimisers(where);
@@ -1335,13 +1335,13 @@ public class LeviathanUpdateProcessor
             // URIs available to it which it gets from the Query property of the Context
             // object
             //var query = new SparqlQuery();
-            SparqlQuery query = QueryBuilder.SelectAll().BuildQuery();
+            var query = QueryBuilder.SelectAll().BuildQuery();
 
-            foreach (Uri u in cmd.UsingUris)
+            foreach (var u in cmd.UsingUris)
             {
                 query.AddDefaultGraph(new UriNode(u));
             }
-            foreach (Uri u in cmd.UsingNamedUris)
+            foreach (var u in cmd.UsingNamedUris)
             {
                 query.AddNamedGraph(new UriNode(u));
             }
@@ -1352,7 +1352,7 @@ public class LeviathanUpdateProcessor
                 context.Data.SetActiveGraph(cmd.UsingUris.Select<Uri, IRefNode>(u => new UriNode(u)).ToList());
                 datasetOk = true;
             }
-            BaseMultiset results = queryContext.Evaluate(where);
+            var results = queryContext.Evaluate(where);
             if (results is IdentityMultiset) results = new SingletonMultiset(results.Variables);
             if (cmd.UsingUris.Any())
             {
@@ -1388,7 +1388,7 @@ public class LeviathanUpdateProcessor
 
             // Delete the Triples for each Solution
             var deletedTriples = new List<Triple>();
-            foreach (ISet s in results.Sets)
+            foreach (var s in results.Sets)
             {
                 try
                 {
@@ -1396,7 +1396,7 @@ public class LeviathanUpdateProcessor
                     if (g != null)
                     {
                         var constructContext = new ConstructContext(g, true) {Set = s};
-                        foreach (IConstructTriplePattern p in cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                        foreach (var p in cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
                         {
                             try
                             {
@@ -1418,7 +1418,7 @@ public class LeviathanUpdateProcessor
                 }
 
                 // Triples from GRAPH clauses
-                foreach (GraphPattern gp in cmd.DeletePattern.ChildGraphPatterns)
+                foreach (var gp in cmd.DeletePattern.ChildGraphPatterns)
                 {
                     deletedTriples.Clear();
                     try
@@ -1433,7 +1433,7 @@ public class LeviathanUpdateProcessor
                                 var graphVar = gp.GraphSpecifier.Value.Substring(1);
                                 if (s.ContainsVariable(graphVar))
                                 {
-                                    INode temp = s[graphVar];
+                                    var temp = s[graphVar];
                                     if (temp == null)
                                     {
                                         // If the Variable is not bound then skip
@@ -1465,9 +1465,9 @@ public class LeviathanUpdateProcessor
                         if (!context.Data.HasGraph(graphName)) continue;
 
                         // Do the actual Deletions
-                        IGraph h = context.Data.GetModifiableGraph(graphName);
+                        var h = context.Data.GetModifiableGraph(graphName);
                         var constructContext = new ConstructContext(h, true) {Set = s};
-                        foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
+                        foreach (var p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                         {
                             try
                             {
@@ -1490,13 +1490,13 @@ public class LeviathanUpdateProcessor
             }
 
             // Insert the Triples for each Solution
-            foreach (ISet s in results.Sets)
+            foreach (var s in results.Sets)
             {
                 var insertedTriples = new List<Triple>();
                 try
                 {
                     var constructContext = new ConstructContext(g, true) { Set = s };
-                    foreach (IConstructTriplePattern p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                    foreach (var p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
                     {
                         try
                         {
@@ -1524,7 +1524,7 @@ public class LeviathanUpdateProcessor
                 }
 
                 // Triples from GRAPH clauses
-                foreach (GraphPattern gp in cmd.InsertPattern.ChildGraphPatterns)
+                foreach (var gp in cmd.InsertPattern.ChildGraphPatterns)
                 {
                     insertedTriples.Clear();
                     try
@@ -1539,7 +1539,7 @@ public class LeviathanUpdateProcessor
                                 var graphVar = gp.GraphSpecifier.Value.Substring(1);
                                 if (s.ContainsVariable(graphVar))
                                 {
-                                    INode temp = s[graphVar];
+                                    var temp = s[graphVar];
                                     if (temp == null)
                                     {
                                         // If the Variable is not bound then skip
@@ -1568,7 +1568,7 @@ public class LeviathanUpdateProcessor
 
                         // Ensure the Graph we're inserting to exists in the dataset creating it if necessary
                         IGraph h;
-                        IRefNode destGraph = new UriNode(UriFactory.Root.Create(graphUri));
+                        var destGraph = new UriNode(UriFactory.Root.Create(graphUri));
                         if (context.Data.HasGraph(destGraph))
                         {
                             h = context.Data.GetModifiableGraph(destGraph);
@@ -1582,11 +1582,11 @@ public class LeviathanUpdateProcessor
 
                         // Do the actual Insertions
                         var constructContext = new ConstructContext(h, true) { Set = s };
-                        foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
+                        foreach (var p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                         {
                             try
                             {
-                                Triple t = p.Construct(constructContext);
+                                var t = p.Construct(constructContext);
                                 t = new Triple(t.Subject, t.Predicate, t.Object);
                                 insertedTriples.Add(t);
                             }
@@ -1640,7 +1640,7 @@ public class LeviathanUpdateProcessor
             if (context.Data.HasGraph(cmd.SourceGraphName))
             {
                 // Get the Source Graph
-                IGraph source = context.Data.GetModifiableGraph(cmd.SourceGraphName);
+                var source = context.Data.GetModifiableGraph(cmd.SourceGraphName);
 
                 // Create/Delete/Clear the Destination Graph
                 IGraph dest;

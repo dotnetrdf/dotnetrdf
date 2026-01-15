@@ -110,7 +110,7 @@ public class ListUrisHandler
         {
             if (_vars.Contains(var) && result.HasValue(var))
             {
-                INode value = result[var];
+                var value = result[var];
                 if (value.NodeType == NodeType.Uri)
                 {
                     _uris.Add(((IUriNode)value).Uri);
@@ -201,7 +201,7 @@ public class ListStringsHandler
         {
             if (_vars.Contains(var) && result.HasValue(var))
             {
-                INode value = result[var];
+                var value = result[var];
                 if (value.NodeType == NodeType.Literal)
                 {
                     _values.Add(((ILiteralNode)value).Value);

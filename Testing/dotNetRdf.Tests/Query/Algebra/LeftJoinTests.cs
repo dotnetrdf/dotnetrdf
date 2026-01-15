@@ -42,7 +42,7 @@ public class LeftJoinTests
         var expressionProcessor = new LeviathanExpressionProcessor(mockContext.Options,
             mockContext.Processor as LeviathanQueryProcessor);
             
-        BaseMultiset result = lhs.LeftJoin(rhs, new ConstantTerm(new BooleanNode(true)), mockContext, expressionProcessor);
+        var result = lhs.LeftJoin(rhs, new ConstantTerm(new BooleanNode(true)), mockContext, expressionProcessor);
 
         Assert.True(result.Sets.Where(s => s["a"].Equals(_factory.CreateUriNode(UriFactory.Root.Create("http://x/x2"))))
             .Select(s => s["b"])

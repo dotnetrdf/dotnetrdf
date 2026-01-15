@@ -272,7 +272,7 @@ public class Loader
             [
                 new KeyValuePair<string, string>("Accept", parser != null ? MimeTypesHelper.CustomHttpAcceptHeader(parser) : MimeTypesHelper.HttpRdfOrDatasetAcceptHeader),
             ];
-            using HttpResponseMessage httpResponse = await GetFollowingRedirects(uri, headers, cancellationToken);
+            using var httpResponse = await GetFollowingRedirects(uri, headers, cancellationToken);
             AssertResponseSuccess(uri, httpResponse);
 
             try
@@ -303,11 +303,11 @@ public class Loader
         {
             requestMessage.Headers.Add(headerEntry.Key, headerEntry.Value);
         }
-        HttpResponseMessage responseMessage = await HttpClient.SendAsync(requestMessage, cancellationToken);
+        var responseMessage = await HttpClient.SendAsync(requestMessage, cancellationToken);
         if (responseMessage.IsSuccessStatusCode) return responseMessage;
         if (CanRedirect(responseMessage, redirectDepth))
         {
-            Uri location = responseMessage.Headers.Location;
+            var location = responseMessage.Headers.Location;
             if (!location.IsAbsoluteUri)
             {
                 location = new Uri(uri, location);
@@ -530,7 +530,7 @@ public class Loader
                     ? MimeTypesHelper.CustomHttpAcceptHeader(parser)
                     : MimeTypesHelper.HttpRdfDatasetAcceptHeader),
             ];
-            using HttpResponseMessage responseMessage = await GetFollowingRedirects(uri, headers, cancellationToken);
+            using var responseMessage = await GetFollowingRedirects(uri, headers, cancellationToken);
             AssertResponseSuccess(uri, responseMessage);
 
             if (parser == null)
@@ -539,7 +539,7 @@ public class Loader
                 {
                     parser = MimeTypesHelper.GetStoreParser(responseMessage.Content.Headers.ContentType.MediaType);
                     parser.Warning += RaiseStoreWarning;
-                    Stream stream = await responseMessage.Content.ReadAsStreamAsync();
+                    var stream = await responseMessage.Content.ReadAsStreamAsync();
                     cancellationToken.ThrowIfCancellationRequested();
                     parser.Load(handler, new StreamReader(stream));
                 }
@@ -550,8 +550,8 @@ public class Loader
                                       " - seeing if the content is an RDF Graph instead.");
                     try
                     {
-                        IRdfReader rdfParser = MimeTypesHelper.GetParser(responseMessage.Content.Headers.ContentType.MediaType);
-                        Stream stream = await responseMessage.Content.ReadAsStreamAsync();
+                        var rdfParser = MimeTypesHelper.GetParser(responseMessage.Content.Headers.ContentType.MediaType);
+                        var stream = await responseMessage.Content.ReadAsStreamAsync();
                         cancellationToken.ThrowIfCancellationRequested();
                         rdfParser.Load(handler, new StreamReader(stream));
                     }
@@ -589,7 +589,7 @@ public class Loader
     /// <param name="message">Warning Message.</param>
     private static void RaiseWarning(string message)
     {
-        RdfReaderWarning d = Warning;
+        var d = Warning;
         d?.Invoke(message);
     }
 
@@ -599,7 +599,7 @@ public class Loader
     /// <param name="message">Warning Message.</param>
     private static void RaiseStoreWarning(string message)
     {
-        StoreReaderWarning d = StoreWarning;
+        var d = StoreWarning;
         d?.Invoke(message);
     }
 

@@ -66,7 +66,7 @@ public class LeviathanEngineTestSuites(ITestOutputHelper output) : RdfTestSuite
         tripleStore.LoadFromFile(dataInputPath);
 
         var queryParser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
-        SparqlQuery query = queryParser.ParseFromFile(queryInputPath);
+        var query = queryParser.ParseFromFile(queryInputPath);
 
         var queryEngine = new LeviathanQueryProcessor(tripleStore);
         var results = queryEngine.ProcessQuery(query);
@@ -75,7 +75,7 @@ public class LeviathanEngineTestSuites(ITestOutputHelper output) : RdfTestSuite
         {
             results.Should().BeAssignableTo<IGraph>();
             var graphDiff = new GraphDiff();
-            GraphDiffReport diffReport = graphDiff.Difference(resultGraph, results as IGraph);
+            var diffReport = graphDiff.Difference(resultGraph, results as IGraph);
             TestTools.ShowDifferences(diffReport, "Expected Results", "Actual Results", output);
             diffReport.AreEqual.Should().BeTrue();
         }

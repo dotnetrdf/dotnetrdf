@@ -61,7 +61,7 @@ public class LeviathanTests
         store.Add(g);
 
         var parser = new SparqlQueryParser();
-        SparqlQuery q = parser.ParseFromString(@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        var q = parser.ParseFromString(@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         var processor = new LeviathanQueryProcessor(store);
         var testResult = processor.ProcessQuery(q);
@@ -131,13 +131,13 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         //Create a load of Nodes to use in the tests
         var g = new Graph();
         g.NamespaceMap.AddNamespace(String.Empty, new Uri("http://example.org"));
-        IUriNode s1 = g.CreateUriNode(":s1");
-        IUriNode s2 = g.CreateUriNode(":s2");
-        IUriNode p1 = g.CreateUriNode(":p1");
-        IUriNode p2 = g.CreateUriNode(":p2");
-        IUriNode rdfsLabel = g.CreateUriNode("rdfs:label");
-        ILiteralNode o1 = g.CreateLiteralNode("Some Text");
-        ILiteralNode o2 = g.CreateLiteralNode("1", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+        var s1 = g.CreateUriNode(":s1");
+        var s2 = g.CreateUriNode(":s2");
+        var p1 = g.CreateUriNode(":p1");
+        var p2 = g.CreateUriNode(":p2");
+        var rdfsLabel = g.CreateUriNode("rdfs:label");
+        var o1 = g.CreateLiteralNode("Some Text");
+        var o2 = g.CreateLiteralNode("1", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
         //Create an ID and Null Multiset
         var id = new IdentityMultiset();
@@ -182,19 +182,19 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
         //Show the Sets
         Console.WriteLine("LHS");
-        foreach (ISet set in m.Sets)
+        foreach (var set in m.Sets)
         {
             Console.WriteLine(set.ToString());
         }
         Console.WriteLine();
         Console.WriteLine("RHS");
-        foreach (ISet set in n.Sets)
+        foreach (var set in n.Sets)
         {
             Console.WriteLine(set.ToString());
         }
         Console.WriteLine();
         Console.WriteLine("D");
-        foreach (ISet set in d.Sets)
+        foreach (var set in d.Sets)
         {
             Console.WriteLine(set.ToString());
         }
@@ -202,8 +202,8 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
         //Try a Join to Identity
         Console.WriteLine("Join ID-LHS");
-        BaseMultiset join = id.Join(m);
-        foreach (ISet set in join.Sets)
+        var join = id.Join(m);
+        foreach (var set in join.Sets)
         {
             Console.WriteLine(set.ToString());
         }
@@ -212,7 +212,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         //Try a Join to Identity
         Console.WriteLine("Join LHS-ID");
         join = m.Join(id);
-        foreach (ISet set in join.Sets)
+        foreach (var set in join.Sets)
         {
             Console.WriteLine(set.ToString());
         }
@@ -221,7 +221,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         //Try a Join to Null
         Console.WriteLine("Join NULL-LHS");
         join = nullset.Join(m);
-        foreach (ISet set in join.Sets)
+        foreach (var set in join.Sets)
         {
             Console.WriteLine(set.ToString());
         }
@@ -230,7 +230,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         //Try a Join to Null
         Console.WriteLine("Join LHS-NULL");
         join = m.Join(nullset);
-        foreach (ISet set in join.Sets)
+        foreach (var set in join.Sets)
         {
             Console.WriteLine(set.ToString());
         }
@@ -238,8 +238,8 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
         //Try a LeftJoin
         Console.WriteLine("LeftJoin NULL-LHS");
-        BaseMultiset leftjoin = nullset.LeftJoin(m, new ConstantTerm(new BooleanNode(true)), mockContext, expressionProcessor);
-        foreach (ISet set in leftjoin.Sets)
+        var leftjoin = nullset.LeftJoin(m, new ConstantTerm(new BooleanNode(true)), mockContext, expressionProcessor);
+        foreach (var set in leftjoin.Sets)
         {
             Console.WriteLine(set.ToString());
         }
@@ -248,7 +248,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         //Try a LeftJoin
         Console.WriteLine("LeftJoin LHS-NULL");
         leftjoin = m.LeftJoin(nullset, new ConstantTerm(new BooleanNode(true)), mockContext, expressionProcessor);
-        foreach (ISet set in leftjoin.Sets)
+        foreach (var set in leftjoin.Sets)
         {
             Console.WriteLine(set.ToString());
         }
@@ -257,7 +257,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         //Try a Join
         Console.WriteLine("Join LHS-RHS");
         join = m.Join(n);
-        foreach (ISet set in join.Sets)
+        foreach (var set in join.Sets)
         {
             Console.WriteLine(set.ToString());
         }
@@ -266,7 +266,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         //Try a LeftOuterJoin
         Console.WriteLine("LeftJoin LHS-RHS");
         leftjoin = m.LeftJoin(n, new ConstantTerm(new BooleanNode(true)), mockContext, expressionProcessor);
-        foreach (ISet set in leftjoin.Sets)
+        foreach (var set in leftjoin.Sets)
         {
             Console.WriteLine(set.ToString());
         }
@@ -274,8 +274,8 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
         //Try a Produce
         Console.WriteLine("Product LHS-RHS");
-        BaseMultiset product = m.Product(n);
-        foreach (ISet set in product.Sets)
+        var product = m.Product(n);
+        foreach (var set in product.Sets)
         {
             Console.WriteLine(set.ToString());
         }
@@ -284,7 +284,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         //Try a Join to Self
         Console.WriteLine("Product LHS-D");
         product = m.Product(d);
-        foreach (ISet set in product.Sets)
+        foreach (var set in product.Sets)
         {
             Console.WriteLine(set.ToString());
         }
@@ -292,8 +292,8 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
         //Try a Union
         Console.WriteLine("Union LHS-RHS");
-        BaseMultiset union = m.Union(n);
-        foreach (ISet set in union.Sets)
+        var union = m.Union(n);
+        foreach (var set in union.Sets)
         {
             Console.WriteLine(set.ToString());
         }
@@ -345,7 +345,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         foreach (var query in testQueries)
         {
             //Parse the Query and output to console
-            SparqlQuery q = parser.ParseFromString(query);
+            var q = parser.ParseFromString(query);
             Console.WriteLine(q.ToString());
 
             //Now we'll try and evaluate it (if this is possible)
@@ -383,11 +383,11 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         Console.WriteLine(store.Triples.Count() + " Triples in Store");
 
         //Create the Triple Pattern we want to query with
-        IUriNode fordFiesta = g.CreateUriNode(new Uri("http://example.org/vehicles/FordFiesta"));
-        IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-        IUriNode rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
-        IUriNode speed = g.CreateUriNode(new Uri("http://example.org/vehicles/Speed"));
-        IUriNode carClass = g.CreateUriNode(new Uri("http://example.org/vehicles/Car"));
+        var fordFiesta = g.CreateUriNode(new Uri("http://example.org/vehicles/FordFiesta"));
+        var rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+        var rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+        var speed = g.CreateUriNode(new Uri("http://example.org/vehicles/Speed"));
+        var carClass = g.CreateUriNode(new Uri("http://example.org/vehicles/Car"));
 
         var allTriples = new TriplePattern(new VariablePattern("?s"), new VariablePattern("?p"), new VariablePattern("?o"));
         var allTriples2 = new TriplePattern(new VariablePattern("?x"), new VariablePattern("?y"), new VariablePattern("?z"));
@@ -412,28 +412,28 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             new List<ITriplePattern>() { tp1, blankSubject }
         };
 
-        foreach (List<ITriplePattern> tps in tests)
+        foreach (var tps in tests)
         {
             Console.WriteLine(tps.Count + " Triple Patterns in the Query");
-            foreach (ITriplePattern tp in tps)
+            foreach (var tp in tps)
             {
                 Console.WriteLine(tp.ToString());
             }
             Console.WriteLine();
 
-            ISparqlAlgebra ask = new Ask(new Bgp(tps));
-            ISparqlAlgebra askOptimised = new Ask(new AskBgp(tps));
+            var ask = new Ask(new Bgp(tps));
+            var askOptimised = new Ask(new AskBgp(tps));
 
             //Evaluate with timings
             var timer = new Stopwatch();
             TimeSpan unopt, opt;
             timer.Start();
-            BaseMultiset results1 = ask.Accept(processor, new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
+            var results1 = ask.Accept(processor, new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
             timer.Stop();
             unopt = timer.Elapsed;
             timer.Reset();
             timer.Start();
-            BaseMultiset results2 = askOptimised.Accept(processor, new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
+            var results2 = askOptimised.Accept(processor, new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
             timer.Stop();
             opt = timer.Elapsed;
 
@@ -495,11 +495,11 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         Console.WriteLine(store.Triples.Count() + " Triples in Store");
 
         //Create the Triple Pattern we want to query with
-        IUriNode fordFiesta = g.CreateUriNode(new Uri("http://example.org/vehicles/FordFiesta"));
-        IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-        IUriNode rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
-        IUriNode speed = g.CreateUriNode(new Uri("http://example.org/vehicles/Speed"));
-        IUriNode carClass = g.CreateUriNode(new Uri("http://example.org/vehicles/Car"));
+        var fordFiesta = g.CreateUriNode(new Uri("http://example.org/vehicles/FordFiesta"));
+        var rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+        var rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+        var speed = g.CreateUriNode(new Uri("http://example.org/vehicles/Speed"));
+        var carClass = g.CreateUriNode(new Uri("http://example.org/vehicles/Car"));
 
         var allTriples = new TriplePattern(new VariablePattern("?s"), new VariablePattern("?p"), new VariablePattern("?o"));
         var allTriples2 = new TriplePattern(new VariablePattern("?x"), new VariablePattern("?y"), new VariablePattern("?z"));
@@ -524,28 +524,28 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             new List<ITriplePattern>() { tp1, blankSubject }
         };
 
-        foreach (List<ITriplePattern> tps in tests)
+        foreach (var tps in tests)
         {
             Console.WriteLine(tps.Count + " Triple Patterns in the Query");
-            foreach (ITriplePattern tp in tps)
+            foreach (var tp in tps)
             {
                 Console.WriteLine(tp.ToString());
             }
             Console.WriteLine();
 
-            ISparqlAlgebra select = new Bgp(tps);
-            ISparqlAlgebra selectOptimised = new LazyBgp(tps, 10);
+            var select = new Bgp(tps);
+            var selectOptimised = new LazyBgp(tps, 10);
 
             //Evaluate with timings
             var timer = new Stopwatch();
             TimeSpan unopt, opt;
             timer.Start();
-            BaseMultiset results1 = select.Accept(processor, new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
+            var results1 = select.Accept(processor, new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
             timer.Stop();
             unopt = timer.Elapsed;
             timer.Reset();
             timer.Start();
-            BaseMultiset results2 = selectOptimised.Accept(processor, new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
+            var results2 = selectOptimised.Accept(processor, new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
             timer.Stop();
             opt = timer.Elapsed;
 
@@ -554,7 +554,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
             Console.WriteLine();
             Console.WriteLine("Optimised Results");
-            foreach (ISet s in results2.Sets)
+            foreach (var s in results2.Sets)
             {
                 Console.WriteLine(s.ToString());
             }
@@ -568,7 +568,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
     private void ShowMultiset(BaseMultiset multiset) 
     {
         Console.WriteLine(multiset.GetType().ToString());
-        foreach (ISet s in multiset.Sets)
+        foreach (var s in multiset.Sets)
         {
             Console.WriteLine(s.ToString());
         }

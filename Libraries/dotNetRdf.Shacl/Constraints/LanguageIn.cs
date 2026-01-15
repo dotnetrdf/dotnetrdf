@@ -53,9 +53,9 @@ internal class LanguageIn : Constraint
 
     internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
     {
-        IEnumerable<INode> items = Graph.GetListItems(this);
+        var items = Graph.GetListItems(this);
 
-        IEnumerable<INode> invalidValues =
+        var invalidValues =
             from valueNode in valueNodes
             where !items.Any(item => LangMatches(dataGraph, valueNode, item))
             select valueNode;

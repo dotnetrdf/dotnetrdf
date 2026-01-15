@@ -74,7 +74,7 @@ public class LiteralExpressionTests : SparqlExpressionTestsBase
         var literal = new LiteralExpression(5.5.ToConstantTerm());
 
         // when
-        LiteralExpression simpleLiteral = literal.ToSimpleLiteral();
+        var simpleLiteral = literal.ToSimpleLiteral();
 
         // then
         Assert.True(simpleLiteral.Expression is ConstantTerm);

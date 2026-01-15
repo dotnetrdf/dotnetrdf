@@ -86,7 +86,7 @@ public class LeftJoin
         get
         {
             // Floating variables are those fixed on RHS or floating on either side and not fixed on LHS
-            IEnumerable<string> floating = Lhs.FloatingVariables.Concat(Rhs.FloatingVariables).Concat(Rhs.FixedVariables).Distinct();
+            var floating = Lhs.FloatingVariables.Concat(Rhs.FloatingVariables).Concat(Rhs.FixedVariables).Distinct();
             var fixedVars = new HashSet<string>(FixedVariables);
             return floating.Where(v => !fixedVars.Contains(v));
         }

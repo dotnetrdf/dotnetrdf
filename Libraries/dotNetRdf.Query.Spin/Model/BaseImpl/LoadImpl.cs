@@ -41,9 +41,9 @@ public LoadImpl(INode node, IGraph graph, SpinProcessor spinModel)
 		p.printKeyword("LOAD");
 		p.print(" ");
 		printSilent(p);
-    IResource document = getResource(SP.PropertyDocument);
+    var document = getResource(SP.PropertyDocument);
 		p.printURIResource(document);
-    IResource into = getResource(SP.PropertyInto);
+    var into = getResource(SP.PropertyInto);
 		if(into != null) {
 			p.print(" ");
 			p.printKeyword("INTO");

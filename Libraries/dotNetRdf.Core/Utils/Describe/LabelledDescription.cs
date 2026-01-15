@@ -73,12 +73,12 @@ public class LabelledDescription
         // Get Triples for this Subject
         var bnodes = new Queue<INode>();
         var expandedBNodes = new HashSet<INode>();
-        
-        INode rdfsLabel = handler.CreateUriNode(_uriFactory.Create(NamespaceMapper.RDFS + "label"));
-        foreach (INode n in nodes)
+
+        var rdfsLabel = handler.CreateUriNode(_uriFactory.Create(NamespaceMapper.RDFS + "label"));
+        foreach (var n in nodes)
         {
             // Get Triples where the Node is the Subject
-            foreach (Triple t in dataset.GetTriplesWithSubject(n).ToList())
+            foreach (var t in dataset.GetTriplesWithSubject(n).ToList())
             {
                 if (t.Object.NodeType == NodeType.Blank)
                 {
@@ -90,11 +90,11 @@ public class LabelledDescription
             // Compute the Blank Node Closure for this Subject
             while (bnodes.Count > 0)
             {
-                INode bsubj = bnodes.Dequeue();
+                var bsubj = bnodes.Dequeue();
                 if (expandedBNodes.Contains(bsubj)) continue;
                 expandedBNodes.Add(bsubj);
 
-                foreach (Triple t2 in dataset.GetTriplesWithSubjectPredicate(bsubj, rdfsLabel).ToList())
+                foreach (var t2 in dataset.GetTriplesWithSubjectPredicate(bsubj, rdfsLabel).ToList())
                 {
                     if (!handler.HandleTriple((RewriteDescribeBNodes(t2, bnodeMapping, handler)))) ParserHelper.Stop();
                 }

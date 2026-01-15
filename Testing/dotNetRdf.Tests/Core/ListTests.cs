@@ -38,7 +38,7 @@ public class ListTests
     private INode TestListsBasic(IGraph g)
     {
         var items = Enumerable.Range(1, 10).Select(i => i.ToLiteral(g)).OfType<INode>().ToList();
-        INode listRoot = g.AssertList(items);
+        var listRoot = g.AssertList(items);
 
         TestTools.ShowGraph(g);
 
@@ -54,7 +54,7 @@ public class ListTests
         Assert.True(listRoot.IsListRoot(g), "Should be considered a list root");
 
         var listNodes = g.GetListNodes(listRoot).Skip(1).ToList();
-        foreach (INode n in listNodes)
+        foreach (var n in listNodes)
         {
             Assert.False(n.IsListRoot(g), "Should not be considered a list root");
         }
@@ -66,7 +66,7 @@ public class ListTests
     public void GraphLists1()
     {
         var g = new Graph();
-        INode listRoot = TestListsBasic(g);
+        var listRoot = TestListsBasic(g);
 
         g.RetractList(listRoot);
         Assert.Equal(0, g.Triples.Count);
@@ -76,7 +76,7 @@ public class ListTests
     public void GraphLists2()
     {
         var g = new Graph();
-        INode listRoot = TestListsBasic(g);
+        var listRoot = TestListsBasic(g);
 
         //Try extending the list
         var items = Enumerable.Range(11, 10).Select(i => i.ToLiteral(g)).OfType<INode>().ToList();
@@ -100,7 +100,7 @@ public class ListTests
     public void GraphLists3()
     {
         var g = new Graph();
-        INode listRoot = TestListsBasic(g);
+        var listRoot = TestListsBasic(g);
 
         //Try removing items from the list
         var items = Enumerable.Range(1, 10).Where(i => i % 2 == 0).Select(i => i.ToLiteral(g)).OfType<INode>().ToList();
@@ -131,7 +131,7 @@ public class ListTests
     public void RemoveFromListRemovesFirstOccurrenceOnly()
     {
         var g = new Graph();
-        INode list = g.AssertList([0, 0, 1], x => x.ToLiteral(g));
+        var list = g.AssertList([0, 0, 1], x => x.ToLiteral(g));
         g.RemoveFromList(list, [0], x=>x.ToLiteral(g));
         g.GetListItems(list).Should().HaveCount(2);
     }
@@ -140,7 +140,7 @@ public class ListTests
     public void RemoveAllFromListRemovesAllOccurrences()
     {
         var g = new Graph();
-        INode list = g.AssertList([0, 0, 1], x => x.ToLiteral(g));
+        var list = g.AssertList([0, 0, 1], x => x.ToLiteral(g));
         g.RemoveAllFromList(list, [0], x=>x.ToLiteral(g));
         g.GetListItems(list).Should().HaveCount(1);
     }
@@ -149,7 +149,7 @@ public class ListTests
     public void AnEmptyListCanBeAssertedAndRetrieved()
     {
         var g = new Graph();
-        INode list = g.AssertList(new List<INode>());
+        var list = g.AssertList(new List<INode>());
         g.GetListItems(list).Should().BeEmpty();
     }
 

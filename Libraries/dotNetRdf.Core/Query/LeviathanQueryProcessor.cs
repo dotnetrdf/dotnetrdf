@@ -152,7 +152,7 @@ public class LeviathanQueryProcessor
             case SparqlQueryType.Construct:
             case SparqlQueryType.Describe:
             case SparqlQueryType.DescribeAll:
-                IGraph g = new Graph();
+                var g = new Graph();
                 ProcessQuery(new GraphHandler(g), null, query);
                 return g;
             default:
@@ -174,7 +174,7 @@ public class LeviathanQueryProcessor
         if (resultsHandler == null && (query.QueryType == SparqlQueryType.Ask || SparqlSpecsHelper.IsSelectQuery(query.QueryType))) throw new ArgumentNullException(nameof(resultsHandler), "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
 
         // Handle the Thread Safety of the Query Evaluation
-        ReaderWriterLockSlim currLock = (_dataset is IThreadSafeDataset threadSafeDataset) ? threadSafeDataset.Lock : _lock;
+        var currLock = (_dataset is IThreadSafeDataset threadSafeDataset) ? threadSafeDataset.Lock : _lock;
         try
         {
             currLock.EnterReadLock();
@@ -190,7 +190,7 @@ public class LeviathanQueryProcessor
                 {
                     // Call HasGraph() on each Default Graph but ignore the results, we just do this
                     // in case a dataset has any kind of load on demand behaviour
-                    foreach (IRefNode defaultGraphName in query.DefaultGraphNames)
+                    foreach (var defaultGraphName in query.DefaultGraphNames)
                     {
                         _dataset.HasGraph(defaultGraphName);
                     }
@@ -206,12 +206,12 @@ public class LeviathanQueryProcessor
                 datasetOk = true;
 
                 // Convert to Algebra and execute the Query
-                SparqlEvaluationContext context = GetContext(query);
+                var context = GetContext(query);
                 try
                 {
                     context.StartExecution(_options.QueryExecutionTimeout);
-                    ISparqlAlgebra algebra = query.ToAlgebra(_options.AlgebraOptimisation, _options.AlgebraOptimisers);
-                    BaseMultiset _ = context.Evaluate(algebra);
+                    var algebra = query.ToAlgebra(_options.AlgebraOptimisation, _options.AlgebraOptimisers);
+                    var _ = context.Evaluate(algebra);
 
                     context.EndExecution();
                     query.QueryExecutionTime = new TimeSpan(context.QueryTimeTicks);
@@ -257,13 +257,13 @@ public class LeviathanQueryProcessor
 
                             // Construct the Triples for each Solution
                             if (context.OutputMultiset is IdentityMultiset) context.OutputMultiset = new SingletonMultiset();
-                            foreach (ISet s in context.OutputMultiset.Sets)
+                            foreach (var s in context.OutputMultiset.Sets)
                             {
                                 var constructContext = new ConstructContext(rdfHandler, false);
                                 try
                                 {
                                     constructContext.Set = s;
-                                    foreach (IConstructTriplePattern p in query.ConstructTemplate.TriplePatterns.OfType<IConstructTriplePattern>())
+                                    foreach (var p in query.ConstructTemplate.TriplePatterns.OfType<IConstructTriplePattern>())
                                     {
                                         try
                                         {
@@ -299,7 +299,7 @@ public class LeviathanQueryProcessor
                     case SparqlQueryType.Describe:
                     case SparqlQueryType.DescribeAll:
                         // For DESCRIBE we retrieve the Describe algorithm and apply it
-                        ISparqlDescribe describer = context.Options.Describer;
+                        var describer = context.Options.Describer;
                         describer.Describe(rdfHandler, (ISparqlDescribeContext)context);
                         break;
 
@@ -339,8 +339,8 @@ public class LeviathanQueryProcessor
             {
                 if (antecedent.Exception != null)
                 {
-                    Exception innerException = antecedent.Exception.InnerExceptions[0];
-                    RdfQueryException queryException = innerException as RdfQueryException ??
+                    var innerException = antecedent.Exception.InnerExceptions[0];
+                    var queryException = innerException as RdfQueryException ??
                                                        new RdfQueryException(
                                                            "Unexpected error while making an asynchronous query, see inner exception for details",
                                                            innerException);
@@ -397,8 +397,8 @@ public class LeviathanQueryProcessor
             {
                 if (antecedent.Exception != null)
                 {
-                    Exception innerException = antecedent.Exception.InnerExceptions[0];
-                    RdfQueryException queryException = innerException as RdfQueryException ??
+                    var innerException = antecedent.Exception.InnerExceptions[0];
+                    var queryException = innerException as RdfQueryException ??
                                                        new RdfQueryException(
                                                            "Unexpected error while making an asynchronous query, see inner exception for details",
                                                            innerException);
@@ -511,7 +511,7 @@ public class LeviathanQueryProcessor
         {
             case AskBgp askBgp:
                 context.CheckTimeout();
-                BaseMultiset results = EvaluateAskBgp(askBgp.TriplePatterns.ToList(), context, 0, out _);
+                var results = EvaluateAskBgp(askBgp.TriplePatterns.ToList(), context, 0, out _);
                 if (results is Multiset && results.IsEmpty) results = new NullMultiset();
                 context.CheckTimeout();
 
@@ -613,7 +613,7 @@ public class LeviathanQueryProcessor
     /// <param name="context">SPARQL Evaluation Context.</param>
     public virtual BaseMultiset ProcessBindings(Bindings b, SparqlEvaluationContext context)
     {
-        if (!_bindingsCache.TryGetValue(b, out BaseMultiset multiSet))
+        if (!_bindingsCache.TryGetValue(b, out var multiSet))
         {
             multiSet = b.BindingsPattern.ToMultiset();
             _bindingsCache[b] = multiSet;
@@ -645,8 +645,8 @@ public class LeviathanQueryProcessor
 
         // Apply distinctness
         context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
-        IEnumerable<ISet> sets = context.InputMultiset.Sets.Distinct();
-        foreach (ISet s in sets)
+        var sets = context.InputMultiset.Sets.Distinct();
+        foreach (var s in sets)
         {
             context.OutputMultiset.Add(s.Copy());
         }
@@ -662,7 +662,7 @@ public class LeviathanQueryProcessor
     {
         context ??= GetContext();
         // First evaluate the inner algebra
-        BaseMultiset results = extend.InnerAlgebra.Accept(this, context);
+        var results = extend.InnerAlgebra.Accept(this, context);
         context.OutputMultiset = new Multiset();
 
         if (results is NullMultiset)
@@ -675,7 +675,7 @@ public class LeviathanQueryProcessor
             var s = new Set();
             try
             {
-                INode temp = extend.AssignExpression.Accept(_expressionProcessor, context, 0);
+                var temp = extend.AssignExpression.Accept(_expressionProcessor, context, 0);
                 s.Add(extend.VariableName, temp);
             }
             catch
@@ -712,11 +712,11 @@ public class LeviathanQueryProcessor
 
     private void EvalExtend(Extend extend, SparqlEvaluationContext context, BaseMultiset results, int id)
     {
-        ISet s = results[id].Copy();
+        var s = results[id].Copy();
         try
         {
             // Make a new assignment
-            INode temp = extend.AssignExpression.Accept(_expressionProcessor, context, id);
+            var temp = extend.AssignExpression.Accept(_expressionProcessor, context, id);
             s.Add(extend.VariableName, temp);
         }
         catch
@@ -734,7 +734,7 @@ public class LeviathanQueryProcessor
     public virtual BaseMultiset ProcessExistsJoin(IExistsJoin existsJoin, SparqlEvaluationContext context)
     {
         context ??= GetContext();
-        BaseMultiset lhsResult = existsJoin.Lhs.Accept(this, context);
+        var lhsResult = existsJoin.Lhs.Accept(this, context);
         context.CheckTimeout();
 
         if (lhsResult is NullMultiset)
@@ -749,7 +749,7 @@ public class LeviathanQueryProcessor
         {
             // Only execute the RHS if the LHS had results
             context.InputMultiset = lhsResult;
-            BaseMultiset rhsResult = existsJoin.Rhs.Accept(this, context);
+            var rhsResult = existsJoin.Rhs.Accept(this, context);
             context.CheckTimeout();
 
             context.OutputMultiset = lhsResult.ExistsJoin(rhsResult, existsJoin.MustExist);
@@ -823,7 +823,7 @@ public class LeviathanQueryProcessor
                 {
                     case Token.URI:
                     case Token.QNAME:
-                        IRefNode activeGraphName = new UriNode(context.UriFactory.Create(Tools.ResolveUriOrQName(graph.GraphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri)));
+                        var activeGraphName = new UriNode(context.UriFactory.Create(Tools.ResolveUriOrQName(graph.GraphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri)));
                         if (context.Data.HasGraph(activeGraphName))
                         {
                             // If the Graph is explicitly specified and there are FROM/FROM NAMED present then the Graph 
@@ -866,9 +866,9 @@ public class LeviathanQueryProcessor
                 {
                     // If there are already values bound to the Graph variable for all Input Solutions then we limit the Query to those Graphs
                     var graphUris = new List<Uri>();
-                    foreach (ISet s in context.InputMultiset.Sets)
+                    foreach (var s in context.InputMultiset.Sets)
                     {
-                        INode temp = s[gvar];
+                        var temp = s[gvar];
                         if (temp == null) continue;
                         if (temp.NodeType != NodeType.Uri) continue;
                         activeGraphs.Add(temp.ToString());
@@ -901,7 +901,7 @@ public class LeviathanQueryProcessor
             activeGraphs = activeGraphs.Distinct().ToList();
 
             // Evaluate the inner pattern
-            BaseMultiset initialInput = context.InputMultiset;
+            var initialInput = context.InputMultiset;
             BaseMultiset finalResult = new Multiset();
 
             // Evaluate for each Graph URI and union the results
@@ -911,7 +911,7 @@ public class LeviathanQueryProcessor
                 // Be sure to translate String.Empty back to the null URI to select the default graph
                 // correctly
                 context.InputMultiset = initialInput;
-                IRefNode currGraphName = uri.Equals(string.Empty) ? null :
+                var currGraphName = uri.Equals(string.Empty) ? null :
                     uri.StartsWith("_:") ? (IRefNode)new BlankNode(uri) : new UriNode(context.UriFactory.Create(uri));
 
                 // Set Active Graph
@@ -928,7 +928,7 @@ public class LeviathanQueryProcessor
                 datasetOk = true;
 
                 // Evaluate for the current Active Graph
-                BaseMultiset result = graph.InnerAlgebra.Accept(this, context);
+                var result = graph.InnerAlgebra.Accept(this, context);
 
                 // Merge the Results into our overall Results
                 if (result is NullMultiset)
@@ -941,7 +941,7 @@ public class LeviathanQueryProcessor
                     if (graph.GraphSpecifier.TokenType == Token.VARIABLE)
                     {
                         // Include graph variable if not yet bound
-                        INode currGraph = currGraphName;
+                        var currGraph = currGraphName;
                         var s = new Set();
                         s.Add(graph.GraphSpecifier.Value.Substring(1), currGraph);
                         finalResult.Add(s);
@@ -960,7 +960,7 @@ public class LeviathanQueryProcessor
                         var gvar = graph.GraphSpecifier.Value.Substring(1);
                         foreach (var id in result.SetIDs.ToList())
                         {
-                            ISet s = result[id];
+                            var s = result[id];
                             if (s[gvar] == null)
                             {
                                 // If Graph Variable is not yet bound for solution bind it
@@ -1003,7 +1003,7 @@ public class LeviathanQueryProcessor
     public virtual BaseMultiset ProcessGroupBy(GroupBy groupBy, SparqlEvaluationContext context)
     {
         context ??= GetContext();
-        BaseMultiset results = groupBy.InnerAlgebra.Accept(this, context);
+        var results = groupBy.InnerAlgebra.Accept(this, context);
         context.InputMultiset = results;
 
         // Identity/Null yields an empty multiset
@@ -1030,9 +1030,9 @@ public class LeviathanQueryProcessor
 
         // Add Groups to the GroupMultiset
         var vars = new HashSet<string>();
-        foreach (BindingGroup group in groups)
+        foreach (var group in groups)
         {
-            foreach (KeyValuePair<string, INode> assignment in group.Assignments)
+            foreach (var assignment in group.Assignments)
             {
                 if (vars.Contains(assignment.Key)) continue;
 
@@ -1050,7 +1050,7 @@ public class LeviathanQueryProcessor
         // Apply the aggregates
         context.InputMultiset = groupSet;
         context.Binder.SetGroupContext(true);
-        foreach (SparqlVariable var in groupBy.Aggregates)
+        foreach (var var in groupBy.Aggregates)
         {
             if (!vars.Contains(var.Name))
             {
@@ -1058,11 +1058,11 @@ public class LeviathanQueryProcessor
                 vars.Add(var.Name);
             }
 
-            foreach (ISet s in groupSet.Sets)
+            foreach (var s in groupSet.Sets)
             {
                 try
                 {
-                    INode value = var.Aggregate.Accept(_aggregateProcessor, context, groupSet.GroupSetIDs(s.ID));
+                    var value = var.Aggregate.Accept(_aggregateProcessor, context, groupSet.GroupSetIDs(s.ID));
                     s.Add(var.Name, value);
                 }
                 catch (RdfQueryException)
@@ -1086,10 +1086,10 @@ public class LeviathanQueryProcessor
         {
             try
             {
-                INode value = groupBy.Expression.Accept(_expressionProcessor, context, id);
+                var value = groupBy.Expression.Accept(_expressionProcessor, context, id);
                 if (value != null)
                 {
-                    if (!groups.TryGetValue(value, out BindingGroup group))
+                    if (!groups.TryGetValue(value, out var group))
                     {
                         group = [];
                         if (groupBy.AssignVariable != null)
@@ -1134,7 +1134,7 @@ public class LeviathanQueryProcessor
         List<BindingGroup> groups)
     {
         var outGroups = new List<BindingGroup>();
-        foreach (BindingGroup group in groups)
+        foreach (var group in groups)
         {
             var subgroups = new Dictionary<INode, BindingGroup>();
             var error = new BindingGroup();
@@ -1144,7 +1144,7 @@ public class LeviathanQueryProcessor
             {
                 try
                 {
-                    INode value = groupBy.Expression.Accept(_expressionProcessor, context, id);
+                    var value = groupBy.Expression.Accept(_expressionProcessor, context, id);
 
                     if (value != null)
                     {
@@ -1172,7 +1172,7 @@ public class LeviathanQueryProcessor
 
             // Build the List of Groups
             // Null and Error Group are included if required
-            foreach (BindingGroup g in subgroups.Values)
+            foreach (var g in subgroups.Values)
             {
                 outGroups.Add(g);
             }
@@ -1224,7 +1224,7 @@ public class LeviathanQueryProcessor
     {
         context ??= GetContext();
         if (join is ParallelJoin pj) return EvaluateParallelJoin(pj, context);
-        BaseMultiset lhsResult = join.Lhs.Accept(this, context);
+        var lhsResult = join.Lhs.Accept(this, context);
         context.CheckTimeout();
 
         if (lhsResult is NullMultiset)
@@ -1239,7 +1239,7 @@ public class LeviathanQueryProcessor
         {
             // Only Execute the RHS if the LHS has some results
             context.InputMultiset = lhsResult;
-            BaseMultiset rhsResult = join.Rhs.Accept(this, context);
+            var rhsResult = join.Rhs.Accept(this, context);
             context.CheckTimeout();
 
             context.OutputMultiset = lhsResult.Join(rhsResult);
@@ -1264,7 +1264,7 @@ public class LeviathanQueryProcessor
             context.InputMultiset = new IdentityMultiset();
         }
 
-        BaseMultiset lhsResult = leftJoin.Lhs.Accept(this, context);
+        var lhsResult = leftJoin.Lhs.Accept(this, context);
         context.CheckTimeout();
 
         if (lhsResult is NullMultiset)
@@ -1280,7 +1280,7 @@ public class LeviathanQueryProcessor
             // Only execute the RHS if the LHS had some results
             // Need to be careful about whether we linearize (CORE-406)
             context.InputMultiset = CanFlowResultsToRhs(leftJoin) && !IsCrossProduct(leftJoin) ? lhsResult : new IdentityMultiset();
-            BaseMultiset rhsResult = leftJoin.Rhs.Accept(this, context);
+            var rhsResult = leftJoin.Rhs.Accept(this, context);
             context.CheckTimeout();
 
             context.OutputMultiset = lhsResult.LeftJoin(rhsResult, leftJoin.Filter.Expression, context, _expressionProcessor);
@@ -1327,8 +1327,8 @@ public class LeviathanQueryProcessor
     public virtual BaseMultiset ProcessMinus(IMinus minus, SparqlEvaluationContext context)
     {
         context ??= GetContext();
-        BaseMultiset initialInput = context.InputMultiset;
-        BaseMultiset lhsResult = minus.Lhs.Accept(this, context);
+        var initialInput = context.InputMultiset;
+        var lhsResult = minus.Lhs.Accept(this, context);
         context.CheckTimeout();
 
         if (lhsResult is NullMultiset)
@@ -1351,7 +1351,7 @@ public class LeviathanQueryProcessor
             // Only execute the RHS if the LHS had results
             // context.InputMultiset = lhsResult;
             context.InputMultiset = initialInput;
-            BaseMultiset rhsResult = minus.Rhs.Accept(this, context);
+            var rhsResult = minus.Rhs.Accept(this, context);
             context.CheckTimeout();
 
             context.OutputMultiset = lhsResult.MinusJoin(rhsResult);
@@ -1414,7 +1414,7 @@ public class LeviathanQueryProcessor
         {
             (subjVars, objVars) = (objVars, subjVars);
         }
-        foreach (Triple t in ts)
+        foreach (var t in ts)
         {
             if (!properties.Contains(t.Predicate))
             {
@@ -1461,7 +1461,7 @@ public class LeviathanQueryProcessor
     {
         if (context == null) context = GetContext();
         var paths = new List<List<INode>>();
-        BaseMultiset initialInput = context.InputMultiset;
+        var initialInput = context.InputMultiset;
         int step = 0, prevCount = 0, skipCount = 0;
 
         var subjVars = oneOrMorePath.PathStart.Variables.ToList();
@@ -1513,9 +1513,9 @@ public class LeviathanQueryProcessor
         do
         {
             prevCount = paths.Count;
-            foreach (List<INode> path in paths.Skip(skipCount).ToList())
+            foreach (var path in paths.Skip(skipCount).ToList())
             {
-                foreach (INode nextStep in EvaluateStep(oneOrMorePath, context, path, reverse))
+                foreach (var nextStep in EvaluateStep(oneOrMorePath, context, path, reverse))
                 {
                     var newPath = new List<INode>(path) {nextStep};
                     paths.Add(newPath);
@@ -1543,7 +1543,7 @@ public class LeviathanQueryProcessor
             if (bothTerms)
             {
                 var exit = false;
-                foreach (List<INode> path in paths)
+                foreach (var path in paths)
                 {
                     var s = new Set();
                     if (reverse)
@@ -1578,7 +1578,7 @@ public class LeviathanQueryProcessor
 
             // Evaluate the Paths to check that are acceptable
             var returnedPaths = new HashSet<ISet>();
-            foreach (List<INode> path in paths)
+            foreach (var path in paths)
             {
                 if (reverse)
                 {
@@ -1647,20 +1647,20 @@ public class LeviathanQueryProcessor
             // Include the trivial identity mapping for any node that is not a predicate node
             // ISparqlDataset does not currently provide an accessor for all nodes, so construct the distinct set here
             var distinctNodes = new HashSet<INode>();
-            foreach (Triple t in context.Data.Triples)
+            foreach (var t in context.Data.Triples)
             {
                 distinctNodes.Add(t.Subject);
                 distinctNodes.Add(t.Object);
             }
-            foreach (INode node in distinctNodes)
+            foreach (var node in distinctNodes)
             {
                 nodes.Add(new KeyValuePair<INode, INode>(node, node));
             }
         }
         if (pathOperator.Path is Property path)
         {
-            INode predicate = path.Predicate;
-            foreach (Triple t in context.Data.GetTriplesWithPredicate(predicate))
+            var predicate = path.Predicate;
+            foreach (var t in context.Data.GetTriplesWithPredicate(predicate))
             {
                 nodes.Add(reverse
                     ? new KeyValuePair<INode, INode>(t.Object, t.Subject)
@@ -1669,18 +1669,18 @@ public class LeviathanQueryProcessor
         }
         else
         {
-            BaseMultiset initialInput = context.InputMultiset;
+            var initialInput = context.InputMultiset;
             context.InputMultiset = new IdentityMultiset();
             var x = new VariablePattern("?x");
             var y = new VariablePattern("?y");
             var bgp = new Bgp(new PropertyPathPattern(x, pathOperator.Path, y));
 
-            BaseMultiset results = context.Evaluate(bgp); //bgp.Evaluate(context);
+            var results = context.Evaluate(bgp); //bgp.Evaluate(context);
             context.InputMultiset = initialInput;
 
             if (!results.IsEmpty)
             {
-                foreach (ISet s in results.Sets)
+                foreach (var s in results.Sets)
                 {
                     if (s["x"] != null && s["y"] != null)
                     {
@@ -1713,11 +1713,11 @@ public class LeviathanQueryProcessor
         if (pathOperator.Path is Property pathOperatorPath)
         {
             var nodes = new HashSet<INode>();
-            INode predicate = pathOperatorPath.Predicate;
-            IEnumerable<Triple> ts = reverse 
+            var predicate = pathOperatorPath.Predicate;
+            var ts = reverse 
                 ? context.Data.GetTriplesWithPredicateObject(predicate, path[path.Count - 1]) 
                 : context.Data.GetTriplesWithSubjectPredicate(path[path.Count - 1], predicate);
-            foreach (Triple t in ts)
+            foreach (var t in ts)
             {
                 if (reverse)
                 {
@@ -1740,7 +1740,7 @@ public class LeviathanQueryProcessor
         {
             var nodes = new HashSet<INode>();
 
-            BaseMultiset initialInput = context.InputMultiset;
+            var initialInput = context.InputMultiset;
             var currInput = new Multiset();
             var x = new VariablePattern("?x");
             var y = new VariablePattern("?y");
@@ -1757,12 +1757,12 @@ public class LeviathanQueryProcessor
             context.InputMultiset = currInput;
 
             var bgp = new Bgp(new PropertyPathPattern(x, pathOperator.Path, y));
-            BaseMultiset results = context.Evaluate(bgp); //bgp.Evaluate(context);
+            var results = context.Evaluate(bgp); //bgp.Evaluate(context);
             context.InputMultiset = initialInput;
 
             if (!results.IsEmpty)
             {
-                foreach (ISet s in results.Sets)
+                foreach (var s in results.Sets)
                 {
                     if (reverse)
                     {
@@ -1834,7 +1834,7 @@ public class LeviathanQueryProcessor
 
     private int CompareSets(ISet x, ISet y, OrderByVariable obv, SparqlEvaluationContext context)
     {
-        INode xval = x[obv.Variable];
+        var xval = x[obv.Variable];
         if (xval == null)
         {
             if (y[obv.Variable] == null)
@@ -1947,11 +1947,11 @@ public class LeviathanQueryProcessor
         {
             transformContext.NextID = (int)context["PathTransformID"];
         }
-        ISparqlAlgebra algebra = path.Path.ToAlgebra(transformContext);
+        var algebra = path.Path.ToAlgebra(transformContext);
         context["PathTransformID"] = transformContext.NextID;
 
         // Now we can evaluate the resulting algebra
-        BaseMultiset initialInput = context.InputMultiset;
+        var initialInput = context.InputMultiset;
         var trimMode = context.TrimTemporaryVariables;
         var rigMode = context.Options.RigorousEvaluation;
         try
@@ -1964,7 +1964,7 @@ public class LeviathanQueryProcessor
             // into an algebra at a time and may need to do further nested translate calls we do
             // need to do this here
             context.TrimTemporaryVariables = false;
-            BaseMultiset result = context.Evaluate(algebra);
+            var result = context.Evaluate(algebra);
 
             // Also note that we don't trim temporary variables here even if we've set the setting back
             // to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
@@ -2000,7 +2000,7 @@ public class LeviathanQueryProcessor
         if (context.Query.Limit > 0)
         {
             context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
-            foreach (ISet s in context.InputMultiset.Sets.Distinct())
+            foreach (var s in context.InputMultiset.Sets.Distinct())
             {
                 context.OutputMultiset.Add(s.Copy());
             }
@@ -2043,7 +2043,7 @@ public class LeviathanQueryProcessor
         }
         else if (context.InputMultiset.IsEmpty)
         {
-            foreach (SparqlVariable var in vars)
+            foreach (var var in vars)
             {
                 context.InputMultiset.AddVariable(var.Name);
             }
@@ -2063,7 +2063,7 @@ public class LeviathanQueryProcessor
         }
 
         // Ensure all SELECTed variables are present
-        foreach (SparqlVariable var in vars)
+        foreach (var var in vars)
         {
             if (!context.InputMultiset.ContainsVariable(var.Name))
             {
@@ -2092,7 +2092,7 @@ public class LeviathanQueryProcessor
         context.OutputMultiset = new Multiset();
         var var = context.Query != null ? context.Query.Variables.First(v => v.IsResultVariable).Name : selDistGraphs.GraphVariable;
 
-        foreach (IRefNode graphName in context.Data.GraphNames)
+        foreach (var graphName in context.Data.GraphNames)
         {
             var s = new Set();
             s.Add(var, graphName);
@@ -2110,11 +2110,11 @@ public class LeviathanQueryProcessor
     public virtual BaseMultiset ProcessService(Service service, SparqlEvaluationContext context)
     {
         if (context == null) context = GetContext();
-        ISparqlQueryClient endpoint = GetRemoteEndpoint(service.EndpointSpecifier, context);
+        var endpoint = GetRemoteEndpoint(service.EndpointSpecifier, context);
         try
         {
             context.OutputMultiset = new Multiset();
-            foreach (SparqlQuery query in GetRemoteQueries(context, service.Pattern, GetBindings(context, service.Pattern)))
+            foreach (var query in GetRemoteQueries(context, service.Pattern, GetBindings(context, service.Pattern)))
             {
                 // Try and get a Result Set from the Service
                 var cts = new CancellationTokenSource();
@@ -2124,12 +2124,12 @@ public class LeviathanQueryProcessor
                     cts.CancelAfter(TimeSpan.FromMilliseconds(remainingTimeMillis));
                 }
 
-                Task<SparqlResultSet> task = endpoint.QueryWithResultSetAsync(query.ToString(), cts.Token);
+                var task = endpoint.QueryWithResultSetAsync(query.ToString(), cts.Token);
                 task.Wait(cts.Token);
                 context.CheckTimeout();
 
                 // Transform this Result Set back into a Multiset
-                foreach (ISparqlResult r in task.Result)
+                foreach (var r in task.Result)
                 {
                     var set = new Set();
                     foreach(var v in r.Variables) { set.Add(v, r[v]);}
@@ -2177,10 +2177,10 @@ public class LeviathanQueryProcessor
             {
                 // Possible Bindings comes from BINDINGS clause
                 // In this case each possibility is a distinct binding tuple defined in the BINDINGS clause
-                foreach (BindingTuple tuple in context.Query.Bindings.Tuples)
+                foreach (var tuple in context.Query.Bindings.Tuples)
                 {
                     var set = new Set();
-                    foreach (KeyValuePair<string, PatternItem> binding in tuple.Values)
+                    foreach (var binding in tuple.Values)
                     {
                         set.Add(binding.Key, tuple[binding.Key]);
                     }
@@ -2191,7 +2191,7 @@ public class LeviathanQueryProcessor
             {
                 // Possible Bindings get built from current input (if there was a BINDINGS clause the variables it defines are not in this SERVICE clause)
                 // In this case each possibility only contains Variables bound so far
-                foreach (ISet s in context.InputMultiset.Sets)
+                foreach (var s in context.InputMultiset.Sets)
                 {
                     var t = new Set();
                     foreach (var var in existingVars)
@@ -2216,18 +2216,18 @@ public class LeviathanQueryProcessor
         else
         {
             // Split bindings in chunks and inject them
-            foreach (ISet[] chunk in ChunkBy(bindings, 100))
+            foreach (var chunk in ChunkBy(bindings, 100))
             {
-                IEnumerable<string> vars = chunk.SelectMany(x => x.Variables).Distinct();
+                var vars = chunk.SelectMany(x => x.Variables).Distinct();
                 var data = new BindingsPattern(vars);
-                foreach (ISet set in chunk)
+                foreach (var set in chunk)
                 {
                     var tuple = new BindingTuple(
                         new List<string>(set.Variables),
                         new List<PatternItem>(set.Values.Select(x => new NodeMatchPattern(x))));
                     data.AddTuple(tuple);
                 }
-                SparqlQuery sparqlQuery = GetRemoteQuery(context, pattern);
+                var sparqlQuery = GetRemoteQuery(context, pattern);
                 sparqlQuery.RootGraphPattern.AddInlineData(data);
                 yield return sparqlQuery;
             }
@@ -2251,7 +2251,7 @@ public class LeviathanQueryProcessor
         if (endpointSpecifier.TokenType == Token.URI)
         {
             var baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.AbsoluteUri;
-            Uri endpointUri = context.UriFactory.Create(Tools.ResolveUri(endpointSpecifier.Value, baseUri));
+            var endpointUri = context.UriFactory.Create(Tools.ResolveUri(endpointSpecifier.Value, baseUri));
             return new SparqlQueryClient(context.GetHttpClient(endpointUri), endpointUri);
         }
 
@@ -2261,7 +2261,7 @@ public class LeviathanQueryProcessor
             var var = endpointSpecifier.Value.Substring(1);
             if (!context.InputMultiset.ContainsVariable(var)) throw new RdfQueryException("Cannot evaluate a SERVICE clause which uses a Variable as the Service specifier when the Variable is unbound");
 
-            IEnumerable<SparqlQueryClient> serviceEndpoints = context.InputMultiset.Sets
+            var serviceEndpoints = context.InputMultiset.Sets
                 .Select(set => set[var])
                 .OfType<IUriNode>()
                 .Distinct()
@@ -2385,13 +2385,13 @@ public class LeviathanQueryProcessor
             // Add any Named Graphs to the subquery
             if (context.Query != null)
             {
-                foreach (IRefNode graphName in context.Query.NamedGraphNames)
+                foreach (var graphName in context.Query.NamedGraphNames)
                 {
                     subquery.Query.AddNamedGraph(graphName);
                 }
             }
 
-            ISparqlAlgebra query = subquery.Query.ToAlgebra(_options.AlgebraOptimisation, _options.AlgebraOptimisers);
+            var query = subquery.Query.ToAlgebra(_options.AlgebraOptimisation, _options.AlgebraOptimisers);
             try
             {
                 // Evaluate the Subquery
@@ -2436,18 +2436,18 @@ public class LeviathanQueryProcessor
 
     private BaseMultiset EvaluateLazyUnion(LazyUnion union, SparqlEvaluationContext context)
     {
-        BaseMultiset initialInput = context.InputMultiset;
+        var initialInput = context.InputMultiset;
         if (union.Lhs is Extend || union.Rhs is Extend) initialInput = new IdentityMultiset();
 
         context.InputMultiset = initialInput;
-        BaseMultiset lhsResult = union.Lhs.Accept(this, context);
+        var lhsResult = union.Lhs.Accept(this, context);
         context.CheckTimeout();
 
         if (lhsResult.Count >= union.RequiredResults || union.RequiredResults == -1)
         {
             // Only evaluate the RHS if the LHS didn't yield sufficient results
             context.InputMultiset = initialInput;
-            BaseMultiset rhsResult = union.Rhs.Accept(this, context);
+            var rhsResult = union.Rhs.Accept(this, context);
             context.CheckTimeout();
 
             context.OutputMultiset = lhsResult.Union(rhsResult);
@@ -2464,19 +2464,19 @@ public class LeviathanQueryProcessor
 
     private BaseMultiset EvaluateDefaultUnion(IUnion union, SparqlEvaluationContext context)
     {
-        BaseMultiset initialInput = context.InputMultiset;
+        var initialInput = context.InputMultiset;
         if (union.Lhs is Extend || union.Rhs is Extend) initialInput = new IdentityMultiset();
         if (union is AskUnion)
         {
             context.InputMultiset = initialInput;
-            BaseMultiset lhsResult = union.Lhs.Accept(this, context);
+            var lhsResult = union.Lhs.Accept(this, context);
             context.CheckTimeout();
 
             if (lhsResult.IsEmpty)
             {
                 // Only evaluate the RHS if the LHS was empty
                 context.InputMultiset = initialInput;
-                BaseMultiset rhsResult = union.Rhs.Accept(this, context);
+                var rhsResult = union.Rhs.Accept(this, context);
                 context.CheckTimeout();
 
                 context.OutputMultiset = lhsResult.Union(rhsResult);
@@ -2494,11 +2494,11 @@ public class LeviathanQueryProcessor
         else
         {
             context.InputMultiset = initialInput;
-            BaseMultiset lhsResult = union.Lhs.Accept(this, context);
+            var lhsResult = union.Lhs.Accept(this, context);
             context.CheckTimeout();
 
             context.InputMultiset = initialInput;
-            BaseMultiset rhsResult = union.Rhs.Accept(this, context);
+            var rhsResult = union.Rhs.Accept(this, context);
             context.CheckTimeout();
 
             context.OutputMultiset = lhsResult.Union(rhsResult);
@@ -2545,15 +2545,15 @@ public class LeviathanQueryProcessor
                     if (context.InputMultiset.ContainsVariables(objVars))
                     {
                         // Both Subject and Object are Bound
-                        foreach (ISet s in context.InputMultiset.Sets.Where(set =>
+                        foreach (var s in context.InputMultiset.Sets.Where(set =>
                                      set.BindsAll(subjVars) && set.BindsAll(objVars)))
                         {
-                            INode subj = path.PathStart.Bind(s);
-                            INode obj = path.PathEnd.Bind(s);
-                            ISet x = new Set();
+                            var subj = path.PathStart.Bind(s);
+                            var obj = path.PathEnd.Bind(s);
+                            var x = new Set();
                             if (path.PathStart.Accepts(context, subj, x))
                             {
-                                ISet y = new Set();
+                                var y = new Set();
                                 if (path.PathEnd.Accepts(context, obj, y))
                                 {
                                     context.OutputMultiset.Add(x);
@@ -2565,10 +2565,10 @@ public class LeviathanQueryProcessor
                     else
                     {
                         // Subject is bound but Object is Unbound
-                        foreach (ISet s in context.InputMultiset.Sets.Where(set => set.BindsAll(subjVars)))
+                        foreach (var s in context.InputMultiset.Sets.Where(set => set.BindsAll(subjVars)))
                         {
-                            INode subj = path.PathStart.Bind(s);
-                            ISet x = s.Copy();
+                            var subj = path.PathStart.Bind(s);
+                            var x = s.Copy();
                             if (path.PathStart.Accepts(context, subj, x))
                             {
                                 objVars.ForEach(objVar => x.Add(objVar, subj));
@@ -2581,10 +2581,10 @@ public class LeviathanQueryProcessor
                 {
                     // Object is a Term
                     // Preserve sets where the Object Term is equal to the currently bound Subject
-                    INode objTerm = path.PathEnd.Bind(new Set());
-                    foreach (ISet s in context.InputMultiset.Sets)
+                    var objTerm = path.PathEnd.Bind(new Set());
+                    foreach (var s in context.InputMultiset.Sets)
                     {
-                        INode temp = path.PathStart.Bind(s);
+                        var temp = path.PathStart.Bind(s);
                         if (temp != null && temp.Equals(objTerm))
                         {
                             context.OutputMultiset.Add(s.Copy());
@@ -2601,10 +2601,10 @@ public class LeviathanQueryProcessor
                     if (context.InputMultiset.ContainsVariables(objVars))
                     {
                         // Object is Bound but Subject is unbound
-                        foreach (ISet s in context.InputMultiset.Sets.Where(set => set.BindsAll(objVars)))
+                        foreach (var s in context.InputMultiset.Sets.Where(set => set.BindsAll(objVars)))
                         {
-                            INode obj = path.PathEnd.Bind(s);
-                            ISet x = s.Copy();
+                            var obj = path.PathEnd.Bind(s);
+                            var x = s.Copy();
                             if (path.PathEnd.Accepts(context, obj, x))
                             {
                                 subjVars.ForEach(subjVar => x.Add(subjVar, obj));
@@ -2616,12 +2616,12 @@ public class LeviathanQueryProcessor
                     {
                         // Subject and Object are Unbound
                         var nodes = new HashSet<INode>();
-                        foreach (Triple t in context.Data.Triples)
+                        foreach (var t in context.Data.Triples)
                         {
                             nodes.Add(t.Subject);
                             nodes.Add(t.Object);
                         }
-                        foreach (INode n in nodes)
+                        foreach (var n in nodes)
                         {
                             if ((path.PathStart is QuotedTriplePattern || path.PathEnd is QuotedTriplePattern) && n is not ITripleNode) continue;
                             var s = new Set();
@@ -2636,7 +2636,7 @@ public class LeviathanQueryProcessor
                     // Object is a Term
                     // Create a single set with the Variable bound to the Object Term
                     var s = new Set();
-                    INode objNode = path.PathEnd.Bind(new Set());
+                    var objNode = path.PathEnd.Bind(new Set());
                     path.PathStart.AddBindings(objNode, s);
                     context.OutputMultiset.Add(s);
                 }
@@ -2645,14 +2645,14 @@ public class LeviathanQueryProcessor
         else if (!path.PathEnd.IsFixed)
         {
             // Subject is a Term but Object is a Variable
-            INode subjTerm = path.PathStart.Bind(new Set());
+            var subjTerm = path.PathStart.Bind(new Set());
             if (context.InputMultiset.ContainsVariables(objVars))
             {
                 // Object is Bound
                 // Preserve sets where the Subject Term is equal to the currently bound Object
-                foreach (ISet s in context.InputMultiset.Sets)
+                foreach (var s in context.InputMultiset.Sets)
                 {
-                    INode temp = path.PathEnd.Bind(s);
+                    var temp = path.PathEnd.Bind(s);
                     if (temp != null && temp.Equals(subjTerm))
                     {
                         context.OutputMultiset.Add(s.Copy());
@@ -2687,7 +2687,7 @@ public class LeviathanQueryProcessor
     {
         context ??= GetContext();
         var paths = new List<List<INode>>();
-        BaseMultiset initialInput = context.InputMultiset;
+        var initialInput = context.InputMultiset;
         int step = 0, prevCount = 0, skipCount = 0;
         var subjVars = zeroOrMorePath.PathStart.Variables.ToList();
         var objVars = zeroOrMorePath.PathEnd.Variables.ToList();
@@ -2734,9 +2734,9 @@ public class LeviathanQueryProcessor
         do
         {
             prevCount = paths.Count;
-            foreach (List<INode> path in paths.Skip(skipCount).ToList())
+            foreach (var path in paths.Skip(skipCount).ToList())
             {
-                foreach (INode nextStep in EvaluateStep(zeroOrMorePath, context, path, reverse))
+                foreach (var nextStep in EvaluateStep(zeroOrMorePath, context, path, reverse))
                 {
                     var newPath = new List<INode>(path) { nextStep };
                     paths.Add(newPath);
@@ -2754,7 +2754,7 @@ public class LeviathanQueryProcessor
             if (bothTerms)
             {
                 var exit = false;
-                foreach (List<INode> path in paths)
+                foreach (var path in paths)
                 {
                     var s = new Set();
                     if (reverse)
@@ -2789,7 +2789,7 @@ public class LeviathanQueryProcessor
 
             // Evaluate the Paths to check that are acceptable
             var returnedPaths = new HashSet<ISet>();
-            foreach (List<INode> path in paths)
+            foreach (var path in paths)
             {
                 if (reverse)
                 {
@@ -2839,9 +2839,9 @@ public class LeviathanQueryProcessor
             // Then union in the zero length paths
             context.InputMultiset = initialInput;
             var zeroPath = new ZeroLengthPath(zeroOrMorePath.PathStart, zeroOrMorePath.PathEnd, zeroOrMorePath.Path);
-            BaseMultiset currResults = context.OutputMultiset;
+            var currResults = context.OutputMultiset;
             context.OutputMultiset = new Multiset();
-            BaseMultiset results = context.Evaluate(zeroPath);
+            var results = context.Evaluate(zeroPath);
             context.OutputMultiset = currResults;
             context.OutputMultiset.Merge(results);
         }
@@ -2960,7 +2960,7 @@ public class LeviathanQueryProcessor
     {
         if (context.InputMultiset is NullMultiset) return context.InputMultiset;
 
-        foreach (ISparqlFilter subFilter in filter.Filters)
+        foreach (var subFilter in filter.Filters)
         {
             subFilter.Accept(this, context);
         }
@@ -2971,7 +2971,7 @@ public class LeviathanQueryProcessor
     /// <inheritdoc />
     public BaseMultiset ProcessSingleValueRestrictionFilter(SingleValueRestrictionFilter filter, SparqlEvaluationContext context)
     {
-        INode term = filter.RestrictionValue.Accept(_expressionProcessor, context, 0);
+        var term = filter.RestrictionValue.Accept(_expressionProcessor, context, 0);
 
         // First take appropriate pre-filtering actions
         if (context.InputMultiset is IdentityMultiset)
@@ -2996,7 +2996,7 @@ public class LeviathanQueryProcessor
                 // If the Input Multiset contains the variable then pre-filter
                 foreach (var id in context.InputMultiset.SetIDs.ToList())
                 {
-                    ISet x = context.InputMultiset[id];
+                    var x = context.InputMultiset[id];
                     try
                     {
                         if (x.ContainsVariable(filter.RestrictionVariable))
@@ -3019,7 +3019,7 @@ public class LeviathanQueryProcessor
             else
             {
                 // If it doesn't contain the variable then bind for each existing set
-                foreach (ISet x in context.InputMultiset.Sets)
+                foreach (var x in context.InputMultiset.Sets)
                 {
                     x.Add(filter.RestrictionVariable, term);
                 }
@@ -3027,13 +3027,13 @@ public class LeviathanQueryProcessor
         }
 
         // Then evaluate the inner algebra
-        BaseMultiset results = context.Evaluate(filter.InnerAlgebra);
+        var results = context.Evaluate(filter.InnerAlgebra);
         if (results is NullMultiset || results is IdentityMultiset) return results;
 
         // Filter the results to ensure that the variable is indeed bound to the term
         foreach (var id in results.SetIDs.ToList())
         {
-            ISet x = results[id];
+            var x = results[id];
             try
             {
                 if (!term.Equals(x[filter.RestrictionVariable]))
@@ -3071,7 +3071,7 @@ public class LeviathanQueryProcessor
             var s = new Set();
             try
             {
-                INode temp = bindPattern.InnerExpression.Accept(_expressionProcessor, context, 0);
+                var temp = bindPattern.InnerExpression.Accept(_expressionProcessor, context, 0);
                 s.Add(bindPattern.Variable, temp);
             }
             catch
@@ -3091,11 +3091,11 @@ public class LeviathanQueryProcessor
             context.OutputMultiset.AddVariable(bindPattern.Variable);
             foreach (var id in context.InputMultiset.SetIDs.ToList())
             {
-                ISet s = context.InputMultiset[id].Copy();
+                var s = context.InputMultiset[id].Copy();
                 try
                 {
                     // Make a new assignment
-                    INode temp = bindPattern.InnerExpression.Accept(_expressionProcessor, context, id);
+                    var temp = bindPattern.InnerExpression.Accept(_expressionProcessor, context, id);
                     s.Add(bindPattern.Variable, temp);
                 }
                 catch
@@ -3158,7 +3158,7 @@ public class LeviathanQueryProcessor
             var s = new Set();
             try
             {
-                INode temp = letPattern.AssignExpression.Accept(_expressionProcessor, context, 0);
+                var temp = letPattern.AssignExpression.Accept(_expressionProcessor, context, 0);
                 s.Add(letPattern.VariableName, temp);
                 context.OutputMultiset.Add(s);
             }
@@ -3171,14 +3171,14 @@ public class LeviathanQueryProcessor
         {
             foreach (var id in context.InputMultiset.SetIDs.ToList())
             {
-                ISet s = context.InputMultiset[id];
+                var s = context.InputMultiset[id];
                 if (s.ContainsVariable(letPattern.VariableName))
                 {
                     try
                     {
                         // A value already exists so see if the two values match
-                        INode current = s[letPattern.VariableName];
-                        INode temp = letPattern.AssignExpression.Accept(_expressionProcessor, context, id);
+                        var current = s[letPattern.VariableName];
+                        var temp = letPattern.AssignExpression.Accept(_expressionProcessor, context, id);
                         if (!current.Equals(temp))
                         {
                             // Where the values aren't equal the solution is eliminated
@@ -3197,7 +3197,7 @@ public class LeviathanQueryProcessor
                     try
                     {
                         // Make a new assignment
-                        INode temp = letPattern.AssignExpression.Accept(_expressionProcessor, context, id);
+                        var temp = letPattern.AssignExpression.Accept(_expressionProcessor, context, id);
                         s.Add(letPattern.VariableName, temp);
                     }
                     catch
@@ -3236,11 +3236,11 @@ public class LeviathanQueryProcessor
         {
             transformContext.NextID = (int)context["PathTransformID"];
         }
-        ISparqlAlgebra algebra = propertyPathPattern.Path.ToAlgebra(transformContext);
+        var algebra = propertyPathPattern.Path.ToAlgebra(transformContext);
         context["PathTransformID"] = transformContext.NextID + 1;
 
         // Now we can evaluate the resulting algebra
-        BaseMultiset initialInput = context.InputMultiset;
+        var initialInput = context.InputMultiset;
         var trimMode = context.TrimTemporaryVariables;
         var rigMode = context.Options.RigorousEvaluation;
         try
@@ -3253,7 +3253,7 @@ public class LeviathanQueryProcessor
             // into an algebra at a time and may need to do further nested translate calls we do
             // need to do this here
             context.TrimTemporaryVariables = false;
-            BaseMultiset result = context.Evaluate(algebra);//algebra.Evaluate(context);
+            var result = context.Evaluate(algebra);//algebra.Evaluate(context);
             // Also note that we don't trim temporary variables here even if we've set the setting back
             // to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
 
@@ -3298,13 +3298,13 @@ public class LeviathanQueryProcessor
             // Add any Named Graphs to the subquery
             if (context.Query != null)
             {
-                foreach (IRefNode u in context.Query.NamedGraphNames)
+                foreach (var u in context.Query.NamedGraphNames)
                 {
                     subQueryPattern.SubQuery.AddNamedGraph(u);
                 }
             }
 
-            ISparqlAlgebra query = subQueryPattern.SubQuery.ToAlgebra(_options.AlgebraOptimisation, _options.AlgebraOptimisers);
+            var query = subQueryPattern.SubQuery.ToAlgebra(_options.AlgebraOptimisation, _options.AlgebraOptimisers);
             try
             {
                 // Evaluate the Subquery
@@ -3419,19 +3419,19 @@ public class LeviathanQueryProcessor
         context.OutputMultiset = localOutput;
 
         // Get the Triple Pattern we're evaluating
-        ITriplePattern temp = triplePatterns[pattern];
+        var temp = triplePatterns[pattern];
         var resultsFound = 0;
 
         if (temp.PatternType == TriplePatternType.Match)
         {
             // Find the first Triple which matches the Pattern
             var tp = (IMatchTriplePattern)temp;
-            foreach (Triple t in context.GetTriples(tp))
+            foreach (var t in context.GetTriples(tp))
             {
                 // Remember to check for Timeout during lazy evaluation
                 context.CheckTimeout();
 
-                ISet result = tp.Evaluate(context, t);
+                var result = tp.Evaluate(context, t);
                 if (result != null)
                 {
                     resultsFound++;
@@ -3478,8 +3478,8 @@ public class LeviathanQueryProcessor
         else if (temp.PatternType == TriplePatternType.Filter)
         {
             var fp = (IFilterPattern)temp;
-            ISparqlFilter filter = fp.Filter;
-            ISparqlExpression expr = filter.Expression;
+            var filter = fp.Filter;
+            var expr = filter.Expression;
 
             // Find the first result of those we've got so far that matches
             if (context.InputMultiset is IdentityMultiset || context.InputMultiset.IsEmpty)
@@ -3614,19 +3614,19 @@ public class LeviathanQueryProcessor
         context.OutputMultiset = localOutput;
 
         // Get the Triple Pattern we're evaluating
-        ITriplePattern temp = triplePatterns[pattern];
+        var temp = triplePatterns[pattern];
         var resultsFound = 0;
 
         if (temp.PatternType == TriplePatternType.Match)
         {
             // Find the first Triple which matches the Pattern
             var tp = (IMatchTriplePattern)temp;
-            foreach (Triple t in context.GetTriples(tp))
+            foreach (var t in context.GetTriples(tp))
             {
                 // Remember to check for Timeout during lazy evaluation
                 context.CheckTimeout();
 
-                ISet result = tp.Evaluate(context, t);
+                var result = tp.Evaluate(context, t);
                 if (result != null)
                 {
                     resultsFound++;
@@ -3670,8 +3670,8 @@ public class LeviathanQueryProcessor
         else if (temp.PatternType == TriplePatternType.Filter)
         {
             var fp = (IFilterPattern)temp;
-            ISparqlFilter filter = fp.Filter;
-            ISparqlExpression expr = filter.Expression;
+            var filter = fp.Filter;
+            var expr = filter.Expression;
 
             // Find the first result of those we've got so far that matches
             if (context.InputMultiset is IdentityMultiset || context.InputMultiset.IsEmpty)
@@ -3903,7 +3903,7 @@ public class LeviathanQueryProcessor
         context.OutputMultiset = localOutput;
 
         // Get the Triple Pattern we're evaluating
-        ITriplePattern temp = bgp.TriplePatterns[pattern];
+        var temp = bgp.TriplePatterns[pattern];
         var resultsFound = 0;
         var prevResults = -1;
 
@@ -3911,7 +3911,7 @@ public class LeviathanQueryProcessor
         {
             // Find the first Triple which matches the Pattern
             var tp = (IMatchTriplePattern)temp;
-            IEnumerable<Triple> ts = context.GetTriples(tp);
+            var ts = context.GetTriples(tp);
 
             // In the case that we're lazily evaluating an optimisable ORDER BY then
             // we need to apply OrderBy()'s to our enumeration
@@ -3922,7 +3922,7 @@ public class LeviathanQueryProcessor
                 {
                     if (context.Query.OrderBy != null && context.Query.IsOptimisableOrderBy)
                     {
-                        IComparer<Triple> comparer = context.Query.OrderBy.GetComparer(tp, context.OrderingComparer);
+                        var comparer = context.Query.OrderBy.GetComparer(tp, context.OrderingComparer);
                         if (comparer != null)
                         {
                             ts = ts.OrderBy(t => t, comparer);
@@ -3938,9 +3938,9 @@ public class LeviathanQueryProcessor
                 }
             }
 
-            foreach (Triple t in ts)
+            foreach (var t in ts)
             {
-                ISet result = tp.Evaluate(context, t);
+                var result = tp.Evaluate(context, t);
                 if (result != null)
                 {
                     resultsFound++;
@@ -4030,7 +4030,7 @@ public class LeviathanQueryProcessor
         else if (temp.PatternType == TriplePatternType.Filter)
         {
             var filter = (IFilterPattern)temp;
-            ISparqlExpression filterExpr = filter.Filter.Expression;
+            var filterExpr = filter.Filter.Expression;
 
             if (!filter.Variables.Intersect(context.InputMultiset.Variables).Any())
             {
@@ -4126,7 +4126,7 @@ public class LeviathanQueryProcessor
         else if (temp is BindPattern)
         {
             var bind = (BindPattern)temp;
-            ISparqlExpression bindExpr = bind.AssignExpression;
+            var bindExpr = bind.AssignExpression;
             var bindVar = bind.VariableName;
 
             if (context.InputMultiset.ContainsVariable(bindVar))
@@ -4138,12 +4138,12 @@ public class LeviathanQueryProcessor
             {
                 // Compute the Binding for every value
                 context.OutputMultiset.AddVariable(bindVar);
-                foreach (ISet s in context.InputMultiset.Sets)
+                foreach (var s in context.InputMultiset.Sets)
                 {
-                    ISet x = s.Copy();
+                    var x = s.Copy();
                     try
                     {
-                        INode val = bindExpr.Accept(_expressionProcessor, context, s.ID);
+                        var val = bindExpr.Accept(_expressionProcessor, context, s.ID);
                         x.Add(bindVar, val);
                     }
                     catch (RdfQueryException)
@@ -4214,8 +4214,8 @@ public class LeviathanQueryProcessor
 
     private BaseMultiset EvaluateFilteredProduct(FilteredProduct fp, SparqlEvaluationContext context)
     {
-        BaseMultiset initialInput = context.InputMultiset;
-        BaseMultiset lhsResults = fp.Lhs.Accept(this, context);
+        var initialInput = context.InputMultiset;
+        var lhsResults = fp.Lhs.Accept(this, context);
 
         if (lhsResults is NullMultiset || lhsResults.IsEmpty)
         {
@@ -4226,7 +4226,7 @@ public class LeviathanQueryProcessor
         {
 
             context.InputMultiset = initialInput;
-            BaseMultiset rhsResults = fp.Rhs.Accept(this, context);
+            var rhsResults = fp.Rhs.Accept(this, context);
             if (rhsResults is NullMultiset || rhsResults.IsEmpty)
             {
                 // If RHS Results are Null/Empty then end results will always be null so short circuit
@@ -4246,7 +4246,7 @@ public class LeviathanQueryProcessor
                 if (context.Options.UsePLinqEvaluation && fp.FilterExpression.CanParallelise)
                 {
                     PartitionedMultiset partitionedSet;
-                    SparqlResultBinder binder = context.Binder;
+                    var binder = context.Binder;
                     if (lhsResults.Count >= rhsResults.Count)
                     {
                         partitionedSet = new PartitionedMultiset(lhsResults.Count, rhsResults.Count);
@@ -4265,14 +4265,14 @@ public class LeviathanQueryProcessor
                 }
                 else
                 {
-                    BaseMultiset productSet = new Multiset();
-                    SparqlResultBinder binder = context.Binder;
+                    var productSet = new Multiset();
+                    var binder = context.Binder;
                     context.Binder = new LeviathanLeftJoinBinder(productSet);
-                    foreach (ISet x in lhsResults.Sets)
+                    foreach (var x in lhsResults.Sets)
                     {
-                        foreach (ISet y in rhsResults.Sets)
+                        foreach (var y in rhsResults.Sets)
                         {
-                            ISet z = x.Join(y);
+                            var z = x.Join(y);
                             productSet.Add(z);
                             try
                             {
@@ -4302,10 +4302,10 @@ public class LeviathanQueryProcessor
     private void EvalFilteredProduct(ISparqlExpression filterExpression, SparqlEvaluationContext context, ISet x, BaseMultiset other, PartitionedMultiset partitionedSet)
     {
         var id = partitionedSet.GetNextBaseID();
-        foreach (ISet y in other.Sets)
+        foreach (var y in other.Sets)
         {
             id++;
-            ISet z = x.Join(y);
+            var z = x.Join(y);
             z.ID = id;
             partitionedSet.Add(z);
             try
@@ -4337,7 +4337,7 @@ public class LeviathanQueryProcessor
         if (context.InputMultiset is not IdentityMultiset)
         {
             context2.InputMultiset = new Multiset();
-            foreach (ISet s in context.InputMultiset.Sets)
+            foreach (var s in context.InputMultiset.Sets)
             {
                 context2.InputMultiset.Add(s.Copy());
             }
@@ -4348,11 +4348,11 @@ public class LeviathanQueryProcessor
 
         // Start both executing asynchronously
         var cts = new CancellationTokenSource();
-        CancellationToken cancellationToken = cts.Token;
-        Task<BaseMultiset> lhsEvaluation =
+        var cancellationToken = cts.Token;
+        var lhsEvaluation =
             Task.Factory.StartNew(() => ParallelEvaluate(join.Lhs, context, activeGraphs, defaultGraphs),
                 cancellationToken);
-        Task<BaseMultiset> rhsEvaluation =
+        var rhsEvaluation =
             Task.Factory.StartNew(() => ParallelEvaluate(join.Rhs, context2, activeGraphs, defaultGraphs),
                 cancellationToken);
         var evaluationTasks = new Task[] { lhsEvaluation, rhsEvaluation };
@@ -4367,7 +4367,7 @@ public class LeviathanQueryProcessor
                 Task.WaitAny(evaluationTasks, cancellationToken);
             }
 
-            BaseMultiset firstResult = lhsEvaluation.IsCompleted ? lhsEvaluation.Result : rhsEvaluation.Result;
+            var firstResult = lhsEvaluation.IsCompleted ? lhsEvaluation.Result : rhsEvaluation.Result;
             if (firstResult == null)
             {
                 context.OutputMultiset = new NullMultiset();
@@ -4390,8 +4390,8 @@ public class LeviathanQueryProcessor
                     Task.WaitAll(evaluationTasks, cancellationToken);
                 }
 
-                BaseMultiset lhsResult = lhsEvaluation.Result;
-                BaseMultiset rhsResult = rhsEvaluation.Result;
+                var lhsResult = lhsEvaluation.Result;
+                var rhsResult = rhsEvaluation.Result;
                 if (lhsResult is NullMultiset)
                 {
                     context.OutputMultiset = lhsResult;
@@ -4420,7 +4420,7 @@ public class LeviathanQueryProcessor
         }
         catch (AggregateException ex)
         {
-            Exception firstCause = ex.InnerExceptions.FirstOrDefault();
+            var firstCause = ex.InnerExceptions.FirstOrDefault();
             if (firstCause is RdfException) throw firstCause;
             throw new RdfQueryException("Error in parallel join evaluation.", ex);
         }
@@ -4495,7 +4495,7 @@ public class LeviathanQueryProcessor
         if (context.InputMultiset is not IdentityMultiset)
         {
             context2.InputMultiset = new Multiset();
-            foreach (ISet s in context.InputMultiset.Sets)
+            foreach (var s in context.InputMultiset.Sets)
             {
                 context2.InputMultiset.Add(s.Copy());
             }
@@ -4504,15 +4504,15 @@ public class LeviathanQueryProcessor
         var activeGraphs = context.Data.ActiveGraphNames.ToList();
         var defaultGraphs = context.Data.ActiveGraphNames.ToList();
 
-        Task<BaseMultiset> lhsTask = Task.Factory.StartNew(() => ParallelEvaluate(union.Lhs, context, activeGraphs, defaultGraphs));
-        Task<BaseMultiset> rhsTask = Task.Factory.StartNew(() => ParallelEvaluate(union.Rhs, context2, activeGraphs, defaultGraphs));
+        var lhsTask = Task.Factory.StartNew(() => ParallelEvaluate(union.Lhs, context, activeGraphs, defaultGraphs));
+        var rhsTask = Task.Factory.StartNew(() => ParallelEvaluate(union.Rhs, context2, activeGraphs, defaultGraphs));
         Task[] evaluationTasks = [lhsTask, rhsTask];
         try
         {
             Task.WaitAll(evaluationTasks);
             context.CheckTimeout();
-            BaseMultiset lhsResult = lhsTask.Result;
-            BaseMultiset rhsResult = rhsTask.Result;
+            var lhsResult = lhsTask.Result;
+            var rhsResult = rhsTask.Result;
             context.OutputMultiset = lhsResult.Union(rhsResult);
             context.CheckTimeout();
             context.InputMultiset = context.OutputMultiset;

@@ -63,7 +63,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
 
     protected override IValuedNode GetBoundValue(string variableName, SparqlEvaluationContext context, int binding)
     {
-        INode value = context.Binder.Value(variableName, binding);
+        var value = context.Binder.Value(variableName, binding);
         return value.AsValuedNode();
     }
 
@@ -78,7 +78,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
             IValuedNode aggValue;
             if (context.Binder.IsGroup(binding))
             {
-                BindingGroup group = context.Binder.Group(binding);
+                var group = context.Binder.Group(binding);
                 context.Binder.SetGroupContext(true);
                 aggValue = aggregate.Aggregate.Accept(AggregateProcessor, context, group.BindingIDs);
                 context.Binder.SetGroupContext(false);
@@ -102,7 +102,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
 
     public override IValuedNode ProcessExistsFunction(ExistsFunction exists, SparqlEvaluationContext context, int binding)
     {
-        if (!_existsCache.TryGetValue(exists, out ExistsCacheEntry cacheEntry) ||
+        if (!_existsCache.TryGetValue(exists, out var cacheEntry) ||
             cacheEntry.InputHashCode != context.InputMultiset.GetHashCode() ||
             cacheEntry.InputCount != context.InputMultiset.Count
         )
@@ -128,7 +128,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
             return exists.MustExist ? new BooleanNode(true) : new BooleanNode(false);
         }
 
-        ISet x = context.InputMultiset[binding];
+        var x = context.InputMultiset[binding];
 
         var found = cacheEntry.Bindings.Contains(x.ID);
         return exists.MustExist ? new BooleanNode(found) : new BooleanNode(!found);
@@ -148,8 +148,8 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
         };
 
         // REQ: Optimise the algebra here
-        ISparqlAlgebra existsClause = exists.Pattern.ToAlgebra();
-        BaseMultiset result = existsClause.Accept(_algebraProcessor, context);
+        var existsClause = exists.Pattern.ToAlgebra();
+        var result = existsClause.Accept(_algebraProcessor, context);
         cacheEntry.ResultNullOrEmpty = result.IsEmpty;
 
         // This is the new algorithm which is also correct but is O(3n) so much faster and scalable
@@ -167,15 +167,15 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
         }
 
         // First do a pass over the LHS Result to find all possible values for joined variables
-        foreach (ISet x in origContext.InputMultiset.Sets)
+        foreach (var x in origContext.InputMultiset.Sets)
         {
             var i = 0;
             foreach (var var in joinVars)
             {
-                INode value = x[var];
+                var value = x[var];
                 if (value != null)
                 {
-                    if (values[i].TryGetValue(value, out List<int> ids))
+                    if (values[i].TryGetValue(value, out var ids))
                     {
                         ids.Add(x.ID);
                     }
@@ -195,13 +195,13 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
 
         // Then do a pass over the RHS and work out the intersections
         cacheEntry.Bindings = [];
-        foreach (ISet y in result.Sets)
+        foreach (var y in result.Sets)
         {
             IEnumerable<int> possMatches = null;
             var i = 0;
             foreach (var var in joinVars)
             {
-                INode value = y[var];
+                var value = y[var];
                 if (value != null)
                 {
                     if (values[i].ContainsKey(value))
@@ -262,7 +262,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
             }
             else
             {
-                INode temp = bNode.InnerExpression.Accept(this, context, binding);
+                var temp = bNode.InnerExpression.Accept(this, context, binding);
                 if (temp != null)
                 {
                     if (temp.NodeType == NodeType.Literal)
@@ -350,7 +350,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
     public override IValuedNode ProcessIriFunction(IriFunction iri, SparqlEvaluationContext context, int binding)
     {
         {
-            IValuedNode result = iri.InnerExpression.Accept(this, context, binding);
+            var result = iri.InnerExpression.Accept(this, context, binding);
             if (result == null)
             {
                 throw new RdfQueryException("Cannot create an IRI from a null");
@@ -409,7 +409,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
 
         lock (rand)
         {
-            if (randExprCache.TryGetValue(binding, out IValuedNode result)) return result;
+            if (randExprCache.TryGetValue(binding, out var result)) return result;
             result = new DoubleNode(_rnd.NextDouble());
             randExprCache[binding] = result;
             return result;

@@ -58,7 +58,7 @@ internal class LeviathanAggregateProcessor : ISparqlAggregateProcessor<IValuedNo
         var dectotal = 0.0m;
         var flttotal = 0.0f;
         var dbltotal = 0.0d;
-        SparqlNumericType maxtype = SparqlNumericType.NaN;
+        var maxtype = SparqlNumericType.NaN;
         SparqlNumericType numtype;
 
         foreach (var id in bindings)
@@ -213,7 +213,7 @@ internal class LeviathanAggregateProcessor : ISparqlAggregateProcessor<IValuedNo
 
             // Just Count the number of results where the variable is bound
             var varExpr = (VariableTerm)countDistinct.Expression;
-            foreach (IValuedNode value in bindings
+            foreach (var value in bindings
                 .Select(id => countDistinct.Expression.Accept(_expressionProcessor, context, id))
                 .Where(x => x != null))
             {
@@ -228,7 +228,7 @@ internal class LeviathanAggregateProcessor : ISparqlAggregateProcessor<IValuedNo
             {
                 try
                 {
-                    IValuedNode temp = countDistinct.Expression.Accept(_expressionProcessor, context, id);
+                    var temp = countDistinct.Expression.Accept(_expressionProcessor, context, id);
                     if (temp != null)
                     {
                         values.Add(temp);
@@ -246,7 +246,7 @@ internal class LeviathanAggregateProcessor : ISparqlAggregateProcessor<IValuedNo
 
     public IValuedNode ProcessGroupConcat(GroupConcatAggregate groupConcat, SparqlEvaluationContext context, IEnumerable<int> bindings)
     {
-        IValuedNode n = ProcessConcat(
+        var n = ProcessConcat(
             (id)=>GroupConcatValue(groupConcat.Expression, context, id),
             (id)=>StringJoinSeparator(groupConcat.SeparatorExpression, context, id),
             context, bindings, groupConcat.Distinct);
@@ -255,7 +255,7 @@ internal class LeviathanAggregateProcessor : ISparqlAggregateProcessor<IValuedNo
 
     private string GroupConcatValue(ISparqlExpression expression, SparqlEvaluationContext context, int bindingId)
     {
-        IValuedNode temp = expression.Accept(_expressionProcessor, context, bindingId);
+        var temp = expression.Accept(_expressionProcessor, context, bindingId);
         if (temp == null) throw new RdfQueryException("Cannot do an XPath string-join on a null");
         switch (temp.NodeType)
         {
@@ -328,7 +328,7 @@ internal class LeviathanAggregateProcessor : ISparqlAggregateProcessor<IValuedNo
             {
 
                 // First non-null result we find is returned
-                IValuedNode temp = sample.Expression.Accept(_expressionProcessor, context, id);
+                var temp = sample.Expression.Accept(_expressionProcessor, context, id);
                 if (temp != null) return temp;
             }
             catch (RdfQueryException)
@@ -348,7 +348,7 @@ internal class LeviathanAggregateProcessor : ISparqlAggregateProcessor<IValuedNo
         var dectotal = 0.0m;
         var flttotal = 0.0f;
         var dbltotal = 0.0d;
-        SparqlNumericType maxtype = SparqlNumericType.NaN;
+        var maxtype = SparqlNumericType.NaN;
         SparqlNumericType numtype;
         var values = new HashSet<IValuedNode>();
 
@@ -494,7 +494,7 @@ internal class LeviathanAggregateProcessor : ISparqlAggregateProcessor<IValuedNo
 
     private string StringJoinValue(ISparqlExpression expression, SparqlEvaluationContext context, int bindingId)
     {
-        IValuedNode temp = expression.Accept(_expressionProcessor, context, bindingId);
+        var temp = expression.Accept(_expressionProcessor, context, bindingId);
         if (temp == null) throw new RdfQueryException("Cannot do an XPath string-join on a null");
         if (temp.NodeType == NodeType.Literal)
         {
@@ -523,7 +523,7 @@ internal class LeviathanAggregateProcessor : ISparqlAggregateProcessor<IValuedNo
 
     private string StringJoinSeparator(ISparqlExpression expression, SparqlEvaluationContext context, int bindingId)
     {
-        INode temp = expression.Accept(_expressionProcessor, context, bindingId);
+        var temp = expression.Accept(_expressionProcessor, context, bindingId);
         if (temp == null)
         {
             return string.Empty;
@@ -612,7 +612,7 @@ internal class LeviathanAggregateProcessor : ISparqlAggregateProcessor<IValuedNo
         {
             try
             {
-                IValuedNode temp = median.Expression.Accept(_expressionProcessor, context, id);
+                var temp = median.Expression.Accept(_expressionProcessor, context, id);
                 if (median.Distinct)
                 {
                     if (temp != null)
@@ -664,7 +664,7 @@ internal class LeviathanAggregateProcessor : ISparqlAggregateProcessor<IValuedNo
         {
             try
             {
-                IValuedNode temp = mode.Expression.Accept(_expressionProcessor, context, id);
+                var temp = mode.Expression.Accept(_expressionProcessor, context, id);
                 if (temp == null)
                 {
                     nullCount++;
@@ -739,11 +739,11 @@ internal class LeviathanAggregateProcessor : ISparqlAggregateProcessor<IValuedNo
         }
 
         // Prep Variables
-        long lngmax = 0;
+        var lngmax = 0L;
         var decmax = 0.0m;
         var fltmax = 0.0f;
         var dblmax = 0.0d;
-        SparqlNumericType maxtype = SparqlNumericType.NaN;
+        var maxtype = SparqlNumericType.NaN;
         SparqlNumericType numtype;
 
         foreach (var id in bindings)
@@ -882,11 +882,11 @@ internal class LeviathanAggregateProcessor : ISparqlAggregateProcessor<IValuedNo
         }
 
         // Prep Variables
-        long lngmin = 0;
+        var lngmin = 0L;
         var decmin = 0.0m;
         var fltmin = 0.0f;
         var dblmin = 0.0d;
-        SparqlNumericType mintype = SparqlNumericType.NaN;
+        var mintype = SparqlNumericType.NaN;
         SparqlNumericType numtype;
 
         foreach (var id in bindings)

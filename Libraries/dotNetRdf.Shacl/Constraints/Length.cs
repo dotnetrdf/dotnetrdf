@@ -43,7 +43,7 @@ internal abstract class Length : Numeric
 
     internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
     {
-        IEnumerable<INode> invalidValues =
+        var invalidValues =
             from valueNode in valueNodes
             where valueNode.NodeType == NodeType.Blank || !ValidateInternal(SparqlLength(dataGraph, valueNode).CompareTo(NumericValue))
             select valueNode;

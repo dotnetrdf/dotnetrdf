@@ -153,7 +153,7 @@ public class LoaderTests
     {
         var g = new Graph();
         var loader = new Loader(_serverFixture.Client);
-        Uri resourceUri = _serverFixture.UriFor("/one.ttl");
+        var resourceUri = _serverFixture.UriFor("/one.ttl");
         await loader.LoadGraphAsync(g, resourceUri);
         g.Triples.Count.Should().Be(1);
         g.BaseUri.Should().Be(resourceUri, "the loader should set the base URI of the target graph if it is not already set.");
@@ -164,7 +164,7 @@ public class LoaderTests
     {
         var g = new Graph();
         var loader = new Loader(_serverFixture.NoRedirectClient);
-        Uri resourceUri = _serverFixture.UriFor("/redirectRelative");
+        var resourceUri = _serverFixture.UriFor("/redirectRelative");
         await loader.LoadGraphAsync(g, resourceUri);
         g.IsEmpty.Should().BeFalse();
         g.BaseUri.Should().Be(resourceUri);
@@ -175,7 +175,7 @@ public class LoaderTests
     {
         var g = new Graph();
         var loader = new Loader(_serverFixture.NoRedirectClient);
-        Uri resourceUri = _serverFixture.UriFor("/redirectAbsolute");
+        var resourceUri = _serverFixture.UriFor("/redirectAbsolute");
         await loader.LoadGraphAsync(g, resourceUri);
         g.IsEmpty.Should().BeFalse();
         g.BaseUri.Should().Be(resourceUri);
@@ -186,7 +186,7 @@ public class LoaderTests
     {
         var s = new TripleStore();
         var loader = new Loader(_serverFixture.NoRedirectClient);
-        Uri resourceUri = _serverFixture.UriFor("/redirectQuadsRelative");
+        var resourceUri = _serverFixture.UriFor("/redirectQuadsRelative");
         await loader.LoadDatasetAsync(s, resourceUri);
         s.Triples.Should().NotBeEmpty();
     }
@@ -196,7 +196,7 @@ public class LoaderTests
     {
         var s = new TripleStore();
         var loader = new Loader(_serverFixture.NoRedirectClient);
-        Uri resourceUri = _serverFixture.UriFor("/redirectQuadsAbsolute");
+        var resourceUri = _serverFixture.UriFor("/redirectQuadsAbsolute");
         await loader.LoadDatasetAsync(s, resourceUri);
         s.Triples.Should().NotBeEmpty();
     }
@@ -206,8 +206,8 @@ public class LoaderTests
     {
         var g = new Graph();
         var loader = new Loader(_serverFixture.NoRedirectClient) {  MaxRedirects = 0 };
-        Uri resourceUri = _serverFixture.UriFor("/redirectAbsolute");
-        RdfException ex = await Assert.ThrowsAsync<RdfException>(() => loader.LoadGraphAsync(g, resourceUri));
+        var resourceUri = _serverFixture.UriFor("/redirectAbsolute");
+        var ex = await Assert.ThrowsAsync<RdfException>(() => loader.LoadGraphAsync(g, resourceUri));
         ex.Message.Should().Contain("303");
     }
 
@@ -220,7 +220,7 @@ public class LoaderTests
             g.CreateUriNode(new Uri("http://example.org/p")),
             g.CreateUriNode(new Uri("http://example.org/o")));
         var loader = new Loader(_serverFixture.Client);
-        Uri resourceUri = _serverFixture.UriFor("/one.ttl");
+        var resourceUri = _serverFixture.UriFor("/one.ttl");
 
         await loader.LoadGraphAsync(g, resourceUri);
 
@@ -233,7 +233,7 @@ public class LoaderTests
     {
         var h = new CountHandler();
         var loader = new Loader(_serverFixture.Client);
-        Uri resourceUri = _serverFixture.UriFor("/one.nt");
+        var resourceUri = _serverFixture.UriFor("/one.nt");
         await loader.LoadGraphAsync(h, resourceUri, null, CancellationToken.None);
         h.Count.Should().Be(1);
     }
@@ -243,8 +243,8 @@ public class LoaderTests
     {
         var graph = new Graph();
         var loader = new Loader(_serverFixture.Client);
-        Uri resourceUri = _serverFixture.UriFor("/notfound.ttl");
-        RdfException ex = await Assert.ThrowsAsync<RdfException>(() => loader.LoadGraphAsync(graph, resourceUri));
+        var resourceUri = _serverFixture.UriFor("/notfound.ttl");
+        var ex = await Assert.ThrowsAsync<RdfException>(() => loader.LoadGraphAsync(graph, resourceUri));
         ex.Message.Should().Contain(resourceUri.AbsoluteUri).And.Contain("404").And.Contain("Not Found");
     }
 
@@ -253,9 +253,9 @@ public class LoaderTests
     {
         var graph = new Graph();
         var loader = new Loader(_serverFixture.Client);
-        Uri resourceUri = _serverFixture.UriFor("/resource");
+        var resourceUri = _serverFixture.UriFor("/resource");
         await loader.LoadGraphAsync(graph, resourceUri, new TurtleParser(TurtleSyntax.W3C, false), TestContext.Current.CancellationToken);
-        ILogEntry requestLog = _serverFixture.Server.LogEntries.FirstOrDefault(e => e.RequestMessage.Path.EndsWith("/resource"));
+        var requestLog = _serverFixture.Server.LogEntries.FirstOrDefault(e => e.RequestMessage.Path.EndsWith("/resource"));
         requestLog.Should().NotBeNull();
         requestLog.RequestMessage.Headers["Accept"].Should().Contain(v => v.Contains("text/turtle"));
         requestLog.RequestMessage.Headers["Accept"].Should().NotContain(v => v.Contains("application/n-triples"));
@@ -266,7 +266,7 @@ public class LoaderTests
     {
         var store = new TripleStore();
         var loader = new Loader(_serverFixture.Client);
-        Uri resourceUri = _serverFixture.UriFor("/one.trig");
+        var resourceUri = _serverFixture.UriFor("/one.trig");
         await loader.LoadDatasetAsync(store, resourceUri);
         store.Triples.Count().Should().Be(2);
         store.Graphs.Count.Should().Be(2);
@@ -277,7 +277,7 @@ public class LoaderTests
     {
         var g = new Graph();
         var loader = new Loader(_serverFixture.Client);
-        Uri resourceUri = _serverFixture.UriFor("/one.trig");
+        var resourceUri = _serverFixture.UriFor("/one.trig");
         await loader.LoadGraphAsync(g, resourceUri);
         g.Triples.Count.Should().Be(2);
     }
@@ -287,8 +287,8 @@ public class LoaderTests
     {
         var store = new TripleStore();
         var loader = new Loader(_serverFixture.Client);
-        Uri resourceUri = _serverFixture.UriFor("/notfound.trig");
-        RdfException ex = await Assert.ThrowsAsync<RdfException>(() => loader.LoadDatasetAsync(store, resourceUri));
+        var resourceUri = _serverFixture.UriFor("/notfound.trig");
+        var ex = await Assert.ThrowsAsync<RdfException>(() => loader.LoadDatasetAsync(store, resourceUri));
         ex.Message.Should().Contain(resourceUri.AbsoluteUri).And.Contain("404").And.Contain("Not Found");
     }
 
@@ -297,7 +297,7 @@ public class LoaderTests
     {
         var graph = new Graph();
         var loader = new Loader(_serverFixture.Client);
-        Uri resourceUri = _serverFixture.UriFor("/wait");
+        var resourceUri = _serverFixture.UriFor("/wait");
         var cts = new CancellationTokenSource();
         cts.CancelAfter(500);
         await Assert.ThrowsAsync<TaskCanceledException>(() =>
@@ -309,7 +309,7 @@ public class LoaderTests
     {
         var store = new TripleStore();
         var loader = new Loader(_serverFixture.Client);
-        Uri resourceUri = _serverFixture.UriFor("/wait");
+        var resourceUri = _serverFixture.UriFor("/wait");
         var cts = new CancellationTokenSource();
         cts.CancelAfter(500);
         await Assert.ThrowsAsync<TaskCanceledException>(() =>
@@ -321,7 +321,7 @@ public class LoaderTests
     {
         var graph = new Graph();
         var loader = new Loader(_serverFixture.Client);
-        Uri resourceUri = Path.DirectorySeparatorChar.Equals('/')
+        var resourceUri = Path.DirectorySeparatorChar.Equals('/')
             ? new Uri("file://" + Path.GetFullPath(Path.Combine("resources", "simple.ttl")))
             : new Uri(Path.GetFullPath(Path.Combine("resources", "simple.ttl")));
         resourceUri.Scheme.Should().Be("file");
@@ -344,7 +344,7 @@ public class LoaderTests
     {
         var store = new TripleStore();
         var loader = new Loader(_serverFixture.Client);
-        Uri resourceUri = Path.DirectorySeparatorChar.Equals('/')
+        var resourceUri = Path.DirectorySeparatorChar.Equals('/')
             ? new Uri("file://" + Path.GetFullPath(Path.Combine("resources", "simple.trig")))
             : new Uri(Path.GetFullPath(Path.Combine("resources", "simple.trig")));
         resourceUri.Scheme.Should().Be("file");

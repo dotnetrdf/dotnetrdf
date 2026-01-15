@@ -40,11 +40,11 @@ public class LiteralNodeTests
     [Fact]
     public void NodeToLiteralCultureInvariant1()
     {
-        CultureInfo sysCulture = CultureInfo.CurrentCulture;
+        var sysCulture = CultureInfo.CurrentCulture;
         try
         {
             // given
-            INodeFactory nodeFactory = new NodeFactory(new NodeFactoryOptions());
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
 
             // when
             Thread.CurrentThread.CurrentCulture = new CultureInfo("pl");
@@ -55,7 +55,7 @@ public class LiteralNodeTests
             Assert.Equal("15.5", 15.5m.ToLiteral(nodeFactory).Value);
 
             // when
-            CultureInfo culture = CultureInfo.CurrentCulture;
+            var culture = CultureInfo.CurrentCulture;
             // Make a writable clone
             culture = (CultureInfo)culture.Clone();
             culture.NumberFormat.NegativeSign = "!";
@@ -75,12 +75,12 @@ public class LiteralNodeTests
     [Fact]
     public void NodeToLiteralCultureInvariant2()
     {
-        CultureInfo sysCulture = CultureInfo.CurrentCulture;
+        var sysCulture = CultureInfo.CurrentCulture;
         try
         {
-            INodeFactory factory = new NodeFactory(new NodeFactoryOptions());
+            var factory = new NodeFactory(new NodeFactoryOptions());
 
-            CultureInfo culture = CultureInfo.CurrentCulture;
+            var culture = CultureInfo.CurrentCulture;
             culture = (CultureInfo)culture.Clone();
             culture.NumberFormat.NegativeSign = "!";
             Thread.CurrentThread.CurrentCulture = culture;
@@ -100,56 +100,56 @@ public class LiteralNodeTests
     [Fact]
     public void NodeToLiteralDateTimePrecision1()
     {
-        DateTimeOffset now = DateTimeOffset.Now;
+        var now = DateTimeOffset.Now;
         var factory = new NodeFactory(new NodeFactoryOptions());
-        ILiteralNode litNow = now.ToLiteral(factory);
+        var litNow = now.ToLiteral(factory);
 
         //Extract and check it round tripped
-        DateTimeOffset now2 = litNow.AsValuedNode().AsDateTime();
+        var now2 = litNow.AsValuedNode().AsDateTime();
 
-        TimeSpan diff = now - now2;
+        var diff = now - now2;
         Assert.True(diff < new TimeSpan(10), "Loss of precision should be at most 1 micro-second");
     }
 
     [Fact]
     public void NodeToLiteralDateTimePrecision2()
     {
-        DateTime now = DateTime.Now;
+        var now = DateTime.Now;
         var factory = new NodeFactory(new NodeFactoryOptions());
-        ILiteralNode litNow = now.ToLiteral(factory);
+        var litNow = now.ToLiteral(factory);
 
         //Extract and check it round tripped
-        DateTimeOffset now2 = litNow.AsValuedNode().AsDateTime();
+        var now2 = litNow.AsValuedNode().AsDateTime();
 
-        TimeSpan diff = now - now2;
+        var diff = now - now2;
         Assert.True(diff < new TimeSpan(10), "Loss of precision should be at most 1 micro-second");
     }
 
     [Fact]
     public void NodeToLiteralDateTimePrecision3()
     {
-        DateTimeOffset now = DateTimeOffset.Now;
+        var now = DateTimeOffset.Now;
         var factory = new NodeFactory(new NodeFactoryOptions());
-        ILiteralNode litNow = now.ToLiteral(factory, false);
+        var litNow = now.ToLiteral(factory, false);
 
         //Extract and check it round tripped
-        DateTimeOffset now2 = litNow.AsValuedNode().AsDateTime();
+        var now2 = litNow.AsValuedNode().AsDateTime();
 
-        TimeSpan diff = now - now2;
+        var diff = now - now2;
         Assert.True(diff < new TimeSpan(0,0,1), "Loss of precision should be at most 1 second");
     }
 
     [Fact]
     public void NodeToLiteralDateTimePrecision4()
     {
-        DateTime now = DateTime.Now;
+        var now = DateTime.Now;
         var factory = new NodeFactory(new NodeFactoryOptions());
-        ILiteralNode litNow = now.ToLiteral(factory, false);
+        var litNow = now.ToLiteral(factory, false);
 
         //Extract and check it round tripped
-        DateTimeOffset now2 = litNow.AsValuedNode().AsDateTime();
+        var now2 = litNow.AsValuedNode().AsDateTime();
 
-        TimeSpan diff = now - now2;
+        var diff = now - now2;
         Assert.True(diff < new TimeSpan(0,0,1), "Loss of precision should be at most 1 second");
     }
 
@@ -157,8 +157,8 @@ public class LiteralNodeTests
     public void NodeLiteralLanguageSpecifierCase1()
     {
         var factory = new NodeFactory(new NodeFactoryOptions());
-        ILiteralNode lcase = factory.CreateLiteralNode("example", "en-gb");
-        ILiteralNode ucase = factory.CreateLiteralNode("example", "en-GB");
+        var lcase = factory.CreateLiteralNode("example", "en-gb");
+        var ucase = factory.CreateLiteralNode("example", "en-GB");
 
         Assert.True(EqualityHelper.AreLiteralsEqual(lcase, ucase));
     }
@@ -167,8 +167,8 @@ public class LiteralNodeTests
     public void NodeLiteralLanguageSpecifierCase2()
     {
         var factory = new NodeFactory(new NodeFactoryOptions());
-        ILiteralNode lcase = factory.CreateLiteralNode("example", "en-gb");
-        ILiteralNode ucase = factory.CreateLiteralNode("example", "en-GB");
+        var lcase = factory.CreateLiteralNode("example", "en-gb");
+        var ucase = factory.CreateLiteralNode("example", "en-GB");
 
         Assert.Equal(0, ComparisonHelper.CompareLiterals(lcase, ucase));
     }
@@ -176,11 +176,11 @@ public class LiteralNodeTests
     [Fact]
     public void NodeLiteralLanguageSpecifierCase3()
     {
-        IGraph g = new Graph();
-        ILiteralNode lcase = g.CreateLiteralNode("example", "en-gb");
-        ILiteralNode ucase = g.CreateLiteralNode("example", "en-GB");
-        INode s = g.CreateBlankNode();
-        INode p = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
+        var g = new Graph();
+        var lcase = g.CreateLiteralNode("example", "en-gb");
+        var ucase = g.CreateLiteralNode("example", "en-GB");
+        var s = g.CreateBlankNode();
+        var p = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
 
         g.Assert(s, p, lcase);
         g.Assert(s, p, ucase);
@@ -196,7 +196,7 @@ public class LiteralNodeTests
     [Fact]
     public void LanguageTagsAreValidated()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         // By default Turtle validation is used
         g.CreateLiteralNode("example", ValidTurtleLanguageSpecifier);
         Assert.Throws<ArgumentException>(() => g.CreateLiteralNode("example", InvalidLanguageSpecifier));
@@ -205,7 +205,7 @@ public class LiteralNodeTests
     [Fact]
     public void LanguageTagValidationCanBeDisabled()
     {
-        IGraph g = new Graph(null, new NodeFactory(new NodeFactoryOptions() { LanguageTagValidation = LanguageTagValidationMode.None }));
+        var g = new Graph(null, new NodeFactory(new NodeFactoryOptions() { LanguageTagValidation = LanguageTagValidationMode.None }));
         g.CreateLiteralNode("example", ValidTurtleLanguageSpecifier);
         g.CreateLiteralNode("example", InvalidLanguageSpecifier);
     }
@@ -213,7 +213,7 @@ public class LiteralNodeTests
     [Fact]
     public void LanguageTagValidationCanBeTurtle()
     {
-        IGraph g = new Graph(null, new NodeFactory(new NodeFactoryOptions() { LanguageTagValidation = LanguageTagValidationMode.Turtle }));
+        var g = new Graph(null, new NodeFactory(new NodeFactoryOptions() { LanguageTagValidation = LanguageTagValidationMode.Turtle }));
         g.CreateLiteralNode("example", ValidTurtleLanguageSpecifier);
         Assert.Throws<ArgumentException>(() => g.CreateLiteralNode("example", InvalidLanguageSpecifier));
     }
@@ -221,8 +221,8 @@ public class LiteralNodeTests
     [Fact]
     public void EmptyLanguageTagsAreNotValidated()
     {
-        IGraph g1 = new Graph(null, new NodeFactory(new NodeFactoryOptions() { LanguageTagValidation = LanguageTagValidationMode.WellFormed }));
-        IGraph g2 = new Graph(null, new NodeFactory(new NodeFactoryOptions() { LanguageTagValidation = LanguageTagValidationMode.Turtle }));
+        var g1 = new Graph(null, new NodeFactory(new NodeFactoryOptions() { LanguageTagValidation = LanguageTagValidationMode.WellFormed }));
+        var g2 = new Graph(null, new NodeFactory(new NodeFactoryOptions() { LanguageTagValidation = LanguageTagValidationMode.Turtle }));
         g1.CreateLiteralNode("example", "");
         g2.CreateLiteralNode("example", "");
     }
@@ -243,14 +243,14 @@ public class LiteralNodeTests
         var normalizingFactory = new NodeFactory(new NodeFactoryOptions { NormalizeLiteralValues = true });
         var nonNormalizingFactory = new NodeFactory(new NodeFactoryOptions { NormalizeLiteralValues = false });
 
-        ILiteralNode lit7 = normalizingFactory.CreateLiteralNode(decomposed);
-        ILiteralNode lit8 =
+        var lit7 = normalizingFactory.CreateLiteralNode(decomposed);
+        var lit8 =
             normalizingFactory.CreateLiteralNode(decomposed, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
-        ILiteralNode lit9 = normalizingFactory.CreateLiteralNode(decomposed, "en");
-        ILiteralNode lit10 = nonNormalizingFactory.CreateLiteralNode(decomposed);
-        ILiteralNode lit11 =
+        var lit9 = normalizingFactory.CreateLiteralNode(decomposed, "en");
+        var lit10 = nonNormalizingFactory.CreateLiteralNode(decomposed);
+        var lit11 =
             nonNormalizingFactory.CreateLiteralNode(decomposed, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
-        ILiteralNode lit12 = nonNormalizingFactory.CreateLiteralNode(decomposed, "en");
+        var lit12 = nonNormalizingFactory.CreateLiteralNode(decomposed, "en");
 
         lit1.Value.Should().Be(composed);
         lit2.Value.Should().Be(composed);
