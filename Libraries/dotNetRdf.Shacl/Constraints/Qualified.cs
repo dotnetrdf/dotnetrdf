@@ -63,7 +63,7 @@ internal abstract class Qualified : Numeric
 
     protected IEnumerable<INode> QualifiedValueNodes(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes)
     {
-        Shape currentShape = Shape;
+        var currentShape = Shape;
 
         IEnumerable<Shape> selectSiblingShapes()
         {
@@ -81,7 +81,7 @@ internal abstract class Qualified : Numeric
             select disjoint)
             .Any();
 
-        IEnumerable<Shape> siblingShapes = isDisjoint ? selectSiblingShapes() : [];
+        var siblingShapes = isDisjoint ? selectSiblingShapes() : [];
 
         return
             from qualified in Vocabulary.QualifiedValueShape.ObjectsOf(Shape)

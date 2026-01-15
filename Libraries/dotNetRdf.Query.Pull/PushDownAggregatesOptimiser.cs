@@ -63,10 +63,10 @@ public class PushDownAggregatesOptimiser(string varPrefix) : IAlgebraOptimiser, 
                 var ret = new GroupBy(groupBy.InnerAlgebra, groupBy.Grouping, aggregates);
                 return ret;
             case Having having:
-                ISparqlFilter transformedHavingClause = Transform(having.HavingClause);
+                var transformedHavingClause = Transform(having.HavingClause);
                 return new Having(Optimise(having.InnerAlgebra), transformedHavingClause);
             case Extend extend:
-                ISparqlExpression transformedExpression = extend.AssignExpression.Transform(this);
+                var transformedExpression = extend.AssignExpression.Transform(this);
                 return new Extend(Optimise(extend.InnerAlgebra), transformedExpression, extend.VariableName);
             case Select select:
                 if (select.SparqlVariables.Any(sv => sv.IsAggregate || sv.IsProjection))

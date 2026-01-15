@@ -85,7 +85,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
             uriFactory: _options.UriFactory,
             nodeComparer: _options.NodeComparer
         );
-        IAsyncEvaluation evaluation = builder.Build(algebra, context);
+        var evaluation = builder.Build(algebra, context);
         return evaluation.Evaluate(context, null, null, cancellationToken);
     }
 
@@ -265,7 +265,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                 autoVarPrefix = "_" + autoVarPrefix;
             }
             var pushDownAggregatesOptimiser = new PushDownAggregatesOptimiser(autoVarPrefix);
-            ISparqlAlgebra algebra = query.ToAlgebra(
+            var algebra = query.ToAlgebra(
                 true, [pushDownAggregatesOptimiser]
                 );
             
@@ -284,7 +284,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                     baseUri: query.BaseUri,
                     uriFactory: _options.UriFactory,
                     nodeComparer: _options.NodeComparer);
-            IAsyncEnumerable<ISet> solutionBindings = Evaluate(algebra, evaluationContext, cts.Token);
+            var solutionBindings = Evaluate(algebra, evaluationContext, cts.Token);
             switch (query.QueryType)
             {
                 case SparqlQueryType.SelectAll:
@@ -305,7 +305,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                         throw new ArgumentNullException(nameof(resultsHandler), "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
                     }
                     resultsHandler.StartResults();
-                    await using (IAsyncEnumerator<ISet>? enumerator = solutionBindings.GetAsyncEnumerator(cts.Token))
+                    await using (var enumerator = solutionBindings.GetAsyncEnumerator(cts.Token))
                     {
                         var hasNext = await enumerator.MoveNextAsync();
                         resultsHandler.HandleBooleanResult(hasNext);
@@ -330,12 +330,12 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                         }
 
                         var constructContext = new ConstructContext(rdfHandler, false);
-                        await foreach (ISet? s in solutionBindings)
+                        await foreach (var s in solutionBindings)
                         {
                             try
                             {
                                 constructContext.Set = s;
-                                foreach (IConstructTriplePattern p in query.ConstructTemplate.TriplePatterns
+                                foreach (var p in query.ConstructTemplate.TriplePatterns
                                              .OfType<IConstructTriplePattern>())
                                 {
                                     try
@@ -374,7 +374,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
 
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    ISparqlDescribe describer = _options.Describer;
+                    var describer = _options.Describer;
                     describer.Describe(rdfHandler, new DescriberContext(query, evaluationContext, solutionBindings));
                     break;
                 default:
@@ -408,7 +408,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
         }
 
         var ok = true;
-        await foreach (ISet? solutionBinding in solutionBindings)
+        await foreach (var solutionBinding in solutionBindings)
         {
             ok = resultsHandler.HandleResult(this._options.SparqlResultFactory.MakeResult(solutionBinding, projectionVars));
             if (!ok) break;

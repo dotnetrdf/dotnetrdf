@@ -63,7 +63,7 @@ public class PropertyFunctionPattern
         _rhsArgs = rhsArgs.ToList();
         PropertyFunction = propertyFunction;
 
-        foreach (PatternItem item in _lhsArgs.Concat(_rhsArgs))
+        foreach (var item in _lhsArgs.Concat(_rhsArgs))
         {
             foreach (var variableName in item.Variables)
             {
@@ -198,7 +198,7 @@ public class PropertyFunctionPattern
         if (_lhsArgs.Count > 1)
         {
             output.Append("( ");
-            foreach (PatternItem arg in _lhsArgs)
+            foreach (var arg in _lhsArgs)
             {
                 output.Append(arg);
                 output.Append(' ');
@@ -215,7 +215,7 @@ public class PropertyFunctionPattern
         if (_rhsArgs.Count > 1)
         {
             output.Append("( ");
-            foreach (PatternItem arg in _rhsArgs)
+            foreach (var arg in _rhsArgs)
             {
                 output.Append(arg);
                 output.Append(' ');

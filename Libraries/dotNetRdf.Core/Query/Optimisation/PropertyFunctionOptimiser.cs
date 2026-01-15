@@ -58,16 +58,16 @@ public class PropertyFunctionOptimiser
             if (current.PatternCount == 0) return current;
 
             var ps = current.TriplePatterns.ToList();
-            List<IPropertyFunctionPattern> propFuncs = PropertyFunctionHelper.ExtractPatterns(ps, _factories.Value);
+            var propFuncs = PropertyFunctionHelper.ExtractPatterns(ps, _factories.Value);
             if (propFuncs.Count == 0) return current;
 
             // Remove raw Triple Patterns pertaining to extracted property functions
-            foreach (IPropertyFunctionPattern propFunc in propFuncs)
+            foreach (var propFunc in propFuncs)
             {
                 // Track where we need to insert the property function back into the BGP
-                ITriplePattern first = propFunc.OriginalPatterns.First();
+                var first = propFunc.OriginalPatterns.First();
                 var origLocation = ps.FindIndex(p => p.Equals(first));
-                foreach (ITriplePattern tp in propFunc.OriginalPatterns)
+                foreach (var tp in propFunc.OriginalPatterns)
                 {
                     var location = ps.FindIndex(p => p.Equals(tp));
                     if (location >= 0)

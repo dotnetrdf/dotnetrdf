@@ -160,12 +160,12 @@ internal class PullEvaluationContext : IPatternEvaluationContext
 
     internal bool HasAnyTriples(IRefNode? activeGraph)
     {
-        BaseTripleCollection tripleCollection = activeGraph != null ? _namedGraphs[activeGraph] : _defaultGraph;
+        var tripleCollection = activeGraph != null ? _namedGraphs[activeGraph] : _defaultGraph;
         return tripleCollection.Any();
     }
     internal IEnumerable<Triple> GetTriples(IMatchTriplePattern triplePattern, ISet? inputBindings, IRefNode? activeGraph)
     {
-        BaseTripleCollection tripleCollection = activeGraph != null ? _namedGraphs[activeGraph] : _defaultGraph;
+        var tripleCollection = activeGraph != null ? _namedGraphs[activeGraph] : _defaultGraph;
         // Expand quoted triple patterns in subject or object position of the triple pattern
         if (triplePattern.Subject is QuotedTriplePattern subjectTriplePattern)
         {
@@ -181,9 +181,9 @@ internal class PullEvaluationContext : IPatternEvaluationContext
                     new NodeMatchPattern(tn)), inputBindings, activeGraph));
         }
 
-        INode? subj = GetNode(triplePattern.Subject, inputBindings);
-        INode? pred = GetNode(triplePattern.Predicate, inputBindings);
-        INode? obj = GetNode(triplePattern.Object, inputBindings);
+        var subj = GetNode(triplePattern.Subject, inputBindings);
+        var pred = GetNode(triplePattern.Predicate, inputBindings);
+        var obj = GetNode(triplePattern.Object, inputBindings);
         if (subj != null)
         {
             if (pred != null)
@@ -201,16 +201,16 @@ internal class PullEvaluationContext : IPatternEvaluationContext
 
     internal IEnumerable<INode> GetNodes(PatternItem nodePattern, IRefNode? activeGraph)
     {
-        BaseTripleCollection tripleCollection = activeGraph != null ? _namedGraphs[activeGraph] : _defaultGraph;
+        var tripleCollection = activeGraph != null ? _namedGraphs[activeGraph] : _defaultGraph;
         return tripleCollection.SubjectNodes.Where(n => nodePattern.Accepts(this, n, new Set()))
             .Union(tripleCollection.ObjectNodes.Where(n => nodePattern.Accepts(this, n, new Set())));
     }
 
     private IEnumerable<ITripleNode> GetQuotedTriples(QuotedTriplePattern qtp, IRefNode? activeGraph)
     {
-        TriplePattern triplePattern = qtp.QuotedTriple;
+        var triplePattern = qtp.QuotedTriple;
         INode s, p, o;
-        BaseTripleCollection tripleCollection = activeGraph != null ? _namedGraphs[activeGraph] : _defaultGraph;
+        var tripleCollection = activeGraph != null ? _namedGraphs[activeGraph] : _defaultGraph;
         switch (triplePattern.IndexType)
         {
             case TripleIndexType.Subject:

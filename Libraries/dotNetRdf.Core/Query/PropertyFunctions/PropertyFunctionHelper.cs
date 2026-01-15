@@ -58,7 +58,7 @@ public static class PropertyFunctionHelper
         var funcInfo = new Dictionary<PatternItem, PropertyFunctionInfo>();
         var ps = patterns.OfType<IMatchTriplePattern>().ToList();
         if (ps.Count == 0) return [];
-        foreach (IMatchTriplePattern tp in ps)
+        foreach (var tp in ps)
         {
             var predItem = tp.Predicate as NodeMatchPattern;
             if (predItem == null) continue;
@@ -72,7 +72,7 @@ public static class PropertyFunctionHelper
             }
         }
         // Remove any Patterns we found from the original patterns
-        foreach (PropertyFunctionInfo info in funcInfo.Values)
+        foreach (var info in funcInfo.Values)
         {
             info.Patterns.ForEach(tp => ps.Remove(tp));
         }
@@ -81,7 +81,7 @@ public static class PropertyFunctionHelper
 
         // Now for each 'magic' property we found do a further search to see if we are using
         // the collection forms to provide extended arguments
-        foreach (PatternItem key in funcInfo.Keys)
+        foreach (var key in funcInfo.Keys)
         {
             if (key is BlankNodePattern)
             {
@@ -99,7 +99,7 @@ public static class PropertyFunctionHelper
                 // Otherwise key is the only LHS argument
                 funcInfo[key].SubjectArgs.Add(key);
             }
-            PatternItem searchKey = funcInfo[key].Patterns.First().Object;
+            var searchKey = funcInfo[key].Patterns.First().Object;
             if (searchKey is BlankNodePattern)
             {
                 // If RHS is a blank node may be collection form
@@ -120,7 +120,7 @@ public static class PropertyFunctionHelper
 
         // Now try to create actual property functions
         var propFunctions = new List<IPropertyFunctionPattern>();
-        foreach (PatternItem key in funcInfo.Keys)
+        foreach (var key in funcInfo.Keys)
         {
             IPropertyFunctionPattern propFunc;
             if (PropertyFunctionFactory.TryCreatePropertyFunction(funcInfo[key], localFactories, out propFunc))
@@ -142,11 +142,11 @@ public static class PropertyFunctionHelper
     static void ExtractRelatedPatterns(PatternItem key, PatternItem subj, List<IMatchTriplePattern> ps, Dictionary<PatternItem, PropertyFunctionInfo> funcInfo, List<PatternItem> argList)
     {
         bool recurse = true, any = false, argSeen = false;
-        PatternItem nextSubj = subj;
+        var nextSubj = subj;
         while (recurse)
         {
             any = false;
-            foreach (IMatchTriplePattern tp in ps.ToList())
+            foreach (var tp in ps.ToList())
             {
                 if (tp.Subject.Variables.All(v=>nextSubj.Variables.Contains(v)))
                 {

@@ -148,7 +148,7 @@ public class QueryBuilder : IQueryBuilder
     /// <param name="variables">query result variables.</param>
     public static ISelectBuilder Select(params string[] variables)
     {
-        SparqlVariable[] sparqlVariables = variables.Select(var => new SparqlVariable(var, true)).ToArray();
+        var sparqlVariables = variables.Select(var => new SparqlVariable(var, true)).ToArray();
         return Select(sparqlVariables);
     }
 
@@ -270,7 +270,7 @@ public class QueryBuilder : IQueryBuilder
         _buildGroups.Add(prefixes =>
         {
             var expressionBuilder = new ExpressionBuilder(prefixes);
-            ISparqlExpression sparqlExpression = buildGroupingExpression(expressionBuilder).Expression;
+            var sparqlExpression = buildGroupingExpression(expressionBuilder).Expression;
             return new GroupByExpression(sparqlExpression);
         });
         return this;
@@ -288,7 +288,7 @@ public class QueryBuilder : IQueryBuilder
         _buildOrderings.Add(prefixes =>
         {
             var expressionBuilder = new ExpressionBuilder(prefixes);
-            ISparqlExpression sparqlExpression = orderExpression.Invoke(expressionBuilder).Expression;
+            var sparqlExpression = orderExpression.Invoke(expressionBuilder).Expression;
             var orderBy = new OrderByExpression(sparqlExpression) { Descending = descending };
             return orderBy;
         });
@@ -304,7 +304,7 @@ public class QueryBuilder : IQueryBuilder
             Offset = _queryOffset,
         };
 
-        SparqlQuery ret = BuildQuery(query);
+        var ret = BuildQuery(query);
         if (applyOptimisation)
         {
             if (queryOptimiser != null)
@@ -339,7 +339,7 @@ public class QueryBuilder : IQueryBuilder
 
     private void BuildRootGraphPattern(SparqlQuery query)
     {
-        GraphPattern rootGraphPattern = RootGraphPatternBuilder.BuildGraphPattern(Prefixes);
+        var rootGraphPattern = RootGraphPatternBuilder.BuildGraphPattern(Prefixes);
 
         query.RootGraphPattern = rootGraphPattern;
     }
@@ -349,7 +349,7 @@ public class QueryBuilder : IQueryBuilder
         ISparqlGroupBy rootGroup = null;
         ISparqlGroupBy lastGroup = null;
 
-        foreach (Func<INamespaceMapper, ISparqlGroupBy> buildGroup in _buildGroups)
+        foreach (var buildGroup in _buildGroups)
         {
             if (rootGroup == null)
             {

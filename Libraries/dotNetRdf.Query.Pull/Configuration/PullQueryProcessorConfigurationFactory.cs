@@ -43,11 +43,11 @@ public class PullQueryProcessorConfigurationFactory : IObjectFactory
         ISparqlQueryProcessor? queryProcessor = null;
 
         // Get the property nodes we will use to load the configuration
-        INode usingStore = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingStore));
+        var usingStore = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingStore));
         switch (targetType.FullName)
         {
             case PullQueryProcessor:
-                INode storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, usingStore);
+                var storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, usingStore);
                 if (storeObj == null) return false;
                 var store = ConfigurationLoader.LoadObject(g, storeObj);
                 if (store is ITripleStore tripletStoreObj)

@@ -45,7 +45,7 @@ internal class PullExpressionProcessor(
     protected override IValuedNode GetBoundValue(string variableName, PullEvaluationContext context,
         ExpressionContext expressionContext)
     {
-        INode value = expressionContext.Bindings[variableName];
+        var value = expressionContext.Bindings[variableName];
         return value.AsValuedNode();
     }
 
@@ -64,8 +64,8 @@ internal class PullExpressionProcessor(
         ExpressionContext expressionContext)
     {
         var builder = new EvaluationBuilder();
-        IAsyncEvaluation graphPatternEvaluation = builder.Build(exists.Pattern.ToAlgebra(), context);
-        ValueTask<bool> findMatch = graphPatternEvaluation
+        var graphPatternEvaluation = builder.Build(exists.Pattern.ToAlgebra(), context);
+        var findMatch = graphPatternEvaluation
             .Evaluate(context, expressionContext.Bindings, expressionContext.ActiveGraph).AnyAsync();
         var result = findMatch.IsCompleted ? findMatch.Result : findMatch.AsTask().GetAwaiter().GetResult();
         return exists.MustExist ? new BooleanNode(result) : new BooleanNode(!result);
@@ -79,7 +79,7 @@ internal class PullExpressionProcessor(
             return context.NodeFactory.CreateBlankNode().AsValuedNode();
         }
 
-        INode temp = bNode.InnerExpression.Accept(this, context, expressionContext);
+        var temp = bNode.InnerExpression.Accept(this, context, expressionContext);
         if (temp == null)
         {
             throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to null");
@@ -99,19 +99,19 @@ internal class PullExpressionProcessor(
                 "Cannot create a Blank Node when the argument Expression evaluates to a literal node typed as anything other than xsd:string");
         }
 
-        if (expressionContext.TryGetBlankNode(lit.Value, out IBlankNode? mappedBlankNode))
+        if (expressionContext.TryGetBlankNode(lit.Value, out var mappedBlankNode))
         {
             return mappedBlankNode.AsValuedNode();
         }
 
-        IBlankNode newBlankNode = context.NodeFactory.CreateBlankNode();
+        var newBlankNode = context.NodeFactory.CreateBlankNode();
         expressionContext.MapBlankNode(lit.Value, newBlankNode);
         return newBlankNode.AsValuedNode();
     }
 
     public override IValuedNode ProcessIriFunction(IriFunction iri, PullEvaluationContext context, ExpressionContext expressionContext)
     {
-        IValuedNode result = iri.InnerExpression.Accept(this, context, expressionContext);
+        var result = iri.InnerExpression.Accept(this, context, expressionContext);
         if (result == null)
         {
             throw new RdfQueryException("Cannot create an IRI from a null");

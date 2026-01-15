@@ -34,8 +34,8 @@ public class PullEngineEvaluationTestSuite : BaseAsyncSparqlEvaluationTestSuite
     {
         const string testUrl = "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-12";
 
-        ManifestTestDataProvider provider = testUrl.Contains("data-r2") ? Sparql10QueryEvalTests : Sparql11QueryEvalTests;
-        ManifestTestData t = provider.GetTestData(testUrl);
+        var provider = testUrl.Contains("data-r2") ? Sparql10QueryEvalTests : Sparql11QueryEvalTests;
+        var t = provider.GetTestData(testUrl);
         await base.PerformTest(t);
     }
     

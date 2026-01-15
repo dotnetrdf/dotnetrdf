@@ -52,7 +52,7 @@ internal class QualifiedMaxCount : Qualified
 
     protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
     {
-        IEnumerable<INode> invalidValues = QualifiedValueNodes(dataGraph, focusNode, valueNodes).Skip(NumericValue);
+        var invalidValues = QualifiedValueNodes(dataGraph, focusNode, valueNodes).Skip(NumericValue);
 
         return ReportFocusNode(focusNode, invalidValues, report);
     }

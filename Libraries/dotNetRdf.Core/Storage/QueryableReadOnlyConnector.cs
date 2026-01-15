@@ -97,7 +97,7 @@ public class QueryableReadOnlyConnector
                 {
                     if (r.HasValue("g"))
                     {
-                        INode temp = r["g"];
+                        var temp = r["g"];
                         if (temp.NodeType == NodeType.Uri)
                         {
                             graphs.Add(((IUriNode)temp).Uri);
@@ -143,7 +143,7 @@ public class QueryableReadOnlyConnector
                     {
                         if (r.HasValue("g"))
                         {
-                            INode temp = r["g"];
+                            var temp = r["g"];
                             if (temp.NodeType == NodeType.Uri)
                             {
                                 graphs.Add(((IUriNode)temp).Uri.AbsoluteUri);

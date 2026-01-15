@@ -49,7 +49,7 @@ public class PropertyPathTransformationTests
 
         Console.WriteLine("Path: " + path.ToString());
 
-        ISparqlAlgebra algebra = path.ToAlgebra(context);
+        var algebra = path.ToAlgebra(context);
         var result = algebra.ToString();
         Console.WriteLine("Algebra: " + result);
 
@@ -207,10 +207,10 @@ public class PropertyPathTransformationTests
     [Fact]
     public void SparqlPropertyPathTransformationSequencedAlternatives()
     {
-        INode a = _factory.CreateUriNode(new Uri("ex:a"));
-        INode b = _factory.CreateUriNode(new Uri("ex:b"));
-        INode c = _factory.CreateUriNode(new Uri("ex:c"));
-        INode d = _factory.CreateUriNode(new Uri("ex:d"));
+        var a = _factory.CreateUriNode(new Uri("ex:a"));
+        var b = _factory.CreateUriNode(new Uri("ex:b"));
+        var c = _factory.CreateUriNode(new Uri("ex:c"));
+        var d = _factory.CreateUriNode(new Uri("ex:d"));
         var path = new SequencePath(new AlternativePath(new Property(a), new Property(c)), new AlternativePath(new Property(b), new Property(d)));
         RunTest(path, ["BGP"]);
     }

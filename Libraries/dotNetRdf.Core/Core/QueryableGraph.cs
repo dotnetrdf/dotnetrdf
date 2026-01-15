@@ -53,7 +53,7 @@ public class QueryableGraph
     /// <returns></returns>
     public object ExecuteQuery(string sparqlQuery)
     {
-        SparqlQuery q = _parser.ParseFromString(sparqlQuery);
+        var q = _parser.ParseFromString(sparqlQuery);
         return ExecuteQuery(q);
     }
 
@@ -65,7 +65,7 @@ public class QueryableGraph
     /// <param name="sparqlQuery">SPARQL Query.</param>
     public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
     {
-        SparqlQuery q = _parser.ParseFromString(sparqlQuery);
+        var q = _parser.ParseFromString(sparqlQuery);
         ExecuteQuery(rdfHandler, resultsHandler, q);
     }
 

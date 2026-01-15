@@ -46,7 +46,7 @@ public class QueryBuilderTests
     [Fact]
     public void CanCreateSelectStarQuery()
     {
-        SparqlQuery q = QueryBuilder
+        var q = QueryBuilder
             .SelectAll()
             .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
             .BuildQuery();
@@ -57,7 +57,7 @@ public class QueryBuilderTests
     [Fact]
     public void CanCreateSelectDistinctStarQuery()
     {
-        SparqlQuery q = QueryBuilder
+        var q = QueryBuilder
             .SelectAll()
             .Distinct()
             .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
@@ -165,11 +165,11 @@ public class QueryBuilderTests
     public void GetExectuableQueryReturnsNewInstance()
     {
         // given
-        IQueryBuilder builder = QueryBuilder.SelectAll().Where(tpb => tpb.Subject("s").Predicate("p").Object("o"));
+        var builder = QueryBuilder.SelectAll().Where(tpb => tpb.Subject("s").Predicate("p").Object("o"));
 
         // when
-        SparqlQuery query1 = builder.BuildQuery();
-        SparqlQuery query2 = builder.BuildQuery();
+        var query1 = builder.BuildQuery();
+        var query2 = builder.BuildQuery();
 
         // then
         Assert.NotSame(query1, query2);
@@ -179,11 +179,11 @@ public class QueryBuilderTests
     public void CanStartQueryWithGivenVariablesStrings()
     {
         // given
-        IQueryBuilder queryBuilder = QueryBuilder.Select("s", "p", "o")
+        var queryBuilder = QueryBuilder.Select("s", "p", "o")
                                                  .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"));
 
         // when
-        SparqlQuery query = queryBuilder.BuildQuery();
+        var query = queryBuilder.BuildQuery();
 
         // then
         Assert.Equal(3, query.Variables.Count());
@@ -200,11 +200,11 @@ public class QueryBuilderTests
         var s = new SparqlVariable("s", true);
         var p = new SparqlVariable("p", true);
         var o = new SparqlVariable("o", true);
-        IQueryBuilder queryBuilder = QueryBuilder.Select(s, p, o)
+        var queryBuilder = QueryBuilder.Select(s, p, o)
                                                  .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"));
 
         // when
-        SparqlQuery query = queryBuilder.BuildQuery();
+        var query = queryBuilder.BuildQuery();
 
         // then
         Assert.Equal(3, query.Variables.Count());
@@ -305,7 +305,7 @@ public class QueryBuilderTests
     public void ShouldBeCreatedWithEmptyNamespaceMap()
     {
         // when
-        IQueryBuilder builder = QueryBuilder.SelectAll().Where();
+        var builder = QueryBuilder.SelectAll().Where();
 
         // then
         Assert.Empty(builder.Prefixes.Prefixes);
@@ -315,7 +315,7 @@ public class QueryBuilderTests
     public void CanCreateSelectQueryWithExpressionFirst()
     {
         // when
-        SparqlQuery q = QueryBuilder
+        var q = QueryBuilder
             .Select(eb => eb.IsIRI(eb.Variable("o"))).As("isIri").And("o")
             .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
             .BuildQuery();
@@ -346,7 +346,7 @@ public class QueryBuilderTests
     public void ShouldAllowAddingLimit()
     {
         // when
-        SparqlQuery q = QueryBuilder.SelectAll()
+        var q = QueryBuilder.SelectAll()
             .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
             .Limit(5)
             .BuildQuery();
@@ -360,7 +360,7 @@ public class QueryBuilderTests
     public void ShouldAllowAddingNegativeLimit()
     {
         // when
-        SparqlQuery q = QueryBuilder.SelectAll()
+        var q = QueryBuilder.SelectAll()
             .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
             .Limit(5).Limit(-10)
             .BuildQuery();
@@ -374,7 +374,7 @@ public class QueryBuilderTests
     public void ShouldAllowAddingOffset()
     {
         // when
-        SparqlQuery q = QueryBuilder.SelectAll()
+        var q = QueryBuilder.SelectAll()
             .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
             .Offset(10)
             .BuildQuery();
@@ -391,7 +391,7 @@ public class QueryBuilderTests
         var limit = 5;
 
         // when
-        SparqlQuery q = QueryBuilder.SelectAll()
+        var q = QueryBuilder.SelectAll()
             .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
             .Limit(limit++).Limit(limit++).Limit(limit++).Limit(limit++).Limit(limit)
             .BuildQuery();
@@ -408,7 +408,7 @@ public class QueryBuilderTests
         var offset = 5;
 
         // when
-        SparqlQuery q = QueryBuilder.SelectAll()
+        var q = QueryBuilder.SelectAll()
             .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
             .Offset(offset++).Offset(offset++).Offset(offset++).Offset(offset++).Offset(offset)
             .BuildQuery();
@@ -422,7 +422,7 @@ public class QueryBuilderTests
     public void ShouldAllowAddingLimitAndOffset()
     {
         // when
-        SparqlQuery q = QueryBuilder.SelectAll()
+        var q = QueryBuilder.SelectAll()
             .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
             .Limit(5).Offset(10)
             .BuildQuery();
@@ -436,7 +436,7 @@ public class QueryBuilderTests
     public void ShouldAllowBuildingAskQueries()
     {
         // when
-        SparqlQuery q = QueryBuilder.Ask()
+        var q = QueryBuilder.Ask()
                                     .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
                                     .BuildQuery();
 
@@ -448,7 +448,7 @@ public class QueryBuilderTests
     public void ShouldAllowBuildingConstructQueries()
     {
         // when
-        SparqlQuery q = QueryBuilder.Construct(gpb => gpb.Where(tpb => tpb.Subject("o").Predicate("p").Object("s")))
+        var q = QueryBuilder.Construct(gpb => gpb.Where(tpb => tpb.Subject("o").Predicate("p").Object("s")))
                                     .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
                                     .BuildQuery();
 
@@ -462,7 +462,7 @@ public class QueryBuilderTests
     public void ShouldAllowBuildingConstructQueriesWithNullBuilderFunction()
     {
         // when
-        SparqlQuery q = QueryBuilder.Construct(null)
+        var q = QueryBuilder.Construct(null)
                                     .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
                                     .BuildQuery();
 
@@ -476,7 +476,7 @@ public class QueryBuilderTests
     public void ShouldAllowBuildingConstructQueriesWithoutBuilderFunction()
     {
         // when
-        SparqlQuery q = QueryBuilder.Construct()
+        var q = QueryBuilder.Construct()
                                     .Where(BuildSPOPattern)
                                     .BuildQuery();
 
@@ -495,7 +495,7 @@ public class QueryBuilderTests
     public void ShouldAllowOrderingQueryByVariableAscending()
     {
         // when
-        SparqlQuery sparqlQuery = QueryBuilder.SelectAll()
+        var sparqlQuery = QueryBuilder.SelectAll()
                                               .Where(BuildSPOPattern)
                                               .OrderBy("s")
                                               .BuildQuery();
@@ -512,7 +512,7 @@ public class QueryBuilderTests
     public void ShouldAllowOrderingQueryByVariableDescending()
     {
         // when
-        SparqlQuery sparqlQuery = QueryBuilder.SelectAll()
+        var sparqlQuery = QueryBuilder.SelectAll()
                                               .Where(BuildSPOPattern)
                                               .OrderByDescending("s")
                                               .BuildQuery();
@@ -529,7 +529,7 @@ public class QueryBuilderTests
     public void ShouldAllowOrderingQueryByExpressionAscending()
     {
         // when
-        SparqlQuery sparqlQuery = QueryBuilder.SelectAll()
+        var sparqlQuery = QueryBuilder.SelectAll()
                                               .Where(BuildSPOPattern)
                                               .OrderBy(expr => expr.Str(expr.Variable("s"))) 
                                               .BuildQuery();
@@ -546,7 +546,7 @@ public class QueryBuilderTests
     public void ShouldAllowOrderingQueryByExpressionDescending()
     {
         // when
-        SparqlQuery sparqlQuery = QueryBuilder.SelectAll()
+        var sparqlQuery = QueryBuilder.SelectAll()
                                               .Where(BuildSPOPattern)
                                               .OrderByDescending(expr => expr.Str(expr.Variable("s")))
                                               .BuildQuery();
@@ -563,7 +563,7 @@ public class QueryBuilderTests
     public void ShouldAllowChainingMultipleVariableAndExpressionOrderings()
     {
         // when
-        SparqlQuery sparqlQuery = QueryBuilder.SelectAll()
+        var sparqlQuery = QueryBuilder.SelectAll()
                                               .Where(BuildSPOPattern)
                                               .OrderBy("s")
                                               .OrderByDescending("p")
@@ -574,7 +574,7 @@ public class QueryBuilderTests
                                               .BuildQuery();
 
         // then
-        ISparqlOrderBy currentOrdering = sparqlQuery.OrderBy;
+        var currentOrdering = sparqlQuery.OrderBy;
 
         for (var i = 0; i < 6; i++)
         {
@@ -681,13 +681,13 @@ public class QueryBuilderTests
     [Fact]
     public void QueryWithHavingShouldRoundtripThroughParser()
     {
-        IQueryBuilder queryBuilder = QueryBuilder.Select(b => b.Sum("z")).As("sum")
+        var queryBuilder = QueryBuilder.Select(b => b.Sum("z")).As("sum")
             .Where(p => p.Subject("x").Predicate("y").Object("z"))
             .GroupBy("y")
             .Having(b => b.Variable("sum") > 10);
-        SparqlQuery query = queryBuilder.BuildQuery();
+        var query = queryBuilder.BuildQuery();
         var queryString = query.ToString();
-        SparqlQuery parsedQuery = new SparqlQueryParser().ParseFromString(queryString);
+        var parsedQuery = new SparqlQueryParser().ParseFromString(queryString);
         parsedQuery.Having.Should().NotBeNull();
         parsedQuery.Having.Expression.ToString().Trim().Should().Be("?sum > 10");
     }
@@ -716,57 +716,57 @@ public class QueryBuilderTests
         var x = new SparqlVariable("x");
 
         // Valid: SELECT query with one SELECT sub-query.
-        IQueryBuilder subSelectBuilder = QueryBuilder
+        var subSelectBuilder = QueryBuilder
             .Select(s)
             .And(v => v.Count(x)).As("c")
             .Where(BuildSPOPattern)
             .Optional(o => o.Where(p => p.Subject(s).PredicateUri(hasSomeValue).Object(x)))
             .GroupBy(s);
 
-        IQueryBuilder queryBuilder0 = QueryBuilder
+        var queryBuilder0 = QueryBuilder
             .Select(s)
             .Where(BuildSPOPattern)
             .Child(subSelectBuilder)
             .Filter(f => f.Variable("c") == 0);
 
-        SparqlQuery q0 = queryBuilder0.BuildQuery();
+        var q0 = queryBuilder0.BuildQuery();
 
         Assert.Equal(1, q0.RootGraphPattern.TriplePatterns.Count(p => p.PatternType == TriplePatternType.SubQuery));
 
         // Invalid: SELECT query with one ASK sub-query.
-        IQueryBuilder subAskBuilder = QueryBuilder
+        var subAskBuilder = QueryBuilder
             .Ask()
             .Where(BuildSPOPattern);
 
         Assert.Throws<ArgumentException>(() =>
         {
-            IQueryBuilder queryBuilder1 = QueryBuilder
+            var queryBuilder1 = QueryBuilder
                 .Select(s)
                 .Where(BuildSPOPattern)
                 .Child(subAskBuilder);
         });
 
         // Invalid: SELECT query with one CONSTRUCT sub-query.
-        IQueryBuilder subConstructBuilder = QueryBuilder
+        var subConstructBuilder = QueryBuilder
             .Construct()
             .Where(BuildSPOPattern);
 
         Assert.Throws<ArgumentException>(() =>
         {
-            IQueryBuilder queryBuilder1 = QueryBuilder
+            var queryBuilder1 = QueryBuilder
                 .Select(s)
                 .Where(BuildSPOPattern)
                 .Child(subConstructBuilder);
         });
 
         // Invalid: SELECT query with one DESCRIBE sub-query.
-        IQueryBuilder subDescribeBuilder = QueryBuilder
+        var subDescribeBuilder = QueryBuilder
             .Construct()
             .Where(BuildSPOPattern);
 
         Assert.Throws<ArgumentException>(() =>
         {
-            IQueryBuilder queryBuilder1 = QueryBuilder
+            var queryBuilder1 = QueryBuilder
                 .Select(s)
                 .Where(BuildSPOPattern)
                 .Child(subDescribeBuilder);
@@ -784,7 +784,7 @@ public class QueryBuilderTests
         var patternBuilder0 = new GraphPatternBuilder();
         var patternBuilder1 = new GraphPatternBuilder();
 
-        IQueryBuilder queryBuilder0 = QueryBuilder
+        var queryBuilder0 = QueryBuilder
             .Ask()
             .Union(patternBuilder0, patternBuilder1);
 
@@ -792,7 +792,7 @@ public class QueryBuilderTests
         patternBuilder0.Where(p => p.Subject("s0").Predicate("p0").ObjectLiteral(0));
         patternBuilder1.Where(p => p.Subject("s1").Predicate("p1").ObjectLiteral(1));
 
-        SparqlQuery q0 = queryBuilder0.BuildQuery();
+        var q0 = queryBuilder0.BuildQuery();
 
         Assert.Single(q0.RootGraphPattern.ChildGraphPatterns);
         Assert.True(q0.RootGraphPattern.ChildGraphPatterns.First().IsUnion);
@@ -801,7 +801,7 @@ public class QueryBuilderTests
         // Now add other triples to the query after the query was already build.
         patternBuilder1.Where(p => p.Subject("s1").Predicate("p2").ObjectLiteral(2));
 
-        SparqlQuery q1 = queryBuilder0.BuildQuery();
+        var q1 = queryBuilder0.BuildQuery();
 
         Assert.Single(q1.RootGraphPattern.ChildGraphPatterns);
         Assert.True(q1.RootGraphPattern.ChildGraphPatterns.First().IsUnion);
@@ -812,7 +812,7 @@ public class QueryBuilderTests
     [Fact]
     public void CanBuildQueryWithGroupBySeveralVariables()
     {
-        SparqlQuery query = QueryBuilder.Select(b => b.Sum("c")).As("sum")
+        var query = QueryBuilder.Select(b => b.Sum("c")).As("sum")
             .Where(p => p
                 .Subject("x").PredicateUri(new Uri("http://example.org/a")).Object("a")
                 .Subject("x").PredicateUri(new Uri("http://example.org/b")).Object("b")
@@ -828,7 +828,7 @@ public class QueryBuilderTests
     [Fact]
     public void ItBuildsAnOptimisedQueryByDefault()
     {
-        SparqlQuery query = QueryBuilder.Select("s", "p", "o")
+        var query = QueryBuilder.Select("s", "p", "o")
             .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
             .BuildQuery();
         query.IsOptimised.Should().BeTrue();
@@ -837,7 +837,7 @@ public class QueryBuilderTests
     [Fact]
     public void QueryOptimisationCanBeDisabled()
     {
-        SparqlQuery query = QueryBuilder.Select("s", "p", "o")
+        var query = QueryBuilder.Select("s", "p", "o")
             .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
             .BuildQuery(false);
         query.IsOptimised.Should().BeFalse();
@@ -847,7 +847,7 @@ public class QueryBuilderTests
     public void ItCanUseALocallyDefinedQueryOptimiser()
     {
         var optimiserMock = new Mock<IQueryOptimiser>();
-        SparqlQuery query = QueryBuilder.Select("s", "p", "o")
+        var query = QueryBuilder.Select("s", "p", "o")
             .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
             .BuildQuery(true, optimiserMock.Object);
         query.IsOptimised.Should().BeTrue();

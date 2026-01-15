@@ -138,7 +138,7 @@ public class PropertyPathEvaluationTests
 
         var path =
             new FixedCardinality(new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
-        INode rdfsClass = _factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class"));
+        var rdfsClass = _factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class"));
         var algebra = GetAlgebra(path, null, rdfsClass);
         var context = new SparqlEvaluationContext(null, _data, new LeviathanQueryOptions());
         var results = algebra.Accept(_processor, context);
@@ -229,8 +229,8 @@ public class PropertyPathEvaluationTests
     {
         EnsureTestData();
 
-        INode a = _factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-        INode b = _factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
+        var a = _factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+        var b = _factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
         var path = new SequencePath(new AlternativePath(new Property(a), new Property(b)),
                                              new AlternativePath(new Property(a), new Property(a)));
         var algebra = GetAlgebraUntransformed(path);
@@ -274,7 +274,7 @@ public class PropertyPathEvaluationTests
 
         var path =
             new OneOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
-        INode sportsCar = _factory.CreateUriNode(new Uri("http://example.org/vehicles/SportsCar"));
+        var sportsCar = _factory.CreateUriNode(new Uri("http://example.org/vehicles/SportsCar"));
         var algebra = GetAlgebra(path, sportsCar, null);
         var results = algebra.Accept(_processor, new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
@@ -295,7 +295,7 @@ public class PropertyPathEvaluationTests
 
         var path =
             new OneOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
-        INode airVehicle = _factory.CreateUriNode(new Uri("http://example.org/vehicles/AirVehicle"));
+        var airVehicle = _factory.CreateUriNode(new Uri("http://example.org/vehicles/AirVehicle"));
         var algebra = GetAlgebra(path, null, airVehicle);
         var results = algebra.Accept(_processor, new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
@@ -336,7 +336,7 @@ public class PropertyPathEvaluationTests
 
         var path =
             new ZeroOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
-        INode sportsCar = _factory.CreateUriNode(new Uri("http://example.org/vehicles/SportsCar"));
+        var sportsCar = _factory.CreateUriNode(new Uri("http://example.org/vehicles/SportsCar"));
         var algebra = GetAlgebra(path, sportsCar, null);
         var results = algebra.Accept(_processor, new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
@@ -357,7 +357,7 @@ public class PropertyPathEvaluationTests
 
         var path =
             new ZeroOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
-        INode airVehicle = _factory.CreateUriNode(new Uri("http://example.org/vehicles/AirVehicle"));
+        var airVehicle = _factory.CreateUriNode(new Uri("http://example.org/vehicles/AirVehicle"));
         var algebra = GetAlgebra(path, null, airVehicle);
         var results = algebra.Accept(_processor, new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
@@ -400,7 +400,7 @@ WHERE
     [Trait("Coverage", "Skip")]
     public void SparqlPropertyPathEvaluationDuplicates()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         g.LoadFromFile(Path.Combine("resources", "schema-org.ttl"));
 
         var parser = new SparqlQueryParser();
@@ -492,7 +492,7 @@ WHERE
     [Fact]
     public void SparqlPropertyPathEvaluationCore395ExactQuery()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         g.LoadFromFile(Path.Combine("resources", "pp.rdf"));
 
         var dataset = new InMemoryDataset(g);
@@ -510,7 +510,7 @@ WHERE
     [Fact]
     public void SparqlPropertyPathEvaluationCore395ListQuery()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         g.LoadFromFile(@"resources/pp.rdf");
 
         var dataset = new InMemoryDataset(g);
@@ -537,7 +537,7 @@ select ?superclass where {
     [Fact]
     public void SparqlPropertyPathEvaluationCore441ZeroOrMorePath()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         g.LoadFromFile(Path.Combine("resources", "core-441", "data.ttl"));
 
         var dataset = new InMemoryDataset(g);
@@ -557,7 +557,7 @@ select ?superclass where {
     [Fact]
     public void SparqlPropertyPathEvaluationCore441OneOrMorePath()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         g.LoadFromFile(Path.Combine("resources", "core-441", "data.ttl"));
 
         var dataset = new InMemoryDataset(g);
@@ -576,7 +576,7 @@ select ?superclass where {
     [Fact]
     public void SparqlPropertyPathEvaluationCore441NoPath()
     {
-        IGraph g = new Graph();
+        var g = new Graph();
         g.LoadFromFile(Path.Combine("resources", "core-441", "data.ttl"));
 
         var dataset = new InMemoryDataset(g);

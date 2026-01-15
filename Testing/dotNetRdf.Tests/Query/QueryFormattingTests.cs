@@ -41,7 +41,7 @@ public class QueryFormattingTests
     public void SparqlFormattingFilter1()
     {
         const string query = "SELECT * WHERE { { ?s ?p ?o } FILTER(ISURI(?o)) }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         Console.WriteLine("ToString() form:");
         var toString = q.ToString();
@@ -59,7 +59,7 @@ public class QueryFormattingTests
     public void SparqlFormattingFilter2()
     {
         const string query = "SELECT * WHERE { { ?s ?p ?o } FILTER(REGEX(?o, 'search', 'i')) }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         Console.WriteLine("ToString() form:");
         var toString = q.ToString();
@@ -85,7 +85,7 @@ public class QueryFormattingTests
     public void SparqlFormattingUnion1()
     {
         const string query = "SELECT * WHERE { { ?s a ?type } UNION { ?s ?p ?o } }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         Console.WriteLine("ToString() form:");
         var toString = q.ToString();
@@ -107,7 +107,7 @@ public class QueryFormattingTests
     public void SparqlFormattingUnion2()
     {
         const string query = "SELECT * WHERE { { GRAPH <http://x> { ?s a ?type } } UNION { GRAPH <http://y> { ?s ?p ?o } } }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         Console.WriteLine("ToString() form:");
         var toString = q.ToString();
@@ -129,7 +129,7 @@ public class QueryFormattingTests
     public void SparqlFormattingUnion3()
     {
         const string query = "SELECT * WHERE { { MINUS { ?s a ?type } } UNION { GRAPH <http://y> { ?s ?p ?o } } }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         Console.WriteLine("ToString() form:");
         var toString = q.ToString();
@@ -151,7 +151,7 @@ public class QueryFormattingTests
     public void SparqlFormattingUnion4()
     {
         const string query = "SELECT * WHERE { { OPTIONAL { ?s a ?type } } UNION { GRAPH <http://y> { ?s ?p ?o } } }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         Console.WriteLine("ToString() form:");
         var toString = q.ToString();
@@ -173,7 +173,7 @@ public class QueryFormattingTests
     public void SparqlFormattingUnion5()
     {
         const string query = "SELECT * WHERE { { SERVICE <http://x> { ?s a ?type } } UNION { GRAPH <http://y> { ?s ?p ?o } } }";
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         Console.WriteLine("ToString() form:");
         var toString = q.ToString();
