@@ -96,10 +96,10 @@ public abstract class WriteToStoreHandlerTests
     protected void TestWriteToStoreDatasetsHandler(IStorageProvider manager)
     {
         var factory = new NodeFactory(new NodeFactoryOptions());
-        INode a = factory.CreateUriNode(new Uri("http://example.org/a"));
-        INode b = factory.CreateUriNode(new Uri("http://example.org/b"));
-        INode c = factory.CreateUriNode(new Uri("http://example.org/c"));
-        INode d = factory.CreateUriNode(new Uri("http://example.org/d"));
+        var a = factory.CreateUriNode(new Uri("http://example.org/a"));
+        var b = factory.CreateUriNode(new Uri("http://example.org/b"));
+        var c = factory.CreateUriNode(new Uri("http://example.org/c"));
+        var d = factory.CreateUriNode(new Uri("http://example.org/d"));
 
         var graphB = new Uri("http://example.org/graphs/b");
         var graphD = new Uri("http://example.org/graphs/d");
@@ -190,14 +190,14 @@ public abstract class WriteToStoreHandlerTests
     [Fact]
     public void ParsingWriteToStoreHandler()
     {
-        IStorageProvider store = GetConnection();
+        var store = GetConnection();
         TestWriteToStoreHandler(store);
     }
 
     [Fact]
     public void ParsingWriteToStoreHandlerBNodesAcrossBatches()
     {
-        IStorageProvider store = GetConnection();
+        var store = GetConnection();
         TestWriteToStoreHandlerWithBNodes(store);
     }
 

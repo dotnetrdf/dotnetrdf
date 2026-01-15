@@ -118,13 +118,13 @@ public class WriteThroughHandler
             _formattingMapper = new QNameOutputMapper();
 
             // Instantiate a new Formatter
-            ConstructorInfo[] cs = _formatterType.GetConstructors();
-            Type qNameMapperType = typeof(QNameOutputMapper);
-            Type nsMapperType = typeof(INamespaceMapper);
+            var cs = _formatterType.GetConstructors();
+            var qNameMapperType = typeof(QNameOutputMapper);
+            var nsMapperType = typeof(INamespaceMapper);
             object formatter = null;
-            foreach (ConstructorInfo c in cs.OrderByDescending(c => c.GetParameters().Count()))
+            foreach (var c in cs.OrderByDescending(c => c.GetParameters().Count()))
             {
-                ParameterInfo[] ps = c.GetParameters();
+                var ps = c.GetParameters();
                 try
                 {
                     if (ps.Length == 1)

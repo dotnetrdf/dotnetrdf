@@ -52,7 +52,7 @@ SELECT * WHERE
         var weightings = new Graph();
         weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Test");
         _parser.QueryOptimiser = new WeightedOptimiser(weightings);
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         Console.WriteLine(_formatter.Format(q));
 
@@ -74,7 +74,7 @@ SELECT * WHERE
         weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Test");
         _parser.QueryOptimiser = new WeightedOptimiser(weightings);
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         Console.WriteLine(_formatter.Format(q));
 
@@ -96,7 +96,7 @@ SELECT * WHERE
         weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Test");
         _parser.QueryOptimiser = new WeightedOptimiser(weightings);
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         Console.WriteLine(_formatter.Format(q));
 
@@ -118,7 +118,7 @@ SELECT * WHERE
         weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Test");
         _parser.QueryOptimiser = new WeightedOptimiser(weightings);
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         Console.WriteLine(_formatter.Format(q));
 
@@ -140,7 +140,7 @@ SELECT * WHERE
         weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Test");
         _parser.QueryOptimiser = new WeightedOptimiser(weightings);
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         Console.WriteLine(_formatter.Format(q));
 
@@ -163,7 +163,7 @@ SELECT * WHERE
         weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Test");
         _parser.QueryOptimiser = new WeightedOptimiser(weightings);
 
-        SparqlQuery q = _parser.ParseFromString(query);
+        var q = _parser.ParseFromString(query);
 
         Console.WriteLine(_formatter.Format(q));
 

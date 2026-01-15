@@ -95,10 +95,10 @@ public class WriteToStoreHandlerTests
     private void TestWriteToStoreDatasetsHandler(IStorageProvider manager)
     {
         var factory = new NodeFactory();
-        INode a = factory.CreateUriNode(new Uri("http://example.org/a"));
-        INode b = factory.CreateUriNode(new Uri("http://example.org/b"));
-        INode c = factory.CreateUriNode(new Uri("http://example.org/c"));
-        INode d = factory.CreateUriNode(new Uri("http://example.org/d"));
+        var a = factory.CreateUriNode(new Uri("http://example.org/a"));
+        var b = factory.CreateUriNode(new Uri("http://example.org/b"));
+        var c = factory.CreateUriNode(new Uri("http://example.org/c"));
+        var d = factory.CreateUriNode(new Uri("http://example.org/d"));
 
         var graphB = new Uri("http://example.org/graphs/b");
         var graphD = new Uri("http://example.org/graphs/d");

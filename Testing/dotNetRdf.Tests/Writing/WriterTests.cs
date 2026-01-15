@@ -48,11 +48,11 @@ public class WriterTests
 
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org"));
-        IUriNode subj = g.CreateUriNode("ex:subject");
-        IUriNode pred = g.CreateUriNode("ex:predicate");
-        IUriNode name = g.CreateUriNode("ex:name");
-        IBlankNode b1 = g.CreateBlankNode("autos1");
-        IBlankNode b2 = g.CreateBlankNode("1");
+        var subj = g.CreateUriNode("ex:subject");
+        var pred = g.CreateUriNode("ex:predicate");
+        var name = g.CreateUriNode("ex:name");
+        var b1 = g.CreateBlankNode("autos1");
+        var b2 = g.CreateBlankNode("1");
 
         g.Assert(subj, pred, b1);
         g.Assert(b1, name, g.CreateLiteralNode("First Triple"));
@@ -155,9 +155,9 @@ public class WriterTests
             BaseUri = new Uri("http://example.org/植物")
         };
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/植物"));
-        IUriNode subj = g.CreateUriNode(new Uri("http://example.org/植物/名=しそ;使用部=葉"));
-        IUriNode pred = g.CreateUriNode(new Uri("http://example.org/植物#使用部"));
-        IUriNode obj = g.CreateUriNode(new Uri("http://example.org/葉"));
+        var subj = g.CreateUriNode(new Uri("http://example.org/植物/名=しそ;使用部=葉"));
+        var pred = g.CreateUriNode(new Uri("http://example.org/植物#使用部"));
+        var obj = g.CreateUriNode(new Uri("http://example.org/葉"));
 
         g.Assert(subj, pred, obj);
 
@@ -173,10 +173,10 @@ public class WriterTests
             BaseUri = new Uri("http://example.org/space in/base")
         };
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/space in/namespace"));
-        IUriNode subj = g.CreateUriNode(new Uri("http://example.org/subject"));
-        IUriNode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
-        IUriNode obj = g.CreateUriNode(new Uri("http://example.org/with%20uri%20escapes"));
-        IUriNode obj2 = g.CreateUriNode(new Uri("http://example.org/needs escapes"));
+        var subj = g.CreateUriNode(new Uri("http://example.org/subject"));
+        var pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
+        var obj = g.CreateUriNode(new Uri("http://example.org/with%20uri%20escapes"));
+        var obj2 = g.CreateUriNode(new Uri("http://example.org/needs escapes"));
 
         g.Assert(subj, pred, obj);
         g.Assert(subj, pred, obj2);
@@ -194,9 +194,9 @@ public class WriterTests
             g.NamespaceMap.AddNamespace("", new Uri("http://example.org/"));
             ITripleNode quoted = new TripleNode(new Triple(g.CreateUriNode(":a"), g.CreateUriNode(":b"),
                 g.CreateUriNode(":c")));
-            IUriNode subj = g.CreateUriNode(":s");
-            IUriNode pred = g.CreateUriNode(":p");
-            IUriNode obj = g.CreateUriNode(":o");
+            var subj = g.CreateUriNode(":s");
+            var pred = g.CreateUriNode(":p");
+            var obj = g.CreateUriNode(":o");
             g.Assert(subj, pred, quoted);
             g.Assert(quoted, pred, obj);
             RoundTripTest(g, writer, parser);
@@ -208,7 +208,7 @@ public class WriterTests
         var formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11Star);
 
         _output.WriteLine("Input Data:");
-        foreach (Triple t in original.Triples)
+        foreach (var t in original.Triples)
         {
             _output.WriteLine(t.ToString(formatter));
         }
@@ -224,7 +224,7 @@ public class WriterTests
         var parsed = new Graph(true);
         parser.Load(parsed, new StringReader(strWriter.ToString()));
         _output.WriteLine("Parsed Data:");
-        foreach (Triple t in parsed.Triples)
+        foreach (var t in parsed.Triples)
         {
             _output.WriteLine(t.ToString(formatter));
         }
@@ -248,8 +248,8 @@ public class WriterTests
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
-        INode subj = g.CreateUriNode("ex:subject");
-        INode pred = g.CreateUriNode("ex:predicate");
+        var subj = g.CreateUriNode("ex:subject");
+        var pred = g.CreateUriNode("ex:predicate");
         var objects = new List<INode>()
         {
             g.CreateUriNode("ex:123"),
@@ -260,7 +260,7 @@ public class WriterTests
             g.CreateUriNode("ex:_object"),
             g.CreateUriNode("ex:-object")
         };
-        foreach (INode obj in objects)
+        foreach (var obj in objects)
         {
             g.Assert(subj, pred, obj);
         }

@@ -68,14 +68,14 @@ public class WriterTests
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", UriFactory.Root.Create("http://example.org/"));
         g.NamespaceMap.AddNamespace("owl", UriFactory.Root.Create(NamespaceMapper.OWL));
-        INode testProperty = g.CreateUriNode("ex:property");
-        INode rdfType = g.CreateUriNode("rdf:type");
-        INode rdfProperty = g.CreateUriNode("rdf:Property");
-        INode rdfsRange = g.CreateUriNode("rdfs:range");
-        INode union = g.CreateBlankNode();
-        INode unionOf = g.CreateUriNode("owl:unionOf");
-        INode testItem1 = g.CreateUriNode("ex:one");
-        INode testItem2 = g.CreateUriNode("ex:two");
+        var testProperty = g.CreateUriNode("ex:property");
+        var rdfType = g.CreateUriNode("rdf:type");
+        var rdfProperty = g.CreateUriNode("rdf:Property");
+        var rdfsRange = g.CreateUriNode("rdfs:range");
+        var union = g.CreateBlankNode();
+        var unionOf = g.CreateUriNode("owl:unionOf");
+        var testItem1 = g.CreateUriNode("ex:one");
+        var testItem2 = g.CreateUriNode("ex:two");
 
         g.Assert(testProperty, rdfType, rdfProperty);
         g.Assert(testProperty, rdfsRange, union);

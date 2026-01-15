@@ -499,10 +499,10 @@ public static class XmlSpecsHelper
         }
 
         // TODO: This is enough for our specific ordering needs, but could maybe be broken down further for more general usage?
-        SparqlNumericType numericType1 = NumericTypesHelper.GetNumericTypeFromDataTypeUri(type1);
+        var numericType1 = NumericTypesHelper.GetNumericTypeFromDataTypeUri(type1);
         if (numericType1 != SparqlNumericType.NaN)
         {
-            SparqlNumericType numericType2 = NumericTypesHelper.GetNumericTypeFromDataTypeUri(type2);
+            var numericType2 = NumericTypesHelper.GetNumericTypeFromDataTypeUri(type2);
             if (numericType2 != SparqlNumericType.NaN)
             {
                 var compatibleType = (SparqlNumericType)Math.Max((int)numericType1, (int)numericType2);

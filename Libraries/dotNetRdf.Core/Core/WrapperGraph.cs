@@ -808,7 +808,7 @@ public abstract class WrapperGraph
     /// <param name="args">Triple Event Arguments.</param>
     protected void RaiseTripleAsserted(TripleEventArgs args)
     {
-        TripleEventHandler d = TripleAsserted;
+        var d = TripleAsserted;
         args.Graph = this;
         if (d != null)
         {
@@ -823,8 +823,8 @@ public abstract class WrapperGraph
     /// <param name="t">Triple.</param>
     protected void RaiseTripleAsserted(Triple t)
     {
-        TripleEventHandler d = TripleAsserted;
-        GraphEventHandler e = Changed;
+        var d = TripleAsserted;
+        var e = Changed;
         if (d != null || e != null)
         {
             var args = new TripleEventArgs(t, this);
@@ -849,7 +849,7 @@ public abstract class WrapperGraph
     /// <param name="args"></param>
     protected void RaiseTripleRetracted(TripleEventArgs args)
     {
-        TripleEventHandler d = TripleRetracted;
+        var d = TripleRetracted;
         args.Graph = this;
         if (d != null)
         {
@@ -864,8 +864,8 @@ public abstract class WrapperGraph
     /// <param name="t">Triple.</param>
     protected void RaiseTripleRetracted(Triple t)
     {
-        TripleEventHandler d = TripleRetracted;
-        GraphEventHandler e = Changed;
+        var d = TripleRetracted;
+        var e = Changed;
         if (d != null || e != null)
         {
             var args = new TripleEventArgs(t, this, false);
@@ -890,7 +890,7 @@ public abstract class WrapperGraph
     /// <param name="args">Triple Event Arguments.</param>
     protected void RaiseGraphChanged(TripleEventArgs args)
     {
-        GraphEventHandler d = Changed;
+        var d = Changed;
         if (d != null)
         {
             d(this, new GraphEventArgs(this, args));
@@ -902,7 +902,7 @@ public abstract class WrapperGraph
     /// </summary>
     protected void RaiseGraphChanged()
     {
-        GraphEventHandler d = Changed;
+        var d = Changed;
         if (d != null)
         {
             d(this, new GraphEventArgs(this));
@@ -925,7 +925,7 @@ public abstract class WrapperGraph
     /// <returns>True if the operation can continue, false if it should be aborted.</returns>
     protected void RaiseClearRequested(CancellableGraphEventArgs args)
     {
-        CancellableGraphEventHandler d = ClearRequested;
+        var d = ClearRequested;
         if (d != null)
         {
             d(this, args);
@@ -947,7 +947,7 @@ public abstract class WrapperGraph
     /// </summary>
     protected void RaiseCleared()
     {
-        GraphEventHandler d = Cleared;
+        var d = Cleared;
         if (d != null)
         {
             d(this, new GraphEventArgs(this));
@@ -970,7 +970,7 @@ public abstract class WrapperGraph
     /// <returns>True if the operation can continue, false if it should be aborted.</returns>
     protected void RaiseMergeRequested(CancellableGraphEventArgs args)
     {
-        CancellableGraphEventHandler d = MergeRequested;
+        var d = MergeRequested;
         if (d != null)
         {
             d(this, args);
@@ -992,7 +992,7 @@ public abstract class WrapperGraph
     /// </summary>
     protected void RaiseMerged()
     {
-        GraphEventHandler d = Merged;
+        var d = Merged;
         if (d != null)
         {
             d(this, new GraphEventArgs(this));

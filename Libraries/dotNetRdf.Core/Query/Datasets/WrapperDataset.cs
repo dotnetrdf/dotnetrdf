@@ -580,12 +580,12 @@ public abstract class WrapperDataset
     {
         if (_dataset is IConfigurationSerializable)
         {
-            INode dataset = context.NextSubject;
-            INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
-            INode datasetClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlDataset));
-            INode usingDataset = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset));
-            INode innerDataset = context.Graph.CreateBlankNode();
+            var dataset = context.NextSubject;
+            var rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+            var dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+            var datasetClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlDataset));
+            var usingDataset = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset));
+            var innerDataset = context.Graph.CreateBlankNode();
 
             var assm = Assembly.GetAssembly(GetType()).FullName;
             if (assm.Contains(",")) assm = assm.Substring(0, assm.IndexOf(','));

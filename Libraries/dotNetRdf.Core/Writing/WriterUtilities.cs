@@ -472,7 +472,7 @@ public static class WriterHelper
         if (mode == CollectionSearchMode.All || mode == CollectionSearchMode.ImplicitOnly)
         {
             // Find all rdf:rest rdf:nil Triples
-            foreach (Triple t in context.Graph.GetTriplesWithPredicateObject(rest, nil))
+            foreach (var t in context.Graph.GetTriplesWithPredicateObject(rest, nil))
             {
                 // If has named list node cannot compress
                 if (t.Subject.NodeType != NodeType.Blank)
@@ -484,21 +484,21 @@ public static class WriterHelper
                 var membersStack = new Stack<Triple>();
 
                 // Get the thing that is the rdf:first related to this rdf:rest
-                Triple[] firsts = context.Graph.GetTriplesWithSubjectPredicate(t.Subject, first).ToArray();//context.Graph.GetTriples(relfirstsel).Distinct();
+                var firsts = context.Graph.GetTriplesWithSubjectPredicate(t.Subject, first).ToArray();//context.Graph.GetTriples(relfirstsel).Distinct();
                 if (firsts.Length != 1)
                 {
                     // Node has multiple firsts or no firsts so the list cannot be compressed
                     break;
                 }
                 // Stick this item onto the Stack
-                Triple temp = firsts[0];
+                var temp = firsts[0];
                 membersStack.Push(temp);
 
                 // See if this thing is the rdf:rest of anything else
                 var canCompress = true;
                 do
                 {
-                    Triple[] ts = context.Graph.GetTriplesWithPredicateObject(rest, firsts.First().Subject).ToArray();
+                    var ts = context.Graph.GetTriplesWithPredicateObject(rest, firsts.First().Subject).ToArray();
 
                     // Stop when there isn't a rdf:rest
                     if (ts.Length == 0)
@@ -506,7 +506,7 @@ public static class WriterHelper
                         break;
                     }
 
-                    foreach (Triple t2 in ts)
+                    foreach (var t2 in ts)
                     {
                         firsts = context.Graph.GetTriplesWithSubjectPredicate(t2.Subject, first).Distinct(new FullTripleComparer(new FastNodeComparer())).ToArray();
 
@@ -543,7 +543,7 @@ public static class WriterHelper
         if (mode == CollectionSearchMode.All || mode == CollectionSearchMode.ExplicitOnly)
         {
             var bnodes = context.Graph.Nodes.BlankNodes().ToList();
-            foreach (IBlankNode b in bnodes)
+            foreach (var b in bnodes)
             {
                 // Drop list roots and list nodes
                 if (context.Collections.ContainsKey(b) || (context.Collections.Values.Any(c => !c.IsExplicit && c.Triples.Any(t => t.Subject.Equals(b)))))
@@ -584,9 +584,9 @@ public static class WriterHelper
         var cs = context.Collections.ToList();
 
         // 1 - If all the Triples pertaining to a particular Node are in the Collection then a collection is not eligible
-        foreach (KeyValuePair<INode, OutputRdfCollection> kvp in cs)
+        foreach (var kvp in cs)
         {
-            OutputRdfCollection c = kvp.Value;
+            var c = kvp.Value;
             if (c.IsExplicit)
             {
                 // For explicit collections if all Triples mentioning the Target Blank Node are in the Collection then can't compress
@@ -617,9 +617,9 @@ public static class WriterHelper
 
         // First build up a dependencies table
         var dependencies = new Dictionary<INode, HashSet<INode>>();
-        foreach (KeyValuePair<INode, OutputRdfCollection> kvp in cs)
+        foreach (var kvp in cs)
         {
-            OutputRdfCollection c = kvp.Value;
+            var c = kvp.Value;
 
             // Empty Blank Node Collections cannot be cyclic i.e. []
             if (c.Triples.Count == 0)
@@ -629,7 +629,7 @@ public static class WriterHelper
 
             // Otherwise check each Object of the Triples for other Blank Nodes
             var ds = new HashSet<INode>(new FastNodeComparer());
-            foreach (Triple t in c.Triples)
+            foreach (var t in c.Triples)
             {
                 // Only care about Blank Nodes which aren't the collection root but are the root for another collection
                 if (t.Object.NodeType == NodeType.Blank && !t.Object.Equals(kvp.Key) && context.Collections.ContainsKey(t.Object))
@@ -644,20 +644,20 @@ public static class WriterHelper
         }
 
         // Now go back through that table looking for cycles
-        foreach (INode n in dependencies.Keys)
+        foreach (var n in dependencies.Keys)
         {
-            HashSet<INode> ds = dependencies[n];
+            var ds = dependencies[n];
 
             if (ds.Count == 0)
             {
                 continue;
             }
 
-            foreach (INode d in ds.ToList())
+            foreach (var d in ds.ToList())
             {
                 if (dependencies.ContainsKey(d))
                 {
-                    foreach (INode dd in dependencies[d])
+                    foreach (var dd in dependencies[d])
                     {
                         ds.Add(dd);
                     }
@@ -676,19 +676,19 @@ public static class WriterHelper
         }
 
         // Finally fill out the TriplesDone for each Collection
-        foreach (KeyValuePair<INode, OutputRdfCollection> kvp in context.Collections)
+        foreach (var kvp in context.Collections)
         {
-            OutputRdfCollection c = kvp.Value;
+            var c = kvp.Value;
             if (c.IsExplicit)
             {
-                foreach (Triple t in c.Triples)
+                foreach (var t in c.Triples)
                 {
                     context.TriplesDone.Add(t);
                 }
             }
             else
             {
-                INode temp = kvp.Key;
+                var temp = kvp.Key;
                 for (var i = 0; i < c.Triples.Count; i++)
                 {
                     context.TriplesDone.Add(c.Triples[i]);
@@ -706,9 +706,9 @@ public static class WriterHelper
 
         // As a final sanity check look for any Explicit Collection Key which is used more than once
         cs = context.Collections.ToList();
-        foreach (KeyValuePair<INode, OutputRdfCollection> kvp in cs)
+        foreach (var kvp in cs)
         {
-            OutputRdfCollection c = kvp.Value;
+            var c = kvp.Value;
             if (c.IsExplicit)
             {
                 var mentions = context.Graph.GetTriples(kvp.Key).Count(t => !context.TriplesDone.Contains(t));
@@ -735,11 +735,11 @@ public static class WriterHelper
     /// <param name="context">Writer context.</param>
     public static void FindAnnotations(IAnnotationCompressingWriterContext context)
     {
-        foreach (Triple annotatedTriple in context.Graph.Triples.Quoted.Where(context.Graph.ContainsTriple))
+        foreach (var annotatedTriple in context.Graph.Triples.Quoted.Where(context.Graph.ContainsTriple))
         {
             List<Triple> annotations = context.Graph.GetTriplesWithSubject(new TripleNode(annotatedTriple)).ToList();
             context.Annotations[annotatedTriple] = annotations;
-            foreach (Triple annotation in annotations) context.TriplesDone.Add(annotation);
+            foreach (var annotation in annotations) context.TriplesDone.Add(annotation);
         }
     }
 
@@ -830,7 +830,7 @@ public static class WriterHelper
         var capacity = ts.Count;
         var sortHelperDictionary = new Dictionary<INode, Dictionary<INode, List<Triple>>>(capacity);
         // Fill dictionary
-        foreach (Triple triple in ts)
+        foreach (var triple in ts)
         {
             if (!sortHelperDictionary.ContainsKey(triple.Subject))
             {
@@ -846,13 +846,13 @@ public static class WriterHelper
         }
 
         ts.Clear();
-        INode[] keys = sortHelperDictionary.Keys.ToArray();
+        var keys = sortHelperDictionary.Keys.ToArray();
         Array.Sort(keys, new FastNodeComparer());
-        foreach (INode subjectKey in keys)
+        foreach (var subjectKey in keys)
         {
-            INode[] predicateKeys = sortHelperDictionary[subjectKey].Keys.ToArray();
+            var predicateKeys = sortHelperDictionary[subjectKey].Keys.ToArray();
             Array.Sort(predicateKeys, new FastNodeComparer());
-            foreach (INode predicateKey in predicateKeys)
+            foreach (var predicateKey in predicateKeys)
             {
                 ts.AddRange(sortHelperDictionary[subjectKey][predicateKey]);
             }

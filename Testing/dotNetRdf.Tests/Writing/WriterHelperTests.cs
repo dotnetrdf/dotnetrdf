@@ -20,16 +20,16 @@ public class WriterHelperTests
     public void FindCollectionsIgnoresNodeWithNoRdfFirst()
     {
         var g= new Graph();
-        INode rdfFirst = g.CreateUriNode("rdf:first");
-        INode rdfRest = g.CreateUriNode("rdf:rest");
-        INode rdfNil = g.CreateUriNode("rdf:nil");
-        INode listRoot = g.CreateBlankNode();
-        INode listNode = g.CreateBlankNode();
+        var rdfFirst = g.CreateUriNode("rdf:first");
+        var rdfRest = g.CreateUriNode("rdf:rest");
+        var rdfNil = g.CreateUriNode("rdf:nil");
+        var listRoot = g.CreateBlankNode();
+        var listNode = g.CreateBlankNode();
         g.Assert(listRoot, rdfFirst, g.CreateLiteralNode("first"));
         g.Assert(listRoot, rdfRest, listNode);
         g.Assert(listNode, rdfRest, rdfNil);
 
-        Dictionary<INode, OutputRdfCollection> collections = FindImplicitCollections(g);
+        var collections = FindImplicitCollections(g);
         Assert.Empty(collections);
     }
 
@@ -37,16 +37,16 @@ public class WriterHelperTests
     public void FindCollectionsIgnoresRootWithNoRdfFirst()
     {
         var g = new Graph();
-        INode rdfFirst = g.CreateUriNode("rdf:first");
-        INode rdfRest = g.CreateUriNode("rdf:rest");
-        INode rdfNil = g.CreateUriNode("rdf:nil");
-        INode listRoot = g.CreateBlankNode("root");
-        INode listNode = g.CreateBlankNode("node");
+        var rdfFirst = g.CreateUriNode("rdf:first");
+        var rdfRest = g.CreateUriNode("rdf:rest");
+        var rdfNil = g.CreateUriNode("rdf:nil");
+        var listRoot = g.CreateBlankNode("root");
+        var listNode = g.CreateBlankNode("node");
         g.Assert(listRoot, rdfRest, listNode);
         g.Assert(listNode, rdfFirst, g.CreateLiteralNode("first"));
         g.Assert(listNode, rdfRest, rdfNil);
 
-        Dictionary<INode, OutputRdfCollection> collections = FindImplicitCollections(g);
+        var collections = FindImplicitCollections(g);
         Assert.Empty(collections);
     }
 
@@ -55,11 +55,11 @@ public class WriterHelperTests
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", UriFactory.Create("http://example.org/"));
-        INode rdfFirst = g.CreateUriNode("rdf:first");
-        INode rdfRest = g.CreateUriNode("rdf:rest");
-        INode rdfNil = g.CreateUriNode("rdf:nil");
-        INode listRoot = g.CreateBlankNode("root");
-        INode listNode = g.CreateBlankNode("node");
+        var rdfFirst = g.CreateUriNode("rdf:first");
+        var rdfRest = g.CreateUriNode("rdf:rest");
+        var rdfNil = g.CreateUriNode("rdf:nil");
+        var listRoot = g.CreateBlankNode("root");
+        var listNode = g.CreateBlankNode("node");
 
         g.Assert(g.CreateUriNode("ex:s"), g.CreateUriNode("ex:p"), listRoot);
         g.Assert(listRoot, rdfFirst, g.CreateLiteralNode("first"));
@@ -68,7 +68,7 @@ public class WriterHelperTests
         g.Assert(listNode, rdfFirst, g.CreateLiteralNode("second"));
         g.Assert(listNode, rdfRest, rdfNil);
 
-        Dictionary<INode, OutputRdfCollection> collections = FindImplicitCollections(g);
+        var collections = FindImplicitCollections(g);
         Assert.Empty(collections);
     }
 
@@ -77,11 +77,11 @@ public class WriterHelperTests
     {
         var g = new Graph();
         g.NamespaceMap.AddNamespace("ex", UriFactory.Create("http://example.org/"));
-        INode rdfFirst = g.CreateUriNode("rdf:first");
-        INode rdfRest = g.CreateUriNode("rdf:rest");
-        INode rdfNil = g.CreateUriNode("rdf:nil");
-        INode listRoot = g.CreateBlankNode("root");
-        INode listNode = g.CreateBlankNode("node");
+        var rdfFirst = g.CreateUriNode("rdf:first");
+        var rdfRest = g.CreateUriNode("rdf:rest");
+        var rdfNil = g.CreateUriNode("rdf:nil");
+        var listRoot = g.CreateBlankNode("root");
+        var listNode = g.CreateBlankNode("node");
 
         g.Assert(g.CreateUriNode("ex:s"), g.CreateUriNode("ex:p"), listRoot);
         g.Assert(listRoot, rdfFirst, g.CreateLiteralNode("first"));
@@ -90,7 +90,7 @@ public class WriterHelperTests
         g.Assert(listNode, rdfFirst, g.CreateLiteralNode("another second"));
         g.Assert(listNode, rdfRest, rdfNil);
 
-        Dictionary<INode, OutputRdfCollection> collections = FindImplicitCollections(g);
+        var collections = FindImplicitCollections(g);
         Assert.Empty(collections);
     }
 
@@ -98,15 +98,15 @@ public class WriterHelperTests
     public void FindCollectionsIgnoresUnterminatedList()
     {
         var g = new Graph();
-        INode rdfFirst = g.CreateUriNode("rdf:first");
-        INode rdfRest = g.CreateUriNode("rdf:rest");
-        INode l = g.CreateBlankNode();
-        INode m = g.CreateBlankNode();
+        var rdfFirst = g.CreateUriNode("rdf:first");
+        var rdfRest = g.CreateUriNode("rdf:rest");
+        var l = g.CreateBlankNode();
+        var m = g.CreateBlankNode();
         g.Assert(l, rdfFirst, g.CreateLiteralNode("first"));
         g.Assert(l, rdfRest, m);
         g.Assert(m, rdfFirst, g.CreateLiteralNode("second"));
 
-        Dictionary<INode, OutputRdfCollection> collections = FindImplicitCollections(g);
+        var collections = FindImplicitCollections(g);
         Assert.Empty(collections);
     }
 
@@ -126,9 +126,9 @@ public class WriterHelperTests
                          <urn:X> a sh:PropertyShape;
                             sh:in _:autos1.
                          """, new TurtleParser(TurtleSyntax.W3C, false));
-        Dictionary<INode, OutputRdfCollection> collections = FindImplicitCollections(g);
+        var collections = FindImplicitCollections(g);
         Assert.Single(collections);
-        OutputRdfCollection collection = collections.Values.First();
+        var collection = collections.Values.First();
         Assert.False(collection.IsExplicit);
         Assert.Equal(3, collection.Triples.Count);
     }

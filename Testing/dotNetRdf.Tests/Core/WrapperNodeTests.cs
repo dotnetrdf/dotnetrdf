@@ -44,7 +44,7 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_Equals_object()
     {
-        IBlankNode node = _factory.CreateBlankNode();
+        var node = _factory.CreateBlankNode();
         var nodeObject = node as object;
         var wrapper = new MockWrapperNode(node);
 
@@ -57,7 +57,7 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_GetHashCode()
     {
-        IBlankNode node = _factory.CreateBlankNode();
+        var node = _factory.CreateBlankNode();
         var wrapper = new MockWrapperNode(node);
 
         var expected = node.GetHashCode();
@@ -69,7 +69,7 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_ToString()
     {
-        IBlankNode node = _factory.CreateBlankNode();
+        var node = _factory.CreateBlankNode();
         var wrapper = new MockWrapperNode(node);
 
         var expected = node.ToString();
@@ -81,11 +81,11 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_NodeType()
     {
-        IBlankNode node = _factory.CreateBlankNode();
+        var node = _factory.CreateBlankNode();
         var wrapper = new MockWrapperNode(node);
 
-        NodeType expected = node.NodeType;
-        NodeType actual = wrapper.NodeType;
+        var expected = node.NodeType;
+        var actual = wrapper.NodeType;
 
         Assert.Equal(expected, actual);
     }
@@ -105,7 +105,7 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_CompareTo_blank()
     {
-        IBlankNode node = _factory.CreateBlankNode();
+        var node = _factory.CreateBlankNode();
         var wrapper = new MockWrapperNode(node);
 
         var expected = node.CompareTo(node);
@@ -117,7 +117,7 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_CompareTo_graphLiteral()
     {
-        IGraphLiteralNode node = _factory.CreateGraphLiteralNode();
+        var node = _factory.CreateGraphLiteralNode();
         var wrapper = new MockWrapperNode(node);
 
         var expected = node.CompareTo(node);
@@ -129,7 +129,7 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_CompareTo_literal()
     {
-        ILiteralNode node = _factory.CreateLiteralNode(string.Empty);
+        var node = _factory.CreateLiteralNode(string.Empty);
         var wrapper = new MockWrapperNode(node);
 
         var expected = node.CompareTo(node);
@@ -141,7 +141,7 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_CompareTo_uri()
     {
-        IUriNode node = _factory.CreateUriNode(UriFactory.Root.Create("http://example.com/"));
+        var node = _factory.CreateUriNode(UriFactory.Root.Create("http://example.com/"));
         var wrapper = new MockWrapperNode(node);
 
         var expected = node.CompareTo(node);
@@ -153,7 +153,7 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_CompareTo_variable()
     {
-        IVariableNode node = _factory.CreateVariableNode(string.Empty);
+        var node = _factory.CreateVariableNode(string.Empty);
         var wrapper = new MockWrapperNode(node);
 
         var expected = node.CompareTo(node);
@@ -177,7 +177,7 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_Equals_blank()
     {
-        IBlankNode node = _factory.CreateBlankNode();
+        var node = _factory.CreateBlankNode();
         var wrapper = new MockWrapperNode(node);
 
         var expected = node.Equals(node);
@@ -189,7 +189,7 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_Equals_graphLiteral()
     {
-        IGraphLiteralNode node = _factory.CreateGraphLiteralNode();
+        var node = _factory.CreateGraphLiteralNode();
         var wrapper = new MockWrapperNode(node);
 
         var expected = node.Equals(node);
@@ -201,7 +201,7 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_Equals_literal()
     {
-        ILiteralNode node = _factory.CreateLiteralNode(string.Empty);
+        var node = _factory.CreateLiteralNode(string.Empty);
         var wrapper = new MockWrapperNode(node);
 
         var expected = node.Equals(node);
@@ -213,7 +213,7 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_Equals_uri()
     {
-        IUriNode node = _factory.CreateUriNode(UriFactory.Root.Create("http://example.com/"));
+        var node = _factory.CreateUriNode(UriFactory.Root.Create("http://example.com/"));
         var wrapper = new MockWrapperNode(node);
 
         var expected = node.Equals(node);
@@ -225,7 +225,7 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_Equals_variable()
     {
-        IVariableNode node = _factory.CreateVariableNode(string.Empty);
+        var node = _factory.CreateVariableNode(string.Empty);
         var wrapper = new MockWrapperNode(node);
 
         var expected = node.Equals(node);
@@ -237,7 +237,7 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_ToString_formatter()
     {
-        IBlankNode node = _factory.CreateBlankNode();
+        var node = _factory.CreateBlankNode();
         var wrapper = new MockWrapperNode(node);
 
         var expected = node.ToString(new CsvFormatter());
@@ -249,7 +249,7 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_ToString_formatter_segment()
     {
-        IBlankNode node = _factory.CreateBlankNode();
+        var node = _factory.CreateBlankNode();
         var wrapper = new MockWrapperNode(node);
         var formatter = new CsvFormatter();
 
@@ -262,7 +262,7 @@ public class WrapperNodeTests
     [Fact]
     public void Fails_invalid_InternalID()
     {
-        ILiteralNode node = _factory.CreateLiteralNode(string.Empty);
+        var node = _factory.CreateLiteralNode(string.Empty);
         var wrapper = new MockWrapperNode(node);
 
         Assert.Throws<InvalidCastException>(() =>
@@ -273,7 +273,7 @@ public class WrapperNodeTests
     public void Delegates_InternalID()
     {
         var expected = new Guid().ToString();
-        IBlankNode node = _factory.CreateBlankNode(expected);
+        var node = _factory.CreateBlankNode(expected);
         var wrapper = new MockWrapperNode(node);
 
         var actual = ((IBlankNode)wrapper).InternalID;
@@ -284,7 +284,7 @@ public class WrapperNodeTests
     [Fact]
     public void Fails_invalid_Uri()
     {
-        IBlankNode node = _factory.CreateBlankNode();
+        var node = _factory.CreateBlankNode();
         var wrapper = new MockWrapperNode(node);
 
         Assert.Throws<InvalidCastException>(() =>
@@ -294,11 +294,11 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_Uri()
     {
-        Uri expected = UriFactory.Root.Create("urn:s");
-        IUriNode node = _factory.CreateUriNode(expected);
+        var expected = UriFactory.Root.Create("urn:s");
+        var node = _factory.CreateUriNode(expected);
         var wrapper = new MockWrapperNode(node);
 
-        Uri actual = ((IUriNode)wrapper).Uri;
+        var actual = ((IUriNode)wrapper).Uri;
 
         Assert.Equal(expected, actual);
     }
@@ -306,7 +306,7 @@ public class WrapperNodeTests
     [Fact]
     public void Fails_invalid_Value()
     {
-        IBlankNode node = _factory.CreateBlankNode();
+        var node = _factory.CreateBlankNode();
         var wrapper = new MockWrapperNode(node);
 
         Assert.Throws<InvalidCastException>(() =>
@@ -317,7 +317,7 @@ public class WrapperNodeTests
     public void Delegates_Value()
     {
         var expected = string.Empty;
-        ILiteralNode node = _factory.CreateLiteralNode(expected);
+        var node = _factory.CreateLiteralNode(expected);
         var wrapper = new MockWrapperNode(node);
 
         var actual = ((ILiteralNode)wrapper).Value;
@@ -328,7 +328,7 @@ public class WrapperNodeTests
     [Fact]
     public void Fails_invalid_Language()
     {
-        IBlankNode node = _factory.CreateBlankNode();
+        var node = _factory.CreateBlankNode();
         var wrapper = new MockWrapperNode(node);
 
         Assert.Throws<InvalidCastException>(() =>
@@ -339,7 +339,7 @@ public class WrapperNodeTests
     public void Delegates_Language()
     {
         var expected = "en";
-        ILiteralNode node = _factory.CreateLiteralNode(string.Empty, expected);
+        var node = _factory.CreateLiteralNode(string.Empty, expected);
         var wrapper = new MockWrapperNode(node);
 
         var actual = ((ILiteralNode)wrapper).Language;
@@ -350,7 +350,7 @@ public class WrapperNodeTests
     [Fact]
     public void Fails_invalid_DataType()
     {
-        IBlankNode node = _factory.CreateBlankNode();
+        var node = _factory.CreateBlankNode();
         var wrapper = new MockWrapperNode(node);
 
         Assert.Throws<InvalidCastException>(() =>
@@ -360,11 +360,11 @@ public class WrapperNodeTests
     [Fact]
     public void Delegates_DataType()
     {
-        Uri expected = UriFactory.Root.Create("urn:s");
-        ILiteralNode node = _factory.CreateLiteralNode(string.Empty, expected);
+        var expected = UriFactory.Root.Create("urn:s");
+        var node = _factory.CreateLiteralNode(string.Empty, expected);
         var wrapper = new MockWrapperNode(node);
 
-        Uri actual = ((ILiteralNode)wrapper).DataType;
+        var actual = ((ILiteralNode)wrapper).DataType;
 
         Assert.Equal(expected, actual);
     }

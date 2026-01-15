@@ -116,7 +116,7 @@ public class WriteToStoreHandler
             ProcessBatch();
         }
         // Then process each batch of non-ground triples
-        foreach (IRefNode g in _bnodeUris)
+        foreach (var g in _bnodeUris)
         {
             var batch = new List<Triple>();
             for (var i = 0; i < _bnodeActions.Count; i++)
