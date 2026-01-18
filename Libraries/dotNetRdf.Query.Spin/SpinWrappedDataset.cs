@@ -738,9 +738,9 @@ public class SpinWrappedDataset : ISparqlDataset
     {
         ExecuteUpdate();
         ISparqlPrinter sparqlFactory = new BaseSparqlPrinter(this);
-        if (_queryExecutionMode != QueryMode.UserQuerying && spinQuery is IConstruct)
+        if (_queryExecutionMode != QueryMode.UserQuerying && spinQuery is IConstruct query)
         {
-            ExecuteUpdate((IConstruct)spinQuery);
+            ExecuteUpdate(query);
             return null; // TODO is this correct or should we return the execution graph ?
         }
         SparqlParameterizedString commandText = sparqlFactory.GetCommandText(spinQuery);

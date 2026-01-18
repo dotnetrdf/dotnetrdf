@@ -73,9 +73,9 @@ public class FilteredProduct
     /// <returns></returns>
     public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
     {
-        if (optimiser is IExpressionTransformer)
+        if (optimiser is IExpressionTransformer transformer)
         {
-            return new FilteredProduct(optimiser.Optimise(Lhs), optimiser.Optimise(Rhs), ((IExpressionTransformer)optimiser).Transform(FilterExpression));
+            return new FilteredProduct(optimiser.Optimise(Lhs), optimiser.Optimise(Rhs), transformer.Transform(FilterExpression));
         }
         else
         {

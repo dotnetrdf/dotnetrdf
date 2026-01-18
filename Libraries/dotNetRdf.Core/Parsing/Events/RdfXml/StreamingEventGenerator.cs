@@ -312,26 +312,26 @@ public class StreamingEventGenerator
             for (var i = 0; i < _reader.AttributeCount; i++)
             {
                 IRdfXmlEvent attr = GetNextAttribute();
-                if (attr is AttributeEvent)
+                if (attr is AttributeEvent attributeEvent)
                 {
-                    el.Attributes.Add((AttributeEvent)attr);
+                    el.Attributes.Add(attributeEvent);
                 }
-                else if (attr is NamespaceAttributeEvent)
+                else if (attr is NamespaceAttributeEvent nsAttributeEvent)
                 {
-                    el.NamespaceAttributes.Add((NamespaceAttributeEvent)attr);
+                    el.NamespaceAttributes.Add(nsAttributeEvent);
                 }
-                else if (attr is LanguageAttributeEvent)
+                else if (attr is LanguageAttributeEvent languageAttributeEvent)
                 {
-                    el.Language = ((LanguageAttributeEvent)attr).Language;
+                    el.Language = languageAttributeEvent.Language;
                 }
-                else if (attr is ParseTypeAttributeEvent)
+                else if (attr is ParseTypeAttributeEvent typeAttributeEvent)
                 {
-                    el.ParseType = ((ParseTypeAttributeEvent)attr).ParseType;
+                    el.ParseType = typeAttributeEvent.ParseType;
                     el.Attributes.Add(new AttributeEvent( _reader.LocalName, _reader.Prefix, _reader.Value, _reader.Value, GetPosition()));
                 }
-                else if (attr is XmlBaseAttributeEvent)
+                else if (attr is XmlBaseAttributeEvent baseAttributeEvent)
                 {
-                    el.BaseUri = ((XmlBaseAttributeEvent)attr).BaseUri;
+                    el.BaseUri = baseAttributeEvent.BaseUri;
                     _currentBaseUri = el.BaseUri;
                 }
             }

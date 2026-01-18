@@ -84,15 +84,15 @@ public class SparqlEndpointFactory
                 foreach (INode e in endpoints)
                 {
                     var temp = ConfigurationLoader.LoadObject(g, e);
-                    if (temp is SparqlRemoteEndpoint)
+                    if (temp is SparqlRemoteEndpoint remoteEndpoint)
                     {
                         if (endpoint == null)
                         {
-                            endpoint = new FederatedSparqlRemoteEndpoint((SparqlRemoteEndpoint)temp);
+                            endpoint = new FederatedSparqlRemoteEndpoint(remoteEndpoint);
                         }
                         else
                         {
-                            ((FederatedSparqlRemoteEndpoint)endpoint).AddEndpoint((SparqlRemoteEndpoint)temp);
+                            ((FederatedSparqlRemoteEndpoint)endpoint).AddEndpoint(remoteEndpoint);
                         }
                     }
                     else
@@ -118,9 +118,9 @@ public class SparqlEndpointFactory
             if (proxyNode != null)
             {
                 var proxy = ConfigurationLoader.LoadObject(g, proxyNode);
-                if (proxy is IWebProxy)
+                if (proxy is IWebProxy webProxy)
                 {
-                    endpoint.Proxy = (IWebProxy)proxy;
+                    endpoint.Proxy = webProxy;
 
                     // Are we supposed to use the same credentials for the proxy as for the endpoint?
                     var useCredentialsForProxy = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy)), false);

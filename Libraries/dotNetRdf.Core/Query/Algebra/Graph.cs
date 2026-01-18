@@ -171,9 +171,8 @@ public class Graph
     /// <returns>A Graph instance representing the application of the graph constraint to the algebra.</returns>
     public static ISparqlAlgebra ApplyGraph(ISparqlAlgebra algebra, IToken graphSpecifier)
     {
-        if (algebra is not Graph) return new Graph(algebra, graphSpecifier);
+        if (algebra is not Graph other) return new Graph(algebra, graphSpecifier);
 
-        var other = (Graph) algebra;
         if (other.GraphSpecifier.TokenType == graphSpecifier.TokenType && other.GraphSpecifier.Value.Equals(graphSpecifier.Value))
         {
             // We already have the appropriate graph specifier applied to us so reapplying it is unnecessary

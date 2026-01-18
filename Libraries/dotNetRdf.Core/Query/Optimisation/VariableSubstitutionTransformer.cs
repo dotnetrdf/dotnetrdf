@@ -76,9 +76,9 @@ public class VariableSubstitutionTransformer
         _findVar = findVar;
         _replaceItem = new NodeMatchPattern(replaceTerm);
         _replaceExpr = new ConstantTerm(replaceTerm);
-        if (replaceTerm is IUriNode)
+        if (replaceTerm is IUriNode node)
         {
-            _replaceToken = new UriToken("<" + ((IUriNode)replaceTerm).Uri.AbsoluteUri + ">", 0, 0, 0);
+            _replaceToken = new UriToken("<" + node.Uri.AbsoluteUri + ">", 0, 0, 0);
         }
         _canReplaceObjects = true;
     }
@@ -116,9 +116,8 @@ public class VariableSubstitutionTransformer
         // that makes object replacement safe for that scope only
         var canReplaceObjects = (_canReplaceCustom ? _canReplaceObjects : _replaceItem is NodeMatchPattern);
 
-        if (algebra is IBgp)
+        if (algebra is IBgp bgp)
         {
-            var bgp = (IBgp)algebra;
             if (bgp.PatternCount == 0) return bgp;
 
             // Do variable substitution on the patterns
@@ -156,13 +155,13 @@ public class VariableSubstitutionTransformer
                 return g;
             }
         }
-        else if (algebra is IUnaryOperator)
+        else if (algebra is IUnaryOperator @operator)
         {
-            return ((IUnaryOperator)algebra).Transform(this);
+            return @operator.Transform(this);
         }
-        else if (algebra is IAbstractJoin)
+        else if (algebra is IAbstractJoin join)
         {
-            return ((IAbstractJoin)algebra).Transform(this);
+            return join.Transform(this);
         }
         else if (algebra is ITerminalOperator)
         {
@@ -264,9 +263,8 @@ public class VariableSubstitutionTransformer
                 return expr;
             }
         }
-        else if (expr is GraphPatternTerm)
+        else if (expr is GraphPatternTerm gp)
         {
-            var gp = (GraphPatternTerm)expr;
             ISparqlAlgebra alg = gp.Pattern.ToAlgebra();
             alg = Optimise(alg);
             return new GraphPatternTerm(alg.ToGraphPattern());

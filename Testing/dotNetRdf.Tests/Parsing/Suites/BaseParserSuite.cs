@@ -368,11 +368,11 @@ WHERE
 
                 //Repeat parsing with tracing enabled if appropriate
                 //This gives us more useful debugging output for failed tests
-                if (Parser is ITraceableTokeniser)
+                if (Parser is ITraceableTokeniser tokeniser)
                 {
                     try
                     {
-                        ((ITraceableTokeniser)Parser).TraceTokeniser = true;
+                        tokeniser.TraceTokeniser = true;
                         ((IRdfReader)Parser).Load(new Graph(), Path.GetFileName(file));
                     }
                     catch
@@ -381,7 +381,7 @@ WHERE
                     }
                     finally
                     {
-                        ((ITraceableTokeniser)Parser).TraceTokeniser = false;
+                        tokeniser.TraceTokeniser = false;
                     }
                 }
 

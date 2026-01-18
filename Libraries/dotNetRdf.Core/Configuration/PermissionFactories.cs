@@ -136,9 +136,9 @@ public class UserGroupFactory : IObjectFactory
                 foreach (INode allow in allowed)
                 {
                     var temp = ConfigurationLoader.LoadObject(g, allow);
-                    if (temp is IPermission)
+                    if (temp is IPermission permission)
                     {
-                        result.AddAllowedAction((IPermission)temp);
+                        result.AddAllowedAction(permission);
                     }
                     else
                     {
@@ -151,9 +151,9 @@ public class UserGroupFactory : IObjectFactory
                 foreach (INode deny in denied)
                 {
                     var temp = ConfigurationLoader.LoadObject(g, deny);
-                    if (temp is IPermission)
+                    if (temp is IPermission permission)
                     {
-                        result.AddDeniedAction((IPermission)temp);
+                        result.AddDeniedAction(permission);
                     }
                     else
                     {

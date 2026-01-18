@@ -191,9 +191,9 @@ public static class StorageHelper
     /// <returns></returns>
     public static RdfQueryException HandleQueryError(Exception ex)
     {
-        if (ex is WebException)
+        if (ex is WebException exception)
         {
-            return HandleHttpQueryError((WebException)ex);
+            return HandleHttpQueryError(exception);
         }
         else
         {
@@ -209,9 +209,9 @@ public static class StorageHelper
     /// <returns></returns>
     public static RdfStorageException HandleError(Exception ex, string action)
     {
-        if (ex is WebException)
+        if (ex is WebException exception)
         {
-            return HandleHttpError((WebException)ex, action);
+            return HandleHttpError(exception, action);
         }
         else
         {

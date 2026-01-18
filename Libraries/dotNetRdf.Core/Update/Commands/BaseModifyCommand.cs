@@ -141,7 +141,7 @@ public abstract class BaseModificationCommand
         if (p.IsGraph)
         {
             // If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
-            return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoBlankVariables);
+            return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern { HasNoBlankVariables: true });
         }
         else if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
         {
@@ -153,7 +153,7 @@ public abstract class BaseModificationCommand
             // For other patterns all Triple patterns must be constructable with no blank variables
             // If top level then any Child Graph Patterns must be valid
             // Otherwise must have no Child Graph Patterns
-            return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoBlankVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDeletePattern(gp, false))) || !p.HasChildGraphPatterns);
+            return p.TriplePatterns.All(tp => tp is IConstructTriplePattern { HasNoBlankVariables: true }) && ((top && p.ChildGraphPatterns.All(gp => IsValidDeletePattern(gp, false))) || !p.HasChildGraphPatterns);
         }
     }
 }

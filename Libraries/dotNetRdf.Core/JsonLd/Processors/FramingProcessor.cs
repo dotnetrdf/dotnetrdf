@@ -663,7 +663,7 @@ internal static class FramingProcessor
 
     private static bool ValuePatternMatch(JToken valuePattern, JToken value)
     {
-        if (valuePattern is JArray) valuePattern = ((JArray)valuePattern)[0];
+        if (valuePattern is JArray array) valuePattern = array[0];
         var valuePatternObject = valuePattern as JObject;
         var valueObject = value as JObject;
         if (valuePatternObject == null || valueObject == null) return false;

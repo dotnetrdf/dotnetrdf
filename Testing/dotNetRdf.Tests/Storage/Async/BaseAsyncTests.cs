@@ -418,7 +418,7 @@ public abstract class BaseAsyncTests
     protected void TestAsyncQuery(IGraph g)
     {
         IAsyncStorageProvider provider = GetAsyncProvider();
-        if (provider is not IAsyncQueryableStorage)
+        if (provider is not IAsyncQueryableStorage storage)
         {
             Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
             return;
@@ -444,7 +444,7 @@ public abstract class BaseAsyncTests
 
                 resArgs = null;
                 signal.Reset();
-                ((IAsyncQueryableStorage)provider).Query("SELECT * WHERE { GRAPh <" + QueryGraphUri + "> { ?s a ?type } }", (_, args, state) =>
+                storage.Query("SELECT * WHERE { GRAPh <" + QueryGraphUri + "> { ?s a ?type } }", (_, args, state) =>
                 {
                     resArgs = args;
                     signal.Set();
@@ -665,7 +665,7 @@ public abstract class BaseAsyncTests
     protected async Task TestQueryAsync(IGraph g)
     {
         IAsyncStorageProvider provider = GetAsyncProvider();
-        if (provider is not IAsyncQueryableStorage)
+        if (provider is not IAsyncQueryableStorage storage)
         {
             throw SkipException.ForSkip("[" + provider.GetType().Name +
                                     "] IO Behaviour required for this test is not supported, skipping test for this provider");
@@ -674,8 +674,8 @@ public abstract class BaseAsyncTests
         try
         {
             g.BaseUri = UriFactory.Root.Create(SaveGraphUri);
-            await provider.SaveGraphAsync(g, CancellationToken.None);
-            var results = await ((IAsyncQueryableStorage)provider).QueryAsync(
+            await storage.SaveGraphAsync(g, CancellationToken.None);
+            var results = await storage.QueryAsync(
                 "SELECT * WHERE { GRAPh <" + QueryGraphUri + "> { ?s a ?type } }", CancellationToken.None);
             Assert.NotNull(results);
             SparqlResultSet resultSet = Assert.IsType<SparqlResultSet>(results, exactMatch: false);

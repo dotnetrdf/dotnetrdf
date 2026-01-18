@@ -78,9 +78,9 @@ public class Extend
     /// <returns></returns>
     public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
     {
-        if (optimiser is IExpressionTransformer)
+        if (optimiser is IExpressionTransformer transformer)
         {
-            return new Extend(optimiser.Optimise(InnerAlgebra), ((IExpressionTransformer)optimiser).Transform(AssignExpression), VariableName);
+            return new Extend(optimiser.Optimise(InnerAlgebra), transformer.Transform(AssignExpression), VariableName);
         }
         else
         {

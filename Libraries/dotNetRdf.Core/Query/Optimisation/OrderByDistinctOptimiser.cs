@@ -54,18 +54,15 @@ public class OrderByDistinctOptimiser
     /// <returns>Optimized algebra.</returns>
     public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
     {
-        if (algebra is Distinct)
+        if (algebra is Distinct distinct)
         {
-            var distinct = (Distinct)algebra;
-            if (distinct.InnerAlgebra is Select)
+            if (distinct.InnerAlgebra is Select select)
             {
-                var select = (Select)distinct.InnerAlgebra;
                 if (!select.IsSelectAll)
                 {
-                    if (select.InnerAlgebra is OrderBy)
+                    if (select.InnerAlgebra is OrderBy orderBy)
                     {
                         var ok = true;
-                        var orderBy = (OrderBy)select.InnerAlgebra;
                         var projectVars = select.SparqlVariables.Select(v => v.Name).ToList();
                         foreach (var var in orderBy.Ordering.Variables)
                         {
@@ -89,20 +86,17 @@ public class OrderByDistinctOptimiser
             }
 
             // If we reach here than optimization is not applicable
-            return ((Distinct)algebra).Transform(this);
+            return distinct.Transform(this);
         }
-        else if (algebra is Reduced)
+        else if (algebra is Reduced reduced)
         {
-            var reduced = (Reduced)algebra;
-            if (reduced.InnerAlgebra is Select)
+            if (reduced.InnerAlgebra is Select select)
             {
-                var select = (Select)reduced.InnerAlgebra;
                 if (!select.IsSelectAll)
                 {
-                    if (select.InnerAlgebra is OrderBy)
+                    if (select.InnerAlgebra is OrderBy orderBy)
                     {
                         var ok = true;
-                        var orderBy = (OrderBy)select.InnerAlgebra;
                         var projectVars = select.SparqlVariables.Select(v => v.Name).ToList();
                         foreach (var var in orderBy.Ordering.Variables)
                         {
@@ -126,19 +120,19 @@ public class OrderByDistinctOptimiser
             }
 
             // If we reach here than optimization is not applicable
-            return ((Reduced)algebra).Transform(this);
+            return reduced.Transform(this);
         }
         else if (algebra is ITerminalOperator)
         {
             return algebra;
         }
-        else if (algebra is IUnaryOperator)
+        else if (algebra is IUnaryOperator @operator)
         {
-            return ((IUnaryOperator)algebra).Transform(this);
+            return @operator.Transform(this);
         }
-        else if (algebra is IAbstractJoin)
+        else if (algebra is IAbstractJoin join)
         {
-            return ((IAbstractJoin)algebra).Transform(this);
+            return join.Transform(this);
         }
         else
         {

@@ -198,9 +198,9 @@ internal class SpinProcessor //: IInferenceEngine
 
     private INode GetSourceNode(INode resource)
     {
-        if (resource is IResource)
+        if (resource is IResource r)
         {
-            return ((IResource)resource).getSource();
+            return r.getSource();
         }
         return resource;
     }

@@ -405,12 +405,12 @@ public class RdfXmlParser
         var setBaseUri = (context.BaseUri == null);
         Uri baseUri;
 
-        if (first is RootEvent)
+        if (first is RootEvent root)
         {
-            GrammarProductionDoc(context, (RootEvent)first);
-            if (setBaseUri && !((RootEvent)first).BaseUri.Equals(string.Empty))
+            GrammarProductionDoc(context, root);
+            if (setBaseUri && !root.BaseUri.Equals(string.Empty))
             {
-                baseUri = context.UriFactory.Create(Tools.ResolveUri(((RootEvent)first).BaseUri, string.Empty));
+                baseUri = context.UriFactory.Create(Tools.ResolveUri(root.BaseUri, string.Empty));
                 context.BaseUri = baseUri;
                 if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
             }
@@ -580,14 +580,13 @@ public class RdfXmlParser
         IRdfXmlEvent first = eventlist.Dequeue();
 
         // Check it's an ElementEvent
-        if (first is not ElementEvent)
+        if (first is not ElementEvent element)
         {
             // Unexpected Event
             throw ParserHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType() + "'", "Node Element", first);
         }
 
         // Check it has a valid Uri
-        var element = (ElementEvent)first;
         if (_traceparsing) ProductionTracePartial(element);
         // Start a new namespace scope
         ApplyNamespaces(context, element);
@@ -657,15 +656,12 @@ public class RdfXmlParser
         if (element.SubjectNode == null)
         {
             // Don't always want to drop in here since the SubjectNode may already be set elsewhere
-            if (element.Subject is UriReferenceEvent)
+            if (element.Subject is UriReferenceEvent uri)
             {
-                var uri = (UriReferenceEvent)element.Subject;
                 subj = Resolve(context, uri, element.BaseUri);
             }
-            else if (element.Subject is BlankNodeIDEvent)
+            else if (element.Subject is BlankNodeIDEvent blank)
             {
-                var blank = (BlankNodeIDEvent)element.Subject;
-
                 // Select whether we need to generate an ID or if there's one given for the Blank Node
                 // Note that we let the Graph class handle generation of IDs
                 if (blank.Identifier.Equals(string.Empty))
@@ -833,14 +829,14 @@ public class RdfXmlParser
         ElementEvent element;
 
         // Must be an ElementEvent
-        if (first is not ElementEvent)
+        if (first is not ElementEvent @event)
         {
             // Unexpected Event
             throw ParserHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType() + "'", "PropertyElement", first);
         }
 
         // Validate the Uri
-        element = (ElementEvent)first;
+        element = @event;
         if (_traceparsing) ProductionTracePartial(element);
 
         // Start a new namespace scope
@@ -966,7 +962,7 @@ public class RdfXmlParser
         }
 
         // Next must be an ElementEvent
-        if (next is not ElementEvent)
+        if (next is not ElementEvent child)
         {
             throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an ElementEvent as the first Event in a Resource Property Elements Event list", next);
         }
@@ -990,11 +986,10 @@ public class RdfXmlParser
         INode subj, pred, obj;
 
         // Validate the Type of the Parent
-        if (parent is not ElementEvent)
+        if (parent is not ElementEvent parentEl)
         {
             throw ParserHelper.Error("Unexpected Parent Event '" + parent.GetType() + "', expected an ElementEvent", parent);
         }
-        var parentEl = (ElementEvent)parent;
 
         // Get the Subject Node from the Parent
         subj = parentEl.SubjectNode;
@@ -1009,7 +1004,6 @@ public class RdfXmlParser
         pred = Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
 
         // Get the Object Node from the Child Node
-        var child = (ElementEvent)next;
         obj = child.SubjectNode;
 
         // Assert the Triple
@@ -1065,11 +1059,10 @@ public class RdfXmlParser
         ApplyNamespaces(context, element);
 
         // Validate that the middle event is a TextEvent
-        if (middle is not TextEvent)
+        if (middle is not TextEvent text)
         {
             throw ParserHelper.Error("Unexpected event '" + middle.GetType() + "', expected a TextEvent in a Literal Property Element", middle);
         }
-        var text = (TextEvent)middle;
 
         // Validate the Attributes
         var ID = string.Empty;
@@ -1208,7 +1201,8 @@ public class RdfXmlParser
         // Get the next event in the Queue which should be a TypedLiteralEvent
         // Validate this
         IRdfXmlEvent lit = eventlist.Dequeue();
-        if (lit is not TypedLiteralEvent)
+        // Create the Object from the Typed Literal
+        if (lit is not TypedLiteralEvent tlit)
         {
             throw ParserHelper.Error("Unexpected Event '" + lit.GetType() + "', expected a TypedLiteralEvent after a Property Element with Parse Type 'Literal'", "Parse Type Literal Property Element", lit);
         }
@@ -1227,8 +1221,6 @@ public class RdfXmlParser
         // Create the Predicate from the Element
         pred = Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
 
-        // Create the Object from the Typed Literal
-        var tlit = (TypedLiteralEvent)lit;
         // At the moment we're just going to ensure that we normalize it to Unicode Normal Form C
         var xmllit = tlit.Value;
         xmllit = xmllit.Normalize();
@@ -1699,15 +1691,13 @@ public class RdfXmlParser
             }
 
             // Now create the actual Subject Node
-            if (res is UriReferenceEvent)
+            if (res is UriReferenceEvent urirefevent)
             {
                 // Resolve the Uri Reference
-                var uriref = (UriReferenceEvent)res;
-                subj = Resolve(context, uriref, element.BaseUri);
+                subj = Resolve(context, urirefevent, element.BaseUri);
             }
-            else if (res is BlankNodeIDEvent)
+            else if (res is BlankNodeIDEvent blank)
             {
-                var blank = (BlankNodeIDEvent)res;
                 if (blank.Identifier.Equals(string.Empty))
                 {
                     // Have the Graph generate a Blank Node ID

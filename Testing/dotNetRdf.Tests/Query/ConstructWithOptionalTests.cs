@@ -67,10 +67,8 @@ public class ConstructWithOptionalTests
 
         var processor = new LeviathanQueryProcessor(AsDataset(store));
         var results = processor.ProcessQuery(q);
-        if (results is IGraph)
+        if (results is IGraph result)
         {
-            var result = (IGraph)results;
-
             var formatter = new NTriplesFormatter();
             Console.WriteLine("Result Data");
             foreach (Triple t in result.Triples)

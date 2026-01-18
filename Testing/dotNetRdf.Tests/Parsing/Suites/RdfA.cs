@@ -209,16 +209,16 @@ public class RdfA
                             {
                                 SparqlQuery q = queryparser.ParseFromFile("rdfa_tests/" + Path.GetFileNameWithoutExtension(file) + ".sparql");
                                 var results = g.ExecuteQuery(q);
-                                if (results is SparqlResultSet)
+                                if (results is SparqlResultSet set)
                                 {
                                     //The Result is the result of the ASK Query
                                     if (falseTests.Contains(Path.GetFileName(file)))
                                     {
-                                        passed = !((SparqlResultSet)results).Result;
+                                        passed = !set.Result;
                                     }
                                     else
                                     {
-                                        passed = ((SparqlResultSet)results).Result;
+                                        passed = set.Result;
                                     }
                                 }
                             }

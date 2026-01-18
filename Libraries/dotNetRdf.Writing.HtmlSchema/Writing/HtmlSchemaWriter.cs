@@ -183,11 +183,11 @@ public class HtmlSchemaWriter
             try 
             {
                 results = context.Graph.ExecuteQuery(getOntoDescrip);
-                if (results is SparqlResultSet)
+                if (results is SparqlResultSet set)
                 {
-                    if (!((SparqlResultSet)results).IsEmpty)
+                    if (!set.IsEmpty)
                     {
-                        ISparqlResult ontoInfo = ((SparqlResultSet)results)[0];
+                        ISparqlResult ontoInfo = set[0];
 
                         // Show rdfs:comment on the Ontology
                         if (ontoInfo.HasValue("description"))
@@ -353,9 +353,8 @@ public class HtmlSchemaWriter
         try
         {
             results = context.Graph.ExecuteQuery(getClasses);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet rs)
             {
-                var rs = (SparqlResultSet)results;
                 for (var i = 0; i < rs.Count; i++)
                 {
                     ISparqlResult r = rs[i];
@@ -403,9 +402,8 @@ public class HtmlSchemaWriter
         try
         {
             results = context.Graph.ExecuteQuery(getProperties);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet rs)
             {
-                var rs = (SparqlResultSet)results;
                 for (var i = 0; i < rs.Count; i++)
                 {
                     ISparqlResult r = rs[i];
@@ -459,9 +457,9 @@ public class HtmlSchemaWriter
         try
         {
             results = context.Graph.ExecuteQuery(getClasses);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet set)
             {
-                foreach (SparqlResult r in (SparqlResultSet)results)
+                foreach (SparqlResult r in set)
                 {
                     if (!r.HasValue("class")) continue;
                     var qname = context.NodeFormatter.Format(r["class"]);
@@ -569,9 +567,9 @@ public class HtmlSchemaWriter
         try
         {
             results = context.Graph.ExecuteQuery(getProperties);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet set)
             {
-                foreach (SparqlResult r in (SparqlResultSet)results)
+                foreach (SparqlResult r in set)
                 {
                     if (!r.HasValue("property")) continue;
                     var qname = context.NodeFormatter.Format(r["property"]);

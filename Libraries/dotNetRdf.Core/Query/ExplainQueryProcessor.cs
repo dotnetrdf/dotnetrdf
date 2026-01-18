@@ -116,17 +116,17 @@ public class ExplainQueryProcessor
     /// <param name="context">SPARQL Evaluation Context.</param>
     private void PrintAnalysis(ISparqlAlgebra algebra, SparqlEvaluationContext context)
     {
-        if (algebra is IBgp)
+        if (algebra is IBgp bgp)
         {
-            PrintBgpAnalysis((IBgp) algebra);
+            PrintBgpAnalysis(bgp);
         }
-        else if (algebra is IAbstractJoin)
+        else if (algebra is IAbstractJoin join)
         {
-            PrintJoinAnalysis((IAbstractJoin) algebra);
+            PrintJoinAnalysis(join);
         }
-        else if (algebra is Algebra.Graph)
+        else if (algebra is Algebra.Graph graph)
         {
-            PrintGraphAnalysis((Algebra.Graph) algebra, context);
+            PrintGraphAnalysis(graph, context);
         }
     }
 

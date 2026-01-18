@@ -52,28 +52,26 @@ public class AskBgpOptimiser
         try
         {
             ISparqlAlgebra temp;
-            if (algebra is Bgp)
+            if (algebra is Bgp bgp)
             {
                 // Bgp is transformed into AskBgp
                 // This tries to find 1 possible solution
-                temp = new AskBgp(((Bgp)algebra).TriplePatterns);
+                temp = new AskBgp(bgp.TriplePatterns);
             }
-            else if (algebra is ILeftJoin)
+            else if (algebra is ILeftJoin leftJoin)
             {
                 // LeftJoin is transformed to just be the LHS as the RHS is irrelevant for ASK queries
                 // UNLESS the LeftJoin occurs inside a Filter/Minus BUT we should never get called to transform a 
                 // LeftJoin() for those branches of the algebra as the Optimiseer does not transform 
                 // Filter()/Minus() operators
-                temp = OptimiseInternal(((ILeftJoin)algebra).Lhs, depth + 1);
+                temp = OptimiseInternal(leftJoin.Lhs, depth + 1);
             }
-            else if (algebra is IUnion)
+            else if (algebra is IUnion union)
             {
-                var join = (IUnion)algebra;
-                temp = new AskUnion(OptimiseInternal(join.Lhs, depth + 1), OptimiseInternal(join.Rhs, depth + 1));
+                temp = new AskUnion(OptimiseInternal(union.Lhs, depth + 1), OptimiseInternal(union.Rhs, depth + 1));
             }
-            else if (algebra is IJoin)
+            else if (algebra is IJoin join)
             {
-                var join = (IJoin)algebra;
                 if (!join.Lhs.Variables.Intersect(join.Rhs.Variables).Any())
                 {
                     // If the sides of the Join are disjoint then can fully transform the join since we only need to find at least

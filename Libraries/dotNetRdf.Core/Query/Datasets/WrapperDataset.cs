@@ -578,7 +578,7 @@ public abstract class WrapperDataset
     /// <param name="context">Serialization Context.</param>
     public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
     {
-        if (_dataset is IConfigurationSerializable)
+        if (_dataset is IConfigurationSerializable serializable)
         {
             INode dataset = context.NextSubject;
             INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
@@ -596,7 +596,7 @@ public abstract class WrapperDataset
             context.Graph.Assert(dataset, usingDataset, innerDataset);
             context.NextSubject = innerDataset;
 
-            ((IConfigurationSerializable)_dataset).SerializeConfiguration(context);
+            serializable.SerializeConfiguration(context);
         }
         else
         {

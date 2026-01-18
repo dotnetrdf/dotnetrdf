@@ -179,9 +179,9 @@ public class WriteThroughHandler
     /// <param name="ok">Indicates whether parsing completed without error.</param>
     protected override void EndRdfInternal(bool ok)
     {
-        if (_tripleFormatter is IGraphFormatter)
+        if (_tripleFormatter is IGraphFormatter formatter)
         {
-            _writer.WriteLine(((IGraphFormatter)_tripleFormatter).FormatGraphFooter());
+            _writer.WriteLine(formatter.FormatGraphFooter());
         }
         if (_closeOnEnd)
         {
