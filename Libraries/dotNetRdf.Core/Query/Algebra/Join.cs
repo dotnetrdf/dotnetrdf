@@ -58,17 +58,17 @@ public class Join
     /// <returns></returns>
     public static ISparqlAlgebra CreateJoin(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
     {
-        if (lhs is Bgp)
+        if (lhs is Bgp lbgp)
         {
-            if (((Bgp)lhs).IsEmpty)
+            if (lbgp.IsEmpty)
             {
                 return rhs;
             }
-            else if (rhs is Bgp)
+            else if (rhs is Bgp rbgp)
             {
-                if (((Bgp)rhs).IsEmpty)
+                if (rbgp.IsEmpty)
                 {
-                    return lhs;
+                    return lbgp;
                 }
                 else
                 {
@@ -80,9 +80,9 @@ public class Join
                 return new Join(lhs, rhs);
             }
         }
-        else if (rhs is Bgp)
+        else if (rhs is Bgp rbgp)
         {
-            if (((Bgp)rhs).IsEmpty)
+            if (rbgp.IsEmpty)
             {
                 return lhs;
             }

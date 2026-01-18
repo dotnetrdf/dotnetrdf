@@ -55,9 +55,9 @@ public class DefaultGraphTests
         store.Add(g);
 
         object results = ExecuteQuery(store, "ASK WHERE { GRAPH ?g { ?s ?p ?o }}");
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet set)
         {
-            Assert.False(((SparqlResultSet)results).Result);
+            Assert.False(set.Result);
         }
         else
         {
@@ -74,9 +74,9 @@ public class DefaultGraphTests
         store.Add(g);
 
         object results = ExecuteQuery(store, "ASK WHERE { GRAPH <dotnetrdf:default-graph> { ?s ?p ?o }}");
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet set)
         {
-            Assert.False(((SparqlResultSet)results).Result);
+            Assert.False(set.Result);
         }
         else
         {

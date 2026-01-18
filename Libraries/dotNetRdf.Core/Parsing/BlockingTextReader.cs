@@ -130,7 +130,7 @@ public abstract class ParsingTextReader
     /// <returns></returns>
     public static BlockingTextReader CreateBlocking(TextReader input, int bufferSize)
     {
-        if (input is BlockingTextReader) return (BlockingTextReader)input;
+        if (input is BlockingTextReader reader) return reader;
         return new BlockingTextReader(input, bufferSize);
     }
 
@@ -141,7 +141,7 @@ public abstract class ParsingTextReader
     /// <returns></returns>
     public static NonBlockingTextReader CreateNonBlocking(TextReader input)
     {
-        if (input is NonBlockingTextReader) return (NonBlockingTextReader)input;
+        if (input is NonBlockingTextReader reader) return reader;
         return new NonBlockingTextReader(input);
     }
 
@@ -153,7 +153,7 @@ public abstract class ParsingTextReader
     /// <returns></returns>
     public static NonBlockingTextReader CreateNonBlocking(TextReader input, int bufferSize)
     {
-        if (input is NonBlockingTextReader) return (NonBlockingTextReader)input;
+        if (input is NonBlockingTextReader reader) return reader;
         return new NonBlockingTextReader(input, bufferSize);
     }
 }

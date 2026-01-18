@@ -75,9 +75,8 @@ public struct BatchTriple
     /// <returns></returns>
     public override bool Equals(object obj)
     {
-        if (obj is BatchTriple)
+        if (obj is BatchTriple other)
         {
-            var other = (BatchTriple)obj;
             return _graphID == other.GraphID && _t.Equals(other.Triple);
         }
         else

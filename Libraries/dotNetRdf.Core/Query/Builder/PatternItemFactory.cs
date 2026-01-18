@@ -109,13 +109,13 @@ internal class PatternItemFactory : IPatternItemFactory
     private static string GetLiteralString(object literal)
     {
         var literalString = literal.ToString();
-        if (literal is DateTimeOffset)
+        if (literal is DateTimeOffset offset)
         {
-            literalString = GetDatetimeString((DateTimeOffset) literal);
+            literalString = GetDatetimeString(offset);
         }
-        else if (literal is DateTime)
+        else if (literal is DateTime dateTime)
         {
-            literalString = GetDatetimeString((DateTime) literal);
+            literalString = GetDatetimeString(dateTime);
         }
         return literalString;
     }

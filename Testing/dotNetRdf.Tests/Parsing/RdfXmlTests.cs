@@ -70,9 +70,9 @@ namespace VDS.RDF.Parsing;
     private void TestRdfXmlSequence(IRdfReader parser, String file)
     {
         var g = new Graph();
-        if (parser is ITraceableParser)
+        if (parser is ITraceableParser traceableParser)
         {
-            ((ITraceableParser)parser).TraceParsing = true;
+            traceableParser.TraceParsing = true;
         }
         parser.Load(g, file);
 

@@ -209,9 +209,9 @@ public class DomBasedEventGenerator : IRdfXmlPreProcessingEventGenerator
     {
         // Get the Base Uri
         var baseUri = string.Empty;
-        if (parent is ElementEvent)
+        if (parent is ElementEvent @event)
         {
-            baseUri = ((ElementEvent)parent).BaseUri;
+            baseUri = @event.BaseUri;
         }
         // Create an ElementEvent for the Node
         var element = new ElementEvent(node.LocalName, node.Prefix, baseUri, node.OuterXml);
@@ -472,9 +472,8 @@ public class DomBasedEventGenerator : IRdfXmlPreProcessingEventGenerator
         }
 
         // Iterate over Children where present
-        if (evt is RootEvent)
+        if (evt is RootEvent root)
         {
-            var root = (RootEvent)evt;
             if (context.TraceParsing)
             {
                 Console.WriteLine("");
@@ -487,9 +486,8 @@ public class DomBasedEventGenerator : IRdfXmlPreProcessingEventGenerator
             // No End after a RootEvent
             return;
         }
-        else if (evt is ElementEvent)
+        else if (evt is ElementEvent element)
         {
-            var element = (ElementEvent)evt;
             if (context.TraceParsing)
             {
                 Console.WriteLine(" " + element.Namespace + ":" + element.LocalName);
@@ -502,9 +500,8 @@ public class DomBasedEventGenerator : IRdfXmlPreProcessingEventGenerator
                 }
             }
         }
-        else if (evt is TextEvent)
+        else if (evt is TextEvent text)
         {
-            var text = (TextEvent)evt;
             if (context.TraceParsing)
             {
                 Console.WriteLine(" " + text.Value);
@@ -513,9 +510,8 @@ public class DomBasedEventGenerator : IRdfXmlPreProcessingEventGenerator
             // No additional End after a Text Event
             return;
         }
-        else if (evt is TypedLiteralEvent)
+        else if (evt is TypedLiteralEvent tlit)
         {
-            var tlit = (TypedLiteralEvent)evt;
             if (context.TraceParsing)
             {
                 Console.WriteLine();
@@ -531,9 +527,8 @@ public class DomBasedEventGenerator : IRdfXmlPreProcessingEventGenerator
         if (context.TraceParsing)
         {
             var endDescrip = string.Empty;
-            if (evt is ElementEvent)
+            if (evt is ElementEvent temp)
             {
-                var temp = (ElementEvent)evt;
                 endDescrip = " " + temp.QName;
             }
             Console.WriteLine(nesting + " " + end.GetType() + endDescrip);

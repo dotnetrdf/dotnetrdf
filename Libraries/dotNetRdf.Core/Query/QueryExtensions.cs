@@ -55,9 +55,9 @@ static class QueryExtensions
             case SparqlExpressionType.UnaryOperator:
                 return expr.Arguments.All(arg => arg.UsesDefaultDataset());
             case SparqlExpressionType.Primary:
-                if (expr is GraphPatternTerm)
+                if (expr is GraphPatternTerm term)
                 {
-                    return ((GraphPatternTerm)expr).Pattern.UsesDefaultDataset;
+                    return term.Pattern.UsesDefaultDataset;
                 }
                 else
                 {

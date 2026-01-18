@@ -47,13 +47,13 @@ public class StoreWriterTests
         g.LoadFromFile(Path.Combine("resources", "cyrillic.rdf"));
         store.Add(g);
 
-        if (writer is ICompressingWriter)
+        if (writer is ICompressingWriter compressingWriter)
         {
-            ((ICompressingWriter)writer).CompressionLevel = compressionLevel;
+            compressingWriter.CompressionLevel = compressionLevel;
         }
-        if (writer is IMultiThreadedWriter)
+        if (writer is IMultiThreadedWriter threadedWriter)
         {
-            ((IMultiThreadedWriter)writer).UseMultiThreadedWriting = useMultiThreaded;
+            threadedWriter.UseMultiThreadedWriting = useMultiThreaded;
         }
         var strWriter = new System.IO.StringWriter();
         writer.Save(store, strWriter);

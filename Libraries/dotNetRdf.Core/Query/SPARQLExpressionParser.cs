@@ -1314,9 +1314,9 @@ class SparqlExpressionParser
         {
             case Token.AVG:
                 // AVG Aggregate
-                if (aggExpr is VariableTerm)
+                if (aggExpr is VariableTerm var1)
                 {
-                    return new AggregateTerm(new AverageAggregate((VariableTerm)aggExpr, distinct));
+                    return new AggregateTerm(new AverageAggregate(var1, distinct));
                 }
                 else
                 {
@@ -1336,15 +1336,15 @@ class SparqlExpressionParser
                         return new AggregateTerm(new CountAllAggregate());
                     }
                 }
-                else if (aggExpr is VariableTerm)
+                else if (aggExpr is VariableTerm var2)
                 {
                     if (distinct)
                     {
-                        return new AggregateTerm(new CountDistinctAggregate((VariableTerm)aggExpr));
+                        return new AggregateTerm(new CountDistinctAggregate(var2));
                     }
                     else
                     {
-                        return new AggregateTerm(new CountAggregate((VariableTerm)aggExpr));
+                        return new AggregateTerm(new CountAggregate(var2));
                     }
                 }
                 else
@@ -1371,9 +1371,9 @@ class SparqlExpressionParser
 
             case Token.MAX:
                 // MAX Aggregate
-                if (aggExpr is VariableTerm)
+                if (aggExpr is VariableTerm var3)
                 {
-                    return new AggregateTerm(new MaxAggregate((VariableTerm)aggExpr, distinct));
+                    return new AggregateTerm(new MaxAggregate(var3, distinct));
                 }
                 else
                 {
@@ -1383,9 +1383,9 @@ class SparqlExpressionParser
             case Token.MEDIAN:
                 // MEDIAN Aggregate
                 if (SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("The MEDIAN aggregate is only supported when the Syntax is set to Extended.");
-                if (aggExpr is VariableTerm)
+                if (aggExpr is VariableTerm var4)
                 {
-                    return new AggregateTerm(new MedianAggregate((VariableTerm)aggExpr, distinct));
+                    return new AggregateTerm(new MedianAggregate(var4, distinct));
                 }
                 else
                 {
@@ -1394,9 +1394,9 @@ class SparqlExpressionParser
 
             case Token.MIN:
                 // MIN Aggregate
-                if (aggExpr is VariableTerm)
+                if (aggExpr is VariableTerm var5)
                 {
-                    return new AggregateTerm(new MinAggregate((VariableTerm)aggExpr, distinct));
+                    return new AggregateTerm(new MinAggregate(var5, distinct));
                 }
                 else
                 {
@@ -1406,9 +1406,9 @@ class SparqlExpressionParser
             case Token.MODE:
                 // MODE Aggregate
                 if (SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("The MODE aggregate is only supported when the Syntax is set to Extended.");
-                if (aggExpr is VariableTerm)
+                if (aggExpr is VariableTerm var6)
                 {
-                    return new AggregateTerm(new ModeAggregate((VariableTerm)aggExpr, distinct));
+                    return new AggregateTerm(new ModeAggregate(var6, distinct));
                 }
                 else
                 {
@@ -1418,9 +1418,9 @@ class SparqlExpressionParser
             case Token.NMAX:
                 // NMAX Aggregate
                 if (SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("The NMAX (Numeric Maximum) aggregate is only supported when the Syntax is set to Extended.  To achieve an equivalent result in SPARQL 1.0/1.1 apply a FILTER to your query so the aggregated variable is only literals of the desired numeric type");
-                if (aggExpr is VariableTerm)
+                if (aggExpr is VariableTerm var7)
                 {
-                    return new AggregateTerm(new NumericMaxAggregate((VariableTerm)aggExpr, distinct));
+                    return new AggregateTerm(new NumericMaxAggregate(var7, distinct));
                 }
                 else
                 {
@@ -1430,9 +1430,9 @@ class SparqlExpressionParser
             case Token.NMIN:
                 // NMIN Aggregate
                 if (SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("The NMIN (Numeric Minimum) aggregate is only supported when the Syntax is set to Extended.  To achieve an equivalent result in SPARQL 1.0/1.1 apply a FILTER to your query so the aggregated variable is only literals of the desired numeric type");
-                if (aggExpr is VariableTerm)
+                if (aggExpr is VariableTerm var8)
                 {
-                    return new AggregateTerm(new NumericMinAggregate((VariableTerm)aggExpr, distinct));
+                    return new AggregateTerm(new NumericMinAggregate(var8, distinct));
                 }
                 else
                 {
@@ -1446,9 +1446,9 @@ class SparqlExpressionParser
 
             case Token.SUM:
                 // SUM Aggregate
-                if (aggExpr is VariableTerm)
+                if (aggExpr is VariableTerm var9)
                 {
-                    return new AggregateTerm(new SumAggregate((VariableTerm)aggExpr, distinct));
+                    return new AggregateTerm(new SumAggregate(var9, distinct));
                 }
                 else
                 {

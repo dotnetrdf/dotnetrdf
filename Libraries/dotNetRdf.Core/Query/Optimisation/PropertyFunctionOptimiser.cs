@@ -52,9 +52,8 @@ public class PropertyFunctionOptimiser
     /// <returns></returns>
     public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
     {
-        if (algebra is IBgp)
+        if (algebra is IBgp current)
         {
-            var current = (IBgp)algebra;
             if (current.PatternCount == 0) return current;
 
             var ps = current.TriplePatterns.ToList();
@@ -99,13 +98,13 @@ public class PropertyFunctionOptimiser
         {
             return algebra;
         }
-        else if (algebra is IAbstractJoin)
+        else if (algebra is IAbstractJoin join)
         {
-            return ((IAbstractJoin)algebra).Transform(this);
+            return join.Transform(this);
         }
-        else if (algebra is IUnaryOperator)
+        else if (algebra is IUnaryOperator @operator)
         {
-            return ((IUnaryOperator)algebra).Transform(this);
+            return @operator.Transform(this);
         }
         else
         {

@@ -4123,9 +4123,8 @@ public class LeviathanQueryProcessor
                 }
             }
         }
-        else if (temp is BindPattern)
+        else if (temp is BindPattern bind)
         {
-            var bind = (BindPattern)temp;
             ISparqlExpression bindExpr = bind.AssignExpression;
             var bindVar = bind.VariableName;
 

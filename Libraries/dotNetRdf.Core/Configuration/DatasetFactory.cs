@@ -66,19 +66,19 @@ public class DatasetFactory
                 else
                 {
                     var temp = ConfigurationLoader.LoadObject(g, storeNode);
-                    if (temp is IInMemoryQueryableStore)
+                    if (temp is IInMemoryQueryableStore store)
                     {
                         if (unionDefGraph)
                         {
-                            obj = new InMemoryDataset((IInMemoryQueryableStore)temp, unionDefGraph);
+                            obj = new InMemoryDataset(store, unionDefGraph);
                         }
                         else if (defaultGraph != null)
                         {
-                            obj = new InMemoryDataset((IInMemoryQueryableStore)temp, new UriNode(defaultGraph));
+                            obj = new InMemoryDataset(store, new UriNode(defaultGraph));
                         }
                         else
                         {
-                            obj = new InMemoryDataset((IInMemoryQueryableStore)temp);
+                            obj = new InMemoryDataset(store);
                         }
                     }
                     else
@@ -97,9 +97,9 @@ public class DatasetFactory
                 else
                 {
                     var temp = ConfigurationLoader.LoadObject(g, storeNode);
-                    if (temp is IInMemoryQueryableStore)
+                    if (temp is IInMemoryQueryableStore store)
                     {
-                        obj = new InMemoryQuadDataset((IInMemoryQueryableStore)temp);
+                        obj = new InMemoryQuadDataset(store);
                     }
                     else
                     {
@@ -117,9 +117,9 @@ public class DatasetFactory
                 else
                 {
                     var temp = ConfigurationLoader.LoadObject(g, storeNode);
-                    if (temp is ISparqlDataset)
+                    if (temp is ISparqlDataset dataset)
                     {
-                        obj = new WebDemandDataset((ISparqlDataset)temp);
+                        obj = new WebDemandDataset(dataset);
                     }
                     else
                     {

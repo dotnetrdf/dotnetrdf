@@ -229,9 +229,9 @@ public class QueryThreadSafety
     private IGraph QueryWithGraph(SparqlQuery q, ISparqlQueryProcessor processor)
     {
         var results = processor.ProcessQuery(q);
-        if (results is IGraph)
+        if (results is IGraph graph)
         {
-            return (IGraph)results;
+            return graph;
         }
         else
         {
@@ -252,9 +252,9 @@ public class QueryThreadSafety
     private SparqlResultSet QueryWithResults(SparqlQuery q, ISparqlQueryProcessor processor)
     {
         var results = processor.ProcessQuery(q);
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet set)
         {
-            return (SparqlResultSet)results;
+            return set;
         }
         else
         {

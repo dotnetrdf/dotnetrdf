@@ -109,9 +109,9 @@ internal abstract class UpdateImpl : AbstractSPINResource, IUpdate
             while (it.MoveNext())
             {
                 Triple s = it.Current;
-                if (s.Object is IUriNode)
+                if (s.Object is IUriNode node)
                 {
-                    graphIRIs.Add(((IUriNode)s.Object).Uri.ToString());
+                    graphIRIs.Add(node.Uri.ToString());
                 }
             }
             graphIRIs.Sort();

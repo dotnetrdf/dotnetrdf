@@ -96,9 +96,8 @@ public class ImplicitJoinOptimiser
     {
         try
         {
-            if (algebra is Filter)
+            if (algebra is Filter f)
             {
-                var f = (Filter)algebra;
                 string lhsVar, rhsVar;
                 bool equals;
                 if (IsImplicitJoinExpression(f.SparqlFilter.Expression, out lhsVar, out rhsVar, out equals))
@@ -150,13 +149,13 @@ public class ImplicitJoinOptimiser
                     return f.Transform(this);
                 }
             }
-            else if (algebra is IAbstractJoin)
+            else if (algebra is IAbstractJoin join)
             {
-                return ((IAbstractJoin)algebra).Transform(this);
+                return join.Transform(this);
             }
-            else if (algebra is IUnaryOperator)
+            else if (algebra is IUnaryOperator unary)
             {
-                return ((IUnaryOperator)algebra).Transform(this);
+                return unary.Transform(this);
             }
             else
             {
@@ -183,16 +182,14 @@ public class ImplicitJoinOptimiser
         rhsVar = null;
         equals = false;
         ISparqlExpression lhs, rhs;
-        if (expr is EqualsExpression)
+        if (expr is EqualsExpression eq)
         {
-            var eq = (EqualsExpression)expr;
             lhs = eq.Arguments.First();
             rhs = eq.Arguments.Last();
             equals = true;
         } 
-        else if (expr is SameTermFunction)
+        else if (expr is SameTermFunction st)
         {
-            var st = (SameTermFunction)expr;
             lhs = st.Arguments.First();
             rhs = st.Arguments.Last();
         }
@@ -216,10 +213,10 @@ public class ImplicitJoinOptimiser
     private bool IsDisjointOperation(ISparqlAlgebra algebra, string lhsVar, string rhsVar, out int splitPoint)
     {
         splitPoint = -1;
-        if (algebra is IBgp)
+        if (algebra is IBgp bgp)
         {
             // Get Triple Patterns, can't split into a product if there are blank variables present
-            var ps = ((IBgp)algebra).TriplePatterns.ToList();
+            var ps = bgp.TriplePatterns.ToList();
             if (ps.Any(p => !p.HasNoBlankVariables)) return false;
 
             // Iterate over the Triple Patterns to see if we can split into a Product
@@ -272,9 +269,8 @@ public class ImplicitJoinOptimiser
             // If we get all the way here then not a product
             return false;
         }
-        else if (algebra is IJoin)
+        else if (algebra is IJoin join)
         {
-            var join = (IJoin)algebra;
             if (!join.Lhs.Variables.Intersect(join.Rhs.Variables).Any())
             {
                 // There a product between the two sides of the join but are the two variables on different sides of that join

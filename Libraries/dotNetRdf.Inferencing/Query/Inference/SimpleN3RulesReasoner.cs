@@ -142,7 +142,7 @@ public class SimpleN3RulesReasoner : IInferenceEngine
         var variableMap = new Dictionary<INode, INode>();
         var nextVarID = 1;
         VariableContext vars = null;
-        if (t.Context != null && t.Context is VariableContext) vars = (VariableContext)t.Context;
+        if (t.Context is VariableContext context) vars = context;
 
         var output = new StringBuilder();
 

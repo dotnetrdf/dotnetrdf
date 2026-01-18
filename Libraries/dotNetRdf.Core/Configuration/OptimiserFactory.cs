@@ -68,9 +68,9 @@ public class OptimiserFactory
                 if (statsObj != null)
                 {
                     temp = ConfigurationLoader.LoadObject(g, statsObj);
-                    if (temp is IGraph)
+                    if (temp is IGraph graph)
                     {
-                        obj = new WeightedOptimiser((IGraph)temp);
+                        obj = new WeightedOptimiser(graph);
                     }
                     else
                     {

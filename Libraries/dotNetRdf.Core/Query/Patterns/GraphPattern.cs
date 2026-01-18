@@ -448,10 +448,10 @@ public class GraphPattern
                 // Set the Filter
                 _filter = value;
             }
-            else if (_filter is ChainFilter)
+            else if (_filter is ChainFilter chain)
             {
                 // Add to the Filter Chain
-                ((ChainFilter) _filter).Add(value);
+                chain.Add(value);
             }
             else
             {

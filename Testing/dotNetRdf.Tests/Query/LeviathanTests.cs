@@ -66,9 +66,8 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         var processor = new LeviathanQueryProcessor(store);
         var testResult = processor.ProcessQuery(q);
 
-        if (testResult is SparqlResultSet)
+        if (testResult is SparqlResultSet rset)
         {
-            var rset = (SparqlResultSet)testResult;
             _testOutputHelper.WriteLine(rset.Count + " Results");
             foreach (SparqlResult r in rset) 
             {
@@ -456,11 +455,10 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         var q = parser.ParseFromString(query);
         var results = processor.ProcessQuery(q);
 
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet rset)
         {
             TestTools.ShowResults(results);
 
-            var rset = (SparqlResultSet)results;
             Assert.True(rset.IsEmpty, "Result Set should be empty");
             Assert.Equal(3, rset.Variables.Count());
         }

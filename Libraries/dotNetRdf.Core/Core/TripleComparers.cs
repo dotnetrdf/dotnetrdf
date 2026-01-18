@@ -67,9 +67,9 @@ public class FastVirtualNodeComparer
             return 1;
         }
 
-        if (x is IVirtualIdComparable && y is IVirtualIdComparable)
+        if (x is IVirtualIdComparable comparable && y is IVirtualIdComparable)
         {
-            if ((x as IVirtualIdComparable).TryCompareVirtualId(y, out var result))
+            if (comparable.TryCompareVirtualId(y, out var result))
             {
                 return result;
             }

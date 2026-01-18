@@ -137,9 +137,9 @@ public class GraphFactory
             ConfigurationLoader.CheckCircularReference(objNode, source, "dnr:fromGraph");
 
             var graph = ConfigurationLoader.LoadObject(g, source);
-            if (graph is IGraph)
+            if (graph is IGraph igraph)
             {
-                output.Merge((IGraph)graph);
+                output.Merge(igraph);
             }
             else
             {

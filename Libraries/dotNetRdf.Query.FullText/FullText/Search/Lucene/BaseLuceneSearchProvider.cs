@@ -424,9 +424,9 @@ public abstract class BaseLuceneSearchProvider
         //Serialize and link the Schema
         INode schemaObj = context.Graph.CreateBlankNode();
         context.NextSubject = schemaObj;
-        if (_schema is IConfigurationSerializable)
+        if (_schema is IConfigurationSerializable serializable)
         {
-            ((IConfigurationSerializable)_schema).SerializeConfiguration(context);
+            serializable.SerializeConfiguration(context);
         }
         else
         {

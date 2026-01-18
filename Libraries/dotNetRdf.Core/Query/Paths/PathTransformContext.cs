@@ -193,9 +193,9 @@ public class PathTransformContext
     /// <returns></returns>
     public ITriplePattern GetTriplePattern(PatternItem subj, ISparqlPath path, PatternItem obj)
     {
-        if (path is Property)
+        if (path is Property property)
         {
-            var nodeMatch = new NodeMatchPattern(((Property)path).Predicate, true);
+            var nodeMatch = new NodeMatchPattern(property.Predicate, true);
             return new TriplePattern(subj, nodeMatch, obj);
         }
         else
