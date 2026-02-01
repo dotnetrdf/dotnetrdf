@@ -242,12 +242,15 @@ public class QueryTimeouts
 
         var store = new TripleStore();
         var g = new Graph();
-        g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+        g.LoadFromFile("resources/dataset_50.ttl.gz");
         store.Add(g);
         var processor = new LeviathanQueryProcessor(AsDataset(store));
         Assert.Throws<RdfQueryTimeoutException>(() =>
         {
-            processor.ProcessQuery(q);
+            // Try multiple times
+            for (var i = 0; i < 100; i++) {
+                processor.ProcessQuery(q);
+            }
         });
     }
 
