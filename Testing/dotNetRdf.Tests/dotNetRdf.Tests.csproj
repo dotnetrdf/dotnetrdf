@@ -31,7 +31,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Configuration.ConfigurationManager" />
-    <PackageReference Include="System.Data.Common"/>
   </ItemGroup>
 
   <ItemGroup>
