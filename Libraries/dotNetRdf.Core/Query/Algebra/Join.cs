@@ -56,46 +56,16 @@ public class Join
     /// <param name="lhs">Left Hand Side.</param>
     /// <param name="rhs">Right Hand Side.</param>
     /// <returns></returns>
-    public static ISparqlAlgebra CreateJoin(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
-    {
-        if (lhs is Bgp lbgp)
+    public static ISparqlAlgebra CreateJoin(ISparqlAlgebra lhs, ISparqlAlgebra rhs) =>
+        lhs switch
         {
-            if (lbgp.IsEmpty)
+            Bgp { IsEmpty: true } => rhs,
+            _ => rhs switch
             {
-                return rhs;
+                Bgp { IsEmpty: true } => lhs,
+                _ => new Join(lhs, rhs)
             }
-            else if (rhs is Bgp rbgp)
-            {
-                if (rbgp.IsEmpty)
-                {
-                    return lbgp;
-                }
-                else
-                {
-                    return new Join(lhs, rhs);
-                }
-            }
-            else
-            {
-                return new Join(lhs, rhs);
-            }
-        }
-        else if (rhs is Bgp rbgp)
-        {
-            if (rbgp.IsEmpty)
-            {
-                return lhs;
-            }
-            else
-            {
-                return new Join(lhs, rhs);
-            }
-        }
-        else
-        {
-            return new Join(lhs, rhs);
-        }
-    }
+        };
 
 
     /// <summary>
