@@ -69,7 +69,7 @@ public class InsertDataCommand
         if (p.IsGraph)
         {
             // If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
-            return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables);
+            return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern { HasNoExplicitVariables: true });
         }
         if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
         {
@@ -79,7 +79,7 @@ public class InsertDataCommand
         // For other patterns all Triple patterns must be constructable with no explicit variables
         // If top level then any Child Graph Patterns must be valid
         // Otherwise must have no Child Graph Patterns
-        return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
+        return p.TriplePatterns.All(tp => tp is IConstructTriplePattern { HasNoExplicitVariables: true }) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
     }
 
     /// <summary>

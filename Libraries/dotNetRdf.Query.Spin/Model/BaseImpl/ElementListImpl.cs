@@ -58,10 +58,8 @@ internal class ElementListImpl : ElementImpl, IElementList
             {
                 IResource firstSubject = firstPattern.getSubject();
                 IResource secondSubject = secondPattern.getSubject();
-                if (firstSubject is IVariable && secondSubject is IVariable)
+                if (firstSubject is IVariable firstVar && secondSubject is IVariable secondVar)
                 {
-                    var firstVar = (IVariable)firstSubject;
-                    var secondVar = (IVariable)secondSubject;
                     if (firstVar.isBlankNodeVar() && firstVar.getName().Equals(secondVar.getName()))
                     {
                         members.Add(firstPattern.getObject());
@@ -121,15 +119,13 @@ internal class ElementListImpl : ElementImpl, IElementList
                 var lastPattern = (ITriplePattern)elements[i + 2];
                 IResource nextSubject = nextPattern.getSubject();
                 IResource lastSubject = lastPattern.getSubject();
-                if (nextSubject is IVariable &&
-                   lastSubject is IVariable &&
+                if (nextSubject is IVariable nextVar &&
+                   lastSubject is IVariable lastVar &&
                         RDFUtil.sameTerm(RDF.PropertyFirst, nextPattern.getPredicate()) &&
                         RDFUtil.sameTerm(RDF.PropertyRest, lastPattern.getPredicate()))
                 {
-                    var nextVar = (IVariable)nextSubject;
                     if (mainVar.getName().Equals(nextVar.getName()))
                     {
-                        var lastVar = (IVariable)lastSubject;
                         return mainVar.getName().Equals(lastVar.getName());
                     }
                 }
@@ -153,7 +149,7 @@ internal class ElementListImpl : ElementImpl, IElementList
             oldI = i;
             IElement element = elements[i];
             p.printIndentation(p.getIndentation());
-            if (element is IElementList && ((IElementList)element).getElements().Count > 1)
+            if (element is IElementList list && list.getElements().Count > 1)
             {
                 p.print("{");
                 p.println();
@@ -174,7 +170,7 @@ internal class ElementListImpl : ElementImpl, IElementList
                     element.Print(p);
                 }
             }
-            if (element is not IElementList || ((IElementList)element).getElements().Count > 1)
+            if (element is not IElementList elementList || elementList.getElements().Count > 1)
             {
                 p.print(" .");
             }

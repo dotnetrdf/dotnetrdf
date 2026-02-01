@@ -89,9 +89,9 @@ internal class AggregationImpl : AbstractSPINResource, IAggregation
         {
             IResource r = Resource.Get(exprS.Object, Graph, getModel());
             IResource expr = SPINFactory.asExpression(r);
-            if (expr is IPrintable)
+            if (expr is IPrintable printable)
             {
-                ((IPrintable)expr).Print(p);
+                printable.Print(p);
             }
             else
             {

@@ -872,18 +872,17 @@ public class SparqlUpdateParser
         else if (next.TokenType == Token.DELETE)
         {
             SparqlUpdateCommand deleteCmd = TryParseDeleteCommand(context, false);
-            if (deleteCmd is DeleteCommand)
+            if (deleteCmd is DeleteCommand delete)
             {
-                var delete = ((DeleteCommand)deleteCmd);
                 if (ReferenceEquals(delete.DeletePattern, delete.WherePattern))
                 {
                     throw new RdfParseException("The DELETE WHERE { } shorthand syntax cannot be used in conjunction with a WITH clause");
                 }
                 delete.WithGraphName = new UriNode(u);
             }
-            else if (deleteCmd is BaseModificationCommand)
+            else if (deleteCmd is BaseModificationCommand command)
             {
-                ((BaseModificationCommand) deleteCmd).WithGraphName = new UriNode(u);
+                command.WithGraphName = new UriNode(u);
             }
             else
             {

@@ -379,7 +379,7 @@ public class LeviathanUpdateProcessor
 
         // Then if possible attempt to get the lock and determine whether it needs releasing
         ReaderWriterLockSlim currLock =
-            (_dataset is IThreadSafeDataset) ? ((IThreadSafeDataset) _dataset).Lock : _lock;
+            _dataset is IThreadSafeDataset dataset ? dataset.Lock : _lock;
         var mustRelease = false;
         try
         {
@@ -473,7 +473,7 @@ public class LeviathanUpdateProcessor
 
         // Remember to handle the Thread Safety
         // If the Dataset is Thread Safe use its own lock otherwise use our local lock
-        ReaderWriterLockSlim currLock = (_dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)_dataset).Lock : _lock;
+        ReaderWriterLockSlim currLock = _dataset is IThreadSafeDataset dataset ? dataset.Lock : _lock;
         try
         {
             currLock.EnterWriteLock();

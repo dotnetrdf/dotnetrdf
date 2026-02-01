@@ -177,9 +177,9 @@ public class SesameTests
         sesame.UpdateGraph(g.BaseUri, null, g.GetTriplesWithSubject(new Uri("http://example.org/vehicles/FordFiesta")));
 
         var results = sesame.Query("ASK WHERE { GRAPH <http://example.org/SesameTest> { <http://example.org/vehicles/FordFiesta> ?p ?o } }");
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet set)
         {
-            Assert.False(((SparqlResultSet) results).Result, "There should no longer be any triples about the Ford Fiesta present");
+            Assert.False(set.Result, "There should no longer be any triples about the Ford Fiesta present");
         }
 
         var h = new Graph();
@@ -207,9 +207,9 @@ public class SesameTests
         sesame.UpdateGraph(g.BaseUri, null, g.Triples);
 
         var results = sesame.Query("ASK WHERE { GRAPH <http://example.org/SesameTest/Delete2> { <http://example.org/ns#subj> ?p ?o } }");
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet set)
         {
-            Assert.False(((SparqlResultSet) results).Result, "There should no longer be any triples present in the graph");
+            Assert.False(set.Result, "There should no longer be any triples present in the graph");
         }
 
         var h = new Graph();
@@ -234,9 +234,9 @@ public class SesameTests
 
         var results = sesame.Query(ask);
         Assert.IsType<SparqlResultSet>(results, exactMatch: false);
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet set)
         {
-            Assert.True(((SparqlResultSet) results).Result);
+            Assert.True(set.Result);
         }
 
         // Now delete the triple in question
@@ -245,9 +245,9 @@ public class SesameTests
         // Re-issue ASK to check deletion
         results = sesame.Query(ask);
         Assert.IsType<SparqlResultSet>(results, exactMatch: false);
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet resultSet)
         {
-            Assert.False(((SparqlResultSet) results).Result);
+            Assert.False(resultSet.Result);
         }
     }
 
@@ -317,9 +317,9 @@ public class SesameTests
 
         var results = sesame.Query(ask);
         Assert.IsType<SparqlResultSet>(results, exactMatch: false);
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet set)
         {
-            Assert.True(((SparqlResultSet) results).Result);
+            Assert.True(set.Result);
         }
     }
 
@@ -338,9 +338,9 @@ public class SesameTests
 
         var results = sesame.Query(ask);
         Assert.IsType<SparqlResultSet>(results, exactMatch: false);
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet set)
         {
-            Assert.True(((SparqlResultSet) results).Result);
+            Assert.True(set.Result);
         }
     }
 
@@ -429,9 +429,9 @@ DELETE WHERE
         // Issue query to validate data was added
         var results = sesame.Query(ask);
         Assert.IsType<SparqlResultSet>(results, exactMatch: false);
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet set)
         {
-            Assert.True(((SparqlResultSet) results).Result);
+            Assert.True(set.Result);
         }
 
         // Issue a DELETE for the Chinese literal
@@ -441,9 +441,9 @@ DELETE WHERE
         // Re-issue query to validate triple was deleted
         results = sesame.Query(ask);
         Assert.IsType<SparqlResultSet>(results, exactMatch: false);
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet resultSet)
         {
-            Assert.False(((SparqlResultSet) results).Result);
+            Assert.False(resultSet.Result);
         }
     }
 
@@ -467,9 +467,9 @@ DELETE WHERE
         // Issue query to validate data was added
         var results = sesame.Query(ask);
         Assert.IsType<SparqlResultSet>(results, exactMatch: false);
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet set)
         {
-            Assert.True(((SparqlResultSet) results).Result);
+            Assert.True(set.Result);
         }
     }
 

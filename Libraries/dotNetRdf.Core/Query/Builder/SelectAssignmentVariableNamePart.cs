@@ -47,9 +47,9 @@ sealed class SelectAssignmentVariableNamePart<TExpression> : AssignmentVariableN
         {
             TExpression assignmentExpression = BuildAssignmentExpression(mapper);
 
-            if (assignmentExpression is ISparqlAggregate)
+            if (assignmentExpression is ISparqlAggregate aggregate)
             {
-                return new SparqlVariable(variableName, (ISparqlAggregate)assignmentExpression);
+                return new SparqlVariable(variableName, aggregate);
             }
 
             return new SparqlVariable(variableName, (ISparqlExpression)assignmentExpression);

@@ -489,9 +489,9 @@ public class ConfigurationLoader : IConfigurationLoader
         foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, objLoader).Select(t => t.Subject))
         {
             var temp = LoadObject(g, objNode);
-            if (temp is IObjectFactory)
+            if (temp is IObjectFactory factory)
             {
-                AddObjectFactory((IObjectFactory)temp);
+                AddObjectFactory(factory);
             }
             else
             {
@@ -613,7 +613,7 @@ public class ConfigurationLoader : IConfigurationLoader
         foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
         {
             temp = LoadObject(g, objNode);
-            if (temp is IRdfReader)
+            if (temp is IRdfReader reader)
             {
                 // Get the formats to associate this with
                 mimeTypes = GetConfigurationArray(g, objNode, formatMimeType);
@@ -621,7 +621,7 @@ public class ConfigurationLoader : IConfigurationLoader
                 extensions = GetConfigurationArray(g, objNode, formatExtension);
 
                 // Register
-                MimeTypesHelper.RegisterParser((IRdfReader)temp, mimeTypes, extensions);
+                MimeTypesHelper.RegisterParser(reader, mimeTypes, extensions);
             }
             else
             {
@@ -634,7 +634,7 @@ public class ConfigurationLoader : IConfigurationLoader
         foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
         {
             temp = LoadObject(g, objNode);
-            if (temp is IStoreReader)
+            if (temp is IStoreReader reader)
             {
                 // Get the formats to associate this with
                 mimeTypes = GetConfigurationArray(g, objNode, formatMimeType);
@@ -642,7 +642,7 @@ public class ConfigurationLoader : IConfigurationLoader
                 extensions = GetConfigurationArray(g, objNode, formatExtension);
 
                 // Register
-                MimeTypesHelper.RegisterParser((IStoreReader)temp, mimeTypes, extensions);
+                MimeTypesHelper.RegisterParser(reader, mimeTypes, extensions);
             }
             else
             {
@@ -655,7 +655,7 @@ public class ConfigurationLoader : IConfigurationLoader
         foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
         {
             temp = LoadObject(g, objNode);
-            if (temp is ISparqlResultsReader)
+            if (temp is ISparqlResultsReader reader)
             {
                 // Get the formats to associate this with
                 mimeTypes = GetConfigurationArray(g, objNode, formatMimeType);
@@ -663,7 +663,7 @@ public class ConfigurationLoader : IConfigurationLoader
                 extensions = GetConfigurationArray(g, objNode, formatExtension);
 
                 // Register
-                MimeTypesHelper.RegisterParser((ISparqlResultsReader)temp, mimeTypes, extensions);
+                MimeTypesHelper.RegisterParser(reader, mimeTypes, extensions);
             }
             else
             {
@@ -676,7 +676,7 @@ public class ConfigurationLoader : IConfigurationLoader
         foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
         {
             temp = LoadObject(g, objNode);
-            if (temp is IRdfWriter)
+            if (temp is IRdfWriter writer)
             {
                 // Get the formats to associate this with
                 mimeTypes = GetConfigurationArray(g, objNode, formatMimeType);
@@ -684,7 +684,7 @@ public class ConfigurationLoader : IConfigurationLoader
                 extensions = GetConfigurationArray(g, objNode, formatExtension);
 
                 // Register
-                MimeTypesHelper.RegisterWriter((IRdfWriter)temp, mimeTypes, extensions);
+                MimeTypesHelper.RegisterWriter(writer, mimeTypes, extensions);
             }
             else
             {
@@ -697,7 +697,7 @@ public class ConfigurationLoader : IConfigurationLoader
         foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
         {
             temp = LoadObject(g, objNode);
-            if (temp is IStoreWriter)
+            if (temp is IStoreWriter writer)
             {
                 // Get the formats to associate this with
                 mimeTypes = GetConfigurationArray(g, objNode, formatMimeType);
@@ -705,7 +705,7 @@ public class ConfigurationLoader : IConfigurationLoader
                 extensions = GetConfigurationArray(g, objNode, formatExtension);
 
                 // Register
-                MimeTypesHelper.RegisterWriter((IStoreWriter)temp, mimeTypes, extensions);
+                MimeTypesHelper.RegisterWriter(writer, mimeTypes, extensions);
             }
             else
             {
@@ -718,7 +718,7 @@ public class ConfigurationLoader : IConfigurationLoader
         foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
         {
             temp = LoadObject(g, objNode);
-            if (temp is ISparqlResultsWriter)
+            if (temp is ISparqlResultsWriter writer)
             {
                 // Get the formats to associate this with
                 mimeTypes = GetConfigurationArray(g, objNode, formatMimeType);
@@ -726,7 +726,7 @@ public class ConfigurationLoader : IConfigurationLoader
                 extensions = GetConfigurationArray(g, objNode, formatExtension);
 
                 // Register
-                MimeTypesHelper.RegisterWriter((ISparqlResultsWriter)temp, mimeTypes, extensions);
+                MimeTypesHelper.RegisterWriter(writer, mimeTypes, extensions);
             }
             else
             {
@@ -748,16 +748,16 @@ public class ConfigurationLoader : IConfigurationLoader
         foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, operatorClass))
         {
             var temp = ConfigurationLoader.LoadObject(g, t.Subject);
-            if (temp is ISparqlOperator)
+            if (temp is ISparqlOperator @operator)
             {
                 var enable = ConfigurationLoader.GetConfigurationBoolean(g, t.Subject, enabled, true);
                 if (enable)
                 {
-                    SparqlOperators.AddOperator((ISparqlOperator)temp);
+                    SparqlOperators.AddOperator(@operator);
                 }
                 else
                 {
-                    SparqlOperators.RemoveOperatorByType((ISparqlOperator)temp);
+                    SparqlOperators.RemoveOperatorByType(@operator);
                 }
             }
             else

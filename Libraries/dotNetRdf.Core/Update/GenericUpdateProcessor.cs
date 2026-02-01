@@ -94,9 +94,9 @@ public class GenericUpdateProcessor
     /// <param name="cmd">Add Command.</param>
     public void ProcessAddCommand(AddCommand cmd)
     {
-        if (_manager is IUpdateableStorage)
+        if (_manager is IUpdateableStorage storage)
         {
-            ((IUpdateableStorage)_manager).Update(cmd.ToString());
+            storage.Update(cmd.ToString());
         }
         else
         {
@@ -144,9 +144,9 @@ public class GenericUpdateProcessor
     /// </remarks>
     public void ProcessClearCommand(ClearCommand cmd)
     {
-        if (_manager is IUpdateableStorage)
+        if (_manager is IUpdateableStorage storage)
         {
-            ((IUpdateableStorage)_manager).Update(cmd.ToString());
+            storage.Update(cmd.ToString());
         }
         else 
         {
@@ -233,9 +233,9 @@ public class GenericUpdateProcessor
     /// <param name="cmd">Copy Command.</param>
     public void ProcessCopyCommand(CopyCommand cmd)
     {
-        if (_manager is IUpdateableStorage)
+        if (_manager is IUpdateableStorage storage)
         {
-            ((IUpdateableStorage)_manager).Update(cmd.ToString());
+            storage.Update(cmd.ToString());
         }
         else
         {
@@ -402,9 +402,9 @@ public class GenericUpdateProcessor
         commands.UpdateExecutionTime = null;
         try
         {
-            if (_manager is IUpdateableStorage)
+            if (_manager is IUpdateableStorage storage)
             {
-                ((IUpdateableStorage)_manager).Update(commands.ToString());
+                storage.Update(commands.ToString());
             }
             else
             {
@@ -432,13 +432,13 @@ public class GenericUpdateProcessor
     /// </remarks>
     public void ProcessDeleteCommand(DeleteCommand cmd)
     {
-        if (_manager is IUpdateableStorage)
+        if (_manager is IUpdateableStorage storage)
         {
-            ((IUpdateableStorage)_manager).Update(cmd.ToString());
+            storage.Update(cmd.ToString());
         }
         else
         {
-            if (_manager is IQueryableStorage)
+            if (_manager is IQueryableStorage queryableStorage)
             {
                 // Check IO Behaviour
                 // For a delete we either need the ability to Update Delete Triples or to Overwrite Graphs
@@ -473,11 +473,11 @@ public class GenericUpdateProcessor
                     query.AddNamedGraph(new UriNode(u));
                 }
 
-                var results = ((IQueryableStorage)_manager).Query(query.ToString());
-                if (results is SparqlResultSet)
+                var results = queryableStorage.Query(query.ToString());
+                if (results is SparqlResultSet set)
                 {
                     // Now need to transform the Result Set back to a Multiset
-                    var mset = new Multiset((SparqlResultSet)results);
+                    var mset = new Multiset(set);
 
                     // Generate the Triples for each Solution
                     var deletedTriples = new List<Triple>();
@@ -727,9 +727,9 @@ public class GenericUpdateProcessor
     /// <param name="cmd">Drop Command.</param>
     public void ProcessDropCommand(DropCommand cmd)
     {
-        if (_manager is IUpdateableStorage)
+        if (_manager is IUpdateableStorage storage)
         {
-            ((IUpdateableStorage)_manager).Update(cmd.ToString());
+            storage.Update(cmd.ToString());
         }
         else
         {
@@ -1441,9 +1441,9 @@ public class GenericUpdateProcessor
     /// <param name="cmd">Move Command.</param>
     public void ProcessMoveCommand(MoveCommand cmd)
     {
-        if (_manager is IUpdateableStorage)
+        if (_manager is IUpdateableStorage storage)
         {
-            ((IUpdateableStorage)_manager).Update(cmd.ToString());
+            storage.Update(cmd.ToString());
         }
         else
         {

@@ -66,7 +66,7 @@ internal class SPINLabels
      */
     public static String getLabel(INode resource)
     {
-        if (resource is IUriNode)
+        if (resource is IUriNode node)
         {
             String qname = null; // TODO chercher dans les NS prefixes ;
             if (qname != null)
@@ -75,7 +75,7 @@ internal class SPINLabels
             }
             else
             {
-                return "<" + ((IUriNode)resource).Uri.ToString() + ">";
+                return "<" + node.Uri.ToString() + ">";
             }
         }
         else

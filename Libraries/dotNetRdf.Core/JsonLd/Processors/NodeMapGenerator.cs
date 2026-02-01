@@ -348,9 +348,9 @@ public class NodeMapGenerator : INodeMapGenerator
             parent[property] = new JArray();
         }
         var target = parent[property] as JArray;
-        if (values is JArray)
+        if (values is JArray array)
         {
-            foreach (JToken item in (values as JArray))
+            foreach (JToken item in array)
             {
                 target.Add(item);
             }

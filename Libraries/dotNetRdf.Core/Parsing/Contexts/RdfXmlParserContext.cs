@@ -84,9 +84,9 @@ public class RdfXmlParserContext : BaseParserContext, IEventParserContext<IRdfXm
         : base(handler, traceParsing, uriFactory ?? RDF.UriFactory.Root)
     {
         _queue = new EventQueue<IRdfXmlEvent>(new DomBasedEventGenerator(document));
-        if (_queue.EventGenerator is IRdfXmlPreProcessingEventGenerator)
+        if (_queue.EventGenerator is IRdfXmlPreProcessingEventGenerator generator)
         {
-            ((IRdfXmlPreProcessingEventGenerator)_queue.EventGenerator).GetAllEvents(this);
+            generator.GetAllEvents(this);
         }
     }
 

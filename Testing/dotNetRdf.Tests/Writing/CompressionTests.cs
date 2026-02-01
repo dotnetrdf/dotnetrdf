@@ -53,13 +53,13 @@ public abstract class CompressionTests
         {
 
             IRdfWriter writer = kvp.Key;
-            if (writer is ICompressingWriter)
+            if (writer is ICompressingWriter compressingWriter)
             {
-                ((ICompressingWriter)writer).CompressionLevel = WriterCompressionLevel.High;
+                compressingWriter.CompressionLevel = WriterCompressionLevel.High;
             }
-            if (writer is IHighSpeedWriter)
+            if (writer is IHighSpeedWriter speedWriter)
             {
-                ((IHighSpeedWriter)writer).HighSpeedModePermitted = false;
+                speedWriter.HighSpeedModePermitted = false;
             }
             var strWriter = new System.IO.StringWriter();
             writer.Save(g, strWriter);

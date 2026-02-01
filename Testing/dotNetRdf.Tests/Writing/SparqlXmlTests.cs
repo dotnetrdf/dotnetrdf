@@ -52,9 +52,8 @@ public class SparqlXmlTests
         store.Add(g);
 
         var results = ExecuteQuery(store, "SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet rset)
         {
-            var rset = (SparqlResultSet)results;
             var writer = new SparqlXmlWriter();
             writer.Save(rset, "temp.srx");
 
@@ -95,9 +94,8 @@ public class SparqlXmlTests
         store.Add(g);
 
         var results = ExecuteQuery(store, "SELECT * WHERE { ?s ?p ?o }");
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet rset)
         {
-            var rset = (SparqlResultSet)results;
             var writer = new SparqlXmlWriter();
             writer.Save(rset, "temp.srx");
 

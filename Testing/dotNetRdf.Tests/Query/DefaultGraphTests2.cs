@@ -133,9 +133,8 @@ public class DefaultGraphTests2
         var processor = new LeviathanQueryProcessor(dataset);
 
         var results = processor.ProcessQuery(q);
-        if (results is IGraph)
+        if (results is IGraph r)
         {
-            var r = (IGraph)results;
             Assert.Equal(0, r.Triples.Count);
             Assert.False(r.HasSubGraph(g), "g should not be a subgraph of the results");
             Assert.False(r.HasSubGraph(h), "h should not be a subgraph of the results");
@@ -163,9 +162,8 @@ public class DefaultGraphTests2
         var processor = new LeviathanQueryProcessor(dataset);
 
         var results = processor.ProcessQuery(q);
-        if (results is IGraph)
+        if (results is IGraph r)
         {
-            var r = (IGraph)results;
             Assert.Equal(g.Triples.Count, r.Triples.Count);
             Assert.Equal(g, r);
             Assert.NotEqual(h, r);
@@ -193,9 +191,8 @@ public class DefaultGraphTests2
         var processor = new LeviathanQueryProcessor(dataset);
 
         var results = processor.ProcessQuery(q);
-        if (results is IGraph)
+        if (results is IGraph r)
         {
-            var r = (IGraph)results;
             Assert.Equal(h.Triples.Count, r.Triples.Count);
             Assert.NotEqual(g, r);
             Assert.Equal(h, r);
@@ -223,9 +220,8 @@ public class DefaultGraphTests2
         var processor = new LeviathanQueryProcessor(dataset);
 
         var results = processor.ProcessQuery(q);
-        if (results is IGraph)
+        if (results is IGraph r)
         {
-            var r = (IGraph)results;
             Assert.Equal(h.Triples.Count, r.Triples.Count);
             Assert.NotEqual(g, r);
             Assert.Equal(h, r);
@@ -253,9 +249,8 @@ public class DefaultGraphTests2
         var processor = new LeviathanQueryProcessor(dataset);
 
         var results = processor.ProcessQuery(q);
-        if (results is IGraph)
+        if (results is IGraph r)
         {
-            var r = (IGraph)results;
             Assert.Equal(g.Triples.Count, r.Triples.Count);
             Assert.Equal(g, r);
             Assert.NotEqual(h, r);
@@ -283,9 +278,8 @@ public class DefaultGraphTests2
         var processor = new LeviathanQueryProcessor(dataset);
 
         var results = processor.ProcessQuery(q);
-        if (results is IGraph)
+        if (results is IGraph r)
         {
-            var r = (IGraph)results;
             Assert.Equal(0, r.Triples.Count);
             Assert.False(r.HasSubGraph(g), "g should not be a subgraph of the results");
             Assert.False(r.HasSubGraph(h), "h should not be a subgraph of the results");
@@ -313,9 +307,8 @@ public class DefaultGraphTests2
         var processor = new LeviathanQueryProcessor(dataset);
 
         var results = processor.ProcessQuery(q);
-        if (results is IGraph)
+        if (results is IGraph r)
         {
-            var r = (IGraph)results;
             Assert.Equal(0, r.Triples.Count);
             Assert.False(r.HasSubGraph(g), "g should not be a subgraph of the results");
             Assert.False(r.HasSubGraph(h), "h should not be a subgraph of the results");

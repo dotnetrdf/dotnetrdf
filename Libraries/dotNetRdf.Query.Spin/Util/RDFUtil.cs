@@ -47,24 +47,24 @@ internal static class RDFUtil
 
     internal static bool sameTerm(Uri uri1, INode uri2)
     {
-        if (uri2 is IResource) uri2 = ((IResource)uri2).getSource();
-        if (uri2 is not IUriNode) return false;
-        return uriComparer.Equals(uri1, ((IUriNode)uri2).Uri);
+        if (uri2 is IResource resource) uri2 = resource.getSource();
+        if (uri2 is not IUriNode node) return false;
+        return uriComparer.Equals(uri1, node.Uri);
     }
 
     internal static bool sameTerm(INode uri1, Uri uri2)
     {
-        if (uri1 is IResource) uri1 = ((IResource)uri1).getSource();
-        if (uri1 is not IUriNode) return false;
-        return uriComparer.Equals(((IUriNode)uri1).Uri, uri2);
+        if (uri1 is IResource resource) uri1 = resource.getSource();
+        if (uri1 is not IUriNode node) return false;
+        return uriComparer.Equals(node.Uri, uri2);
     }
 
     internal static bool sameTerm(INode uri1, INode uri2)
     {
-        if (uri1 is IResource) uri1 = ((IResource)uri1).getSource();
-        if (uri2 is IResource) uri2 = ((IResource)uri2).getSource();
-        if (uri1 is not IUriNode || uri2 is not IUriNode) return false;
-        return uriComparer.Equals(((IUriNode)uri1).Uri, ((IUriNode)uri2).Uri);
+        if (uri1 is IResource resource) uri1 = resource.getSource();
+        if (uri2 is IResource resource1) uri2 = resource1.getSource();
+        if (uri1 is not IUriNode node || uri2 is not IUriNode uriNode) return false;
+        return uriComparer.Equals(node.Uri, uriNode.Uri);
     }
 
     #endregion
@@ -191,9 +191,9 @@ internal static class RDFUtil
     internal static bool isSystemDatatype(INode node)
     {
         Initialize();
-        if (node is IUriNode)
+        if (node is IUriNode uriNode)
         {
-            return isNumeric(((IUriNode)node).Uri) || otherDatatypeURIs.Contains(((IUriNode)node).Uri);
+            return isNumeric(uriNode.Uri) || otherDatatypeURIs.Contains(uriNode.Uri);
         }
         else
         {

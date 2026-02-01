@@ -194,9 +194,8 @@ public class Notation3Writer
 
             foreach (Triple t in context.Graph.Triples)
             {
-                if (!contextWritten && t.Context != null && t.Context is VariableContext)
+                if (!contextWritten && t.Context is VariableContext varContext)
                 {
-                    var varContext = (VariableContext)t.Context;
                     contextWritten = GenerateVariableQuantificationOutput(context, varContext);
                 }
                 context.Output.WriteLine(GenerateTripleOutput(context, t));
@@ -229,9 +228,8 @@ public class Notation3Writer
                     if (lastSubj != null) context.Output.WriteLine(".");
 
                     // If there's a Variable Context insert the @forAll and @forSome
-                    if (!contextWritten && t.Context != null && t.Context is VariableContext)
+                    if (!contextWritten && t.Context is VariableContext varContext)
                     {
-                        var varContext = (VariableContext)t.Context;
                         contextWritten = GenerateVariableQuantificationOutput(context, varContext);
                     }
 
@@ -349,9 +347,9 @@ public class Notation3Writer
                 // Write Triples 1 at a Time on a single line
                 foreach (Triple t in subcontext.Graph.Triples) 
                 {
-                    if (!contextWritten && t.Context != null && t.Context is VariableContext)
+                    if (!contextWritten && t.Context is VariableContext tContext)
                     {
-                        contextWritten = GenerateVariableQuantificationOutput(subcontext, (VariableContext)t.Context);
+                        contextWritten = GenerateVariableQuantificationOutput(subcontext, tContext);
                         if (contextWritten) output.Append(temp);
                     }
 

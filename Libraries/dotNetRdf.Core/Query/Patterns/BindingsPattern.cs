@@ -162,9 +162,9 @@ public class BindingTuple
         {
             if (!_values.ContainsKey(var)) throw new IndexOutOfRangeException();
             PatternItem temp = _values[var];
-            if (temp is NodeMatchPattern)
+            if (temp is NodeMatchPattern pattern)
             {
-                return ((NodeMatchPattern)temp).Node;
+                return pattern.Node;
             }
             else
             {

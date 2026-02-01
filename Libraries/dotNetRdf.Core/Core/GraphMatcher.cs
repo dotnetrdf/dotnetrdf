@@ -1153,9 +1153,8 @@ class MappingPair
     public override bool Equals(object obj)
     {
         if (obj == null) return false;
-        if (obj is MappingPair)
+        if (obj is MappingPair p)
         {
-            var p = (MappingPair)obj;
             return (_x.Equals(p.X) && _y.Equals(p.Y) && _type == p.Type);
         }
         else

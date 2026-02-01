@@ -196,14 +196,14 @@ public sealed class PersistentTripleStore
     /// <param name="query">SPARQL Query as unparsed String.</param>
     public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query)
     {
-        if (_manager is IQueryableStorage)
+        if (_manager is IQueryableStorage storage)
         {
             if (!((PersistentGraphCollection)_graphs).IsSynced)
             {
                 throw new RdfQueryException("Unable to execute a SPARQL Query as the in-memory view of the store is not synced with the underlying store, please invoked Flush() or Discard() and try again.  Alternatively if you do not want to see in-memory changes reflected in query results you can invoke the Query() method directly on the underlying store by accessing it through the UnderlyingStore property.");
             }
 
-            ((IQueryableStorage)_manager).Query(rdfHandler, resultsHandler, query);
+            storage.Query(rdfHandler, resultsHandler, query);
         }
         else
         {
@@ -224,14 +224,14 @@ public sealed class PersistentTripleStore
     /// </remarks>
     public void ExecuteUpdate(string update)
     {
-        if (_manager is IUpdateableStorage)
+        if (_manager is IUpdateableStorage storage)
         {
             if (!((PersistentGraphCollection)_graphs).IsSynced)
             {
                 throw new SparqlUpdateException("Unable to execute a SPARQL Update as the in-memory view of the store is not synced with the underlying store, please invoked Flush() or Discard() and try again.  Alternatively if you do not want to see in-memory changes reflected in update results you can invoke the Update() method directly on the underlying store by accessing it through the UnderlyingStore property.");
             }
 
-            ((IUpdateableStorage)_manager).Update(update);
+            storage.Update(update);
         }
         else
         {

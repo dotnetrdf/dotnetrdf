@@ -87,10 +87,9 @@ public abstract class BaseGZipResultsWriter
     {
         if (results == null) throw new RdfOutputException("Cannot write RDF from a null Graph");
 
-        if (output is StreamWriter)
+        if (output is StreamWriter streamOutput)
         {
             // Check for inner GZipStream and re-wrap if required
-            var streamOutput = (StreamWriter)output;
             if (streamOutput.BaseStream is GZipStream)
             {
                 _writer.Save(results, streamOutput);

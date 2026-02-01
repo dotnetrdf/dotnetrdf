@@ -525,7 +525,7 @@ internal class CompactProcessor : ProcessorBase
                         }
                     }
                     // 12.8.9.6 - Otherwise, if container includes @index and index key is not @index: 
-                    else if (container.Contains(JsonLdContainer.Index) && compactedItem is JObject)
+                    else if (container.Contains(JsonLdContainer.Index) && compactedItem is JObject jObject)
                     {
                         // 12.8.9.6.1 - Reinitialize container key by IRI compacting index key after first IRI expanding it.
                         var expandedIndexKey = _contextProcessor.ExpandIri(activeContext, indexKey);
@@ -535,7 +535,7 @@ internal class CompactProcessor : ProcessorBase
                         // Otherwise, remove that entry from compacted item.
                         JArray array = JsonLdUtils.EnsureArray(compactedItem[containerKey]);
 
-                        (compactedItem as JObject).Remove(containerKey);
+                        jObject.Remove(containerKey);
                         foreach (JToken item in array)
                         {
                             if (mapKey == null && item.Type == JTokenType.String)
@@ -544,7 +544,7 @@ internal class CompactProcessor : ProcessorBase
                             }
                             else
                             {
-                                JsonLdUtils.AddValue(compactedItem as JObject, containerKey, item);
+                                JsonLdUtils.AddValue(jObject, containerKey, item);
                             }
                         }
                     }
@@ -648,7 +648,7 @@ bool vocab = false, bool reverse = false)
             var typeLanguage = "@language";
             var typeLanguageValue = "@null";
             // 4.5 - If value is a map containing an @index entry, and value is not a graph object then append the values @index and @index@set to containers.
-            if (value is JObject && (value as JObject).ContainsKey("@index") && !JsonLdUtils.IsGraphObject(value))
+            if (value is JObject jObject && jObject.ContainsKey("@index") && !JsonLdUtils.IsGraphObject(jObject))
             {
                 containers.Add("@index");
                 containers.Add("@index@set");
@@ -897,8 +897,8 @@ bool vocab = false, bool reverse = false)
             }
 
             // 4.16 - type/language value is @id or @reverse and value is a map containing an @id entry: 
-            if ((typeLanguageValue.Equals("@id") || typeLanguageValue.Equals("@reverse")) && (value is JObject) &&
-                (value as JObject).ContainsKey("@id"))
+            if ((typeLanguageValue.Equals("@id") || typeLanguageValue.Equals("@reverse")) && (value is JObject o) &&
+                o.ContainsKey("@id"))
             {
                 // 4.16.1 If the result of IRI compacting the value of the @id entry in value has a term definition in the active context with an IRI mapping that equals the value of the @id entry in value, then append @vocab, @id, and @none, in that order, to preferred values.
                 var idValue = value["@id"].Value<string>();
