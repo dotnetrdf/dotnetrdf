@@ -468,9 +468,9 @@ public abstract class BaseVirtualNode<TNodeID, TGraphID>
         if (ReferenceEquals(this, obj)) return true;
         if (obj == null) return false;
 
-        if (obj is INode)
+        if (obj is INode node)
         {
-            return Equals((INode)obj);
+            return Equals(node);
         }
         else
         {
@@ -571,9 +571,8 @@ public abstract class BaseVirtualNode<TNodeID, TGraphID>
     protected bool TryVirtualEquality(INode other, out bool areEqual)
     {
         areEqual = false;
-        if (other is IVirtualNode<TNodeID, TGraphID>)
+        if (other is IVirtualNode<TNodeID, TGraphID> virt)
         {
-            var virt = (IVirtualNode<TNodeID, TGraphID>)other;
             if (ReferenceEquals(_provider, virt.Provider))
             {
                 areEqual = _id.Equals(virt.VirtualID);
@@ -719,9 +718,8 @@ public abstract class BaseVirtualNode<TNodeID, TGraphID>
     /// <see cref="IVirtualRdfProvider{TNodeID,TGraphID}"/> as this node.</remarks>
     public bool TryCompareVirtualId(INode other, out int comparisonResult)
     {
-        if (other is IVirtualNode<TNodeID, TGraphID>)
+        if (other is IVirtualNode<TNodeID, TGraphID> virt)
         {
-            var virt = other as IVirtualNode<TNodeID, TGraphID>;
             if (ReferenceEquals(_provider, virt.Provider))
             {
                 if (_id.Equals(virt.VirtualID))

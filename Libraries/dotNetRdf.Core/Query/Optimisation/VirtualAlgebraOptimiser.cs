@@ -70,17 +70,16 @@ public abstract class VirtualAlgebraOptimiser<TNodeID, TGraphID>
     /// <returns></returns>
     public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
     {
-        if (algebra is IAbstractJoin)
+        if (algebra is IAbstractJoin join)
         {
-            return ((IAbstractJoin)algebra).Transform(this);
+            return join.Transform(this);
         }
-        else if (algebra is IUnaryOperator)
+        else if (algebra is IUnaryOperator @operator)
         {
-            return ((IUnaryOperator)algebra).Transform(this);
+            return @operator.Transform(this);
         }
-        else if (algebra is IBgp)
+        else if (algebra is IBgp current)
         {
-            var current = (IBgp)algebra;
             if (current.PatternCount == 0)
             {
                 return current;
@@ -118,9 +117,9 @@ public abstract class VirtualAlgebraOptimiser<TNodeID, TGraphID>
                         // Convert Terms in the Pattern into Virtual Nodes
                         var tp = (IMatchTriplePattern)ps[i];
                         PatternItem subj, pred, obj;
-                        if (tp.Subject is NodeMatchPattern)
+                        if (tp.Subject is NodeMatchPattern pattern)
                         {
-                            TNodeID id = _provider.GetID(((NodeMatchPattern)tp.Subject).Node);
+                            TNodeID id = _provider.GetID(pattern.Node);
                             if (id == null || id.Equals(nullID))
                             {
                                 result = new NullOperator(current.Variables);
@@ -128,16 +127,16 @@ public abstract class VirtualAlgebraOptimiser<TNodeID, TGraphID>
                             }
                             else
                             {
-                                subj = new NodeMatchPattern(CreateVirtualNode(id, ((NodeMatchPattern)tp.Subject).Node));
+                                subj = new NodeMatchPattern(CreateVirtualNode(id, pattern.Node));
                             }
                         }
                         else
                         {
                             subj = tp.Subject;
                         }
-                        if (tp.Predicate is NodeMatchPattern)
+                        if (tp.Predicate is NodeMatchPattern matchPattern)
                         {
-                            TNodeID id = _provider.GetID(((NodeMatchPattern)tp.Predicate).Node);
+                            TNodeID id = _provider.GetID(matchPattern.Node);
                             if (id == null || id.Equals(nullID))
                             {
                                 result = new NullOperator(current.Variables);
@@ -145,16 +144,16 @@ public abstract class VirtualAlgebraOptimiser<TNodeID, TGraphID>
                             }
                             else
                             {
-                                pred = new NodeMatchPattern(CreateVirtualNode(id, ((NodeMatchPattern)tp.Predicate).Node));
+                                pred = new NodeMatchPattern(CreateVirtualNode(id, matchPattern.Node));
                             }
                         }
                         else
                         {
                             pred = tp.Predicate;
                         }
-                        if (tp.Object is NodeMatchPattern)
+                        if (tp.Object is NodeMatchPattern nodeMatchPattern)
                         {
-                            TNodeID id = _provider.GetID(((NodeMatchPattern)tp.Object).Node);
+                            TNodeID id = _provider.GetID(nodeMatchPattern.Node);
                             if (id == null || id.Equals(nullID))
                             {
                                 result = new NullOperator(current.Variables);
@@ -162,7 +161,7 @@ public abstract class VirtualAlgebraOptimiser<TNodeID, TGraphID>
                             }
                             else
                             {
-                                obj = new NodeMatchPattern(CreateVirtualNode(id, ((NodeMatchPattern)tp.Object).Node));
+                                obj = new NodeMatchPattern(CreateVirtualNode(id, nodeMatchPattern.Node));
                             }
                         }
                         else

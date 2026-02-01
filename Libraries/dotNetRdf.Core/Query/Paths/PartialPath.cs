@@ -166,9 +166,8 @@ public class PotentialPath
     /// <returns></returns>
     public override bool Equals(object obj)
     {
-        if (obj is PotentialPath)
+        if (obj is PotentialPath other)
         {
-            var other = (PotentialPath)obj;
             return (_start.Equals(other.Start) && _current.Equals(other.Current));
         }
         else

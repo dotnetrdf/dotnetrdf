@@ -58,9 +58,9 @@ public class SimpleUpdateProcessor : ISparqlUpdateProcessor
     /// </summary>
     public virtual void Flush()
     {
-        if (_store is ITransactionalStore)
+        if (_store is ITransactionalStore store)
         {
-            ((ITransactionalStore)_store).Flush();
+            store.Flush();
         }
     }
 

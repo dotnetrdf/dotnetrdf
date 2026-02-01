@@ -70,7 +70,7 @@ public class DeleteDataCommand : SparqlUpdateCommand
         if (p.IsGraph)
         {
             // If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
-            return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoVariables);
+            return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern { HasNoVariables: true });
         }
         else if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
         {
@@ -82,7 +82,7 @@ public class DeleteDataCommand : SparqlUpdateCommand
             // For other patterns all Triple patterns must be constructable with no explicit variables
             // If top level then any Child Graph Patterns must be valid
             // Otherwise must have no Child Graph Patterns
-            return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
+            return p.TriplePatterns.All(tp => tp is IConstructTriplePattern { HasNoVariables: true }) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
         }
     }
 

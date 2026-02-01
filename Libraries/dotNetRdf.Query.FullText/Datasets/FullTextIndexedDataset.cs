@@ -200,13 +200,13 @@ public class FullTextIndexedDataset
             base.SerializeConfiguration(context);
 
             //Then add additional configuration to the serialization
-            if (_indexer is IConfigurationSerializable)
+            if (_indexer is IConfigurationSerializable serializable)
             {
                 INode indexer = context.NextSubject;
                 context.NextSubject = indexer;
                 context.Graph.Assert(dataset, context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyIndexer)), indexer);
                 context.Graph.Assert(dataset, context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyIndexNow)), _indexNow.ToLiteral(context.Graph));
-                ((IConfigurationSerializable)_indexer).SerializeConfiguration(context);
+                serializable.SerializeConfiguration(context);
             }
             else
             {

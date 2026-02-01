@@ -594,9 +594,8 @@ public class SparqlFormatter
         {
             return item.ToString();
         }
-        else if (item is NodeMatchPattern)
+        else if (item is NodeMatchPattern match)
         {
-            var match = (NodeMatchPattern)item;
             return Format(match.Node, segment);
         }
         else if (item is FixedBlankNodePattern)
@@ -753,9 +752,8 @@ public class SparqlFormatter
             switch (expr.Type)
             {
                 case SparqlExpressionType.Aggregate:
-                    if (expr is AggregateTerm)
+                    if (expr is AggregateTerm agg)
                     {
-                        var agg = (AggregateTerm)expr;
                         output.Append(FormatAggregate(agg.Aggregate));
                     }
                     else
@@ -952,18 +950,16 @@ public class SparqlFormatter
     {
         var output = new StringBuilder();
 
-        if (path is AlternativePath)
+        if (path is AlternativePath alt)
         {
-            var alt = (AlternativePath)path;
             output.Append('(');
             output.Append(FormatPath(alt.LhsPath));
             output.Append(" | ");
             output.Append(FormatPath(alt.RhsPath));
             output.Append(')');
         }
-        else if (path is FixedCardinality)
+        else if (path is FixedCardinality card)
         {
-            var card = (FixedCardinality)path;
             if (card.Path is BaseBinaryPath) output.Append('(');
             output.Append(FormatPath(card.Path));
             if (card.Path is BaseBinaryPath) output.Append(')');
@@ -971,17 +967,15 @@ public class SparqlFormatter
             output.Append(card.MaxCardinality);
             output.Append('}');
         }
-        else if (path is InversePath)
+        else if (path is InversePath inv)
         {
-            var inv = (InversePath)path;
             output.Append('^');
             if (inv.Path is BaseBinaryPath) output.Append('(');
             output.Append(FormatPath(inv.Path));
             if (inv.Path is BaseBinaryPath) output.Append(')');
         }
-        else if (path is NOrMore)
+        else if (path is NOrMore nOrMore)
         {
-            var nOrMore = (NOrMore)path;
             if (nOrMore.Path is BaseBinaryPath) output.Append('(');
             output.Append(FormatPath(nOrMore.Path));
             if (nOrMore.Path is BaseBinaryPath) output.Append(')');
@@ -989,9 +983,8 @@ public class SparqlFormatter
             output.Append(nOrMore.MinCardinality);
             output.Append(",}");
         }
-        else if (path is NToM)
+        else if (path is NToM nToM)
         {
-            var nToM = (NToM)path;
             if (nToM.Path is BaseBinaryPath) output.Append('(');
             output.Append(FormatPath(nToM.Path));
             if (nToM.Path is BaseBinaryPath) output.Append(')');
@@ -1001,45 +994,39 @@ public class SparqlFormatter
             output.Append(nToM.MaxCardinality);
             output.Append('}');
         }
-        else if (path is OneOrMore)
+        else if (path is OneOrMore oneOrMore)
         {
-            var oneOrMore = (OneOrMore)path;
             if (oneOrMore.Path is BaseBinaryPath) output.Append('(');
             output.Append(FormatPath(oneOrMore.Path));
             if (oneOrMore.Path is BaseBinaryPath) output.Append(')');
             output.Append('+');
         }
-        else if (path is Property)
+        else if (path is Property prop)
         {
-            var prop = (Property)path;
             output.Append(Format(prop.Predicate, TripleSegment.Predicate));
         }
-        else if (path is SequencePath)
+        else if (path is SequencePath seq)
         {
-            var seq = (SequencePath)path;
             output.Append(FormatPath(seq.LhsPath));
             output.Append(" / ");
             output.Append(FormatPath(seq.RhsPath));
         }
-        else if (path is ZeroOrMore)
+        else if (path is ZeroOrMore zeroOrMore)
         {
-            var zeroOrMore = (ZeroOrMore)path;
             if (zeroOrMore.Path is BaseBinaryPath) output.Append('(');
             output.Append(FormatPath(zeroOrMore.Path));
             if (zeroOrMore.Path is BaseBinaryPath) output.Append(')');
             output.Append('*');
         }
-        else if (path is ZeroOrOne)
+        else if (path is ZeroOrOne zeroOrOne)
         {
-            var zeroOrOne = (ZeroOrOne)path;
             if (zeroOrOne.Path is BaseBinaryPath) output.Append('(');
             output.Append(FormatPath(zeroOrOne.Path));
             if (zeroOrOne.Path is BaseBinaryPath) output.Append(')');
             output.Append('?');
         }
-        else if (path is ZeroToN)
+        else if (path is ZeroToN zeroToN)
         {
-            var zeroToN = (ZeroToN)path;
             if (zeroToN.Path is BaseBinaryPath) output.Append('(');
             output.Append(FormatPath(zeroToN.Path));
             if (zeroToN.Path is BaseBinaryPath) output.Append(')');
@@ -1047,9 +1034,8 @@ public class SparqlFormatter
             output.Append(zeroToN.MaxCardinality);
             output.Append('}');
         }
-        else if (path is NegatedSet)
+        else if (path is NegatedSet negSet)
         {
-            var negSet = (NegatedSet)path;
             output.Append('!');
             if (negSet.Properties.Count() + negSet.InverseProperties.Count() > 1) output.Append('(');
             foreach (Property p in negSet.Properties)

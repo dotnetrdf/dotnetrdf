@@ -205,10 +205,8 @@ public class SparqlTests : IClassFixture<MockRemoteSparqlEndpointFixture>
 
         object results = ExecuteQuery(store, query);
         Assert.IsType<SparqlResultSet>(results, exactMatch: false);
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet rset)
         {
-            var rset = (SparqlResultSet)results;
-
             //Serialize to both XML and JSON Results format
             var xmlwriter = new SparqlXmlWriter();
             xmlwriter.Save(rset, "results.xml");

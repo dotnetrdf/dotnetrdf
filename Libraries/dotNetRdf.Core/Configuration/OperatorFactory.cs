@@ -50,9 +50,9 @@ public class OperatorFactory
     {
         obj = null;
         var temp = Activator.CreateInstance(targetType);
-        if (temp is ISparqlOperator)
+        if (temp is ISparqlOperator @operator)
         {
-            obj = (ISparqlOperator)temp;
+            obj = @operator;
             return true;
         }
         else

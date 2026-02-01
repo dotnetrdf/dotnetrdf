@@ -58,9 +58,9 @@ public class ReasonerFactory : IObjectFactory
                 INode reasonerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyOwlReasoner)));
                 if (reasonerNode == null) return false;
                 var reasoner = ConfigurationLoader.LoadObject(g, reasonerNode);
-                if (reasoner is IOwlReasoner)
+                if (reasoner is IOwlReasoner owlReasoner)
                 {
-                    output = new OwlReasonerWrapper((IOwlReasoner)reasoner);
+                    output = new OwlReasonerWrapper(owlReasoner);
                 }
                 else
                 {
@@ -84,16 +84,16 @@ public class ReasonerFactory : IObjectFactory
 
         if (output != null)
         {
-            if (output is IInferenceEngine)
+            if (output is IInferenceEngine engine)
             {
                 // Now initialise with any specified Graphs
                 IEnumerable<INode> rulesGraphs = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
                 foreach (INode rulesGraph in rulesGraphs)
                 {
                     var temp = ConfigurationLoader.LoadObject(g, rulesGraph);
-                    if (temp is IGraph)
+                    if (temp is IGraph graph)
                     {
-                        ((IInferenceEngine)output).Initialise((IGraph)temp);
+                        engine.Initialise(graph);
                     }
                     else
                     {

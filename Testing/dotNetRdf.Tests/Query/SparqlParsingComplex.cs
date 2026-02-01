@@ -61,9 +61,8 @@ public class SparqlParsingComplex
         SparqlQuery q = parser.ParseFromString(query);
 
         var results = g.ExecuteQuery(q);
-        if (results is SparqlResultSet)
+        if (results is SparqlResultSet rset)
         {
-            var rset = (SparqlResultSet)results;
             TestTools.ShowResults(rset);
 
             Assert.True(rset.All(r => r.HasValue("s") && r.HasValue("p") && r.HasValue("o")), "All Results should have had ?s, ?p and ?o variables");

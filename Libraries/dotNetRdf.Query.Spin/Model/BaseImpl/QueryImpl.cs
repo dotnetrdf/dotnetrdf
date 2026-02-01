@@ -75,13 +75,13 @@ internal abstract class QueryImpl : AbstractSPINResource, ISolutionModifierQuery
         while (it.MoveNext())
         {
             INode node = it.Current.Object;
-            if (node is IValuedNode)
+            if (node is IValuedNode valuedNode)
             {
-                results.Add(((IValuedNode)node).AsString());
+                results.Add(valuedNode.AsString());
             }
-            else if (node is IUriNode)
+            else if (node is IUriNode uriNode)
             {
-                results.Add(((IUriNode)node).Uri.ToString());
+                results.Add(uriNode.Uri.ToString());
             }
         }
         return results;

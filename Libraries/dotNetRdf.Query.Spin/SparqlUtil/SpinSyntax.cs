@@ -493,39 +493,37 @@ internal static class SpinSyntax
     {
         INode p = g.CreateBlankNode();
 
-        if (pattern is TriplePattern)
+        if (pattern is TriplePattern tp)
         {
-            var tp = (TriplePattern)pattern;
             g.Assert(p, RDF.PropertyType, SP.ClassTriplePattern);
             g.Assert(p, SP.PropertySubject, tp.Subject.ToSpinRdf(g, varTable));
             g.Assert(p, SP.PropertyPredicate, tp.Predicate.ToSpinRdf(g, varTable));
             g.Assert(p, SP.PropertyObject, tp.Object.ToSpinRdf(g, varTable));
         }
-        else if (pattern is SubQueryPattern)
+        else if (pattern is SubQueryPattern sqp)
         {
             g.Assert(p, RDF.PropertyType, SP.ClassSubQuery);
-            g.Assert(p, SP.PropertyQuery, ((SubQueryPattern)pattern).SubQuery.ToSpinRdf(g));
+            g.Assert(p, SP.PropertyQuery, sqp.SubQuery.ToSpinRdf(g));
         }
-        else if (pattern is FilterPattern)
+        else if (pattern is FilterPattern filterPattern)
         {
             g.Assert(p, RDF.PropertyType, SP.ClassFilter);
-            g.Assert(p, SP.PropertyExpression, ((FilterPattern)pattern).Filter.Expression.ToSpinRdf(g, varTable));
+            g.Assert(p, SP.PropertyExpression, filterPattern.Filter.Expression.ToSpinRdf(g, varTable));
         }
-        else if (pattern is PropertyPathPattern)
+        else if (pattern is PropertyPathPattern pp)
         {
-            var pp = (PropertyPathPattern)pattern;
             g.Assert(p, RDF.PropertyType, SP.ClassTriplePath);
             g.Assert(p, SP.PropertySubject, pp.Subject.ToSpinRdf(g, varTable));
             g.Assert(p, SP.PropertyPath, pp.Path.ToSpinRdf(g, varTable));
             g.Assert(p, SP.PropertyObject, pp.Object.ToSpinRdf(g, varTable));
         }
-        else if (pattern is LetPattern)
+        else if (pattern is LetPattern letPattern)
         {
             g.Assert(p, RDF.PropertyType, SP.ClassLet);
             INode var = g.CreateBlankNode();
             g.Assert(p, SP.PropertyVariable, var);
-            g.Assert(var, SP.PropertyVarName, g.CreateLiteralNode(((LetPattern)pattern).VariableName, XSD.string_.Uri));
-            g.Assert(p, SP.PropertyExpression, ((LetPattern)pattern).AssignExpression.ToSpinRdf(g, varTable));
+            g.Assert(var, SP.PropertyVarName, g.CreateLiteralNode(letPattern.VariableName, XSD.string_.Uri));
+            g.Assert(p, SP.PropertyExpression, letPattern.AssignExpression.ToSpinRdf(g, varTable));
         }
         else if (pattern is BindPattern)
         {
@@ -539,9 +537,9 @@ internal static class SpinSyntax
     {
         INode i;
 
-        if (item is NodeMatchPattern)
+        if (item is NodeMatchPattern pattern)
         {
-            i = ((NodeMatchPattern)item).Node;
+            i = pattern.Node;
         }
         else if (item is VariablePattern)
         {

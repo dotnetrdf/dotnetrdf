@@ -1048,9 +1048,9 @@ public class SparqlQueryParser
         ISparqlExpression aggExpr = context.ExpressionParser.Parse(tokens);
         context.ExpressionParser.AllowAggregates = false;
 
-        if (aggExpr is AggregateTerm)
+        if (aggExpr is AggregateTerm term)
         {
-            aggregate = ((AggregateTerm)aggExpr).Aggregate;
+            aggregate = term.Aggregate;
         }
         else
         {

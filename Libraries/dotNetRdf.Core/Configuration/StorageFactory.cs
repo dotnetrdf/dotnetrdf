@@ -96,9 +96,9 @@ public class StorageFactory
                 // Get the actual Manager we are wrapping
                 storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
                 temp = ConfigurationLoader.LoadObject(g, storeObj);
-                if (temp is IQueryableStorage)
+                if (temp is IQueryableStorage storage)
                 {
-                    storageProvider = new QueryableReadOnlyConnector((IQueryableStorage) temp);
+                    storageProvider = new QueryableReadOnlyConnector(storage);
                 }
                 else
                 {
@@ -318,9 +318,9 @@ public class StorageFactory
                 if (datasetObj != null)
                 {
                     temp = ConfigurationLoader.LoadObject(g, datasetObj);
-                    if (temp is ISparqlDataset)
+                    if (temp is ISparqlDataset dataset)
                     {
-                        storageProvider = new InMemoryManager((ISparqlDataset)temp);
+                        storageProvider = new InMemoryManager(dataset);
                     }
                     else
                     {

@@ -57,11 +57,10 @@ public class ParallelEvaluationOptimiser
     /// <returns></returns>
     public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
     {
-        if (algebra is IAbstractJoin)
+        if (algebra is IAbstractJoin abstractJoin)
         {
-            if (algebra is Join)
+            if (algebra is Join join)
             {
-                var join = (Join)algebra;
                 if (!join.Lhs.Variables.Intersect(join.Rhs.Variables).Any())
                 {
                     return new ParallelJoin(Optimise(join.Lhs), Optimise(join.Rhs));
@@ -71,19 +70,18 @@ public class ParallelEvaluationOptimiser
                     return join.Transform(this);
                 }
             }
-            else if (algebra is Union)
+            else if (abstractJoin is Union u)
             {
-                var u = (Union)algebra;
                 return new ParallelUnion(Optimise(u.Lhs), Optimise(u.Rhs));
             }
             else
             {
-                return ((IAbstractJoin)algebra).Transform(this);
+                return abstractJoin.Transform(this);
             }
         }
-        else if (algebra is IUnaryOperator)
+        else if (algebra is IUnaryOperator @operator)
         {
-            return ((IUnaryOperator)algebra).Transform(this);
+            return @operator.Transform(this);
         }
         else
         {

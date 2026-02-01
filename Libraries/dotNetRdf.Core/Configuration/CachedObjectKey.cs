@@ -63,9 +63,9 @@ class CachedObjectKey : IEquatable<CachedObjectKey>
     /// <returns></returns>
     public override bool Equals(object obj)
     {
-        if (obj is CachedObjectKey)
+        if (obj is CachedObjectKey key)
         {
-            return Equals((CachedObjectKey)obj);
+            return Equals(key);
         }
         else
         {
