@@ -23,6 +23,7 @@ The class [`VDS.RDF.JsonLd.JsonLdProcessorOptions`](xref:VDS.RDF.JsonLd.JsonLdPr
 | OmitDefault | A boolean flag that indicates whether or not the Framing operation should include the @default values of properties when generating the framed output if those properties are missing from the input. Defaults to `false`.
 | OmitGraph | A boolean flag that indicates whether or not the outer @graph property can be omitted by the framing process. If `true` an `@graph` property is only generated when required to hold multiple top-level nodes. This property defaults to `true` if `ProcessingMode` is `JsonLdProcessingMode.JsonLd10` or `false` otherwise.
 | RemoteContextLimit | An integer value specifying the maximum number of remote context documents to retrieve and process. When this limit is exceeded a [`JsonLdProcessorException`](xref:VDS.RDF.JsonLd.JsonLdProcessorException) exception will be raised. If set to 0, this prevents the processor from retrieving and processing remote contexts (and it will raise an exception if an input document attempts to use a remote context). A value less than 0 indicates that any number of remote contexts may be processed. Defaults to `10`.
+| SafeMode | A boolean flag if set to true, will force a warning to be raised when data is dropped by the JSON-LD processor. This can be particularly important in digital signing scenarios. 
 
 ## Specifying Processor Mode
 
