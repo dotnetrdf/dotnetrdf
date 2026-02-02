@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <!-- Default Assembly metadata -->
-    <Copyright>Copyright © dotNetRDF Project 2009-2025</Copyright>
+    <Copyright>Copyright © dotNetRDF Project 2009-2026</Copyright>
     <!-- Default Build Options -->
     <CodeAnalysisRuleSet>../../dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -17,7 +17,7 @@
 
   <PropertyGroup>
 	  <!-- Default NuGet Package metadata -->
-    <PackageTags>RDF;Semantic;Web;SPARQL;RDF/XML;Turtle;Notation3</PackageTags>
+    <PackageTags>RDF;Semantic;Web;SPARQL;RDF/XML;Turtle;Notation3;JSON-LD</PackageTags>
     <PackageProjectUrl>https://www.dotnetrdf.org</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RequiresLicenseAcceptance>false</RequiresLicenseAcceptance>
