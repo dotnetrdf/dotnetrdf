@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <!-- Default Assembly metadata -->
-    <Copyright>Copyright © dotNetRDF Project 2009-2025</Copyright>
+    <Copyright>Copyright © dotNetRDF Project 2009-2026</Copyright>
     <!-- Default Build Options -->
     <CodeAnalysisRuleSet>../../dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
