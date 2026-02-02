@@ -1,6 +1,13 @@
 ﻿Change Log
 ==========
 
+3.5.0
+-----
+
+FIX: Fix an issue with the SHACL processor generating an invalid SPARQL query for SPARQL-base constraint components (#693). Thanks to @Ikeragnell for the report and @langsamu for the repro.
+INTERNAL: A lot of internal code cleanup and migration to more modern C# idioms. Thanks to @langsamu for the contributions.
+INTERNAL: Update to .NET 10 as the default target framework for CI/CD. The libraries themselves still target .NET Standard 2.0.
+
 3.4.2
 -----
 
