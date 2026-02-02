@@ -17,7 +17,7 @@
 
   <PropertyGroup>
 	  <!-- Default NuGet Package metadata -->
-    <PackageTags>RDF;Semantic;Web;SPARQL;RDF/XML;Turtle;Notation3</PackageTags>
+    <PackageTags>RDF;Semantic;Web;SPARQL;RDF/XML;Turtle;Notation3;JSON-LD</PackageTags>
     <PackageProjectUrl>https://www.dotnetrdf.org</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RequiresLicenseAcceptance>false</RequiresLicenseAcceptance>
