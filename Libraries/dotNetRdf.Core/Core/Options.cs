@@ -204,29 +204,6 @@ public static class Options
     public static bool ValidateIris { get; set; } = false;
 
     /// <summary>
-    /// Gets/Sets whether Blocking IO should be forced.
-    /// </summary>
-    /// <remarks>
-    /// Blocking IO refers to how the parsing sub-system reads in inputs, it will use Blocking/Non-Blocking IO depending on the input source.  In most cases the detection of which to use should never cause an issue but theoretically in some rare cases using non-blocking IO may lead to incorrect parsing errors being thrown (premature end of input detected), if you suspect this is the case try enabling this setting.  If you still experience this problem with this setting enabled then there is some other issue with your input.
-    /// </remarks>
-    [Obsolete("This API has been deprecated. Setting this option will not change the use of blocking IO for streams. Please refer to the change notes for this release for a workaround.", true)]
-    public static bool ForceBlockingIO { get; set; } = false;
-
-    /// <summary>
-    /// Gets/Sets whether Basic HTTP authentication should be forced.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// There have been reported problems where some servers don't cope nicely with the HTTP authentication challenge response procedure resulting in failed HTTP requests.  If the server only uses Basic HTTP authentication then you can opt to force dotNetRDF to always include the HTTP basic authentication header in requests and thus workaround this problem.
-    /// </para>
-    /// <para>
-    /// <strong>Warning:</strong> Under Silverlight this will only work correctly if usernames and passwords are composed only of characters within the ASCII range.
-    /// </para>
-    /// </remarks>
-    [Obsolete("This API has been deprecated. There is currently no replacement for this API.", true)]
-    public static bool ForceHttpBasicAuth { get; set; } = false;
-
-    /// <summary>
     /// Gets/Sets whether a DTD should be used for some XML formats to compress output.
     /// </summary>
     [Obsolete("This API has been deprecated. Writers that support the use of an XML DTD now provide a property and a constructor parameter to control the use of a DTD when writing.")]
@@ -252,19 +229,6 @@ public static class Options
     /// </summary>
     [Obsolete("This API has been deprecated. Use the ITokenisingParser.TokenQueueMode property instead, or pass the desired TokenQueueMode to the constructor of those parsers that support this option.")]
     public static TokenQueueMode DefaultTokenQueueMode { get; set; } = TokenQueueMode.SynchronousBufferDuringParsing;
-
-    /// <summary>
-    /// Gets/Sets whether HTTP Request and Response Information should be output to the Console Standard Out for Debugging purposes.
-    /// </summary>
-    [Obsolete("This API has been deprecated. Please use the standard .NET HttpClient logging facility instead", true)]
-    public static bool HttpDebugging { get; set; } = false;
-
-    /// <summary>
-    /// Gets/Sets whether the HTTP Response Stream should be output to the Console Standard Output for Debugging purposes.
-    /// </summary>
-    [Obsolete("This API has been deprecated. Please use the standard .NET HttpClient logging facility instead", true)]
-    public static bool HttpFullDebugging { get; set; } = false;
-
 
     /// <summary>
     /// Gets/Sets the default culture literal comparison when literals are string or not implicitely comparable (different types, parse/cast error...)

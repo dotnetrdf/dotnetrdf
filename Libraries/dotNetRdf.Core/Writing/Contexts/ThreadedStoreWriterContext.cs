@@ -92,17 +92,6 @@ public class ThreadedStoreWriterContext : BaseStoreWriterContext
     }
 
     /// <summary>
-    /// Gets the next Uri for a Graph that is waiting to be written.
-    /// </summary>
-    /// <returns>Uri of next Graph to be written.</returns>
-    [Obsolete("Replaced by TryGetNextGraphName(out IRefNode)", true)]
-    public bool TryGetNextUri(out Uri uri)
-    {
-        throw new NotSupportedException(
-            "A threaded writer must now use TryGetNextGraphName instead of TryGetNextUri");
-    }
-
-    /// <summary>
     /// Gets the next name for a graph that is waiting to be written.
     /// </summary>
     /// <param name="graphName">Name of next graph to be written.</param>

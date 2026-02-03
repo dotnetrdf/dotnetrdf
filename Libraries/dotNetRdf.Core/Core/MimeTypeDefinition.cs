@@ -257,19 +257,6 @@ public sealed class MimeTypeDefinition
     }
 
     /// <summary>
-    /// Determines whether the Definition supports a particular MIME type.
-    /// </summary>
-    /// <param name="mimeType">MIME Type.</param>
-    /// <returns></returns>
-    [Obsolete("Deprecated in favour of the alternative overload which takes a MimeTypeSelector", true)]
-    public bool SupportsMimeType(string mimeType)
-    {
-        var type = mimeType.ToLowerInvariant();
-        type = type.Contains(';') ? type.Substring(0, type.IndexOf(';')) : type;
-        return _mimeTypes.Contains(type) || mimeType.Equals(MimeTypesHelper.Any);
-    }
-
-    /// <summary>
     /// Determines whether the definition supports the MIME type specified by the selector.
     /// </summary>
     /// <param name="selector">MIME Type selector.</param>
