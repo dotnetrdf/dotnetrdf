@@ -313,7 +313,7 @@ public class AllegroGraphConnector
     /// <param name="method">HTTP Method.</param>
     /// <param name="queryParams">Querystring Parameters.</param>
     /// <returns></returns>
-    [Obsolete("This method is obsolete and will be removed in a future release. Use CreateRequest(string, string, HttpMethod, Dictionary<string, string>) instead.")]
+    [Obsolete("This method is obsolete and will be removed in a future release. Use CreateRequest(string, string, HttpMethod, Dictionary<string, string>) instead.", true)]
     protected override HttpWebRequest CreateRequest(string servicePath, string accept, string method, Dictionary<string, string> queryParams)
     {
         // Remove JSON Mime Types from supported Accept types

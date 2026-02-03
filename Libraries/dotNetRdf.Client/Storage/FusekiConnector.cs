@@ -134,7 +134,7 @@ public class FusekiConnector
     /// Gets the List of Graphs from the store.
     /// </summary>
     /// <returns></returns>
-    [Obsolete("Replaced by ListGraphNames")]
+    [Obsolete("Replaced by ListGraphNames", true)]
     public override IEnumerable<Uri> ListGraphs()
     {
         try
@@ -673,7 +673,7 @@ public class FusekiConnector
     /// </summary>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("Replaced with ListGraphsAsync(CancellationToken)")]
+    [Obsolete("Replaced with ListGraphsAsync(CancellationToken)", true)]
     public override void ListGraphs(AsyncStorageCallback callback, object state)
     {
         // Use ListUrisHandler and make an async query to list the graphs, when that returns we invoke the correct callback

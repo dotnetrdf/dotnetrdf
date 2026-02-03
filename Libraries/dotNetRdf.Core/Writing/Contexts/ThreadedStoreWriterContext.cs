@@ -76,7 +76,7 @@ public class ThreadedStoreWriterContext : BaseStoreWriterContext
     /// Adds a Uri to the list of URIs for Graphs that are waiting to be written.
     /// </summary>
     /// <param name="u"></param>
-    [Obsolete("Replaced by Add(IRefNode)")]
+    [Obsolete("Replaced by Add(IRefNode)", true)]
     public void Add(Uri u)
     {
         _writeList.Enqueue(u == null ? null : new UriNode(u));

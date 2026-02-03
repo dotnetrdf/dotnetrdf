@@ -152,7 +152,7 @@ public class StardogV2Connector
     /// Adds Stardog specific request headers.
     /// </summary>
     /// <param name="request"></param>
-    [Obsolete("This method is obsolete and will be removed in a future release")]
+    [Obsolete("This method is obsolete and will be removed in a future release", true)]
     protected override void AddStardogHeaders(HttpWebRequest request)
     {
         var reasoning = GetReasoningParameter();

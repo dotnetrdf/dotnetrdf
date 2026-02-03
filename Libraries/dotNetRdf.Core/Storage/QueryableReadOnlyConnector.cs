@@ -79,7 +79,7 @@ public class QueryableReadOnlyConnector
     /// Lists the Graphs in the Store.
     /// </summary>
     /// <returns></returns>
-    [Obsolete("Replaced by ListGraphNames")]
+    [Obsolete("Replaced by ListGraphNames", true)]
     public override IEnumerable<Uri> ListGraphs()
     {
         if (base.ListGraphsSupported)

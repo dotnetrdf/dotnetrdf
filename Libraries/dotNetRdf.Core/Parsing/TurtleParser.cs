@@ -60,7 +60,7 @@ public class TurtleParser
     /// </summary>
     /// <param name="syntax">Turtle Syntax.</param>
     /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is <see cref="TurtleSyntax.W3C"/> and <see cref="Options.ValidateIris"/> is true.</remarks>
-    [Obsolete("The Options.ValidateIris API has been deprecated. Please use the constructor that allows IRI validation to be set directly.")]
+    [Obsolete("The Options.ValidateIris API has been deprecated. Please use the constructor that allows IRI validation to be set directly.", true)]
     public TurtleParser(TurtleSyntax syntax)
     {
         _syntax = syntax;

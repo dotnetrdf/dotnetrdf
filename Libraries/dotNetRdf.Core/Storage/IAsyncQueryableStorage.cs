@@ -48,7 +48,7 @@ public interface IAsyncQueryableStorage
     /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query.</exception>
     /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results.</exception>
     /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand.</exception>
-    [Obsolete("This method is obsolete and will be removed in a future version. Replaced by QueryAsync(string, CancellationToken)")]
+    [Obsolete("This method is obsolete and will be removed in a future version. Replaced by QueryAsync(string, CancellationToken)", true)]
     void Query(string sparqlQuery, AsyncStorageCallback callback, object state);
 
     /// <summary>
@@ -63,7 +63,7 @@ public interface IAsyncQueryableStorage
     /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query.</exception>
     /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results.</exception>
     /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand.</exception>
-    [Obsolete("Replaced by QueryAsync(IRdfHandler, ISparqlResultsHandler, string")]
+    [Obsolete("Replaced by QueryAsync(IRdfHandler, ISparqlResultsHandler, string", true)]
     void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state);
 
     /// <summary>

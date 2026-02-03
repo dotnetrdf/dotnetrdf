@@ -52,9 +52,9 @@ public class ReadWriteSparqlConnector
     : SparqlConnector, IUpdateableStorage
 {
     private readonly TurtleFormatter _formatter = new ();
-#pragma warning disable 618
+
+    [Obsolete("Replaced by UpdateClient", true)]
     private readonly SparqlRemoteUpdateEndpoint _updateEndpoint;
-#pragma warning restore 618
 
     /// <summary>
     /// Creates a new connector.
@@ -75,7 +75,7 @@ public class ReadWriteSparqlConnector
     /// <param name="queryEndpoint">Query Endpoint.</param>
     /// <param name="updateEndpoint">Update Endpoint.</param>
     /// <param name="mode">Method for loading graphs.</param>
-    [Obsolete("Replaced by ReadWriteSparqlConnector(SparqlQueryClient, SparqlUpdateClient, SparqlConnectorLoadMethod")]
+    [Obsolete("Replaced by ReadWriteSparqlConnector(SparqlQueryClient, SparqlUpdateClient, SparqlConnectorLoadMethod", true)]
     public ReadWriteSparqlConnector(SparqlRemoteEndpoint queryEndpoint, SparqlRemoteUpdateEndpoint updateEndpoint, SparqlConnectorLoadMethod mode)
         : base(queryEndpoint, mode)
     {
@@ -87,7 +87,7 @@ public class ReadWriteSparqlConnector
     /// </summary>
     /// <param name="queryEndpoint">Query Endpoint.</param>
     /// <param name="updateEndpoint">Update Endpoint.</param>
-    [Obsolete("Replaced by ReadWriteSparqlConnector(SparqlQueryClient, SparqlUpdateClient, SparqlConnectorLoadMethod")]
+    [Obsolete("Replaced by ReadWriteSparqlConnector(SparqlQueryClient, SparqlUpdateClient, SparqlConnectorLoadMethod", true)]
     public ReadWriteSparqlConnector(SparqlRemoteEndpoint queryEndpoint, SparqlRemoteUpdateEndpoint updateEndpoint)
         : this(queryEndpoint, updateEndpoint, SparqlConnectorLoadMethod.Construct) { }
 
@@ -129,7 +129,7 @@ public class ReadWriteSparqlConnector
     /// <summary>
     /// Gets/Sets the HTTP Timeout in milliseconds used for communicating with the SPARQL Endpoint.
     /// </summary>
-    [Obsolete("This property is only used by the obsolete SparqlRemoteEndpoint-backed implementation.")]
+    [Obsolete("This property is only used by the obsolete SparqlRemoteEndpoint-backed implementation.", true)]
     public override int Timeout
     {
         get

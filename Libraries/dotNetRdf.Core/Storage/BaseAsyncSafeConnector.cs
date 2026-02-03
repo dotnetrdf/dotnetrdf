@@ -139,7 +139,7 @@ public abstract class BaseAsyncSafeConnector
     /// Lists the Graphs in the Store.
     /// </summary>
     /// <returns></returns>
-    [Obsolete("Replaced by ListGraphNames")]
+    [Obsolete("Replaced by ListGraphNames", true)]
     public abstract IEnumerable<Uri> ListGraphs();
 
     /// <summary>
@@ -353,7 +353,7 @@ public abstract class BaseAsyncSafeConnector
     /// </summary>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("Replaced with ListGraphsAsync(CancellationToken)")]
+    [Obsolete("Replaced with ListGraphsAsync(CancellationToken)", true)]
     public void ListGraphs(AsyncStorageCallback callback, object state)
     {
         this.AsyncListGraphs(callback, state);

@@ -45,7 +45,7 @@ public class DeleteCommand : BaseModificationCommand
     /// <param name="deletions">Pattern to construct Triples to delete.</param>
     /// <param name="where">Pattern to select data which is then used in evaluating the deletions pattern.</param>
     /// <param name="graphUri">URI of the affected Graph.</param>
-    [Obsolete("Replaced by DeleteCommand(GraphPatten, GraphPattern, IRefNode")]
+    [Obsolete("Replaced by DeleteCommand(GraphPatten, GraphPattern, IRefNode", true)]
     public DeleteCommand(GraphPattern deletions, GraphPattern where, Uri graphUri)
         : this(deletions, where, graphUri == null ? null : new UriNode(graphUri))
     {
@@ -86,7 +86,7 @@ public class DeleteCommand : BaseModificationCommand
     /// </summary>
     /// <param name="where">Pattern to construct Triples to delete.</param>
     /// <param name="graphUri">URI of the affected Graph.</param>
-    [Obsolete("Replaced by DeleteCommand(GraphPattern, IRefNode)")]
+    [Obsolete("Replaced by DeleteCommand(GraphPattern, IRefNode)", true)]
     public DeleteCommand(GraphPattern where, Uri graphUri)
         : this(where, where, graphUri) { }
 
@@ -134,7 +134,7 @@ public class DeleteCommand : BaseModificationCommand
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by AffectsGraph(IRefNode)")]
+    [Obsolete("Replaced by AffectsGraph(IRefNode)", true)]
     public override bool AffectsGraph(Uri graphUri)
     {
         var affectedUris = new List<string>();
@@ -185,7 +185,7 @@ public class DeleteCommand : BaseModificationCommand
     /// <summary>
     /// Gets the URI of the Graph the deletions are made from.
     /// </summary>
-    [Obsolete("Replaced by TargetGraph")]
+    [Obsolete("Replaced by TargetGraph", true)]
     public Uri TargetUri
     {
         get

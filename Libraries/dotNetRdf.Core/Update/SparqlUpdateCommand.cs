@@ -123,7 +123,7 @@ public abstract class SparqlUpdateCommand
     /// <remarks>
     /// A return value of <strong>true</strong> does not guarantee that the Graph will be affected.  Some Commands (e.g. DROP ALL) affect all Graphs in the Dataset but the command itself doesn't know whether a Graph with the given URI is actually present in the dataset to which it is applied.
     /// </remarks>
-    [Obsolete("Replaced by AffectsGraph(IRefNode)")]
+    [Obsolete("Replaced by AffectsGraph(IRefNode)", true)]
     public abstract bool AffectsGraph(Uri graphUri);
 
     /// <summary>

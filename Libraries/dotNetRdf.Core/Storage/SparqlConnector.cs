@@ -56,9 +56,8 @@ public class SparqlConnector
     /// <summary>
     /// Underlying SPARQL query endpoint.
     /// </summary>
-#pragma warning disable 618
+    [Obsolete("Replaced by QueryClient property.", true)]
     protected SparqlRemoteEndpoint _endpoint;
-#pragma warning restore 618
 
     /// <summary>
     /// Method for loading graphs.
@@ -74,7 +73,7 @@ public class SparqlConnector
     /// Creates a new SPARQL Connector which uses the given SPARQL Endpoint.
     /// </summary>
     /// <param name="endpoint">Endpoint.</param>
-    [Obsolete("Replaced by SparqlConnector(SparqlQueryClient)")]
+    [Obsolete("Replaced by SparqlConnector(SparqlQueryClient)", true)]
     public SparqlConnector(SparqlRemoteEndpoint endpoint)
     {
         _endpoint = endpoint ?? throw new ArgumentNullException(nameof(endpoint), "A valid Endpoint must be specified");
@@ -86,7 +85,7 @@ public class SparqlConnector
     /// </summary>
     /// <param name="endpoint">Endpoint.</param>
     /// <param name="mode">Load Method to use.</param>
-    [Obsolete("Replaced by SparqlConnector(SparqlQueryClient, SparqlConnectorLoadMethod)")]
+    [Obsolete("Replaced by SparqlConnector(SparqlQueryClient, SparqlConnectorLoadMethod)", true)]
     public SparqlConnector(SparqlRemoteEndpoint endpoint, SparqlConnectorLoadMethod mode)
         : this(endpoint)
     {
@@ -117,7 +116,7 @@ public class SparqlConnector
     /// Creates a new SPARQL Connector which uses the given SPARQL Endpoint.
     /// </summary>
     /// <param name="endpointUri">Endpoint URI.</param>
-    [Obsolete("Replaced by SparqlConnector(SparqlQueryClient)")]
+    [Obsolete("Replaced by SparqlConnector(SparqlQueryClient)", true)]
     public SparqlConnector(Uri endpointUri)
         : this(new SparqlRemoteEndpoint(endpointUri)) { }
 
@@ -126,7 +125,7 @@ public class SparqlConnector
     /// </summary>
     /// <param name="endpointUri">Endpoint URI.</param>
     /// <param name="mode">Load Method to use.</param>
-    [Obsolete("Replaced by SparqlConnector(SparqlQueryClient, SparqlConnectorLoadMethod)")]
+    [Obsolete("Replaced by SparqlConnector(SparqlQueryClient, SparqlConnectorLoadMethod)", true)]
     public SparqlConnector(Uri endpointUri, SparqlConnectorLoadMethod mode)
         : this(new SparqlRemoteEndpoint(endpointUri), mode) { }
 
@@ -147,7 +146,7 @@ public class SparqlConnector
     /// <remarks>
     /// If the endpoint you are connecting to provides extensions to SPARQL syntax which are not permitted by the libraries parser then you may wish to enable this option as otherwise you will not be able to execute such queries.
     /// </remarks>
-    [Obsolete("This property is no longer supported as local query parsing is not supported by this implementation. Clients wishing to ensure that only valid SPARQL is sent to a remote server should apply query parsing before invoking this class.")]
+    [Obsolete("This property is no longer supported as local query parsing is not supported by this implementation. Clients wishing to ensure that only valid SPARQL is sent to a remote server should apply query parsing before invoking this class.", true)]
     [Description("Determines whether queries are parsed locally before being sent to the remote endpoint.  Should be disabled if the remote endpoint supports non-standard extensions that won't parse locally.")]
     public bool SkipLocalParsing
     {
@@ -166,7 +165,7 @@ public class SparqlConnector
     /// Gets/Sets the HTTP Timeout in milliseconds used for communicating with the SPARQL Endpoint.
     /// </summary>
     /// <remarks>This property is only used when using the obsolete <see cref="SparqlRemoteEndpoint"/>-backed implementation. When using the replacement <see cref="SparqlQueryClient"/>-backed implementation, timeout is controlled by the <see cref="HttpClient"/> used by the SparqlQueryClient.</remarks>
-    [Obsolete("This property is only used by the obsolete SparqlRemoteEndpoint-backed implementation.")]
+    [Obsolete("This property is only used by the obsolete SparqlRemoteEndpoint-backed implementation.", true)]
     public virtual int Timeout
     {
         get 
@@ -437,7 +436,7 @@ public class SparqlConnector
     /// Lists the Graphs in the Store.
     /// </summary>
     /// <returns></returns>
-    [Obsolete("Replaced by ListGraphNames()")]
+    [Obsolete("Replaced by ListGraphNames()", true)]
     public virtual IEnumerable<Uri> ListGraphs()
     {
         try

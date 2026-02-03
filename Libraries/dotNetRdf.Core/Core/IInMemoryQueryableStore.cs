@@ -142,7 +142,7 @@ public interface IInMemoryQueryableStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="uri">Uri.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriples(List<IRefNode>, Uri)")]
+    [Obsolete("Replaced by GetTriples(List<IRefNode>, Uri)", true)]
     IEnumerable<Triple> GetTriples(List<Uri> graphUris, Uri uri);
 
     /// <summary>
@@ -151,7 +151,7 @@ public interface IInMemoryQueryableStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="n">Node.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriples(List<IRefNode>, INode)")]
+    [Obsolete("Replaced by GetTriples(List<IRefNode>, INode)", true)]
     IEnumerable<Triple> GetTriples(List<Uri> graphUris, INode n);
 
     /// <summary>
@@ -160,7 +160,7 @@ public interface IInMemoryQueryableStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="u">Uri.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriplesWithObject(List<IRefNode>, Uri)")]
+    [Obsolete("Replaced by GetTriplesWithObject(List<IRefNode>, Uri)", true)]
     IEnumerable<Triple> GetTriplesWithObject(List<Uri> graphUris, Uri u);
 
     /// <summary>
@@ -169,7 +169,7 @@ public interface IInMemoryQueryableStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="n">Node.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriplesWithObject(List<IRefNode>, INode)")]
+    [Obsolete("Replaced by GetTriplesWithObject(List<IRefNode>, INode)", true)]
     IEnumerable<Triple> GetTriplesWithObject(List<Uri> graphUris, INode n);
 
     /// <summary>
@@ -178,7 +178,7 @@ public interface IInMemoryQueryableStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="n">Node.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriplesWithPredicate(List<IRefNode>, INode)")]
+    [Obsolete("Replaced by GetTriplesWithPredicate(List<IRefNode>, INode)", true)]
     IEnumerable<Triple> GetTriplesWithPredicate(List<Uri> graphUris, INode n);
 
     /// <summary>
@@ -187,7 +187,7 @@ public interface IInMemoryQueryableStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="u">Uri.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriplesWithPredicate(List<IRefNode>, Uri)")]
+    [Obsolete("Replaced by GetTriplesWithPredicate(List<IRefNode>, Uri)", true)]
     IEnumerable<Triple> GetTriplesWithPredicate(List<Uri> graphUris, Uri u);
 
     /// <summary>
@@ -196,7 +196,7 @@ public interface IInMemoryQueryableStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="n">Node.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriplesWithSubject(List<IRefNode>, INode)")]
+    [Obsolete("Replaced by GetTriplesWithSubject(List<IRefNode>, INode)", true)]
     IEnumerable<Triple> GetTriplesWithSubject(List<Uri> graphUris, INode n);
 
     /// <summary>
@@ -205,7 +205,7 @@ public interface IInMemoryQueryableStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="u">Uri.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriplesWithSubject(List<IRefNode>, Uri)")]
+    [Obsolete("Replaced by GetTriplesWithSubject(List<IRefNode>, Uri)", true)]
     IEnumerable<Triple> GetTriplesWithSubject(List<Uri> graphUris, Uri u);
 
 

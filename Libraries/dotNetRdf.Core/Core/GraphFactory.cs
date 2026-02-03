@@ -39,7 +39,7 @@ namespace VDS.RDF;
 /// The main usage for this class is scenarios where consistent graph references matter such as returning node references from out of memory datasets (like SQL backed ones) particularly with regards to blank nodes since blank node equality is predicated upon Graph reference.
 /// </para>
 /// </remarks>
-[Obsolete("This class is obsolete and will be removed in a future release. There is no replacement for this class.")]
+[Obsolete("This class is obsolete and will be removed in a future release. There is no replacement for this class.", true)]
 public class GraphFactory
 {
     private TripleStore _store = new TripleStore();

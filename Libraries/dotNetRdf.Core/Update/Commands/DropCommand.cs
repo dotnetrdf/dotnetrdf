@@ -67,7 +67,7 @@ public class DropCommand : SparqlUpdateCommand
     /// <param name="graphUri">URI of the Graph to DROP.</param>
     /// <param name="mode">DROP Mode to use.</param>
     /// <param name="silent">Whether the DROP should be done silently.</param>
-    [Obsolete("Replaced by DropCommand(IRefNode, ClearMode, bool)")]
+    [Obsolete("Replaced by DropCommand(IRefNode, ClearMode, bool)", true)]
     public DropCommand(Uri graphUri, ClearMode mode, bool silent)
         : this(graphUri == null ? null : new UriNode(graphUri), mode, silent)
     {
@@ -78,7 +78,7 @@ public class DropCommand : SparqlUpdateCommand
     /// </summary>
     /// <param name="graphUri">URI of the Graph to DROP.</param>
     /// <param name="mode">DROP Mode to use.</param>
-    [Obsolete("Replaced by DropCommand(IRefNode, ClearMode, bool)")]
+    [Obsolete("Replaced by DropCommand(IRefNode, ClearMode, bool)", true)]
     public DropCommand(Uri graphUri, ClearMode mode)
         : this(graphUri, mode, false) { }
 
@@ -86,14 +86,14 @@ public class DropCommand : SparqlUpdateCommand
     /// Creates a new DROP command.
     /// </summary>
     /// <param name="graphUri">URI of the Graph to DROP.</param>
-    [Obsolete("Replaced by DropCommand(IRefNode, ClearMode, bool)")]
+    [Obsolete("Replaced by DropCommand(IRefNode, ClearMode, bool)", true)]
     public DropCommand(Uri graphUri)
         : this(graphUri, ClearMode.Graph, false) { }
 
     /// <summary>
     /// Creates a new DROP command which drops the Default Graph.
     /// </summary>
-    [Obsolete("Replaced by DropCommand(IRefNode, ClearMode, bool)")]
+    [Obsolete("Replaced by DropCommand(IRefNode, ClearMode, bool)", true)]
     public DropCommand()
         : this(null, ClearMode.Default) { }
 
@@ -101,7 +101,7 @@ public class DropCommand : SparqlUpdateCommand
     /// Creates a new DROP command which performs a specific clear mode drop operation.
     /// </summary>
     /// <param name="mode">Clear Mode.</param>
-    [Obsolete("Replaced by DropCommand(IRefNode, ClearMode, bool)")]
+    [Obsolete("Replaced by DropCommand(IRefNode, ClearMode, bool)", true)]
     public DropCommand(ClearMode mode)
         : this(mode, false) { }
 
@@ -132,7 +132,7 @@ public class DropCommand : SparqlUpdateCommand
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by AffectsGraph(IRefNode)")]
+    [Obsolete("Replaced by AffectsGraph(IRefNode)", true)]
     public override bool AffectsGraph(Uri graphUri)
     {
         return AffectsGraph(graphUri == null ? null : new UriNode(graphUri));
@@ -171,7 +171,7 @@ public class DropCommand : SparqlUpdateCommand
     /// <summary>
     /// Gets the URI of the Graph to be dropped.
     /// </summary>
-    [Obsolete("Replaced by TargetGraphName")]
+    [Obsolete("Replaced by TargetGraphName", true)]
     public Uri TargetUri => ((IUriNode)TargetGraphName)?.Uri;
 
     /// <summary>

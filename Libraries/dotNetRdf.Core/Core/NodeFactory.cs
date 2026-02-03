@@ -69,7 +69,7 @@ public class NodeFactory
     /// <param name="namespaceMap">The namespace map to use for the resolution of QNames. If not specified, a default <see cref="NamespaceMapper"/> instance will be created.</param>
     /// <param name="normalizeLiteralValues">Whether or not to normalize the value strings of literal nodes.</param>
     /// <param name="uriFactory">The factory to use to create URIs. Defaults to <see cref="VDS.RDF.UriFactory.Root">the root UriFactory instance</see>.</param>
-    [Obsolete("Replaced by NodeFactory(NodeFactoryOptions, INamespaceMapper, IUriFactory)")]
+    [Obsolete("Replaced by NodeFactory(NodeFactoryOptions, INamespaceMapper, IUriFactory)", true)]
     public NodeFactory(Uri baseUri = null, INamespaceMapper namespaceMap = null, bool normalizeLiteralValues = false, IUriFactory uriFactory = null)
     {
         BaseUri = baseUri;
@@ -115,7 +115,7 @@ public class NodeFactory
     /// Setting this property to 'true' will set <see cref="LanguageTagValidation"/> to <see cref="LanguageTagValidationMode.Turtle"/>.
     /// Setting this property to 'false' will set <see cref="LanguageTagValidation"/> to <see cref="LanguageTagValidationMode.None"/>.
     /// </remarks>
-    [Obsolete("Use LanguageTagValidation to set the validation mode.")]
+    [Obsolete("Use LanguageTagValidation to set the validation mode.", true)]
     public bool ValidateLanguageSpecifiers
     {
         get => LanguageTagValidation != LanguageTagValidationMode.None;

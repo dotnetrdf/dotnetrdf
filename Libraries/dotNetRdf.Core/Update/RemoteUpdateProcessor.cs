@@ -43,7 +43,7 @@ public class RemoteUpdateProcessor : ISparqlUpdateProcessor
     /// Creates a new Remote Update Processor.
     /// </summary>
     /// <param name="endpointUri">Endpoint URI.</param>
-    [Obsolete("Replaced by RemoteUpdateProcessor(SparqlUpdateClient)")]
+    [Obsolete("Replaced by RemoteUpdateProcessor(SparqlUpdateClient)", true)]
     public RemoteUpdateProcessor(string endpointUri)
         : this(new SparqlRemoteUpdateEndpoint(endpointUri)) { }
 
@@ -51,7 +51,7 @@ public class RemoteUpdateProcessor : ISparqlUpdateProcessor
     /// Creates a new Remote Update Processor.
     /// </summary>
     /// <param name="endpointUri">Endpoint URI.</param>
-    [Obsolete("Replaced by RemoteUpdateProcessor(SparqlUpdateClient)")]
+    [Obsolete("Replaced by RemoteUpdateProcessor(SparqlUpdateClient)", true)]
     public RemoteUpdateProcessor(Uri endpointUri)
         : this(new SparqlRemoteUpdateEndpoint(endpointUri)) { }
 
@@ -59,7 +59,7 @@ public class RemoteUpdateProcessor : ISparqlUpdateProcessor
     /// Creates a new Remote Update Processor.
     /// </summary>
     /// <param name="endpoint">SPARQL Remote Update Endpoint.</param>
-    [Obsolete("Replaced by RemoteUpdateProcessor(SparqlUpdateClient)")]
+    [Obsolete("Replaced by RemoteUpdateProcessor(SparqlUpdateClient)", true)]
     public RemoteUpdateProcessor(SparqlRemoteUpdateEndpoint endpoint)
     {
         _endpoint = endpoint;

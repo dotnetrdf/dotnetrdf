@@ -122,7 +122,7 @@ public class ModifyCommand
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by AffectsGraph(IRefNode)")]
+    [Obsolete("Replaced by AffectsGraph(IRefNode)", true)]
     public override bool AffectsGraph(Uri graphUri)
     {
         var affectedUris = new List<string>
@@ -178,7 +178,7 @@ public class ModifyCommand
     /// <summary>
     /// Gets the URI of the Graph the insertions are made to.
     /// </summary>
-    [Obsolete("Replaced by TargetGraph")]
+    [Obsolete("Replaced by TargetGraph", true)]
     public Uri TargetUri
     {
         get

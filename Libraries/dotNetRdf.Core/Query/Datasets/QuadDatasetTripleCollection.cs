@@ -44,7 +44,7 @@ public class QuadDatasetTripleCollection
     /// </summary>
     /// <param name="dataset">The dataset to wrap.</param>
     /// <param name="graphName">The URI of the graph to expose through this interface.</param>
-    [Obsolete("Replaced by QuadDatasetTripleCollection(BaseQuadDataset, IRefNode)")]
+    [Obsolete("Replaced by QuadDatasetTripleCollection(BaseQuadDataset, IRefNode)", true)]
     public QuadDatasetTripleCollection(BaseQuadDataset dataset, Uri graphName) : this(dataset, new UriNode(graphName)) { }
 
     /// <summary>

@@ -45,7 +45,7 @@ public abstract class BaseGraphCollection
     /// <remarks>
     /// The null URI is used to reference the Default Graph.
     /// </remarks>
-    [Obsolete("Replaced by Contains(IRefNode)")]
+    [Obsolete("Replaced by Contains(IRefNode)", true)]
     public abstract bool Contains(Uri graphUri);
 
     /// <summary>
@@ -70,7 +70,7 @@ public abstract class BaseGraphCollection
     /// <remarks>
     /// The null URI is used to reference the Default Graph.
     /// </remarks>
-    [Obsolete("Replaced by Remove(IRefNode)")]
+    [Obsolete("Replaced by Remove(IRefNode)", true)]
     public abstract bool Remove(Uri graphUri);
 
     /// <summary>
@@ -93,7 +93,7 @@ public abstract class BaseGraphCollection
     /// <summary>
     /// Provides access to the Graph URIs of Graphs in the Collection.
     /// </summary>
-    [Obsolete("Replaced by GraphNames")]
+    [Obsolete("Replaced by GraphNames", true)]
     public abstract IEnumerable<Uri> GraphUris
     {
         get;
@@ -112,7 +112,7 @@ public abstract class BaseGraphCollection
     /// <remarks>
     /// The null URI is used to reference the Default Graph.
     /// </remarks>
-    [Obsolete("Replaced by this[IRefNode]")]
+    [Obsolete("Replaced by this[IRefNode]", true)]
     public abstract IGraph this[Uri graphUri] 
     {
         get;

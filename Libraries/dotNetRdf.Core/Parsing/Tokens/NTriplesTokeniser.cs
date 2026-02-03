@@ -103,7 +103,7 @@ public class NTriplesTokeniser
     /// In the case of NQuads a <see cref="UriToken">UriToken</see> may follow a Literal as the Context of that Triple and not its datatype so it's important to distinguish by using a <see cref="DataTypeToken">DataTypeToken</see> instead.
     /// </para>
     /// </remarks>
-    [Obsolete("This property is no longer used. The tokenizer now behaves consistently for NQuads and NTriples syntax. This property will be removed in a future release.")]
+    [Obsolete("This property is no longer used. The tokenizer now behaves consistently for NQuads and NTriples syntax. This property will be removed in a future release.", true)]
     public bool NQuadsMode { get; set; }
 
     /// <summary>

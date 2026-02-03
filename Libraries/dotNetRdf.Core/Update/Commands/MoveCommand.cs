@@ -48,7 +48,7 @@ public class MoveCommand : BaseTransferCommand
     /// <param name="sourceUri">Source Graph URI.</param>
     /// <param name="destUri">Destination Graph URI.</param>
     /// <param name="silent">Whether errors should be suppressed.</param>
-    [Obsolete("Replaced by MoveCommand(IRefNode, IRefNode, bool)")]
+    [Obsolete("Replaced by MoveCommand(IRefNode, IRefNode, bool)", true)]
     public MoveCommand(Uri sourceUri, Uri destUri, bool silent)
         : base(SparqlUpdateCommandType.Move, sourceUri, destUri, silent) { }
 
@@ -57,7 +57,7 @@ public class MoveCommand : BaseTransferCommand
     /// </summary>
     /// <param name="sourceUri">Source Graph URI.</param>
     /// <param name="destUri">Destination Graph URI.</param>
-    [Obsolete("Replaced by MoveCommand(IRefNode, IRefNode, bool)")]
+    [Obsolete("Replaced by MoveCommand(IRefNode, IRefNode, bool)", true)]
     public MoveCommand(Uri sourceUri, Uri destUri)
         : base(SparqlUpdateCommandType.Move, sourceUri, destUri) { }
 

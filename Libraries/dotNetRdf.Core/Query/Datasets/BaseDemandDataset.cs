@@ -46,7 +46,7 @@ public abstract class BaseDemandDataset
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by HasGraph(IRefNode)")]
+    [Obsolete("Replaced by HasGraph(IRefNode)", true)]
     public override bool HasGraph(Uri graphUri)
     {
         if (!_dataset.HasGraph(graphUri))

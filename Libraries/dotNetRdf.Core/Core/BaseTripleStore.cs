@@ -213,7 +213,7 @@ public abstract class BaseTripleStore
     /// Removes a Graph from the Triple Store.
     /// </summary>
     /// <param name="graphUri">Uri of the Graph to Remove.</param>
-    [Obsolete("Replaced by Remove(IRefNode)")]
+    [Obsolete("Replaced by Remove(IRefNode)", true)]
     public virtual bool Remove(Uri graphUri)
     {
         return _graphs.Remove(graphUri == null ? null : new UriNode(graphUri));
@@ -238,7 +238,7 @@ public abstract class BaseTripleStore
     /// </summary>
     /// <param name="graphUri">Graph Uri.</param>
     /// <returns>True if the Graph exists in the Triple Store.</returns>
-    [Obsolete("Replaced by HasGraph(IRefNode)")]
+    [Obsolete("Replaced by HasGraph(IRefNode)", true)]
     public bool HasGraph(Uri graphUri)
     {
         return _graphs.Contains(graphUri == null ? null : new UriNode(graphUri));
@@ -260,7 +260,7 @@ public abstract class BaseTripleStore
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by this[IRefNode]")]
+    [Obsolete("Replaced by this[IRefNode]", true)]
     public IGraph this[Uri? graphUri]
     {
         get
