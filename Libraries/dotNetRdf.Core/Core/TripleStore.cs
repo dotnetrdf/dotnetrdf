@@ -229,7 +229,7 @@ public class TripleStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="uri">Uri.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriples(List<IRefNode>, Uri)")]
+    [Obsolete("Replaced by GetTriples(List<IRefNode>, Uri)", true)]
     public IEnumerable<Triple> GetTriples(List<Uri> graphUris, Uri uri)
     {
         return GetTriples(graphUris, new UriNode(uri));
@@ -241,7 +241,7 @@ public class TripleStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="n">Node.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriples(List<IRefNode>, INode)")]
+    [Obsolete("Replaced by GetTriples(List<IRefNode>, INode)", true)]
     public IEnumerable<Triple> GetTriples(List<Uri> graphUris, INode n)
     {
         var graphNames = graphUris.Select(u => u == null ? null : new UriNode(u) as IRefNode).ToList();
@@ -279,7 +279,7 @@ public class TripleStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="u">Uri.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriplesWithObject(List<IRefNode>, Uri)")]
+    [Obsolete("Replaced by GetTriplesWithObject(List<IRefNode>, Uri)", true)]
     public IEnumerable<Triple> GetTriplesWithObject(List<Uri> graphUris, Uri u)
     {
         return GetTriplesWithObject(graphUris, new UriNode(u));
@@ -291,7 +291,7 @@ public class TripleStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="n">Node.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriplesWithObject(List<IRefNode>, INode)")]
+    [Obsolete("Replaced by GetTriplesWithObject(List<IRefNode>, INode)", true)]
     public IEnumerable<Triple> GetTriplesWithObject(List<Uri> graphUris, INode n)
     {
         var graphNames = graphUris.Select(x => x == null ? null : new UriNode(x) as IRefNode).ToList();
@@ -328,7 +328,7 @@ public class TripleStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="n">Node.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriplesWithPredicate(List<IRefNode>, INode)")]
+    [Obsolete("Replaced by GetTriplesWithPredicate(List<IRefNode>, INode)", true)]
     public IEnumerable<Triple> GetTriplesWithPredicate(List<Uri> graphUris, INode n)
     {
         var graphNames = graphUris.Select(x => x == null ? null : new UriNode(x) as IRefNode).ToList();
@@ -341,7 +341,7 @@ public class TripleStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="u">Uri.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriplesWithPredicate(List<IRefNode>, Uri)")]
+    [Obsolete("Replaced by GetTriplesWithPredicate(List<IRefNode>, Uri)", true)]
     public IEnumerable<Triple> GetTriplesWithPredicate(List<Uri> graphUris, Uri u)
     {
         return GetTriplesWithPredicate(graphUris, new UriNode(u));
@@ -378,7 +378,7 @@ public class TripleStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="n">Node.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriplesWithSubject(List<IRefNode>, INode)")]
+    [Obsolete("Replaced by GetTriplesWithSubject(List<IRefNode>, INode)", true)]
     public IEnumerable<Triple> GetTriplesWithSubject(List<Uri> graphUris, INode n)
     {
         IEnumerable<Triple> ts = from g in _graphs
@@ -395,7 +395,7 @@ public class TripleStore
     /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
     /// <param name="u">Uri.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetTriplesWithSubject(List<IRefNode>, Uri)")]
+    [Obsolete("Replaced by GetTriplesWithSubject(List<IRefNode>, Uri)", true)]
     public IEnumerable<Triple> GetTriplesWithSubject(List<Uri> graphUris, Uri u)
     {
         return GetTriplesWithSubject(graphUris, new UriNode(u));

@@ -39,7 +39,7 @@ class ExplainDataset
 
     public ExplainQueryProcessor Processor { get; set; }
 
-    [Obsolete("Replaced by SetActiveGraph(IRefNode)")]
+    [Obsolete("Replaced by SetActiveGraph(IRefNode)", true)]
     public override void SetActiveGraph(Uri graphUri)
     {
         if (Processor != null)
@@ -52,7 +52,7 @@ class ExplainDataset
         base.SetActiveGraph(graphUri);
     }
 
-    [Obsolete("Replaced by SetActiveGraph(IList<IRefNode>)")]
+    [Obsolete("Replaced by SetActiveGraph(IList<IRefNode>)", true)]
     public override void SetActiveGraph(IEnumerable<Uri> graphUris)
     {
         IList<Uri> gs = graphUris as IList<Uri> ?? graphUris.ToList();

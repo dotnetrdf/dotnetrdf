@@ -92,13 +92,7 @@ public class QueryProcessorFactory : IObjectFactory
                 INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint)));
                 if (endpointObj == null) return false;
                 temp = ConfigurationLoader.LoadObject(g, endpointObj);
-#pragma warning disable 618
-                if (temp is SparqlRemoteEndpoint queryEndpoint)
-                {
-                    processor = new RemoteQueryProcessor(queryEndpoint);
-#pragma warning restore 618
-                }
-                else if (temp is SparqlQueryClient queryClient)
+                if (temp is SparqlQueryClient queryClient)
                 {
                     processor = new RemoteQueryProcessor(queryClient);
                 }
@@ -143,6 +137,7 @@ public class QueryProcessorFactory : IObjectFactory
         obj = processor;
         return (processor != null);
     }
+
 
     /// <summary>
     /// Gets whether this Factory can load objects of the given Type.

@@ -89,7 +89,7 @@ public class FullTextIndexedDataset
     /// Removes a Graph from the Dataset updating the Full Text Index appropriately.
     /// </summary>
     /// <param name="graphUri">URI of the Graph to remove.</param>
-    [Obsolete("Replaced by RemoveGraph(IRefNode)")]
+    [Obsolete("Replaced by RemoveGraph(IRefNode)", true)]
     public override bool RemoveGraph(Uri graphUri)
     {
         if (HasGraph(graphUri))
@@ -118,7 +118,7 @@ public class FullTextIndexedDataset
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetModifiableGraph(IRefNode)")]
+    [Obsolete("Replaced by GetModifiableGraph(IRefNode)", true)]
     public override IGraph GetModifiableGraph(Uri graphUri)
     {
         //Use Events to pick up Triple Level changes in the Modifiable Graph

@@ -200,17 +200,6 @@ public abstract class BaseFormatter
     }
 
     /// <summary>
-    /// Formats a Character for the given Format.
-    /// </summary>
-    /// <param name="c">Character.</param>
-    /// <returns></returns>
-    [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", true)]
-    public virtual string FormatChar(char c)
-    {
-        return c.ToString();
-    }
-
-    /// <summary>
     /// Formats a sequence of characters as a String.
     /// </summary>
     /// <param name="cs">Characters.</param>

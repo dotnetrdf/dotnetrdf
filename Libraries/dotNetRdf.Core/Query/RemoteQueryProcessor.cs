@@ -83,16 +83,12 @@ public class RemoteQueryProcessor
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    temp = _client != null
-                        ? Task.Run(()=>_client.QueryWithResultSetAsync(_formatter.Format(query), CancellationToken.None)).Result
-                        : _endpoint.QueryWithResultSet(_formatter.Format(query));
+                    temp = Task.Run(()=>_client.QueryWithResultSetAsync(_formatter.Format(query), CancellationToken.None)).Result;
                     break;
                 case SparqlQueryType.Construct:
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    temp = _client != null
-                        ? Task.Run(()=>_client.QueryWithResultGraphAsync(_formatter.Format(query), CancellationToken.None)).Result
-                        : _endpoint.QueryWithResultGraph(_formatter.Format(query));
+                    temp = Task.Run(()=>_client.QueryWithResultGraphAsync(_formatter.Format(query), CancellationToken.None)).Result;
                     break;
                 default:
                     throw new RdfQueryException(
@@ -129,29 +125,14 @@ public class RemoteQueryProcessor
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    if (_client != null)
-                    {
-                        _client.QueryWithResultSetAsync(_formatter.Format(query), resultsHandler,
-                            CancellationToken.None).Wait();
-                    }
-                    else
-                    {
-                        _endpoint.QueryWithResultSet(resultsHandler, _formatter.Format(query));
-                    }
-
+                    _client.QueryWithResultSetAsync(_formatter.Format(query), resultsHandler,
+                        CancellationToken.None).Wait();
                     break;
                 case SparqlQueryType.Construct:
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    if (_client != null)
-                    {
-                        _client.QueryWithResultGraphAsync(_formatter.Format(query), rdfHandler,
-                            CancellationToken.None).Wait();
-                    }
-                    else
-                    {
-                        _endpoint.QueryWithResultGraph(rdfHandler, _formatter.Format(query));
-                    }
+                    _client.QueryWithResultGraphAsync(_formatter.Format(query), rdfHandler,
+                        CancellationToken.None).Wait();
 
                     break;
                 default:
@@ -192,63 +173,48 @@ public class RemoteQueryProcessor
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    if (_client != null)
-                    {
-                        _client.QueryWithResultSetAsync(_formatter.Format(query), CancellationToken.None)
-                            .ContinueWith(
-                                queryTask =>
+                    _client.QueryWithResultSetAsync(_formatter.Format(query), CancellationToken.None)
+                        .ContinueWith(
+                            queryTask =>
+                            {
+                                if (queryTask.IsCanceled)
                                 {
-                                    if (queryTask.IsCanceled)
-                                    {
-                                        resultsCallback(null,
-                                            new AsyncError(new RdfQueryException("The operation was cancelled"),
-                                                state));
-                                    }
-                                    else if (queryTask.IsFaulted)
-                                    {
-                                        resultsCallback(null, new AsyncError(queryTask.Exception, state));
-                                    }
-                                    else
-                                    {
-                                        resultsCallback(queryTask.Result, state);
-                                    }
-                                });
-                    }
-                    else
-                    {
-                        _endpoint.QueryWithResultSet(_formatter.Format(query), resultsCallback, state);
-                    }
-
+                                    resultsCallback(null,
+                                        new AsyncError(new RdfQueryException("The operation was cancelled"),
+                                            state));
+                                }
+                                else if (queryTask.IsFaulted)
+                                {
+                                    resultsCallback(null, new AsyncError(queryTask.Exception, state));
+                                }
+                                else
+                                {
+                                    resultsCallback(queryTask.Result, state);
+                                }
+                            });
                     break;
                 case SparqlQueryType.Construct:
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    if (_client != null)
-                    {
-                        _client.QueryWithResultGraphAsync(_formatter.Format(query), CancellationToken.None)
-                            .ContinueWith(
-                                queryTask =>
+                    _client.QueryWithResultGraphAsync(_formatter.Format(query), CancellationToken.None)
+                        .ContinueWith(
+                            queryTask =>
+                            {
+                                if (queryTask.IsCanceled)
                                 {
-                                    if (queryTask.IsCanceled)
-                                    {
-                                        rdfCallback(null,
-                                            new AsyncError(new RdfQueryException("The operation was cancelled"),
-                                                state));
-                                    }
-                                    else if (queryTask.IsFaulted)
-                                    {
-                                        rdfCallback(null, new AsyncError(queryTask.Exception, state));
-                                    }
-                                    else
-                                    {
-                                        rdfCallback(queryTask.Result, state);
-                                    }
-                                });
-                    }
-                    else
-                    {
-                        _endpoint.QueryWithResultGraph(_formatter.Format(query), rdfCallback, state);
-                    }
+                                    rdfCallback(null,
+                                        new AsyncError(new RdfQueryException("The operation was cancelled"),
+                                            state));
+                                }
+                                else if (queryTask.IsFaulted)
+                                {
+                                    rdfCallback(null, new AsyncError(queryTask.Exception, state));
+                                }
+                                else
+                                {
+                                    rdfCallback(queryTask.Result, state);
+                                }
+                            });
 
                     break;
                 default:
@@ -290,67 +256,52 @@ public class RemoteQueryProcessor
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    if (_client != null)
-                    {
-                        _client.QueryWithResultSetAsync(_formatter.Format(query), resultsHandler,
-                                CancellationToken.None)
-                            .ContinueWith(
-                                queryTask =>
+                    _client.QueryWithResultSetAsync(_formatter.Format(query), resultsHandler,
+                            CancellationToken.None)
+                        .ContinueWith(
+                            queryTask =>
+                            {
+                                if (queryTask.IsCanceled)
                                 {
-                                    if (queryTask.IsCanceled)
-                                    {
-                                        callback(rdfHandler, resultsHandler,
-                                            new AsyncError(new RdfQueryException("The operation was cancelled"),
-                                                state));
-                                    }
-                                    else if (queryTask.IsFaulted)
-                                    {
-                                        callback(rdfHandler, resultsHandler,
-                                            new AsyncError(queryTask.Exception, state));
-                                    }
-                                    else
-                                    {
-                                        callback(rdfHandler, resultsHandler, state);
-                                    }
-                                });
-                    }
-                    else
-                    {
-                        _endpoint.QueryWithResultSet(resultsHandler, _formatter.Format(query), callback, state);
-                    }
-
+                                    callback(rdfHandler, resultsHandler,
+                                        new AsyncError(new RdfQueryException("The operation was cancelled"),
+                                            state));
+                                }
+                                else if (queryTask.IsFaulted)
+                                {
+                                    callback(rdfHandler, resultsHandler,
+                                        new AsyncError(queryTask.Exception, state));
+                                }
+                                else
+                                {
+                                    callback(rdfHandler, resultsHandler, state);
+                                }
+                            });
                     break;
                 case SparqlQueryType.Construct:
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    if (_client != null)
-                    {
-                        _client.QueryWithResultGraphAsync(_formatter.Format(query), rdfHandler,
-                                CancellationToken.None)
-                            .ContinueWith(
-                                queryTask =>
+                    _client.QueryWithResultGraphAsync(_formatter.Format(query), rdfHandler,
+                            CancellationToken.None)
+                        .ContinueWith(
+                            queryTask =>
+                            {
+                                if (queryTask.IsCanceled)
                                 {
-                                    if (queryTask.IsCanceled)
-                                    {
-                                        callback(rdfHandler, resultsHandler,
-                                            new AsyncError(new RdfQueryException("The operation was cancelled"),
-                                                state));
-                                    }
-                                    else if (queryTask.IsFaulted)
-                                    {
-                                        callback(rdfHandler, resultsHandler,
-                                            new AsyncError(queryTask.Exception, state));
-                                    }
-                                    else
-                                    {
-                                        callback(rdfHandler, resultsHandler, state);
-                                    }
-                                });
-                    }
-                    else
-                    {
-                        _endpoint.QueryWithResultGraph(rdfHandler, _formatter.Format(query), callback, state);
-                    }
+                                    callback(rdfHandler, resultsHandler,
+                                        new AsyncError(new RdfQueryException("The operation was cancelled"),
+                                            state));
+                                }
+                                else if (queryTask.IsFaulted)
+                                {
+                                    callback(rdfHandler, resultsHandler,
+                                        new AsyncError(queryTask.Exception, state));
+                                }
+                                else
+                                {
+                                    callback(rdfHandler, resultsHandler, state);
+                                }
+                            });
 
                     break;
                 default:
@@ -381,29 +332,13 @@ public class RemoteQueryProcessor
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    if (_client != null)
-                    {
-                        return await _client.QueryWithResultSetAsync(_formatter.Format(query),
-                            CancellationToken.None);
-                    }
-                    else
-                    {
-                        return await Task.Factory.StartNew(() =>
-                            _endpoint.QueryWithResultSet(_formatter.Format(query)));
-                    }
+                    return await _client.QueryWithResultSetAsync(_formatter.Format(query),
+                        CancellationToken.None);
                 case SparqlQueryType.Construct:
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    if (_client != null)
-                    {
-                        return await _client.QueryWithResultGraphAsync(_formatter.Format(query),
-                            CancellationToken.None);
-                    }
-                    else
-                    {
-                        return await Task.Factory.StartNew(() =>
-                            _endpoint.QueryWithResultGraph(_formatter.Format(query)));
-                    }
+                    return await _client.QueryWithResultGraphAsync(_formatter.Format(query),
+                        CancellationToken.None);
                 default:
                     throw new RdfQueryException(
                         "Unable to execute an unknown query type against a Remote Endpoint");
@@ -433,29 +368,13 @@ public class RemoteQueryProcessor
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    if (_client != null)
-                    {
-                        return _client.QueryWithResultSetAsync(_formatter.Format(query), resultsHandler,
-                            CancellationToken.None);
-                    }
-                    else
-                    {
-                        return Task.Factory.StartNew(() =>
-                            _endpoint.QueryWithResultSet(resultsHandler, _formatter.Format(query)));
-                    }
+                    return _client.QueryWithResultSetAsync(_formatter.Format(query), resultsHandler,
+                        CancellationToken.None);
                 case SparqlQueryType.Construct:
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    if (_client != null)
-                    {
-                        return _client.QueryWithResultGraphAsync(_formatter.Format(query), rdfHandler,
-                            CancellationToken.None);
-                    }
-                    else
-                    {
-                        return Task.Factory.StartNew(() =>
-                            _endpoint.QueryWithResultGraph(rdfHandler, _formatter.Format(query)));
-                    }
+                    return _client.QueryWithResultGraphAsync(_formatter.Format(query), rdfHandler,
+                        CancellationToken.None);
                 default:
                     throw new RdfQueryException(
                         "Unable to execute an unknown query type against a Remote Endpoint");

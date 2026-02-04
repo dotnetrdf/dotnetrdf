@@ -341,7 +341,7 @@ public abstract class BaseAsyncHttpConnector
     /// <param name="g">Graph to save.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("This method is obsolete and will be removed in a future release.")]
+    [Obsolete("This method is obsolete and will be removed in a future release.", true)]
     protected internal void SaveGraphAsync(HttpWebRequest request, IRdfWriter writer, IGraph g, AsyncStorageCallback callback, object state)
     {
         request.BeginGetRequestStream(r =>
@@ -417,7 +417,7 @@ public abstract class BaseAsyncHttpConnector
     /// <param name="ts">Triples.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("This method is obsolete and will be removed in a future release")]
+    [Obsolete("This method is obsolete and will be removed in a future release", true)]
     protected internal void UpdateGraphAsync(HttpWebRequest request, IRdfWriter writer, Uri graphUri, IEnumerable<Triple> ts, AsyncStorageCallback callback, object state)
     {
         var g = new Graph();
@@ -557,7 +557,7 @@ public abstract class BaseAsyncHttpConnector
     /// <param name="graphUri">URI of the Graph to delete.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("This method is obsolete and will be removed in a future release")]
+    [Obsolete("This method is obsolete and will be removed in a future release", true)]
     protected internal void DeleteGraphAsync(HttpWebRequest request, bool allow404, string graphUri, AsyncStorageCallback callback, object state)
     {
         request.BeginGetResponse(r =>
@@ -660,7 +660,7 @@ public abstract class BaseAsyncHttpConnector
     /// </summary>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("Replaced with ListGraphsAsync(CancellationToken)")]
+    [Obsolete("Replaced with ListGraphsAsync(CancellationToken)", true)]
     public virtual void ListGraphs(AsyncStorageCallback callback, object state)
     {
         if (this is IAsyncQueryableStorage)

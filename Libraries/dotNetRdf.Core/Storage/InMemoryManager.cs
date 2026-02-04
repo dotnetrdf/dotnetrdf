@@ -284,7 +284,7 @@ public class InMemoryManager
     /// Lists the URIs of Graphs in the Store.
     /// </summary>
     /// <returns></returns>
-    [Obsolete("Replaced by ListGraphNames")]
+    [Obsolete("Replaced by ListGraphNames", true)]
     public override IEnumerable<Uri> ListGraphs()
     {
         return _dataset.GraphUris;

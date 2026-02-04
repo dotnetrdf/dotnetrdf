@@ -61,7 +61,7 @@ public interface IAsyncStorageProvider
     /// <param name="graphUri">URI of the Graph to load.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("Replaced with LoadGraphAsync(IGraph, string, CancellationToken)")]
+    [Obsolete("Replaced with LoadGraphAsync(IGraph, string, CancellationToken)", true)]
     void LoadGraph(IGraph g, Uri graphUri, AsyncStorageCallback callback, object state);
 
     /// <summary>
@@ -71,7 +71,7 @@ public interface IAsyncStorageProvider
     /// <param name="graphUri">URI of the Graph to load.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("Replaced with LoadGraphAsync(IGraph, string, CancellationToken)")]
+    [Obsolete("Replaced with LoadGraphAsync(IGraph, string, CancellationToken)", true)]
     void LoadGraph(IGraph g, string graphUri, AsyncStorageCallback callback, object state);
 
     /// <summary>
@@ -81,7 +81,7 @@ public interface IAsyncStorageProvider
     /// <param name="graphUri">URI of the Graph to load.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("Replaced with LoadGraphAsync(IRdfHandler, string, CancellationToken)")]
+    [Obsolete("Replaced with LoadGraphAsync(IRdfHandler, string, CancellationToken)", true)]
     void LoadGraph(IRdfHandler handler, Uri graphUri, AsyncStorageCallback callback, object state);
 
     /// <summary>
@@ -91,7 +91,7 @@ public interface IAsyncStorageProvider
     /// <param name="graphUri">URI of the Graph to load.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("Replaced with LoadGraphAsync(IRdfHandler, string, CancellationToken)")]
+    [Obsolete("Replaced with LoadGraphAsync(IRdfHandler, string, CancellationToken)", true)]
     void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state);
 
     /// <summary>
@@ -116,7 +116,7 @@ public interface IAsyncStorageProvider
     /// <param name="g">Graph to save.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("Replaced with SaveGraphAsync(IGraph, CancellationToken)")]
+    [Obsolete("Replaced with SaveGraphAsync(IGraph, CancellationToken)", true)]
     void SaveGraph(IGraph g, AsyncStorageCallback callback, object state);
 
     /// <summary>
@@ -135,7 +135,7 @@ public interface IAsyncStorageProvider
     /// <param name="removals">Triples to be removed.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("Replaced with UpdateGraphAsync(string, IEnumerable<Triple>, IEnumerable<Triple>, CancellationToken")]
+    [Obsolete("Replaced with UpdateGraphAsync(string, IEnumerable<Triple>, IEnumerable<Triple>, CancellationToken", true)]
     void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state);
 
     /// <summary>
@@ -146,7 +146,7 @@ public interface IAsyncStorageProvider
     /// <param name="removals">Triples to be removed.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("Replaced with UpdateGraphAsync(string, IEnumerable<Triple>, IEnumerable<Triple>, CancellationToken")]
+    [Obsolete("Replaced with UpdateGraphAsync(string, IEnumerable<Triple>, IEnumerable<Triple>, CancellationToken", true)]
     void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state);
 
     /// <summary>
@@ -165,7 +165,7 @@ public interface IAsyncStorageProvider
     /// <param name="graphUri">URI of the Graph to delete.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("Replaced by DeleteGraphAsync(string, CancellationToken)")]
+    [Obsolete("Replaced by DeleteGraphAsync(string, CancellationToken)", true)]
     void DeleteGraph(Uri graphUri, AsyncStorageCallback callback, object state);
 
     /// <summary>
@@ -174,7 +174,7 @@ public interface IAsyncStorageProvider
     /// <param name="graphUri">URI of the Graph to delete.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("Replaced with DeleteGraphAsync(string, CancellationToken)")]
+    [Obsolete("Replaced with DeleteGraphAsync(string, CancellationToken)", true)]
     void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state);
 
     /// <summary>
@@ -190,7 +190,7 @@ public interface IAsyncStorageProvider
     /// </summary>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("Replaced with ListGraphsAsync(CancellationToken)")]
+    [Obsolete("Replaced with ListGraphsAsync(CancellationToken)", true)]
     void ListGraphs(AsyncStorageCallback callback, object state);
 
     /// <summary>

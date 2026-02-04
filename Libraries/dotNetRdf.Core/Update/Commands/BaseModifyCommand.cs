@@ -92,7 +92,7 @@ public abstract class BaseModificationCommand
     /// <summary>
     /// Gets the URI of the Graph specified in the WITH clause.
     /// </summary>
-    [Obsolete("Replaced by WithGraphName")]
+    [Obsolete("Replaced by WithGraphName", true)]
     public Uri GraphUri
     {
         get

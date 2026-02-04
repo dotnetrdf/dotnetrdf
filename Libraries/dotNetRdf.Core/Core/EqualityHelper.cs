@@ -44,9 +44,7 @@ public static class EqualityHelper
     /// <summary>
     /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification).
     /// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public static LiteralEqualityMode LiteralEqualityMode { get; set; } = Options.LiteralEqualityMode; //LiteralEqualityMode.Strict;
-#pragma warning restore CS0618 // Type or member is obsolete
+    public static LiteralEqualityMode LiteralEqualityMode { get; set; } = LiteralEqualityMode.Strict;
 
     /// <summary>
     /// Determines whether two URIs are equal.

@@ -40,7 +40,7 @@ public class CopyCommand
     /// <param name="sourceUri">Source Graph URI.</param>
     /// <param name="destUri">Destination Graph URI.</param>
     /// <param name="silent">Whether errors should be suppressed.</param>
-    [Obsolete("Replaced by CopyCommand(IRefNode, IRefNode, bool)")]
+    [Obsolete("Replaced by CopyCommand(IRefNode, IRefNode, bool)", true)]
     public CopyCommand(Uri sourceUri, Uri destUri, bool silent)
         : base(SparqlUpdateCommandType.Copy, sourceUri, destUri, silent) { }
 
@@ -49,7 +49,7 @@ public class CopyCommand
     /// </summary>
     /// <param name="sourceUri">Source Graph URI.</param>
     /// <param name="destUri">Destination Graph URI.</param>
-    [Obsolete("Replaced by CopyCommand(IRefNode, IRefNode, bool)")]
+    [Obsolete("Replaced by CopyCommand(IRefNode, IRefNode, bool)", true)]
     public CopyCommand(Uri sourceUri, Uri destUri)
         : base(SparqlUpdateCommandType.Copy, sourceUri, destUri) { }
 

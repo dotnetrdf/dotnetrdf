@@ -129,21 +129,19 @@ public class StorageFactory
                 if (server == null)
                 {
                     INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, [g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint))]);
-                    if (endpointObj == null) return false;
+                    if (endpointObj == null) 
+                    {
+                        return false;
+                    }
                     temp = ConfigurationLoader.LoadObject(g, endpointObj);
                     
-                    switch (temp)
+                    if (temp is SparqlQueryClient queryClient)
                     {
-#pragma warning disable 618
-                        case SparqlRemoteEndpoint remoteEndpoint:
-                            storageProvider = new SparqlConnector(remoteEndpoint, loadMode);
-                            break;
-#pragma warning restore 618
-                        case SparqlQueryClient queryClient:
-                            storageProvider = new SparqlConnector(queryClient, loadMode);
-                            break;
-                        default:
-                            throw new DotNetRdfConfigurationException("Unable to load the SparqlConnector identified by the Node '" + objNode.ToString() + "' as the value given for the property dnr:endpoint points to an Object which cannot be loaded as an object which is of the type SparqlRemoteEndpoint");
+                        storageProvider = new SparqlConnector(queryClient, loadMode);
+                    }
+                    else
+                    {
+                        throw new DotNetRdfConfigurationException("Unable to load the SparqlConnector identified by the Node '" + objNode.ToString() + "' as the value given for the property dnr:endpoint points to an Object which cannot be loaded as an object which is of the type SparqlRemoteEndpoint");
                     }
                 }
                 else
@@ -164,10 +162,6 @@ public class StorageFactory
 
             case ReadWriteSparql:
             {
-#pragma warning disable 618
-                SparqlRemoteEndpoint queryEndpoint = null;
-                SparqlRemoteUpdateEndpoint updateEndpoint = null;
-#pragma warning restore 618
                 SparqlQueryClient queryClient = null;
                 SparqlUpdateClient updateClient = null;
 
@@ -206,21 +200,16 @@ public class StorageFactory
                         ]);
                     if (endpointObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, endpointObj);
-                    switch (temp)
+                    if (temp is SparqlQueryClient qc)
                     {
-#pragma warning disable 618
-                        case SparqlRemoteEndpoint remoteEndpoint:
-#pragma warning restore 618
-                            queryEndpoint = remoteEndpoint;
-                            break;
-                        case SparqlQueryClient qc:
-                            queryClient = qc;
-                            break;
-                        default:
-                            throw new DotNetRdfConfigurationException(
-                                "Unable to load the ReadWriteSparqlConnector identified by the Node '" +
-                                objNode.ToString() +
-                                "' as the value given for the property dnr:queryEndpoint/dnr:endpoint points to an Object which cannot be loaded as an object which is of the type SparqlRemoteEndpoint");
+                        queryClient = qc;
+                    }
+                    else
+                    {
+                        throw new DotNetRdfConfigurationException(
+                            "Unable to load the ReadWriteSparqlConnector identified by the Node '" +
+                            objNode.ToString() +
+                            "' as the value given for the property dnr:queryEndpoint/dnr:endpoint points to an Object which cannot be loaded as an object which is of the type SparqlRemoteEndpoint");
                     }
                 }
                 else
@@ -255,21 +244,15 @@ public class StorageFactory
                         ]);
                     if (endpointObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, endpointObj);
-                    switch (temp)
+                    if (temp is SparqlUpdateClient uc)
                     {
-#pragma warning disable 618
-                        case SparqlRemoteUpdateEndpoint ue:
-#pragma warning restore 618
-                            updateEndpoint = ue;
-                            break;
-                        case SparqlUpdateClient uc:
-                            updateClient = uc;
-                            break;
-                        default:
-                            throw new DotNetRdfConfigurationException(
-                                "Unable to load the ReadWriteSparqlConnector identified by the Node '" +
-                                objNode.ToString() +
-                                "' as the value given for the property dnr:updateEndpoint/dnr:endpoint points to an Object which cannot be loaded as an object which is of the type SparqlRemoteUpdateEndpoint");
+                        updateClient = uc;
+                    }
+                    else {
+                        throw new DotNetRdfConfigurationException(
+                            "Unable to load the ReadWriteSparqlConnector identified by the Node '" +
+                            objNode.ToString() +
+                            "' as the value given for the property dnr:updateEndpoint/dnr:endpoint points to an Object which cannot be loaded as an object which is of the type SparqlRemoteUpdateEndpoint");
                     }
                 }
                 else
@@ -280,12 +263,6 @@ public class StorageFactory
                 if (queryClient != null && updateClient != null)
                 {
                     storageProvider = new ReadWriteSparqlConnector(queryClient, updateClient, loadMode);
-                }
-                else if (queryEndpoint != null && updateEndpoint != null)
-                {
-#pragma warning disable 618
-                    storageProvider = new ReadWriteSparqlConnector(queryEndpoint, updateEndpoint, loadMode);
-#pragma warning restore 618
                 }
                 else
                 {

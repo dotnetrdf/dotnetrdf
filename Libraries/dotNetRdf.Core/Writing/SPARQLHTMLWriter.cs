@@ -54,18 +54,16 @@ public class SparqlHtmlWriter
     /// <param name="filename">File to save to.</param>
     public void Save(SparqlResultSet results, string filename)
     {
-        if (results == null) throw  new ArgumentNullException(nameof(results), "Cannot write a null results set");
-        if (filename == null) throw new ArgumentNullException(nameof(filename), "Cannot write to a null file");
-        Save(results, filename,
-#pragma warning disable CS0618 // Type or member is obsolete
-                new UTF8Encoding(Options.UseBomForUtf8) //new UTF8Encoding(false)
-#pragma warning restore CS0618 // Type or member is obsolete
-            );
+        Save(results, filename, new UTF8Encoding(false));
     }
 
     /// <inheritdoc />
     public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
     {
+        if (results == null) throw  new ArgumentNullException(nameof(results), "Cannot write a null results set");
+        if (filename == null) throw new ArgumentNullException(nameof(filename), "Cannot write to a null file");
+        if (fileEncoding == null) throw new ArgumentNullException(nameof(fileEncoding), "Cannot write to a file with a null encoding");
+
         using FileStream stream = File.Open(filename, FileMode.Create);
         Save(results, new StreamWriter(stream, fileEncoding));
     }
@@ -77,6 +75,9 @@ public class SparqlHtmlWriter
     /// <param name="output">Stream to save to.</param>
     public void Save(SparqlResultSet results, TextWriter output)
     {
+        if (results == null) throw  new ArgumentNullException(nameof(results), "Cannot write a null results set");
+        if (output == null) throw new ArgumentNullException(nameof(output), "Cannot write to a null output writer");
+
         try
         {
             GenerateOutput(results, output);

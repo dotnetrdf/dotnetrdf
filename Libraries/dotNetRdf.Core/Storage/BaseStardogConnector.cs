@@ -2009,7 +2009,7 @@ public abstract class BaseStardogConnector
     /// <param name="method">HTTP Method.</param>
     /// <param name="requestParams">Querystring Parameters.</param>
     /// <returns></returns>
-    [Obsolete("This method has been replaced by CreateRequest(string, string, HttpMethod, Dictionary<string, string>.")]
+    [Obsolete("This method has been replaced by CreateRequest(string, string, HttpMethod, Dictionary<string, string>.", true)]
     protected virtual HttpWebRequest CreateRequest(string servicePath, string accept, string method,
         Dictionary<string, string> requestParams)
     {
@@ -2078,7 +2078,7 @@ public abstract class BaseStardogConnector
     /// Adds Stardog specific request headers; reasoning needed for &lt; 2.2.
     /// </summary>
     /// <param name="request"></param>
-    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by AddStardogHeaders(HttpRequestMessage).")]
+    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by AddStardogHeaders(HttpRequestMessage).", true)]
     protected virtual void AddStardogHeaders(HttpWebRequest request)
     {
         request.Headers.Add("SD-Connection-String", "kb=" + _kb + ";" + GetReasoningParameter());

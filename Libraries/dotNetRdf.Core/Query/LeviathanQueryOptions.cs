@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Globalization;
 using System.Collections.Generic;
 using VDS.RDF.Query.Describe;
 using VDS.RDF.Query.Optimisation;
@@ -37,13 +38,11 @@ namespace VDS.RDF.Query;
 /// </summary>
 public class LeviathanQueryOptions
 {
-#pragma warning disable CS0618 // Type or member is obsolete
-    private long _queryExecutionTimeout = Options.QueryExecutionTimeout; //= 180000;
+    private long _queryExecutionTimeout = 180000;
     private ISparqlNodeComparer _nodeComparer = new SparqlNodeComparer(
-        Options.DefaultCulture, //CultureInfo.InvariantCulture, 
-        Options.DefaultComparisonOptions // CompareOptions.Ordinal
-        );
-#pragma warning restore CS0618 // Type or member is obsolete
+        CultureInfo.InvariantCulture, 
+        CompareOptions.Ordinal
+    );
     private ISparqlDescribe _describer;
 
     /// <summary>
@@ -70,9 +69,7 @@ public class LeviathanQueryOptions
     /// <summary>
     /// Gets/Sets whether Algebra Optimization should be used.
     /// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public bool AlgebraOptimisation { get; set; } = Options.AlgebraOptimisation; // = true;
-#pragma warning restore CS0618 // Type or member is obsolete
+    public bool AlgebraOptimisation { get; set; } = true;
 
     /// <summary>
     /// Gets/Sets the optimisers to apply if <see cref="AlgebraOptimisation"/> is enabled.
@@ -89,12 +86,10 @@ public class LeviathanQueryOptions
     /// If disabled (which is the default) then certain extensions (which the SPARQL specification allows an implementation to provide) will be allowed e.g. date time arithmetic.
     /// </para>
     /// <para>
-    /// The only time you may want to disable this is if you are developing queries locally which you want to ensure are portable to other systems or when running the SPARQL compliance tests.
+    /// The only time you may want to enable this is if you are developing queries locally which you want to ensure are portable to other systems or when running the SPARQL compliance tests.
     /// </para>
     /// </remarks>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public bool StrictOperators { get; set; } = Options.StrictOperators;
-#pragma warning restore CS0618 // Type or member is obsolete
+    public bool StrictOperators { get; set; } = false;
 
     /// <summary>
     /// Gets/Sets whether the query engine will try to use PLinq where applicable to evaluate suitable SPARQL constructs in parallel.
@@ -102,21 +97,18 @@ public class LeviathanQueryOptions
     /// <remarks>
     /// Defaults to true.
     /// </remarks>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public bool UsePLinqEvaluation { get; set; } = Options.UsePLinqEvaluation; //= true;
-#pragma warning restore CS0618 // Type or member is obsolete
+    public bool UsePLinqEvaluation { get; set; } = true;
 
     /// <summary>
     /// Gets/Sets whether to use rigorous query evaluation.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Rigorous Query evaluation applies more checks to the triples produced by datasets to ensure they actually match the patterns being scanned.  If the underlying index structures are able to guarantee this then rigorous evaluation may be turned off for faster evaluation which it is by default since our default <see cref="TreeIndexedTripleCollection"/> and <see cref="TripleCollection"/> implementations will guarantee this.
+    /// Rigorous Query evaluation applies more checks to the triples produced by datasets to ensure they actually match the patterns being scanned.
+    /// If the underlying index structures are able to guarantee this then rigorous evaluation may be turned off for faster evaluation which it is by default since our default <see cref="TreeIndexedTripleCollection"/> and <see cref="TripleCollection"/> implementations will guarantee this.
     /// </para>
     /// </remarks>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public bool RigorousEvaluation { get; set; } = Options.RigorousEvaluation; // = false;
-#pragma warning restore CS0618 // Type or member is obsolete
+    public bool RigorousEvaluation { get; set; } = false;
 
     /// <summary>
     /// Gets/Sets the URI factory to use during query evaluation.

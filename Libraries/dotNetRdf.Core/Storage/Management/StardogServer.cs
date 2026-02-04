@@ -655,7 +655,7 @@ public abstract class BaseStardogServer
     /// <param name="method">HTTP method to use.</param>
     /// <param name="requestParams">Additional request parameters.</param>
     /// <returns></returns>
-    [Obsolete("This method is obsolete and will be removed in a future release.")]
+    [Obsolete("This method is obsolete and will be removed in a future release.", true)]
     protected virtual HttpWebRequest CreateAdminRequest(string servicePath, string accept, string method, Dictionary<string, string> requestParams)
     {
         // Build the Request Uri

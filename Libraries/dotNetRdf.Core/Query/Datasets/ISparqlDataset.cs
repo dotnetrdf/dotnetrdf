@@ -61,7 +61,7 @@ public interface ISparqlDataset : ITripleIndex
     /// Sets the Active Graph to be the merge of the Graphs with the given URIs.
     /// </summary>
     /// <param name="graphUris">Graph URIs.</param>
-    [Obsolete("Replaced by SetActiveGraph(IList<IRefNode>)")]
+    [Obsolete("Replaced by SetActiveGraph(IList<IRefNode>)", true)]
     void SetActiveGraph(IEnumerable<Uri> graphUris);
 
     /// <summary>
@@ -74,7 +74,7 @@ public interface ISparqlDataset : ITripleIndex
     /// Sets the Active Graph to be the Graph with the given URI.
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
-    [Obsolete("Replaced by SetActiveGraph(IRefNode)")]
+    [Obsolete("Replaced by SetActiveGraph(IRefNode)", true)]
     void SetActiveGraph(Uri graphUri);
 
     /// <summary>
@@ -87,7 +87,7 @@ public interface ISparqlDataset : ITripleIndex
     /// Sets the Default Graph to be the Graph with the given URI.
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
-    [Obsolete("Replaced by SetDefaultGraph(IRefNode)")]
+    [Obsolete("Replaced by SetDefaultGraph(IRefNode)", true)]
     void SetDefaultGraph(Uri graphUri);
 
     /// <summary>
@@ -100,7 +100,7 @@ public interface ISparqlDataset : ITripleIndex
     /// Sets the Default Graph to be the merge of the Graphs with the given URIs.
     /// </summary>
     /// <param name="graphUris">Graph URIs.</param>
-    [Obsolete("Replaced by SetDefaultGraph(IList<IRefNode>)")]
+    [Obsolete("Replaced by SetDefaultGraph(IList<IRefNode>)", true)]
     void SetDefaultGraph(IEnumerable<Uri> graphUris);
 
     /// <summary>
@@ -122,7 +122,7 @@ public interface ISparqlDataset : ITripleIndex
     /// <summary>
     /// Gets the enumeration of the Graph URIs that currently make up the default graph.
     /// </summary>
-    [Obsolete("Replaced by DefaultGraphNames. This implementation will NOT report graphs with blank node names.")]
+    [Obsolete("Replaced by DefaultGraphNames. This implementation will NOT report graphs with blank node names.", true)]
     IEnumerable<Uri> DefaultGraphUris
     {
         get;
@@ -136,7 +136,7 @@ public interface ISparqlDataset : ITripleIndex
     /// <summary>
     /// Gets the enumeration of the Graph URIs that currently make up the active graph.
     /// </summary>
-    [Obsolete("Replaced by ActiveGraphNames. This implementation will NOT report graphs with blank node names.")]
+    [Obsolete("Replaced by ActiveGraphNames. This implementation will NOT report graphs with blank node names.", true)]
     IEnumerable<Uri> ActiveGraphUris
     {
         get;
@@ -171,7 +171,7 @@ public interface ISparqlDataset : ITripleIndex
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable i.e. Updates not supported.</exception>        /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable.</exception>
-    [Obsolete("Replaced by RemoveGraph(IRefNode)")]
+    [Obsolete("Replaced by RemoveGraph(IRefNode)", true)]
     bool RemoveGraph(Uri graphUri);
 
     /// <summary>
@@ -186,7 +186,7 @@ public interface ISparqlDataset : ITripleIndex
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by HasGraph(IRefNode)")]
+    [Obsolete("Replaced by HasGraph(IRefNode)", true)]
     bool HasGraph(Uri graphUri);
 
     /// <summary>
@@ -207,7 +207,7 @@ public interface ISparqlDataset : ITripleIndex
     /// <summary>
     /// Gets all the URIs of Graphs in the Dataset.
     /// </summary>
-    [Obsolete("Replaced by GraphNames. This property will not include graphs named with a blank node.")]
+    [Obsolete("Replaced by GraphNames. This property will not include graphs named with a blank node.", true)]
     IEnumerable<Uri> GraphUris
     {
         get;
@@ -228,7 +228,7 @@ public interface ISparqlDataset : ITripleIndex
     /// This property need only return a read-only view of the Graph, code which wishes to modify Graphs should use the <see cref="ISparqlDataset.GetModifiableGraph(IRefNode)">GetModifiableGraph()</see> method to guarantee a Graph they can modify and will be persisted to the underlying storage.
     /// </para>
     /// </remarks>
-    [Obsolete("Replaced by this[IRefNode]")]
+    [Obsolete("Replaced by this[IRefNode]", true)]
     IGraph this[Uri graphUri]
     {
         get;
@@ -257,7 +257,7 @@ public interface ISparqlDataset : ITripleIndex
     /// Graphs returned from this method must be modifiable and the Dataset must guarantee that when it is Flushed or Disposed of that any changes to the Graph are persisted.
     /// </para>
     /// </remarks>
-    [Obsolete("Replaced by GetModifiableGraph(IRefNode)")]
+    [Obsolete("Replaced by GetModifiableGraph(IRefNode)", true)]
     IGraph GetModifiableGraph(Uri graphUri);
 
 

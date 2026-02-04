@@ -158,7 +158,7 @@ public interface IStorageProvider
     /// </remarks>
     /// <exception cref="NotSupportedException">May be thrown if the underlying Store is not capable of doing Updates at the Triple level.</exception>
     /// <exception cref="RdfStorageException">May be thrown if the underlying Store is not capable of doing Updates at the Triple level or if some error occurs while attempting the Update.</exception>
-    [Obsolete("Replaced by UpdateGraph(IRefNode, IEnumerable<Triple>, IEnumerable<Triple>)")]
+    [Obsolete("Replaced by UpdateGraph(IRefNode, IEnumerable<Triple>, IEnumerable<Triple>)", true)]
     void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals);
 
     /// <summary>
@@ -180,7 +180,7 @@ public interface IStorageProvider
     /// </remarks>
     /// <exception cref="NotSupportedException">May be thrown if the underlying Store is not capable of doing Updates at the Triple level.</exception>
     /// <exception cref="RdfStorageException">May be thrown if the underlying Store is not capable of doing Updates at the Triple level or if some error occurs while attempting the Update.</exception>
-    [Obsolete("Replaced by UpdateGraph(IRefNode, IEnumerable<Triple>, IEnumerable<Triple>)")] 
+    [Obsolete("Replaced by UpdateGraph(IRefNode, IEnumerable<Triple>, IEnumerable<Triple>)", true)] 
     void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals);
 
     /// <summary>
@@ -219,7 +219,7 @@ public interface IStorageProvider
     /// Implementations should implement this method only if they need to provide a custom way of listing Graphs.  If the Store for which you are providing a manager can efficiently return the Graphs using a SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } } query then there should be no need to implement this function.
     /// </para>
     /// </remarks>
-    [Obsolete("Replaced by ListGraphNames")]
+    [Obsolete("Replaced by ListGraphNames", true)]
     IEnumerable<Uri> ListGraphs();
 
     /// <summary>

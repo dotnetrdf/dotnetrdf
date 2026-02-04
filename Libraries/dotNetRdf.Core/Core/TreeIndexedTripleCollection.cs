@@ -58,11 +58,9 @@ public class TreeIndexedTripleCollection
                          _objVar = new VariableNode("o");
 
     /// <summary>
-    /// Creates a new Tree Indexed triple collection.
+    /// Creates a new Tree Indexed triple collection with full triple indexing enabled.
     /// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public TreeIndexedTripleCollection() : this(Options.FullTripleIndexing /* true */)
-#pragma warning restore CS0618 // Type or member is obsolete
+    public TreeIndexedTripleCollection() : this(true)
     {
     }
 

@@ -34,9 +34,7 @@ namespace VDS.RDF.Update;
 /// </summary>
 public class LeviathanUpdateOptions : LeviathanQueryOptions
 {
-#pragma warning disable CS0618 // Type or member is obsolete
-    private long _updateExecutionTimeout = Options.UpdateExecutionTimeout; // = 180000;
-#pragma warning restore CS0618 // Type or member is obsolete
+    private long _updateExecutionTimeout = 180000;
 
     /// <summary>
     /// Get or set whether to automatically flush dataset changes after an update changeset is processed.

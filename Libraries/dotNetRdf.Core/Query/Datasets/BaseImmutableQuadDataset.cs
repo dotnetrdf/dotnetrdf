@@ -48,7 +48,7 @@ public abstract class BaseImmutableQuadDataset
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <param name="t">Triple.</param>
-    [Obsolete("Replaced by AddQuad(IRefNode, Triple)")]
+    [Obsolete("Replaced by AddQuad(IRefNode, Triple)", true)]
     public override bool AddQuad(Uri graphUri, Triple t)
     {
         throw new NotSupportedException("This dataset is immutable");
@@ -68,7 +68,7 @@ public abstract class BaseImmutableQuadDataset
     /// Throws an error as this dataset is immutable.
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
-    [Obsolete("Replaced by RemoveGraph(IRefNode)")]
+    [Obsolete("Replaced by RemoveGraph(IRefNode)", true)]
     public sealed override bool RemoveGraph(Uri graphUri)
     {
         throw new NotSupportedException("This dataset is immutable");
@@ -89,7 +89,7 @@ public abstract class BaseImmutableQuadDataset
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <param name="t">Triple.</param>
-    [Obsolete("Replacecd by RemoveQuad(IRefNode, Triple)")]
+    [Obsolete("Replacecd by RemoveQuad(IRefNode, Triple)", true)]
     public override bool RemoveQuad(Uri graphUri, Triple t)
     {
         throw new NotSupportedException("This dataset is immutable");
@@ -111,7 +111,7 @@ public abstract class BaseImmutableQuadDataset
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetModifiableGraph(IRefNode)")]
+    [Obsolete("Replaced by GetModifiableGraph(IRefNode)", true)]
     public sealed override IGraph GetModifiableGraph(Uri graphUri)
     {
         throw new NotSupportedException("This dataset is immutable");

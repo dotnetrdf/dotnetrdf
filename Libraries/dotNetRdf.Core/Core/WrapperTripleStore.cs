@@ -192,7 +192,7 @@ public class WrapperTripleStore
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by Remove(IRefNode)")]
+    [Obsolete("Replaced by Remove(IRefNode)", true)]
     public virtual bool Remove(Uri? graphUri)
     {
         return _store.Remove(graphUri);
@@ -213,7 +213,7 @@ public class WrapperTripleStore
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by HasGraph(IRefNode)")]
+    [Obsolete("Replaced by HasGraph(IRefNode)", true)]
     public virtual bool HasGraph(Uri graphUri)
     {
         return _store.HasGraph(graphUri);
@@ -235,7 +235,7 @@ public class WrapperTripleStore
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by this[IRefNode]")]
+    [Obsolete("Replaced by this[IRefNode]", true)]
     public virtual IGraph this[Uri graphUri]
     {
         get

@@ -40,7 +40,7 @@ public class CreateCommand : SparqlUpdateCommand
     /// </summary>
     /// <param name="graphUri">URI of the Graph to create.</param>
     /// <param name="silent">Whether the create should be done silently.</param>
-    [Obsolete("Replaced by CreateCommand(IRefNode, bool)")]
+    [Obsolete("Replaced by CreateCommand(IRefNode, bool)", true)]
     public CreateCommand(Uri graphUri, bool silent)
         : this(graphUri == null ? null : new UriNode(graphUri), silent) { }
 
@@ -48,7 +48,7 @@ public class CreateCommand : SparqlUpdateCommand
     /// Creates a new CREATE command.
     /// </summary>
     /// <param name="graphUri">URI of the Graph to create.</param>
-    [Obsolete("Replaced by CreateCommand(IRefNode, bool)")]
+    [Obsolete("Replaced by CreateCommand(IRefNode, bool)", true)]
     public CreateCommand(Uri graphUri)
         : this(graphUri == null ? null : new UriNode(graphUri), false) { }
 
@@ -80,7 +80,7 @@ public class CreateCommand : SparqlUpdateCommand
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by AffectsGraph(IRefNode)")]
+    [Obsolete("Replaced by AffectsGraph(IRefNode)", true)]
     public override bool AffectsGraph(Uri graphUri)
     {
         return AffectsGraph(graphUri == null ? (IRefNode)null : new UriNode(graphUri));
@@ -99,7 +99,7 @@ public class CreateCommand : SparqlUpdateCommand
     /// <summary>
     /// Gets the URI of the Graph to be created.
     /// </summary>
-    [Obsolete("Replaced by TargetGraphName")]
+    [Obsolete("Replaced by TargetGraphName", true)]
     public Uri TargetUri { get { return ((IUriNode)TargetGraphName)?.Uri; } }
 
     /// <summary>

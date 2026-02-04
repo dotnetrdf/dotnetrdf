@@ -133,7 +133,7 @@ public class DeleteDataCommand : SparqlUpdateCommand
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by AffectsGraph(IRefNode)")]
+    [Obsolete("Replaced by AffectsGraph(IRefNode)", true)]
     public override bool AffectsGraph(Uri graphUri)
     {
         var affectedUris = new List<string>();

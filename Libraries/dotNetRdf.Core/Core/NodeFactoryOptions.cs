@@ -46,7 +46,7 @@ public class NodeFactoryOptions
     /// <summary>
     /// Whether or not to validate the language specifier of language-tagged literal nodes.
     /// </summary>
-    [Obsolete("Replaced by NodeFactoryOptions.LanguageTagValidation")]
+    [Obsolete("Replaced by NodeFactoryOptions.LanguageTagValidation", true)]
     public bool ValidateLanguageSpecifiers { get; set; } = true;
 
     /// <summary>

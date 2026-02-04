@@ -103,9 +103,7 @@ public class Notation3Parser
     /// <summary>
     /// Gets/Sets the token queue mode used.
     /// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public TokenQueueMode TokenQueueMode { get; set; } = Options.DefaultTokenQueueMode; // TokenQueueMode.SynchronousBufferDuringParsing
-#pragma warning restore CS0618 // Type or member is obsolete
+    public TokenQueueMode TokenQueueMode { get; set; } = TokenQueueMode.SynchronousBufferDuringParsing;
 
     /// <summary>
     /// Loads a Graph by reading Notation 3 syntax from the given input.

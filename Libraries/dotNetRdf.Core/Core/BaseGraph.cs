@@ -174,9 +174,7 @@ public abstract class BaseGraph : IGraph
     /// <summary>
     /// Get or set whether to normalize the value strings of literal nodes on creation.
     /// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public virtual bool NormalizeLiteralValues { get; set; } = Options.LiteralValueNormalization;
-#pragma warning restore CS0618 // Type or member is obsolete
+    public virtual bool NormalizeLiteralValues { get; set; }
 
     /// <inheritdoc />
     public LanguageTagValidationMode LanguageTagValidation
