@@ -43,11 +43,8 @@ public class TurtleParser
     private bool _traceParsing;
     private bool _traceTokeniser;
 
-#pragma warning disable CS0618 // Type or member is obsolete
-    private readonly bool _validateIris = Options.ValidateIris; // = false;
-#pragma warning restore CS0618 // Type or member is obsolete
+    private readonly bool _validateIris;
     
-    //private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
     private readonly TurtleSyntax _syntax;
 
     /// <summary>
@@ -130,9 +127,7 @@ public class TurtleParser
     /// <summary>
     /// Gets/Sets the token queue mode used.
     /// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public TokenQueueMode TokenQueueMode { get; set; } = Options.DefaultTokenQueueMode; // TokenQueueMode.SynchronousBufferDuringParsing
-#pragma warning restore CS0618 // Type or member is obsolete
+    public TokenQueueMode TokenQueueMode { get; set; } = TokenQueueMode.SynchronousBufferDuringParsing;
 
     /// <summary>
     /// Loads a Graph by reading Turtle syntax from the given input.

@@ -27,8 +27,10 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
@@ -71,11 +73,10 @@ public class BlockingTextReaderTests : BaseTest
     }
 
     [Fact]
-    public void ParsingTextReaderCreation3()
+    public async Task ParsingTextReaderCreation3()
     {
-        using var client = new WebClient();
-        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-        using (Stream stream = client.OpenRead(new Uri("http://www.dotnetrdf.org")))
+        using var client = new HttpClient();
+        using (Stream stream = await client.GetStreamAsync(new Uri("http://www.dotnetrdf.org"), TestContext.Current.CancellationToken))
         {
             var reader = ParsingTextReader.Create(stream);
             Assert.IsType<BlockingTextReader>(reader);

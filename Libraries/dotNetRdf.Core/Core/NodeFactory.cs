@@ -95,9 +95,7 @@ public class NodeFactory
         if (options == null) throw new ArgumentNullException(nameof(options));
         BaseUri = options.BaseUri;
         NormalizeLiteralValues = options.NormalizeLiteralValues;
-#pragma warning disable CS0618 // Type or member is obsolete
-        LanguageTagValidation = !options.ValidateLanguageSpecifiers ? LanguageTagValidationMode.None: options.LanguageTagValidation;
-#pragma warning restore CS0618 // Type or member is obsolete
+        LanguageTagValidation = options.LanguageTagValidation;
         NamespaceMap = namespaceMap ?? new NamespaceMapper();
         UriFactory = uriFactory ?? RDF.UriFactory.Root;
     }

@@ -374,30 +374,6 @@ public class CollectionCompressionTests
     }
 
     [Fact]
-    [Obsolete("Test uses obsolete API")]
-    public void WritingCollectionCompressionComplex1()
-    {
-        var connector = new SparqlConnector(new VDS.RDF.Query.SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql")));
-        var g = new Graph();
-        g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
-        g.NamespaceMap.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
-        INode n = g.CreateBlankNode();
-
-        g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("dnr:genericManager"), n);
-        var sContext = new ConfigurationSerializationContext(g)
-        {
-            NextSubject = n
-        };
-        connector.SerializeConfiguration(sContext);
-
-        var collections = FindCollections(g);
-
-        Assert.Equal(2, collections.Count);
-
-        CheckCompressionRoundTrip(g);
-    }
-
-    [Fact]
     public void WritingCollectionCompressionComplex2()
     {
         var g = new Graph();

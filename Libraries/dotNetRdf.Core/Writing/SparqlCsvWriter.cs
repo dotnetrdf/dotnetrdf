@@ -43,11 +43,7 @@ public class SparqlCsvWriter
     /// <inheritdoc />
     public void Save(SparqlResultSet results, string filename)
     {
-        Save(results, filename,
-#pragma warning disable CS0618 // Type or member is obsolete
-                new UTF8Encoding(Options.UseBomForUtf8) //new UTF8Encoding(false)
-#pragma warning restore CS0618 // Type or member is obsolete
-            );
+        Save(results, filename, new UTF8Encoding(false));
     }
 
     /// <inheritdoc />

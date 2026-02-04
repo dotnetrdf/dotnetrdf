@@ -257,11 +257,6 @@ public class ConfigurationLoader : IConfigurationLoader
         // Endpoint Factories
         new SparqlClientFactory(),
 
-#pragma warning disable 618
-        // To be removed when deprecated classes are removed
-        new SparqlEndpointFactory(),
-#pragma warning restore 618
-
         // Processor Factories
         new QueryProcessorFactory(),
         new UpdateProcessorFactory(),

@@ -117,9 +117,7 @@ public class NTriplesParser
     /// <summary>
     /// Gets/Sets the token queue mode used.
     /// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public TokenQueueMode TokenQueueMode { get; set; } = Options.DefaultTokenQueueMode; // TokenQueueMode.SynchronousBufferDuringParsing
-#pragma warning restore CS0618 // Type or member is obsolete
+    public TokenQueueMode TokenQueueMode { get; set; } = TokenQueueMode.SynchronousBufferDuringParsing;
 
     /// <summary>
     /// Gets/Sets the desired NTriples syntax.

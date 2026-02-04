@@ -37,7 +37,7 @@ namespace VDS.RDF.Writing;
 /// </summary>
 public class SparqlTsvWriter : ISparqlResultsWriter
 {
-    private TsvFormatter _formatter = new TsvFormatter();
+    private TsvFormatter _formatter = new ();
 
     /// <summary>
     /// Saves a SPARQL Result Set to TSV format.
@@ -47,11 +47,7 @@ public class SparqlTsvWriter : ISparqlResultsWriter
     /// <remarks>The output file is encoded in UTF-8 with no byte-order mark.</remarks>
     public void Save(SparqlResultSet results, string filename)
     {
-        Save(results, filename,
-#pragma warning disable CS0618 // Type or member is obsolete
-                new UTF8Encoding(Options.UseBomForUtf8) //new UTF8Encoding(false)
-#pragma warning restore CS0618 // Type or member is obsolete
-            );
+        Save(results, filename, new UTF8Encoding(false));
     }
 
     /// <summary>
@@ -118,20 +114,10 @@ public class SparqlTsvWriter : ISparqlResultsWriter
             {
                 output.Write(results.Result.ToString());
             }
-
-            output.Close();
         }
-        catch
+        finally
         {
-            try
-            {
-                output.Close();
-            }
-            catch
-            {
-                // No error handling, just trying to clean up
-            }
-            throw;
+            output.Close();
         }
     }
 

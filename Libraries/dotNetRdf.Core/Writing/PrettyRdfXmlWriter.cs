@@ -109,9 +109,7 @@ public class PrettyRdfXmlWriter
     /// <summary>
     /// Gets/Sets whether DTDs are used in the output.
     /// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public bool UseDtd { get; set; } = Options.UseDtd; //= true;
-#pragma warning restore CS0618 // Type or member is obsolete
+    public bool UseDtd { get; set; } = true;
 
     /// <summary>
     /// Gets/Sets whether triples which have a literal object will be expressed as attributes rather than elements where possible (defaults to true).

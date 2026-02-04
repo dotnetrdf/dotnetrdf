@@ -18,8 +18,8 @@ public class JsonLdTestSuiteBase
     {
         _output = output;
         // Ensure that we are using modern TLS2 for HTTPS connections (required to access the GitHub-hosted context files)
-        ServicePointManager.Expect100Continue = true;
-        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+        //ServicePointManager.Expect100Continue = true;
+        //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
     }
 
     public virtual void ExpandTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,

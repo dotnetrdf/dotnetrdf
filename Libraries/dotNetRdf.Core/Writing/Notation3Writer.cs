@@ -107,9 +107,7 @@ public class Notation3Writer
     /// <para>
     /// If the Compression Level is set to <see cref="WriterCompressionLevel.More">More</see> or above then Blank Node Collections and Collection syntax will be used if the Graph contains Triples that can be compressed in that way.</para>
     /// </remarks>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public int CompressionLevel { get; set; } = Options.DefaultCompressionLevel;
-#pragma warning restore CS0618 // Type or member is obsolete
+    public int CompressionLevel { get; set; } = WriterCompressionLevel.More;
 
     /// <summary>
     /// Gets/Sets the Default Namespaces that are always available.
