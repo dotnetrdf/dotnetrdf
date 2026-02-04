@@ -339,7 +339,7 @@ public class ParsingSparqlConnector
     /// Lists the Graphs in the Store.
     /// </summary>
     /// <returns></returns>
-    [Obsolete("Replaced by ListGraphNames()")]
+    [Obsolete("Replaced by ListGraphNames()", true)]
     public virtual IEnumerable<Uri> ListGraphs()
     {
         try

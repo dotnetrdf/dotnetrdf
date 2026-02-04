@@ -1183,7 +1183,7 @@ public static class SparqlSpecsHelper
     /// </summary>
     /// <param name="n">Node to computer EBV for.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by the INode.EffectiveBooleanValue extension method.")]
+    [Obsolete("Replaced by the INode.EffectiveBooleanValue extension method.", true)]
     public static bool EffectiveBooleanValue(INode n)
     {
         return n.EffectiveBooleanValue();

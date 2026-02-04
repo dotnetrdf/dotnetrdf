@@ -299,7 +299,7 @@ public class DatasetFileManager
     /// Gets the list of URIs of Graphs in the Store.
     /// </summary>
     /// <returns></returns>
-    [Obsolete("Replaced by ListGraphNames")]
+    [Obsolete("Replaced by ListGraphNames", true)]
     public override IEnumerable<Uri> ListGraphs()
     {
         return _store.Graphs.GraphUris;

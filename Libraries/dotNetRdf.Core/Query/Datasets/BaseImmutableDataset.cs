@@ -47,7 +47,7 @@ public abstract class BaseImmutableDataset
     /// Throws an exception since Immutable Datasets cannot be altered.
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
-    [Obsolete("Replaced by RemoveGraph(IRefNode)")]
+    [Obsolete("Replaced by RemoveGraph(IRefNode)", true)]
     public override bool RemoveGraph(Uri graphUri)
     {
         throw new NotSupportedException("Cannot remove a Graph from an immutable Dataset");

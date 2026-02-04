@@ -52,9 +52,9 @@ public class ReadWriteSparqlConnector
     : SparqlConnector, IUpdateableStorage
 {
     private readonly TurtleFormatter _formatter = new ();
-#pragma warning disable 618
+
+    [Obsolete("Replaced by UpdateClient", true)]
     private readonly SparqlRemoteUpdateEndpoint _updateEndpoint;
-#pragma warning restore 618
 
     /// <summary>
     /// Creates a new connector.
@@ -75,7 +75,7 @@ public class ReadWriteSparqlConnector
     /// <param name="queryEndpoint">Query Endpoint.</param>
     /// <param name="updateEndpoint">Update Endpoint.</param>
     /// <param name="mode">Method for loading graphs.</param>
-    [Obsolete("Replaced by ReadWriteSparqlConnector(SparqlQueryClient, SparqlUpdateClient, SparqlConnectorLoadMethod")]
+    [Obsolete("Replaced by ReadWriteSparqlConnector(SparqlQueryClient, SparqlUpdateClient, SparqlConnectorLoadMethod", true)]
     public ReadWriteSparqlConnector(SparqlRemoteEndpoint queryEndpoint, SparqlRemoteUpdateEndpoint updateEndpoint, SparqlConnectorLoadMethod mode)
         : base(queryEndpoint, mode)
     {
@@ -87,7 +87,7 @@ public class ReadWriteSparqlConnector
     /// </summary>
     /// <param name="queryEndpoint">Query Endpoint.</param>
     /// <param name="updateEndpoint">Update Endpoint.</param>
-    [Obsolete("Replaced by ReadWriteSparqlConnector(SparqlQueryClient, SparqlUpdateClient, SparqlConnectorLoadMethod")]
+    [Obsolete("Replaced by ReadWriteSparqlConnector(SparqlQueryClient, SparqlUpdateClient, SparqlConnectorLoadMethod", true)]
     public ReadWriteSparqlConnector(SparqlRemoteEndpoint queryEndpoint, SparqlRemoteUpdateEndpoint updateEndpoint)
         : this(queryEndpoint, updateEndpoint, SparqlConnectorLoadMethod.Construct) { }
 
@@ -129,20 +129,8 @@ public class ReadWriteSparqlConnector
     /// <summary>
     /// Gets/Sets the HTTP Timeout in milliseconds used for communicating with the SPARQL Endpoint.
     /// </summary>
-    [Obsolete("This property is only used by the obsolete SparqlRemoteEndpoint-backed implementation.")]
-    public override int Timeout
-    {
-        get
-        {
-            return _timeout;
-        }
-        set
-        {
-            _timeout = value;
-            _endpoint.Timeout = value;
-            _updateEndpoint.Timeout = value;
-        }
-    }
+    [Obsolete("This property is only used by the obsolete SparqlRemoteEndpoint-backed implementation and will be removed.", true)]
+    public override int Timeout {get;set;}
 
     /// <summary>
     /// Gets that deleting graphs is supported.
@@ -315,7 +303,10 @@ public class ReadWriteSparqlConnector
                 // Serialize triples
                 foreach (Triple t in removals)
                 {
-                    if (!t.IsGroundTriple) throw new RdfStorageException("The ReadWriteSparqlConnector does not support the deletion of blank node containing triples");
+                    if (!t.IsGroundTriple) 
+                    {
+                        throw new RdfStorageException("The ReadWriteSparqlConnector does not support the deletion of blank node containing triples");
+                    }
                     updates.AppendLine("  " + _formatter.Format(t));
                 }
 
@@ -338,14 +329,7 @@ public class ReadWriteSparqlConnector
     /// <param name="sparqlUpdate">SPARQL Update.</param>
     public void Update(string sparqlUpdate)
     {
-        if (UpdateClient != null)
-        {
-            UpdateClient.UpdateAsync(sparqlUpdate).Wait();
-        }
-        else
-        {
-            _updateEndpoint.Update(sparqlUpdate);
-        }
+        UpdateClient.UpdateAsync(sparqlUpdate).Wait();
     }
 
     /// <summary>
@@ -354,7 +338,7 @@ public class ReadWriteSparqlConnector
     /// <returns></returns>
     public override string ToString()
     {
-        return "[SPARQL Query & Update] Query: " + _endpoint.Uri.AbsoluteUri + " Update: " + _updateEndpoint.Uri.AbsoluteUri;
+        return "[SPARQL Query & Update] Query: " + QueryClient.EndpointUri.AbsoluteUri + " Update: " + UpdateClient.EndpointUri.AbsoluteUri;
     }
 
     /// <summary>
@@ -369,38 +353,13 @@ public class ReadWriteSparqlConnector
         base.SerializeConfiguration(context);
         context.NextSubject = manager;
 
-        if (UpdateClient != null)
-        {
-            // Use the indirect serialization method
+        // Serialize the Endpoints Configuration
+        INode endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint));
+        INode endpointObj = context.Graph.CreateBlankNode();
+        context.NextSubject = endpointObj;
+        UpdateClient.SerializeConfiguration(context);
 
-            // Serialize the Endpoints Configuration
-            INode endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint));
-            INode endpointObj = context.Graph.CreateBlankNode();
-            context.NextSubject = endpointObj;
-            UpdateClient.SerializeConfiguration(context);
-
-            // Link that serialization to our serialization
-            context.Graph.Assert(new Triple(manager, endpoint, endpointObj));
-        }
-        else if (_updateEndpoint != null)
-        {
-            // Use the indirect serialization method
-
-            // Serialize the Endpoints Configuration
-            INode endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint));
-            INode endpointObj = context.Graph.CreateBlankNode();
-            context.NextSubject = endpointObj;
-            ((IConfigurationSerializable)_updateEndpoint).SerializeConfiguration(context);
-
-            // Link that serialization to our serialization
-            context.Graph.Assert(new Triple(manager, endpoint, endpointObj));
-        }
-        else
-        {
-            // Use the direct serialization method
-            INode endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
-
-            context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(_endpoint.Uri.AbsoluteUri)));
-        }
+        // Link that serialization to our serialization
+        context.Graph.Assert(new Triple(manager, endpoint, endpointObj));
     }
 }

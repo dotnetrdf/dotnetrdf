@@ -161,7 +161,7 @@ public abstract class BaseTripleStore
     /// </summary>
     /// <param name="graphName">The name of the graph to add.</param>
     /// <returns>True if the execution resulted in a new graph being added to the triplestore, false otherwise.</returns>
-    public virtual bool Add(IRefNode graphName)
+    public virtual bool Add(IRefNode? graphName)
     {
         return !HasGraph(graphName) && Graphs.Add(new Graph(graphName), false);
     }
@@ -222,8 +222,8 @@ public abstract class BaseTripleStore
     /// Removes a Graph from the Triple Store.
     /// </summary>
     /// <param name="graphUri">Uri of the Graph to Remove.</param>
-    [Obsolete("Replaced by Remove(IRefNode)")]
-    public virtual bool Remove(Uri graphUri)
+    [Obsolete("Replaced by Remove(IRefNode)", true)]
+    public virtual bool Remove(Uri? graphUri)
     {
         return _graphs.Remove(graphUri == null ? null : new UriNode(graphUri));
     }
@@ -234,7 +234,7 @@ public abstract class BaseTripleStore
     /// </summary>
     /// <param name="graphName">The name of the graph to remove.</param>
     /// <returns>True if the operation removed a graph, false if no matching graph was found to remove.</returns>
-    public virtual bool Remove(IRefNode graphName)
+    public virtual bool Remove(IRefNode? graphName)
     {
         return _graphs.Remove(graphName);
     }
@@ -247,7 +247,7 @@ public abstract class BaseTripleStore
     /// </summary>
     /// <param name="graphUri">Graph Uri.</param>
     /// <returns>True if the Graph exists in the Triple Store.</returns>
-    [Obsolete("Replaced by HasGraph(IRefNode)")]
+    [Obsolete("Replaced by HasGraph(IRefNode)", true)]
     public bool HasGraph(Uri graphUri)
     {
         return _graphs.Contains(graphUri == null ? null : new UriNode(graphUri));
@@ -269,7 +269,7 @@ public abstract class BaseTripleStore
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by this[IRefNode]")]
+    [Obsolete("Replaced by this[IRefNode]", true)]
     public IGraph this[Uri? graphUri]
     {
         get
@@ -335,27 +335,27 @@ public abstract class BaseTripleStore
     /// <summary>
     /// Event which is raised when a Graph is added
     /// </summary>
-    public event TripleStoreEventHandler GraphAdded;
+    public event TripleStoreEventHandler? GraphAdded;
 
     /// <summary>
     /// Event which is raised when a Graph is removed
     /// </summary>
-    public event TripleStoreEventHandler GraphRemoved;
+    public event TripleStoreEventHandler? GraphRemoved;
 
     /// <summary>
     /// Event which is raised when a Graphs contents changes
     /// </summary>
-    public event TripleStoreEventHandler GraphChanged;
+    public event TripleStoreEventHandler? GraphChanged;
 
     /// <summary>
     /// Event which is raised when a Graph is cleared
     /// </summary>
-    public event TripleStoreEventHandler GraphCleared;
+    public event TripleStoreEventHandler? GraphCleared;
 
     /// <summary>
     /// Event which is raised when a Graph has a merge operation performed on it
     /// </summary>
-    public event TripleStoreEventHandler GraphMerged;
+    public event TripleStoreEventHandler? GraphMerged;
 
     /// <summary>
     /// Helper method for raising the <see cref="GraphAdded">Graph Added</see> event manually.
@@ -363,7 +363,7 @@ public abstract class BaseTripleStore
     /// <param name="g">Graph.</param>
     protected void RaiseGraphAdded(IGraph g)
     {
-        TripleStoreEventHandler d = GraphAdded;
+        TripleStoreEventHandler? d = GraphAdded;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, g));
@@ -377,7 +377,7 @@ public abstract class BaseTripleStore
     /// <param name="args">Graph Event Arguments.</param>
     protected void RaiseGraphAdded(GraphEventArgs args)
     {
-        TripleStoreEventHandler d = GraphAdded;
+        TripleStoreEventHandler? d = GraphAdded;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, args));
@@ -402,7 +402,7 @@ public abstract class BaseTripleStore
     /// <param name="g">Graph.</param>
     protected void RaiseGraphRemoved(IGraph g)
     {
-        TripleStoreEventHandler d = GraphRemoved;
+        TripleStoreEventHandler? d = GraphRemoved;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, g));
@@ -416,7 +416,7 @@ public abstract class BaseTripleStore
     /// <param name="args">Graph Event Arguments.</param>
     protected void RaiseGraphRemoved(GraphEventArgs args)
     {
-        TripleStoreEventHandler d = GraphRemoved;
+        TripleStoreEventHandler? d = GraphRemoved;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, args));
@@ -440,7 +440,7 @@ public abstract class BaseTripleStore
     /// <param name="args">Graph Event Arguments.</param>
     protected void RaiseGraphChanged(GraphEventArgs args)
     {
-        TripleStoreEventHandler d = GraphChanged;
+        TripleStoreEventHandler? d = GraphChanged;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, args));
@@ -463,7 +463,7 @@ public abstract class BaseTripleStore
     /// <param name="g">Graph.</param>
     protected void RaiseGraphChanged(IGraph g)
     {
-        TripleStoreEventHandler d = GraphChanged;
+        TripleStoreEventHandler? d = GraphChanged;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, g));
@@ -476,7 +476,7 @@ public abstract class BaseTripleStore
     /// <param name="args">Graph Event Arguments.</param>
     protected void RaiseGraphCleared(GraphEventArgs args)
     {
-        TripleStoreEventHandler d = GraphCleared;
+        TripleStoreEventHandler? d = GraphCleared;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, args));
@@ -499,7 +499,7 @@ public abstract class BaseTripleStore
     /// <param name="args">Graph Event Arguments.</param>
     protected void RaiseGraphMerged(GraphEventArgs args)
     {
-        TripleStoreEventHandler d = GraphMerged;
+        TripleStoreEventHandler? d = GraphMerged;
         if (d != null)
         {
             d(this, new TripleStoreEventArgs(this, args));

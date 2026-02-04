@@ -259,7 +259,7 @@ public class AllegroGraphServer
     /// </summary>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to callback.</param>
-    [Obsolete("Replaced with ListStoresAsync(CancellationToken).")]
+    [Obsolete("Replaced with ListStoresAsync(CancellationToken).", true)]
     public override void ListStores(AsyncStorageCallback callback, object state)
     {
         try

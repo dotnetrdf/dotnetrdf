@@ -257,11 +257,6 @@ public class ConfigurationLoader : IConfigurationLoader
         // Endpoint Factories
         new SparqlClientFactory(),
 
-#pragma warning disable 618
-        // To be removed when deprecated classes are removed
-        new SparqlEndpointFactory(),
-#pragma warning restore 618
-
         // Processor Factories
         new QueryProcessorFactory(),
         new UpdateProcessorFactory(),
@@ -792,26 +787,6 @@ public class ConfigurationLoader : IConfigurationLoader
             throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + a.ToString() + "' as one of the values for the " + property + " property is a circular reference to the Object we are attempting to load");
         }
         return false;
-    }
-
-    /// <summary>
-    /// Creates a URI Node that refers to some Configuration property/type.
-    /// </summary>
-    /// <param name="g">Configuration Graph.</param>
-    /// <param name="qname">QName of the property/type.</param>
-    /// <returns></returns>
-    /// <remarks>
-    /// <para>
-    /// The QName provides should be of the form <strong>dnr:qname</strong> - the <strong>dnr</strong> prefix will be automatically be considered to be to the Configuration Namespace which is defined by the <see cref="ConfigurationLoader.ConfigurationNamespace">ConfigurationNamespace</see> constant.
-    /// </para>
-    /// <para>
-    /// This function uses caching to ensure that URI Nodes aren't needlessly recreated in order to save memory.
-    /// </para>
-    /// </remarks>
-    [Obsolete("This method is obsolete and should no longer be used, constants are now URIs so you should just create URI Nodes directly on your Configuration Graph", true)]
-    public static INode CreateConfigurationNode(IGraph g, string qname)
-    {
-        return g.CreateUriNode(g.UriFactory.Create(qname));
     }
 
     /// <summary>

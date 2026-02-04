@@ -43,7 +43,7 @@ public interface ISparqlDescribe
     /// </summary>
     /// <param name="context">SPARQL Evaluation Context.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by Describe(ISparqlDescribeContext).")]
+    [Obsolete("Replaced by Describe(ISparqlDescribeContext).", true)]
     IGraph Describe(SparqlEvaluationContext context);
 
     /// <summary>
@@ -51,7 +51,7 @@ public interface ISparqlDescribe
     /// </summary>
     /// <param name="handler">RDF Handler.</param>
     /// <param name="context">SPARQL Evaluation Context.</param>
-    [Obsolete("Replaced by Describe(IRdfHandler, ISparqlDescribeContext).")]
+    [Obsolete("Replaced by Describe(IRdfHandler, ISparqlDescribeContext).", true)]
     void Describe(IRdfHandler handler, SparqlEvaluationContext context);
     
     /// <summary>

@@ -68,7 +68,7 @@ public sealed class Triple
     /// <param name="g">Graph.</param>
     /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory.</remarks>
     /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory.</exception>
-    [Obsolete("This constructor is obsolete and will be removed in a future version.")]
+    [Obsolete("This constructor is obsolete and will be removed in a future version.", true)]
     public Triple(INode subj, INode pred, INode obj, IGraph g)
         : this(subj, pred, obj)
     {
@@ -99,7 +99,7 @@ public sealed class Triple
     ///// <param name="graphUri">Graph URI.</param>
     ///// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory.</remarks>
     ///// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory.</exception>
-    //[Obsolete("This constructor is obsolete and will be remove in a future version.")]
+    //[Obsolete("This constructor is obsolete and will be remove in a future version.", true)]
     //public Triple(INode subj, INode pred, INode obj, Uri graphUri)
     //    : this(subj, pred, obj)
     //{
@@ -116,7 +116,7 @@ public sealed class Triple
     ///// <param name="graphUri">Graph URI.</param>
     ///// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory.</remarks>
     ///// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory.</exception>
-    //[Obsolete("This constructor is obsolete and will be remove in a future version.")]
+    //[Obsolete("This constructor is obsolete and will be remove in a future version.", true)]
     //public Triple(INode subj, INode pred, INode obj, ITripleContext context, Uri graphUri)
     //    : this(subj, pred, obj, graphUri)
     //{
@@ -130,7 +130,7 @@ public sealed class Triple
     ///// <param name="pred">Predicate of the Triple.</param>
     ///// <param name="obj">Object of the Triple.</param>
     ///// <param name="graph">Name of the graph the triple is associated with</param>
-    //[Obsolete("This constructor is obsolete and will be remove in a future version.")]
+    //[Obsolete("This constructor is obsolete and will be remove in a future version.", true)]
     //public Triple(IRefNode subj, IRefNode pred, INode obj, IRefNode graph):
     //    this(subj, pred, obj)
     //{
@@ -312,7 +312,7 @@ public sealed class Triple
     /// <returns></returns>
     /// <remarks>As of dotNetRdf 3.0, this method is obsolete and does not perform an URI to QName compression. To produce a compressed string, use
     /// the <see cref="ToString(ITripleFormatter)"/> overload passing in a formatter configured with the desired <see cref="INamespaceMapper"/>.</remarks>
-    [Obsolete("This method is obsolete and will be removed in a future version. Use ToString() or ToString(ITripleFormatter) instead.")]
+    [Obsolete("This method is obsolete and will be removed in a future version. Use ToString() or ToString(ITripleFormatter) instead.", true)]
     public string ToString(bool compress)
     {
         //if (!compress || Graph == null)

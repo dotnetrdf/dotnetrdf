@@ -559,7 +559,7 @@ public class SesameServer
     /// </summary>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by ListStoresAsync")]
+    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by ListStoresAsync", true)]
     public virtual void ListStores(AsyncStorageCallback callback, object state)
     {
         HttpRequestMessage request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], HttpMethod.Get, []);
@@ -627,7 +627,7 @@ public class SesameServer
     /// <param name="method">HTTP Method.</param>
     /// <param name="queryParams">Querystring Parameters.</param>
     /// <returns></returns>
-    [Obsolete("This method is obsolete and will be removed in a future release.")]
+    [Obsolete("This method is obsolete and will be removed in a future release.", true)]
     protected virtual HttpWebRequest CreateRequest(string servicePath, string accept, string method, Dictionary<string, string> queryParams)
     {
         // Build the Request Uri

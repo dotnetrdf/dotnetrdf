@@ -42,7 +42,7 @@ public interface IAsyncUpdateableStorage
     /// <param name="sparqlUpdates">SPARQL Update.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("This method is obsolete and will be removed in a future version. Replaced by UpdateAsync(string, CancellationToken).")]
+    [Obsolete("This method is obsolete and will be removed in a future version. Replaced by UpdateAsync(string, CancellationToken).", true)]
     void Update(string sparqlUpdates, AsyncStorageCallback callback, object state);
 
     /// <summary>

@@ -432,7 +432,7 @@ public class SparqlHttpProtocolConnector
     /// </summary>
     /// <returns></returns>
     /// <exception cref="NotSupportedException">Thrown since SPARQL Graph Store HTTP Protocol does not support listing graphs.</exception>
-    [Obsolete("Replaced by ListGraphNames")]
+    [Obsolete("Replaced by ListGraphNames", true)]
     public virtual IEnumerable<Uri> ListGraphs()
     {
         throw new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing Graphs");
@@ -625,7 +625,7 @@ public class SparqlHttpProtocolConnector
     /// </summary>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("Replaced with ListGraphsAsync(CancellationToken)")]
+    [Obsolete("Replaced with ListGraphsAsync(CancellationToken)", true)]
     public override void ListGraphs(AsyncStorageCallback callback, object state)
     {
         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListGraphs, new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing graphs")), state);

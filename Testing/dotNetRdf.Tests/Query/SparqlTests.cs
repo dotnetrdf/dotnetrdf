@@ -316,25 +316,6 @@ SELECT * WHERE {
     }
 
     [Fact]
-    [Obsolete("Tests obsolete class")]
-    public void SparqlEndpointWithExtensions()
-    {
-        //var endpoint = new SparqlConnector(new Uri(TestConfigManager.GetSetting(TestConfigManager.RemoteSparqlQuery)));
-        var testQuery = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIMIT 1";
-
-        _serverFixture.RegisterSelectQueryGetHandler(testQuery);
-        var endpoint = new SparqlConnector(new Uri(_serverFixture.Server.Urls[0] + "/sparql"));
-
-        // As local SPARQL query parsing is no longer supposed, the server will receive the query (and in this case send back a response)
-        // endpoint.SkipLocalParsing = true;
-
-        var results = endpoint.Query(testQuery);
-        results.Should().BeOfType<SparqlResultSet>().Which.Results.Should().NotBeEmpty();
-        //TestTools.ShowResults(results);
-    }
-
-    [Fact]
     public void SparqlBNodeIDsInResults()
     {
         var xmlparser = new SparqlXmlParser();

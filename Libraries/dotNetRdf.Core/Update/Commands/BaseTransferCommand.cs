@@ -47,7 +47,7 @@ public abstract class BaseTransferCommand : SparqlUpdateCommand
     /// <param name="sourceUri">Source Graph URI.</param>
     /// <param name="destUri">Destination Graph URI.</param>
     /// <param name="silent">Whether errors should be suppressed.</param>
-    [Obsolete("Replaced by BaseTransferCommand(SparqlUpdateCommandType, IRefNode, IRefNode, bool)")]
+    [Obsolete("Replaced by BaseTransferCommand(SparqlUpdateCommandType, IRefNode, IRefNode, bool)", true)]
     protected BaseTransferCommand(SparqlUpdateCommandType type, Uri sourceUri, Uri destUri, bool silent)
         : this(type, sourceUri == null ? null : new UriNode(sourceUri),
             destUri == null ? null : new UriNode(destUri), silent)
@@ -60,7 +60,7 @@ public abstract class BaseTransferCommand : SparqlUpdateCommand
     /// <param name="type">Command Type.</param>
     /// <param name="sourceUri">Source Graph URI.</param>
     /// <param name="destUri">Destination Graph URI.</param>
-    [Obsolete("Replaced by BaseTransferCommand(SparqlUpdateCommandType, IRefNode, IRefNode, bool)")]
+    [Obsolete("Replaced by BaseTransferCommand(SparqlUpdateCommandType, IRefNode, IRefNode, bool)", true)]
     protected BaseTransferCommand(SparqlUpdateCommandType type, Uri sourceUri, Uri destUri)
         : this(type, sourceUri == null ? null : new UriNode(sourceUri),
             destUri == null ? null : new UriNode(destUri))
@@ -85,7 +85,7 @@ public abstract class BaseTransferCommand : SparqlUpdateCommand
     /// <summary>
     /// URI of the Source Graph.
     /// </summary>
-    [Obsolete("Replaced by SourceGraphName")]
+    [Obsolete("Replaced by SourceGraphName", true)]
     public Uri SourceUri
     {
         get
@@ -102,7 +102,7 @@ public abstract class BaseTransferCommand : SparqlUpdateCommand
     /// <summary>
     /// URI of the Destination Graph.
     /// </summary>
-    [Obsolete("Replaced by DestinationGraphName")]
+    [Obsolete("Replaced by DestinationGraphName", true)]
     public Uri DestinationUri
     {
         get
@@ -143,7 +143,7 @@ public abstract class BaseTransferCommand : SparqlUpdateCommand
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by AffectsGraph(IRefNode)")]
+    [Obsolete("Replaced by AffectsGraph(IRefNode)", true)]
     public override bool AffectsGraph(Uri graphUri)
     {
         return AffectsGraph(graphUri == null ? (IRefNode)null : new UriNode(graphUri));

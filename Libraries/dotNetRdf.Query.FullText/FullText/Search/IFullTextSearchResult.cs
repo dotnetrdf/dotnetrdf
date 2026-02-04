@@ -52,7 +52,7 @@ public interface IFullTextSearchResult
     /// <summary>
     /// Gets the Graph URI for this result.
     /// </summary>
-    [Obsolete("Replaced by GraphName")]
+    [Obsolete("Replaced by GraphName", true)]
     Uri GraphUri
     {
         get;

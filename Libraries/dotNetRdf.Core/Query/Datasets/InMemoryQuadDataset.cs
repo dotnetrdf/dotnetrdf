@@ -177,7 +177,7 @@ public class InMemoryQuadDataset
     /// <summary>
     /// Gets all the URIs of Graphs in the Dataset.
     /// </summary>
-    [Obsolete("Replaced by GraphNames")]
+    [Obsolete("Replaced by GraphNames", true)]
     public override IEnumerable<Uri> GraphUris
     {
         get
@@ -232,7 +232,7 @@ public class InMemoryQuadDataset
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <param name="t">Triple.</param>
-    [Obsolete("Replaced by AddQuad(IRefNode, Triple)")]
+    [Obsolete("Replaced by AddQuad(IRefNode, Triple)", true)]
     public override bool AddQuad(Uri graphUri, Triple t)
     {
         return AddQuad(new UriNode(graphUri), t);
@@ -476,7 +476,7 @@ public class InMemoryQuadDataset
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <param name="t">Triple.</param>
-    [Obsolete("Replaced by RemoveQuad(IRefNode, Triple)")]
+    [Obsolete("Replaced by RemoveQuad(IRefNode, Triple)", true)]
     public override bool RemoveQuad(Uri graphUri, Triple t)
     {
         if (_store.HasGraph(graphUri))

@@ -63,7 +63,7 @@ public class InsertCommand
     /// <param name="insertions">Pattern to construct Triples to insert.</param>
     /// <param name="where">Pattern to select data which is then used in evaluating the insertions.</param>
     /// <param name="graphUri">URI of the affected Graph.</param>
-    [Obsolete("Replaced by InsertCommand(GraphPattern, GraphPattern, IRefNode)")]
+    [Obsolete("Replaced by InsertCommand(GraphPattern, GraphPattern, IRefNode)", true)]
     public InsertCommand(GraphPattern insertions, GraphPattern where, Uri graphUri)
         : this(insertions, where, graphUri == null ? null : new UriNode(graphUri)) { }
 
@@ -104,7 +104,7 @@ public class InsertCommand
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by AffectsGraph(IRefNode)")]
+    [Obsolete("Replaced by AffectsGraph(IRefNode)", true)]
     public override bool AffectsGraph(Uri graphUri)
     {
         var affectedUris = new List<string>();
@@ -150,7 +150,7 @@ public class InsertCommand
     /// <summary>
     /// Gets the URI of the Graph the insertions are made to.
     /// </summary>
-    [Obsolete("Replaced by TargetGraph")]
+    [Obsolete("Replaced by TargetGraph", true)]
     public Uri TargetUri
     {
         get

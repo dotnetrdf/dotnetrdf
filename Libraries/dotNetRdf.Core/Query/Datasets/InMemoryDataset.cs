@@ -159,7 +159,7 @@ public class InMemoryDataset
     /// <summary>
     /// Gets all the URIs of Graphs in the Dataset.
     /// </summary>
-    [Obsolete("Replaced by GraphNames")]
+    [Obsolete("Replaced by GraphNames", true)]
     public override IEnumerable<Uri> GraphUris
     {
         get 

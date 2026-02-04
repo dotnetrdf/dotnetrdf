@@ -1799,52 +1799,6 @@ public static class MimeTypesHelper
     }
 
     /// <summary>
-    /// Selects the appropriate MIME Type for the given File Extension if the File Extension is a standard extension for an RDF format.
-    /// </summary>
-    /// <param name="fileExt">File Extension.</param>
-    /// <returns></returns>
-    [Obsolete("This method is deprecated, please use GetDefinitionsForExtension() to find relevant definitions and extract the MIME types from there", true)]
-    public static string GetMimeType(string fileExt)
-    {
-        if (!_init) Init();
-        foreach (MimeTypeDefinition definition in Definitions)
-        {
-            if (definition.SupportsFileExtension(fileExt))
-            {
-                return definition.CanonicalMimeType;
-            }
-        }
-
-        // Unknown File Extension
-        throw new RdfParserSelectionException("Unable to determine the appropriate MIME Type for the File Extension '" + fileExt + "' as this is not a standard extension for an RDF format");
-    }
-
-    /// <summary>
-    /// Gets all the MIME Types associated with a given File Extension.
-    /// </summary>
-    /// <param name="fileExt">File Extension.</param>
-    /// <returns></returns>
-    [Obsolete("This method is deprecated, please use GetDefinitionsForExtension() to find relevant definitions and extract the MIME types from there", true)]
-    public static IEnumerable<string> GetMimeTypes(string fileExt)
-    {
-        if (!_init) Init();
-        var types = new List<string>();
-        foreach (MimeTypeDefinition definition in Definitions)
-        {
-            if (definition.SupportsFileExtension(fileExt))
-            {
-                types.AddRange(definition.MimeTypes);
-            }
-        }
-
-        if (types.Count > 0) return types;
-
-        // Unknown File Extension
-        throw new RdfParserSelectionException("Unable to determine the appropriate MIME Type for the File Extension '" + fileExt + "' as this is not a standard extension for an RDF format");
-    }
-
-
-    /// <summary>
     /// Gets the true file extension for a filename.
     /// </summary>
     /// <param name="filename"></param>

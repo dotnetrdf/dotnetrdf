@@ -111,7 +111,7 @@ public abstract class BaseTransactionalQuadDataset
     /// Removes a Graph from the Dataset.
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
-    [Obsolete("Replaced by RemoveGraph(IRefNode)")]
+    [Obsolete("Replaced by RemoveGraph(IRefNode)", true)]
     public sealed override bool RemoveGraph(Uri graphUri)
     {
         return RemoveGraph(graphUri == null ? null : new UriNode(graphUri));
@@ -172,7 +172,7 @@ public abstract class BaseTransactionalQuadDataset
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by this[IRefNode]")]
+    [Obsolete("Replaced by this[IRefNode]", true)]
     public override IGraph this[Uri graphUri]
     {
         get
@@ -236,7 +236,7 @@ public abstract class BaseTransactionalQuadDataset
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetModifiableGraph(IRefNode)")]
+    [Obsolete("Replaced by GetModifiableGraph(IRefNode)", true)]
     public sealed override IGraph GetModifiableGraph(Uri graphUri)
     {
         return GetModifiableGraph(new UriNode(graphUri));

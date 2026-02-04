@@ -296,9 +296,9 @@ public class WriterTests
     {
         if (formats.HasFlag(Formats.Turtle))
         {
-            yield return new(new CompressingTurtleWriter(TurtleSyntax.Original), new TurtleParser(TurtleSyntax.Original));
-            yield return new(new CompressingTurtleWriter(TurtleSyntax.W3C), new TurtleParser(TurtleSyntax.W3C));
-            yield return new(new CompressingTurtleWriter(TurtleSyntax.Rdf11Star), new TurtleParser(TurtleSyntax.Rdf11Star));
+            yield return new(new CompressingTurtleWriter(TurtleSyntax.Original), new TurtleParser(TurtleSyntax.Original, false));
+            yield return new(new CompressingTurtleWriter(TurtleSyntax.W3C), new TurtleParser(TurtleSyntax.W3C, false));
+            yield return new(new CompressingTurtleWriter(TurtleSyntax.Rdf11Star), new TurtleParser(TurtleSyntax.Rdf11Star, false));
             yield return new(new Notation3Writer(), new Notation3Parser());
         }
 

@@ -49,7 +49,7 @@ public class AddCommand
     /// <param name="sourceUri">Source Graph URI.</param>
     /// <param name="destUri">Destination Graph URI.</param>
     /// <param name="silent">Whether errors should be suppressed.</param>
-    [Obsolete("Replaced by AddCommand(IRefNode, IRefNode, bool)")]
+    [Obsolete("Replaced by AddCommand(IRefNode, IRefNode, bool)", true)]
     public AddCommand(Uri sourceUri, Uri destUri, bool silent)
         : base(SparqlUpdateCommandType.Add, sourceUri, destUri, silent) { }
 
@@ -58,7 +58,7 @@ public class AddCommand
     /// </summary>
     /// <param name="sourceUri">Source Graph URI.</param>
     /// <param name="destUri">Destination Graph URI.</param>
-    [Obsolete("Replaced by AddCommand(IRefNode, IRefNode, bool)")]
+    [Obsolete("Replaced by AddCommand(IRefNode, IRefNode, bool)", true)]
     public AddCommand(Uri sourceUri, Uri destUri)
         : base(SparqlUpdateCommandType.Add, sourceUri, destUri) { }
 

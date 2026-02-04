@@ -70,7 +70,7 @@ public static class Extensions
     /// </list>
     /// </para>
     /// </remarks>
-    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.")]
+    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.", true)]
     public static IEnumerable<T> AsEnumerable<T>(this T item)
     {
         yield return item;
@@ -93,7 +93,7 @@ public static class Extensions
     ///     </item>
     /// </list>
     /// </remarks>
-    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.")]
+    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.", true)]
     public static bool IsDisjoint<T>(this IEnumerable<T> x, IEnumerable<T> y)
     {
         return x.All(item => !y.Contains(item));
@@ -113,7 +113,7 @@ public static class Extensions
     ///     </item>
     /// </list>
     /// </remarks>
-    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.")]
+    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.", true)]
     public static IEnumerable<T[]> ChunkBy<T>(this IEnumerable<T> source, int size)
     {
         var buffer = new List<T>();
@@ -701,7 +701,7 @@ public static class Extensions
     ///     </item>
     /// </list>
     /// </remarks>
-    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.")]
+    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.", true)]
     public static string ToSafeString(this object obj)
     {
         return (obj == null) ? string.Empty : obj.ToString();
@@ -725,7 +725,7 @@ public static class Extensions
     ///     </item>
     /// </list>
     /// </remarks>
-    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.")]
+    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.", true)]
     public static string ToSafeString(this Uri u)
     {
         return (u == null) ? string.Empty : u.AbsoluteUri;
@@ -755,7 +755,7 @@ public static class Extensions
     ///     </item>
     /// </list>
     /// </remarks>
-    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.")]
+    [Obsolete("This method is deprecated and will be removed in a future version. See documentation for alternatives.", true)]
     public static string ToString(this Uri u, IUriFormatter formatter)
     {
         return formatter.FormatUri(u);

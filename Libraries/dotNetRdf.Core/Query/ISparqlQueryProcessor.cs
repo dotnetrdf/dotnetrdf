@@ -66,7 +66,7 @@ public interface ISparqlQueryProcessor
     /// <param name="rdfCallback">Callback for queries that return a Graph.</param>
     /// <param name="resultsCallback">Callback for queries that return a Result Set.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("This method is obsolete and will be removed in a future version. Use the ProcessQueryAsync method instead.")]
+    [Obsolete("This method is obsolete and will be removed in a future version. Use the ProcessQueryAsync method instead.", true)]
     void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, object state);
 
     /// <summary>
@@ -77,7 +77,7 @@ public interface ISparqlQueryProcessor
     /// <param name="query">SPARQL Query.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("This method is obsolete and will be removed in a future version. Use the ProcessQueryAsync method instead.")]
+    [Obsolete("This method is obsolete and will be removed in a future version. Use the ProcessQueryAsync method instead.", true)]
     void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, object state);
 
     /// <summary>

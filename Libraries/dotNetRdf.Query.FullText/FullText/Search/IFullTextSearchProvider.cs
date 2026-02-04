@@ -75,7 +75,7 @@ public interface IFullTextSearchProvider
     /// <param name="scoreThreshold">Score Threshold.</param>
     /// <param name="limit">Result Limit.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string, double, int)")]
+    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string, double, int)", true)]
     IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, String text, double scoreThreshold, int limit);
 
     /// <summary>
@@ -84,7 +84,7 @@ public interface IFullTextSearchProvider
     /// <param name="graphUris">Graph URIs.</param>
     /// <param name="text">Search Query.</param>
     /// <param name="scoreThreshold">Score Threshold.</param>
-    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string, double)")]
+    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string, double)", true)]
     IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, String text, double scoreThreshold);
 
     /// <summary>
@@ -93,7 +93,7 @@ public interface IFullTextSearchProvider
     /// <param name="graphUris">Graph URIs.</param>
     /// <param name="text">Search Query.</param>
     /// <param name="limit">Result Limit.</param>
-    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string, int)")]
+    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string, int)", true)]
     IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, String text, int limit);
 
     /// <summary>
@@ -101,7 +101,7 @@ public interface IFullTextSearchProvider
     /// </summary>
     /// <param name="graphUris">Graph URIs.</param>
     /// <param name="text">Search Query.</param>
-    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string)")]
+    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string)", true)]
     IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, String text);
 
     /// <summary>

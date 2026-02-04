@@ -112,7 +112,7 @@ public interface IAsyncStorageServer
     /// </summary>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by ListStoresAsync.")]
+    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by ListStoresAsync.", true)]
     void ListStores(AsyncStorageCallback callback, object state);
 
     /// <summary>
@@ -129,7 +129,7 @@ public interface IAsyncStorageServer
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
     /// <returns></returns>
-    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by GetDefaultTemplateAsync.")]
+    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by GetDefaultTemplateAsync.", true)]
     void GetDefaultTemplate(string id, AsyncStorageCallback callback, object state);
 
     /// <summary>
@@ -146,7 +146,7 @@ public interface IAsyncStorageServer
     /// <param name="id">ID.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by GetAvailableTemplatesAsync.")]
+    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by GetAvailableTemplatesAsync.", true)]
     void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state);
 
     /// <summary>
@@ -166,7 +166,7 @@ public interface IAsyncStorageServer
     /// <remarks>
     /// Behaviour with regards to whether creating a store overwrites an existing store with the same ID is at the discretion of the implementation and <em>SHOULD</em> be documented in an implementations comments.
     /// </remarks>
-    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by CreateStoreAsync.")]
+    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by CreateStoreAsync.", true)]
     void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, object state);
 
     /// <summary>
@@ -183,7 +183,7 @@ public interface IAsyncStorageServer
     /// <param name="storeID">ID of the store to delete.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by DeleteStoreAsync.")]
+    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by DeleteStoreAsync.", true)]
     void DeleteStore(string storeID, AsyncStorageCallback callback, object state);
 
     /// <summary>
@@ -200,7 +200,7 @@ public interface IAsyncStorageServer
     /// <param name="storeId">Store ID.</param>
     /// <param name="callback">Callback.</param>
     /// <param name="state">State to pass to the callback.</param>
-    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by GetStoreAsync.")]
+    [Obsolete("This method is obsolete and will be removed in a future release. Replaced by GetStoreAsync.", true)]
     void GetStore(string storeId, AsyncStorageCallback callback, object state);
 
     /// <summary>

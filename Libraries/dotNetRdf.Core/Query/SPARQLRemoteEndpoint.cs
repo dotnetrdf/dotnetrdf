@@ -41,7 +41,7 @@ namespace VDS.RDF.Query;
 /// <summary>
 /// A Class for connecting to a remote SPARQL Endpoint and executing Queries against it.
 /// </summary>
-[Obsolete("This class is obsolete and will be removed in a future release. Replaced by VDS.RDF.Query.SparqlQueryClient.")]
+[Obsolete("This class is obsolete and will be removed in a future release. Replaced by VDS.RDF.Query.SparqlQueryClient.", true)]
 public class SparqlRemoteEndpoint 
     : BaseEndpoint
 {

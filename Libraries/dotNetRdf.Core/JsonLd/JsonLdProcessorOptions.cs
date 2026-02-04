@@ -67,13 +67,6 @@ public class JsonLdProcessorOptions
     public Func<Uri, JsonLdLoaderOptions, RemoteDocument> DocumentLoader { get; set; }
 
     /// <summary>
-    /// The callback of the loader to be used to retrieve remote documents and contexts.
-    /// </summary>
-    /// <remarks>This property has been replaced by the <see cref="DocumentLoader"/> property whose name matches that defined by the JSON-LD 1.1 API specification.</remarks>
-    [Obsolete("The Loader property has been deprecated in favor of the DocumentLoader property.", true)]
-    public Func<Uri, JsonLdLoaderOptions, RemoteDocument> Loader { get => DocumentLoader; set => DocumentLoader = value; }
-
-    /// <summary>
     /// A context that is used to initialize the active context when expanding a document.
     /// </summary>
     public JToken ExpandContext { get; set; }

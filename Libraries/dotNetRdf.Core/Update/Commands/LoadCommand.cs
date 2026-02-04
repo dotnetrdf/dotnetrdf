@@ -62,7 +62,7 @@ public class LoadCommand : SparqlUpdateCommand
     /// <param name="graphUri">Target URI for the Graph to store data in.</param>
     /// <param name="silent">Whether errors loading should be suppressed.</param>
     /// <param name="loader">The loader to use for retrieving and parsing data.</param>
-    [Obsolete("Replaced by LoadCommand(Uri, IRefNode, bool Loader)")]
+    [Obsolete("Replaced by LoadCommand(Uri, IRefNode, bool Loader)", true)]
     public LoadCommand(Uri sourceUri, Uri graphUri, bool silent, Loader loader = null)
         : this(sourceUri, graphUri == null ? null : new UriNode(graphUri), silent, loader)
     {
@@ -73,7 +73,7 @@ public class LoadCommand : SparqlUpdateCommand
     /// </summary>
     /// <param name="sourceUri">Source URI to load data from.</param>
     /// <param name="silent">Whether errors loading should be suppressed.</param>
-    [Obsolete("Replaced by LoadCommand(Uri, IRefNode, bool Loader)")]
+    [Obsolete("Replaced by LoadCommand(Uri, IRefNode, bool Loader)", true)]
     public LoadCommand(Uri sourceUri, bool silent)
         : this(sourceUri, (IRefNode)null, silent) { }
 
@@ -82,7 +82,7 @@ public class LoadCommand : SparqlUpdateCommand
     /// </summary>
     /// <param name="sourceUri">Source URI to load data from.</param>
     /// <param name="targetUri">Target URI for the Graph to store data in.</param>
-    [Obsolete("Replaced by LoadCommand(Uri, IRefNode, bool Loader)")]
+    [Obsolete("Replaced by LoadCommand(Uri, IRefNode, bool Loader)", true)]
     public LoadCommand(Uri sourceUri, Uri targetUri)
         : this(sourceUri, targetUri, false) { }
 
@@ -90,7 +90,7 @@ public class LoadCommand : SparqlUpdateCommand
     /// Creates a new LOAD command which operates on the Default Graph.
     /// </summary>
     /// <param name="sourceUri">Source URI to load data from.</param>
-    [Obsolete("Replaced by LoadCommand(Uri, IRefNode, bool Loader)")]
+    [Obsolete("Replaced by LoadCommand(Uri, IRefNode, bool Loader)", true)]
     public LoadCommand(Uri sourceUri)
         : this(sourceUri, null) { }
 
@@ -104,7 +104,7 @@ public class LoadCommand : SparqlUpdateCommand
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by AffectsGraph(IRefNode)")]
+    [Obsolete("Replaced by AffectsGraph(IRefNode)", true)]
     public override bool AffectsGraph(Uri graphUri)
     {
         return AffectsGraph(graphUri == null ? null : new UriNode(graphUri));
@@ -128,7 +128,7 @@ public class LoadCommand : SparqlUpdateCommand
     /// <summary>
     /// Gets the URI of the Graph to load data into.
     /// </summary>
-    [Obsolete("Replaced by TargetGraphName")]
+    [Obsolete("Replaced by TargetGraphName", true)]
     public Uri TargetUri => ((IUriNode)TargetGraphName)?.Uri;
 
     /// <summary>

@@ -88,7 +88,7 @@ public abstract class WrapperDataset
     /// Sets the Active Graph for the dataset.
     /// </summary>
     /// <param name="graphUris">Graph URIs.</param>
-    [Obsolete("Replaced by SetActiveGraph(IList<IRefNode>)")]
+    [Obsolete("Replaced by SetActiveGraph(IList<IRefNode>)", true)]
     public virtual void SetActiveGraph(IEnumerable<Uri> graphUris)
     {
         _dataset.SetActiveGraph(graphUris);
@@ -98,7 +98,7 @@ public abstract class WrapperDataset
     /// Sets the Active Graph for the dataset.
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
-    [Obsolete("Replaced by SetActiveGraph(IRefNode)")]
+    [Obsolete("Replaced by SetActiveGraph(IRefNode)", true)]
     public virtual void SetActiveGraph(Uri graphUri)
     {
         _dataset.SetActiveGraph(graphUri);
@@ -126,7 +126,7 @@ public abstract class WrapperDataset
     /// Sets the Default Graph for the dataset.
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
-    [Obsolete("Replaced by SetDefaultGraph(IRefNode)")]
+    [Obsolete("Replaced by SetDefaultGraph(IRefNode)", true)]
     public virtual void SetDefaultGraph(Uri graphUri)
     {
         _dataset.SetDefaultGraph(graphUri);
@@ -136,7 +136,7 @@ public abstract class WrapperDataset
     /// Sets the Default Graph for the dataset.
     /// </summary>
     /// <param name="graphUris">Graph URIs.</param>
-    [Obsolete("Replaced by SetDefaultGraph(IList<IRefNode>)")]
+    [Obsolete("Replaced by SetDefaultGraph(IList<IRefNode>)", true)]
     public virtual void SetDefaultGraph(IEnumerable<Uri> graphUris)
     {
         _dataset.SetDefaultGraph(graphUris);
@@ -178,7 +178,7 @@ public abstract class WrapperDataset
     /// <summary>
     /// Gets the Default Graph URIs.
     /// </summary>
-    [Obsolete("Replaced by DefaultGraphNames")]
+    [Obsolete("Replaced by DefaultGraphNames", true)]
     public virtual IEnumerable<Uri> DefaultGraphUris
     {
         get
@@ -190,7 +190,7 @@ public abstract class WrapperDataset
     /// <summary>
     /// Gets the Active Graph URIs.
     /// </summary>
-    [Obsolete("Replaced by ActiveGraphNames")]
+    [Obsolete("Replaced by ActiveGraphNames", true)]
     public virtual IEnumerable<Uri> ActiveGraphUris
     {
         get
@@ -232,7 +232,7 @@ public abstract class WrapperDataset
     /// Removes a Graph from the dataset.
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
-    [Obsolete("Replaced by RemoveGraph(IRefNode)")]
+    [Obsolete("Replaced by RemoveGraph(IRefNode)", true)]
     public virtual bool RemoveGraph(Uri graphUri)
     {
         return _dataset.RemoveGraph(graphUri);
@@ -253,7 +253,7 @@ public abstract class WrapperDataset
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by HasGraph(IRefNode)")]
+    [Obsolete("Replaced by HasGraph(IRefNode)", true)]
     public virtual bool HasGraph(Uri graphUri)
     {
         return _dataset.HasGraph(graphUri);
@@ -283,7 +283,7 @@ public abstract class WrapperDataset
     /// <summary>
     /// Gets the URIs of Graphs in the dataset.
     /// </summary>
-    [Obsolete("Replaced by GraphNames")]
+    [Obsolete("Replaced by GraphNames", true)]
     public virtual IEnumerable<Uri> GraphUris
     {
         get 
@@ -302,7 +302,7 @@ public abstract class WrapperDataset
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by this[IRefNode]")]
+    [Obsolete("Replaced by this[IRefNode]", true)]
     public virtual IGraph this[Uri graphUri]
     {
         get
@@ -328,7 +328,7 @@ public abstract class WrapperDataset
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by GetModifiableGraph(IRefNode)")]
+    [Obsolete("Replaced by GetModifiableGraph(IRefNode)", true)]
     public virtual IGraph GetModifiableGraph(Uri graphUri)
     {
         return _dataset.GetModifiableGraph(graphUri);

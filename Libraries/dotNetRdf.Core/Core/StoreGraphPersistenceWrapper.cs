@@ -50,7 +50,7 @@ public class StoreGraphPersistenceWrapper
     /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageCapabilities.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph.
     /// </para>
     /// </remarks>
-    [Obsolete("Replaced by StoreGraphPersistenceWrapper(IStorageProvider, IGraph, bool)")]
+    [Obsolete("Replaced by StoreGraphPersistenceWrapper(IStorageProvider, IGraph, bool)", true)]
     public StoreGraphPersistenceWrapper(IStorageProvider manager, IGraph g, Uri graphUri, bool writeOnly)
         : base(g, writeOnly)
     {
@@ -106,7 +106,7 @@ public class StoreGraphPersistenceWrapper
     /// When not operating in write-only mode the existing Graph will be loaded from the underlying store.
     /// </para>
     /// </remarks>
-    [Obsolete("Replaced by StoreGraphPersistenceWrapper(IStorageProvider, IRefNode, bool)")]
+    [Obsolete("Replaced by StoreGraphPersistenceWrapper(IStorageProvider, IRefNode, bool)", true)]
     public StoreGraphPersistenceWrapper(IStorageProvider manager, Uri graphUri, bool writeOnly)
         : base(new Graph(graphUri == null ? null : new UriNode(graphUri)), writeOnly)
     {
@@ -157,7 +157,7 @@ public class StoreGraphPersistenceWrapper
     /// </summary>
     /// <param name="manager">Generic IO Manager.</param>
     /// <param name="graphUri">Graph URI (the URI the Graph will be persisted as).</param>
-    [Obsolete("Replaced by StoreGraphPersistenceWrapper(IStorageProvider, IRefNode)")]
+    [Obsolete("Replaced by StoreGraphPersistenceWrapper(IStorageProvider, IRefNode)", true)]
     public StoreGraphPersistenceWrapper(IStorageProvider manager, Uri graphUri)
         : this(manager, graphUri, false) { }
 

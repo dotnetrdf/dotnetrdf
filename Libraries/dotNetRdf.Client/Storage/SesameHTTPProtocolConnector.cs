@@ -1325,7 +1325,7 @@ public abstract class BaseSesameHttpProtocolConnector
     /// <param name="method">HTTP Method.</param>
     /// <param name="queryParams">Querystring Parameters.</param>
     /// <returns></returns>
-    [Obsolete("This method is obsolete and will be removed in a future release. Use the overload that returns an HttpRequestMessage instead.")]
+    [Obsolete("This method is obsolete and will be removed in a future release. Use the overload that returns an HttpRequestMessage instead.", true)]
     protected virtual HttpWebRequest CreateRequest(string servicePath, string accept, string method, Dictionary<string, string> queryParams)
     {
         // Build the Request Uri

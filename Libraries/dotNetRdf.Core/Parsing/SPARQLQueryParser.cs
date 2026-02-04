@@ -156,16 +156,12 @@ public class SparqlQueryParser
     /// Get/set whether query optimization should be used.
     /// </summary>
     /// <remarks>Defaults to true.</remarks>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public bool QueryOptimisation { get; set; } = Options.QueryOptimisation; // = true;
-#pragma warning restore CS0618 // Type or member is obsolete
+    public bool QueryOptimisation { get; set; }  = true;
 
     /// <summary>
     /// Gets/Sets whether functions that can't be parsed into Expressions should be represented by the <see cref="VDS.RDF.Query.Expressions.Functions.UnknownFunction">UnknownFunction</see>.
     /// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public bool AllowUnknownFunctions { get; set; } = Options.QueryAllowUnknownFunctions; //= true;
-#pragma warning restore CS0618 // Type or member is obsolete
+    public bool AllowUnknownFunctions { get; set; } = true;
 
     #endregion
 

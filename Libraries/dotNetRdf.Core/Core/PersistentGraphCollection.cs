@@ -104,7 +104,7 @@ class PersistentGraphCollection
     /// </summary>
     /// <param name="graphUri">Graph Uri to test.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by Contains(IRefNode)")]
+    [Obsolete("Replaced by Contains(IRefNode)", true)]
     public override bool Contains(Uri graphUri)
     {
         return Contains(graphUri == null ? null : new UriNode(graphUri));
@@ -150,7 +150,7 @@ class PersistentGraphCollection
         return false;
     }
 
-    [Obsolete("Replaced by Remove(IRefNode)")]
+    [Obsolete("Replaced by Remove(IRefNode)", true)]
     public override bool Remove(Uri graphUri)
     {
         if (Contains(graphUri))
@@ -175,7 +175,7 @@ class PersistentGraphCollection
     /// <summary>
     /// Provides access to the Graph URIs of Graphs in the Collection.
     /// </summary>
-    [Obsolete("Replaced by GraphNames")]
+    [Obsolete("Replaced by GraphNames", true)]
     public override IEnumerable<Uri> GraphUris
     {
         get
@@ -217,7 +217,7 @@ class PersistentGraphCollection
     /// </summary>
     /// <param name="graphUri">Graph Uri.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by this[IRefNode]")]
+    [Obsolete("Replaced by this[IRefNode]", true)]
     public override IGraph this[Uri graphUri]
     {
         get

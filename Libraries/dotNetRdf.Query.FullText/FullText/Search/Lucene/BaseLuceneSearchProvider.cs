@@ -173,7 +173,7 @@ public abstract class BaseLuceneSearchProvider
     /// <param name="scoreThreshold">Score Threshold.</param>
     /// <param name="limit">Result Limit.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string, double, int)")]
+    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string, double, int)", true)]
     public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold, int limit)
     {
         EnsureCurrent();
@@ -194,7 +194,7 @@ public abstract class BaseLuceneSearchProvider
     /// <param name="text">Search Query.</param>
     /// <param name="scoreThreshold">Score Threshold.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string, double)")]
+    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string, double)", true)]
     public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold)
     {
         EnsureCurrent();
@@ -213,7 +213,7 @@ public abstract class BaseLuceneSearchProvider
     /// <param name="text">Search Query.</param>
     /// <param name="limit">Result Limit.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string, int)")]
+    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string, int)", true)]
     public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, int limit)
     {
         EnsureCurrent();
@@ -232,7 +232,7 @@ public abstract class BaseLuceneSearchProvider
     /// <param name="graphUris">Graph URIs.</param>
     /// <param name="text">Search Query.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string)")]
+    [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string)", true)]
     public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text)
     {
         EnsureCurrent();
@@ -322,7 +322,7 @@ public abstract class BaseLuceneSearchProvider
     /// <param name="graphUris">Graph URIs.</param>
     /// <param name="results">Results.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by FilterByGraph(IEnumerable<IRefNode>, IEnumerable<IFullTextSearchResult>")]
+    [Obsolete("Replaced by FilterByGraph(IEnumerable<IRefNode>, IEnumerable<IFullTextSearchResult>", true)]
     private IEnumerable<IFullTextSearchResult> FilterByGraph(IEnumerable<Uri> graphUris, IEnumerable<IFullTextSearchResult> results)
     {
         if (graphUris == null)

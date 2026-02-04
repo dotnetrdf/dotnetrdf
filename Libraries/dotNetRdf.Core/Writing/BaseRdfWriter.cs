@@ -42,9 +42,7 @@ public abstract class BaseRdfWriter : IRdfWriter
     /// <inheritdoc/>
     public virtual void Save(IGraph g, string filename)
     {
-#pragma warning disable CS0618 // Type or member is obsolete
-        Save(g, filename, new UTF8Encoding(Options.UseBomForUtf8 /* false */));
-#pragma warning restore CS0618 // Type or member is obsolete
+        Save(g, filename, new UTF8Encoding(false));
     }
 
     /// <inheritdoc/>

@@ -35,15 +35,13 @@ namespace VDS.RDF.Update;
 /// </summary>
 public class RemoteUpdateProcessor : ISparqlUpdateProcessor
 {
-    [Obsolete]
-    private readonly SparqlRemoteUpdateEndpoint _endpoint;
     private readonly SparqlUpdateClient _client;
 
     /// <summary>
     /// Creates a new Remote Update Processor.
     /// </summary>
     /// <param name="endpointUri">Endpoint URI.</param>
-    [Obsolete("Replaced by RemoteUpdateProcessor(SparqlUpdateClient)")]
+    [Obsolete("Replaced by RemoteUpdateProcessor(SparqlUpdateClient)", true)]
     public RemoteUpdateProcessor(string endpointUri)
         : this(new SparqlRemoteUpdateEndpoint(endpointUri)) { }
 
@@ -51,7 +49,7 @@ public class RemoteUpdateProcessor : ISparqlUpdateProcessor
     /// Creates a new Remote Update Processor.
     /// </summary>
     /// <param name="endpointUri">Endpoint URI.</param>
-    [Obsolete("Replaced by RemoteUpdateProcessor(SparqlUpdateClient)")]
+    [Obsolete("Replaced by RemoteUpdateProcessor(SparqlUpdateClient)", true)]
     public RemoteUpdateProcessor(Uri endpointUri)
         : this(new SparqlRemoteUpdateEndpoint(endpointUri)) { }
 
@@ -59,10 +57,9 @@ public class RemoteUpdateProcessor : ISparqlUpdateProcessor
     /// Creates a new Remote Update Processor.
     /// </summary>
     /// <param name="endpoint">SPARQL Remote Update Endpoint.</param>
-    [Obsolete("Replaced by RemoteUpdateProcessor(SparqlUpdateClient)")]
+    [Obsolete("Replaced by RemoteUpdateProcessor(SparqlUpdateClient)", true)]
     public RemoteUpdateProcessor(SparqlRemoteUpdateEndpoint endpoint)
     {
-        _endpoint = endpoint;
     }
 
     /// <summary>
@@ -132,14 +129,7 @@ public class RemoteUpdateProcessor : ISparqlUpdateProcessor
     /// <param name="cmd">Command.</param>
     public void ProcessCommand(SparqlUpdateCommand cmd)
     {
-        if (_client != null)
-        {
-            Task.Run(()=>_client.UpdateAsync(cmd.ToString())).Wait();
-        }
-        else
-        {
-            _endpoint.Update(cmd.ToString());
-        }
+        Task.Run(()=>_client.UpdateAsync(cmd.ToString())).Wait();
     }
 
     /// <summary>
@@ -152,19 +142,11 @@ public class RemoteUpdateProcessor : ISparqlUpdateProcessor
         commands.UpdateExecutionTime = null;
         try
         {
-            if (_client != null)
-            {
-                Task.Run(() => _client.UpdateAsync(commands.ToString())).Wait();
-            }
-            else
-            {
-                _endpoint.Update(commands.ToString());
-            }
+            Task.Run(() => _client.UpdateAsync(commands.ToString())).Wait();
         }
         finally
         {
-            TimeSpan elapsed = (DateTime.Now - start);
-            commands.UpdateExecutionTime = elapsed;
+            commands.UpdateExecutionTime = DateTime.Now - start;
         }
     }
 

@@ -33,6 +33,11 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
+using Scriban.Syntax;
+using System.Net.Http;
+using GraphQLParser;
+using System.Threading.Tasks;
+using VDS.RDF.Utils;
 
 namespace VDS.RDF.Storage;
 
@@ -271,30 +276,26 @@ public class SparqlGraphStoreProtocolTest
     }
 
     [Fact]
-    public void StorageSparqlUniformHttpProtocolPostCreate()
+    public async Task StorageSparqlUniformHttpProtocolPostCreate()
     {
         SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
-
-        var request = (HttpWebRequest)WebRequest.Create(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
-        request.Method = "POST";
-        request.ContentType = "application/rdf+xml";
-
+        var client = new HttpClient();
+        
         var g = new Graph();
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
+        var postContent = new RdfGraphContent(g, new RdfXmlWriter());
+        using var response = await client.PostAsync(
+            TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri),
+            postContent,
+            TestContext.Current.CancellationToken
+        );
 
-        using (var writer = new StreamWriter(request.GetRequestStream()))
-        {
-            var rdfxmlwriter = new RdfXmlWriter();
-            rdfxmlwriter.Save(g, writer);
-            writer.Close();
-        }
-
-        using var response = (HttpWebResponse)request.GetResponse();
         //Should get a 201 Created response
         if (response.StatusCode == HttpStatusCode.Created)
         {
-            if (response.Headers["Location"] == null) Assert.Fail("A Location: Header containing the URI of the newly created Graph should have been returned");
-            var graphUri = new Uri(response.Headers["Location"]);
+            var location = response.Headers.Location;
+            if (location == null) Assert.Fail("A Location: Header containing the URI of the newly created Graph should have been returned");
+            var graphUri = location;
 
             Console.WriteLine("New Graph URI is " + graphUri.ToString());
 
@@ -310,11 +311,10 @@ public class SparqlGraphStoreProtocolTest
         {
             Assert.Fail("A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
         }
-        response.Close();
     }
 
     [Fact]
-    public void StorageSparqlUniformHttpProtocolPostCreateMultiple()
+    public async Task StorageSparqlUniformHttpProtocolPostCreateMultiple()
     {
         SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
 
@@ -322,42 +322,34 @@ public class SparqlGraphStoreProtocolTest
         FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
         var uris = new List<Uri>();
+        var client = new HttpClient();
         for (var i = 0; i < 10; i++)
         {
-            var request = (HttpWebRequest)WebRequest.Create(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
-            request.Method = "POST";
-            request.ContentType = "application/rdf+xml";
+            using var response = await client.PostAsync(
+                TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri),
+                new RdfGraphContent(g, new RdfXmlWriter()),
+                TestContext.Current.CancellationToken
+            );
 
-            using (var writer = new StreamWriter(request.GetRequestStream()))
+            //Should get a 201 Created response
+            if (response.StatusCode == HttpStatusCode.Created)
             {
-                var rdfxmlwriter = new RdfXmlWriter();
-                rdfxmlwriter.Save(g, writer);
-                writer.Close();
+                if (response.Headers.Location == null) Assert.Fail("A Location: Header containing the URI of the newly created Graph should have been returned");
+                var graphUri = response.Headers.Location;
+                uris.Add(graphUri);
+
+                Console.WriteLine("New Graph URI is " + graphUri.ToString());
+
+                Console.WriteLine("Now attempting to retrieve this Graph from the Store");
+                var h = new Graph();
+                connector.LoadGraph(h, graphUri);
+
+                Assert.Equal(g, h);
+                Console.WriteLine("Graphs were equal as expected");
             }
-
-            using (var response = (HttpWebResponse)request.GetResponse())
+            else
             {
-                //Should get a 201 Created response
-                if (response.StatusCode == HttpStatusCode.Created)
-                {
-                    if (response.Headers["Location"] == null) Assert.Fail("A Location: Header containing the URI of the newly created Graph should have been returned");
-                    var graphUri = new Uri(response.Headers["Location"]);
-                    uris.Add(graphUri);
-
-                    Console.WriteLine("New Graph URI is " + graphUri.ToString());
-
-                    Console.WriteLine("Now attempting to retrieve this Graph from the Store");
-                    var h = new Graph();
-                    connector.LoadGraph(h, graphUri);
-
-                    Assert.Equal(g, h);
-                    Console.WriteLine("Graphs were equal as expected");
-                }
-                else
-                {
-                    Assert.Fail("A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
-                }
-                response.Close();
+                Assert.Fail("A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
             }
             Console.WriteLine();
         }

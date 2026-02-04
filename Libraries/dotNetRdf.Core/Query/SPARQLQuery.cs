@@ -138,7 +138,7 @@ public sealed class SparqlQuery
     /// <summary>
     /// Gets the Default Graph URIs for the Query.
     /// </summary>
-    [Obsolete("Replaced by DefaultGraphNames")]
+    [Obsolete("Replaced by DefaultGraphNames", true)]
     public IEnumerable<Uri> DefaultGraphs => _defaultGraphs.Where(x=>x is null || x.NodeType == NodeType.Uri).Select(x=>(x as IUriNode)?.Uri);
 
     /// <summary>
@@ -149,7 +149,7 @@ public sealed class SparqlQuery
     /// <summary>
     /// Gets the Named Graph URIs for the Query.
     /// </summary>
-    [Obsolete("Replaced by NamedGraphNames")]
+    [Obsolete("Replaced by NamedGraphNames", true)]
     public IEnumerable<Uri> NamedGraphs => _namedGraphs.Where(x => x is null || x.NodeType == NodeType.Uri)
         .Select(x => (x as IUriNode)?.Uri);
 
@@ -433,7 +433,7 @@ public sealed class SparqlQuery
     /// <summary>
     /// The number of results that would be returned without any limit clause to a query or -1 if not supported. Defaults to the same value as the Count member.
     /// </summary>
-    [Obsolete("This property is obsolete and is no longer set when a query is processed")]
+    [Obsolete("This property is obsolete and is no longer set when a query is processed", true)]
     public int VirtualCount { get; internal set; } = -1;
 
     #endregion
@@ -494,7 +494,7 @@ public sealed class SparqlQuery
     /// Adds a Default Graph URI.
     /// </summary>
     /// <param name="u">Graph URI.</param>
-    [Obsolete("Replaced by AddDefaultGraph(IRefNode)")]
+    [Obsolete("Replaced by AddDefaultGraph(IRefNode)", true)]
     public void AddDefaultGraph(Uri u)
     {
         AddDefaultGraph(new UriNode(u));
@@ -504,7 +504,7 @@ public sealed class SparqlQuery
     /// Adds a Named Graph URI.
     /// </summary>
     /// <param name="u">Graph URI.</param>
-    [Obsolete("Replaced by AddNamedGraph(IRefNode)")]
+    [Obsolete("Replaced by AddNamedGraph(IRefNode)", true)]
     public void AddNamedGraph(Uri u)
     {
         AddNamedGraph(new UriNode(u));

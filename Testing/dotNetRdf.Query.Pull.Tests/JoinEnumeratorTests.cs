@@ -1,16 +1,25 @@
 using VDS.RDF;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Pull;
 using VDS.RDF.Query.Pull.Algebra;
 
 namespace dotNetRdf.Query.Pull.Tests;
 
 public class JoinEnumeratorTests : EnumeratorTestBase
 {
+    private readonly TripleStore _store = new ();
+    private readonly PullEvaluationContext _context;
+    public JoinEnumeratorTests()
+    {
+        _store.Add(new VDS.RDF.Graph());
+        _context = new PullEvaluationContext(_store);
+    }
+
     [Fact]
     public async Task TestIntegerSequence()
     {
         var enumeration = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 6, 3);
-        IAsyncEnumerator<ISet> seq = enumeration.Evaluate(null, null, null, TestContext.Current.CancellationToken).GetAsyncEnumerator(TestContext.Current.CancellationToken);
+        IAsyncEnumerator<ISet> seq = enumeration.Evaluate(_context, null, null, TestContext.Current.CancellationToken).GetAsyncEnumerator(TestContext.Current.CancellationToken);
         Assert.True(await seq.MoveNextAsync());
         Assert.Equal("0", (seq.Current["x"] as ILiteralNode)?.Value);
         Assert.True(await seq.MoveNextAsync());
@@ -26,7 +35,7 @@ public class JoinEnumeratorTests : EnumeratorTestBase
         var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3);
         var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5, wait:100);
         var join = new AsyncJoinEvaluation(lhs, rhs, ["x"]);
-        List<ISet> results = await join.Evaluate(null, null, cancellationToken: TestContext.Current.CancellationToken).ToListAsync(cancellationToken: TestContext.Current.CancellationToken);
+        List<ISet> results = await join.Evaluate(_context, null, cancellationToken: TestContext.Current.CancellationToken).ToListAsync(cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(5, results.Count);
         var resultValues = results.Select(r => r["x"]).OfType<ILiteralNode>().Select(n => n.Value).ToArray();
         Assert.Contains("0", resultValues);
@@ -39,7 +48,7 @@ public class JoinEnumeratorTests : EnumeratorTestBase
         var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3, wait:100);
         var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5);
         var join = new AsyncJoinEvaluation(lhs, rhs, ["x"]);
-        List<ISet> results = await join.Evaluate(null, null, cancellationToken: TestContext.Current.CancellationToken).ToListAsync(cancellationToken: TestContext.Current.CancellationToken);
+        List<ISet> results = await join.Evaluate(_context, null, cancellationToken: TestContext.Current.CancellationToken).ToListAsync(cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(5, results.Count);
         var resultValues = results.Select(r => r["x"]).OfType<ILiteralNode>().Select(n => n.Value).ToArray();
         Assert.Contains("0", resultValues);
@@ -52,7 +61,7 @@ public class JoinEnumeratorTests : EnumeratorTestBase
         var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3);
         var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5);
         var join = new AsyncJoinEvaluation(lhs, rhs, ["x"]);
-        List<ISet> results = await join.Evaluate(null, null, cancellationToken: TestContext.Current.CancellationToken).ToListAsync(cancellationToken: TestContext.Current.CancellationToken);
+        List<ISet> results = await join.Evaluate(_context, null, cancellationToken: TestContext.Current.CancellationToken).ToListAsync(cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(5, results.Count);
         var resultValues = results.Select(r => r["x"]).OfType<ILiteralNode>().Select(n => n.Value).ToArray();
         Assert.Contains("0", resultValues);

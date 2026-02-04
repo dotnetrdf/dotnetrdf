@@ -66,7 +66,7 @@ public abstract class BaseTransactionalDataset
     /// Creates a new Transactional Dataset with a fixed Default Graph and no Union Default Graph.
     /// </summary>
     /// <param name="defaultGraphUri">Default Graph URI.</param>
-    [Obsolete("Replaced by BaseTransactionalDataset(IRefNode)")]
+    [Obsolete("Replaced by BaseTransactionalDataset(IRefNode)", true)]
     public BaseTransactionalDataset(Uri defaultGraphUri)
         : base(defaultGraphUri) { }
 
@@ -110,7 +110,7 @@ public abstract class BaseTransactionalDataset
     /// Removes a Graph from the Dataset.
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
-    [Obsolete("Replaced by RemoveGraph(IRefNode)")]
+    [Obsolete("Replaced by RemoveGraph(IRefNode)", true)]
     public sealed override bool RemoveGraph(Uri graphUri)
     {
         return RemoveGraph(graphUri == null ? null : new UriNode(graphUri));
@@ -155,7 +155,7 @@ public abstract class BaseTransactionalDataset
     /// <remarks>
     /// If the Graph has been modified during the active Transaction the modified version is returned rather than the original version.
     /// </remarks>
-    [Obsolete("Replaced by this[IRefNode]")]
+    [Obsolete("Replaced by this[IRefNode]", true)]
     public sealed override IGraph this[Uri graphUri]
     {
         get

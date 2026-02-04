@@ -66,9 +66,7 @@ public class TriGWriter
     /// <summary>
     /// Gets/Sets the Compression Level for the writer.
     /// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public int CompressionLevel { get; set; } = Options.DefaultCompressionLevel; //= WriterCompressionLevel.Default;
-#pragma warning restore CS0618 // Type or member is obsolete
+    public int CompressionLevel { get; set; } = WriterCompressionLevel.Default;
 
     /// <summary>
     /// Gets/Sets whether N3 Compatibility Mode is used, in this mode an = is written after Graph Names so an N3 parser can read the TriG file correctly.
@@ -81,9 +79,7 @@ public class TriGWriter
     /// <summary>
     /// Gets/Sets whether multi-threaded writing will be used to generate output faster.
     /// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public bool UseMultiThreadedWriting { get; set; } = Options.AllowMultiThreadedWriting; // = false;
-#pragma warning restore CS0618 // Type or member is obsolete
+    public bool UseMultiThreadedWriting { get; set; } = false;
 
     /// <summary>
     /// Get/Sets the syntax mode for the writer.

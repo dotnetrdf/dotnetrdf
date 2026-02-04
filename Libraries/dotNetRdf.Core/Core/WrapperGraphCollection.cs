@@ -83,7 +83,7 @@ public abstract class WrapperGraphCollection
     /// </summary>
     /// <param name="graphUri"></param>
     /// <returns></returns>
-    [Obsolete("Replaced by Contains(IRefNode)")]
+    [Obsolete("Replaced by Contains(IRefNode)", true)]
     public override bool Contains(Uri graphUri)
     {
         return _graphs.Contains(graphUri);
@@ -133,7 +133,7 @@ public abstract class WrapperGraphCollection
     /// <summary>
     /// Gets the URIs of the Graphs in the collection.
     /// </summary>
-    [Obsolete("Replaced by GraphNames")]
+    [Obsolete("Replaced by GraphNames", true)]
     public override IEnumerable<Uri> GraphUris
     {
         get 
@@ -152,7 +152,7 @@ public abstract class WrapperGraphCollection
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by Remove(IRefNode)")]
+    [Obsolete("Replaced by Remove(IRefNode)", true)]
     public override bool Remove(Uri graphUri)
     {
         return _graphs.Remove(graphUri);
@@ -175,7 +175,7 @@ public abstract class WrapperGraphCollection
     /// </summary>
     /// <param name="graphUri">Graph URI.</param>
     /// <returns></returns>
-    [Obsolete("Replaced by this[IRefNode]")]
+    [Obsolete("Replaced by this[IRefNode]", true)]
     public override IGraph this[Uri graphUri]
     {
         get

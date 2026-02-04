@@ -40,9 +40,6 @@ namespace VDS.RDF.Writing;
 /// <summary>
 /// Class for generating Turtle Concrete RDF Syntax which provides varying levels of Syntax Compression.
 /// </summary>
-/// <remarks>
-/// Similar in speed to the standard <see cref="TurtleWriter">TurtleWriter</see> but capable of using more syntax compressions depending on the Compression level set.
-/// </remarks>
 /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue.</threadsafety>
 public class CompressingTurtleWriter 
     : BaseRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, ICompressingWriter, INamespaceWriter, IFormatterBasedWriter
@@ -112,9 +109,7 @@ public class CompressingTurtleWriter
     /// If the Compression Level is set to <see cref="WriterCompressionLevel.More">More</see> or above then Blank Node Collections and Collection syntax will be used if the Graph contains Triples that can be compressed in that way;
     /// and if writing <see cref="TurtleSyntax.Rdf11Star"/> syntax, triple annotations syntax will be used if the graph contains asserted triples that are also quoted as the subject of one or more other triples.</para>
     /// </remarks>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public int CompressionLevel { get; set; } = Options.DefaultCompressionLevel; // = WriterCompressionLevel.More;
-#pragma warning restore CS0618 // Type or member is obsolete
+    public int CompressionLevel { get; set; } = WriterCompressionLevel.More;
 
     /// <summary>
     /// Gets/Sets the Default Namespaces that are always available.

@@ -79,9 +79,7 @@ public class TriGParser
     /// <summary>
     /// Gets/Sets the token queue mode used.
     /// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-    public TokenQueueMode TokenQueueMode { get; set; } = Options.DefaultTokenQueueMode; // TokenQueueMode.SynchronousBufferDuringParsing
-#pragma warning restore CS0618 // Type or member is obsolete
+    public TokenQueueMode TokenQueueMode { get; set; } = TokenQueueMode.SynchronousBufferDuringParsing;
 
     /// <summary>
     /// Loads the named Graphs from the TriG input into the given Triple Store.

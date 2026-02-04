@@ -204,24 +204,6 @@ public class NTriplesFormatter
     }
 
     /// <summary>
-    /// Formats a Character.
-    /// </summary>
-    /// <param name="c">Character.</param>
-    /// <returns></returns>
-    [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", true)]
-    public override string FormatChar(char c)
-    {
-        if (Syntax != NTriplesSyntax.Original) return base.FormatChar(c);
-        if (c <= 127)
-        {
-            // ASCII
-            return c.ToString();
-        }
-        // Small Unicode Escape required
-        return "\\u" + ((int)c).ToString("X4");
-    }
-
-    /// <summary>
     /// Formats a sequence of characters as a String.
     /// </summary>
     /// <param name="cs">Characters.</param>
