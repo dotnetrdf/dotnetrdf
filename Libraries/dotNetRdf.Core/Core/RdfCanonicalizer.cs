@@ -82,7 +82,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
         // 1) Create the canonicalization state (done in constructor).
         // Note: Since our input will always be a dataset, we do not need to parse n-quads syntax.
 
-        var outputDataset = new TripleStore();
+        using var outputDataset = new TripleStore();
         var inputDatasetEnum = inputDataset.Graphs.ToList();
 
         // 2) For every quad (generated here using LINQ) in the input dataset

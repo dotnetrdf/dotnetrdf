@@ -242,6 +242,8 @@ public abstract class WrapperTripleCollection
             _isDisposed = true;
             if (disposing)
             {
+                _triples.TripleAdded -= HandleTripleAdded;
+                _triples.TripleRemoved -= HandleTripleRemoved;
                 if (_disposeTriples)
                 {
                     _triples.Dispose();

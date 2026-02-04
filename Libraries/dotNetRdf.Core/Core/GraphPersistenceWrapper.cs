@@ -1219,6 +1219,7 @@ public class GraphPersistenceWrapper
     {
         if (disposing) GC.SuppressFinalize(this);
         Flush();
+        DetachEventHandlers(_g.Triples);
     }
 
 }

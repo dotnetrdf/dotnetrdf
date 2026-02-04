@@ -401,4 +401,19 @@ public class InMemoryDataset
             transactionalStore.Flush();
         }
     }
+
+    /// <summary>
+    /// Disposes The InMemoryDataset
+    /// </summary>
+    /// <param name="disposing">True if called via <see cref="Dispose"/>.</param>
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _store?.Dispose();
+            Lock?.Dispose();
+        }
+        
+        base.Dispose(disposing);
+    }
 }

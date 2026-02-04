@@ -42,11 +42,14 @@ namespace VDS.RDF.Query.Datasets;
 /// </para>
 /// </remarks>
 public abstract class BaseTransactionalDataset
-    : BaseDataset
+    : BaseDataset, IDisposable
 {
     private readonly List<GraphPersistenceAction> _actions = [];
     private TripleStore _modifiableGraphs = new TripleStore();
-
+    /// <summary>
+    /// Flag to check whether the object had already been disposed.
+    /// </summary>
+    private bool _disposed;
     /// <summary>
     /// Creates a new Transactional Dataset.
     /// </summary>
@@ -74,6 +77,11 @@ public abstract class BaseTransactionalDataset
     public BaseTransactionalDataset(IRefNode defaultGraphName)
         : base(defaultGraphName) { }
 
+    ~BaseTransactionalDataset()
+    {
+        Dispose(false);
+    }
+    
     /// <summary>
     /// Adds a Graph to the Dataset.
     /// </summary>
@@ -263,6 +271,7 @@ public abstract class BaseTransactionalDataset
         {
             g.Flush();
         }
+        _modifiableGraphs?.Dispose();
         _modifiableGraphs = new TripleStore();
 
         FlushInternal();
@@ -316,6 +325,7 @@ public abstract class BaseTransactionalDataset
         {
             g.Discard();
         }
+        _modifiableGraphs?.Dispose();
         _modifiableGraphs = new TripleStore();
 
         DiscardInternal();
@@ -335,5 +345,30 @@ public abstract class BaseTransactionalDataset
     protected virtual void DiscardInternal()
     {
         // No actions by default
+    }
+    
+    /// <summary>
+    /// Disposes The BaseTransactionalDataset
+    /// </summary>
+    /// <param name="disposing">True if called via <see cref="Dispose"/>.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            _disposed = true;
+            if (disposing)
+            {
+                _modifiableGraphs?.Dispose();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Disposes The InMemoryDataset
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }

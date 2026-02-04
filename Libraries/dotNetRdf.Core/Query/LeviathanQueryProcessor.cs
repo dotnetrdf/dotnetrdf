@@ -61,7 +61,7 @@ namespace VDS.RDF.Query;
 /// </remarks>
 public class LeviathanQueryProcessor 
     : ISparqlQueryProcessor,
-        ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext>
+        ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext>, IDisposable
 {
     private readonly ISparqlDataset _dataset;
     private readonly ReaderWriterLockSlim _lock = new();
@@ -4546,5 +4546,23 @@ public class LeviathanQueryProcessor
             yield return buffer.ToArray();
             buffer.Clear();
         }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _lock?.Dispose();
+            if (_dataset is IDisposable d)
+            {
+                d.Dispose();
+            }
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }
