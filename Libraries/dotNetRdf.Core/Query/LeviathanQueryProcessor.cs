@@ -4553,10 +4553,6 @@ public class LeviathanQueryProcessor
         if (disposing)
         {
             _lock?.Dispose();
-            if (_dataset is IDisposable d)
-            {
-                d.Dispose();
-            }
         }
     }
 
