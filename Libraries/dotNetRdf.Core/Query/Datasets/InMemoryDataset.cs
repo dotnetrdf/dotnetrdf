@@ -39,43 +39,48 @@ public class InMemoryDataset
     , IThreadSafeDataset
 {
     private IInMemoryQueryableStore _store;
+    private bool _disposeStore;
+
 
     /// <summary>
     /// Creates a new in-memory dataset using the default in-memory <see cref="TripleStore">TripleStore</see> as the underlying storage.
     /// </summary>
     public InMemoryDataset()
-        : this(new TripleStore()) { }
+        : this(new TripleStore(), disposeStore: true) { }
 
     /// <summary>
     /// Creates a new in-memory dataset using the default in-memory <see cref="TripleStore">TripleStore</see> as the underlying storage.
     /// </summary>
     /// <param name="unionDefaultGraph">Whether the Default Graph when no Active/Default Graph is explicitly set should be the union of all Graphs in the Dataset.</param>
     public InMemoryDataset(bool unionDefaultGraph)
-        : this(new TripleStore(), unionDefaultGraph) { }
+        : this(new TripleStore(), unionDefaultGraph, disposeStore: true) { }
 
     /// <summary>
     /// Creates a new in-memory dataset containing initially just the given graph and treating the given graph as the default graph of the dataset.
     /// </summary>
     /// <param name="g">Graph.</param>
     public InMemoryDataset(IGraph g)
-        : this(g.AsTripleStore(), g.Name) { }
+        : this(g.AsTripleStore(), g.Name, disposeStore: true) { }
 
     /// <summary>
     /// Creates a new In-Memory dataset.
     /// </summary>
     /// <param name="store">In-Memory queryable store.</param>
-    public InMemoryDataset(IInMemoryQueryableStore store)
-        : this(store, false) { }
+    /// <param name="disposeStore">Whether the store should be disposed when the InMemoryDataset is disposed</param>
+    public InMemoryDataset(IInMemoryQueryableStore store, bool disposeStore = false)
+        : this(store, false, disposeStore) { }
 
     /// <summary>
     /// Creates a new In-Memory dataset.
     /// </summary>
     /// <param name="store">In-Memory queryable store.</param>
     /// <param name="unionDefaultGraph">Whether the Default Graph when no Active/Default Graph is explicitly set should be the union of all Graphs in the Dataset.</param>
-    public InMemoryDataset(IInMemoryQueryableStore store, bool unionDefaultGraph)
+    /// <param name="disposeStore">Whether the store should be disposed when the InMemoryDataset is disposed.</param>
+    public InMemoryDataset(IInMemoryQueryableStore store, bool unionDefaultGraph, bool disposeStore = false)
         : base(unionDefaultGraph)
     {
         _store = store ?? throw new ArgumentNullException(nameof(store));
+        _disposeStore = disposeStore;
 
         if (!_store.HasGraph((IRefNode)null))
         {
@@ -88,10 +93,12 @@ public class InMemoryDataset
     /// </summary>
     /// <param name="store">In-Memory queryable store.</param>
     /// <param name="defaultGraphName">Default Graph URI.</param>
-    public InMemoryDataset(IInMemoryQueryableStore store, IRefNode defaultGraphName)
+    /// <param name="disposeStore">Whether the store should be disposed when the InMemoryDataset is disposed.</param>
+    public InMemoryDataset(IInMemoryQueryableStore store, IRefNode defaultGraphName, bool disposeStore = false)
         : base(defaultGraphName)
     {
         _store = store ?? throw new ArgumentNullException(nameof(store));
+        _disposeStore = disposeStore;
 
         if (!_store.HasGraph(defaultGraphName))
         {
@@ -410,8 +417,12 @@ public class InMemoryDataset
     {
         if (disposing)
         {
-            _store?.Dispose();
-            Lock?.Dispose();
+            if (_disposeStore)
+            {
+                _store.Dispose();
+            }
+
+            Lock.Dispose();
         }
         
         base.Dispose(disposing);
