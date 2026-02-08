@@ -46,7 +46,7 @@ public class InMemoryDataset
     /// Creates a new in-memory dataset using the default in-memory <see cref="TripleStore">TripleStore</see> as the underlying storage.
     /// </summary>
     public InMemoryDataset()
-        : this(new TripleStore(), disposeStore: true) { }
+        : this(new TripleStore(), unionDefaultGraph: false, disposeStore: true) { }
 
     /// <summary>
     /// Creates a new in-memory dataset using the default in-memory <see cref="TripleStore">TripleStore</see> as the underlying storage.
@@ -67,8 +67,8 @@ public class InMemoryDataset
     /// </summary>
     /// <param name="store">In-Memory queryable store.</param>
     /// <param name="disposeStore">Whether the store should be disposed when the InMemoryDataset is disposed</param>
-    public InMemoryDataset(IInMemoryQueryableStore store, bool disposeStore = false)
-        : this(store, false, disposeStore) { }
+    public InMemoryDataset(IInMemoryQueryableStore store)
+        : this(store, false, false) { }
 
     /// <summary>
     /// Creates a new In-Memory dataset.
