@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Datasets;
 /// </para>
 /// </remarks>
 public abstract class BaseTransactionalQuadDataset
-    : BaseQuadDataset
+    : BaseQuadDataset, IDisposable
 {
     private List<GraphPersistenceAction> _actions = [];
     private TripleStore _modifiableGraphs = new TripleStore();
@@ -51,7 +51,12 @@ public abstract class BaseTransactionalQuadDataset
     /// Creates a Transactional Quad Dataset.
     /// </summary>
     public BaseTransactionalQuadDataset() { }
-
+    
+    /// <summary>
+    /// Flag to check whether the object had already been disposed.
+    /// </summary>
+    private bool _disposed;
+    
     /// <summary>
     /// Creates a Transactional Quad Dataset.
     /// </summary>
@@ -73,6 +78,11 @@ public abstract class BaseTransactionalQuadDataset
     public BaseTransactionalQuadDataset(IRefNode defaultGraphName)
         : base(defaultGraphName){ }
 
+    ~BaseTransactionalQuadDataset()
+    {
+        Dispose(false);
+    }
+    
     /// <summary>
     /// Adds a Graph to the Dataset.
     /// </summary>
@@ -301,6 +311,7 @@ public abstract class BaseTransactionalQuadDataset
         {
             g.Flush();
         }
+        _modifiableGraphs?.Dispose();
         _modifiableGraphs = new TripleStore();
 
         FlushInternal();
@@ -354,6 +365,7 @@ public abstract class BaseTransactionalQuadDataset
         {
             g.Discard();
         }
+        _modifiableGraphs?.Dispose();
         _modifiableGraphs = new TripleStore();
 
         DiscardInternal();
@@ -373,5 +385,30 @@ public abstract class BaseTransactionalQuadDataset
     protected virtual void DiscardInternal()
     {
         // No actions by default
+    }
+    
+    /// <summary>
+    /// Disposes The BaseTransactionalDataset
+    /// </summary>
+    /// <param name="disposing">True if called via <see cref="Dispose"/>.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            _disposed = true;
+            if (disposing)
+            {
+                _modifiableGraphs?.Dispose();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Disposes The InMemoryDataset
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }

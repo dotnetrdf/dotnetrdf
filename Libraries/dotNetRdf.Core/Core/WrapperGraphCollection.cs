@@ -116,6 +116,8 @@ public abstract class WrapperGraphCollection
     /// </summary>
     public override void Dispose()
     {
+        _graphs.GraphRemoved -= HandleGraphRemoved;
+        _graphs.GraphAdded -= HandleGraphAdded;
         _graphs.Dispose();
     }
 

@@ -429,18 +429,6 @@ public class TripleStore
 
 
     #endregion
-    
-    #region IDisposable Members
-
-    /// <summary>
-    /// Disposes of a Triple Store.
-    /// </summary>
-    public override void Dispose()
-    {
-        _graphs.Dispose();
-    }
-
-    #endregion
 
     #region IUpdateableTripleStore Members
 

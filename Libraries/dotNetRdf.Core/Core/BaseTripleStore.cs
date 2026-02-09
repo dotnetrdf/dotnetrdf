@@ -50,6 +50,10 @@ public abstract class BaseTripleStore
     private GraphEventHandler GraphAddedHandler, GraphRemovedHandler, GraphChangedHandler, GraphMergedHandler, GraphClearedHandler;
 
     /// <summary>
+    /// Flag to check whether the object had been disposed already
+    /// </summary>
+    private bool _disposed;
+    /// <summary>
     /// Creates a new Base Triple Store.
     /// </summary>
     /// <param name="graphCollection">Graph Collection to use.</param>
@@ -66,6 +70,11 @@ public abstract class BaseTripleStore
         // Attach Handlers to the Graph Collection
         _graphs.GraphAdded += GraphAddedHandler;
         _graphs.GraphRemoved += GraphRemovedHandler;
+    }
+    
+    ~BaseTripleStore()
+    {
+        Dispose(false);
     }
 
     #region Properties
@@ -530,10 +539,37 @@ public abstract class BaseTripleStore
     }
 
     #endregion
-
+        
+    /// <summary>
+    /// Disposes of the Triple Store.
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+    
     /// <summary>
     /// Disposes of the Triple Store.
     /// </summary>
     /// <remarks>Derived classes must override this to implement required disposal actions.</remarks>
-    public abstract void Dispose();
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            _disposed = true;
+
+            if (disposing)
+            {
+                // Need to remove graphs first to ensure that DetachEventHandlers is called for each of them via OnGraphRemoved
+                foreach (IGraph g in _graphs.ToList())
+                {
+                    _graphs.Remove(g.Name);
+                }
+
+                _graphs.GraphRemoved -= GraphRemovedHandler;
+                _graphs.GraphAdded -= GraphAddedHandler;
+            }
+        }
+    }
 }

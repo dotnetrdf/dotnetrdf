@@ -1011,6 +1011,19 @@ public abstract class WrapperGraph
         _g.TripleAsserted += TripleAssertedHandler;
         _g.TripleRetracted += TripleRetractedHandler;
     }
+    
+    /// <summary>
+    /// Helper method for detaching the necessary event handlers to the underlying graph.
+    /// </summary>
+    protected void DetachEventHandlers()
+    {
+        _g.TripleRetracted -= TripleRetractedHandler;
+        _g.TripleAsserted -= TripleAssertedHandler;
+        _g.Merged -= GraphMergedHandler;
+        _g.Changed -= GraphChangedHandler;
+        _g.Cleared -= GraphClearedHandler;
+    }
+
 
     #endregion
 
@@ -1019,6 +1032,7 @@ public abstract class WrapperGraph
     /// </summary>
     public virtual void Dispose()
     {
+        DetachEventHandlers();
         _g.Dispose();
     }
 
