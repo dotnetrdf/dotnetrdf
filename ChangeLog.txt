@@ -1,6 +1,10 @@
 ﻿Change Log
 ==========
 
+3.5.1
+-----
+FIX: Fix a memory-leak due to the failure to deregister graph event handlers. Thanks to @bruluk5w for the bug report and the fix.
+
 3.5.0
 -----
 
