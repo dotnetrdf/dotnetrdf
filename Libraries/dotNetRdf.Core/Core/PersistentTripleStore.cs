@@ -101,17 +101,6 @@ public sealed class PersistentTripleStore
     }
 
     /// <summary>
-    /// Finalizer which ensures that the instance is properly disposed of thereby persisting any outstanding changes to the underlying store
-    /// </summary>
-    /// <remarks>
-    /// If you do not wish to persist your changes you must call <see cref="PersistentTripleStore.Discard()">Discard()</see> prior to disposing of this instance or allowing it to go out of scope such that the finalizer gets called
-    /// </remarks>
-    ~PersistentTripleStore()
-    {
-        Dispose(false);
-    }
-
-    /// <summary>
     /// Get the preferred URI factory to use when creating URIs in this store.
     /// </summary>
     public override  IUriFactory UriFactory { get; }
@@ -133,15 +122,10 @@ public sealed class PersistentTripleStore
     /// <remarks>
     /// If you do not want to persist changes you have please ensure you call <see cref="PersistentTripleStore.Discard()">Discard()</see> prior to disposing of the instance.
     /// </remarks>
-    public override void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        Dispose(true);
-    }
-
-    private void Dispose(bool disposing)
-    {
-        if (disposing) GC.SuppressFinalize(this);
         Flush();
+        base.Dispose(disposing);
     }
 
     /// <summary>

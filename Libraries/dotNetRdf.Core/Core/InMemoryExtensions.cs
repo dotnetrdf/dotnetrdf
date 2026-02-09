@@ -44,8 +44,8 @@ public static class InMemoryExtensions
     public static object ExecuteQuery(this IGraph g, string sparqlQuery)
     {
         // Due to change in default graph behaviour ensure that we associate this graph as the default graph of the dataset
-        var ds = new InMemoryDataset(g);
-        var processor = new LeviathanQueryProcessor(ds, options => options.UriFactory = new CachingUriFactory(g.UriFactory));
+        using var ds = new InMemoryDataset(g);
+        using var processor = new LeviathanQueryProcessor(ds, options => options.UriFactory = new CachingUriFactory(g.UriFactory));
         var parser = new SparqlQueryParser();
         SparqlQuery q = parser.ParseFromString(sparqlQuery);
         return processor.ProcessQuery(q);
@@ -60,8 +60,8 @@ public static class InMemoryExtensions
     /// <param name="sparqlQuery">SPARQL Query.</param>
     public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
     {
-        var ds = new InMemoryDataset(g);
-        var processor = new LeviathanQueryProcessor(ds, options => options.UriFactory = new CachingUriFactory(g.UriFactory));
+        using var ds = new InMemoryDataset(g);
+        using var processor = new LeviathanQueryProcessor(ds, options => options.UriFactory = new CachingUriFactory(g.UriFactory));
         var parser = new SparqlQueryParser();
         SparqlQuery q = parser.ParseFromString(sparqlQuery);
         processor.ProcessQuery(rdfHandler, resultsHandler, q);
@@ -75,8 +75,8 @@ public static class InMemoryExtensions
     /// <returns></returns>
     public static object ExecuteQuery(this IGraph g, SparqlQuery query)
     {
-        var ds = new InMemoryDataset(g);
-        var processor = new LeviathanQueryProcessor(ds, options => options.UriFactory = new CachingUriFactory(g.UriFactory));
+        using var ds = new InMemoryDataset(g);
+        using var processor = new LeviathanQueryProcessor(ds, options => options.UriFactory = new CachingUriFactory(g.UriFactory));
         return processor.ProcessQuery(query);
     }
 
@@ -89,8 +89,8 @@ public static class InMemoryExtensions
     /// <param name="query">SPARQL Query.</param>
     public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
     {
-        var ds = new InMemoryDataset(g);
-        var processor = new LeviathanQueryProcessor(ds, options => options.UriFactory = new CachingUriFactory(g.UriFactory));
+        using var ds = new InMemoryDataset(g);
+        using var processor = new LeviathanQueryProcessor(ds, options => options.UriFactory = new CachingUriFactory(g.UriFactory));
         processor.ProcessQuery(rdfHandler, resultsHandler, query);
     }
 

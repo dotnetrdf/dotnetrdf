@@ -283,4 +283,17 @@ public abstract class BaseSparqlView
             }
         }
     }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _store.GraphChanged -= OnGraphChanged;
+            _store.GraphAdded -= OnGraphAdded;
+            _store.GraphRemoved -= OnGraphRemoved;
+            _store.GraphMerged -= OnGraphMerged;
+        }
+
+        base.Dispose(disposing);
+    }
 }
