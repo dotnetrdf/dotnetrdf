@@ -46,14 +46,14 @@ public class ThreadSafeTripleCollection
     /// Creates a new thread safe triple collection which wraps a new instance of the default unindexed <see cref="TripleCollection"/>.
     /// </summary>
     public ThreadSafeTripleCollection()
-        : base(new TripleCollection()) { }
+        : base(new TripleCollection(), disposeTriples: false) { }
 
     /// <summary>
     /// Creates a new thread safe triple collection which wraps the provided triple collection.
     /// </summary>
     /// <param name="tripleCollection">Triple Collection.</param>
     public ThreadSafeTripleCollection(BaseTripleCollection tripleCollection)
-        : base(tripleCollection) { }
+        : base(tripleCollection, disposeTriples: false) { }
 
     /// <summary>
     /// Enters the write lock.

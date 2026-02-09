@@ -410,6 +410,11 @@ public class WrapperTripleStore
     /// </summary>
     public virtual void Dispose()
     {
+        _store.GraphRemoved -= GraphRemovedHandler;
+        _store.GraphMerged -= GraphMergedHandler;
+        _store.GraphCleared -= GraphClearedHandler;
+        _store.GraphChanged -= GraphChangedHandler;
+        _store.GraphAdded -= GraphAddedHandler;
         _store.Dispose();
     }
 }

@@ -52,9 +52,10 @@ public sealed class SimpleTripleStore: BaseTripleStore
     public override IUriFactory UriFactory { get; }
 
     /// <inheritdoc />
-    public override void Dispose()
+    protected override void Dispose(bool disposing)
     {
         Graphs.Dispose();
+        base.Dispose(disposing);
     }
 
 }
