@@ -1,6 +1,7 @@
 # Welcome
 
 ![Build status](https://github.com/dotnetrdf/dotnetrdf/actions/workflows/build.yaml/badge.svg)
+[![libs.tech recommends](https://libs.tech/project/56993722/badge.svg)](https://libs.tech/project/56993722/dotnetrdf)
 
 ---
 
