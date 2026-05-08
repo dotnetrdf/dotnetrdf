@@ -45,9 +45,6 @@
     <PackageReference Include="StyleCop.Analyzers">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AngleSharp" />
     <PackageReference Include="System.ComponentModel.TypeConverter" />
     <PackageReference Include="System.Configuration.ConfigurationManager" />
