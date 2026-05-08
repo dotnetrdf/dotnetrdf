@@ -35,7 +35,7 @@ namespace VDS.RDF.Update;
 /// </summary>
 public class RemoteUpdateProcessor : ISparqlUpdateProcessor
 {
-    private readonly SparqlUpdateClient _client;
+    private readonly ISparqlUpdateClient _client;
 
     /// <summary>
     /// Creates a new Remote Update Processor.
@@ -66,7 +66,7 @@ public class RemoteUpdateProcessor : ISparqlUpdateProcessor
     /// Creates a new remote update processor.
     /// </summary>
     /// <param name="updateClient">The SPARQL update client to delegate processing of commands to.</param>
-    public RemoteUpdateProcessor(SparqlUpdateClient updateClient)
+    public RemoteUpdateProcessor(ISparqlUpdateClient updateClient)
     {
         _client = updateClient;
     }
