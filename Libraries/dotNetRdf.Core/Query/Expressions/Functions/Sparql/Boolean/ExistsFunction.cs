@@ -81,7 +81,9 @@ public class ExistsFunction
         { 
             return (from p in Pattern.TriplePatterns
                     from v in p.Variables
-                    select v).Distinct();
+                    select v)
+                    .Union(Pattern.Variables)
+                    .Distinct();
         }
     }
 
