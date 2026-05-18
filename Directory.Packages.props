@@ -16,7 +16,7 @@
 		<PackageVersion Include="System.Threading.Channels" Version="10.0.7" />
 		<PackageVersion Include="AngleSharp" Version="1.4.0" />
 		<PackageVersion Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-		<PackageVersion Include="System.Configuration.ConfigurationManager" Version="10.0.7" />
+		<PackageVersion Include="System.Configuration.ConfigurationManager" Version="10.0.8" />
 		<PackageVersion Include="System.Globalization.Extensions" Version="4.3.0" />
 		<PackageVersion Include="System.Net.Http" Version="4.3.4" />
 		<PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
