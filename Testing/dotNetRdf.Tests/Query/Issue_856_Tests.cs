@@ -120,4 +120,31 @@ public class Issue_856_Tests
         Assert.Equal("http://example.org/David", results[0]["this"].ToString());
         Assert.Equal("http://example.org/Yara", results[0]["someone"].ToString());
     }
+
+    [Fact]
+    public void ApplyFilterWithNamedGraphPatternAndBind()
+    {
+        var parser = new SparqlQueryParser();
+        SparqlQuery query = parser.ParseFromString(@"
+        PREFIX ex:   <http://example.org/>
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+        SELECT *
+        WHERE {
+        BIND(ex:David AS ?this) .
+        ?this a foaf:Person .
+        ?this foaf:knows ?someone .
+        FILTER NOT EXISTS {
+            GRAPH ex:namedGraph {
+            ?someone a ex:famousPerson .
+            }
+            ?this foaf:knows ?someone .
+        }
+        }");
+        var results = _processor.ProcessQuery(query) as SparqlResultSet;
+        Assert.NotNull(results);
+        Assert.Equal(1, results.Count);
+        Assert.Equal("http://example.org/David", results[0]["this"].ToString());
+        Assert.Equal("http://example.org/Yara", results[0]["someone"].ToString());
+    }
 }
