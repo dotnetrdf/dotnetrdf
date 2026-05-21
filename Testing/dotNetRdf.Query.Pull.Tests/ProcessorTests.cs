@@ -194,7 +194,7 @@ public class ProcessorTests
                 PREFIX ex: <http://example.org/>
 
                 SELECT ?n WHERE {
-                    ?n ex:p+* ex:n4 .
+                    ?n ex:p+ ex:n4 .
                 }
             """);
             var processor = new PullQueryProcessor(store, options => { options.UnionDefaultGraph = true; });
