@@ -314,8 +314,8 @@ internal class EvaluationBuilder
             AlternativePath altPath => new AsyncPathUnionEvaluation(Build(altPath.LhsPath, pathStart, pathEnd, context),
                 Build(altPath.RhsPath, pathStart, pathEnd, context)),
             ZeroOrOne zeroOrOne => new AsyncRepeatablePathEvaluation(0, 1, Build(zeroOrOne.Path, pathStart, pathEnd, context)),
-            ZeroOrMore zeroOrMore => new AsyncRepeatablePathEvaluation(0, -1, Build(zeroOrMore.Path, pathStart, pathEnd, context)),
-            OneOrMore oneOrMore => new AsyncRepeatablePathEvaluation(1, -1, Build(oneOrMore.Path, pathStart, pathEnd, context)),
+            ZeroOrMore zeroOrMore => new AsyncRepeatablePathEvaluation(0, -1, Build(zeroOrMore.Path, pathStart, new VariablePattern(context.AutoVarFactory.NextId()), context)),
+            OneOrMore oneOrMore => new AsyncRepeatablePathEvaluation(1, -1, Build(oneOrMore.Path, pathStart, new VariablePattern(context.AutoVarFactory.NextId()), context)),
             NegatedSet negatedSet => new AsyncNegatedSetPathEvaluation(negatedSet, pathEnd),
             _ => throw new RdfQueryException($"Unsupported query algebra {path} ({path.GetType()})")
         };
