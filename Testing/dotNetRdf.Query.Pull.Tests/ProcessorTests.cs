@@ -31,6 +31,16 @@ public class ProcessorTests
         return store;
     }
 
+    private static TripleStore MakeTestTripleStoreFromTurtle(string turtle)
+    {
+        var turtleStore = new TripleStore();
+        var turtleParser = new TurtleParser();
+        var graph = new Graph();
+        turtleParser.Load(graph, new StringReader(turtle));
+        turtleStore.Add(graph);
+        return turtleStore;
+    }
+
     [Fact]
     public void CanQueryUnionDefaultGraph()
     {
@@ -146,4 +156,56 @@ public class ProcessorTests
         Assert.Equal(1, graph.Triples.Count);
     }
 
+    [Fact]
+    public void SelectWithWildcardOperatorSimple()
+    {
+        var sparqlParser = new SparqlQueryParser();
+        TripleStore store = MakeTestTripleStoreFromTurtle("""
+                @prefix ex: <http://example.org/> .
+
+                ex:n1 ex:p1 ex:n2 .
+                ex:n2 ex:p1 ex:n3 .
+                ex:n3 ex:p1 ex:n4 .
+
+                """);
+
+        {
+            SparqlQuery? query = sparqlParser.ParseFromString("""
+                PREFIX ex: <http://example.org/>
+
+                SELECT ?n WHERE {
+                    ?n ex:p1* ex:n4 .
+                }
+            """);
+            var processor = new PullQueryProcessor(store, options => { options.UnionDefaultGraph = true; });
+            var results = processor.ProcessQuery(query);
+            SparqlResultSet resultSet = Assert.IsType<SparqlResultSet>(results);
+
+            Assert.Equal(4, resultSet.Count);
+            var eqValues = resultSet.Select(r => r["n"].ToString()).ToHashSet();
+            Assert.Contains("http://example.org/n1", eqValues);
+            Assert.Contains("http://example.org/n2", eqValues);
+            Assert.Contains("http://example.org/n3", eqValues);
+            Assert.Contains("http://example.org/n4", eqValues);
+        }
+
+        {
+            SparqlQuery? query = sparqlParser.ParseFromString("""
+                PREFIX ex: <http://example.org/>
+
+                SELECT ?n WHERE {
+                    ?n ex:p1+ ex:n4 .
+                }
+            """);
+            var processor = new PullQueryProcessor(store, options => { options.UnionDefaultGraph = true; });
+            var results = processor.ProcessQuery(query);
+            SparqlResultSet resultSet = Assert.IsType<SparqlResultSet>(results);
+
+            Assert.Equal(3, resultSet.Count);
+            var eqValues = resultSet.Select(r => r["n"].ToString()).ToHashSet();
+            Assert.Contains("http://example.org/n1", eqValues);
+            Assert.Contains("http://example.org/n2", eqValues);
+            Assert.Contains("http://example.org/n3", eqValues);
+        }
+    }
 }
