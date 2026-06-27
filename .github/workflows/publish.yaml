@@ -9,6 +9,7 @@ jobs:
     runs-on: windows-latest
     permissions:
       id-token: write
+      contents: write
 
     steps:
     - name: Checkout
@@ -27,19 +28,10 @@ jobs:
       run: dotnet pack --configuration=Release -p:Version=${{ env.VERSION }} -p:PackageOutputPath=../../nugets
       
     - name: Upload NuGet Packages
-      uses: actions/upload-artifact@v8
+      uses: actions/upload-artifact@v7
       with:
         name: nuget
         path: nugets\*.nupkg
-
-    - name: NuGet login
-      uses: NuGet/login@v1
-      id: login
-      with:
-        user: ${{ secrets.NUGET_USER }}
-
-    - name: Publish NuGet Packages
-      run: nuget push src\bin\Release\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{steps.login.outputs.NUGET_API_KEY}}
 
     - name: Create Release
       uses: softprops/action-gh-release@v3
@@ -49,3 +41,12 @@ jobs:
         prerelease: true
         files: |
           nugets/*.nupkg
+
+    - name: NuGet login
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: ${{ secrets.NUGET_USER }}
+
+    - name: Publish NuGet Packages
+      run: nuget push nugets\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{steps.login.outputs.NUGET_API_KEY}}

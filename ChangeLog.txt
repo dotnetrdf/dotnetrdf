@@ -1,7 +1,7 @@
 ﻿Change Log
 ==========
 
-Upcoming
+3.5.2
 -----
 
 FIX: Fix a stackoverflow on Dispose of a ThreadSafeGraph. Thanks to @bruluk5w for the report (#879)
