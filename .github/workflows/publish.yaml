@@ -39,7 +39,7 @@ jobs:
         user: ${{ secrets.NUGET_USER }}
 
     - name: Publish NuGet Packages
-      run: nuget push src\bin\Release\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{steps.login.outputs.NUGET_API_KEY}}
+      run: nuget push nugets\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{steps.login.outputs.NUGET_API_KEY}}
 
     - name: Create Release
       uses: softprops/action-gh-release@v3
