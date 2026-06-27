@@ -8,10 +8,12 @@ This is a major version update to the dotNetRDF library.
 BREAKING: In line with our deprecation policy, all APIS previously flagged as Obsolete with an error have been removed, an APIS flagged as Obsolete with a warning in 3.x will now result in a compile-time error. All of the obsolete APIs suggest their replacement.
 NEW: Introduced `VDS.RDF.Utils.RdfGraphContent` - an `HttpContent` implementation for writing the content of a `Graph` to the body of an HTTP request.
 
-3.5.2 (unreleased)
+3.5.2
 -----
 
+FIX: Fix a stackoverflow on Dispose of a ThreadSafeGraph. Thanks to @bruluk5w for the report (#879)
 FIX: Fix an issue with incorrect handling of FILTER clauses with a NAMED GRAPH subclause in the Leviathan Query Processor. Thanks to @Ikeragnell for the report and repr. (#856)
+FIX: Fix the handling of the * and + path operators in the pull query processor. Thanks to @fennibay for the fix (#877)
 
 3.5.1
 -----

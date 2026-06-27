@@ -284,6 +284,9 @@ public abstract class BaseSparqlView
         }
     }
 
+    /// <summary>
+    /// Disposes of the graph, removing event handlers from the store.
+    /// </summary>
     protected override void Dispose(bool disposing)
     {
         if (disposing)
