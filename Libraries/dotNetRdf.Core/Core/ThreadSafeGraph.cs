@@ -237,7 +237,7 @@ public class ThreadSafeGraph
                 _lockManager.Dispose();
             }
         }
-        base.Dispose();
+        base.Dispose(disposing);
     }
     #endregion
 

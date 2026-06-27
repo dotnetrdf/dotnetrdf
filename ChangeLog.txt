@@ -12,6 +12,7 @@ NEW: Introduced `VDS.RDF.Utils.RdfGraphContent` - an `HttpContent` implementatio
 -----
 
 FIX: Fix an issue with incorrect handling of FILTER clauses with a NAMED GRAPH subclause in the Leviathan Query Processor. Thanks to @Ikeragnell for the report and repr. (#856)
+FIX: Fix the handling of the * and + path operators in the pull query processor. Thanks to @fennibay for the fix (#877)
 
 3.5.1
 -----
