@@ -26,7 +26,7 @@
 
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using VDS.RDF.JsonLd.Syntax;
 
 namespace VDS.RDF.JsonLd;
@@ -108,7 +108,7 @@ public class JsonLdTermDefinition
     /// <summary>
     /// Get or set the context specified for this term definition.
     /// </summary>
-    public JToken LocalContext { get; set; }
+    public JsonNode LocalContext { get; set; }
 
     /// <summary>
     /// Get or set the nest property for this term definition.

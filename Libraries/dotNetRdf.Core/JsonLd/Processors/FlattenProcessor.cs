@@ -26,7 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 
 namespace VDS.RDF.JsonLd.Processors;
 
@@ -53,35 +53,35 @@ internal class FlattenProcessor
     /// <param name="ordered">True to process the properties of the element in lexicographical order.</param>
     /// <returns>A new token representing the flattened element.</returns>
     /// <remarks>This operation does not modify the input element.</remarks>
-    public JToken FlattenElement(JToken element, bool ordered = false)
+    public JsonNode FlattenElement(JsonNode element, bool ordered = false)
     {
         // 1 = Initialize node map to a map consisting of a single member whose key is @default
         // and whose value is an empty map.
         // 2 - Perform the Node Map Generation algorithm, passing element and node map.
-        JObject nodeMap = _nodeMapGenerator.GenerateNodeMap(element);
+        JsonObject nodeMap = _nodeMapGenerator.GenerateNodeMap(element);
 
         // 3 - Initialize default graph to the value of the @default member of node map,
         // which is a map representing the default graph.
-        var defaultGraph = nodeMap["@default"] as JObject;
+        var defaultGraph = nodeMap["@default"] as JsonObject;
 
         // 4 - For each key-value pair graph name-graph in node map where graph name is not @default,
         // ordered lexicographically by graph name if ordered is true, perform the following steps: 
-        IEnumerable<JProperty> properties = nodeMap.Properties().Where(p => !p.Name.Equals("@default"));
-        if (ordered) properties = properties.OrderBy(p => p.Name);
-        foreach (JProperty p in properties)
+        IEnumerable<KeyValuePair<string, JsonNode>> properties = nodeMap.Where(p => !p.Key.Equals("@default"));
+        if (ordered) properties = properties.OrderBy(p => p.Key);
+        foreach (var p in properties)
         {
-            var graphName = p.Name;
-            var graph = p.Value as JObject;
+            var graphName = p.Key;
+            var graph = p.Value as JsonObject;
 
             // 4.1 - If default graph does not have a graph name entry, create one and initialize its
             // value to a map consisting of an @id entry whose value is set to graph name.
             if (!defaultGraph.ContainsKey(graphName))
             {
-                defaultGraph.Add(graphName, new JObject(new JProperty("@id", graphName)));
+                defaultGraph.Add(graphName, new JsonObject{{"@id", graphName}});
             }
 
             // 4.2 - Reference the value associated with the graph name entry in default graph using the variable entry.
-            var entry = defaultGraph[graphName] as JObject;
+            var entry = defaultGraph[graphName] as JsonObject;
 
             // 4.3 - Add an @graph entry to entry and set it to an empty array.
             // 4.4 - For each id-node pair in graph ordered lexicographically by id if ordered is true,
@@ -92,27 +92,27 @@ internal class FlattenProcessor
         // 5 - Initialize an empty array flattened.
         // 6 - For each id-node pair in default graph ordered lexicographically by id if ordered is true,
         // add node to flattened, unless the only entry of node is @id.
-        JArray flattened = FlattenGraph(defaultGraph, ordered);
+        JsonArray flattened = FlattenGraph(defaultGraph, ordered);
 
 
         // 7 - return flattened.
         return flattened;
     }
 
-    private static JArray FlattenGraph(JObject graphObject, bool ordered)
+    private static JsonArray FlattenGraph(JsonObject graphObject, bool ordered)
     {
-        var flattened = new JArray();
-        IEnumerable<JProperty> graphProperties = graphObject.Properties();
-        if (ordered) graphProperties = graphProperties.OrderBy(p => p.Name);
-        foreach (JProperty p in graphProperties)
+        var flattened = new JsonArray();
+        IEnumerable<KeyValuePair<string, JsonNode>> graphProperties = graphObject;
+
+        if (ordered) graphProperties = graphProperties.OrderBy(p => p.Key);
+        foreach (var p in graphProperties)
         {
-            var node = p.Value as JObject;
-            if (node.Count > 1 || node.Properties().Any(x => !x.Name.Equals("@id")))
+            var node = p.Value as JsonObject;
+            if (node.Count > 1 || node.Any(x => !x.Key.Equals("@id")))
             {
                 flattened.Add(node);
             }
         }
-
         return flattened;
     }
 }

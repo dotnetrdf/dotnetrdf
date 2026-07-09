@@ -26,7 +26,7 @@
 
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using VDS.RDF.JsonLd.Syntax;
 
 namespace VDS.RDF.JsonLd.Processors;
@@ -37,16 +37,16 @@ internal class FramingState
     public bool ExplicitInclusion { get; set; }
     public bool RequireAll { get; set; }
     public bool OmitDefault { get; set; }
-    public JObject GraphMap { get; set; }
+    public JsonObject GraphMap { get; set; }
     public string GraphName { get; set; }
-    public JObject Subjects => GraphMap[GraphName] as JObject;
+    public JsonObject Subjects => GraphMap[GraphName] as JsonObject;
     public Stack<string> GraphStack { get; set; }
-    public JObject Link { get; set; }
+    public JsonObject Link { get; set; }
     public bool Embedded { get; set; }
 
-    private readonly Dictionary<string, Dictionary<string, Tuple<JToken, string>>> _embeds;
+    private readonly Dictionary<string, Dictionary<string, Tuple<JsonNode, string>>> _embeds;
 
-    public FramingState(JsonLdProcessorOptions options, JObject graphMap, string graphName)
+    public FramingState(JsonLdProcessorOptions options, JsonObject graphMap, string graphName)
     {
         Embed = options.Embed;
         Embedded = false;
@@ -73,17 +73,17 @@ internal class FramingState
         return _embeds[GraphName].ContainsKey(id);
     }
 
-    public void AddEmbeddedNode(string id, JToken node, string property)
+    public void AddEmbeddedNode(string id, JsonNode node, string property)
     {
         if (!_embeds.ContainsKey(GraphName))
         {
             _embeds[GraphName] = [];
         }
 
-        _embeds[GraphName][id] = new Tuple<JToken, string>(node, property);
+        _embeds[GraphName][id] = new Tuple<JsonNode, string>(node, property);
     }
 
-    public Tuple<JToken, string> GetEmbeddedNode(string id)
+    public Tuple<JsonNode, string> GetEmbeddedNode(string id)
     {
         if (_embeds.ContainsKey(GraphName) && _embeds[GraphName].ContainsKey(id))
         {

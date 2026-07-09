@@ -25,7 +25,7 @@
 */
 
 using System;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 
 namespace VDS.RDF.JsonLd;
 
@@ -34,7 +34,7 @@ namespace VDS.RDF.JsonLd;
 /// </summary>
 public class JsonLdRemoteContext
 {
-    internal JsonLdRemoteContext(Uri documentUrl, JToken loadedContext)
+    internal JsonLdRemoteContext(Uri documentUrl, JsonNode loadedContext)
     {
         DocumentUrl = documentUrl;
         Context = loadedContext;
@@ -48,5 +48,5 @@ public class JsonLdRemoteContext
     /// <summary>
     /// Get the context value as a JSON representation.
     /// </summary>
-    public JToken Context { get; }
+    public JsonNode Context { get; }
 }
