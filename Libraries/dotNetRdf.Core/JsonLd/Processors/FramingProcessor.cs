@@ -194,7 +194,7 @@ internal static class FramingProcessor
                 // 4.7.1 - If property is a keyword, add property and objects to output.
                 if (JsonLdUtils.IsKeyword(property))
                 {
-                    output[property] = p.Value;
+                    output[property] = p.Value.DeepClone();
                     continue;
                 }
 

@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Nodes;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
@@ -305,12 +305,12 @@ public class JsonLdParserTests : IDisposable
   ""@id"": ""http://localhost:8080/outline/http%3A%2F%2Flocalhost%3A8080%2Fknowledge-graph%2Fengine_01""
 }";
 
-        var input = JToken.Parse(inputJson);
-        var frame = JToken.Parse(frameJson);
-        JObject frameResult = JsonLdProcessor.Frame(input, frame, new JsonLdProcessorOptions());
+        var input = JsonNode.Parse(inputJson);
+        var frame = JsonNode.Parse(frameJson);
+        JsonObject frameResult = JsonLdProcessor.Frame(input, frame, new JsonLdProcessorOptions());
         frameResult["@id"]?.ToString().Should()
             .Be("http://localhost:8080/outline/http%3A%2F%2Flocalhost%3A8080%2Fknowledge-graph%2Fengine_01");
-        frameResult["@type"]?.Children().Count().Should().Be(2);
+        frameResult["@type"]?.AsArray().Count.Should().Be(2);
         frameResult["ex:id"]?.ToString().Should().Be("engine_01");
         _output.WriteLine(frameResult.ToString());
     }

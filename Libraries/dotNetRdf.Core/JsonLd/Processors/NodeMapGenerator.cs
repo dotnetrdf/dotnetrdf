@@ -357,12 +357,12 @@ public class NodeMapGenerator : INodeMapGenerator
         {
             foreach (JsonNode item in array)
             {
-                target.Add(item);
+                target.Add(item.DeepClone());
             }
         }
         else
         {
-            target.Add(values);
+            target.Add(values.DeepClone());
         }
     }
 

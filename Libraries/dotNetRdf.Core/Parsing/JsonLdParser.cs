@@ -26,9 +26,9 @@
 
 using System;
 using System.IO;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using VDS.RDF.Parsing.Handlers;
-using Newtonsoft.Json.Linq;
 using VDS.RDF.JsonLd;
 using System.Globalization;
 using System.Linq;
@@ -87,7 +87,7 @@ public class JsonLdParser : IStoreReader
     /// </summary>
     /// <param name="store">The store to add the parsed RDF quads to.</param>
     /// <param name="input">The expanded JSON-LD document.</param>
-    internal void Load(ITripleStore store, JArray input)
+    internal void Load(ITripleStore store, JsonArray input)
     {
         if (store == null) throw new ArgumentNullException(nameof(store));
         if (input == null) throw new ArgumentNullException(nameof(input));
@@ -127,16 +127,14 @@ public class JsonLdParser : IStoreReader
 
     /// <inheritdoc />
     public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory) {
-        JToken element;
-        using (var reader = new JsonTextReader(input) { DateParseHandling = DateParseHandling.None })
-        {
-            element = JToken.ReadFrom(reader);
-        }
+        JsonNode element;
+        var jsonString = input.ReadToEnd();
+        element = JsonNode.Parse(jsonString);
         var warnings = new List<JsonLdProcessorWarning>();
-        JArray expandedElement = JsonLdProcessor.Expand(element, ParserOptions, warnings);
+        JsonArray expandedElement = JsonLdProcessor.Expand(element, ParserOptions, warnings);
         if (warnings.Any())
         {
-            foreach (var warning in warnings)
+            foreach (JsonLdProcessorWarning warning in warnings)
             {
                 RaiseWarning(warning.Message);
             }
@@ -144,7 +142,7 @@ public class JsonLdParser : IStoreReader
         Load(handler, expandedElement, uriFactory);
     }
     
-    private void Load(IRdfHandler handler, JArray input, IUriFactory uriFactory) {
+    private void Load(IRdfHandler handler, JsonArray input, IUriFactory uriFactory) {
         if (handler == null) throw new ArgumentNullException(nameof(handler));
         if (input == null) throw new ArgumentNullException(nameof(input));
         if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
@@ -154,11 +152,11 @@ public class JsonLdParser : IStoreReader
         try
         {
             var nodeMapGenerator = new NodeMapGenerator();
-            JObject nodeMap = nodeMapGenerator.GenerateNodeMap(input);
-            foreach (JProperty p in nodeMap.Properties())
+            JsonObject nodeMap = nodeMapGenerator.GenerateNodeMap(input);
+            foreach (KeyValuePair<string, JsonNode> p in nodeMap)
             {
-                var graphName = p.Name;
-                var graph = p.Value as JObject;
+                var graphName = p.Key;
+                var graph = p.Value as JsonObject;
                 if (graph == null) continue;
                 IRefNode graphNode;
                 if (graphName == "@default")
@@ -180,10 +178,10 @@ public class JsonLdParser : IStoreReader
                         continue;
                     }
                 }
-                foreach (JProperty gp in graph.Properties())
+                foreach (KeyValuePair<string, JsonNode> gp in graph)
                 {
-                    var subject = gp.Name;
-                    var node = gp.Value as JObject;
+                    var subject = gp.Key;
+                    var node = gp.Value as JsonObject;
                     IRefNode subjectNode;
                     if (IsBlankNodeIdentifier(subject))
                     {
@@ -200,13 +198,13 @@ public class JsonLdParser : IStoreReader
                         }
                         subjectNode = handler.CreateUriNode(subjectIri);
                     }
-                    foreach (JProperty np in node.Properties())
+                    foreach (KeyValuePair<string, JsonNode> np in node)
                     {
-                        var property = np.Name;
-                        var values = np.Value as JArray;
+                        var property = np.Key;
+                        var values = np.Value as JsonArray;
                         if (property.Equals("@type"))
                         {
-                            foreach (JToken type in values)
+                            foreach (JsonNode type in values)
                             {
                                 INode typeNode = MakeNode(handler, type, graphNode);
                                 if (typeNode is null)
@@ -224,7 +222,7 @@ public class JsonLdParser : IStoreReader
                         else if ((JsonLdUtils.IsBlankNodeIdentifier(property) && ParserOptions.ProduceGeneralizedRdf) ||
                                  Uri.IsWellFormedUriString(property, UriKind.Absolute))
                         {
-                            foreach (JToken item in values)
+                            foreach (JsonNode item in values)
                             {
                                 var predicateNode = MakeNode(handler, property, graphNode) as IRefNode;
                                 if (ParserOptions.SafeMode && predicateNode is null)
@@ -263,11 +261,11 @@ public class JsonLdParser : IStoreReader
     private const string RdfValue = RdfNs + "value";
     private static readonly Regex ExponentialFormatMatcher = new Regex(@"(\d)0*E\+?0*");
 
-    private INode MakeNode(IRdfHandler handler, JToken token, IRefNode graphName, bool allowRelativeIri = false)
+    private INode MakeNode(IRdfHandler handler, JsonNode token, IRefNode graphName, bool allowRelativeIri = false)
     {
-        if (token is JValue)
+        if (token is JsonValue)
         {
-            var stringValue = token.Value<string>();
+            var stringValue = token.GetValue<string>();
             if (JsonLdUtils.IsBlankNodeIdentifier(stringValue))
             {
                 return handler.CreateBlankNode(stringValue.Substring(2));
@@ -280,27 +278,27 @@ public class JsonLdParser : IStoreReader
             return null;
         }
 
-        if (JsonLdUtils.IsValueObject(token) && token is JObject valueObject)
+        if (JsonLdUtils.IsValueObject(token) && token is JsonObject valueObject)
         {
             string literalValue;
-            JToken value = valueObject["@value"];
-            var datatype = valueObject.Property("@type")?.Value.Value<string>();
-            var language = valueObject.Property("@language")?.Value.Value<string>();
+            JsonNode value = valueObject["@value"];
+            var datatype = valueObject.ContainsKey("@type") ? valueObject["@type"].GetValue<string>() : null;
+            var language = valueObject.ContainsKey("@language") ? valueObject["@language"].GetValue<string>() : null;
             if (datatype == "@json")
             {
                 datatype = RdfNs + "JSON";
                 var serializer = new JsonLiteralSerializer();
                 literalValue = serializer.Serialize(value);
             }
-            else if (value.Type == JTokenType.Boolean)
+            else if (value.GetValueKind() == JsonValueKind.True || value.GetValueKind() == JsonValueKind.False)
             {
-                literalValue = value.Value<bool>() ? "true" : "false";
+                literalValue = value.GetValue<bool>() ? "true" : "false";
                 datatype ??= XsdNs + "boolean";
             }
-            else if (value.Type == JTokenType.Float ||
-                     value.Type == JTokenType.Integer && datatype != null && datatype.Equals(XsdNs + "double"))
+            else if (value.GetValueKind() == JsonValueKind.Number ||
+                     value.GetValueKind() == JsonValueKind.Number && datatype != null && datatype.Equals(XsdNs + "double"))
             {
-                var doubleValue = value.Value<double>();
+                var doubleValue = value.GetValue<double>();
                 var roundedValue = Math.Round(doubleValue);
                 if (doubleValue.Equals(roundedValue) && doubleValue < 1e21 && datatype == null)
                 {
@@ -312,24 +310,24 @@ public class JsonLdParser : IStoreReader
                 }
                 else
                 {
-                    literalValue = value.Value<double>().ToString("E15", CultureInfo.InvariantCulture);
+                    literalValue = value.GetValue<double>().ToString("E15", CultureInfo.InvariantCulture);
                     literalValue = ExponentialFormatMatcher.Replace(literalValue, "$1E");
                     if (literalValue.EndsWith("E")) literalValue = literalValue + "0";
                     datatype ??= XsdNs + "double";
                 }
             }
-            else if (value.Type == JTokenType.Integer ||
-                     value.Type == JTokenType.Float && datatype != null && datatype.Equals(XsdNs + "integer"))
+            else if (value.GetValueKind() == JsonValueKind.Number ||
+                     value.GetValueKind() == JsonValueKind.Number && datatype != null && datatype.Equals(XsdNs + "integer"))
             {
-                literalValue = value.Value<long>().ToString("D", CultureInfo.InvariantCulture);
+                literalValue = value.GetValue<long>().ToString("D", CultureInfo.InvariantCulture);
                 datatype ??= XsdNs + "integer";
             }
             else if (valueObject.ContainsKey("@direction") && ParserOptions.RdfDirection.HasValue)
             {
-                literalValue = value.Value<string>();
-                var direction = valueObject["@direction"].Value<string>();
+                literalValue = value.GetValue<string>();
+                var direction = valueObject["@direction"].GetValue<string>();
                 language = valueObject.ContainsKey("@language")
-                    ? valueObject["@language"].Value<string>().ToLowerInvariant()
+                    ? valueObject["@language"].GetValue<string>().ToLowerInvariant()
                     : string.Empty;
                 if (ParserOptions.RdfDirection == JsonLdRdfDirectionMode.I18NDatatype)
                 {
@@ -364,7 +362,7 @@ public class JsonLdParser : IStoreReader
             }
             else
             {
-                literalValue = value.Value<string>();
+                literalValue = value.GetValue<string>();
                 if (datatype == null && language == null)
                 {
                     datatype = XsdNs + "string";
@@ -379,21 +377,19 @@ public class JsonLdParser : IStoreReader
         }
         if (JsonLdUtils.IsListObject(token))
         {
-            var listArray = token["@list"] as JArray;
+            var listArray = token["@list"] as JsonArray;
             return MakeRdfList(handler, listArray, graphName);
         }
 
-        if((token as JObject)?.Property("@id")!=null)
+        if((token as JsonObject)?.TryGetPropertyValue("@id", out var idProperty) == true)
         {
-            // Must be a node object
-            var nodeObject = (JObject) token;
-            return MakeNode(handler, nodeObject["@id"], graphName);
+            return MakeNode(handler, idProperty, graphName);
         }
 
         return null;
     }
 
-    private INode MakeRdfList(IRdfHandler handler, JArray list, IRefNode graphName)
+    private INode MakeRdfList(IRdfHandler handler, JsonArray list, IRefNode graphName)
     {
         IUriNode rdfFirst = handler.CreateUriNode(new Uri(RdfNs + "first"));
         IUriNode rdfRest = handler.CreateUriNode(new Uri(RdfNs + "rest"));

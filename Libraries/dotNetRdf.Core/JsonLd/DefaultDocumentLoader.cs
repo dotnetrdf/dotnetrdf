@@ -29,10 +29,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using VDS.RDF.JsonLd.Syntax;
+using System.Text.Json;
 
 namespace VDS.RDF.JsonLd;
 
@@ -155,7 +155,7 @@ public static class DefaultDocumentLoader
             {
                 ContextUrl = contextLink == null ? null : new Uri(contextLink),
                 DocumentUrl = responseMessage.RequestMessage.RequestUri,
-                Document = JToken.Parse(responseString),
+                Document = JsonDocument.Parse(responseString).RootElement,
             };
             return ret;
         }

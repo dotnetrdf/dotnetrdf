@@ -239,7 +239,7 @@ internal class CompactProcessor : ProcessorBase
                 if (compactedValue is JsonObject compactedObject)
                 {
                     // 12.3.2 - For each property and value in compacted value:
-                    foreach (KeyValuePair<string, JsonNode> compactedObjectProperty in compactedObject)
+                    foreach (KeyValuePair<string, JsonNode> compactedObjectProperty in compactedObject.ToList())
                     {
                         // 12.3.1 - If the term definition for property in the active context indicates that property is a reverse property
                         JsonLdTermDefinition td = activeContext.GetTerm(compactedObjectProperty.Key, true);

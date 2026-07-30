@@ -1077,7 +1077,7 @@ internal class ExpandProcessor : ProcessorBase
         }
 
         // 3 - Otherwise, initialize result to a map with an @value entry whose value is set to value.
-        var result = new JsonObject{["@value"] = value};
+        var result = new JsonObject{["@value"] = value.DeepClone()};
 
         // 4 - If active property has a type mapping in active context, other than @id, @vocab, or @none, add @type to result and set its value to the value associated with the type mapping.
         if (typeMapping != null && typeMapping != "@id" && typeMapping != "@vocab" && typeMapping != "@none")

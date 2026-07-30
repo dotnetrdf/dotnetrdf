@@ -53,7 +53,7 @@ internal class JsonLdUtils
     public static JsonArray EnsureArray(JsonNode token)
     {
         if (token is JsonArray array) return array;
-        return new JsonArray(token);
+        return new JsonArray(token.DeepClone());
     }
 
     /// <summary>
@@ -437,21 +437,21 @@ internal class JsonLdUtils
             // If the property doesn't exist, add value as the single value of the property
             if (!o.ContainsKey(entry))
             {
-                o[entry] = value;
+                o[entry] = value.DeepClone();
             }
             else
             {
                 // If property exists and its value is an array, append value to the array
                 if (o[entry] is JsonArray entryArray)
                 {
-                    entryArray.Add(value);
+                    entryArray.Add(value.DeepClone());
                 }
                 else
                 {
                     // Otherwise convert the target property value to an array and then append value
                     entryArray = new JsonArray(o[entry])
                     {
-                        value,
+                        value.DeepClone(),
                     };
                     o[entry] = entryArray;
                 }
@@ -594,6 +594,26 @@ internal class JsonLdUtils
             result.TryAdd(kvp.Key, kvp.Value.DeepClone());
         }
         return result;
+    }
+
+    public static void ReplaceInParent(JsonNode node, JsonNode newValue)
+    {
+        if (node.Parent is JsonArray array)
+        {
+            int index = array.IndexOf(node);
+            if (index >= 0)
+            {
+                array[index] = newValue;
+            }
+        }
+        else if (node.Parent is JsonObject obj)
+        {
+            var property = obj.FirstOrDefault(p => p.Value == node);
+            if (property.Key != null)
+            {
+                obj[property.Key] = newValue;
+            }
+        }
     }
 
 }

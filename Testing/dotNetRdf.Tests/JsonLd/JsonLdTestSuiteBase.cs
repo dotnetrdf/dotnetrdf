@@ -2,7 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Net;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using VDS.RDF.JsonLd.Syntax;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
@@ -29,7 +30,7 @@ public class JsonLdTestSuiteBase
         JsonLdProcessorOptions processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
             compactArrays, rdfDirection);
         var inputJson = File.ReadAllText(inputPath);
-        var inputElement = JToken.Parse(inputJson);
+        var inputElement = JsonNode.Parse(inputJson);
 
         // Expand tests should not have a context parameter
         Assert.Null(contextPath);
@@ -37,9 +38,9 @@ public class JsonLdTestSuiteBase
         switch (testType)
         {
             case JsonLdTestType.PositiveEvaluationTest:
-                JArray actualOutputElement = JsonLdProcessor.Expand(inputElement, processorOptions);
+                JsonArray actualOutputElement = JsonLdProcessor.Expand(inputElement, processorOptions);
                 var expectedOutputJson = File.ReadAllText(expectedOutputPath);
-                var expectedOutputElement = JToken.Parse(expectedOutputJson);
+                var expectedOutputElement = JsonNode.Parse(expectedOutputJson);
                 Assert.True(DeepEquals(actualOutputElement, expectedOutputElement),
                     $"Error processing expand test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
                 break;
@@ -51,7 +52,7 @@ public class JsonLdTestSuiteBase
                 break;
             case JsonLdTestType.PositiveSyntaxTest:
                 // Expect test to run without throwing processing errors
-                JArray _ = JsonLdProcessor.Expand(inputElement, processorOptions);
+                JsonArray _ = JsonLdProcessor.Expand(inputElement, processorOptions);
                 break;
             case JsonLdTestType.NegativeSyntaxTest:
                 Assert.ThrowsAny<JsonLdProcessorException>(() => JsonLdProcessor.Expand(inputElement, processorOptions));
@@ -68,14 +69,14 @@ public class JsonLdTestSuiteBase
             compactArrays, rdfDirection);
         var inputJson = File.ReadAllText(inputPath);
         var contextJson = contextPath == null ? null : File.ReadAllText(contextPath);
-        var inputElement = JToken.Parse(inputJson);
-        JToken contextElement = contextJson == null ? new JObject() : JToken.Parse(contextJson);
+        var inputElement = JsonNode.Parse(inputJson);
+        JsonNode contextElement = contextJson == null ? JsonNode.Parse("{}") : JsonNode.Parse(contextJson);
         switch (testType)
         {
             case JsonLdTestType.PositiveEvaluationTest:
                 var expectedOutputJson = File.ReadAllText(expectedOutputPath);
-                var expectedOutputElement = JToken.Parse(expectedOutputJson);
-                JObject actualOutputElement = JsonLdProcessor.Compact(inputElement, contextElement, processorOptions);
+                var expectedOutputElement = JsonNode.Parse(expectedOutputJson);
+                JsonNode actualOutputElement = JsonLdProcessor.Compact(inputElement, contextElement, processorOptions);
                 Assert.True(DeepEquals(actualOutputElement, expectedOutputElement),
                     $"Error processing compact test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
                 break;
@@ -98,16 +99,16 @@ public class JsonLdTestSuiteBase
             compactArrays, rdfDirection);
         var inputJson = File.ReadAllText(inputPath);
         var contextJson = contextPath == null ? null : File.ReadAllText(contextPath);
-        var inputElement = JToken.Parse(inputJson);
-        JToken contextElement = contextJson == null ? null : JToken.Parse(contextJson);
+        var inputElement = JsonNode.Parse(inputJson);
+        JsonNode contextElement = contextJson == null ? JsonValue.Create<string>(null) : JsonNode.Parse(contextJson);
 
         switch (testType)
         {
             case JsonLdTestType.PositiveEvaluationTest:
                 var expectedOutputJson = File.ReadAllText(expectedOutputPath);
-                var expectedOutputElement = JToken.Parse(expectedOutputJson);
+                var expectedOutputElement = JsonNode.Parse(expectedOutputJson);
 
-                JToken actualOutputElement = JsonLdProcessor.Flatten(inputElement, contextElement, processorOptions);
+                JsonNode actualOutputElement = JsonLdProcessor.Flatten(inputElement, contextElement, processorOptions);
                 Assert.True(DeepEquals(actualOutputElement, expectedOutputElement),
                     $"Error processing flatten test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
                 break;
@@ -195,9 +196,9 @@ public class JsonLdTestSuiteBase
         {
             case JsonLdTestType.PositiveEvaluationTest:
             {
-                JArray actualOutput = jsonLdWriter.SerializeStore(input);
+                JsonArray actualOutput = jsonLdWriter.SerializeStore(input);
                 var expectedOutputJson = File.ReadAllText(expectedOutputPath);
-                var expectedOutput = JToken.Parse(expectedOutputJson);
+                var expectedOutput = JsonNode.Parse(expectedOutputJson);
 
                 try
                 {
@@ -218,7 +219,7 @@ public class JsonLdTestSuiteBase
                 break;
             }
             case JsonLdTestType.PositiveSyntaxTest:
-                JArray _ = jsonLdWriter.SerializeStore(input);
+                JsonArray _ = jsonLdWriter.SerializeStore(input);
                 break;
             case JsonLdTestType.NegativeSyntaxTest:
                 Assert.ThrowsAny<JsonLdProcessorException>(() => jsonLdWriter.SerializeStore(input));
@@ -242,15 +243,15 @@ public class JsonLdTestSuiteBase
             Ordered = ordered,
         };
         if (omitGraph.HasValue) options.OmitGraph = omitGraph.Value;
-        var inputElement = JToken.Parse(inputJson);
-        var frameElement = JToken.Parse(frameJson);
+        var inputElement = JsonNode.Parse(inputJson);
+        var frameElement = JsonNode.Parse(frameJson);
         
         switch (testType)
         {
             case JsonLdTestType.PositiveEvaluationTest:
                 var expectedOutputJson = File.ReadAllText(expectedOutputPath);
-                var expectedOutputElement = JToken.Parse(expectedOutputJson);
-                JObject actualOutput = JsonLdProcessor.Frame(inputElement, frameElement, options);
+                var expectedOutputElement = JsonNode.Parse(expectedOutputJson);
+                JsonObject actualOutput = JsonLdProcessor.Frame(inputElement, frameElement, options);
                 Assert.True(DeepEquals(expectedOutputElement, actualOutput),
                     $"Test failed for input {Path.GetFileName(inputPath)}\nExpected:\n{expectedOutputElement}\nActual:\n{actualOutput}");
                 break;
@@ -270,34 +271,36 @@ public class JsonLdTestSuiteBase
         
     }
 
-    private static bool DeepEquals(JToken t1, JToken t2, bool arraysAreOrdered = false)
+    private static bool DeepEquals(JsonNode t1, JsonNode t2, bool arraysAreOrdered = false)
     {
         if (t1 == null) return t2 == null;
         if (t2 == null) return false;
-        if (t1.Type == JTokenType.Null && t2.Type == JTokenType.Null) return true;
-        if (t1.Type == JTokenType.Null && t2.Type == JTokenType.String) return t2.Value<string>() == null;
-        if (t2.Type == JTokenType.Null && t1.Type == JTokenType.String) return t1.Value<string>() == null;
-        if (t1.Type != t2.Type) return false;
-        switch (t1.Type)
+        var t1Kind = t1.GetValueKind();
+        var t2Kind = t2.GetValueKind();
+        if (t1Kind == JsonValueKind.Null && t2Kind == JsonValueKind.Null) return true;
+        if (t1Kind == JsonValueKind.Null && t2Kind == JsonValueKind.String) return t2.GetValue<string>() == null;
+        if (t2Kind == JsonValueKind.Null && t1Kind == JsonValueKind.String) return t1.GetValue<string>() == null;
+        if (t1Kind != t2Kind) return false;
+        switch (t1Kind)
         {
-            case JTokenType.Array:
-                return DeepEquals(t1 as JArray, t2 as JArray, arraysAreOrdered);
-            case JTokenType.Object:
-                return DeepEquals(t1 as JObject, t2 as JObject, arraysAreOrdered);
+            case JsonValueKind.Array:
+                return DeepEquals(t1.AsArray(), t2.AsArray(), arraysAreOrdered);
+            case JsonValueKind.Object:
+                return DeepEquals(t1.AsObject(), t2.AsObject(), arraysAreOrdered);
             default:
                 return t1.Equals(t2);
         }
     }
 
-    private static bool DeepEquals(JArray a1, JArray a2, bool arraysAreOrdered = false)
+    private static bool DeepEquals(JsonArray a1, JsonArray a2, bool arraysAreOrdered = false)
     {
         if (a1.Count != a2.Count) return false;
         if (arraysAreOrdered)
         {
             return !a1.Where((t, i) => !DeepEquals(t, a2[i], true)).Any();
         }
-        var a2Clone = new JArray(a2);
-        foreach (JToken item in a1)
+        JsonArray a2Clone = a2.DeepClone().AsArray();
+        foreach (JsonNode item in a1)
         {
             var matched = false;
             for (var j = 0; j < a2Clone.Count; j++)
@@ -314,45 +317,45 @@ public class JsonLdTestSuiteBase
         return true;
     }
 
-    private static bool DeepEquals(JObject o1, JObject o2, bool arraysAreOrdered = false)
+    private static bool DeepEquals(JsonObject o1, JsonObject o2, bool arraysAreOrdered = false)
     {
         if (o1.Count != o2.Count) return false;
-        return o1.Properties().All(p => o2.ContainsKey(p.Name)) &&
-               o1.Properties().All(p => DeepEquals(p.Value, o2[p.Name], arraysAreOrdered));
+        return o1.All(p => o2.ContainsKey(p.Key)) &&
+               o1.All(p => DeepEquals(p.Value, o2[p.Key], arraysAreOrdered));
     }
 
-    private static bool DeepEquals(JToken token1, JToken token2, bool ignoreArrayOrder, bool throwOnMismatch)
+    private static bool DeepEquals(JsonNode token1, JsonNode token2, bool ignoreArrayOrder, bool throwOnMismatch)
     {
-        if (token1.Type != token2.Type)
+        if (token1.GetValueKind() != token2.GetValueKind())
         {
             if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
             return false;
         }
-        switch (token1.Type)
+        switch (token1.GetValueKind())
         {
-            case JTokenType.Object:
-                if (!(token1 is JObject o1 && token2 is JObject o2)) return false;
-                foreach (JProperty p in o1.Properties())
+            case JsonValueKind.Object:
+                if (!(token1 is JsonObject o1 && token2 is JsonObject o2)) return false;
+                foreach (var p in o1)
                 {
-                    if (o2[p.Name] == null)
+                    if (o2[p.Key] == null)
                     {
                         if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
                         return false;
                     }
-                    if (!DeepEquals(o1[p.Name], o2[p.Name], ignoreArrayOrder, throwOnMismatch))
+                    if (!DeepEquals(p.Value, o2[p.Key], ignoreArrayOrder, throwOnMismatch))
                     {
-                        if (throwOnMismatch) throw new DeepEqualityFailure(o1[p.Name], o2[p.Name]);
+                        if (throwOnMismatch) throw new DeepEqualityFailure(p.Value, o2[p.Key]);
                         return false;
                     }
                 }
-                if (o2.Properties().Any(p2 => o1.Property(p2.Name) == null))
+                if (o2.Any(p2 => o1[p2.Key] == null))
                 {
                     if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
                     return false;
                 }
                 return true;
-            case JTokenType.Array:
-                if (!(token1 is JArray a1 && token2 is JArray a2)) return false;
+            case JsonValueKind.Array:
+                if (!(token1 is JsonArray a1 && token2 is JsonArray a2)) return false;
                 if (a1.Count != a2.Count)
                 {
                     if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
@@ -372,8 +375,8 @@ public class JsonLdTestSuiteBase
                     }
                     return true;
                 }
-                var unmatchedItems = (token2 as JArray).ToList();
-                foreach (JToken item1 in a1)
+                var unmatchedItems = token2.DeepClone().AsArray().ToList();
+                foreach (JsonNode item1 in a1)
                 {
                     if (unmatchedItems.Count == 0)
                     {
@@ -393,14 +396,14 @@ public class JsonLdTestSuiteBase
                 }
                 return unmatchedItems.Count == 0;
             default:
-                return JToken.DeepEquals(token1, token2);
+                return JsonNode.DeepEquals(token1, token2);
         }
     }
 
     private class DeepEqualityFailure : Exception
     {
-        public DeepEqualityFailure(JToken expected, JToken actual) : base(
-            $"DeepEquality failed at {expected.Path}.\nExpected: {expected}\nActual: {actual}")
+        public DeepEqualityFailure(JsonNode expected, JsonNode actual) : base(
+            $"DeepEquality failed at {expected.GetPath()}.\nExpected: {expected}\nActual: {actual}")
         {
             
         }
@@ -445,7 +448,7 @@ public class JsonLdTestSuiteBase
         if (expandContextPath != null)
         {
             var expandContextJson = File.ReadAllText(expandContextPath);
-            processorOptions.ExpandContext = JObject.Parse(expandContextJson);
+            processorOptions.ExpandContext = JsonNode.Parse(expandContextJson);
         }
         processorOptions.CompactArrays = compactArrays;
         if (!string.IsNullOrEmpty(rdfDirection))

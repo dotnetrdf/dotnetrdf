@@ -24,10 +24,11 @@
 // </copyright>
 */
 
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using VDS.RDF.JsonLd.Processors;
 using VDS.RDF.JsonLd.Syntax;
 using VDS.RDF.Parsing;
@@ -76,11 +77,11 @@ public class JsonLdProcessor
     /// <summary>
     /// Run the Compaction algorithm.
     /// </summary>
-    /// <param name="input">The JSON-LD data to be compacted. Expected to be a JObject or JArray of JObject or a JString whose value is the IRI reference to a JSON-LD document to be retrieved.</param>
-    /// <param name="context">The context to use for the compaction process. May be a JObject, JArray of JObject, JString or JArray of JString. String values are treated as IRI references to context documents to be retrieved.</param>
+    /// <param name="input">The JSON-LD data to be compacted. Expected to be a JsonObject or JsonArray of JsonObject or a JString whose value is the IRI reference to a JSON-LD document to be retrieved.</param>
+    /// <param name="context">The context to use for the compaction process. May be a JsonObject, JsonArray of JsonObject, JString or JsonArray of JString. String values are treated as IRI references to context documents to be retrieved.</param>
     /// <param name="options">Additional processor options.</param>
     /// <returns></returns>
-    public static JObject Compact(JToken input, JToken context, JsonLdProcessorOptions options)
+    public static JsonObject Compact(JsonNode input, JsonNode context, JsonLdProcessorOptions options)
     {
         var processor = new JsonLdProcessor(options);
         return processor.Compact(input, context);
@@ -89,18 +90,18 @@ public class JsonLdProcessor
     /// <summary>
     /// Run the Compaction algorithm.
     /// </summary>
-    /// <param name="input">The JSON-LD data to be compacted. Expected to be a JObject or JArray of JObject or a JString whose value is the IRI reference to a JSON-LD document to be retrieved.</param>
-    /// <param name="context">The context to use for the compaction process. May be a JObject, JArray of JObject, JString or JArray of JString. String values are treated as IRI references to context documents to be retrieved.</param>
+    /// <param name="input">The JSON-LD data to be compacted. Expected to be a JsonObject or JsonArray of JsonObject or a JString whose value is the IRI reference to a JSON-LD document to be retrieved.</param>
+    /// <param name="context">The context to use for the compaction process. May be a JsonObject, JsonArray of JsonObject, JString or JsonArray of JString. String values are treated as IRI references to context documents to be retrieved.</param>
     /// <returns></returns>
-    public JObject Compact(JToken input, JToken context) 
+    public JsonObject Compact(JsonNode input, JsonNode context) 
     { 
         // Set expanded input to the result of using the expand method using input and options.
-        JArray expandedInput;
+        JsonArray expandedInput;
         Uri remoteDocumentUrl = null;
         Uri contextBase = null;
-        if (input.Type == JTokenType.String)
+        if (input.GetValueKind() == JsonValueKind.String)
         {
-            RemoteDocument remoteDocument = LoadJson(new Uri(input.Value<string>()),
+            RemoteDocument remoteDocument = LoadJson(new Uri(input.GetValue<string>()),
                 new JsonLdLoaderOptions {ExtractAllScripts = _options.ExtractAllScripts}, _options);
             expandedInput = Expand(remoteDocument, remoteDocument.DocumentUrl,
                 new JsonLdLoaderOptions {ExtractAllScripts = false}, _options);
@@ -116,7 +117,7 @@ public class JsonLdProcessor
             contextBase = _options.Base;
         }
 
-        if (context is JObject contextObject && contextObject.ContainsKey("@context"))
+        if (context is JsonObject contextObject && contextObject.ContainsKey("@context"))
         {
             context = contextObject["@context"];
         }
@@ -130,24 +131,25 @@ public class JsonLdProcessor
         }
 
         var compactor = new CompactProcessor(_options, contextProcessor, Warnings);
-        JToken compactedOutput = compactor.CompactElement(activeContext, null, expandedInput, _options.CompactArrays,
+        JsonNode compactedOutput = compactor.CompactElement(activeContext, null, expandedInput, _options.CompactArrays,
             _options.Ordered);
         if (JsonLdUtils.IsEmptyArray(compactedOutput))
         {
-            compactedOutput = new JObject();
+            compactedOutput = new JsonObject();
         }
-        else if (compactedOutput is JArray)
+        else if (compactedOutput is JsonArray)
         {
-            compactedOutput = new JObject(new JProperty(compactor.CompactIri(activeContext, "@graph", vocab: true),
-                compactedOutput));
+            compactedOutput = new JsonObject{
+                [compactor.CompactIri(activeContext, "@graph", vocab: true)] = compactedOutput,
+            };
         }
 
         if (context != null && !JsonLdUtils.IsEmptyObject(context))
         {
-            (compactedOutput as JObject)["@context"] = context;
+            (compactedOutput as JsonObject)["@context"] = context;
         }
 
-        return compactedOutput as JObject;
+        return compactedOutput as JsonObject;
     }
 
 
@@ -158,7 +160,7 @@ public class JsonLdProcessor
     /// <param name="options">Options to apply during the expansion processing.</param>
     /// <param name="warnings"></param>
     /// <returns>The expanded JSON-LD context.</returns>
-    public static JArray Expand(Uri contextUrl, JsonLdProcessorOptions options = null, IList<JsonLdProcessorWarning> warnings = null)
+    public static JsonArray Expand(Uri contextUrl, JsonLdProcessorOptions options = null, IList<JsonLdProcessorWarning> warnings = null)
     {
         RemoteDocument parsedJson = LoadJson(contextUrl, null, options);
         var processor = new JsonLdProcessor(options);
@@ -180,17 +182,17 @@ public class JsonLdProcessor
     /// <param name="options">Options to apply during the expansion processing.</param>
     /// <param name="warnings"></param>
     /// <returns>The expanded JSON-LD context.</returns>
-    public static JArray Expand(JToken input, JsonLdProcessorOptions options = null, IList<JsonLdProcessorWarning> warnings = null)
+    public static JsonArray Expand(JsonNode input, JsonLdProcessorOptions options = null, IList<JsonLdProcessorWarning> warnings = null)
     {
         var remoteDoc = new RemoteDocument
         {
-            Document = input is JValue v && v.Type == JTokenType.String ? v.Value<string>() : input,
+            Document = input is JsonValue v && v.GetValueKind() == JsonValueKind.String ? v.GetValue<string>() : input,
         };
         var processor = new JsonLdProcessor(options);
-        var expanded = processor.Expand(remoteDoc, null, null, options);
+        JsonArray expanded = processor.Expand(remoteDoc, null, null, options);
         if (processor.Warnings.Any() && warnings is not null)
         {
-            foreach (var warning in processor.Warnings)
+            foreach (JsonLdProcessorWarning warning in processor.Warnings)
             {
                 warnings.Add(warning);
             }
@@ -198,7 +200,7 @@ public class JsonLdProcessor
         return expanded;
     }
 
-    private JArray Expand(RemoteDocument doc, Uri documentLocation,
+    private JsonArray Expand(RemoteDocument doc, Uri documentLocation,
         JsonLdLoaderOptions loaderOptions = null,
         JsonLdProcessorOptions options = null)
     {
@@ -206,7 +208,7 @@ public class JsonLdProcessor
         {
             try
             {
-                doc.Document = JToken.Parse(docContent);
+                doc.Document = JsonNode.Parse(docContent);
             }
             catch (Exception ex)
             {
@@ -221,12 +223,16 @@ public class JsonLdProcessor
         var contextProcessor = new ContextProcessor(options, Warnings);
         if (options?.ExpandContext != null)
         {
-            if (options.ExpandContext is JObject expandObject)
+            if (options.ExpandContext is JsonObject expandObject)
             {
-                JProperty contextProperty = expandObject.Property("@context");
-                activeContext = contextProcessor.ProcessContext(activeContext,
-                    contextProperty != null ? contextProperty.Value : expandObject,
-                    activeContext.OriginalBase);
+                if (expandObject.TryGetPropertyValue("@context", out JsonNode contextValue))
+                {
+                    activeContext = contextProcessor.ProcessContext(activeContext, expandObject["@context"], activeContext.OriginalBase);
+                } 
+                else
+                {
+                    activeContext = contextProcessor.ProcessContext(activeContext, expandObject, activeContext.OriginalBase);
+                }
             }
             else
             {
@@ -240,26 +246,26 @@ public class JsonLdProcessor
             RemoteDocument contextDoc = LoadJson(doc.ContextUrl, loaderOptions, options);
             if (contextDoc.Document is string contextJson)
             {
-                contextDoc.Document = JToken.Parse(contextJson);
+                contextDoc.Document = JsonNode.Parse(contextJson);
             }
 
-            activeContext = contextProcessor.ProcessContext(activeContext, contextDoc.Document as JToken, doc.ContextUrl);
+            activeContext = contextProcessor.ProcessContext(activeContext, contextDoc.Document as JsonNode, doc.ContextUrl);
         }
         
         var expander = new ExpandProcessor(options, contextProcessor, Warnings);
-        JToken expandedOutput = expander.ExpandElement(activeContext, null, doc.Document as JToken,
+        JsonNode expandedOutput = expander.ExpandElement(activeContext, null, doc.Document as JsonNode,
             doc.DocumentUrl ?? options?.Base,
             options?.FrameExpansion ?? false,
             options?.Ordered ?? false);
-        if (expandedOutput is JObject expandedObject)
+        if (expandedOutput is JsonObject expandedObject)
         {
             if (expandedObject.ContainsKey("@graph") && expandedObject.Count == 1)
                 expandedOutput = expandedObject["@graph"];
         }
 
-        if (expandedOutput == null) expandedOutput = new JArray();
+        if (expandedOutput == null) expandedOutput = new JsonArray();
         expandedOutput = JsonLdUtils.EnsureArray(expandedOutput);
-        return expandedOutput as JArray;
+        return expandedOutput as JsonArray;
     }
 
     /// <summary>
@@ -269,13 +275,13 @@ public class JsonLdProcessor
     /// <param name="frame">The framing specification document.</param>
     /// <param name="options">Processor options.</param>
     /// <returns></returns>
-    public static JObject Frame(JToken input, JToken frame, JsonLdProcessorOptions options)
+    public static JsonObject Frame(JsonNode input, JsonNode frame, JsonLdProcessorOptions options)
     {
         var processor = new JsonLdProcessor(options);
         return processor.Frame(input, frame);
     }
 
-    private JObject Frame(JToken input, JToken frame) 
+    private JsonObject Frame(JsonNode input, JsonNode frame) 
     {
         // JSON-LD 1.0 compatible framing requires ordered processing
         if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
@@ -287,41 +293,41 @@ public class JsonLdProcessor
         Uri remoteDocumentUri = null, remoteFrameUri = null;
         RemoteDocument remoteDocument = null, remoteFrame = null;
         var loaderOptions = new JsonLdLoaderOptions {ExtractAllScripts = _options.ExtractAllScripts};
-        if (input.Type == JTokenType.String)
+        if (input.GetValueKind() == JsonValueKind.String)
         {
-            remoteDocumentUri = new Uri(input.Value<string>());
+            remoteDocumentUri = new Uri(input.GetValue<string>());
             remoteDocument = LoadJson(remoteDocumentUri, loaderOptions, _options);
         }
 
         JsonLdProcessorOptions expandOptions = _options.Clone();
         expandOptions.Ordered = false;
 
-        JArray expandedInput = remoteDocument != null
+        JsonArray expandedInput = remoteDocument != null
             ? Expand(remoteDocument, remoteDocumentUri, loaderOptions, expandOptions)
             : Expand(input, expandOptions);
 
-        if (frame.Type == JTokenType.String)
+        if (frame.GetValueKind() == JsonValueKind.String)
         {
-            remoteFrameUri = new Uri(frame.Value<string>());
+            remoteFrameUri = new Uri(frame.GetValue<string>());
             remoteFrame = LoadJson(remoteFrameUri, loaderOptions, _options);
         }
 
         JsonLdProcessorOptions frameExpansionOptions = _options.Clone();
         frameExpansionOptions.Ordered = false;
         frameExpansionOptions.FrameExpansion = true;
-        JArray expandedFrame = remoteFrame != null
+        JsonArray expandedFrame = remoteFrame != null
             ? Expand(remoteFrame, remoteFrameUri, loaderOptions, frameExpansionOptions)
             : Expand(frame, frameExpansionOptions);
 
-        JToken context = new JObject();
+        JsonNode context = new JsonObject();
         var haveContext = false;
-        if (remoteFrame != null && remoteFrame.Document is JObject remoteFrameObject &&
+        if (remoteFrame != null && remoteFrame.Document is JsonObject remoteFrameObject &&
             remoteFrameObject.ContainsKey("@context"))
         {
-            context = remoteFrameObject["@context"] as JObject;
+            context = remoteFrameObject["@context"] as JsonObject;
             haveContext = true;
         }
-        else if (frame is JObject fo && fo.ContainsKey("@context"))
+        else if (frame is JsonObject fo && fo.ContainsKey("@context"))
         {
             context = fo["@context"];
             haveContext = true;
@@ -344,30 +350,30 @@ public class JsonLdProcessor
         JsonLdContext toReverse = contextProcessor.ProcessContext(new JsonLdContext(), context, reverseContextBase);
 
         // 12 - Initialize inverse context to the result of performing the Inverse Context Creation algorithm.
-        JObject inverseContext = toReverse.InverseContext;
+        JsonObject inverseContext = toReverse.InverseContext;
 
         // 13 - If frame has a top-level property which expands to @graph set the frameDefault option to options with the value true.
-        if (frame is JObject frameObject && frameObject.Properties()
-            .Any(p => contextProcessor.ExpandIri(activeContext, p.Name, true).Equals("@graph")))
+        if (frame is JsonObject frameObject && 
+            frameObject.Any(p => contextProcessor.ExpandIri(activeContext, p.Key, true).Equals("@graph")))
         {
             _options.FrameDefault = true;
         }
 
         // 14 - Initialize a new framing state (state) to an empty map. 
-        JObject graphMap = nodeMapGenerator.GenerateNodeMap(expandedInput);
+        JsonObject graphMap = nodeMapGenerator.GenerateNodeMap(expandedInput);
         if (!_options.FrameDefault)
         {
             // Add an @merged entry to graphMap
-            JObject mergedNodeMap = nodeMapGenerator.GenerateMergedNodeMap(graphMap);
+            JsonObject mergedNodeMap = nodeMapGenerator.GenerateMergedNodeMap(graphMap);
             graphMap["@merged"] = mergedNodeMap;
         }
 
         var state = new FramingState(_options, graphMap, _options.FrameDefault ? "@default" : "@merged");
 
         // 15 - Initialize results as an empty array.
-        var results = new JArray();
+        var results = new JsonArray();
         // 16 - Invoke the Framing algorithm, passing state, the keys from subject map in state for subjects, expanded frame, results for parent, and null as active property.
-        FramingProcessor.ProcessFrame(state, state.Subjects.Properties().Select(p => p.Name).ToList(), expandedFrame, results, null,
+        FramingProcessor.ProcessFrame(state, state.Subjects.Select(p => p.Key).ToList(), expandedFrame, results, null,
             processingMode: _options.ProcessingMode ?? JsonLdProcessingMode.JsonLd11);
 
         // 17 - If the processing mode is not json-ld-1.0, remove the @id entry of each node object in results where the entry value is a blank node identifier which appears only once in any property value within results.
@@ -381,26 +387,26 @@ public class JsonLdProcessor
 
         // 19 - Set compacted results to the result of using the compact method using active context, inverse context, null for active property, results as element,, and the compactArrays and ordered flags from options.
         var compactor = new CompactProcessor(_options, contextProcessor, Warnings);
-        JToken compactedResults =
+        JsonNode compactedResults =
             compactor.CompactElement(activeContext, null, results, _options.CompactArrays, _options.Ordered);
         var graphProperty = compactor.CompactIri(activeContext, "@graph", vocab: true);
         // 19.1 - If compacted results is an empty array, replace it with a new map.
         if (JsonLdUtils.IsEmptyArray(compactedResults))
         {
-            compactedResults = new JObject();
+            compactedResults = new JsonObject();
         }
         else if (JsonLdUtils.IsArray(compactedResults))
         {
             // 19.2 - Otherwise, if compacted results is an array, replace it with a new map with a single entry whose key is the result of IRI compacting @graph and value is compacted results.
-            compactedResults = new JObject(new JProperty(graphProperty, compactedResults));
+            compactedResults = new JsonObject{[graphProperty] = compactedResults};
         }
 
-        var compactedResultsObject = compactedResults as JObject;
+        var compactedResultsObject = compactedResults as JsonObject;
         // 19.3 - Add an @context entry to compacted results and set its value to the provided context.
         if (haveContext
         ) // Only if it was explicitly provided, not if context was created as part of this algorithm.
         {
-            compactedResultsObject.Add("@context", context);
+            compactedResultsObject.Add("@context", context.DeepClone());
         }
 
         // 20 - Recursively, replace all @null values in compacted results with null. If, after replacement, an array contains only the value null remove that value, leaving an empty array.
@@ -410,31 +416,31 @@ public class JsonLdProcessor
         // modify compacted results to place the non @context entry of compacted results into a map contained within the array value of @graph.
         // If omitGraph is true, a top-level @graph entry is used only to contain multiple node objects.
         if (!_options.OmitGraph && (!compactedResultsObject.ContainsKey(graphProperty) ||
-                                   compactedResultsObject[graphProperty].Type != JTokenType.Array))
+                                   compactedResultsObject[graphProperty].GetValueKind() != JsonValueKind.Array))
         {
-            var g = new JObject();
-            foreach (JProperty property in compactedResultsObject.Properties().ToList())
+            var g = new JsonObject();
+            foreach (KeyValuePair<string, JsonNode> property in compactedResultsObject.ToList())
             {
-                if (!property.Name.Equals("@context") && !property.Name.Equals(graphProperty))
+                if (!property.Key.Equals("@context") && !property.Key.Equals(graphProperty))
                 {
                     g.Add(property);
-                    compactedResultsObject.Remove(property.Name);
+                    compactedResultsObject.Remove(property.Key);
                 }
             }
 
             if (compactedResultsObject.ContainsKey(graphProperty))
             {
-                compactedResultsObject[graphProperty] = new JArray(g, compactedResultsObject[graphProperty]);
+                compactedResultsObject[graphProperty] = new JsonArray(g, compactedResultsObject[graphProperty].DeepClone());
             }
             else
             {
                 if (g.Count > 0)
                 {
-                    compactedResultsObject[graphProperty] = new JArray(g);
+                    compactedResultsObject[graphProperty] = new JsonArray(g);
                 }
                 else
                 {
-                    compactedResultsObject[graphProperty] = new JArray();
+                    compactedResultsObject[graphProperty] = new JsonArray();
                 }
             }
         }
@@ -449,12 +455,12 @@ public class JsonLdProcessor
     /// <param name="context"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static JToken Flatten(JToken input, JToken context, JsonLdProcessorOptions options)
+    public static JsonNode Flatten(JsonNode input, JsonNode context, JsonLdProcessorOptions options)
     {
         // Set expanded input to the result of using the expand method using input and options.
-        JArray expandedInput = Expand(input, options);
+        JsonArray expandedInput = Expand(input, options);
         var flattenProcessor = new FlattenProcessor();
-        JToken flattenedOutput = flattenProcessor.FlattenElement(expandedInput, options.Ordered);
+        JsonNode flattenedOutput = flattenProcessor.FlattenElement(expandedInput, options.Ordered);
         if (context != null)
         {
             flattenedOutput = Compact(flattenedOutput, context, options);
@@ -469,7 +475,7 @@ public class JsonLdProcessor
     /// <param name="input"></param>
     /// <param name="context"></param>
     /// <returns></returns>
-    public JToken Flatten(JToken input, JToken context)
+    public JsonNode Flatten(JsonNode input, JsonNode context)
     {
         return Flatten(input, context, _options);
     }
@@ -480,118 +486,121 @@ public class JsonLdProcessor
     /// <param name="input"></param>
     /// <returns></returns>
     /// <remarks>Caution: Make sure to use DateParseHandling.None when deserializing the JSON document.</remarks>
-    public static string Canonicalize(JArray input)
+    public static string Canonicalize(JsonArray input)
     {
         var store = new TripleStore();
-        new JsonLdParser().Load(store, input.DeepClone() as JArray);
+        new JsonLdParser().Load(store, input.DeepClone() as JsonArray);
 
         return new RdfCanonicalizer().Canonicalize(store).SerializedNQuads;
     }
 
-    private static void ReplaceNulls(JToken token)
+    private static void ReplaceNulls(JsonNode token)
     {
         switch (token)
         {
-            case JObject o:
-                foreach (JProperty property in o.Properties())
+            case JsonObject o:
+                foreach (KeyValuePair<string, JsonNode> property in o.ToList())
                 {
-                    switch (property.Value.Type)
+                    switch (property.Value.GetValueKind())
                     {
-                        case JTokenType.String:
-                            if ("@null".Equals(property.Value.Value<string>()))
+                        case JsonValueKind.String:
+                            if ("@null".Equals(property.Value.GetValue<string>()))
                             {
-                                property.Value = null;
+                                o[property.Key] = null;
                             }
 
                             break;
-                        case JTokenType.Array:
-                        case JTokenType.Object:
+                        case JsonValueKind.Array:
+                        case JsonValueKind.Object:
                             ReplaceNulls(property.Value);
                             break;
                     }
                 }
 
                 break;
-            case JArray a:
+            case JsonArray a:
                 for (var ix = 0; ix < a.Count; ix++)
                 {
-                    JToken item = a[ix];
-                    switch (item.Type)
+                    JsonNode item = a[ix];
+                    switch (item.GetValueKind())
                     {
-                        case JTokenType.String:
-                            if ("@null".Equals(item.Value<string>()))
+                        case JsonValueKind.String:
+                            if ("@null".Equals(item.GetValue<string>()))
                             {
                                 a[ix] = null;
                             }
 
                             break;
-                        case JTokenType.Object:
-                        case JTokenType.Array:
+                        case JsonValueKind.Object:
+                        case JsonValueKind.Array:
                             ReplaceNulls(item);
                             break;
                     }
                 }
 
-                if (a.All(x => x.Type == JTokenType.Null))
+                if (a.All(x => x.GetValueKind() == JsonValueKind.Null))
                 {
-                    a.RemoveAll();
+                    a.Clear();
                 }
 
                 break;
         }
     }
 
-    private static void ReplacePreservedValues(JToken token, JsonLdContext context, bool compactArrays)
+    private static void ReplacePreservedValues(JsonNode token, JsonLdContext context, bool compactArrays)
     {
-        switch (token.Type)
+        switch (token.GetValueKind())
         {
-            case JTokenType.Object:
-                var o = token as JObject;
+            case JsonValueKind.Object:
+                var o = token as JsonObject;
                 if (o["@preserve"] != null)
                 {
-                    JContainer parent = o.Parent;
-                    JToken preserveValue = o["@preserve"];
-                    if (preserveValue.Type == JTokenType.String && preserveValue.Value<string>().Equals("@null"))
+                    JsonNode parent = o.Parent;
+                    JsonNode preserveValue = o["@preserve"];
+                    if (preserveValue.GetValueKind() == JsonValueKind.String && preserveValue.GetValue<string>().Equals("@null"))
                     {
-                        if (parent is JArray)
+                        if (parent is JsonArray)
                         {
-                            o.Remove();
+                            parent.AsArray().Remove(o);
                         }
                         else
                         {
-                            o.Replace(JValue.CreateNull());
+                            var parentObject = o.Parent as JsonObject;
+                            var parentKey = parentObject.FirstOrDefault(p => p.Value == o).Key;
+                            parentObject[parentKey] = null;
                         }
                     }
                     else
                     {
-                        o.Replace(preserveValue);
+                        JsonLdUtils.ReplaceInParent(o, preserveValue);
                     }
                 }
 
-                foreach (KeyValuePair<string, JToken> p in o)
+                foreach (KeyValuePair<string, JsonNode> p in o)
                 {
                     ReplacePreservedValues(p.Value, context, compactArrays);
                 }
 
                 break;
-            case JTokenType.Array:
-                var a = token as JArray;
-                foreach (JToken item in a.ToList())
+            case JsonValueKind.Array:
+                var a = token as JsonArray;
+                foreach (JsonNode item in a.ToList())
                 {
                     ReplacePreservedValues(item, context, compactArrays);
                 }
 
                 if (compactArrays && a.Count == 1)
                 {
-                    if (a.Parent is JProperty parentProperty)
+                    if (a.Parent is JsonObject parentObject)
                     {
-                        JsonLdTermDefinition termDefinition = context.GetTerm(parentProperty.Name);
-                        var expandedName = termDefinition?.TypeMapping ?? parentProperty.Name;
+                        KeyValuePair<string, JsonNode> parentProperty = parentObject.FirstOrDefault(p => p.Value == a);
+                        JsonLdTermDefinition termDefinition = context.GetTerm(parentProperty.Key);
+                        var expandedName = termDefinition?.TypeMapping ?? parentProperty.Key;
                         if (expandedName != "@graph" &&
                             expandedName != "@list" &&
                             (termDefinition == null || termDefinition.ContainerMapping == null))
                         {
-                            a.Replace(a[0]);
+                            JsonLdUtils.ReplaceInParent(a, a[0]);
                         }
                     }
                 }
@@ -600,51 +609,46 @@ public class JsonLdProcessor
         }
     }
 
-    private static void PruneBlankNodeIdentifiers(JToken token)
+    private static void PruneBlankNodeIdentifiers(JsonNode token)
     {
         var objectMap = new Dictionary<string, BlankNodeMapEntry>();
-        GenerateBlankNodeMap(objectMap, token, null);
+        GenerateBlankNodeMap(objectMap, token, null, null);
         foreach (KeyValuePair<string, BlankNodeMapEntry> mapEntry in objectMap)
         {
             if (!mapEntry.Value.IsReferenced)
             {
-                PruneBlankNodeIdentifier(mapEntry.Key, mapEntry.Value.IdProperty);
+                PruneBlankNodeIdentifier(mapEntry.Key, mapEntry.Value.Parent as JsonObject, mapEntry.Value.IdProperty);
             }
         }
     }
 
-    private static void PruneBlankNodeIdentifier(string id, JProperty toUpdate)
+    private static void PruneBlankNodeIdentifier(string id, JsonObject parent, string toUpdate)
     {
-        if (toUpdate.Value.Type == JTokenType.String)
+        if (parent[toUpdate].GetValueKind() == JsonValueKind.String)
         {
-            toUpdate.Remove();
+            parent.Remove(toUpdate);
         }
-        else if (toUpdate.Value is JArray valueArray)
+        else if (parent[toUpdate].GetValueKind() == JsonValueKind.Array)
         {
-            foreach (JToken item in valueArray)
-            {
-                if (item.Value<string>().Equals(id))
-                {
-                    item.Remove();
-                    break;
-                }
-            }
+            var valueArray = parent[toUpdate] as JsonArray;
+            valueArray.RemoveAll(item => item.GetValue<string>().Equals(id));
         }
     }
 
     private class BlankNodeMapEntry
     {
         public bool IsReferenced;
-        public JProperty IdProperty;
+        public JsonObject Parent;
+        public string IdProperty;
     }
 
-    private static void GenerateBlankNodeMap(IDictionary<string, BlankNodeMapEntry> objectMap, JToken token,
-        JProperty activeProperty)
+    private static void GenerateBlankNodeMap(IDictionary<string, BlankNodeMapEntry> objectMap, JsonNode token,
+        JsonObject activePropertyParent, string activeProperty)
     {
-        switch (token.Type)
+        switch (token.GetValueKind())
         {
-            case JTokenType.String:
-                var str = token.Value<string>();
+            case JsonValueKind.String:
+                var str = token.GetValue<string>();
                 if (JsonLdUtils.IsBlankNodeIdentifier(str))
                 {
                     if (!objectMap.TryGetValue(str, out BlankNodeMapEntry mapEntry))
@@ -653,8 +657,9 @@ public class JsonLdProcessor
                         objectMap[str] = mapEntry;
                     }
 
-                    if (activeProperty.Name == "@id" && mapEntry.IdProperty == null)
+                    if (activeProperty == "@id" && mapEntry.IdProperty == null)
                     {
+                        mapEntry.Parent = activePropertyParent;
                         mapEntry.IdProperty = activeProperty;
                     }
                     else
@@ -664,18 +669,18 @@ public class JsonLdProcessor
                 }
 
                 break;
-            case JTokenType.Array:
-                foreach (JToken item in (token as JArray))
+            case JsonValueKind.Array:
+                foreach (JsonNode item in (token as JsonArray))
                 {
-                    GenerateBlankNodeMap(objectMap, item, activeProperty);
+                    GenerateBlankNodeMap(objectMap, item, token.Parent as JsonObject, activeProperty);
                 }
 
                 break;
-            case JTokenType.Object:
-                foreach (JProperty p in (token as JObject).Properties())
+            case JsonValueKind.Object:
+                foreach (KeyValuePair<string, JsonNode> p in (token as JsonObject))
                 {
-                    if (p.Name == "@value") continue;
-                    GenerateBlankNodeMap(objectMap, p.Value, p);
+                    if (p.Key == "@value") continue;
+                    GenerateBlankNodeMap(objectMap, p.Value, token as JsonObject, p.Key);
                 }
 
                 break;
