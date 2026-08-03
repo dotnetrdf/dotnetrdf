@@ -146,7 +146,7 @@ public class JsonLdProcessor
 
         if (context != null && !JsonLdUtils.IsEmptyObject(context))
         {
-            (compactedOutput as JsonObject)["@context"] = context;
+            (compactedOutput as JsonObject)["@context"] = context.DetachedClone();
         }
 
         return compactedOutput as JsonObject;
@@ -423,8 +423,8 @@ public class JsonLdProcessor
             {
                 if (!property.Key.Equals("@context") && !property.Key.Equals(graphProperty))
                 {
-                    g.Add(property);
                     compactedResultsObject.Remove(property.Key);
+                    g.Add(property);
                 }
             }
 
@@ -501,7 +501,7 @@ public class JsonLdProcessor
             case JsonObject o:
                 foreach (KeyValuePair<string, JsonNode> property in o.ToList())
                 {
-                    switch (property.Value.GetValueKind())
+                    switch (property.Value.SafeValueKind())
                     {
                         case JsonValueKind.String:
                             if ("@null".Equals(property.Value.GetValue<string>()))
@@ -522,7 +522,7 @@ public class JsonLdProcessor
                 for (var ix = 0; ix < a.Count; ix++)
                 {
                     JsonNode item = a[ix];
-                    switch (item.GetValueKind())
+                    switch (item.SafeValueKind())
                     {
                         case JsonValueKind.String:
                             if ("@null".Equals(item.GetValue<string>()))
@@ -538,7 +538,7 @@ public class JsonLdProcessor
                     }
                 }
 
-                if (a.All(x => x.GetValueKind() == JsonValueKind.Null))
+                if (a.All(x => x.SafeValueKind() == JsonValueKind.Null))
                 {
                     a.Clear();
                 }
@@ -549,7 +549,7 @@ public class JsonLdProcessor
 
     private static void ReplacePreservedValues(JsonNode token, JsonLdContext context, bool compactArrays)
     {
-        switch (token.GetValueKind())
+        switch (token.SafeValueKind())
         {
             case JsonValueKind.Object:
                 var o = token as JsonObject;
@@ -631,7 +631,7 @@ public class JsonLdProcessor
         else if (parent[toUpdate].GetValueKind() == JsonValueKind.Array)
         {
             var valueArray = parent[toUpdate] as JsonArray;
-            valueArray.RemoveAll(item => item.GetValue<string>().Equals(id));
+            valueArray.RemoveAll(item => item.SafeValueKind() == JsonValueKind.String && item.GetValue<string>().Equals(id));
         }
     }
 
@@ -645,7 +645,7 @@ public class JsonLdProcessor
     private static void GenerateBlankNodeMap(IDictionary<string, BlankNodeMapEntry> objectMap, JsonNode token,
         JsonObject activePropertyParent, string activeProperty)
     {
-        switch (token.GetValueKind())
+        switch (token.SafeValueKind())
         {
             case JsonValueKind.String:
                 var str = token.GetValue<string>();

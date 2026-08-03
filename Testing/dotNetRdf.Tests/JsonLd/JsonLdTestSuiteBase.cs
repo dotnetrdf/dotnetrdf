@@ -252,8 +252,14 @@ public class JsonLdTestSuiteBase
                 var expectedOutputJson = File.ReadAllText(expectedOutputPath);
                 var expectedOutputElement = JsonNode.Parse(expectedOutputJson);
                 JsonObject actualOutput = JsonLdProcessor.Frame(inputElement, frameElement, options);
-                Assert.True(DeepEquals(expectedOutputElement, actualOutput),
-                    $"Test failed for input {Path.GetFileName(inputPath)}\nExpected:\n{expectedOutputElement}\nActual:\n{actualOutput}");
+                try
+                {
+                    DeepEquals(expectedOutputElement, actualOutput, true, true);
+                }
+                catch (DeepEqualityFailure ex)
+                {
+                    Assert.Fail($"Test failed for input {Path.GetFileName(inputPath)}\nExpected:\n{expectedOutputElement}\nActual:\n{actualOutput}\nMatch Failure: {ex}");
+                }
                 break;
             case JsonLdTestType.NegativeEvaluationTest:
                 JsonLdProcessorException exception = Assert.ThrowsAny<JsonLdProcessorException>(() =>
@@ -288,7 +294,7 @@ public class JsonLdTestSuiteBase
             case JsonValueKind.Object:
                 return DeepEquals(t1.AsObject(), t2.AsObject(), arraysAreOrdered);
             default:
-                return t1.Equals(t2);
+                return JsonNode.DeepEquals(t1, t2);
         }
     }
 
@@ -324,63 +330,76 @@ public class JsonLdTestSuiteBase
                o1.All(p => DeepEquals(p.Value, o2[p.Key], arraysAreOrdered));
     }
 
-    private static bool DeepEquals(JsonNode token1, JsonNode token2, bool ignoreArrayOrder, bool throwOnMismatch)
+    private static bool DeepEquals(JsonNode expected, JsonNode actual, bool ignoreArrayOrder, bool throwOnMismatch)
     {
-        if (token1.GetValueKind() != token2.GetValueKind())
+        if (expected.SafeValueKind() != actual.SafeValueKind())
         {
-            if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
+            if (throwOnMismatch) throw new DeepEqualityFailure(expected, actual);
             return false;
         }
-        switch (token1.GetValueKind())
+        switch (expected.SafeValueKind())
         {
             case JsonValueKind.Object:
-                if (!(token1 is JsonObject o1 && token2 is JsonObject o2)) return false;
+                if (!(expected is JsonObject o1 && actual is JsonObject o2)) return false;
                 foreach (var p in o1)
                 {
-                    if (o2[p.Key] == null)
+                    if (!o2.ContainsKey(p.Key))
                     {
-                        if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
+                        if (throwOnMismatch) 
+                        {
+                            throw new DeepEqualityFailure(expected, actual, $"Property {p.Key} in expected object not found in actual object.");
+                        }
                         return false;
                     }
                     if (!DeepEquals(p.Value, o2[p.Key], ignoreArrayOrder, throwOnMismatch))
                     {
-                        if (throwOnMismatch) throw new DeepEqualityFailure(p.Value, o2[p.Key]);
+                        if (throwOnMismatch) 
+                        {
+                            throw new DeepEqualityFailure(p.Value, o2[p.Key], $"Property {p.Key} values do not match.");
+                        }
                         return false;
                     }
                 }
-                if (o2.Any(p2 => o1[p2.Key] == null))
+                if (o2.Any(p2 => !o1.ContainsKey(p2.Key)))
                 {
-                    if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
+                    if (throwOnMismatch) {
+                        throw new DeepEqualityFailure(expected, actual, "Actual object has properties not found in expected object.");
+                    }
                     return false;
                 }
                 return true;
             case JsonValueKind.Array:
-                if (!(token1 is JsonArray a1 && token2 is JsonArray a2)) return false;
-                if (a1.Count != a2.Count)
+                if (!(expected is JsonArray expectedArray && actual is JsonArray actualArray))
                 {
-                    if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
+                    if (throwOnMismatch) throw new DeepEqualityFailure(expected, actual, "One of the tokens is not a JsonArray.");
+                    return false;
+                }
+
+                if (expectedArray.Count != actualArray.Count)
+                {
+                    if (throwOnMismatch) throw new DeepEqualityFailure(expected, actual, "Array lengths do not match - expected: " + expectedArray.Count + ", actual: " + actualArray.Count);
                     return false;
                 }
 
                 if (!ignoreArrayOrder)
                 {
-                    for (var i = 0; i < a1.Count; i++)
+                    for (var i = 0; i < expectedArray.Count; i++)
                     {
-                        if (!DeepEquals(a1[i], a2[i], ignoreArrayOrder, throwOnMismatch))
+                        if (!DeepEquals(expectedArray[i], actualArray[i], ignoreArrayOrder, throwOnMismatch))
                         {
-                            if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
+                            if (throwOnMismatch) throw new DeepEqualityFailure(expected, actual, $"Array items at index {i} do not match.");
                             return false;
                         }
 
                     }
                     return true;
                 }
-                var unmatchedItems = token2.DeepClone().AsArray().ToList();
-                foreach (JsonNode item1 in a1)
+                var unmatchedItems = actualArray.DeepClone().AsArray().ToList();
+                foreach (JsonNode item1 in expectedArray)
                 {
                     if (unmatchedItems.Count == 0)
                     {
-                        if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
+                        if (throwOnMismatch) throw new DeepEqualityFailure(expected, actual, "No unmatched items left for array comparison.");
                         return false;
                     }
                     var match = unmatchedItems.FindIndex(x => DeepEquals(item1, x, ignoreArrayOrder, false));
@@ -390,22 +409,23 @@ public class JsonLdTestSuiteBase
                     }
                     else
                     {
-                        if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
+                        if (throwOnMismatch) throw new DeepEqualityFailure(expected, actual, "No matching item found in array.");
                         return false;
                     }
                 }
                 return unmatchedItems.Count == 0;
+            case JsonValueKind.Null:
+                return actual.SafeValueKind() == JsonValueKind.Null;
             default:
-                return JsonNode.DeepEquals(token1, token2);
+                return JsonNode.DeepEquals(expected, actual);
         }
     }
 
     private class DeepEqualityFailure : Exception
     {
-        public DeepEqualityFailure(JsonNode expected, JsonNode actual) : base(
-            $"DeepEquality failed at {expected.GetPath()}.\nExpected: {expected}\nActual: {actual}")
+        public DeepEqualityFailure(JsonNode expected, JsonNode actual, string detail = null) : base(
+            $"DeepEquality failed at {expected?.GetPath() ?? actual?.GetPath() ?? "unknown path"}. {detail ?? ""}\nExpected: {expected.ToJsonString()}\nActual: {actual.ToJsonString()}")
         {
-            
         }
     }
 

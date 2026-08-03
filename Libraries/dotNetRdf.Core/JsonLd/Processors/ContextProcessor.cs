@@ -112,7 +112,7 @@ internal class ContextProcessor : ProcessorBase
         // 5. For each item context in local context:
         foreach (JsonNode context in (JsonArray)localContext)
         {
-            var contextKind = context.GetValueKind();
+            var contextKind = context.SafeValueKind();
             // 5.1 if context is null:
             if (contextKind == JsonValueKind.Null)
             {
@@ -193,7 +193,7 @@ internal class ContextProcessor : ProcessorBase
             if (contextDefinition.ContainsKey("@version"))
             {
                 // 5.5.1 - If the associated value is not 1.1, an invalid @version value has been detected, and processing is aborted.
-                var versionValue = contextDefinition["@version"].GetValue<string>();
+                var versionValue = contextDefinition["@version"].ToString();
                 if (!"1.1".Equals(versionValue))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidVersionValue, $"Found invalid value for @version property: {versionValue}.");
@@ -214,7 +214,7 @@ internal class ContextProcessor : ProcessorBase
                 CheckProcessingMode("@import", JsonLdErrorCode.InvalidContextEntry);
 
                 // 5.6.2 - Otherwise, if the value of @import is not a string, an invalid @import value error has been detected and processing is aborted.
-                if (importProperty.GetValueKind() != JsonValueKind.String)
+                if (importProperty.SafeValueKind() != JsonValueKind.String)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidImportValue,
                         "The value of an @import property must be a string");
@@ -246,7 +246,7 @@ internal class ContextProcessor : ProcessorBase
                 // 5.7.1 - Initialize value to the value associated with the @base entry.
                 JsonNode value = contextDefinition["@base"];
                 // 5.7.2 - If value is null, remove the base IRI of result.
-                if (value.GetValueKind() == JsonValueKind.Null)
+                if (value.SafeValueKind() == JsonValueKind.Null)
                 {
                     result.RemoveBase();
                 }
@@ -282,7 +282,7 @@ internal class ContextProcessor : ProcessorBase
             {
                 // 5.8.1 - Initialize value to the value associated with the @vocab key.
                 JsonNode value = contextDefinition["@vocab"];
-                JsonValueKind valueKind = value.GetValueKind();
+                JsonValueKind valueKind = value.SafeValueKind();
                 // 5.8.2 - If value is null, remove any vocabulary mapping from result.
                 if (valueKind == JsonValueKind.Null)
                 {
@@ -316,25 +316,32 @@ internal class ContextProcessor : ProcessorBase
             {
                 // 5.9.1 - Initialize value to the value associated with the @language key.
                 JsonNode value = contextDefinition["@language"];
-                switch (value.GetValueKind())
+                if (value == null)
                 {
-                    case JsonValueKind.Null:
-                        // 5.9.2 - If value is null, remove any default language from result.
-                        result.Language = null;
-                        break;
-                    case JsonValueKind.String:
-                        // 5.9.3 - Otherwise, if value is string, the default language of result is set to value.
-                        result.Language = value.GetValue<string>().ToLowerInvariant(); // Processors MAY normalize language tags to lower case.
-                        if (!LanguageTag.IsWellFormed(result.Language))
-                        {
-                            Warn(JsonLdErrorCode.MalformedLanguageTag,
-                                $"The value of the @language property ({result.Language}) is not a well-formed BCP-47 language tag.");
-                        }
-                        break;
-                    default:
-                        // 5.9.3 (cont) - If it is not a string, an invalid default language error has been detected and processing is aborted.
-                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidDefaultLanguage,
-                            "@language property value must be a JSON string or null.");
+                    result.Language = null;
+                }
+                else 
+                {
+                    switch (value.SafeValueKind())
+                    {
+                        case JsonValueKind.Null:
+                            // 5.9.2 - If value is null, remove any default language from result.
+                            result.Language = null;
+                            break;
+                        case JsonValueKind.String:
+                            // 5.9.3 - Otherwise, if value is string, the default language of result is set to value.
+                            result.Language = value.GetValue<string>().ToLowerInvariant(); // Processors MAY normalize language tags to lower case.
+                            if (!LanguageTag.IsWellFormed(result.Language))
+                            {
+                                Warn(JsonLdErrorCode.MalformedLanguageTag,
+                                    $"The value of the @language property ({result.Language}) is not a well-formed BCP-47 language tag.");
+                            }
+                            break;
+                        default:
+                            // 5.9.3 (cont) - If it is not a string, an invalid default language error has been detected and processing is aborted.
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidDefaultLanguage,
+                                "@language property value must be a JSON string or null.");
+                    }
                 }
             }
 
@@ -466,20 +473,20 @@ internal class ContextProcessor : ProcessorBase
         var simpleTerm = false;
 
         // 7 - If value is null, convert it to a map consisting of a single entry whose key is @id and whose value is null.
-        if (v == null || v.GetValueKind() == JsonValueKind.Null)
+        if (v == null || v.SafeValueKind() == JsonValueKind.Null)
         {
             v = new JsonObject { ["@id"] = JsonValue.Create((bool?)null) };
         }
 
         // 8 - Otherwise, if value is a string, convert it to a map consisting of a single entry whose key is @id and whose value is value. Set simple term to true.
-        if (v.GetValueKind() == JsonValueKind.String)
+        if (v.SafeValueKind() == JsonValueKind.String)
         {
             v = new JsonObject { ["@id"] = v };
             simpleTerm = true;
         }
 
         // 9 - Otherwise, value MUST be a map, if not, an invalid term definition error has been detected and processing is aborted. Set simple term to false.
-        if (v.GetValueKind() != JsonValueKind.Object)
+        if (v.SafeValueKind() != JsonValueKind.Object)
         {
             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
                 "A term definition must be a string, a map or null.");
@@ -498,10 +505,10 @@ internal class ContextProcessor : ProcessorBase
         if (typeValue != null)
         {
             // 12.1 Initialize type to the value associated with the @type key, which must be a string. Otherwise, an invalid type mapping error has been detected and processing is aborted.
-            if (typeValue.GetValueKind() != JsonValueKind.String)
+            if (typeValue.SafeValueKind() != JsonValueKind.String)
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeMapping,
-                    $"Invalid type mapping for term {term}. The @type value must be a string, got {typeValue.GetValueKind()}");
+                    $"Invalid type mapping for term {term}. The @type value must be a string, got {typeValue.SafeValueKind()}");
             }
 
             // 12.2 - Set type to the result of IRI expanding type, using local context, and defined.
@@ -537,7 +544,7 @@ internal class ContextProcessor : ProcessorBase
             }
 
             // 13.2 - If the value associated with the @reverse key is not a string, an invalid IRI mapping error has been detected and processing is aborted.
-            if (reverseValue.GetValueKind() != JsonValueKind.String)
+            if (reverseValue.SafeValueKind() != JsonValueKind.String)
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping,
                     $"@reverse property value must be a string on term {term}");
@@ -565,7 +572,7 @@ internal class ContextProcessor : ProcessorBase
             // 13.5 - If value contains an @container entry, set the container mapping of definition to an array containing its value; if its value is neither @set, nor @index, nor null, an invalid reverse property error has been detected (reverse properties only support set- and index-containers) and processing is aborted.
             if (containerValue != null)
             {
-                JsonValueKind containerKind = containerValue.GetValueKind();
+                JsonValueKind containerKind = containerValue.SafeValueKind();
                 if (containerKind == JsonValueKind.Null)
                 {
                     definition.ContainerMapping.Clear();
@@ -604,11 +611,11 @@ internal class ContextProcessor : ProcessorBase
             defined[term] = true;
         }
         // 14 - Otherwise, if value contains the key @id and its value does not equal term:
-        else if (JsonLdUtils.GetPropertyValue(activeContext, value, "@id") is { } idValue && !term.Equals(idValue.GetValue<string>()))
+        else if (JsonLdUtils.GetPropertyValue(activeContext, value, "@id") is { } idValue && (!JsonLdUtils.IsString(value) || !term.Equals(idValue.GetValue<string>())))
         {
             // 14.1 - If the @id entry of value is null, the term is not used for IRI expansion, but is retained to be able to detect future redefinitions of this term.
             // 14.2 - Otherwise:
-            JsonValueKind idValueKind = idValue.GetValueKind();
+            JsonValueKind idValueKind = idValue.SafeValueKind();
             if (idValueKind != JsonValueKind.Null)
             {
                 // 14.2.1 - If the value associated with the @id entry is not a string, an invalid IRI mapping error has been detected and processing is aborted.
@@ -680,7 +687,7 @@ internal class ContextProcessor : ProcessorBase
             var rest = term.Substring(ix + 1);
             // 15.1 - If term is a compact IRI with a prefix that is an entry in local context a dependency has been found.
             // Use this algorithm recursively passing active context, local context, the prefix as term, and defined.
-            if (!localContext.ContainsKey(prefix))
+            if (localContext.ContainsKey(prefix))
             {
                 CreateTermDefinition(activeContext, localContext, prefix, defined);
             }
@@ -766,7 +773,7 @@ internal class ContextProcessor : ProcessorBase
                     $"Invalid Term Definition. The definition of term '{term}' includes an @index entry, but the container mapping for the term does not include @index.");
             }
 
-            if (indexValue.GetValueKind() != JsonValueKind.String)
+            if (indexValue.SafeValueKind() != JsonValueKind.String)
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
                     $"Invalid Term Definition. The @index property on '{term}' must expand to an IRI.");
@@ -814,7 +821,7 @@ internal class ContextProcessor : ProcessorBase
         JsonNode languageValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@language");
         if (languageValue != null && typeValue == null)
         {
-            switch (languageValue.GetValueKind())
+            switch (languageValue.SafeValueKind())
             {
                 // 22.1 - Initialize language to the value associated with the @language entry, which MUST be either null or a string.
                 // If language is not well-formed according to section 2.2.9 of [BCP47], processors SHOULD issue a warning.
@@ -859,7 +866,7 @@ internal class ContextProcessor : ProcessorBase
 
             // 24.2 - Initialize nest to the value associated with the @nest key, which must be a string and must not be a keyword other than @nest.
             // Otherwise, an invalid @nest value error has been detected and processing is aborted.
-            if (nestValue.GetValueKind() != JsonValueKind.String)
+            if (nestValue.SafeValueKind() != JsonValueKind.String)
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue,
                     $"Invalid Nest Value for term '{term}'. The value of the @nest property must be a string.");
@@ -1039,7 +1046,7 @@ internal class ContextProcessor : ProcessorBase
         //   An entry for @container with value @set.
         //   An entry for @protected.
         // Any other value means that a keyword redefinition error has been detected and processing is aborted.
-        var isValid = value.GetValueKind() == JsonValueKind.Object;
+        var isValid = value.SafeValueKind() == JsonValueKind.Object;
         if (isValid)
         {
             isValid = false;
@@ -1084,7 +1091,7 @@ internal class ContextProcessor : ProcessorBase
         // or an array containing a combination of @set and any of @index, @graph, @id, @type, @language in any order.
         // Otherwise, an invalid container mapping has been detected and processing is aborted.
         var containerMapping = new HashSet<JsonLdContainer>();
-        switch (containerValue.GetValueKind())
+        switch (containerValue.SafeValueKind())
         {
             case JsonValueKind.String:
                 containerMapping.Add(ParseContainerMapping(term, containerValue.GetValue<string>()));
@@ -1096,7 +1103,7 @@ internal class ContextProcessor : ProcessorBase
                 {
                     foreach (JsonNode entry in containerValue.AsArray())
                     {
-                        if (entry.GetValueKind() != JsonValueKind.String)
+                        if (entry.SafeValueKind() != JsonValueKind.String)
                         {
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
                                 $"Invalid Container Mapping. The value of the @container property of term '{term}' is an array containing non-string entries.");

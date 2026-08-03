@@ -328,7 +328,7 @@ internal static class FramingProcessor
 
                 // 4.7.4.4 - Add property to output with a new dictionary having a property @preserve and a value that is a copy of the value of @default in frame if it exists, or the string @null otherwise.
                 JsonArray defaultValue = JsonLdUtils.EnsureArray(propertyFrame["@default"]) ?? new JsonArray("@null");
-                output[property] = new JsonObject{["@preserve"] = defaultValue};
+                output[property] = new JsonObject{["@preserve"] = defaultValue.DetachedClone()};
                 //if (!(defaultValue is JsonArray)) defaultValue = new JsonArray(defaultValue);
                 //FramingAppend(output, new JsonObject(new JProperty("@preserve", defaultValue)), property);
                 // // output[property] = new JsonObject(new JProperty("@preserve", frame["@default"] ?? "@null"));
@@ -381,34 +381,45 @@ internal static class FramingProcessor
     {
         if (frame["@embed"] != null)
         {
-            var embedString = frame["@embed"] is JsonObject
-                ? frame["@embed"]["@value"].GetValue<string>()
-                : frame["@embed"].GetValue<string>();
-            switch (embedString.ToLowerInvariant())
+            JsonNode embedValue = frame["@embed"] is JsonObject ? frame["@embed"]["@value"] : frame["@embed"];
+            switch (embedValue.SafeValueKind())
             {
-                case "@always":
-                    return JsonLdEmbed.Always;
-                case "true":
-                case "@once":
+                case JsonValueKind.True:
                     return JsonLdEmbed.Once;
-                case "@first" when processingMode == JsonLdProcessingMode.JsonLd10:
-                    return JsonLdEmbed.First;
-                case "@last" when processingMode == JsonLdProcessingMode.JsonLd10:
-                    return JsonLdEmbed.Last;
-                case "@link" when processingMode == JsonLdProcessingMode.JsonLd10:
-                    return JsonLdEmbed.Link;
-                case "@first":
-                case "@last":
-                case "@link":
-                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidEmbedValue,
-                        $"Invalid @embed value {embedString}. This value is only valid if the processing mode is JSON-LD 1.0.");
-                case "false":
-                case "@never":
+                case JsonValueKind.False:
                     return JsonLdEmbed.Never;
+                case JsonValueKind.String:
+                    var embedString = embedValue.GetValue<string>();
+                    switch (embedString.ToLowerInvariant())
+                    {
+                        case "@always":
+                            return JsonLdEmbed.Always;
+                        case "true":
+                        case "@once":
+                            return JsonLdEmbed.Once;
+                        case "@first" when processingMode == JsonLdProcessingMode.JsonLd10:
+                            return JsonLdEmbed.First;
+                        case "@last" when processingMode == JsonLdProcessingMode.JsonLd10:
+                            return JsonLdEmbed.Last;
+                        case "@link" when processingMode == JsonLdProcessingMode.JsonLd10:
+                            return JsonLdEmbed.Link;
+                        case "@first":
+                        case "@last":
+                        case "@link":
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidEmbedValue,
+                                $"Invalid @embed value {embedString}. This value is only valid if the processing mode is JSON-LD 1.0.");
+                        case "false":
+                        case "@never":
+                            return JsonLdEmbed.Never;
+                        default:
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidEmbedValue,
+                                $"Invalid @embed value {embedString}");
+                    }
                 default:
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidEmbedValue,
-                        $"Invalid @embed value {embedString}");
+                        $"Invalid @embed value {embedValue.ToJsonString()}. Must be a string or boolean value.");
             }
+
         }
         return defaultValue;
     }
@@ -450,14 +461,35 @@ internal static class FramingProcessor
             switch (frame[property])
             {
                 case JsonValue optValue:
-                    return optValue.GetValueKind() == JsonValueKind.Null ? defaultValue :optValue.GetValue<bool>();
+                    return GetBooleanOption(optValue, defaultValue);
                 case JsonObject optObject:
-                    return optObject.ContainsKey("@value") ? optObject["@value"].GetValue<bool>() : defaultValue;
+                    return optObject.ContainsKey("@value") ? GetBooleanOption(optObject["@value"].AsValue(), defaultValue) : defaultValue;
             }
         }
         return defaultValue;
     }
 
+    private static bool GetBooleanOption(JsonValue jsonValue, bool defaultValue)
+    {
+        switch (jsonValue.SafeValueKind())
+        {
+            case JsonValueKind.Null:
+                return defaultValue;
+            case JsonValueKind.True:
+                return true;
+            case JsonValueKind.False:
+                return false;
+            case JsonValueKind.String:
+                var str = jsonValue.GetValue<string>().ToLowerInvariant();
+                if (str.Equals("true")) return true;
+                if (str.Equals("false")) return false;
+                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidFrame,
+                    $"Invalid frame option value {jsonValue.ToJsonString()}. Must be a boolean or null.");
+            default:
+                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidFrame,
+                    $"Invalid frame option value {jsonValue.ToJsonString()}. Must be a boolean or null.");
+        }
+    }
 
     private static Dictionary<string, JsonObject> MatchFrame(FramingState state, IEnumerable<string> subjects,
         JsonObject frame, bool requireAll)
@@ -715,7 +747,7 @@ internal static class FramingProcessor
     private static JsonNode Lowercase(JsonNode token)
     {
         if (token == null) return null;
-        if (token.GetValueKind() == JsonValueKind.String){
+        if (token.SafeValueKind() == JsonValueKind.String){
             return JsonValue.Create(token.GetValue<string>().ToLower(CultureInfo.InvariantCulture));
         }
 
@@ -738,7 +770,7 @@ internal static class FramingProcessor
     private static bool IsWildcard(JsonNode token)
     {
         if (token == null) return false;
-        switch (token.GetValueKind())
+        switch (token.SafeValueKind())
         {
             case JsonValueKind.Array:
                 return (token as JsonArray).Any(IsWildcard);
@@ -813,7 +845,7 @@ internal static class FramingProcessor
             {
                 throw new ArgumentException("activeProperty must be null when parent is an array");
             }
-            parentArray.Add(child);
+            parentArray.Add(child.DeepClone());
         }
         else if (parent is JsonObject parentObject)
         {
@@ -828,7 +860,7 @@ internal static class FramingProcessor
             {
                 parent[activeProperty] = array = [];
             }
-            array.Add(child);
+            array.Add(child.DeepClone());
         }
     }
 

@@ -53,7 +53,7 @@ internal class JsonLdUtils
     public static JsonArray EnsureArray(JsonNode token)
     {
         if (token is JsonArray array) return array;
-        return new JsonArray(token.DeepClone());
+        return new JsonArray(token.DetachedClone());
     }
 
     /// <summary>
@@ -230,7 +230,10 @@ internal class JsonLdUtils
     /// <returns>True if <paramref name="node"/> is a string whose value is a valid IRI, false otherwise.</returns>
     public static bool IsIri(JsonNode node)
     {
-        return (node is JsonValue value && value.GetValue<string>() is string s && IsIri(s));
+        return node is JsonValue value &&
+            value.SafeValueKind() == JsonValueKind.String &&
+            value.GetValue<string>() is string s &&
+            IsIri(s);
     }
 
     /// <summary>
@@ -248,6 +251,11 @@ internal class JsonLdUtils
         return !(node == null || node is JsonArray || node is JsonObject);
     }
 
+    public static bool IsScalarOrNull(JsonNode node)
+    {
+        return node == null || IsScalar(node);
+    }
+
     /// <summary>
     /// Determine if a JSON node represents a string value.
     /// </summary>
@@ -255,12 +263,12 @@ internal class JsonLdUtils
     /// <returns>True if <paramref name="node"/> represents a string value, false otherwise.</returns>
     public static bool IsString(JsonNode node)
     {
-        return node.GetValueKind() == JsonValueKind.String;
+        return node.SafeValueKind() == JsonValueKind.String;
     }
 
     public static bool IsValidBaseDirection(JsonNode token)
     {
-        if (token.GetValueKind() != JsonValueKind.String) return false;
+        if (token.SafeValueKind() != JsonValueKind.String) return false;
         var value = token.GetValue<string>();
         return value == "ltr" || value == "rtl";
     }
@@ -273,7 +281,7 @@ internal class JsonLdUtils
     /// <returns>True if the token represents JSON null, false otherwise.</returns>
     public static bool IsNull(JsonNode node)
     {
-        return node.GetValueKind() == JsonValueKind.Null;
+        return node.SafeValueKind() == JsonValueKind.Null;
     }
 
     /// <summary>
@@ -283,7 +291,7 @@ internal class JsonLdUtils
     /// <returns>True if <paramref name="node"/> represents a JSON string and the value of the string can be parsed as an absolute IRI, false otherwise.</returns>
     public static bool IsAbsoluteIri(JsonNode node)
     {
-        if (node.GetValueKind() != JsonValueKind.String) return false;
+        if (node.SafeValueKind() != JsonValueKind.String) return false;
         var value = node.GetValue<string>();
         return IsAbsoluteIri(value);
     }
@@ -311,7 +319,7 @@ internal class JsonLdUtils
     /// <returns>True if <paramref name="node"/> is a string node and the value of the string can be parsed as a relative IRI.</returns>
     public static bool IsRelativeIri(JsonNode node)
     {
-        if (node.GetValueKind() != JsonValueKind.String) return false;
+        if (node.SafeValueKind() != JsonValueKind.String) return false;
         var value = node.GetValue<string>();
         return IsRelativeIri(value);
     }
@@ -368,7 +376,7 @@ internal class JsonLdUtils
     /// or are both subject or subject references with matching @id values.</returns>
     public static bool CompareValues(JsonNode t1, JsonNode t2)
     {
-        if (t1.Equals(t2)) return true;
+        if (JsonNode.DeepEquals(t1, t2)) return true;
         if (t1 is JsonObject o1 && t2 is JsonObject o2)
         {
             if (IsValueObject(o1) && IsValueObject(o2))
@@ -433,27 +441,30 @@ internal class JsonLdUtils
         else
         {
             // Adding a single item
+            value = value.DetachedClone();
 
             // If the property doesn't exist, add value as the single value of the property
             if (!o.ContainsKey(entry))
             {
-                o[entry] = value.DeepClone();
+                o[entry] = value;
             }
             else
             {
                 // If property exists and its value is an array, append value to the array
                 if (o[entry] is JsonArray entryArray)
                 {
-                    entryArray.Add(value.DeepClone());
+                    entryArray.Add(value);
                 }
                 else
                 {
                     // Otherwise convert the target property value to an array and then append value
-                    entryArray = new JsonArray(o[entry])
+                    JsonNode existingValue = o[entry];
+                    o.Remove(entry);
+                    o[entry] = new JsonArray
                     {
-                        value.DeepClone(),
+                        existingValue,
+                        value,
                     };
-                    o[entry] = entryArray;
                 }
             }
         }
@@ -468,6 +479,7 @@ internal class JsonLdUtils
     /// <param name="propertyIsArray">True if the value of the property is always an array.</param>
     public static void RemoveValue(JsonObject subject, string property, JsonNode value, bool propertyIsArray = false)
     {
+        if (!subject.ContainsKey(property)) return;
         var values = EnsureArray(subject[property]).Where(t => !CompareValues(t, value)).ToList();
         switch (values.Count)
         {
@@ -479,9 +491,9 @@ internal class JsonLdUtils
                 break;
             default:
             {
-                var array = new JsonArray();
-                foreach (JsonNode v in values) array.Add(v);
-                subject[property] = array;
+                var newArray = new JsonArray();
+                foreach (JsonNode v in values) newArray.Add(v.DetachedClone());
+                subject[property] = newArray;
                 break;
             }
         }
@@ -499,7 +511,7 @@ internal class JsonLdUtils
         JsonArray result = EnsureArray(node1);
         if (node2 is JsonArray array)
         {
-            foreach (JsonNode c in array) result.Add(c);
+            foreach (JsonNode c in array) result.Add(c.DeepClone());
         }
         else
         {
@@ -538,7 +550,7 @@ internal class JsonLdUtils
     /// or if <paramref name="value"/> is a string but its value is neither 'ltr' nor 'rtl'.</exception>
     public static LanguageDirection ParseLanguageDirection(JsonNode value)
     {
-        switch (value.GetValueKind())
+        switch (value.SafeValueKind())
         {
             case JsonValueKind.Null:
                 return LanguageDirection.Unspecified;
@@ -577,7 +589,7 @@ internal class JsonLdUtils
 
     public static bool IsBooleanNode(JsonNode value)
     {
-        return value.GetValueKind() == JsonValueKind.True || value.GetValueKind() == JsonValueKind.False;
+        return value.SafeValueKind() == JsonValueKind.True || value.SafeValueKind() == JsonValueKind.False;
     }
 
     /// <summary>
@@ -603,7 +615,7 @@ internal class JsonLdUtils
             int index = array.IndexOf(node);
             if (index >= 0)
             {
-                array[index] = newValue;
+                array[index] = newValue.DetachedClone();
             }
         }
         else if (node.Parent is JsonObject obj)
@@ -611,7 +623,7 @@ internal class JsonLdUtils
             var property = obj.FirstOrDefault(p => p.Value == node);
             if (property.Key != null)
             {
-                obj[property.Key] = newValue;
+                obj[property.Key] = newValue.DetachedClone();
             }
         }
     }

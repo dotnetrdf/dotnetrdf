@@ -32,7 +32,7 @@ using System.Text;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using VDS.RDF.JsonLd.Syntax;
-using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace VDS.RDF.JsonLd;
 
@@ -155,7 +155,7 @@ public static class DefaultDocumentLoader
             {
                 ContextUrl = contextLink == null ? null : new Uri(contextLink),
                 DocumentUrl = responseMessage.RequestMessage.RequestUri,
-                Document = JsonDocument.Parse(responseString).RootElement,
+                Document = JsonNode.Parse(responseString),
             };
             return ret;
         }

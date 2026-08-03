@@ -76,7 +76,7 @@ public class JsonLdWriter : BaseStoreWriter
             jsonArray.WriteTo(jsonWriter);
             jsonWriter.Flush();
             ms.Position = 0;
-            var jsonString = Encoding.UTF8.GetString(ms.GetBuffer());
+            var jsonString = Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)ms.Length);
             output.Write(jsonString);
         }
         output.Flush();
@@ -389,7 +389,7 @@ public class JsonLdWriter : BaseStoreWriter
             node.Remove("usages");
             if (node.Any(p => !p.Key.Equals("@id")))
             {
-                result.Add(node);
+                result.Add(node.DeepClone());
             }
         }
         // 9 - Return result.

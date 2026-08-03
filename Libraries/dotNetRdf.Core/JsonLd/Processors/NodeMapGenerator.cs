@@ -73,7 +73,7 @@ public class NodeMapGenerator : INodeMapGenerator
         var elementObject = element as JsonObject;
         var graph = nodeMap[activeGraph] as JsonObject;
         JsonObject node = null, subjectNode = null;
-        if (activeSubject != null && activeSubject.GetValueKind() == JsonValueKind.String)
+        if (activeSubject != null && activeSubject.SafeValueKind() == JsonValueKind.String)
         {
             subjectNode = node = graph[activeSubject.GetValue<string>()] as JsonObject;
         }
@@ -93,7 +93,7 @@ public class NodeMapGenerator : INodeMapGenerator
                     }
                 }
             }
-            else if (elementObject["@type"].GetValueKind() == JsonValueKind.String)
+            else if (elementObject["@type"].SafeValueKind() == JsonValueKind.String)
             {
                 var typeId = elementObject["@type"].GetValue<string>();
                 if (JsonLdUtils.IsBlankNodeIdentifier(typeId))
@@ -113,20 +113,20 @@ public class NodeMapGenerator : INodeMapGenerator
                 // create one and initialize its value to an array containing element.
                 if (!subjectNode.ContainsKey(activeProperty))
                 {
-                    subjectNode[activeProperty] = new JsonArray(element);
+                    subjectNode[activeProperty] = new JsonArray(element.DeepClone());
                 }
                 // 4.1.2 - Otherwise, compare element against every item in the array associated with the active property member of node. If there is no item equivalent to element, append element to the array. Two dictionaries are considered equal if they have equivalent key-value pairs.
                 var existingItems = node[activeProperty] as JsonArray;
                 if (!existingItems.Any(x => JsonNode.DeepEquals(x, element)))
                 {
-                    existingItems.Add(element);
+                    existingItems.Add(element.DeepClone());
                 }
             }
             else
             {
                 // 4.2 - Otherwise, append element to the @list member of list.
                 var listArray = list["@list"] as JsonArray;
-                listArray.Add(element);
+                listArray.Add(element.DeepClone());
             }
         }
         // 5 - Otherwise, if element has an @list member, perform the following steps:
@@ -186,7 +186,7 @@ public class NodeMapGenerator : INodeMapGenerator
                 // 6.5.1 - If node does not have an active property member, create one and initialize its value to an array containing active subject.
                 if (!node.ContainsKey(activeProperty))
                 {
-                    node[activeProperty] = new JsonArray(activeSubject);
+                    node[activeProperty] = new JsonArray(activeSubject.DeepClone());
                 }
                 // 6.5.2 - Otherwise, compare active subject against every item in the array associated with the active property member of node.
                 // If there is no item equivalent to active subject, append active subject to the array.
@@ -244,7 +244,7 @@ public class NodeMapGenerator : INodeMapGenerator
                     throw new JsonLdProcessorException(JsonLdErrorCode.ConflictingIndexes,
                         $"Conflicting indexes for node with id {id}.");
                 }
-                node["@index"] = elementObject["@index"];
+                node["@index"] = elementObject["@index"].DeepClone();
                 elementObject.Remove("@index");
             }
 
@@ -370,7 +370,7 @@ public class NodeMapGenerator : INodeMapGenerator
     {
         if (!toArray.Any(x => JsonNode.DeepEquals(x, element)))
         {
-            toArray.Add(element);
+            toArray.Add(element.DetachedClone());
         }
     }
 }

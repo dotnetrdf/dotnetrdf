@@ -66,7 +66,7 @@ internal class CompactProcessor : ProcessorBase
         JsonLdContext typeScopedContext = activeContext;
 
         // 2 - If element is a scalar, it is already in its most compact form, so simply return element.
-        if (JsonLdUtils.IsScalar(element)) return element;
+        if (JsonLdUtils.IsScalarOrNull(element)) return element;
 
         // 3 - If element is an array: 
         if (element is JsonArray elementArray)
@@ -75,12 +75,17 @@ internal class CompactProcessor : ProcessorBase
             var arrayResult = new JsonArray();
 
             // 3.2 - For each item in element: 
-            foreach (JsonNode item in elementArray)
+            while(elementArray.Count > 0)
             {
+                JsonNode item = elementArray[0];
+                elementArray.RemoveAt(0);
                 // 3.2.1 - Initialize compacted item to the result of using this algorithm recursively, passing active context, active property, item for element, and the compactArrays and ordered flags.
                 JsonNode compactedItem = CompactElement(activeContext, activeProperty, item, compactArrays, ordered);
                 // 3.2.2 - If compacted item is not null, then append it to result.
-                if (compactedItem != null) arrayResult.Add(compactedItem);
+                if (compactedItem != null) 
+                {
+                    arrayResult.Add(compactedItem.DetachedClone());
+                }
             }
             // 3.3 - If result is empty or contains more than one value, or compactArrays is false, or active property is either @graph or @set, or container mapping for active property in active context includes either @list or @set, return result.
             if (arrayResult.Count != 1 || !compactArrays || "@graph".Equals(activeProperty) || "@set".Equals(activeProperty))
@@ -194,7 +199,7 @@ internal class CompactProcessor : ProcessorBase
             {
                 JsonNode compactedValue;
                 // 12.2.1 - If expanded value is a string, then initialize compacted value by IRI compacting expanded value using type-scoped context for active context.
-                if (expandedValue.GetValueKind() == JsonValueKind.String)
+                if (expandedValue.SafeValueKind() == JsonValueKind.String)
                 {
                     compactedValue = CompactIri(typeScopedContext, expandedValue.GetValue<string>(), vocab: true);
                 }
@@ -295,7 +300,7 @@ internal class CompactProcessor : ProcessorBase
                 // 12.6.1 - Initialize alias by IRI compacting expanded property.
                 var alias = CompactIri(activeContext, expandedProperty, vocab: true);
                 // 12.6.2 - Add an entry alias to result whose value is set to expanded value and continue with the next expanded property.
-                result.Add(alias, expandedValue);
+                result.Add(alias, expandedValue.DetachedClone());
                 continue;
             }
             // 12.7 - If expanded value is an empty array: 
@@ -387,8 +392,8 @@ internal class CompactProcessor : ProcessorBase
                     {
                         // 12.8.7.2.1 - Convert compacted item to a list object by setting it to a map containing an entry where the key is
                         // the result of IRI compacting @list and the value is the original compacted item.
-                        compactedItem = new JsonObject();
-                        (compactedItem as JsonObject).Add(CompactIri(activeContext, "@list", vocab: true), compactedItem);
+                        var tmp = new JsonObject {[CompactIri(activeContext, "@list", vocab: true)] = compactedItem.DetachedClone()};
+                        compactedItem = tmp;
 
                         // 12.8.7.2.2 - If expanded item contains the entry @index - value, then add an entry to compacted item where the key is the result of IRI compacting @index and value is value.
                         if (expandedItem is JsonObject expandedItemObject && expandedItemObject.ContainsKey("@index"))
@@ -444,8 +449,8 @@ internal class CompactProcessor : ProcessorBase
                         if ((compactedItem is JsonArray compactedItemArray) && compactedItemArray.Count > 1)
                         {
                             // Set compacted item to a new map, containing the key from IRI compacting @included and the original compacted item as the value.
-                            compactedItem = new JsonObject();
-                            (compactedItem as JsonObject).Add(CompactIri(activeContext, "@included", vocab: true), compactedItem);
+                            var tmp = new JsonObject {[CompactIri(activeContext, "@included", vocab: true)] = compactedItem.DetachedClone()};
+                            compactedItem = tmp;
                         }
 
                         // 12.8.8.3.2 - Use add value to add compacted item to the item active property entry in nest result using as array.
@@ -455,8 +460,8 @@ internal class CompactProcessor : ProcessorBase
                     else
                     {
                         // 12.8.8.4.1 - Set compacted item to a new map containing the key from IRI compacting @graph using the original compacted item as a value.
-                        compactedItem = new JsonObject();
-                        (compactedItem as JsonObject).Add(CompactIri(activeContext, "@graph", vocab: true), compactedItem);
+                        var tmp = new JsonObject {[CompactIri(activeContext, "@graph", vocab: true)] = compactedItem.DetachedClone()};
+                        compactedItem = tmp;
                         if (expandedItem is JsonObject expandedItemObject)
                         {
                             // 12.8.8.4.2 - If expanded item contains an @id entry, add an entry in compacted item using the key from IRI
@@ -542,7 +547,7 @@ internal class CompactProcessor : ProcessorBase
                         jObject.Remove(containerKey);
                         foreach (JsonNode item in array)
                         {
-                            if (mapKey == null && item.GetValueKind() == JsonValueKind.String)
+                            if (mapKey == null && item.SafeValueKind() == JsonValueKind.String)
                             {
                                 mapKey = item.GetValue<string>();
                             }
@@ -1065,7 +1070,7 @@ internal class CompactProcessor : ProcessorBase
 
         var activeTermDefinitionTypeMapping = activeTermDefinition?.TypeMapping ?? null;
         var valueHasType = value.ContainsKey("@type");
-        var valueType = valueHasType && value["@type"].GetValueKind() == JsonValueKind.String ? value["@type"].GetValue<string>() : null;
+        var valueType = valueHasType && value["@type"].SafeValueKind() == JsonValueKind.String ? value["@type"].GetValue<string>() : null;
 
         // 6 - If value has an @id entry and has no other entries other than @index:
         if (value.ContainsKey("@id") &&
@@ -1113,7 +1118,7 @@ internal class CompactProcessor : ProcessorBase
             }
         }
         // 9 - Otherwise, if the value of the @value entry is not a string:
-        else if (value.ContainsKey("@value") && value["@value"].GetValueKind() != JsonValueKind.String)
+        else if (value.ContainsKey("@value") && value["@value"].SafeValueKind() != JsonValueKind.String)
         {
             // 9.1 - If value has an @index entry, and the container mapping associated to active property includes @index, or if value has no @index entry, set result to the value associated with the @value entry.
             if ((value.ContainsKey("@index") && activeTermDefinition != null &&
@@ -1167,10 +1172,10 @@ internal class CompactProcessor : ProcessorBase
     {
         if (str == null)
         {
-            return t == null || t.GetValueKind() == JsonValueKind.Null;
+            return t == null || t.SafeValueKind() == JsonValueKind.Null;
         }
 
-        return t != null && t.GetValueKind() == JsonValueKind.String && t.GetValue<string>().Equals(str, comparisonOptions);
+        return t != null && t.SafeValueKind() == JsonValueKind.String && t.GetValue<string>().Equals(str, comparisonOptions);
     }
 
     

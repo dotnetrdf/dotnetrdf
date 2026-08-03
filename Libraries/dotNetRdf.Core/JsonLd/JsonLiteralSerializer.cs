@@ -103,6 +103,15 @@ internal class JsonLiteralSerializer
                     }
                 };
                 break;
+            case JsonValueKind.True:
+                writer.WriteRawValue("true");
+                break;
+            case JsonValueKind.False:
+                writer.WriteRawValue("false");
+                break;
+            case JsonValueKind.Null:
+                writer.WriteRawValue("null");
+                break;
             default:
                 writer.WriteRawValue(token.GetValue<string>());
                 break;
