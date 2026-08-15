@@ -147,8 +147,8 @@ internal class ExpandProcessor : ProcessorBase
         // and element does not consist of a single entry expanding to @id (where entries are IRI expanded, set active context to previous context from active context, as the scope of a term-scoped context does not apply when processing new node objects.
         if (activeContext.PreviousContext != null &&
             !fromMap &&
-            JsonLdUtils.GetPropertyValue(activeContext, elementObject, "@value") == null &&
-            !(elementObject.Count == 1 && JsonLdUtils.GetPropertyValue(activeContext, elementObject, "@id") != null))
+            !JsonLdUtils.HasProperty(activeContext, elementObject, "@value") == false &&
+            !(elementObject.Count == 1 && JsonLdUtils.HasProperty(activeContext, elementObject, "@id")))
         {
             activeContext = activeContext.PreviousContext;
         }
@@ -163,8 +163,7 @@ internal class ExpandProcessor : ProcessorBase
         // 9 - If element contains the key @context, set active context to the 
         // result of the Context Processing algorithm, passing active context 
         // and the value of the @context key as local context.
-        JsonNode contextValue = JsonLdUtils.GetPropertyValue(activeContext, elementObject, "@context");
-        if (contextValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, elementObject, "@context", out JsonNode contextValue))
         {
             activeContext = _contextProcessor.ProcessContext(activeContext, contextValue, baseUrl);
         }

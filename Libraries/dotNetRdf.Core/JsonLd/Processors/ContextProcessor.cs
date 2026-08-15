@@ -501,8 +501,7 @@ internal class ContextProcessor : ProcessorBase
         definition.Protected = GetProtectedProperty(value, @protected);
 
         // 12 - If value contains the key @type:
-        JsonNode typeValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@type");
-        if (typeValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@type", out JsonNode typeValue))
         {
             // 12.1 Initialize type to the value associated with the @type key, which must be a string. Otherwise, an invalid type mapping error has been detected and processing is aborted.
             if (typeValue.SafeValueKind() != JsonValueKind.String)
@@ -530,14 +529,12 @@ internal class ContextProcessor : ProcessorBase
             }
         }
 
-        JsonNode reverseValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@reverse");
-        JsonNode containerValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@container");
         // 13 - If value contains the key @reverse:
-        if (reverseValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@reverse", out JsonNode reverseValue))
         {
             // 13.1 - If value contains @id or @nest, members, an invalid reverse property error has been detected and processing is aborted.
-            if (JsonLdUtils.GetPropertyValue(activeContext, value, "@id") != null ||
-                JsonLdUtils.GetPropertyValue(activeContext, value, "@nest") != null)
+            if (JsonLdUtils.HasProperty(activeContext, value, "@id") ||
+                JsonLdUtils.HasProperty(activeContext, value, "@nest"))
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReverseProperty,
                     $"Invalid reverse property. The @reverse property cannot be combined with @id or @nest property on term {term}.");
@@ -570,9 +567,9 @@ internal class ContextProcessor : ProcessorBase
             definition.IriMapping = iriMapping;
 
             // 13.5 - If value contains an @container entry, set the container mapping of definition to an array containing its value; if its value is neither @set, nor @index, nor null, an invalid reverse property error has been detected (reverse properties only support set- and index-containers) and processing is aborted.
-            if (containerValue != null)
+            if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@container", out JsonNode containerEntry))
             {
-                JsonValueKind containerKind = containerValue.SafeValueKind();
+                JsonValueKind containerKind = containerEntry.SafeValueKind();
                 if (containerKind == JsonValueKind.Null)
                 {
                     definition.ContainerMapping.Clear();
@@ -580,7 +577,7 @@ internal class ContextProcessor : ProcessorBase
                 }
                 else if (containerKind == JsonValueKind.String)
                 {
-                    var containerMapping = containerValue.GetValue<string>();
+                    var containerMapping = containerEntry.GetValue<string>();
                     if (containerMapping == "@set")
                     {
                         definition.ContainerMapping.Clear();
@@ -611,7 +608,8 @@ internal class ContextProcessor : ProcessorBase
             defined[term] = true;
         }
         // 14 - Otherwise, if value contains the key @id and its value does not equal term:
-        else if (JsonLdUtils.GetPropertyValue(activeContext, value, "@id") is { } idValue && (!JsonLdUtils.IsString(value) || !term.Equals(idValue.GetValue<string>())))
+        else if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@id", out JsonNode idValue) &&
+                    (!JsonLdUtils.IsString(value) || !term.Equals(idValue.GetValue<string>())))
         {
             // 14.1 - If the @id entry of value is null, the term is not used for IRI expansion, but is retained to be able to detect future redefinitions of this term.
             // 14.2 - Otherwise:
@@ -735,7 +733,7 @@ internal class ContextProcessor : ProcessorBase
         }
 
         // 19 - if value contains the key @container
-        if (containerValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@container", out JsonNode containerValue))
         {
             // 19.1 Initialize container to the value associated with the @container entry, which MUST be either @graph, @id, @index, @language, @list, @set, @type, or an array containing exactly any one of those keywords, an array containing @graph and either @id or @index optionally including @set, or an array containing a combination of @set and any of @index, @graph, @id, @type, @language in any order . Otherwise, an invalid container mapping has been detected and processing is aborted.
             // 19.2 If the container value is @graph, @id, or @type, or is otherwise not a string, generate an invalid container mapping error and abort processing if processing mode is json - ld - 1.0.
@@ -757,8 +755,7 @@ internal class ContextProcessor : ProcessorBase
             }
         }
         // 20 - If value contains the entry @index: 
-        JsonNode indexValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@index");
-        if (indexValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@index", out JsonNode indexValue))
         {
             // 20.1 - If processing mode is json-ld-1.0 or container mapping does not include @index, an invalid term definition has been detected and processing is aborted.
             if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
@@ -789,8 +786,7 @@ internal class ContextProcessor : ProcessorBase
         }
 
         // 21 - If value contains the entry @context: 
-        JsonNode contextValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@context");
-        if (contextValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@context", out JsonNode contextValue))
         {
             // 21.1 - If processingMode is json-ld-1.0, an invalid term definition has been detected and processing is aborted.
             if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
@@ -818,8 +814,8 @@ internal class ContextProcessor : ProcessorBase
         }
 
         // 22 - if value contains the key @language and does not contain the key @type
-        JsonNode languageValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@language");
-        if (languageValue != null && typeValue == null)
+        if (!JsonLdUtils.HasProperty(activeContext, value, "@type") &&
+            JsonLdUtils.TryGetPropertyValue(activeContext, value, "@language", out JsonNode languageValue))
         {
             switch (languageValue.SafeValueKind())
             {
@@ -845,8 +841,8 @@ internal class ContextProcessor : ProcessorBase
         }
 
         // 23 - If value contains the entry @direction and does not contain the entry @type:
-        JsonNode directionValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@direction");
-        if (directionValue != null && typeValue == null)
+        if (!JsonLdUtils.HasProperty(activeContext, value, "@type") &&
+            JsonLdUtils.TryGetPropertyValue(activeContext, value, "@direction", out JsonNode directionValue))
         {
             // 23.1 - Initialize direction to the value associated with the @direction entry, which MUST be either null, "ltr", or "rtl".Otherwise, an invalid base direction error has been detected and processing is aborted.
             // 23.2 - Set the direction mapping of definition to direction.
@@ -854,8 +850,7 @@ internal class ContextProcessor : ProcessorBase
         }
 
         // 24 - If value contains the key @nest:
-        JsonNode nestValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@nest");
-        if (nestValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@nest", out JsonNode nestValue))
         {
             // 24.1 - If processingMode is json-ld-1.0, an invalid term definition has been detected and processing is aborted.
             if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
@@ -881,8 +876,7 @@ internal class ContextProcessor : ProcessorBase
         }
 
         // 25 - If value contains the entry @prefix:
-        JsonNode prefixValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@prefix");
-        if (prefixValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@prefix", out JsonNode prefixValue))
         {
             // 25.1 - If processing mode is json - ld - 1.0, or if term contains a colon(:) or slash(/), an invalid term definition has been detected and processing is aborted.
             if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)

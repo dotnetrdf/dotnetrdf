@@ -529,6 +529,7 @@ internal class JsonLdUtils
     /// <param name="parent">The subject node to retrieve a property from.</param>
     /// <param name="propertyName">The name of the property whose value is to be retrieved.</param>
     /// <returns>The property value if found, null otherwise.</returns>
+    [Obsolete("This method will incorrectly return null if the property exists but has a null value. Use TryGetPropertyValue instead.", true)]
     public static JsonNode GetPropertyValue(JsonLdContext activeContext, JsonObject parent, string propertyName)
     {
         if (parent.TryGetPropertyValue(propertyName, out JsonNode ret)) return ret;
@@ -537,6 +538,42 @@ internal class JsonLdUtils
             if (parent.TryGetPropertyValue(alias, out ret)) return ret;
         }
         return null;
+    }
+
+    /// <summary>
+    /// Tries to get the value of a property from a subject node, taking into account possible aliases defined in the active context.
+    /// </summary>
+    /// <param name="activeContext">The context to use.</param>
+    /// <param name="parent">The subject node to retrieve a property from.</param>
+    /// <param name="propertyName">The name of the property whose value is to be retrieved.</param>
+    /// <param name="value">The property value if found, null otherwise.</param>
+    /// <returns>True if the property value was found, false otherwise.</returns>
+    public static bool TryGetPropertyValue(JsonLdContext activeContext, JsonObject parent, string propertyName, out JsonNode value)
+    {
+        if (parent.TryGetPropertyValue(propertyName, out value)) return true;
+        foreach (var alias in activeContext.GetAliases(propertyName))
+        {
+            if (parent.TryGetPropertyValue(alias, out value)) return true;
+        }
+        value = null;
+        return false;
+    }
+
+    /// <summary>
+    /// Determine if a subject node has a property, taking into account possible aliases defined in the active context.
+    /// </summary>
+    /// <param name="activeContext">The context to use.</param>
+    /// <param name="parent">The subject node to check for the property.</param>
+    /// <param name="propertyName">The name of the property to check for.</param>
+    /// <returns>True if the property exists, false otherwise.</returns>
+    public static bool HasProperty(JsonLdContext activeContext, JsonObject parent, string propertyName)
+    {
+        if (parent.ContainsKey(propertyName)) return true;
+        foreach (var alias in activeContext.GetAliases(propertyName))
+        {
+            if (parent.ContainsKey(alias)) return true;
+        }
+        return false;
     }
 
     /// <summary>
