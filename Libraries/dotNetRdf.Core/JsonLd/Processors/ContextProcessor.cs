@@ -609,7 +609,7 @@ internal class ContextProcessor : ProcessorBase
         }
         // 14 - Otherwise, if value contains the key @id and its value does not equal term:
         else if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@id", out JsonNode idValue) &&
-                    (!JsonLdUtils.IsString(value) || !term.Equals(idValue.GetValue<string>())))
+                    (!JsonLdUtils.IsString(idValue) || !term.Equals(idValue.GetValue<string>())))
         {
             // 14.1 - If the @id entry of value is null, the term is not used for IRI expansion, but is retained to be able to detect future redefinitions of this term.
             // 14.2 - Otherwise:
