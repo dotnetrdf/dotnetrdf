@@ -120,7 +120,7 @@ internal class CompactProcessor : ProcessorBase
         }
 
         // 6 - If the term definition for active property in active context has a local context:
-        if (activeTermDefinition?.LocalContext != null)
+        if (activeTermDefinition?.HasLocalContext == true)
         {
             // 6.1 - Set active context to the result of the Context Processing algorithm, passing active context, the value of the active property's
             // local context as local context, base URL from the term definition for active property in active context, and true for override protected.
@@ -168,7 +168,7 @@ internal class CompactProcessor : ProcessorBase
                 // 11.1 - If the term definition for term in type-scoped context has a local context set active context to the result of the
                 // Context Processing algorithm, passing active context and the value of term's local context in type-scoped context as
                 // local context base URL from the term definition for term in type-scoped context, and false for propagate. 
-                if (typeScopedContext.TryGetTerm(term, out JsonLdTermDefinition termDef) && termDef.LocalContext != null)
+                if (typeScopedContext.TryGetTerm(term, out JsonLdTermDefinition termDef) && termDef.HasLocalContext)
                 {
                     activeContext = _contextProcessor.ProcessContext(activeContext, termDef.LocalContext, termDef.BaseUrl,
                         propagate: false);

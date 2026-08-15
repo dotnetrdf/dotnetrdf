@@ -810,6 +810,7 @@ internal class ContextProcessor : ProcessorBase
 
             // 21.4 - Set the local context of definition to context, and base URL to base URL.
             definition.LocalContext = context;
+            definition.HasLocalContext = true;
             definition.BaseUrl = baseUrl;
         }
 
@@ -999,7 +1000,7 @@ internal class ContextProcessor : ProcessorBase
             // This will ensure that a term definition is created for prefix in active context during Context Processing.
             if (localContext != null &&
                 localContext.TryGetPropertyValue(prefix, out var prefixValue) &&
-                !defined.TryGetValue(prefix, out var definedValue))
+                (!defined.TryGetValue(prefix, out var definedValue) || !definedValue))
             {
                 CreateTermDefinition(activeContext, localContext, prefix, defined);
             }

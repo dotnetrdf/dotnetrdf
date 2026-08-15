@@ -75,9 +75,11 @@ internal class ExpandProcessor : ProcessorBase
             out activePropertyTermDefinition);
         // 3 - If active property has a term definition in active context with a local context, initialize property-scoped context to that local context.
         JsonNode propertyScopedContext = null;
-        if (hasTermDefinition && activePropertyTermDefinition.LocalContext != null)
+        bool propertyScopedContextDefined = false;
+        if (hasTermDefinition && activePropertyTermDefinition.HasLocalContext)
         {
             propertyScopedContext = activePropertyTermDefinition.LocalContext;
+            propertyScopedContextDefined = true;
         }
 
         // 4 - If element is a scalar,
@@ -87,7 +89,7 @@ internal class ExpandProcessor : ProcessorBase
             if (activeProperty == null || activeProperty == "@graph") return null;
 
             // 4.2 - If property-scoped context is defined, set active context to the result of the Context Processing algorithm, passing active context, property-scoped context as local context, and base URL from the term definition for active property in active context.
-            if (propertyScopedContext != null)
+            if (propertyScopedContextDefined)
             {
                 activeContext = _contextProcessor.ProcessContext(activeContext, propertyScopedContext,
                     activePropertyTermDefinition.BaseUrl);
@@ -147,14 +149,14 @@ internal class ExpandProcessor : ProcessorBase
         // and element does not consist of a single entry expanding to @id (where entries are IRI expanded, set active context to previous context from active context, as the scope of a term-scoped context does not apply when processing new node objects.
         if (activeContext.PreviousContext != null &&
             !fromMap &&
-            !JsonLdUtils.HasProperty(activeContext, elementObject, "@value") == false &&
+            !JsonLdUtils.HasProperty(activeContext, elementObject, "@value") &&
             !(elementObject.Count == 1 && JsonLdUtils.HasProperty(activeContext, elementObject, "@id")))
         {
             activeContext = activeContext.PreviousContext;
         }
 
         // 8 - If property-scoped context is defined, set active context to the result of the Context Processing algorithm, passing active context, property-scoped context as local context, base URL from the term definition for active property, in active context and true for override protected.
-        if (propertyScopedContext != null)
+        if (propertyScopedContextDefined)
         {
             activeContext = _contextProcessor.ProcessContext(activeContext, propertyScopedContext,
                 activePropertyTermDefinition.BaseUrl, overrideProtected: true);
@@ -183,7 +185,7 @@ internal class ExpandProcessor : ProcessorBase
                 // if term is a string, and term's term definition in type-scoped context has a local context, set active context to the result Context Processing algorithm, passing active context, the value of the term's local context as local context, base URL from the term definition for value in active context, and false for propagate.
                 if (term.SafeValueKind() == JsonValueKind.String &&
                     typeScopedContext.TryGetTerm(term.GetValue<string>(), out JsonLdTermDefinition termDefinition) &&
-                    termDefinition.LocalContext != null)
+                    termDefinition.HasLocalContext)
                 {
                     activeContext = _contextProcessor.ProcessContext(activeContext, termDefinition.LocalContext,
                         termDefinition.BaseUrl, propagate: false);
@@ -318,15 +320,10 @@ internal class ExpandProcessor : ProcessorBase
         JsonLdTermDefinition activePropertyTermDefinition = null;
         var hasTermDefinition = activeProperty != null && activeContext.TryGetTerm(activeProperty,
             out activePropertyTermDefinition);
-        JsonNode propertyScopedContext = null;
-        if (hasTermDefinition && activePropertyTermDefinition.LocalContext != null)
+        if (hasTermDefinition && activePropertyTermDefinition.HasLocalContext)
         {
-            propertyScopedContext = activePropertyTermDefinition.LocalContext;
-        }
-
-        // 8 - If property-scoped context is defined, set active context to the result of the Context Processing algorithm, passing active context, property-scoped context as local context, base URL from the term definition for active property, in active context and true for override protected.
-        if (propertyScopedContext != null)
-        {
+            JsonNode propertyScopedContext = activePropertyTermDefinition.LocalContext;
+            // 8 - If property-scoped context is defined, set active context to the result of the Context Processing algorithm, passing active context, property-scoped context as local context, base URL from the term definition for active property, in active context and true for override protected.
             activeContext = _contextProcessor.ProcessContext(activeContext, propertyScopedContext, baseUrl, overrideProtected: true);
         }
 
@@ -852,7 +849,7 @@ internal class ExpandProcessor : ProcessorBase
                         if (containerMapping.Contains(JsonLdContainer.Type))
                         {
                             JsonLdTermDefinition indexTermDefinition = mapContext.GetTerm(index);
-                            if (indexTermDefinition?.LocalContext != null)
+                            if (indexTermDefinition?.HasLocalContext == true)
                             {
                                 mapContext = _contextProcessor.ProcessContext(mapContext, indexTermDefinition.LocalContext,
                                     indexTermDefinition.BaseUrl);

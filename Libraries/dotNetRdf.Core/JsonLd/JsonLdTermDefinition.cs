@@ -111,6 +111,11 @@ public class JsonLdTermDefinition
     public JsonNode LocalContext { get; set; }
 
     /// <summary>
+    /// Boolean flag indicating if this term definition specifies a local context.
+    /// </summary>
+    public bool HasLocalContext { get; set; }
+
+    /// <summary>
     /// Get or set the nest property for this term definition.
     /// </summary>
     public string Nest { get; set; }
@@ -134,6 +139,7 @@ public class JsonLdTermDefinition
             LanguageMapping = LanguageMapping,
             HasLanguageMapping = HasLanguageMapping,
             Nest = Nest,
+            HasLocalContext = HasLocalContext,
             LocalContext = LocalContext?.DeepClone(), // TODO: Check if it correct to just directly clone the local context
         };
         clone.ContainerMapping.UnionWith(ContainerMapping);
