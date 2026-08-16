@@ -101,7 +101,7 @@ public class JsonLdWriter : BaseStoreWriter
         var referencedOnce =new Dictionary<string, Usage>();
         // 4 - Initialize compound literal subjects to an empty map.
         var compoundLiteralSubjects = new Dictionary<string, JsonNode>();
-        var usages = new List<Usage>();
+        var usages = new Dictionary<JsonNode, List<Usage>>();
         // 5 - For each graph in RDF dataset:
         foreach (IGraph graph in store.Graphs)
         {
@@ -206,7 +206,11 @@ public class JsonLdWriter : BaseStoreWriter
                     // 5.7.9.1 - Reference the usages entry of the object entry of node map using the variable usages.
                     // 5.7.9.2 - Append a new map consisting of three entries, node, property, and value to the usages array. The node entry is set to a reference to node, property to predicate, and value to a reference to value.
                     var objectMap = nodeMap[@object] as JsonObject;
-                    usages.Add(new Usage(node, predicate, value));
+                    if (!usages.ContainsKey(objectMap))
+                    {
+                        usages[objectMap] = new List<Usage>();
+                    }
+                    usages[objectMap].Add(new Usage(node, predicate, value));
                 }
                 else if (@object != null && referencedOnce.ContainsKey(@object))
                 {
@@ -300,53 +304,61 @@ public class JsonLdWriter : BaseStoreWriter
             var nil = graphObject[RdfSpecsHelper.RdfListNil] as JsonObject;
 
             // 6.4 - For each item usage in the usages member of nil, perform the following steps:
-
-            foreach (Usage usage in usages.Where(u => u.Node == nil))
+            if (usages.ContainsKey(nil))
             {
-                // 6.4.1 - Initialize node to the value of the value of the node entry of usage,
-                // property to the value of the property entry of usage,
-                // and head to the value of the value entry of usage.
-                JsonObject node = usage.Node;
-                var property = usage.Property;
-                var head = usage.Value as JsonObject;
-                // 6.4.2 - Initialize two empty arrays list and list nodes.
-                var list = new JsonArray();
-                var listNodes = new JsonArray();
-                // 6.4.3 - While property equals rdf:rest, the value of the @id entry of node is a blank node identifier,
-                // the value of the entry of referenced once associated with the @id entry of node is a map,
-                // node has rdf:first and rdf:rest entries, both of which have as value an array consisting of a single element,
-                // and node has no other entries apart from an optional @type entry whose value is an array with a single item equal to rdf:List,
-                // node represents a well-formed list node.
-                // Perform the following steps to traverse the list backwards towards its head:
-                while (IsWellFormedListNode(node, property, referencedOnce))
+                foreach (Usage usage in usages[nil])
                 {
-                    // 6.4.3.1 - Append the only item of rdf:first member of node to the list array.
-                    list.Add((node[RdfSpecsHelper.RdfListFirst] as JsonArray)[0]);
-                    // 6.4.3.2 - Append the value of the @id member of node to the list nodes array.
-                    listNodes.Add(node["@id"]);
-                    // 6.4.3.3 - Initialize node usage to the value of the entry of referenced once associated with the @id entry of node.
-                    Usage nodeUsage = referencedOnce[node["@id"].GetValue<string>()];
+                    // 6.4.1 - Initialize node to the value of the value of the node entry of usage,
+                    // property to the value of the property entry of usage,
+                    // and head to the value of the value entry of usage.
+                    JsonObject node = usage.Node;
+                    var property = usage.Property;
+                    var head = usage.Value as JsonObject;
+                    // 6.4.2 - Initialize two empty arrays list and list nodes.
+                    var list = new List<JsonNode>();
+                    var listNodes = new List<string>();
+                    // 6.4.3 - While property equals rdf:rest, the value of the @id entry of node is a blank node identifier,
+                    // the value of the entry of referenced once associated with the @id entry of node is a map,
+                    // node has rdf:first and rdf:rest entries, both of which have as value an array consisting of a single element,
+                    // and node has no other entries apart from an optional @type entry whose value is an array with a single item equal to rdf:List,
+                    // node represents a well-formed list node.
+                    // Perform the following steps to traverse the list backwards towards its head:
+                    while (IsWellFormedListNode(node, property, referencedOnce))
+                    {
+                        // 6.4.3.1 - Append the only item of rdf:first member of node to the list array.
+                        JsonArray listArray = node[RdfSpecsHelper.RdfListFirst] as JsonArray;
+                        JsonNode firstItem = listArray[0];
+                        listArray.RemoveAt(0);
+                        list.Add(firstItem);
 
-                    // 6.4.3.4 - Set node to the value of the node entry of node usage,
-                    // property to the value of the property entry of node usage,
-                    // and head to the value of the value entry of node usage.
-                    node = nodeUsage.Node;
-                    property = nodeUsage.Property;
-                    head = nodeUsage.Value as JsonObject;
-                    // 6.4.3.5 - If the @id entry of node is an IRI instead of a blank node identifier, exit the while loop.
-                    if (!JsonLdUtils.IsBlankNodeIdentifier(node["@id"].GetValue<string>())) break;
-                }
+                        // 6.4.3.2 - Append the value of the @id member of node to the list nodes array.
+                        listNodes.Add(node["@id"].GetValue<string>());
 
-                // 6.4.4 - Remove the @id entry from head.
-                head.Remove("@id");
-                // 6.4.5 - Reverse the order of the list array.
-                list = [.. listNodes.Reverse()];
-                // 6.4.6 - Add an @list entry to head and initialize its value to the list array.
-                head["@list"] = list;
-                // 6.5.7 - For each item node id in list nodes, remove the node id entry from graph object.
-                foreach (var nodeId in listNodes.Select(item => item.GetValue<string>()))
-                {
-                    graphObject.Remove(nodeId);
+                        // 6.4.3.3 - Initialize node usage to the value of the entry of referenced once associated with the @id entry of node.
+                        Usage nodeUsage = referencedOnce[node["@id"].GetValue<string>()];
+
+                        // 6.4.3.4 - Set node to the value of the node entry of node usage,
+                        // property to the value of the property entry of node usage,
+                        // and head to the value of the value entry of node usage.
+                        node = nodeUsage.Node;
+                        property = nodeUsage.Property;
+                        head = nodeUsage.Value as JsonObject;
+                        // 6.4.3.5 - If the @id entry of node is an IRI instead of a blank node identifier, exit the while loop.
+                        if (!JsonLdUtils.IsBlankNodeIdentifier(node["@id"].GetValue<string>())) break;
+                    }
+
+                    // 6.4.4 - Remove the @id entry from head.
+                    head.Remove("@id");
+                    // 6.4.5 - Reverse the order of the list array.
+                    list.Reverse();
+                    // list = [.. listNodes.Reverse()];
+                    // 6.4.6 - Add an @list entry to head and initialize its value to the list array.
+                    head["@list"] = new JsonArray(list.ToArray());
+                    // 6.5.7 - For each item node id in list nodes, remove the node id entry from graph object.
+                    foreach (var nodeId in listNodes)
+                    {
+                        graphObject.Remove(nodeId);
+                    }
                 }
             }
 
@@ -374,13 +386,14 @@ public class JsonLdWriter : BaseStoreWriter
                 {
                     subjectMapProperties = subjectMapProperties.OrderBy(x => x.Key, StringComparer.Ordinal);
                 }
-                foreach (KeyValuePair<string, JsonNode> subjectMapProperty in subjectMapProperties)
+                foreach (KeyValuePair<string, JsonNode> subjectMapProperty in subjectMapProperties.ToList())
                 {
                     var s = subjectMapProperty.Key;
                     var n = subjectMapProperty.Value as JsonObject;
                     n.Remove("usages");
                     if (n.Any(np => !np.Key.Equals("@id")))
                     {
+                        graphMap[subject].AsObject().Remove(s);
                         graphArray.Add(n);
                     }
                 }
