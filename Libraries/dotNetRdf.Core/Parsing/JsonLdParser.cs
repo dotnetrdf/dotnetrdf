@@ -127,8 +127,12 @@ public class JsonLdParser : IStoreReader
 
     /// <inheritdoc />
     public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory) {
+        // System.Text.Json does not support parsing from a TextReader and in any case the whole DOM is needed for JSON-LD processing
+        // so we read the whole input into a string and parse that into a JsonNode.
         JsonNode element;
         var jsonString = input.ReadToEnd();
+        input.Close();
+
         element = JsonNode.Parse(jsonString);
         var warnings = new List<JsonLdProcessorWarning>();
         JsonArray expandedElement = JsonLdProcessor.Expand(element, ParserOptions, warnings);
