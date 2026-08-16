@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using AngleSharp.Text;
 using System;
 using System.Text.RegularExpressions;
 using VDS.RDF.Parsing.Tokens;
@@ -855,7 +854,7 @@ public class TurtleSpecsHelper
         {
             return true;
         }
-        else if (c.IsDigit())
+        else if (char.IsDigit(c))
         {
             return true;
         }
