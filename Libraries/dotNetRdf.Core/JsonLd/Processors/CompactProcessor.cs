@@ -398,7 +398,7 @@ internal class CompactProcessor : ProcessorBase
                         // 12.8.7.2.2 - If expanded item contains the entry @index - value, then add an entry to compacted item where the key is the result of IRI compacting @index and value is value.
                         if (expandedItem is JsonObject expandedItemObject && expandedItemObject.ContainsKey("@index"))
                         {
-                            (compactedItem as JsonObject).Add(CompactIri(activeContext, "@index", vocab: true), expandedItemObject["@index"]);
+                            (compactedItem as JsonObject).Add(CompactIri(activeContext, "@index", vocab: true), expandedItemObject["@index"].DeepClone());
                         }
                         // 12.8.7.2.3 - Use add value to add compacted item to the item active property entry in nest result using as array.
                         JsonLdUtils.AddValue(nestResult, itemActiveProperty, compactedItem, asArray);

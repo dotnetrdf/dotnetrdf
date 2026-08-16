@@ -112,6 +112,9 @@ internal class JsonLiteralSerializer
             case JsonValueKind.Null:
                 writer.WriteRawValue("null");
                 break;
+            case JsonValueKind.String:
+                writer.WriteStringValue(token.GetValue<string>());
+                break;
             default:
                 writer.WriteRawValue(token.GetValue<string>());
                 break;
