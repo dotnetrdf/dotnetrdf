@@ -581,8 +581,15 @@ internal class CompactProcessor : ProcessorBase
                         {
                             mapKey = array[0].GetValue<string>();
                             array.RemoveAt(0);
-                            if (array.Count == 0) (compactedItem as JsonObject).Remove(containerKey);
-                            else if (array.Count == 1) compactedItem[containerKey] = array[0];
+                            if (array.Count == 0) {
+                                (compactedItem as JsonObject).Remove(containerKey);
+                            } 
+                            else if (array.Count == 1) {
+                                // If there's only one remaining value, set the container key to that value instead of an array.
+                                JsonNode remainingValue = array[0];
+                                array.Clear();
+                                compactedItem[containerKey] = remainingValue;
+                            }
                         }
                         // 12.8.9.8.4 - If compacted item contains a single entry with a key expanding to @id, set compacted item to the result of using this algorithm recursively, passing active context, item active property for active property, and a map composed of the single entry for @id from expanded item for element.
                         if ((compactedItem is JsonObject compactedItemObject) && compactedItemObject.Count == 1)
@@ -591,7 +598,7 @@ internal class CompactProcessor : ProcessorBase
                                 .Equals("@id"))
                             {
                                 compactedItem = CompactElement(activeContext, itemActiveProperty,
-                                    new JsonObject{["@id"] = expandedItemObject["@id"] });
+                                    new JsonObject{["@id"] = expandedItemObject["@id"].DeepClone() });
                             }
                         }
                     }

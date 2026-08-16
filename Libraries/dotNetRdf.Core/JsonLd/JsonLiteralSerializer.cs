@@ -48,7 +48,7 @@ internal class JsonLiteralSerializer
     {
         var memoryStream = new MemoryStream();
         
-        using (var writer = new Utf8JsonWriter(memoryStream))
+        using (var writer = new Utf8JsonWriter(memoryStream, new JsonWriterOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping }))
         {
             Serialize(writer, token);
         }
@@ -58,6 +58,11 @@ internal class JsonLiteralSerializer
 
     private static void Serialize(Utf8JsonWriter writer, JsonNode token)
     {
+        if (token == null)
+        {
+            writer.WriteRawValue("null");
+            return;
+        }
         switch (token.GetValueKind())
         {
             case JsonValueKind.Object:

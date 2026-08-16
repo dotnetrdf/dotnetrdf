@@ -110,7 +110,7 @@ internal class FlattenProcessor
             var node = p.Value as JsonObject;
             if (node.Count > 1 || node.Any(x => !x.Key.Equals("@id")))
             {
-                flattened.Add(node);
+                flattened.Add(node.DetachedClone());
             }
         }
         return flattened;

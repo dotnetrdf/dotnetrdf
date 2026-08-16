@@ -109,7 +109,10 @@ internal class JsonLdUtils
     /// <returns>True of <paramref name="node"/> is a <see cref="JsonObject"/> with a non-null @value property, false otherwise.</returns>
     public static bool IsValueObject(JsonNode node)
     {
-        return node is JsonObject obj && HasNonNullProperty(obj, "@value");
+        if (node is not JsonObject obj) return false;
+        return obj.ContainsKey("@value");
+        
+//        return node is JsonObject obj && HasNonNullProperty(obj, "@value");
     }
 
 

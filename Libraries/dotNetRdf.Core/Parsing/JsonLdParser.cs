@@ -298,7 +298,12 @@ public class JsonLdParser : IStoreReader
             {
                 datatype = RdfNs + "JSON";
                 var serializer = new JsonLiteralSerializer();
-                literalValue = serializer.Serialize(value);
+                // The "unsafe" JSON Encoder escapes more characters than necessary for JSON-LD, so we need to unescape some of them to conform to the JSON-LD 1.1 specification.
+                literalValue = Regex.Replace(serializer.Serialize(value), @"\\u([0-9a-fA-F]{4})", match =>
+                {
+                    var unicodeChar = (char)Convert.ToInt32(match.Groups[1].Value, 16);
+                    return 0x00 <= unicodeChar && unicodeChar <= 0x1F ? match.Value : unicodeChar.ToString();
+                });
             }
             else if (value.GetValueKind() == JsonValueKind.True || value.GetValueKind() == JsonValueKind.False)
             {
@@ -332,7 +337,8 @@ public class JsonLdParser : IStoreReader
                 (IsInteger(value) ||
                      (!IsInteger(value) && datatype != null && datatype.Equals(XsdNs + "integer"))))
             {
-                literalValue = value.GetValue<long>().ToString("D", CultureInfo.InvariantCulture);
+                var decimalValue = value.GetValue<decimal>();
+                literalValue = decimalValue.ToString("F0", CultureInfo.InvariantCulture);
                 datatype ??= XsdNs + "integer";
             }
             else if (valueObject.ContainsKey("@direction") && ParserOptions.RdfDirection.HasValue)
