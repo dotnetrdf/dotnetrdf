@@ -261,6 +261,16 @@ public class JsonLdParser : IStoreReader
     private const string RdfValue = RdfNs + "value";
     private static readonly Regex ExponentialFormatMatcher = new Regex(@"(\d)0*E\+?0*");
 
+    private static bool IsInteger(JsonNode node)
+    {
+        if (node is JsonValue valueNode && valueNode.GetValueKind() == JsonValueKind.Number)
+        {
+            var doubleValue = valueNode.GetValue<double>();
+            var roundedValue = Math.Round(doubleValue);
+            return doubleValue.Equals(roundedValue) && doubleValue < 1e21;
+        }
+        return false;
+    }
     private INode MakeNode(IRdfHandler handler, JsonNode token, IRefNode graphName, bool allowRelativeIri = false)
     {
         if (token is JsonValue)
@@ -295,8 +305,10 @@ public class JsonLdParser : IStoreReader
                 literalValue = value.GetValue<bool>() ? "true" : "false";
                 datatype ??= XsdNs + "boolean";
             }
-            else if (value.GetValueKind() == JsonValueKind.Number ||
-                     value.GetValueKind() == JsonValueKind.Number && datatype != null && datatype.Equals(XsdNs + "double"))
+            else if (
+                value.GetValueKind() == JsonValueKind.Number &&
+                (!IsInteger(value) ||
+                     (IsInteger(value) && datatype != null && datatype.Equals(XsdNs + "double"))))
             {
                 var doubleValue = value.GetValue<double>();
                 var roundedValue = Math.Round(doubleValue);
@@ -316,8 +328,9 @@ public class JsonLdParser : IStoreReader
                     datatype ??= XsdNs + "double";
                 }
             }
-            else if (value.GetValueKind() == JsonValueKind.Number ||
-                     value.GetValueKind() == JsonValueKind.Number && datatype != null && datatype.Equals(XsdNs + "integer"))
+            else if (value.GetValueKind() == JsonValueKind.Number &&
+                (IsInteger(value) ||
+                     (!IsInteger(value) && datatype != null && datatype.Equals(XsdNs + "integer"))))
             {
                 literalValue = value.GetValue<long>().ToString("D", CultureInfo.InvariantCulture);
                 datatype ??= XsdNs + "integer";
