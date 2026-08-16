@@ -27,7 +27,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using VDS.RDF.JsonLd.Syntax;
 using VDS.RDF.Parsing;
 
@@ -55,13 +56,13 @@ internal class ExpandProcessor : ProcessorBase
     /// <param name="ordered"></param>
     /// <param name="fromMap"></param>
     /// <returns></returns>
-    public JToken ExpandElement(JsonLdContext activeContext, string activeProperty, JToken element, Uri baseUrl,
+    public JsonNode ExpandElement(JsonLdContext activeContext, string activeProperty, JsonNode element, Uri baseUrl,
         bool frameExpansion = false, bool ordered = false, bool fromMap = false)
     {
-        JToken result;
+        JsonNode result;
 
         // 1 - If element is null, return null.
-        if (element.Type == JTokenType.Null)
+        if (element == null || element.SafeValueKind() == JsonValueKind.Null)
         {
             return null;
         }
@@ -73,10 +74,12 @@ internal class ExpandProcessor : ProcessorBase
         var hasTermDefinition = activeProperty != null && activeContext.TryGetTerm(activeProperty,
             out activePropertyTermDefinition);
         // 3 - If active property has a term definition in active context with a local context, initialize property-scoped context to that local context.
-        JToken propertyScopedContext = null;
-        if (hasTermDefinition && activePropertyTermDefinition.LocalContext != null)
+        JsonNode propertyScopedContext = null;
+        bool propertyScopedContextDefined = false;
+        if (hasTermDefinition && activePropertyTermDefinition.HasLocalContext)
         {
             propertyScopedContext = activePropertyTermDefinition.LocalContext;
+            propertyScopedContextDefined = true;
         }
 
         // 4 - If element is a scalar,
@@ -86,7 +89,7 @@ internal class ExpandProcessor : ProcessorBase
             if (activeProperty == null || activeProperty == "@graph") return null;
 
             // 4.2 - If property-scoped context is defined, set active context to the result of the Context Processing algorithm, passing active context, property-scoped context as local context, and base URL from the term definition for active property in active context.
-            if (propertyScopedContext != null)
+            if (propertyScopedContextDefined)
             {
                 activeContext = _contextProcessor.ProcessContext(activeContext, propertyScopedContext,
                     activePropertyTermDefinition.BaseUrl);
@@ -97,33 +100,35 @@ internal class ExpandProcessor : ProcessorBase
         }
 
         // 5 - If element is an array,
-        if (element is JArray elementArray)
+        if (element is JsonArray elementArray)
         {
             // 5.1 - Initialize an empty array, result.
-            result = new JArray();
-            var resultArray = (JArray)result;
+            result = new JsonArray();
+            var resultArray = (JsonArray)result;
 
             // 5.2 - For each item in element:
-            foreach (JToken item in elementArray)
+            foreach (JsonNode item in elementArray)
             {
                 // 5.2.1 - Initialize expanded item to the result of using this algorithm recursively, passing active context, active property, and item as element.
-                JToken expandedItem = ExpandElement(activeContext, activeProperty, item, baseUrl, frameExpansion, ordered, fromMap);
+                JsonNode expandedItem = ExpandElement(activeContext, activeProperty, item, baseUrl, frameExpansion, ordered, fromMap);
                 if (expandedItem != null)
                 {
                     // 5.2.2 - If the container mapping of active property includes @list, and expanded item is an array, set expanded item to a new map
                     // containing the entry @list where the value is the original expanded item.
                     if (hasTermDefinition &&
                         activePropertyTermDefinition.ContainerMapping.Contains(JsonLdContainer.List) &&
-                        expandedItem.Type == JTokenType.Array)
+                        expandedItem is JsonArray)
                     {
-                        expandedItem = new JObject(new JProperty("@list", expandedItem));
+                        expandedItem = new JsonObject {["@list"] = expandedItem };
                     }
                     // 5.2.3 - If expanded item is an array, append each of its items to result. Otherwise, if expanded item is not null, append it to result.
-                    if (expandedItem is JArray expandedItemArray)
+                    if (expandedItem is JsonArray expandedItemArray)
                     {
-                        foreach (JToken arrayItem in expandedItemArray)
+                        while (expandedItemArray.Count > 0)
                         {
-                            resultArray.Add(arrayItem);
+                            JsonNode n = expandedItemArray[0];
+                            expandedItemArray.RemoveAt(0);
+                            resultArray.Add(n);
                         }
                     }
                     else
@@ -137,21 +142,21 @@ internal class ExpandProcessor : ProcessorBase
         }
 
         // 6 - Otherwise element is a map.
-        var elementObject = element as JObject;
+        var elementObject = element as JsonObject;
 
         // 7 - If active context has a previous context, the active context is not propagated.
         // If from map is undefined or false, and element does not contain an entry expanding to @value,
         // and element does not consist of a single entry expanding to @id (where entries are IRI expanded, set active context to previous context from active context, as the scope of a term-scoped context does not apply when processing new node objects.
         if (activeContext.PreviousContext != null &&
             !fromMap &&
-            JsonLdUtils.GetPropertyValue(activeContext, elementObject, "@value") == null &&
-            !(elementObject.Count == 1 && JsonLdUtils.GetPropertyValue(activeContext, elementObject, "@id") != null))
+            !JsonLdUtils.HasProperty(activeContext, elementObject, "@value") &&
+            !(elementObject.Count == 1 && JsonLdUtils.HasProperty(activeContext, elementObject, "@id")))
         {
             activeContext = activeContext.PreviousContext;
         }
 
         // 8 - If property-scoped context is defined, set active context to the result of the Context Processing algorithm, passing active context, property-scoped context as local context, base URL from the term definition for active property, in active context and true for override protected.
-        if (propertyScopedContext != null)
+        if (propertyScopedContextDefined)
         {
             activeContext = _contextProcessor.ProcessContext(activeContext, propertyScopedContext,
                 activePropertyTermDefinition.BaseUrl, overrideProtected: true);
@@ -160,8 +165,7 @@ internal class ExpandProcessor : ProcessorBase
         // 9 - If element contains the key @context, set active context to the 
         // result of the Context Processing algorithm, passing active context 
         // and the value of the @context key as local context.
-        JToken contextValue = JsonLdUtils.GetPropertyValue(activeContext, elementObject, "@context");
-        if (contextValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, elementObject, "@context", out JsonNode contextValue))
         {
             activeContext = _contextProcessor.ProcessContext(activeContext, contextValue, baseUrl);
         }
@@ -170,18 +174,18 @@ internal class ExpandProcessor : ProcessorBase
         JsonLdContext typeScopedContext = activeContext;
 
         // 11 - For each key/value pair in element ordered lexicographically by key where key expands to @type using the IRI Expansion algorithm, passing active context, key for value, and true for vocab:
-        var typeProperties = elementObject.Properties().Where(property => "@type".Equals(_contextProcessor.ExpandIri(activeContext, property.Name, true))).OrderBy(p => p.Name).ToList();
-        foreach (JProperty property in typeProperties)
+        var typeProperties = elementObject.Where(property => "@type".Equals(_contextProcessor.ExpandIri(activeContext, property.Key, true))).OrderBy(p => p.Key).ToList();
+        foreach (var property in typeProperties)
         {
             // 11.1 Convert value into an array, if necessary.
-            JArray values = property.Value.Type == JTokenType.Array ? property.Value as JArray : new JArray(property.Value);
+            JsonArray values = JsonLdUtils.EnsureArray(property.Value);
             // 11.2 For each term which is a value of value ordered lexicographically
-            foreach (JToken term in values.OrderBy(v => v))
+            foreach (JsonNode term in values.OrderBy(v => v.ToJsonString()))
             {
                 // if term is a string, and term's term definition in type-scoped context has a local context, set active context to the result Context Processing algorithm, passing active context, the value of the term's local context as local context, base URL from the term definition for value in active context, and false for propagate.
-                if (term.Type == JTokenType.String &&
-                    typeScopedContext.TryGetTerm(term.Value<string>(), out JsonLdTermDefinition termDefinition) &&
-                    termDefinition.LocalContext != null)
+                if (term.SafeValueKind() == JsonValueKind.String &&
+                    typeScopedContext.TryGetTerm(term.GetValue<string>(), out JsonLdTermDefinition termDefinition) &&
+                    termDefinition.HasLocalContext)
                 {
                     activeContext = _contextProcessor.ProcessContext(activeContext, termDefinition.LocalContext,
                         termDefinition.BaseUrl, propagate: false);
@@ -191,19 +195,18 @@ internal class ExpandProcessor : ProcessorBase
 
         // 12 - Initialize two empty maps, result and nests. Initialize input type to expansion of the last value of the first entry in element expanding to @type (if any), ordering entries lexicographically by key. Both the key and value of the matched entry are IRI expanded. 
         // NOTE: nests is only used in steps 13/14 so is initialized in ExpandElement
-        result = new JObject();
-        var resultObject = result as JObject;
-        JProperty firstTypeProperty = elementObject.Properties()
-            .OrderBy(p => p.Name).FirstOrDefault(p => "@type".Equals(_contextProcessor.ExpandIri(activeContext, p.Name, true)));
-        JToken inputType = null;
-        if (firstTypeProperty != null)
+        result = new JsonObject();
+        var resultObject = result as JsonObject;
+        KeyValuePair<string, JsonNode> firstTypeProperty = elementObject.OrderBy(p => p.Key).FirstOrDefault(p => "@type".Equals(_contextProcessor.ExpandIri(activeContext, p.Key, true)));
+        JsonNode inputType = null;
+        if (!firstTypeProperty.Equals(default(KeyValuePair<string, JsonNode>)))
         {
-            inputType = firstTypeProperty.Value is JArray typeArray
+            inputType = firstTypeProperty.Value is JsonArray typeArray
                 ? (typeArray.Count > 0 ? typeArray[typeArray.Count - 1] : null)
                 : firstTypeProperty.Value;
-            if (inputType is JValue) // Don't try to expand a framing wildcard
+            if (inputType.SafeValueKind() == JsonValueKind.String) // Don't try to expand a framing wildcard
             {
-                inputType = _contextProcessor.ExpandIri(activeContext, inputType.Value<string>(), true);
+                inputType = _contextProcessor.ExpandIri(activeContext, inputType.GetValue<string>(), true);
             }
         }
 
@@ -214,7 +217,7 @@ internal class ExpandProcessor : ProcessorBase
         if (resultObject.ContainsKey("@value"))
         {
             // 15.1 - The result must not contain any entries other than @direction, @index, @language, @type, and @value. It must not contain an @type entry if it contains either @language or @direction entries. Otherwise, an invalid value object error has been detected and processing is aborted.
-            if (resultObject.Properties().Any(p => !JsonLdKeywords.ValueObjectKeys.Contains(p.Name)))
+            if (resultObject.Any(p => !JsonLdKeywords.ValueObjectKeys.Contains(p.Key)))
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObject,
                     $"Invalid value object. Expanding the value of {activeProperty} resulted in a value object with additional properties.");
@@ -225,19 +228,19 @@ internal class ExpandProcessor : ProcessorBase
                     $"Invalid value object. The expansion of {activeProperty} resulted in a value object with both @type and either @language or @direction.");
             }
 
-            JToken resultType = resultObject.ContainsKey("@type") ? resultObject["@type"] : null;
-            JToken resultValue = resultObject["@value"];
+            JsonNode resultType = resultObject.ContainsKey("@type") ? resultObject["@type"] : null;
+            JsonNode resultValue = resultObject["@value"];
             // If the result's @type entry is @json, then the @value entry may contain any value, and is treated as a JSON literal.
-            if (resultType != null && resultType.Type == JTokenType.String && resultType.Value<string>().Equals("@json"))
+            if (resultType != null && resultType.SafeValueKind() == JsonValueKind.String && resultType.GetValue<string>().Equals("@json"))
             {
                 // No-op
             }
             // Otherwise, if the value of result's @value entry is null, or an empty array, return null.
-            else if (resultValue == null || resultValue.Type == JTokenType.Null || resultValue is JArray resultArray && resultArray.Count == 0)
+            else if (resultValue == null || resultValue.SafeValueKind() == JsonValueKind.Null || resultValue is JsonArray resultArray && resultArray.Count == 0)
             {
                 return null;
             }
-            else if (resultObject.ContainsKey("@language") && resultValue.Type != JTokenType.String && !frameExpansion) // KA: in frame expansion @language could be an empty object or array
+            else if (resultObject.ContainsKey("@language") && resultValue.SafeValueKind() != JsonValueKind.String && !frameExpansion) // KA: in frame expansion @language could be an empty object or array
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageTaggedValue,
                     $"Invalid language-tagged value. The expansion of {activeProperty} has an @language entry, but its @value entry is not a JSON string.");
@@ -257,7 +260,7 @@ internal class ExpandProcessor : ProcessorBase
         else if (resultObject.ContainsKey("@set"))
         {
             // 17.1 - The result must contain at most one other entry which must be @index. Otherwise, an invalid set or list object error has been detected and processing is aborted.
-            if (resultObject.Properties().Any(p => p.Name != "@set" && p.Name != "@index"))
+            if (resultObject.Any(p => p.Key != "@set" && p.Key != "@index"))
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidSetOrListObject,
                     $"Invalid set or list object. The expansion of {activeProperty} resulted in a set object that has a property other than @set and @index.");
@@ -268,27 +271,27 @@ internal class ExpandProcessor : ProcessorBase
         else if (resultObject.ContainsKey("@list"))
         {
             // 17.1 - The result must contain at most one other entry which must be @index. Otherwise, an invalid set or list object error has been detected and processing is aborted.
-            if (resultObject.Properties().Any(p => p.Name != "@list" && p.Name != "@index"))
+            if (resultObject.Any(p => p.Key != "@list" && p.Key != "@index"))
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidSetOrListObject,
                     $"Invalid set or list object. The expansion of {activeProperty} resulted in a list object that has a property other than @list and @index.");
             }
         }
         // 18 - If result is a map that contains only the entry @language, return null.
-        if (result is JObject o && o.ContainsKey("@language") && o.Count == 1)
+        if (result is JsonObject o && o.ContainsKey("@language") && o.Count == 1)
         {
             return null;
         }
         // 19 - If active property is null or @graph, drop free-floating values as follows:
         if (activeProperty == null || activeProperty.Equals("@graph"))
         {
-            resultObject = result as JObject;
+            resultObject = result as JsonObject;
             if (resultObject != null)
             {
                 // 19.1 - If result is a map which is empty, or contains only the entries @value or @list, set result to null.
                 // KA: Confirmed that the filter should apply whenever resultObject contains @value or @list (not just when they are the only properties)
                 if (resultObject.Count == 0 ||
-                    resultObject.Properties().Any(p => p.Name.Equals("@value") || p.Name.Equals("@list")))
+                    resultObject.Any(p => p.Key.Equals("@value") || p.Key.Equals("@list")))
                 {
                     if (!frameExpansion)
                     {
@@ -308,42 +311,37 @@ internal class ExpandProcessor : ProcessorBase
     }
 
     private void ExpandNestedElement(
-        JObject resultObject, JToken inputType, JsonLdContext activeContext, string activeProperty, Uri baseUrl,
+        JsonObject resultObject, JsonNode inputType, JsonLdContext activeContext, string activeProperty, Uri baseUrl,
         bool frameExpansion,
-        bool ordered, JObject elementObject, JsonLdContext typeScopedContext
+        bool ordered, JsonObject elementObject, JsonLdContext typeScopedContext
     )
     {
         // 3 - If active property has a term definition in active context with a local context, initialize property-scoped context to that local context.
         JsonLdTermDefinition activePropertyTermDefinition = null;
         var hasTermDefinition = activeProperty != null && activeContext.TryGetTerm(activeProperty,
             out activePropertyTermDefinition);
-        JToken propertyScopedContext = null;
-        if (hasTermDefinition && activePropertyTermDefinition.LocalContext != null)
+        if (hasTermDefinition && activePropertyTermDefinition.HasLocalContext)
         {
-            propertyScopedContext = activePropertyTermDefinition.LocalContext;
-        }
-
-        // 8 - If property-scoped context is defined, set active context to the result of the Context Processing algorithm, passing active context, property-scoped context as local context, base URL from the term definition for active property, in active context and true for override protected.
-        if (propertyScopedContext != null)
-        {
+            JsonNode propertyScopedContext = activePropertyTermDefinition.LocalContext;
+            // 8 - If property-scoped context is defined, set active context to the result of the Context Processing algorithm, passing active context, property-scoped context as local context, base URL from the term definition for active property, in active context and true for override protected.
             activeContext = _contextProcessor.ProcessContext(activeContext, propertyScopedContext, baseUrl, overrideProtected: true);
         }
 
         ExpandElement(resultObject, inputType, activeContext, activeProperty, baseUrl, frameExpansion, ordered, elementObject, typeScopedContext);
     }
 
-    private void ExpandElement(JObject resultObject, JToken inputType, JsonLdContext activeContext, string activeProperty, Uri baseUrl, bool frameExpansion,
-        bool ordered, JObject elementObject, JsonLdContext typeScopedContext)
+    private void ExpandElement(JsonObject resultObject, JsonNode inputType, JsonLdContext activeContext, string activeProperty, Uri baseUrl, bool frameExpansion,
+        bool ordered, JsonObject elementObject, JsonLdContext typeScopedContext)
     {
-        var nests = new JObject();
+        var nests = new JsonObject();
 
         // 13 - For each key and value in element, ordered lexicographically by key if ordered is true: 
-        IEnumerable<JProperty> elementProperties = elementObject.Properties();
-        if (ordered) elementProperties = elementProperties.OrderBy(p => p.Name);
-        foreach (JProperty p in elementProperties)
+        IEnumerable<KeyValuePair<string, JsonNode>> elementProperties = elementObject;
+        if (ordered) elementProperties = elementProperties.OrderBy(p => p.Key);
+        foreach (var p in elementProperties)
         {
-            var key = p.Name;
-            JToken value = p.Value;
+            var key = p.Key;
+            JsonNode value = p.Value;
             // 13.1 - If key is @context, continue to the next key.
             if (key.Equals("@context")) continue;
             // 13.2 - Initialize expanded property to the result of IRI expanding key.
@@ -365,7 +363,7 @@ internal class ExpandProcessor : ProcessorBase
                 }
                 continue;
             }
-            JToken expandedValue = null;
+            JsonNode expandedValue = null;
 
             // 13.4 - If expanded property is a keyword: 
             if (JsonLdUtils.IsKeyword(expandedProperty))
@@ -392,35 +390,35 @@ internal class ExpandProcessor : ProcessorBase
                     // 13.4.3.1 - If value is not a string, an invalid @id value error has been detected and processing is aborted. When the frameExpansion flag is set, value MAY be an empty map, or an array of one or more strings.
                     // 13.4.3.2 - Otherwise, set expanded value to the result of IRI expanding value using true for document relative and false for vocab.
                     // When the frameExpansion flag is set, expanded value will be an array of one or more of the values, with string values expanded using the IRI Expansion algorithm as above.
-                    switch (value.Type)
+                    switch (value.SafeValueKind())
                     {
-                        case JTokenType.String:
-                            expandedValue = _contextProcessor.ExpandIri(activeContext, value.Value<string>(), false, true);
-                            if (frameExpansion) expandedValue = new JArray(expandedValue);
+                        case JsonValueKind.String:
+                            expandedValue = _contextProcessor.ExpandIri(activeContext, value.GetValue<string>(), false, true);
+                            if (frameExpansion) expandedValue = new JsonArray(expandedValue);
                             break;
 
-                        case JTokenType.Array when !frameExpansion:
-                        case JTokenType.Object when !frameExpansion:
+                        case JsonValueKind.Array when !frameExpansion:
+                        case JsonValueKind.Object when !frameExpansion:
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIdValue,
                                 $"Invalid @id value. The value of the property {key} in the value of {activeProperty} is not a string, but {key} expands to the keyword @id.");
 
-                        case JTokenType.Array when value.Children().Any(c => c.Type != JTokenType.String):
+                        case JsonValueKind.Array when value.AsArray().Any(c => c.SafeValueKind() != JsonValueKind.String):
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIdValue,
                                 $"Invalid @id value. The property {key} in the value of {activeProperty} expands to the @id keyword, but its array value contains one or more non-string items.");
 
-                        case JTokenType.Array:
-                            var newArray = new JArray();
-                            foreach (JToken child in value.Children())
-                                newArray.Add(_contextProcessor.ExpandIri(activeContext, child.Value<string>(), false, true));
+                        case JsonValueKind.Array:
+                            var newArray = new JsonArray();
+                            foreach (JsonNode child in value.AsArray())
+                                newArray.Add(_contextProcessor.ExpandIri(activeContext, child.GetValue<string>(), false, true));
                             expandedValue = newArray;
                             break;
 
-                        case JTokenType.Object when value.Children().Any():
+                        case JsonValueKind.Object when value.AsObject().Any():
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIdValue,
                                 $"Invalid @id value. The property {key} in the value of {activeProperty} expands to the @id keyword, but its map value contains one or more entries.");
 
-                        case JTokenType.Object:
-                            expandedValue = frameExpansion ? new JArray(value) : value;
+                        case JsonValueKind.Object:
+                            expandedValue = frameExpansion ? new JsonArray(value.DetachedClone()) : value.DetachedClone();
                             break;
 
                         default:
@@ -438,30 +436,29 @@ internal class ExpandProcessor : ProcessorBase
                 // 13.4.4 - If expanded property is @type: 
                 if ("@type" == expandedProperty)
                 {
-                    switch (value.Type)
+                    switch (value.SafeValueKind())
                     {
-                        case JTokenType.String:
-                            expandedValue = _contextProcessor.ExpandIri(typeScopedContext, value.Value<string>(), true, true);
+                        case JsonValueKind.String:
+                            expandedValue = _contextProcessor.ExpandIri(typeScopedContext, value.GetValue<string>(), true, true);
                             break;
-                        case JTokenType.Array when value.Children().Any(c => c.Type != JTokenType.String):
+                        case JsonValueKind.Array when value.AsArray().Any(c => c.SafeValueKind() != JsonValueKind.String):
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeValue,
                                 $"Invalid @type value. The property {key} in the value of {activeProperty} expands to the @type keyword, but its array value contains one or more non-string items.");
-                        case JTokenType.Array:
-                            var expandedItems = new JArray();
-                            foreach (JToken item in value.Children())
+                        case JsonValueKind.Array:
+                            var expandedItems = new JsonArray();
+                            foreach (JsonNode item in value.AsArray())
                             {
-                                expandedItems.Add(_contextProcessor.ExpandIri(typeScopedContext, item.Value<string>(), true, true));
+                                expandedItems.Add(_contextProcessor.ExpandIri(typeScopedContext, item.GetValue<string>(), true, true));
                             }
 
                             expandedValue = expandedItems;
                             break;
-                        case JTokenType.Object when frameExpansion && !value.HasValues:
+                        case JsonValueKind.Object when frameExpansion && value.AsObject().Count == 0:
                             expandedValue = value;
                             break;
-                        case JTokenType.Object when frameExpansion && (value as JObject).ContainsKey("@default"):
-                            var toExpand = (value as JObject)["@default"].Value<string>();
-                            expandedValue = new JObject(new JProperty("@default",
-                                _contextProcessor.ExpandIri(typeScopedContext, toExpand, true, true)));
+                        case JsonValueKind.Object when frameExpansion && value.AsObject().ContainsKey("@default"):
+                            var toExpand = value.AsObject()["@default"].GetValue<string>();
+                            expandedValue = new JsonObject{["@default"] = _contextProcessor.ExpandIri(typeScopedContext, toExpand, true, true)};
                             break;
                         default:
                             if (frameExpansion)
@@ -487,9 +484,9 @@ internal class ExpandProcessor : ProcessorBase
                 {
                     expandedValue = ExpandElement(activeContext, "@graph", value, baseUrl, frameExpansion,
                         ordered);
-                    if (expandedValue.Type == JTokenType.Object)
+                    if (expandedValue.SafeValueKind() == JsonValueKind.Object)
                     {
-                        expandedValue = new JArray(expandedValue);
+                        expandedValue = new JsonArray(expandedValue);
                     }
                 }
 
@@ -502,7 +499,7 @@ internal class ExpandProcessor : ProcessorBase
                     expandedValue = JsonLdUtils.EnsureArray(ExpandElement(activeContext, null, value, baseUrl, frameExpansion,
                         ordered));
                     // 13.4.6.3 - If any element of expanded value is not a node object, an invalid @included value error has been detected and processing is aborted.
-                    if (expandedValue.Children().Any(c => !JsonLdUtils.IsNodeObject(c)))
+                    if (expandedValue.AsArray().Any(c => !JsonLdUtils.IsNodeObject(c)))
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIncludedValue,
                             $"Invalid @included value. The expanded value for the {key} property of {activeProperty} contains one or more values that are not valid node objects.");
@@ -519,7 +516,7 @@ internal class ExpandProcessor : ProcessorBase
                 {
                     // 13.4.7.1 - If input type is @json, set expanded value to value.
                     // If processing mode is json-ld-1.0, an invalid value object value error has been detected and processing is aborted.
-                    if (inputType != null && inputType.Type == JTokenType.String && inputType.Value<string>().Equals("@json"))
+                    if (inputType != null && inputType.SafeValueKind() == JsonValueKind.String && inputType.GetValue<string>().Equals("@json"))
                     {
                         if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
                         {
@@ -530,8 +527,9 @@ internal class ExpandProcessor : ProcessorBase
                         expandedValue = value;
                     }
                     else if ((!frameExpansion && !(JsonLdUtils.IsScalar(value) || JsonLdUtils.IsNull(value))) ||
-                             (frameExpansion && !(JsonLdUtils.IsScalar(value) || JsonLdUtils.IsNull(value) || JsonLdUtils.IsEmptyMap(value) ||
-                                                  JsonLdUtils.IsArray(value, JsonLdUtils.IsScalar))))
+                             (frameExpansion && !(JsonLdUtils.IsScalar(value) || JsonLdUtils.IsNull(value) || 
+                                                  JsonLdUtils.IsEmptyObject(value) || JsonLdUtils.IsArray(value, JsonLdUtils.IsScalar)))
+                            )
                     {
                         // 13.4.7.2 - Otherwise, if value is not a scalar or null, an invalid value object value error has been detected and processing is aborted.
                         // When the frameExpansion flag is set, value MAY be an empty map or an array of scalar values.
@@ -560,7 +558,7 @@ internal class ExpandProcessor : ProcessorBase
                     // When the frameExpansion flag is set, value MAY be an empty map or an array of zero or more strings.
                     if (!frameExpansion && !JsonLdUtils.IsString(value) ||
                         frameExpansion && !(JsonLdUtils.IsString(value) || 
-                                            JsonLdUtils.IsEmptyMap(value) || 
+                                            JsonLdUtils.IsEmptyObject(value) || 
                                             JsonLdUtils.IsArray(value, JsonLdUtils.IsString)))
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageTaggedString,
@@ -574,14 +572,14 @@ internal class ExpandProcessor : ProcessorBase
                     // Processors MAY normalize language tags to lower case.
                     if (JsonLdUtils.IsString(expandedValue))
                     {
-                        var languageTag = expandedValue.Value<string>().ToLowerInvariant();
+                        var languageTag = expandedValue.GetValue<string>().ToLowerInvariant();
                         if (!LanguageTag.IsWellFormed(languageTag))
                         {
                             Warn(JsonLdErrorCode.MalformedLanguageTag,
                                 $"The @language value of {activeProperty} is not a well-formed BCP-47 language tag.");
                         }
 
-                        expandedValue = new JValue(languageTag);
+                        expandedValue = JsonValue.Create(languageTag);
                     }
                 }
 
@@ -597,7 +595,8 @@ internal class ExpandProcessor : ProcessorBase
                     // 13.4.9.2 - If value is neither "ltr" nor "rtl", an invalid base direction error has been detected and processing is aborted.
                     // When the frameExpansion flag is set, value MAY be an empty map or an array of zero or more strings.
                     if (!frameExpansion && !JsonLdUtils.IsValidBaseDirection(value) ||
-                        frameExpansion && !(JsonLdUtils.IsValidBaseDirection(value) || JsonLdUtils.IsEmptyMap(value) ||
+                        frameExpansion && !(JsonLdUtils.IsValidBaseDirection(value) ||
+                                            JsonLdUtils.IsEmptyObject(value) ||
                                             JsonLdUtils.IsArray(value, JsonLdUtils.IsString)))
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidBaseDirection,
@@ -608,7 +607,7 @@ internal class ExpandProcessor : ProcessorBase
                     // When the frameExpansion flag is set, expanded value will be an array of one or more string values or an array containing an empty map.
                     expandedValue = value;
                     if (frameExpansion) expandedValue = JsonLdUtils.EnsureArray(expandedValue);
-                    if (frameExpansion && !(JsonLdUtils.IsArray(expandedValue, JsonLdUtils.IsString) || JsonLdUtils.IsArray(expandedValue, JsonLdUtils.IsEmptyMap)))
+                    if (frameExpansion && !(JsonLdUtils.IsArray(expandedValue, JsonLdUtils.IsString) || JsonLdUtils.IsArray(expandedValue, JsonLdUtils.IsEmptyObject)))
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidBaseDirection,
                             $"Invalid base direction. During frame expansion, the value of the property {key} of {activeProperty} does not expand to an array of strings or an array containing an empty map.");
@@ -656,7 +655,7 @@ internal class ExpandProcessor : ProcessorBase
                 if ("@reverse".Equals(expandedProperty))
                 {
                     // 13.4.13.1 - If value is not a map, an invalid @reverse value error has been detected and processing is aborted.
-                    if (value.Type != JTokenType.Object)
+                    if (value.SafeValueKind() != JsonValueKind.Object)
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReverseValue,
                             $"Invalid reverse value. The property {key} of {activeProperty} expands to an @reverse property but its value is not a JSON object.");
@@ -665,36 +664,36 @@ internal class ExpandProcessor : ProcessorBase
                     // 13.4.13.2 - Otherwise initialize expanded value to the result of using this algorithm recursively, passing active context, @reverse as active property, value as element, base URL, and the frameExpansion and ordered flags.
                     expandedValue = ExpandElement(activeContext, "@reverse", value, baseUrl, frameExpansion,
                         ordered);
-                    if (expandedValue is JObject expandedValueObject)
+                    if (expandedValue is JsonObject expandedValueObject)
                     {
                         // 13.4.13.3 - If expanded value contains an @reverse entry, i.e., properties that are reversed twice, execute for each of its property and item the following steps: 
                         if (expandedValueObject.ContainsKey("@reverse"))
                         {
-                            if (expandedValueObject["@reverse"] is JObject reverseObject)
+                            if (expandedValueObject["@reverse"] is JsonObject reverseObject)
                             {
-                                foreach (JProperty property in reverseObject.Properties())
+                                foreach (KeyValuePair<string, JsonNode> property in reverseObject)
                                 {
                                     // 13.4.13.3.1 - Use add value to add item to the property entry in result using true for as array.
-                                    JsonLdUtils.AddValue(resultObject, property.Name, property.Value, true);
+                                    JsonLdUtils.AddValue(resultObject, property.Key, property.Value, true);
                                 }
                             }
                         }
                         // 13.4.13.4 - If expanded value contains an entry other than @reverse:
-                        if (expandedValueObject.Properties().Any(x => !x.Name.Equals("@reverse")))
+                        if (expandedValueObject.Any(x => !x.Key.Equals("@reverse")))
                         {
                             // 13.4.13.4.1 - Set reverse map to the value of the @reverse entry in result, initializing it to an empty map, if necessary.
-                            if (!resultObject.ContainsKey("@reverse")) resultObject["@reverse"] = new JObject();
-                            var reverseMap = resultObject["@reverse"] as JObject;
+                            if (!resultObject.ContainsKey("@reverse")) resultObject["@reverse"] = new JsonObject();
+                            var reverseMap = resultObject["@reverse"] as JsonObject;
                             // 13.4.13.4.2 - For each property and items in expanded value other than @reverse: 
-                            foreach (KeyValuePair<string, JToken> property in expandedValueObject)
+                            foreach (KeyValuePair<string, JsonNode> property in expandedValueObject)
                             {
                                 if (property.Key.Equals("@reverse")) continue;
                                 // 13.4.13.4.2.1 - For each item in items:
                                 // KA: Spec is not quite clear here but appears to indicate that the value of all properties should be an array or that array property values should be iterated over
-                                IEnumerable<JToken> items = property.Value is JArray itemsArray
-                                    ? (IEnumerable<JToken>)itemsArray.Children()
+                                IEnumerable<JsonNode> items = property.Value is JsonArray itemsArray
+                                    ? (IEnumerable<JsonNode>)itemsArray
                                     : [property.Value];
-                                foreach (JToken item in items)
+                                foreach (JsonNode item in items)
                                 {
                                     // 13.4.13.4.2.1.1 - If item is a value object or list object, an invalid reverse property value has been detected and processing is aborted.
                                     if (JsonLdUtils.IsValueObject(item) || JsonLdUtils.IsListObject(item))
@@ -720,7 +719,7 @@ internal class ExpandProcessor : ProcessorBase
                 {
                     if (!nests.ContainsKey(key))
                     {
-                        nests.Add(key, new JArray());
+                        nests.Add(key, new JsonArray());
                     }
 
                     continue;
@@ -734,11 +733,12 @@ internal class ExpandProcessor : ProcessorBase
                 }
 
                 // 13.4.16 - Unless expanded value is null, expanded property is @value, and input type is not @json, set the expanded property entry of result to expanded value.
-                var inputTypeIsJson = inputType != null && inputType.Type == JTokenType.String &&
-                                      inputType.Value<string>().Equals("@json");
+                var inputTypeIsJson = inputType != null &&
+                                      inputType.SafeValueKind() == JsonValueKind.String &&
+                                      inputType.GetValue<string>().Equals("@json");
                 if (!(expandedValue == null && "@value".Equals(expandedProperty) && !inputTypeIsJson))
                 {
-                    resultObject[expandedProperty] = expandedValue;
+                    resultObject[expandedProperty] = expandedValue.DetachedClone();
                 }
 
                 // 13.4.17 - Continue with the next key from element.
@@ -751,13 +751,16 @@ internal class ExpandProcessor : ProcessorBase
             // 13.6 - If key's term definition in active context has a type mapping of @json, set expanded value to a new map, set the entry @value to value, and set the entry @type to @json.
             if ("@json".Equals(termDefinition?.TypeMapping))
             {
-                expandedValue = new JObject(new JProperty("@value", value), new JProperty("@type", "@json"));
+                expandedValue = new JsonObject{
+                    ["@value"] = value.DetachedClone(),
+                    ["@type"] = "@json",
+                };
             }
             // 13.7 - Otherwise, if container mapping includes @language and value is a map then value is expanded from a language map as follows: 
-            else if (containerMapping.Contains(JsonLdContainer.Language) && value.Type == JTokenType.Object)
+            else if (containerMapping.Contains(JsonLdContainer.Language) && value.SafeValueKind() == JsonValueKind.Object)
             {
                 // 13.7.1 - Initialize expanded value to an empty array.
-                var expandedValueArray = new JArray();
+                var expandedValueArray = new JsonArray();
                 expandedValue = expandedValueArray;
 
                 // 13.7.2 - Initialize direction to the default base direction from active context.
@@ -765,15 +768,15 @@ internal class ExpandProcessor : ProcessorBase
                 LanguageDirection? direction = termDefinition.DirectionMapping ?? activeContext.BaseDirection;
 
                 // 13.7.4 - For each key - value pair language-language value in value, ordered lexicographically by language if ordered is true: 
-                IEnumerable<JProperty> properties = (value as JObject).Properties();
-                if (ordered) properties = properties.OrderBy(prop => prop.Name);
-                foreach (JProperty languageMappingProperty in properties)
+                IEnumerable<KeyValuePair<string, JsonNode>> properties = value as JsonObject;
+                if (ordered) properties = properties.OrderBy(prop => prop.Key);
+                foreach (var languageMappingProperty in properties)
                 {
-                    var language = languageMappingProperty.Name;
+                    var language = languageMappingProperty.Key;
                     // 13.4.7.1 - If language value is not an array set language value to an array containing only language value.
-                    JArray languageValue = JsonLdUtils.EnsureArray(languageMappingProperty.Value);
+                    JsonArray languageValue = JsonLdUtils.EnsureArray(languageMappingProperty.Value);
                     // 13.4.7.2 - For each item in language value: 
-                    foreach (JToken item in languageValue)
+                    foreach (JsonNode item in languageValue)
                     {
                         // 13.4.7.2.1 - If item is null, continue to the next entry in language value.
                         if (JsonLdUtils.IsNull(item)) continue;
@@ -793,9 +796,10 @@ internal class ExpandProcessor : ProcessorBase
                                 $"The property {languageMappingProperty} in {activeProperty} must be either a " +
                                 $"well-formed BCP-47 language tag or '@none'.");
                         }
-                        var v = new JObject(
-                            new JProperty("@value", item),
-                            new JProperty("@language", language.ToLowerInvariant())); // Processors MAY normalize language tags to lower case.
+                        var v = new JsonObject{
+                            ["@value"] = item.Parent == null ? item : item.DeepClone(),
+                            ["@language"] = language.ToLowerInvariant(),
+                        }; // Processors MAY normalize language tags to lower case.
 
                         // 13.4.7.2.4 - If language is @none, or expands to @none, remove @language from v.
                         if (language.Equals("@none") || activeContext.GetAliases("@none").Contains(language))
@@ -814,25 +818,26 @@ internal class ExpandProcessor : ProcessorBase
                 }
             }
             // 13.8 - Otherwise, if container mapping includes @index, @type, or @id and value is a map then value is expanded from an map as follows: 
-            else if (value.Type == JTokenType.Object &&
+            else if (value != null &&
+                     value.SafeValueKind() == JsonValueKind.Object &&
                      (containerMapping.Contains(JsonLdContainer.Index) ||
                       containerMapping.Contains(JsonLdContainer.Type) ||
                       containerMapping.Contains(JsonLdContainer.Id)))
             {
                 // 13.8.1 Initialize expanded value to an empty array.
-                var expandedValueArray = new JArray();
+                var expandedValueArray = new JsonArray();
                 expandedValue = expandedValueArray;
 
                 // 13.8.2 - Initialize index key to the key's index mapping in active context, or @index, if it does not exist.
                 var indexKey = termDefinition.IndexMapping ?? "@index";
 
                 // 13.8.3 - For each key - value pair index-index value in value, ordered lexicographically by index if ordered is true: 
-                IEnumerable<JProperty> properties = (value as JObject).Properties();
-                if (ordered) properties = properties.OrderBy(prop => prop.Name);
-                foreach (JProperty indexValueProperty in properties)
+                IEnumerable<KeyValuePair<string, JsonNode>> properties = value as JsonObject;
+                if (ordered) properties = properties.OrderBy(prop => prop.Key);
+                foreach (var indexValueProperty in properties)
                 {
-                    var index = indexValueProperty.Name;
-                    JArray indexValue = JsonLdUtils.EnsureArray(indexValueProperty.Value);
+                    var index = indexValueProperty.Key;
+                    JsonArray indexValue = JsonLdUtils.EnsureArray(indexValueProperty.Value);
 
                     JsonLdContext mapContext = null;
                     // 13.8.3.1 - If container mapping includes @id or @type, initialize map context to the previous context from active context if it exists, otherwise, set map context to active context.
@@ -844,7 +849,7 @@ internal class ExpandProcessor : ProcessorBase
                         if (containerMapping.Contains(JsonLdContainer.Type))
                         {
                             JsonLdTermDefinition indexTermDefinition = mapContext.GetTerm(index);
-                            if (indexTermDefinition?.LocalContext != null)
+                            if (indexTermDefinition?.HasLocalContext == true)
                             {
                                 mapContext = _contextProcessor.ProcessContext(mapContext, indexTermDefinition.LocalContext,
                                     indexTermDefinition.BaseUrl);
@@ -868,13 +873,15 @@ internal class ExpandProcessor : ProcessorBase
                         ordered, true));
 
                     // 13.8.3.7 - For each item in index value: 
-                    for (var ix = 0; ix < indexValue.Count; ix++)
+                    while(indexValue.Count > 0)
                     {
-                        var item = indexValue[ix] as JObject;
+                        var item = indexValue[0] as JsonObject;
+                        indexValue.RemoveAt(0); // Detach item from indexValue
+
                         // 13.8.7.3.1 - If container mapping includes @graph, and item is not a graph object, set item to a new map containing the key - value pair @graph-item, ensuring that the value is represented using an array.
                         if (containerMapping.Contains(JsonLdContainer.Graph) && !JsonLdUtils.IsGraphObject(item))
                         {
-                            item = new JObject(new JProperty("@graph", JsonLdUtils.EnsureArray(item)));
+                            item = new JsonObject{ ["@graph"] = JsonLdUtils.EnsureArray(item) };
                         }
 
                         // 13.8.3.7.2 - If container mapping includes @index, index key is not @index, and expanded index is not @none: 
@@ -882,13 +889,13 @@ internal class ExpandProcessor : ProcessorBase
                             !expandedIndex.Equals("@none"))
                         {
                             // 13.8.3.7.2.1 - Initialize re-expanded index to the result of calling the Value Expansion algorithm, passing the active context, index key as active property, and index as value.
-                            JToken reExpandedIndex = ExpandValue(activeContext, indexKey, index);
+                            JsonNode reExpandedIndex = ExpandValue(activeContext, indexKey, index);
 
                             // 13.8.3.7.2.2 - Initialize expanded index key to the result of IRI expanding index key.
                             var expandedIndexKey = _contextProcessor.ExpandIri(activeContext, indexKey, true);
 
                             // 13.8.3.7.2.3 - Initialize index property values to an array consisting of re-expanded index followed by the existing values of the concatenation of expanded index key in item, if any.
-                            var indexPropertyValues = new JArray(reExpandedIndex);
+                            var indexPropertyValues = new JsonArray(reExpandedIndex);
                             if (item.ContainsKey(expandedIndexKey))
                             {
                                 indexPropertyValues =
@@ -897,7 +904,7 @@ internal class ExpandProcessor : ProcessorBase
 
                             // 13.8.3.7.2.4 - Add the key - value pair(expanded index key - index property values) to item.
                             item.Remove(expandedIndexKey); // Overwriting any existing value (which should have been appended to indexPropertyValues
-                            item.Add(new JProperty(expandedIndexKey, indexPropertyValues));
+                            item.Add(expandedIndexKey, indexPropertyValues);
 
                             // 13.8.3.7.2.5 - If item is a value object, it MUST NOT contain any extra properties; an invalid value object error has been detected and processing is aborted.
                             if (item.ContainsKey("@value") && item.Count > 1)
@@ -922,10 +929,12 @@ internal class ExpandProcessor : ProcessorBase
                         // 13.8.7.5 - Otherwise, if container mapping includes @type and expanded index is not @none, initialize types to a new array consisting of expanded index followed by any existing values of @type in item.Add the key - value pair(@type - types) to item.
                         else if (containerMapping.Contains(JsonLdContainer.Type) && !expandedIndex.Equals("@none"))
                         {
-                            var types = new JArray(expandedIndex);
+                            var types = new JsonArray(expandedIndex);
                             if (item.ContainsKey("@type"))
                             {
-                                types = JsonLdUtils.ConcatenateValues(types, item["@type"]);
+                                var t = item["@type"];
+                                item.Remove("@type"); // Detach the existing @type value from item
+                                types = JsonLdUtils.ConcatenateValues(types, t);
                             }
 
                             item["@type"] = types;
@@ -947,7 +956,7 @@ internal class ExpandProcessor : ProcessorBase
             // 13.11 If container mapping includes @list and expanded value is not already a list object, convert expanded value to a list object by first setting it to an array containing only expanded value if it is not already an array, and then by setting it to a map containing the key-value pair @list-expanded value.
             if (containerMapping.Contains(JsonLdContainer.List) && !JsonLdUtils.IsListObject(expandedValue))
             {
-                expandedValue = new JObject(new JProperty("@list", JsonLdUtils.EnsureArray(expandedValue)));
+                expandedValue = new JsonObject{ ["@list"] = JsonLdUtils.EnsureArray(expandedValue) };
             }
 
             // 13.12 - If container mapping includes @graph, and includes neither @id nor @index, convert expanded value into an array, if necessary,
@@ -955,13 +964,15 @@ internal class ExpandProcessor : ProcessorBase
             if (containerMapping.Contains(JsonLdContainer.Graph) &&
                 !containerMapping.Contains(JsonLdContainer.Id) && !containerMapping.Contains(JsonLdContainer.Index))
             {
-                JArray tmp = JsonLdUtils.EnsureArray(expandedValue);
-                var expandedValueArray = new JArray();
-                foreach (JToken ev in tmp)
+                JsonArray tmp = JsonLdUtils.EnsureArray(expandedValue);
+                var expandedValueArray = new JsonArray();
+                foreach (JsonNode ev in tmp)
                 {
                     // 13.12.1 - Convert ev into a graph object by creating a map containing the key-value pair @graph-ev where ev is represented as an array.
                     // Note: This may lead to a graph object including another graph object, if ev was already in the form of a graph object.
-                    expandedValueArray.Add(new JObject(new JProperty("@graph", JsonLdUtils.EnsureArray(ev))));
+                    expandedValueArray.Add(
+                        new JsonObject{ ["@graph"] = JsonLdUtils.EnsureArray(ev) }
+                    );
                 }
 
                 expandedValue = expandedValueArray;
@@ -974,13 +985,13 @@ internal class ExpandProcessor : ProcessorBase
                 // 13.13.2 - Reference the value of the @reverse entry in result using the variable reverse map.
                 if (!resultObject.ContainsKey("@reverse"))
                 {
-                    resultObject.Add(new JProperty("@reverse", new JObject()));
+                    resultObject.Add("@reverse", new JsonObject());
                 }
-                var reverseMap = resultObject["@reverse"] as JObject;
+                var reverseMap = resultObject["@reverse"] as JsonObject;
                 // 13.13.3 - If expanded value is not an array, set it to an array containing expanded value.
                 expandedValue = JsonLdUtils.EnsureArray(expandedValue);
                 // 13.13.4 - For each item in expanded value
-                foreach (JToken item in expandedValue.Children())
+                foreach (JsonNode item in expandedValue.AsArray())
                 {
                     // 13.13.4.1 - If item is a value object or list object, an invalid reverse property value has been detected and processing is aborted.
                     if (JsonLdUtils.IsValueObject(item) || JsonLdUtils.IsListObject(item))
@@ -992,7 +1003,7 @@ internal class ExpandProcessor : ProcessorBase
                     // 13.13.4.2 - If reverse map has no expanded property entry, create one and initialize its value to an empty array.
                     if (!reverseMap.ContainsKey(expandedProperty))
                     {
-                        reverseMap[expandedProperty] = new JArray();
+                        reverseMap[expandedProperty] = new JsonArray();
                     }
 
                     // 13.13.4.3 - Use add value to add item to the expanded property entry in reverse map using true for as array.
@@ -1006,23 +1017,21 @@ internal class ExpandProcessor : ProcessorBase
         }
 
         // 14 - For each key nesting-key in nests, ordered lexicographically if ordered is true: 
-        IEnumerable<JProperty> nestProperties = nests.Properties();
-        if (ordered) nestProperties = nestProperties.OrderBy(p => p.Name);
-        foreach (JProperty nestingProperty in nestProperties)
+        IEnumerable<string> nestPropertyKeys = nests.Select(kvp => kvp.Key);
+        if (ordered) nestPropertyKeys = nestPropertyKeys.OrderBy(p => p);
+        foreach (var nestingKey in nestPropertyKeys.ToList())
         {
-            var nestingKey = nestingProperty.Name;
             // 14.1 - Initialize nested values to the value of nesting-key in element, ensuring that it is an array.
-            JArray nestedValues = JsonLdUtils.EnsureArray(elementObject[nestingKey]);
-            var expandedNestedValues = new JArray();
+            JsonArray nestedValues = JsonLdUtils.EnsureArray(elementObject[nestingKey]);
+            var expandedNestedValues = new JsonArray();
             // 14.2 - For each nested value in nested values: 
-            foreach (JToken nestedValue in nestedValues)
+            foreach (JsonNode nestedValue in nestedValues)
             {
                 // 14.2.1 - If nested value is not a map, or any key within nested value expands to @value, an invalid @nest value error has been detected and processing is aborted.
                 // 14.2.2 - Recursively repeat steps 3, 8, 13 and 14 using nesting-key for active property, and nested value for element.
-                if (nestedValue is JObject nestedValueObject)
+                if (nestedValue is JsonObject nestedValueObject)
                 {
-                    if (nestedValueObject.Properties()
-                        .Any(p => _contextProcessor.ExpandIri(activeContext, p.Name, true).Equals("@value")))
+                    if (nestedValueObject.Any(p => _contextProcessor.ExpandIri(activeContext, p.Key, true).Equals("@value")))
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue,
                             $"Invalid nest value. Invalid value found when expanding the nesting property {nestingKey} of {activeProperty}. The nested value contains a property which is, or which expands to @value.");
@@ -1036,7 +1045,7 @@ internal class ExpandProcessor : ProcessorBase
                         $"Invalid nest value. Invalid value found when expanding the nesting property {nestingKey} of {activeProperty}. The nested value is not a JSON object.");
                 }
             }
-            nestingProperty.Value = expandedNestedValues;
+            nests[nestingKey] = expandedNestedValues;
         }
     }
 
@@ -1048,34 +1057,38 @@ internal class ExpandProcessor : ProcessorBase
     /// <param name="activeProperty"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    private JToken ExpandValue(JsonLdContext activeContext, string activeProperty, JToken value)
+    private JsonNode ExpandValue(JsonLdContext activeContext, string activeProperty, JsonNode value)
     {
         activeContext.TryGetTerm(activeProperty, out JsonLdTermDefinition activePropertyTermDefinition, true);
         var typeMapping = activePropertyTermDefinition?.TypeMapping;
 
         // 1 - If the active property has a type mapping in active context that is @id, and the value is a string, return a new map containing a single entry
         // where the key is @id and the value is the result IRI expanding value using true for document relative and false for vocab.
-        if (typeMapping != null && typeMapping == "@id" && value.Type == JTokenType.String)
+        if (typeMapping != null && typeMapping == "@id" && value.SafeValueKind() == JsonValueKind.String)
         {
-            return new JObject(new JProperty("@id", _contextProcessor.ExpandIri(activeContext, value.Value<string>(), documentRelative: true, vocab: false)));
+            return new JsonObject{
+                ["@id"] = _contextProcessor.ExpandIri(activeContext, value.GetValue<string>(), documentRelative: true, vocab: false),
+            };
         }
 
         // 2 - If active property has a type mapping in active context that is @vocab, and the value is a string, return a new map containing a single entry where the key is @id and the value is the result of IRI expanding value using true for document relative.
-        if (typeMapping != null && typeMapping == "@vocab" && value.Type == JTokenType.String)
+        if (typeMapping != null && typeMapping == "@vocab" && value.SafeValueKind() == JsonValueKind.String)
         {
-            return new JObject(new JProperty("@id", _contextProcessor.ExpandIri(activeContext, value.Value<string>(), vocab: true, documentRelative: true)));
+            return new JsonObject{
+                ["@id"] = _contextProcessor.ExpandIri(activeContext, value.GetValue<string>(), vocab: true, documentRelative: true),
+            };
         }
 
         // 3 - Otherwise, initialize result to a map with an @value entry whose value is set to value.
-        var result = new JObject(new JProperty("@value", value));
+        var result = new JsonObject{["@value"] = value.DeepClone()};
 
         // 4 - If active property has a type mapping in active context, other than @id, @vocab, or @none, add @type to result and set its value to the value associated with the type mapping.
         if (typeMapping != null && typeMapping != "@id" && typeMapping != "@vocab" && typeMapping != "@none")
         {
-            result.Add(new JProperty("@type", typeMapping));
+            result.Add("@type", typeMapping);
         }
         // 5 - Otherwise, if value is a string:
-        else if (value.Type == JTokenType.String)
+        else if (value.SafeValueKind() == JsonValueKind.String)
         {
             // 5.1 - Initialize language to the language mapping for active property in active context, if any, otherwise to the default language of active context.
             var language =
@@ -1089,12 +1102,12 @@ internal class ExpandProcessor : ProcessorBase
             // 5.3 - If language is not null, add @language to result with the value language.
             if (language != null)
             {
-                result.Add(new JProperty("@language", language));
+                result.Add("@language", language);
             }
             // 5.4 - If direction is not null, add @direction to result with the value direction.
             if (direction != LanguageDirection.Unspecified)
             {
-                result.Add(new JProperty("@direction", JsonLdUtils.SerializeLanguageDirection(direction)));
+                result.Add("@direction", JsonLdUtils.SerializeLanguageDirection(direction));
             }
         }
         // 6 - Return result.

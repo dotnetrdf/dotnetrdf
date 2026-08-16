@@ -27,7 +27,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using VDS.RDF.JsonLd.Syntax;
 using VDS.RDF.Parsing;
 
@@ -75,22 +76,22 @@ internal class ContextProcessor : ProcessorBase
     /// <param name="propagate">Boolean flag used to mark term definitions associated with non-propagated contexts.</param>
     /// <param name="validateScopedContext">Boolean flag used to limit recursion when validating possibly recursive scoped contexts.</param>
     /// <returns></returns>
-    public JsonLdContext ProcessContext(JsonLdContext activeContext, JToken localContext, Uri baseUrl,
+    public JsonLdContext ProcessContext(JsonLdContext activeContext, JsonNode localContext, Uri baseUrl,
         List<Uri> remoteContexts = null, bool overrideProtected = false, bool propagate = true, bool validateScopedContext = true)
     {
-        if (remoteContexts == null) remoteContexts = [];
+        if (remoteContexts == null) remoteContexts = new List<Uri>();
 
         // 1. Initialize result to the result of cloning active context
         JsonLdContext result = activeContext.Clone();
 
         // 2. If local context is an object containing the member @propagate, its value MUST be boolean true or false, set propagate to that value. 
-        if (localContext is JObject localContextObject)
+        if (localContext is JsonObject localContextObject)
         {
             if (localContextObject.ContainsKey("@propagate"))
             {
-                if (localContextObject["@propagate"].Type == JTokenType.Boolean)
+                if (JsonLdUtils.IsBooleanNode(localContextObject["@propagate"]))
                 {
-                    propagate = localContextObject["@propagate"].Value<bool>();
+                    propagate = localContextObject["@propagate"].GetValue<bool>();
                 }
                 else
                 {
@@ -109,10 +110,11 @@ internal class ContextProcessor : ProcessorBase
         localContext = JsonLdUtils.EnsureArray(localContext);
 
         // 5. For each item context in local context:
-        foreach (JToken context in (JArray)localContext)
+        foreach (JsonNode context in (JsonArray)localContext)
         {
+            var contextKind = context.SafeValueKind();
             // 5.1 if context is null:
-            if (context.Type == JTokenType.Null)
+            if (contextKind == JsonValueKind.Null)
             {
                 // 5.1.1 If override protected is false and active context contains any protected term definitions,
                 // an invalid context nullification has been detected and processing is aborted.
@@ -136,12 +138,12 @@ internal class ContextProcessor : ProcessorBase
             }
 
             // 5.2 If context is a string
-            if (context.Type == JTokenType.String)
+            if (contextKind == JsonValueKind.String)
             {
                 // 5.2.1 Initialize context to the result of resolving context against base URL.
                 // If base URL is not a valid IRI, then context MUST be a valid IRI, otherwise a loading document failed error
                 // has been detected and processing is aborted. 
-                var contextStr = (context as JValue).Value<string>();
+                var contextStr = context.GetValue<string>();
                 Uri remoteUrl = baseUrl == null ? new Uri(contextStr) : new Uri(baseUrl, contextStr);
                 if (!remoteUrl.IsAbsoluteUri)
                 {
@@ -179,20 +181,19 @@ internal class ContextProcessor : ProcessorBase
             }
 
             // 5.3 - If context is not a map, an invalid local context error has been detected and processing is aborted.
-            if (context.Type != JTokenType.Object)
+            if (contextKind != JsonValueKind.Object)
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLocalContext, "Local context must be a string, array of strings or JSON object");
             }
 
             // 5.4 - Otherwise, context is a context definition.
-            var contextDefinition = context as JObject;
+            var contextDefinition = context as JsonObject;
 
             // 5.5 - If context has an @version entry:
-            JProperty versionProperty = contextDefinition.Property("@version");
-            if (versionProperty != null)
+            if (contextDefinition.ContainsKey("@version"))
             {
                 // 5.5.1 - If the associated value is not 1.1, an invalid @version value has been detected, and processing is aborted.
-                var versionValue = versionProperty.Value.Value<string>();
+                var versionValue = contextDefinition["@version"].ToString();
                 if (!"1.1".Equals(versionValue))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidVersionValue, $"Found invalid value for @version property: {versionValue}.");
@@ -206,25 +207,25 @@ internal class ContextProcessor : ProcessorBase
             }
 
             // 5.6 - If context has an @import entry: 
-            JProperty importProperty = contextDefinition.Property("@import");
-            if (importProperty != null)
+            if (contextDefinition.ContainsKey("@import"))
             {
+                var importProperty = contextDefinition["@import"];
                 // 5.6.1 - If processing mode is json-ld-1.0, an invalid context entry error has been detected and processing is aborted.
                 CheckProcessingMode("@import", JsonLdErrorCode.InvalidContextEntry);
 
                 // 5.6.2 - Otherwise, if the value of @import is not a string, an invalid @import value error has been detected and processing is aborted.
-                if (importProperty.Value.Type != JTokenType.String)
+                if (importProperty.SafeValueKind() != JsonValueKind.String)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidImportValue,
                         "The value of an @import property must be a string");
                 }
 
                 // 5.6.3 - Initialize import to the result of resolving the value of @import against base URL.
-                var import = new Uri(baseUrl, importProperty.Value.Value<string>());
+                var import = new Uri(baseUrl, importProperty.GetValue<string>());
 
                 // Implements 5.6.4, 5.6.5, 5.6.6
                 JsonLdRemoteContext remoteContext = _contextProvider.GetRemoteContext(import);
-                if (remoteContext.Context is not JObject importContext)
+                if (remoteContext.Context is not JsonObject importContext)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext,
                         "The value of the @context of the remote document referenced by @import must be a map.");
@@ -236,26 +237,23 @@ internal class ContextProcessor : ProcessorBase
                         $"The remote context from {import} contains an @import property.");
                 }
                 // 5.6.8 - Set context to the result of merging context into import context, replacing common entries with those from context.
-                var tmp = new JObject(importContext);
-                tmp.Merge(contextDefinition);
-                contextDefinition = tmp;
+                contextDefinition = JsonLdUtils.MergeObjects(contextDefinition, importContext);
             }
 
             // 5.7 - If context has an @base key and remote contexts is empty, i.e., the currently being processed context is not a remote context
-            JProperty baseProperty = contextDefinition.Property("@base");
-            if (baseProperty != null && remoteContexts.Count == 0)
+            if (contextDefinition.ContainsKey("@base") && remoteContexts.Count == 0)
             {
                 // 5.7.1 - Initialize value to the value associated with the @base entry.
-                JToken value = baseProperty.Value;
+                JsonNode value = contextDefinition["@base"];
                 // 5.7.2 - If value is null, remove the base IRI of result.
-                if (value.Type == JTokenType.Null)
+                if (value.SafeValueKind() == JsonValueKind.Null)
                 {
                     result.RemoveBase();
                 }
                 // 5.7.3 - Otherwise, if value is an absolute IRI, the base IRI of result is set to value.
                 else if (JsonLdUtils.IsAbsoluteIri(value))
                 {
-                    result.Base = new Uri(value.Value<string>());
+                    result.Base = new Uri(value.GetValue<string>());
                 }
                 // 5.7.4 - Otherwise, if value is a relative IRI and the base IRI of result is not null, set the base IRI of result to the result of resolving
                 // value against the current base IRI of result.
@@ -263,7 +261,7 @@ internal class ContextProcessor : ProcessorBase
                 {
                     if (result.Base != null)
                     {
-                        result.Base = new Uri(result.Base, value.Value<string>());
+                        result.Base = new Uri(result.Base, value.GetValue<string>());
                     }
                     else
                     {
@@ -280,27 +278,27 @@ internal class ContextProcessor : ProcessorBase
 
 
             // 5.8 - If context has an @vocab key:
-            JProperty contextProperty = contextDefinition.Property("@vocab");
-            if (contextProperty != null)
+            if (contextDefinition.ContainsKey("@vocab"))
             {
                 // 5.8.1 - Initialize value to the value associated with the @vocab key.
-                JToken value = contextProperty.Value;
+                JsonNode value = contextDefinition["@vocab"];
+                JsonValueKind valueKind = value.SafeValueKind();
                 // 5.8.2 - If value is null, remove any vocabulary mapping from result.
-                if (value.Type == JTokenType.Null)
+                if (valueKind == JsonValueKind.Null)
                 {
                     result.Vocab = null;
                 }
                 // 5.8.3 -Otherwise, if value is an IRI or blank node identifier, the vocabulary mapping of result is set to
                 // the result of IRI expanding value using true for document relative . If it is not an IRI, or a blank node
                 // identifier, an invalid vocab mapping error has been detected and processing is aborted. 
-                else if (value.Type != JTokenType.String)
+                else if (valueKind != JsonValueKind.String)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidVocabMapping,
                         "The value of @vocab must be a string.");
                 }
                 else
                 {
-                    var str = value.Value<string>();
+                    var str = value.GetValue<string>();
                     if (JsonLdUtils.IsIri(str) || string.Empty.Equals(str) || JsonLdUtils.IsBlankNodeIdentifier(str))
                     {
                         // Expanding using result ensures that we expand relative to @base if it is specified
@@ -314,55 +312,61 @@ internal class ContextProcessor : ProcessorBase
             }
 
             // 5.9 - If context has an @language key
-            JProperty languageProperty = contextDefinition.Property("@language");
-            if (languageProperty != null)
+            if (contextDefinition.ContainsKey("@language"))
             {
                 // 5.9.1 - Initialize value to the value associated with the @language key.
-                JToken value = languageProperty.Value;
-                switch (value.Type)
+                JsonNode value = contextDefinition["@language"];
+                if (value == null)
                 {
-                    case JTokenType.Null:
-                        // 5.9.2 - If value is null, remove any default language from result.
-                        result.Language = null;
-                        break;
-                    case JTokenType.String:
-                        // 5.9.3 - Otherwise, if value is string, the default language of result is set to value.
-                        result.Language = value.Value<string>().ToLowerInvariant(); // Processors MAY normalize language tags to lower case.
-                        if (!LanguageTag.IsWellFormed(result.Language))
-                        {
-                            Warn(JsonLdErrorCode.MalformedLanguageTag,
-                                $"The value of the @language property ({result.Language}) is not a well-formed BCP-47 language tag.");
-                        }
-                        break;
-                    default:
-                        // 5.9.3 (cont) - If it is not a string, an invalid default language error has been detected and processing is aborted.
-                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidDefaultLanguage,
-                            "@language property value must be a JSON string or null.");
+                    result.Language = null;
+                }
+                else 
+                {
+                    switch (value.SafeValueKind())
+                    {
+                        case JsonValueKind.Null:
+                            // 5.9.2 - If value is null, remove any default language from result.
+                            result.Language = null;
+                            break;
+                        case JsonValueKind.String:
+                            // 5.9.3 - Otherwise, if value is string, the default language of result is set to value.
+                            result.Language = value.GetValue<string>().ToLowerInvariant(); // Processors MAY normalize language tags to lower case.
+                            if (!LanguageTag.IsWellFormed(result.Language))
+                            {
+                                Warn(JsonLdErrorCode.MalformedLanguageTag,
+                                    $"The value of the @language property ({result.Language}) is not a well-formed BCP-47 language tag.");
+                            }
+                            break;
+                        default:
+                            // 5.9.3 (cont) - If it is not a string, an invalid default language error has been detected and processing is aborted.
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidDefaultLanguage,
+                                "@language property value must be a JSON string or null.");
+                    }
                 }
             }
 
             // 5.10 - If context has an @direction entry
-            JProperty directionProperty = contextDefinition.Property("@direction");
-            if (directionProperty != null)
+            if (contextDefinition.ContainsKey("@direction"))
             {
+                JsonNode directionProperty = contextDefinition["@direction"];
                 // 5.10.1 - If processing mode is json - ld - 1.0, an invalid context entry error has been detected and processing is aborted.
                 CheckProcessingMode("@direction");
                 // 5.10.2 - Initialize value to the value associated with the @direction entry.
                 // 5.10.3 - If value is null, remove any base direction from result.
                 // 5.10.4 - Otherwise, if value is a string, the base direction of result is set to value.
                 // If it is not null, "ltr", or "rtl", an invalid base direction error has been detected and processing is aborted.
-                result.BaseDirection = JsonLdUtils.ParseLanguageDirection(directionProperty.Value);
+                result.BaseDirection = JsonLdUtils.ParseLanguageDirection(directionProperty.GetValue<string>());
             }
 
             // 5.11 - context has an @propagate entry:
-            JProperty propagateProperty = contextDefinition.Property("@propagate");
-            if (propagateProperty != null)
+            if (contextDefinition.ContainsKey("@propagate"))
             {
+                JsonNode propagateProperty = contextDefinition["@propagate"];
                 // 5.11.1 - If processing mode is json - ld - 1.0, an invalid context entry error has been detected and processing is aborted.
                 CheckProcessingMode("@propagate", JsonLdErrorCode.InvalidContextEntry);
 
                 // 5.11.2 - Otherwise, if the value of @propagate is not boolean true or false, an invalid @propagate value error has been detected and processing is aborted.
-                if (propagateProperty.Value.Type != JTokenType.Boolean)
+                if (!JsonLdUtils.IsBooleanNode(propagateProperty))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidPropagateValue,
                         "The value of @propagate must be a boolean");
@@ -376,23 +380,23 @@ internal class ContextProcessor : ProcessorBase
             // Create Term Definition algorithm, passing result for active context, context for local context, key, defined, base URL, the value of the @protected
             // entry from context, if any, for protected, override protected, and a copy of remote contexts. 
             var @protected = false;
-            JProperty protectedProperty = contextDefinition.Property("@protected");
-            if (protectedProperty != null)
+            if (contextDefinition.ContainsKey("@protected"))
             {
-                if (protectedProperty.Value.Type != JTokenType.Boolean)
+                var protectedValue = contextDefinition["@protected"];
+                if (!JsonLdUtils.IsBooleanNode(protectedValue))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidProtectedValue,
                         "The value of @protected must be a boolean");
                 }
 
-                @protected = protectedProperty.Value.Value<bool>();
+                @protected = protectedValue.GetValue<bool>();
             }
-            foreach (JProperty property in contextDefinition.Properties())
+            foreach (var property in contextDefinition)
             {
-                var key = property.Name;
+                var key = property.Key;
                 if (!JsonLdKeywords.JsonLdContextKeywords.Contains(key))
                 {
-                    CreateTermDefinition(result, contextDefinition, key, defined, baseUrl, @protected, overrideProtected, new List<Uri>(remoteContexts));
+                    CreateTermDefinition(result, contextDefinition, key, defined, baseUrl, @protected, overrideProtected, [.. remoteContexts]);
                 }
             }
 
@@ -400,10 +404,11 @@ internal class ContextProcessor : ProcessorBase
         return result;
     }
 
-    private void CreateTermDefinition(JsonLdContext activeContext, JObject localContext, string term,
-Dictionary<string, bool> defined = null,
-Uri baseUrl = null, bool @protected = false, bool overrideProtected = false,
-List<Uri> remoteContexts = null, bool validateScopedContexts = true)
+    private void CreateTermDefinition(
+        JsonLdContext activeContext, JsonObject localContext, string term,
+        Dictionary<string, bool> defined = null,
+        Uri baseUrl = null, bool @protected = false, bool overrideProtected = false,
+        List<Uri> remoteContexts = null, bool validateScopedContexts = true)
     {
         if (defined == null) defined = [];
         if (remoteContexts == null) remoteContexts = [];
@@ -432,7 +437,7 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
         defined[term] = false;
 
         // 3 - Initialize value to a copy of the value associated with the entry term in local context.
-        JToken v = localContext[term]?.DeepClone();
+        JsonNode v = localContext[term]?.DeepClone();
 
         // 4 - If term is @type, and processing mode is json-ld-1.0, a keyword redefinition error has been detected and processing is aborted.
         if (term.Equals("@type"))
@@ -468,26 +473,26 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
         var simpleTerm = false;
 
         // 7 - If value is null, convert it to a map consisting of a single entry whose key is @id and whose value is null.
-        if (v == null || v.Type == JTokenType.Null)
+        if (v == null || v.SafeValueKind() == JsonValueKind.Null)
         {
-            v = new JObject(new JProperty("@id", JValue.CreateNull()));
+            v = new JsonObject { ["@id"] = JsonValue.Create((bool?)null) };
         }
 
         // 8 - Otherwise, if value is a string, convert it to a map consisting of a single entry whose key is @id and whose value is value. Set simple term to true.
-        if (v.Type == JTokenType.String)
+        if (v.SafeValueKind() == JsonValueKind.String)
         {
-            v = new JObject(new JProperty("@id", v));
+            v = new JsonObject { ["@id"] = v };
             simpleTerm = true;
         }
 
         // 9 - Otherwise, value MUST be a map, if not, an invalid term definition error has been detected and processing is aborted. Set simple term to false.
-        if (v.Type != JTokenType.Object)
+        if (v.SafeValueKind() != JsonValueKind.Object)
         {
             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
                 "A term definition must be a string, a map or null.");
         }
 
-        var value = v as JObject;
+        var value = v as JsonObject;
 
         // 10 - Create a new term definition, definition, initializing prefix flag to false, protected to protected, and reverse property to false.
         var definition = new JsonLdTermDefinition { Prefix = false, Protected = @protected, Reverse = false };
@@ -496,22 +501,21 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
         definition.Protected = GetProtectedProperty(value, @protected);
 
         // 12 - If value contains the key @type:
-        JToken typeValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@type");
-        if (typeValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@type", out JsonNode typeValue))
         {
             // 12.1 Initialize type to the value associated with the @type key, which must be a string. Otherwise, an invalid type mapping error has been detected and processing is aborted.
-            if (typeValue.Type != JTokenType.String)
+            if (typeValue.SafeValueKind() != JsonValueKind.String)
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeMapping,
-                    $"Invalid type mapping for term {term}. The @type value must be a string, got {typeValue.Type}");
+                    $"Invalid type mapping for term {term}. The @type value must be a string, got {typeValue.SafeValueKind()}");
             }
 
             // 12.2 - Set type to the result of IRI expanding type, using local context, and defined.
-            var type = ExpandIri(activeContext, typeValue.Value<string>(), true, false, localContext, defined);
+            var type = ExpandIri(activeContext, typeValue.GetValue<string>(), true, false, localContext, defined);
             if ((type == "@json" || type == "@none") && Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeMapping,
-                    $"Invalid type mapping for term {term}. Unexpanded value was {typeValue.Value<string>()}, and the expanded type IRI is '{type}', but the JSON-LD Processing mode is set to 1.0 which does not support @none or @json types.");
+                    $"Invalid type mapping for term {term}. Unexpanded value was {typeValue.GetValue<string>()}, and the expanded type IRI is '{type}', but the JSON-LD Processing mode is set to 1.0 which does not support @none or @json types.");
             }
             if (type == "@id" || type == "@vocab" || type == "@json" || type == "@none" || JsonLdUtils.IsAbsoluteIri(type))
             {
@@ -521,42 +525,40 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
             else
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeMapping,
-                    $"Invalid type mapping for term {term}. Expected @type value to expand to @id, @vocab, @json, @none or an absolute IRI. Unexpanded value was {typeValue.Value<string>()}, expanded value was {type}.");
+                    $"Invalid type mapping for term {term}. Expected @type value to expand to @id, @vocab, @json, @none or an absolute IRI. Unexpanded value was {typeValue.GetValue<string>()}, expanded value was {type}.");
             }
         }
 
-        JToken reverseValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@reverse");
-        JToken containerValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@container");
         // 13 - If value contains the key @reverse:
-        if (reverseValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@reverse", out JsonNode reverseValue))
         {
             // 13.1 - If value contains @id or @nest, members, an invalid reverse property error has been detected and processing is aborted.
-            if (JsonLdUtils.GetPropertyValue(activeContext, value, "@id") != null ||
-                JsonLdUtils.GetPropertyValue(activeContext, value, "@nest") != null)
+            if (JsonLdUtils.HasProperty(activeContext, value, "@id") ||
+                JsonLdUtils.HasProperty(activeContext, value, "@nest"))
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReverseProperty,
                     $"Invalid reverse property. The @reverse property cannot be combined with @id or @nest property on term {term}.");
             }
 
             // 13.2 - If the value associated with the @reverse key is not a string, an invalid IRI mapping error has been detected and processing is aborted.
-            if (reverseValue.Type != JTokenType.String)
+            if (reverseValue.SafeValueKind() != JsonValueKind.String)
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping,
                     $"@reverse property value must be a string on term {term}");
             }
 
             // 13.3 - If the value associated with the @reverse entry is a string having the form of a keyword (i.e., it matches the ABNF rule "@"1*ALPHA from [RFC5234]), return; processors SHOULD generate a warning.
-            if (JsonLdUtils.MatchesKeywordProduction(reverseValue.Value<string>()))
+            if (JsonLdUtils.MatchesKeywordProduction(reverseValue.GetValue<string>()))
             {
                 Warn(JsonLdErrorCode.InvalidIriMapping,
-                    "$@reverse property value on {term} matches the JSON-LD keyword production @[a-zA-Z]+.");
+                    $"@reverse property value on {term} matches the JSON-LD keyword production @[a-zA-Z]+.");
                 return;
             }
 
             // 13.4 - Otherwise, set the IRI mapping of definition to the result of IRI expanding the value associated with the @reverse entry, using local context,
             // and defined. If the result does not have the form of an IRI or a blank node identifier, an invalid IRI mapping error has been detected and processing
             // is aborted.
-            var iriMapping = ExpandIri(activeContext, reverseValue.Value<string>(), true, false, localContext, defined);
+            var iriMapping = ExpandIri(activeContext, reverseValue.GetValue<string>(), true, false, localContext, defined);
             if (iriMapping == null || !(JsonLdUtils.IsAbsoluteIri(iriMapping) || JsonLdUtils.IsBlankNodeIdentifier(iriMapping)))
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping,
@@ -565,16 +567,17 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
             definition.IriMapping = iriMapping;
 
             // 13.5 - If value contains an @container entry, set the container mapping of definition to an array containing its value; if its value is neither @set, nor @index, nor null, an invalid reverse property error has been detected (reverse properties only support set- and index-containers) and processing is aborted.
-            if (containerValue != null)
+            if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@container", out JsonNode containerEntry))
             {
-                if (containerValue.Type == JTokenType.Null)
+                JsonValueKind containerKind = containerEntry.SafeValueKind();
+                if (containerKind == JsonValueKind.Null)
                 {
                     definition.ContainerMapping.Clear();
                     definition.ContainerMapping.Add(JsonLdContainer.Null);
                 }
-                else if (containerValue.Type == JTokenType.String)
+                else if (containerKind == JsonValueKind.String)
                 {
-                    var containerMapping = containerValue.Value<string>();
+                    var containerMapping = containerEntry.GetValue<string>();
                     if (containerMapping == "@set")
                     {
                         definition.ContainerMapping.Clear();
@@ -605,21 +608,23 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
             defined[term] = true;
         }
         // 14 - Otherwise, if value contains the key @id and its value does not equal term:
-        else if (JsonLdUtils.GetPropertyValue(activeContext, value, "@id") is { } idValue && !term.Equals(idValue.Value<string>()))
+        else if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@id", out JsonNode idValue) &&
+                    (!JsonLdUtils.IsString(idValue) || !term.Equals(idValue.GetValue<string>())))
         {
             // 14.1 - If the @id entry of value is null, the term is not used for IRI expansion, but is retained to be able to detect future redefinitions of this term.
             // 14.2 - Otherwise:
-            if (idValue.Type != JTokenType.Null)
+            JsonValueKind idValueKind = idValue.SafeValueKind();
+            if (idValueKind != JsonValueKind.Null)
             {
                 // 14.2.1 - If the value associated with the @id entry is not a string, an invalid IRI mapping error has been detected and processing is aborted.
-                if (idValue.Type != JTokenType.String)
+                if (idValueKind != JsonValueKind.String)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping,
                         $"Invalid IRI Mapping. The value of the @id property of term {term} must be a string.");
                 }
                 // 14.2.2 - If the value associated with the @id entry is not a keyword, but has the form of a keyword (i.e., it matches the ABNF rule "@"1*ALPHA from [RFC5234]), return;
                 // processors SHOULD generate a warning.
-                var idValueString = idValue.Value<string>();
+                var idValueString = idValue.GetValue<string>();
                 if (!JsonLdUtils.IsKeyword(idValueString) && JsonLdUtils.MatchesKeywordProduction(idValueString))
                 {
                     Warn(JsonLdErrorCode.InvalidIdValue,
@@ -627,7 +632,7 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
                     return;
                 }
                 // 14.2.3 - Otherwise, set the IRI mapping of definition to the result of IRI expanding the value associated with the @id entry, using local context, and defined.
-                var iriMapping = ExpandIri(activeContext, idValue.Value<string>(), vocab: true, documentRelative: false, localContext: localContext, defined: defined);
+                var iriMapping = ExpandIri(activeContext, idValue.GetValue<string>(), vocab: true, documentRelative: false, localContext: localContext, defined: defined);
 
                 // If the resulting IRI mapping is neither a keyword, nor an IRI, nor a blank node identifier, an invalid IRI mapping error has been detected and processing is aborted;
                 if (!JsonLdUtils.IsKeyword(iriMapping) && !JsonLdUtils.IsAbsoluteIri(iriMapping) && !JsonLdUtils.IsBlankNodeIdentifier(iriMapping))
@@ -680,7 +685,7 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
             var rest = term.Substring(ix + 1);
             // 15.1 - If term is a compact IRI with a prefix that is an entry in local context a dependency has been found.
             // Use this algorithm recursively passing active context, local context, the prefix as term, and defined.
-            if (localContext.Property(prefix) != null)
+            if (localContext.ContainsKey(prefix))
             {
                 CreateTermDefinition(activeContext, localContext, prefix, defined);
             }
@@ -728,7 +733,7 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
         }
 
         // 19 - if value contains the key @container
-        if (containerValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@container", out JsonNode containerValue))
         {
             // 19.1 Initialize container to the value associated with the @container entry, which MUST be either @graph, @id, @index, @language, @list, @set, @type, or an array containing exactly any one of those keywords, an array containing @graph and either @id or @index optionally including @set, or an array containing a combination of @set and any of @index, @graph, @id, @type, @language in any order . Otherwise, an invalid container mapping has been detected and processing is aborted.
             // 19.2 If the container value is @graph, @id, or @type, or is otherwise not a string, generate an invalid container mapping error and abort processing if processing mode is json - ld - 1.0.
@@ -750,8 +755,7 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
             }
         }
         // 20 - If value contains the entry @index: 
-        JToken indexValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@index");
-        if (indexValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@index", out JsonNode indexValue))
         {
             // 20.1 - If processing mode is json-ld-1.0 or container mapping does not include @index, an invalid term definition has been detected and processing is aborted.
             if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
@@ -766,12 +770,12 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
                     $"Invalid Term Definition. The definition of term '{term}' includes an @index entry, but the container mapping for the term does not include @index.");
             }
 
-            if (indexValue.Type != JTokenType.String)
+            if (indexValue.SafeValueKind() != JsonValueKind.String)
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
                     $"Invalid Term Definition. The @index property on '{term}' must expand to an IRI.");
             }
-            var index = indexValue.Value<string>();
+            var index = indexValue.GetValue<string>();
             if (!JsonLdUtils.IsAbsoluteIri(ExpandIri(activeContext, index, vocab: true)))
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
@@ -782,8 +786,7 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
         }
 
         // 21 - If value contains the entry @context: 
-        JToken contextValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@context");
-        if (contextValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@context", out JsonNode contextValue))
         {
             // 21.1 - If processingMode is json-ld-1.0, an invalid term definition has been detected and processing is aborted.
             if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
@@ -792,7 +795,7 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
                     $"Invalid Term Definition for term '{term}'. The @context property is not supported on a term definition when the processing mode is JSON-LD 1.0.");
             }
             // 21.2 - Initialize context to the value associated with the @context key, which is treated as a local context.
-            JToken context = contextValue;
+            JsonNode context = contextValue;
 
             // 21.3 - Invoke the Context Processing algorithm using the active context and context as local context. If any error is detected, an invalid scoped context error has been detected and processing is aborted.
             try
@@ -807,24 +810,25 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
 
             // 21.4 - Set the local context of definition to context, and base URL to base URL.
             definition.LocalContext = context;
+            definition.HasLocalContext = true;
             definition.BaseUrl = baseUrl;
         }
 
         // 22 - if value contains the key @language and does not contain the key @type
-        JToken languageValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@language");
-        if (languageValue != null && typeValue == null)
+        if (!JsonLdUtils.HasProperty(activeContext, value, "@type") &&
+            JsonLdUtils.TryGetPropertyValue(activeContext, value, "@language", out JsonNode languageValue))
         {
-            switch (languageValue.Type)
+            switch (languageValue.SafeValueKind())
             {
                 // 22.1 - Initialize language to the value associated with the @language entry, which MUST be either null or a string.
                 // If language is not well-formed according to section 2.2.9 of [BCP47], processors SHOULD issue a warning.
                 // Otherwise, an invalid language mapping error has been detected and processing is aborted.
                 // 22.2 - Set the language mapping of definition to language. 
-                case JTokenType.Null:
+                case JsonValueKind.Null:
                     definition.LanguageMapping = null;
                     break;
-                case JTokenType.String:
-                    definition.LanguageMapping = languageValue.Value<string>().ToLowerInvariant(); // Processors MAY normalize language tags to lower case.
+                case JsonValueKind.String:
+                    definition.LanguageMapping = languageValue.GetValue<string>().ToLowerInvariant(); // Processors MAY normalize language tags to lower case.
                     if (!LanguageTag.IsWellFormed(definition.LanguageMapping))
                     {
                         Warn(JsonLdErrorCode.MalformedLanguageTag,
@@ -838,8 +842,8 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
         }
 
         // 23 - If value contains the entry @direction and does not contain the entry @type:
-        JToken directionValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@direction");
-        if (directionValue != null && typeValue == null)
+        if (!JsonLdUtils.HasProperty(activeContext, value, "@type") &&
+            JsonLdUtils.TryGetPropertyValue(activeContext, value, "@direction", out JsonNode directionValue))
         {
             // 23.1 - Initialize direction to the value associated with the @direction entry, which MUST be either null, "ltr", or "rtl".Otherwise, an invalid base direction error has been detected and processing is aborted.
             // 23.2 - Set the direction mapping of definition to direction.
@@ -847,8 +851,7 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
         }
 
         // 24 - If value contains the key @nest:
-        JToken nestValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@nest");
-        if (nestValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@nest", out JsonNode nestValue))
         {
             // 24.1 - If processingMode is json-ld-1.0, an invalid term definition has been detected and processing is aborted.
             if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
@@ -859,12 +862,12 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
 
             // 24.2 - Initialize nest to the value associated with the @nest key, which must be a string and must not be a keyword other than @nest.
             // Otherwise, an invalid @nest value error has been detected and processing is aborted.
-            if (nestValue.Type != JTokenType.String)
+            if (nestValue.SafeValueKind() != JsonValueKind.String)
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue,
                     $"Invalid Nest Value for term '{term}'. The value of the @nest property must be a string.");
             }
-            var nest = nestValue.Value<string>();
+            var nest = nestValue.GetValue<string>();
             if (JsonLdUtils.IsKeyword(nest) && !"@nest".Equals(nest))
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue,
@@ -874,8 +877,7 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
         }
 
         // 25 - If value contains the entry @prefix:
-        JToken prefixValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@prefix");
-        if (prefixValue != null)
+        if (JsonLdUtils.TryGetPropertyValue(activeContext, value, "@prefix", out JsonNode prefixValue))
         {
             // 25.1 - If processing mode is json - ld - 1.0, or if term contains a colon(:) or slash(/), an invalid term definition has been detected and processing is aborted.
             if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
@@ -891,12 +893,12 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
             }
 
             // 25.2 - Set the prefix flag to the value associated with the @prefix entry, which MUST be a boolean. Otherwise, an invalid @prefix value error has been detected and processing is aborted.
-            if (prefixValue.Type != JTokenType.Boolean)
+            if (!JsonLdUtils.IsBooleanNode(prefixValue))
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidPrefixValue,
                     $"Invalid @prefix Value. The value of the @prefix property of the term '{term}' must be a boolean value.");
             }
-            definition.Prefix = prefixValue.Value<bool>();
+            definition.Prefix = prefixValue.GetValue<bool>();
 
             // 25.3 - If the prefix flag of definition is set to true, and its IRI mapping is a keyword, an invalid term definition has been detected and processing is aborted.
             if (definition.Prefix && JsonLdUtils.IsKeyword(definition.IriMapping))
@@ -907,7 +909,7 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
         }
 
         // 26 - If the value contains any key other than @id, @reverse, @container, @context, @nest, or @type, an invalid term definition error has been detected and processing is aborted.
-        var unrecognizedKeys = value.Properties().Select(prop => prop.Name).Where(x => !JsonLdKeywords.TermDefinitionKeys.Contains(x)).ToList();
+        var unrecognizedKeys = value.Select(prop => prop.Key).Where(x => !JsonLdKeywords.TermDefinitionKeys.Contains(x)).ToList();
         if (unrecognizedKeys.Any())
         {
             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition, $"Invalid Term Definition for term '{term}'. Term definition contains unrecognised property key(s) {string.Join(", ", unrecognizedKeys)}");
@@ -941,7 +943,7 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
     /// <param name="localContext"></param>
     /// <param name="defined"></param>
     /// <returns></returns>
-    public string ExpandIri(JsonLdContext activeContext, string value, bool vocab = false, bool documentRelative = false, JObject localContext = null, Dictionary<string, bool> defined = null)
+    public string ExpandIri(JsonLdContext activeContext, string value, bool vocab = false, bool documentRelative = false, JsonObject localContext = null, Dictionary<string, bool> defined = null)
     {
         if (defined == null) defined = [];
 
@@ -996,8 +998,9 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
             // 6.3 If local context is not null, it contains a prefix entry, and the value of the prefix entry in defined is not true,
             // invoke the Create Term Definition algorithm, passing active context, local context, prefix as term, and defined.
             // This will ensure that a term definition is created for prefix in active context during Context Processing.
-            defined.TryGetValue(prefix, out var prefixDefined);
-            if (localContext?.Property(prefix) != null && !prefixDefined)
+            if (localContext != null &&
+                localContext.TryGetPropertyValue(prefix, out var prefixValue) &&
+                (!defined.TryGetValue(prefix, out var definedValue) || !definedValue))
             {
                 CreateTermDefinition(activeContext, localContext, prefix, defined);
             }
@@ -1032,20 +1035,20 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
     }
 
 
-    private static void ValidateTypeRedefinition(JToken value)
+    private static void ValidateTypeRedefinition(JsonNode value)
     {
         // At this point, value MUST be a map with only either or both of the following entries:
         //   An entry for @container with value @set.
         //   An entry for @protected.
         // Any other value means that a keyword redefinition error has been detected and processing is aborted.
-        var isValid = value.Type == JTokenType.Object;
+        var isValid = value.SafeValueKind() == JsonValueKind.Object;
         if (isValid)
         {
             isValid = false;
-            var o = value as JObject;
-            foreach (JProperty p in o.Properties())
+            var o = value as JsonObject;
+            foreach (KeyValuePair<string, JsonNode> p in o)
             {
-                isValid = p.Name == "@container" ? "@set".Equals(p.Value.Value<string>()) : p.Name.Equals("@protected");
+                isValid = p.Key == "@container" ? "@set".Equals(p.Value.GetValue<string>()) : p.Key.Equals("@protected");
                 if (!isValid) break;
             }
         }
@@ -1057,51 +1060,51 @@ List<Uri> remoteContexts = null, bool validateScopedContexts = true)
         }
     }
 
-    private bool GetProtectedProperty(JObject map, bool defaultValue)
+    private bool GetProtectedProperty(JsonObject map, bool defaultValue)
     {
-        JProperty protectedProperty = map.Property("@protected");
-        if (protectedProperty == null) return defaultValue;
+        if (!map.ContainsKey("@protected")) return defaultValue;
         if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
         {
             throw new JsonLdProcessorException(JsonLdErrorCode.ProcessingModeConflict,
                 "Processing mode conflict. Processor options specify JSON-LD 1.0 processing mode, but encountered @protected that requires JSON-LD 1.1 processing features");
         }
 
-        if (protectedProperty.Value.Type != JTokenType.Boolean)
+        JsonNode protectedProperty = map["@protected"];
+        if (!JsonLdUtils.IsBooleanNode(protectedProperty))
         {
             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidProtectedValue,
                 "The value of @protected must be a boolean true or false.");
         }
 
-        return protectedProperty.Value.Value<bool>();
+        return protectedProperty.GetValue<bool>();
     }
 
-    private ISet<JsonLdContainer> ValidateContainerMapping(string term, JToken containerValue)
+    private ISet<JsonLdContainer> ValidateContainerMapping(string term, JsonNode containerValue)
     {
         // 19.1 Initialize container to the value associated with the @container entry, which MUST be either @graph, @id, @index, @language, @list, @set, @type,
         // or an array containing exactly any one of those keywords, an array containing @graph and either @id or @index optionally including @set,
         // or an array containing a combination of @set and any of @index, @graph, @id, @type, @language in any order.
         // Otherwise, an invalid container mapping has been detected and processing is aborted.
         var containerMapping = new HashSet<JsonLdContainer>();
-        switch (containerValue.Type)
+        switch (containerValue.SafeValueKind())
         {
-            case JTokenType.String:
-                containerMapping.Add(ParseContainerMapping(term, containerValue.Value<string>()));
+            case JsonValueKind.String:
+                containerMapping.Add(ParseContainerMapping(term, containerValue.GetValue<string>()));
                 break;
-            case JTokenType.Array when Options.ProcessingMode == JsonLdProcessingMode.JsonLd10:
+            case JsonValueKind.Array when Options.ProcessingMode == JsonLdProcessingMode.JsonLd10:
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
                     $"Invalid Container Mapping. The value of the @container property of term '{term}' is an array, but the processing mode is set to JSON-LD 1.0.");
-            case JTokenType.Array:
+            case JsonValueKind.Array:
                 {
-                    foreach (JToken entry in containerValue.Children())
+                    foreach (JsonNode entry in containerValue.AsArray())
                     {
-                        if (entry.Type != JTokenType.String)
+                        if (entry.SafeValueKind() != JsonValueKind.String)
                         {
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
                                 $"Invalid Container Mapping. The value of the @container property of term '{term}' is an array containing non-string entries.");
                         }
 
-                        containerMapping.Add(ParseContainerMapping(term, entry.Value<string>()));
+                        containerMapping.Add(ParseContainerMapping(term, entry.GetValue<string>()));
                     }
 
                     break;

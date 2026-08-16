@@ -26,7 +26,7 @@
 
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using VDS.RDF.JsonLd.Syntax;
 
 namespace VDS.RDF.JsonLd;
@@ -108,7 +108,12 @@ public class JsonLdTermDefinition
     /// <summary>
     /// Get or set the context specified for this term definition.
     /// </summary>
-    public JToken LocalContext { get; set; }
+    public JsonNode LocalContext { get; set; }
+
+    /// <summary>
+    /// Boolean flag indicating if this term definition specifies a local context.
+    /// </summary>
+    public bool HasLocalContext { get; set; }
 
     /// <summary>
     /// Get or set the nest property for this term definition.
@@ -134,6 +139,7 @@ public class JsonLdTermDefinition
             LanguageMapping = LanguageMapping,
             HasLanguageMapping = HasLanguageMapping,
             Nest = Nest,
+            HasLocalContext = HasLocalContext,
             LocalContext = LocalContext?.DeepClone(), // TODO: Check if it correct to just directly clone the local context
         };
         clone.ContainerMapping.UnionWith(ContainerMapping);

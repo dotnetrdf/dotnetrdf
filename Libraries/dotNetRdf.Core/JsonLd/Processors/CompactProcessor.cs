@@ -27,7 +27,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using VDS.RDF.JsonLd.Syntax;
 
 namespace VDS.RDF.JsonLd.Processors;
@@ -52,7 +53,7 @@ internal class CompactProcessor : ProcessorBase
     /// <param name="compactArrays"></param>
     /// <param name="ordered"></param>
     /// <returns></returns>
-    public JToken CompactElement(JsonLdContext activeContext, string activeProperty, JToken element, bool compactArrays = false, bool ordered = false)
+    public JsonNode CompactElement(JsonLdContext activeContext, string activeProperty, JsonNode element, bool compactArrays = false, bool ordered = false)
     {
         JsonLdTermDefinition activeTermDefinition = null;
         if (activeProperty != null)
@@ -64,21 +65,26 @@ internal class CompactProcessor : ProcessorBase
         JsonLdContext typeScopedContext = activeContext;
 
         // 2 - If element is a scalar, it is already in its most compact form, so simply return element.
-        if (JsonLdUtils.IsScalar(element)) return element;
+        if (JsonLdUtils.IsScalarOrNull(element)) return element;
 
         // 3 - If element is an array: 
-        if (element is JArray elementArray)
+        if (element is JsonArray elementArray)
         {
             // 3.1 - Initialize result to an empty array.
-            var arrayResult = new JArray();
+            var arrayResult = new JsonArray();
 
             // 3.2 - For each item in element: 
-            foreach (JToken item in elementArray)
+            while(elementArray.Count > 0)
             {
+                JsonNode item = elementArray[0];
+                elementArray.RemoveAt(0);
                 // 3.2.1 - Initialize compacted item to the result of using this algorithm recursively, passing active context, active property, item for element, and the compactArrays and ordered flags.
-                JToken compactedItem = CompactElement(activeContext, activeProperty, item, compactArrays, ordered);
+                JsonNode compactedItem = CompactElement(activeContext, activeProperty, item, compactArrays, ordered);
                 // 3.2.2 - If compacted item is not null, then append it to result.
-                if (compactedItem != null) arrayResult.Add(compactedItem);
+                if (compactedItem != null) 
+                {
+                    arrayResult.Add(compactedItem.DetachedClone());
+                }
             }
             // 3.3 - If result is empty or contains more than one value, or compactArrays is false, or active property is either @graph or @set, or container mapping for active property in active context includes either @list or @set, return result.
             if (arrayResult.Count != 1 || !compactArrays || "@graph".Equals(activeProperty) || "@set".Equals(activeProperty))
@@ -95,7 +101,7 @@ internal class CompactProcessor : ProcessorBase
         }
 
         // 4 - Otherwise element is a map.
-        var elementObject = element as JObject;
+        var elementObject = element as JsonObject;
 
         // 5 - If active context has a previous context, the active context is not propagated.
         // If element does not contain an @value entry, and element does not consist of a single @id entry,
@@ -113,7 +119,7 @@ internal class CompactProcessor : ProcessorBase
         }
 
         // 6 - If the term definition for active property in active context has a local context:
-        if (activeTermDefinition?.LocalContext != null)
+        if (activeTermDefinition?.HasLocalContext == true)
         {
             // 6.1 - Set active context to the result of the Context Processing algorithm, passing active context, the value of the active property's
             // local context as local context, base URL from the term definition for active property in active context, and true for override protected.
@@ -126,7 +132,7 @@ internal class CompactProcessor : ProcessorBase
         // and element as value is a scalar, or the term definition for active property has a type mapping of @json, return that result.
         if (elementObject.ContainsKey("@value") || elementObject.ContainsKey("@id"))
         {
-            JToken compactValue = CompactValue(activeContext, activeProperty, elementObject);
+            JsonNode compactValue = CompactValue(activeContext, activeProperty, elementObject);
             if (JsonLdUtils.IsScalar(compactValue) ||
                 (activeTermDefinition != null && "@json".Equals(activeTermDefinition.TypeMapping)))
             {
@@ -142,26 +148,26 @@ internal class CompactProcessor : ProcessorBase
         // 9 - Initialize inside reverse to true if active property equals @reverse, otherwise to false.
         var insideReverse = "@reverse".Equals(activeProperty);
         // 10 - Initialize result to an empty map.
-        var result = new JObject();
+        var result = new JsonObject();
         // 11 - If element has an @type entry...
         if (elementObject.ContainsKey("@type"))
         {
             // ...create a new array compacted types initialized by transforming each expanded type of that entry into its
             // compacted form by IRI compacting expanded type. 
-            var compactedTypes = new JArray();
-            JArray expandedTypes = JsonLdUtils.EnsureArray(elementObject["@type"]);
-            foreach (JToken expandedType in expandedTypes)
+            var compactedTypes = new JsonArray();
+            JsonArray expandedTypes = JsonLdUtils.EnsureArray(elementObject["@type"]);
+            foreach (JsonNode expandedType in expandedTypes)
             {
-                var compactedType = CompactIri(activeContext, expandedType.Value<string>(), vocab: true);
+                var compactedType = CompactIri(activeContext, expandedType.GetValue<string>(), vocab: true);
                 compactedTypes.Add(compactedType);
             }
             // Then, for each term in compacted types ordered lexicographically: 
-            foreach (var term in compactedTypes.Select(t => t.Value<string>()).OrderBy(x => x))
+            foreach (var term in compactedTypes.Select(t => t.GetValue<string>()).OrderBy(x => x))
             {
                 // 11.1 - If the term definition for term in type-scoped context has a local context set active context to the result of the
                 // Context Processing algorithm, passing active context and the value of term's local context in type-scoped context as
                 // local context base URL from the term definition for term in type-scoped context, and false for propagate. 
-                if (typeScopedContext.TryGetTerm(term, out JsonLdTermDefinition termDef) && termDef.LocalContext != null)
+                if (typeScopedContext.TryGetTerm(term, out JsonLdTermDefinition termDef) && termDef.HasLocalContext)
                 {
                     activeContext = _contextProcessor.ProcessContext(activeContext, termDef.LocalContext, termDef.BaseUrl,
                         propagate: false);
@@ -169,44 +175,45 @@ internal class CompactProcessor : ProcessorBase
             }
         }
         // 12 - For each key expanded property and value expanded value in element, ordered lexicographically by expanded property if ordered is true: 
-        IEnumerable<JProperty> properties = elementObject.Properties();
-        if (ordered) properties = properties.OrderBy(p => p.Name);
-        foreach (JProperty p in properties)
+        IEnumerable<KeyValuePair<string, JsonNode>> properties = elementObject;
+        if (ordered) properties = properties.OrderBy(p => p.Key);
+        foreach (KeyValuePair<string, JsonNode> p in properties)
         {
-            var expandedProperty = p.Name;
-            JToken expandedValue = p.Value;
+            var expandedProperty = p.Key;
+            JsonNode expandedValue = p.Value;
             // 12.1 - If expanded property is @id:
             if (expandedProperty.Equals("@id"))
             {
                 // 12.1.1 - If expanded value is a string, then initialize compacted value by IRI compacting expanded value with vocab set to false.
-                var compactedValue = CompactIri(activeContext, expandedValue.Value<string>(), vocab: false);
+                var compactedValue = CompactIri(activeContext, expandedValue.GetValue<string>(), vocab: false);
                 // 12.1.2 - Initialize alias by IRI compacting expanded property.
                 var alias = CompactIri(activeContext, expandedProperty, vocab: true);
                 // 12.1.3 - Add an entry alias to result whose value is set to compacted value and continue to the next expanded property.
-                result.Add(new JProperty(alias, compactedValue));
+                result.Add(alias, compactedValue);
                 continue;
             }
 
             // 12.2 - If expanded property is @type:
             if (expandedProperty.Equals("@type"))
             {
-                JToken compactedValue;
+                JsonNode compactedValue;
                 // 12.2.1 - If expanded value is a string, then initialize compacted value by IRI compacting expanded value using type-scoped context for active context.
-                if (expandedValue.Type == JTokenType.String)
+                if (expandedValue.SafeValueKind() == JsonValueKind.String)
                 {
-                    compactedValue = CompactIri(typeScopedContext, expandedValue.Value<string>(), vocab: true);
+                    compactedValue = CompactIri(typeScopedContext, expandedValue.GetValue<string>(), vocab: true);
                 }
                 else
                 {
                     // 12.2.2 - Otherwise, expanded value must be a @type array:
+                    var expandedValueArray = JsonLdUtils.EnsureArray(expandedValue);
                     // 12.2.2.1 - Initialize compacted value to an empty array.
-                    var compactedValueArray = new JArray();
+                    var compactedValueArray = new JsonArray();
                     compactedValue = compactedValueArray;
                     // 12.2.2.2 - For each item expanded type in expanded value:
-                    foreach (JToken item in expandedValue.Children())
+                    foreach (JsonNode item in expandedValueArray)
                     {
                         // 12.2.2.2.1 - Set term by IRI compacting expanded type using type-scoped context for active context.
-                        var term = CompactIri(typeScopedContext, item.Value<string>(), vocab: true);
+                        var term = CompactIri(typeScopedContext, item.GetValue<string>(), vocab: true);
                         // 12.2.2.2.2 - Append term, to compacted value.
                         compactedValueArray.Add(term);
                     }
@@ -231,27 +238,27 @@ internal class CompactProcessor : ProcessorBase
             if ("@reverse".Equals(expandedProperty))
             {
                 // 12.3.1 - Initialize compacted value to the result of using this algorithm recursively, passing active context, @reverse for active property, expanded value for element, and the compactArrays and ordered flags.
-                JToken compactedValue =
+                JsonNode compactedValue =
                     CompactElement(activeContext, "@reverse", expandedValue, compactArrays, ordered);
-                if (compactedValue is JObject compactedObject)
+                if (compactedValue is JsonObject compactedObject)
                 {
                     // 12.3.2 - For each property and value in compacted value:
-                    foreach (JProperty compactedObjectProperty in compactedObject.Properties().ToList())
+                    foreach (KeyValuePair<string, JsonNode> compactedObjectProperty in compactedObject.ToList())
                     {
                         // 12.3.1 - If the term definition for property in the active context indicates that property is a reverse property
-                        JsonLdTermDefinition td = activeContext.GetTerm(compactedObjectProperty.Name, true);
+                        JsonLdTermDefinition td = activeContext.GetTerm(compactedObjectProperty.Key, true);
                         if (td != null && td.Reverse)
                         {
                             // 12.3.2.1.1 - Initialize as array to true if the container mapping for property in the active context includes @set, otherwise the negation of compactArrays.
                             var asArray = td.ContainerMapping.Contains(JsonLdContainer.Set) || !compactArrays;
                             // 12.3.2.1.2 - Use add value to add value to the property entry in result using as array.
-                            JsonLdUtils.AddValue(result, compactedObjectProperty.Name, compactedObjectProperty.Value, asArray);
+                            JsonLdUtils.AddValue(result, compactedObjectProperty.Key, compactedObjectProperty.Value, asArray);
                             // 12.3.2.1.3 - Remove the property entry from compacted value.
-                            compactedObjectProperty.Remove();
+                            compactedObject.Remove(compactedObjectProperty.Key);
                         }
                     }
                     // 12.3.3 - If compacted value has some remaining map entries, i.e., it is not an empty map:
-                    if (compactedObject.HasValues)
+                    if (compactedObject.Count > 0)
                     {
                         var alias = CompactIri(activeContext, "@reverse", vocab: true);
                         result.Add(alias, compactedValue);
@@ -267,7 +274,7 @@ internal class CompactProcessor : ProcessorBase
                 {
                     // 12.4.1 - Initialize compacted value to the result of using this algorithm recursively, passing
                     // active context, active property, expanded value for element, and the compactArrays and ordered flags.
-                    JToken compactedValue = CompactElement(activeContext, activeProperty, expandedValue,
+                    JsonNode compactedValue = CompactElement(activeContext, activeProperty, expandedValue,
                         compactArrays,
                         ordered);
                     // 12.4.2 Add compacted value as the value of @preserve in result unless expanded value is an empty array.
@@ -292,7 +299,7 @@ internal class CompactProcessor : ProcessorBase
                 // 12.6.1 - Initialize alias by IRI compacting expanded property.
                 var alias = CompactIri(activeContext, expandedProperty, vocab: true);
                 // 12.6.2 - Add an entry alias to result whose value is set to expanded value and continue with the next expanded property.
-                result.Add(alias, expandedValue);
+                result.Add(alias, expandedValue.DetachedClone());
                 continue;
             }
             // 12.7 - If expanded value is an empty array: 
@@ -303,7 +310,7 @@ internal class CompactProcessor : ProcessorBase
                     CompactIri(activeContext, expandedProperty, expandedValue, true, insideReverse);
                 // 12.7.2 - If the term definition for item active property in the active context has a nest value entry(nest term): 
                 JsonLdTermDefinition td = activeContext.GetTerm(itemActiveProperty);
-                JObject nestResult = null;
+                JsonObject nestResult = null;
                 if (td != null && td.Nest != null)
                 {
 
@@ -317,10 +324,10 @@ internal class CompactProcessor : ProcessorBase
                     // 12.7.2.2 - If result does not have a nest term entry, initialize it to an empty map.
                     if (!result.ContainsKey("@nest"))
                     {
-                        result.Add("@nest", new JObject());
+                        result.Add("@nest", new JsonObject());
                     }
                     // 12.7.2.3 - Initialize nest result to the value of nest term in result.
-                    nestResult = result["@nest"] as JObject;
+                    nestResult = result["@nest"] as JsonObject;
                 }
                 // 12.7.3 - Otherwise, initialize nest result to result.
                 else
@@ -328,17 +335,17 @@ internal class CompactProcessor : ProcessorBase
                     nestResult = result;
                 }
                 // 12.7.4 - Use add value to add an empty array to the item active property entry in nest result using true for as array.
-                JsonLdUtils.AddValue(nestResult, itemActiveProperty, new JArray(), true);
+                JsonLdUtils.AddValue(nestResult, itemActiveProperty, new JsonArray(), true);
             }
             // 12.8 -  At this point, expanded value must be an array due to the Expansion algorithm. For each item expanded item in expanded value: 
-            foreach (JToken expandedItem in expandedValue.Children())
+            foreach (JsonNode expandedItem in expandedValue as JsonArray)
             {
                 // 12.8.1 - Initialize item active property by IRI compacting expanded property using expanded item for value and inside reverse for reverse.
                 var itemActiveProperty =
                     CompactIri(activeContext, expandedProperty, expandedItem, true, insideReverse);
                 // 12.8.2 - If the term definition for item active property in the active context has a nest value entry (nest term):
                 JsonLdTermDefinition itemActiveTermDefinition = activeContext.GetTerm(itemActiveProperty);
-                JObject nestResult = null;
+                JsonObject nestResult = null;
                 if (itemActiveTermDefinition != null && itemActiveTermDefinition.Nest != null)
                 {
                     // 12.8.2.1 - If nest term is not @nest, or a term in the active context that expands to @nest, an invalid @nest value error has been detected, and processing is aborted.
@@ -370,9 +377,9 @@ internal class CompactProcessor : ProcessorBase
                 // 12.8.6 - Initialize compacted item to the result of using this algorithm recursively, passing active context,
                 // item active property for active property, expanded item for element, along with the compactArrays and ordered flags.
                 // If expanded item is a list object or a graph object, use the value of the @list or @graph entries, respectively, for element instead of expanded item.
-                JToken elementToCompact = JsonLdUtils.IsListObject(expandedItem) ? expandedItem["@list"] :
+                JsonNode elementToCompact = JsonLdUtils.IsListObject(expandedItem) ? expandedItem["@list"] :
                     JsonLdUtils.IsGraphObject(expandedItem) ? expandedItem["@graph"] : expandedItem;
-                JToken compactedItem = CompactElement(activeContext, itemActiveProperty, elementToCompact,
+                JsonNode compactedItem = CompactElement(activeContext, itemActiveProperty, elementToCompact,
                     compactArrays, ordered);
                 // 12.8.7 - If expanded item is a list object: 
                 if (JsonLdUtils.IsListObject(expandedItem))
@@ -384,12 +391,13 @@ internal class CompactProcessor : ProcessorBase
                     {
                         // 12.8.7.2.1 - Convert compacted item to a list object by setting it to a map containing an entry where the key is
                         // the result of IRI compacting @list and the value is the original compacted item.
-                        compactedItem = new JObject(new JProperty(CompactIri(activeContext, "@list", vocab: true), compactedItem));
+                        var tmp = new JsonObject {[CompactIri(activeContext, "@list", vocab: true)] = compactedItem.DetachedClone()};
+                        compactedItem = tmp;
 
                         // 12.8.7.2.2 - If expanded item contains the entry @index - value, then add an entry to compacted item where the key is the result of IRI compacting @index and value is value.
-                        if (expandedItem is JObject expandedItemObject && expandedItemObject.ContainsKey("@index"))
+                        if (expandedItem is JsonObject expandedItemObject && expandedItemObject.ContainsKey("@index"))
                         {
-                            (compactedItem as JObject).Add(new JProperty(CompactIri(activeContext, "@index", vocab: true), expandedItemObject["@index"]));
+                            (compactedItem as JsonObject).Add(CompactIri(activeContext, "@index", vocab: true), expandedItemObject["@index"].DeepClone());
                         }
                         // 12.8.7.2.3 - Use add value to add compacted item to the item active property entry in nest result using as array.
                         JsonLdUtils.AddValue(nestResult, itemActiveProperty, compactedItem, asArray);
@@ -408,12 +416,12 @@ internal class CompactProcessor : ProcessorBase
                     if (container.Contains(JsonLdContainer.Graph) && container.Contains(JsonLdContainer.Id))
                     {
                         // 12.8.8.1.1 - Initialize map object to the value of item active property in nest result, initializing it to a new empty map, if necessary.
-                        JObject mapObject = EnsureMapEntry(nestResult, itemActiveProperty);
+                        JsonObject mapObject = EnsureMapEntry(nestResult, itemActiveProperty);
 
                         // 12.8.8.1.2 - Initialize map key by IRI compacting the value of @id in expanded item or @none if no such value exists with vocab set to false if there is an @id entry in expanded item.
                         var mapKey =
-                            (expandedItem is JObject expandedItemObject && expandedItemObject.ContainsKey("@id"))
-                                ? CompactIri(activeContext, expandedItemObject["@id"].Value<string>(),
+                            (expandedItem is JsonObject expandedItemObject && expandedItemObject.ContainsKey("@id"))
+                                ? CompactIri(activeContext, expandedItemObject["@id"].GetValue<string>(),
                                     vocab: false)
                                 : CompactIri(activeContext, "@none", vocab: true);
                         // 12.8.8.1.3 - Use add value to add compacted item to the map key entry in map object using as array.
@@ -424,11 +432,11 @@ internal class CompactProcessor : ProcessorBase
                              container.Contains(JsonLdContainer.Index))
                     {
                         // 12.8.8.2.1 - Initialize map object to the value of item active property in nest result, initializing it to a new empty map, if necessary.
-                        JObject mapObject = EnsureMapEntry(nestResult, itemActiveProperty);
+                        JsonObject mapObject = EnsureMapEntry(nestResult, itemActiveProperty);
                         // 12.8.8.2.2 - Initialize map key the value of @index in expanded item or @none, if no such value exists.
                         var mapKey =
-                            expandedItem is JObject expandedItemObject && expandedItemObject.ContainsKey("@index")
-                                ? expandedItemObject["@index"].Value<string>()
+                            expandedItem is JsonObject expandedItemObject && expandedItemObject.ContainsKey("@index")
+                                ? expandedItemObject["@index"].GetValue<string>()
                                 : "@none";
                         // 12.8.8.2.3 - Use add value to add compacted item to the map key entry in map object using as array.
                         JsonLdUtils.AddValue(mapObject, mapKey, compactedItem, asArray);
@@ -437,12 +445,11 @@ internal class CompactProcessor : ProcessorBase
                     else if (JsonLdUtils.IsSimpleGraphObject(expandedItem) && container.Contains(JsonLdContainer.Graph))
                     {
                         // 12.8.8.3.1 - If compacted item is an array with more than one value, it cannot be directly represented, as multiple objects would be interpreted as different named graphs.
-                        if ((compactedItem is JArray compactedItemArray) && compactedItemArray.Count > 1)
+                        if ((compactedItem is JsonArray compactedItemArray) && compactedItemArray.Count > 1)
                         {
                             // Set compacted item to a new map, containing the key from IRI compacting @included and the original compacted item as the value.
-                            compactedItem =
-                                new JObject(new JProperty(CompactIri(activeContext, "@included", vocab: true),
-                                    compactedItem));
+                            var tmp = new JsonObject {[CompactIri(activeContext, "@included", vocab: true)] = compactedItem.DetachedClone()};
+                            compactedItem = tmp;
                         }
 
                         // 12.8.8.3.2 - Use add value to add compacted item to the item active property entry in nest result using as array.
@@ -452,24 +459,25 @@ internal class CompactProcessor : ProcessorBase
                     else
                     {
                         // 12.8.8.4.1 - Set compacted item to a new map containing the key from IRI compacting @graph using the original compacted item as a value.
-                        compactedItem = new JObject(new JProperty(CompactIri(activeContext, "@graph", vocab: true), compactedItem));
-                        if (expandedItem is JObject expandedItemObject)
+                        var tmp = new JsonObject {[CompactIri(activeContext, "@graph", vocab: true)] = compactedItem.DetachedClone()};
+                        compactedItem = tmp;
+                        if (expandedItem is JsonObject expandedItemObject)
                         {
                             // 12.8.8.4.2 - If expanded item contains an @id entry, add an entry in compacted item using the key from IRI
                             // compacting @id using the value of IRI compacting the value of @id in expanded item using false for vocab.
                             if (expandedItemObject.ContainsKey("@id"))
                             {
-                                (compactedItem as JObject).Add(
+                                (compactedItem as JsonObject).Add(
                                     CompactIri(activeContext, "@id", vocab: true),
-                                    CompactIri(activeContext, expandedItemObject["@id"].Value<string>(),
+                                    CompactIri(activeContext, expandedItemObject["@id"].GetValue<string>(),
                                         vocab: false));
                             }
                             // 12.8.8.4.3 - If expanded item contains an @index entry, add an entry in compacted item using the key from IRI compacting @index and the value of @index in expanded item.
                             if (expandedItemObject.ContainsKey("@index"))
                             {
-                                (compactedItem as JObject).Add(
+                                (compactedItem as JsonObject).Add(
                                     CompactIri(activeContext, "@index", vocab: true),
-                                    CompactIri(activeContext, expandedItemObject["@index"].Value<string>(),
+                                    CompactIri(activeContext, expandedItemObject["@index"].GetValue<string>(),
                                         vocab: true));
                             }
                         }
@@ -486,9 +494,9 @@ internal class CompactProcessor : ProcessorBase
                     // 12.8.9.1 - Initialize map object to the value of item active property in nest result, initializing it to a new empty map, if necessary.
                     if (!nestResult.ContainsKey(itemActiveProperty))
                     {
-                        nestResult[itemActiveProperty] = new JObject();
+                        nestResult[itemActiveProperty] = new JsonObject();
                     }
-                    var mapObject = nestResult[itemActiveProperty] as JObject;
+                    var mapObject = nestResult[itemActiveProperty] as JsonObject;
 
                     // 12.8.9.2 - Initialize container key by IRI compacting either @language, @index, @id, or @type based on the contents of container.
                     string expandedKey = null;
@@ -506,14 +514,14 @@ internal class CompactProcessor : ProcessorBase
                     // 12.8.9.4 - If container includes @language and expanded item contains a @value entry, then set compacted item to the value associated with its @value entry.
                     // Set map key to the value of @language in expanded item, if any.
                     string mapKey = null;
-                    var expandedItemObject = expandedItem as JObject;
+                    var expandedItemObject = expandedItem as JsonObject;
                     if (container.Contains(JsonLdContainer.Language) && expandedItemObject != null &&
                         expandedItemObject.ContainsKey("@value"))
                     {
                         compactedItem = expandedItemObject["@value"];
                         if (expandedItemObject.ContainsKey("@language"))
                         {
-                            mapKey = expandedItemObject["@language"].Value<string>();
+                            mapKey = expandedItemObject["@language"].GetValue<string>();
                         }
                     }
                     // 12.8.9.5 - Otherwise, if container includes @index and index key is @index, set map key to the value of @index in expanded item, if any.
@@ -521,11 +529,11 @@ internal class CompactProcessor : ProcessorBase
                     {
                         if (expandedItemObject != null && expandedItemObject.ContainsKey("@index"))
                         {
-                            mapKey = expandedItemObject["@index"].Value<string>();
+                            mapKey = expandedItemObject["@index"].GetValue<string>();
                         }
                     }
                     // 12.8.9.6 - Otherwise, if container includes @index and index key is not @index: 
-                    else if (container.Contains(JsonLdContainer.Index) && compactedItem is JObject jObject)
+                    else if (container.Contains(JsonLdContainer.Index) && compactedItem is JsonObject jObject)
                     {
                         // 12.8.9.6.1 - Reinitialize container key by IRI compacting index key after first IRI expanding it.
                         var expandedIndexKey = _contextProcessor.ExpandIri(activeContext, indexKey);
@@ -533,14 +541,14 @@ internal class CompactProcessor : ProcessorBase
                         // 12.8.9.6.2 - Set map key to the first value of container key in compacted item, if any.
                         // 12.8.9.6.3 - If there are remaining values in compacted item for container key, use add value to add those remaining values to the container key in compacted item.
                         // Otherwise, remove that entry from compacted item.
-                        JArray array = JsonLdUtils.EnsureArray(compactedItem[containerKey]);
+                        JsonArray array = JsonLdUtils.EnsureArray(compactedItem[containerKey]);
 
                         jObject.Remove(containerKey);
-                        foreach (JToken item in array)
+                        foreach (JsonNode item in array)
                         {
-                            if (mapKey == null && item.Type == JTokenType.String)
+                            if (mapKey == null && item.SafeValueKind() == JsonValueKind.String)
                             {
-                                mapKey = item.Value<string>();
+                                mapKey = item.GetValue<string>();
                             }
                             else
                             {
@@ -551,10 +559,10 @@ internal class CompactProcessor : ProcessorBase
                     // 12.8.9.7 - Otherwise, if container includes @id, set map key to the value of container key in compacted item and remove container key from compacted item.
                     else if (container.Contains(JsonLdContainer.Id))
                     {
-                        if (compactedItem is JObject compactedItemObject &&
+                        if (compactedItem is JsonObject compactedItemObject &&
                             compactedItemObject.ContainsKey(containerKey))
                         {
-                            mapKey = compactedItemObject[containerKey].Value<string>();
+                            mapKey = compactedItemObject[containerKey].GetValue<string>();
                             compactedItemObject.Remove(containerKey);
                         }
                     }
@@ -564,25 +572,32 @@ internal class CompactProcessor : ProcessorBase
                         // 12.8.9.8.1 - Set map key to the first value of container key in compacted item, if any.
                         // 12.8.9.8.2 - If there are remaining values in compacted item for container key, use add value to add those remaining values to the container key in compacted item.
                         // 12.8.9.8.3 - Otherwise, remove that entry from compacted item.
-                        JArray array = compactedItem.HasValues
-                            ? JsonLdUtils.EnsureArray(compactedItem[containerKey])
-                            : [];
+                        JsonArray array = compactedItem is JsonObject  compactedObject && compactedObject.ContainsKey(containerKey)
+                            ? JsonLdUtils.EnsureArray(compactedObject[containerKey])
+                            : new JsonArray();
 
                         if (array.Count > 0)
                         {
-                            mapKey = array[0].Value<string>();
+                            mapKey = array[0].GetValue<string>();
                             array.RemoveAt(0);
-                            if (array.Count == 0) (compactedItem as JObject).Remove(containerKey);
-                            else if (array.Count == 1) compactedItem[containerKey] = array[0];
+                            if (array.Count == 0) {
+                                (compactedItem as JsonObject).Remove(containerKey);
+                            } 
+                            else if (array.Count == 1) {
+                                // If there's only one remaining value, set the container key to that value instead of an array.
+                                JsonNode remainingValue = array[0];
+                                array.Clear();
+                                compactedItem[containerKey] = remainingValue;
+                            }
                         }
                         // 12.8.9.8.4 - If compacted item contains a single entry with a key expanding to @id, set compacted item to the result of using this algorithm recursively, passing active context, item active property for active property, and a map composed of the single entry for @id from expanded item for element.
-                        if ((compactedItem is JObject compactedItemObject) && compactedItemObject.Count == 1)
+                        if ((compactedItem is JsonObject compactedItemObject) && compactedItemObject.Count == 1)
                         {
-                            if (_contextProcessor.ExpandIri(activeContext, compactedItemObject.Properties().First().Name, vocab: true)
+                            if (_contextProcessor.ExpandIri(activeContext, compactedItemObject.First().Key, vocab: true)
                                 .Equals("@id"))
                             {
                                 compactedItem = CompactElement(activeContext, itemActiveProperty,
-                                    new JObject(new JProperty("@id", expandedItemObject["@id"])));
+                                    new JsonObject{["@id"] = expandedItemObject["@id"].DeepClone() });
                             }
                         }
                     }
@@ -602,8 +617,7 @@ internal class CompactProcessor : ProcessorBase
         return result;
     }
 
-    public string CompactIri(JsonLdContext activeContext, string iri, JToken value = null,
-bool vocab = false, bool reverse = false)
+    public string CompactIri(JsonLdContext activeContext, string iri, JsonNode value = null, bool vocab = false, bool reverse = false)
     {
         // 1 - If var is null, return null.
         // KA - note local name for var is iri to avoid clash with C# keyword
@@ -611,7 +625,7 @@ bool vocab = false, bool reverse = false)
 
         // 2 - If the active context has a null inverse context, set inverse context in active context to the result of calling the Inverse Context Creation algorithm using active context.
         // Initialize inverse context to the value of inverse context in active context.
-        JObject inverseContext = activeContext.InverseContext;
+        JsonObject inverseContext = activeContext.InverseContext;
 
         // 4 - If vocab is true and var is an entry of inverse context:
         if (vocab && inverseContext.ContainsKey(iri))
@@ -633,10 +647,10 @@ bool vocab = false, bool reverse = false)
             }
 
             // 4.2 - If value is a map containing an @preserve entry, use the first element from the value of @preserve as value.
-            if ((value is JObject valueMap) && valueMap.ContainsKey("@preserve"))
+            if ((value is JsonObject valueMap) && valueMap.ContainsKey("@preserve"))
             {
                 value = valueMap["@preserve"];
-                if (value is JArray valueArray)
+                if (value is JsonArray valueArray)
                 {
                     value = valueArray[0];
                 }
@@ -648,7 +662,7 @@ bool vocab = false, bool reverse = false)
             var typeLanguage = "@language";
             var typeLanguageValue = "@null";
             // 4.5 - If value is a map containing an @index entry, and value is not a graph object then append the values @index and @index@set to containers.
-            if (value is JObject jObject && jObject.ContainsKey("@index") && !JsonLdUtils.IsGraphObject(jObject))
+            if (value is JsonObject jObject && jObject.ContainsKey("@index") && !JsonLdUtils.IsGraphObject(jObject))
             {
                 containers.Add("@index");
                 containers.Add("@index@set");
@@ -664,11 +678,11 @@ bool vocab = false, bool reverse = false)
             else if (JsonLdUtils.IsListObject(value))
             {
                 // 4.7 - Otherwise, if value is a list object, then set type/language and type/language value to the most specific values that work for all items in the list as follows: 
-                var valueObject = value as JObject;
+                var valueObject = value as JsonObject;
                 // 4.7.1 - If @index is not an entry in value, then append @list to containers.
                 if (!valueObject.ContainsKey("@index")) containers.Add("@list");
                 // 4.7.2 - Initialize list to the array associated with the @list entry in value.
-                JArray list = JsonLdUtils.EnsureArray(valueObject["@list"]);
+                JsonArray list = JsonLdUtils.EnsureArray(valueObject["@list"]);
                 // 4.7.3 - Initialize common type and common language to null.If list is empty, set common language to default language.
                 string commonType = null;
                 string commonLanguage = null;
@@ -678,9 +692,9 @@ bool vocab = false, bool reverse = false)
                 }
 
                 // 4.7.4 - For each item in list:
-                foreach (JToken item in list)
+                foreach (JsonNode item in list)
                 {
-                    var itemObject = item as JObject;
+                    var itemObject = item as JsonObject;
                     // 4.7.4.1 - Initialize item language to @none and item type to @none.
                     var itemLanguage = "@none";
                     var itemType = "@none";
@@ -692,21 +706,21 @@ bool vocab = false, bool reverse = false)
                             if (itemObject.ContainsKey("@language"))
                             {
                                 itemLanguage =
-                                    (itemObject["@language"].Value<string>() + "_" +
-                                     itemObject["@direction"].Value<string>()).ToLowerInvariant();
+                                    (itemObject["@language"].GetValue<string>() + "_" +
+                                     itemObject["@direction"].GetValue<string>()).ToLowerInvariant();
                             }
                             else
                             {
-                                itemLanguage = "_" + itemObject["@direction"].Value<string>().ToLowerInvariant();
+                                itemLanguage = "_" + itemObject["@direction"].GetValue<string>().ToLowerInvariant();
                             }
                         }
                         else if (itemObject.ContainsKey("@language"))
                         {
-                            itemLanguage = itemObject["@language"].Value<string>().ToLowerInvariant();
+                            itemLanguage = itemObject["@language"].GetValue<string>().ToLowerInvariant();
                         }
                         else if (itemObject.ContainsKey("@type"))
                         {
-                            itemType = itemObject["@type"].Value<string>();
+                            itemType = itemObject["@type"].GetValue<string>();
                         }
                         else
                         {
@@ -770,7 +784,7 @@ bool vocab = false, bool reverse = false)
             else if (JsonLdUtils.IsGraphObject(value))
             {
                 // 4.8 - Otherwise, if value is a graph object, prefer a mapping most appropriate for the particular value. 
-                var valueObject = value as JObject;
+                var valueObject = value as JsonObject;
                 // 4.8.1 - If value contains an @index entry, append the values @graph@index and @graph@index@set to containers.
                 if (valueObject != null && valueObject.ContainsKey("@index"))
                 {
@@ -817,19 +831,19 @@ bool vocab = false, bool reverse = false)
                 // 4.9.1 - If value is a value object: 
                 if (JsonLdUtils.IsValueObject(value))
                 {
-                    var valueObject = value as JObject;
+                    var valueObject = value as JsonObject;
                     // 4.9.1.1 - If value contains an @direction entry and does not contain an @index entry, then set type/language value to the concatenation of the value's @language entry (if any) and the value's @direction entry, separated by an underscore ("_"), normalized to lower case. Append @language and @language@set to containers.
                     if (valueObject.ContainsKey("@direction") && !valueObject.ContainsKey("@index"))
                     {
                         if (valueObject.ContainsKey("@language"))
                         {
                             typeLanguageValue =
-                                (valueObject["@language"].Value<string>() + "_" +
-                                 valueObject["@direction"].Value<string>()).ToLowerInvariant();
+                                (valueObject["@language"].GetValue<string>() + "_" +
+                                 valueObject["@direction"].GetValue<string>()).ToLowerInvariant();
                         }
                         else
                         {
-                            typeLanguageValue = ("_" + valueObject["direction"].Value<string>()).ToLowerInvariant();
+                            typeLanguageValue = ("_" + valueObject["direction"].GetValue<string>()).ToLowerInvariant();
                         }
 
                         containers.Add("@language");
@@ -838,14 +852,14 @@ bool vocab = false, bool reverse = false)
                     // 4.9.1.2 - Otherwise, if value contains an @language entry and does not contain an @index entry, then set type/language value to the value of @language normalized to lower case, and append @language, and @language@set to containers.
                     else if (valueObject.ContainsKey("@language") && !valueObject.ContainsKey("@index"))
                     {
-                        typeLanguageValue = valueObject["@language"].Value<string>().ToLowerInvariant();
+                        typeLanguageValue = valueObject["@language"].GetValue<string>().ToLowerInvariant();
                         containers.Add("@language");
                         containers.Add("@language@set");
                     }
                     // 4.9.1.3 - Otherwise, if value contains an @type entry, then set type/language value to its associated value and set type/language to @type.
                     else if (valueObject.ContainsKey("@type"))
                     {
-                        typeLanguageValue = valueObject["@type"].Value<string>();
+                        typeLanguageValue = valueObject["@type"].GetValue<string>();
                         typeLanguage = "@type";
                     }
 
@@ -870,14 +884,14 @@ bool vocab = false, bool reverse = false)
             if (Options.ProcessingMode != JsonLdProcessingMode.JsonLd10)
             {
                 // 4.11 - If processing mode is not json-ld-1.0 and value is not a map or does not contain an @index entry, append @index and @index@set to containers.
-                if (value == null || value.Type != JTokenType.Object || !(value as JObject).ContainsKey("@index"))
+                if (value == null || value is not JsonObject x || !x.ContainsKey("@index"))
                 {
                     containers.Add("@index");
                     containers.Add("@index@set");
                 }
 
                 // 4.12 - If processing mode is not json - ld - 1.0 and value is a map containing only an @value entry, append @language and @language@set to containers.
-                if (value is JObject valueObject &&
+                if (value is JsonObject valueObject &&
                     valueObject.Count == 1 &&
                     valueObject.ContainsKey("@value"))
                 {
@@ -897,11 +911,11 @@ bool vocab = false, bool reverse = false)
             }
 
             // 4.16 - type/language value is @id or @reverse and value is a map containing an @id entry: 
-            if ((typeLanguageValue.Equals("@id") || typeLanguageValue.Equals("@reverse")) && (value is JObject o) &&
+            if ((typeLanguageValue.Equals("@id") || typeLanguageValue.Equals("@reverse")) && (value is JsonObject o) &&
                 o.ContainsKey("@id"))
             {
                 // 4.16.1 If the result of IRI compacting the value of the @id entry in value has a term definition in the active context with an IRI mapping that equals the value of the @id entry in value, then append @vocab, @id, and @none, in that order, to preferred values.
-                var idValue = value["@id"].Value<string>();
+                var idValue = value["@id"].GetValue<string>();
                 var compactedId = CompactIri(activeContext, idValue, vocab: true);
                 if (activeContext.TryGetTerm(compactedId, out JsonLdTermDefinition td2) && td2.IriMapping.Equals(idValue))
                 {
@@ -923,7 +937,7 @@ bool vocab = false, bool reverse = false)
                 // If value is a list object with an empty array as the value of @list, set type/language to @any.
                 preferredValues.Add(typeLanguageValue);
                 preferredValues.Add("@none");
-                if (JsonLdUtils.IsListObject(value) && (value["@list"] as JArray).Count == 0)
+                if (JsonLdUtils.IsListObject(value) && (value["@list"] as JsonArray).Count == 0)
                 {
                     typeLanguage = "@any";
                 }
@@ -1035,16 +1049,14 @@ bool vocab = false, bool reverse = false)
         // 11 - Finally, return var as is.
         return iri;
     }
-
-
     
 
-    private JToken CompactValue(JsonLdContext activeContext, string activeProperty, JObject value)
+    private JsonNode CompactValue(JsonLdContext activeContext, string activeProperty, JsonObject value)
     {
         JsonLdTermDefinition activeTermDefinition = activeProperty == null ? null : activeContext.GetTerm(activeProperty);
 
         // 1 - Initialize result to a copy of value.
-        JToken result = value.DeepClone();
+        JsonNode result = value.DeepClone();
 
         // 2 - If the active context has a null inverse context, set inverse context in active context to the result of calling the
         // Inverse Context Creation algorithm using active context.
@@ -1064,11 +1076,11 @@ bool vocab = false, bool reverse = false)
 
         var activeTermDefinitionTypeMapping = activeTermDefinition?.TypeMapping ?? null;
         var valueHasType = value.ContainsKey("@type");
-        var valueType = valueHasType && value["@type"].Type == JTokenType.String ? value["@type"].Value<string>() : null;
+        var valueType = valueHasType && value["@type"].SafeValueKind() == JsonValueKind.String ? value["@type"].GetValue<string>() : null;
 
         // 6 - If value has an @id entry and has no other entries other than @index:
         if (value.ContainsKey("@id") &&
-            value.Properties().All(p => p.Name.Equals("@id") || p.Name.Equals("@index")))
+            value.All(p => p.Key.Equals("@id") || p.Key.Equals("@index")))
         {
             var typeMapping = activeTermDefinition?.TypeMapping;
             if (typeMapping != null)
@@ -1077,7 +1089,7 @@ bool vocab = false, bool reverse = false)
                 // 6.2 - Otherwise, if the type mapping of active property is set to @vocab, set result to the result of IRI compacting the value associated with the @id entry.
                 if (typeMapping.Equals("@id") || typeMapping.Equals("@vocab"))
                 {
-                    result = CompactIri(activeContext, value["@id"].Value<string>(),
+                    result = CompactIri(activeContext, value["@id"].GetValue<string>(),
                         vocab: typeMapping.Equals("@vocab"));
                 }
             }
@@ -1092,27 +1104,27 @@ bool vocab = false, bool reverse = false)
                  valueHasType && (valueType == null || valueType != activeTermDefinitionTypeMapping))
         {
             // 8.1 - Replace any value of @type in result with the result of IRI compacting the value of the @type entry.
-            if (result is JObject resultObject && resultObject.ContainsKey("@type"))
+            if (result is JsonObject resultObject && resultObject.ContainsKey("@type"))
             {
-                JToken typeValue = resultObject["@type"];
-                if (typeValue is JArray typeArray)
+                JsonNode typeValue = resultObject["@type"];
+                if (typeValue is JsonArray typeArray)
                 {
-                    var newArray = new JArray();
-                    foreach (JToken item in typeArray)
+                    var newArray = new JsonArray();
+                    foreach (JsonNode item in typeArray)
                     {
-                        newArray.Add(CompactIri(activeContext, item.Value<string>(), vocab: true));
+                        newArray.Add(CompactIri(activeContext, item.GetValue<string>(), vocab: true));
                     }
 
                     resultObject["@type"] = newArray;
                 }
                 else
                 {
-                    resultObject["@type"] = CompactIri(activeContext, typeValue.Value<string>(), vocab: true);
+                    resultObject["@type"] = CompactIri(activeContext, typeValue.GetValue<string>(), vocab: true);
                 }
             }
         }
         // 9 - Otherwise, if the value of the @value entry is not a string:
-        else if (value.ContainsKey("@value") && value["@value"].Type != JTokenType.String)
+        else if (value.ContainsKey("@value") && value["@value"].SafeValueKind() != JsonValueKind.String)
         {
             // 9.1 - If value has an @index entry, and the container mapping associated to active property includes @index, or if value has no @index entry, set result to the value associated with the @value entry.
             if ((value.ContainsKey("@index") && activeTermDefinition != null &&
@@ -1136,15 +1148,15 @@ bool vocab = false, bool reverse = false)
             }
         }
         // 11 - If result is a map, replace each key in result with the result of IRI compacting that key.
-        if (result is JObject r)
+        if (result is JsonObject r)
         {
-            foreach (JProperty p in r.Properties().ToList())
+            foreach (var p in r.ToList())
             {
-                var compactKey = CompactIri(activeContext, p.Name, vocab: true);
-                if (!compactKey.Equals(p.Name))
+                var compactKey = CompactIri(activeContext, p.Key, vocab: true);
+                if (!compactKey.Equals(p.Key))
                 {
-                    r.Remove(p.Name);
-                    r.Add(new JProperty(compactKey, p.Value));
+                    r.Remove(p.Key);
+                    r.Add(compactKey, p.Value);
                 }
             }
         }
@@ -1153,7 +1165,7 @@ bool vocab = false, bool reverse = false)
     }
 
     /// <summary>
-    /// Compare a possibly null string and a possibly null JToken for equality.
+    /// Compare a possibly null string and a possibly null JsonNode for equality.
     /// </summary>
     /// <remarks>If <paramref name="str"/> is null, return true if <paramref name="t"/> is null and false if it is not null.
     /// If <paramref name="str"/> is not null, return true if <paramref name="t"/> is a non-null token of type string and the string value of <paramref name="t"/>
@@ -1162,31 +1174,31 @@ bool vocab = false, bool reverse = false)
     /// <param name="t"></param>
     /// <param name="comparisonOptions"></param>
     /// <returns></returns>
-    private static bool SafeEquals(string str, JToken t, StringComparison comparisonOptions)
+    private static bool SafeEquals(string str, JsonNode t, StringComparison comparisonOptions)
     {
         if (str == null)
         {
-            return t == null || t.Type == JTokenType.Null;
+            return t == null || t.SafeValueKind() == JsonValueKind.Null;
         }
 
-        return t != null && t.Type == JTokenType.String && t.Value<string>().Equals(str, comparisonOptions);
+        return t != null && t.SafeValueKind() == JsonValueKind.String && t.GetValue<string>().Equals(str, comparisonOptions);
     }
 
     
 
     /// <summary>
-    /// Ensure that a JObject has an entry for a given property, initializing it to an empty map if it does not exist.
+    /// Ensure that a JsonObject has an entry for a given property, initializing it to an empty map if it does not exist.
     /// </summary>
     /// <param name="parent"></param>
     /// <param name="property"></param>
     /// <returns></returns>
-    private static JObject EnsureMapEntry(JObject parent, string property)
+    private static JsonObject EnsureMapEntry(JsonObject parent, string property)
     {
         if (!parent.ContainsKey(property))
         {
-            parent[property] = new JObject();
+            parent[property] = new JsonObject();
         }
-        return parent[property] as JObject;
+        return parent[property] as JsonObject;
     }
 
 

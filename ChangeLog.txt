@@ -5,6 +5,8 @@
 -----
 This is a major version update to the dotNetRDF library. 
 
+BREAKING: The JSON-LD processor, parser and serialization have all been re-implemented using the .NET System.Text.Json library. This has resulted in breaking changes to those parts of the API that previously exposed the underlying Newtonsoft.Json library - in particular the API calls that allow an initial context to be set.
+
 BREAKING: In line with our deprecation policy, all APIS previously flagged as Obsolete with an error have been removed, an APIS flagged as Obsolete with a warning in 3.x will now result in a compile-time error. All of the obsolete APIs suggest their replacement.
 NEW: Introduced `VDS.RDF.Utils.RdfGraphContent` - an `HttpContent` implementation for writing the content of a `Graph` to the body of an HTTP request.
 ENHANCEMENT: Removed dependency on AngleSharp that was left in one small corner of the codebase. Thanks to @langsamu for the report and fix.

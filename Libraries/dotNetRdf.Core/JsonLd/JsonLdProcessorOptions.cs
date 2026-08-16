@@ -24,8 +24,8 @@
 // </copyright>
 */
 
-using Newtonsoft.Json.Linq;
 using System;
+using System.Text.Json.Nodes;
 using VDS.RDF.JsonLd.Syntax;
 
 namespace VDS.RDF.JsonLd;
@@ -69,7 +69,7 @@ public class JsonLdProcessorOptions
     /// <summary>
     /// A context that is used to initialize the active context when expanding a document.
     /// </summary>
-    public JToken ExpandContext { get; set; }
+    public JsonNode ExpandContext { get; set; }
 
     /// <summary>
     /// Specifies whether HTML document processing should target all of the JSON-LD script elements in the document or not.

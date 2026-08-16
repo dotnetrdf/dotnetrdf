@@ -24,7 +24,7 @@
 // </copyright>
 */
 
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using VDS.RDF.JsonLd.Processors;
 
 namespace VDS.RDF.JsonLd;
@@ -40,12 +40,12 @@ public interface INodeMapGenerator
     /// <param name="element">The element to be processed.</param>
     /// <param name="identifierGenerator">The identifier generator instance to use when creating new blank node identifiers. Defaults to a new instance of <see cref="BlankNodeGenerator"/>.</param>
     /// <returns>The generated node map dictionary as a JObject instance.</returns>
-    JObject GenerateNodeMap(JToken element, IBlankNodeGenerator identifierGenerator = null);
+    JsonObject GenerateNodeMap(JsonNode element, IBlankNodeGenerator identifierGenerator = null);
 
     /// <summary>
     /// Creates a new node map object by merging the graph-level node maps contained in the input graph map object.
     /// </summary>
     /// <param name="graphMap">The input graph map to be merged.</param>
     /// <returns>The merged node map as a new object (the original node map is not modified).</returns>
-    JObject GenerateMergedNodeMap(JObject graphMap);
+    JsonObject GenerateMergedNodeMap(JsonObject graphMap);
 }

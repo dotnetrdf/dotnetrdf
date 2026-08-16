@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Nodes;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
@@ -43,15 +43,15 @@ public class JsonLdParserTests : IDisposable
                 .WithHeader("Content-Type", "application/ld+json")
                 .WithBody($$"""
                     {
-                      '@context': { 
-                        'name': 'http://xmlns.com/foaf/0.1/name',
-                        'born': { 
-                          '@id': 'http://schema.org/birthDate',
-                          '@type': 'http://www.w3.org/2001/XMLSchema#date'
+                      "@context": {
+                        "name": "http://xmlns.com/foaf/0.1/name",
+                        "born": { 
+                          "@id": "http://schema.org/birthDate",
+                          "@type": "http://www.w3.org/2001/XMLSchema#date"
                         },
-                        'spouse': {
-                          '@id': 'http://schema.org/spouse',
-                          '@type': '@id'
+                        "spouse": {
+                          "@id": "http://schema.org/spouse",
+                          "@type": "@id"
                         }
                       }
                     }
@@ -140,7 +140,8 @@ public class JsonLdParserTests : IDisposable
         original.LoadFromString($@"<http://example.com/1> <http://example.com/1> ""{dateTimeValue}""^^<{datatype}>.");
 
         using var target = new TripleStore();
-        target.LoadFromString(StringWriter.Write(original, new JsonLdWriter()), new JsonLdParser());
+        var originalJsonLd = StringWriter.Write(original, new JsonLdWriter());
+        target.LoadFromString(originalJsonLd, new JsonLdParser());
 
         Assert.True(original.Graphs.Single().Difference(target.Graphs.Single()).AreEqual);
     }
@@ -199,16 +200,16 @@ public class JsonLdParserTests : IDisposable
             .RespondWith(Response.Create()
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/ld+json")
-                .WithBody("{'@context': { 'foo': 'http://example.org/foo'} }"));
+                .WithBody("{\"@context\": { \"foo\": \"http://example.org/foo\"} }"));
         var contextPath = _server.Urls[0] + "/context.jsonld";
         var jsonLd = @"
 {
-  '@context': [
-    { '@base': 'http://example.com/' },
-    '" + contextPath + @"'
+  ""@context"": [
+    { ""@base"": ""http://example.com/"" },
+    """ + contextPath + @"""
   ],
-  '@id': 'foo',
-  'rdf:type': 'foo:Item'
+  ""@id"": ""foo"",
+  ""rdf:type"": ""foo:Item""
 }";
         var jsonLdParser = new JsonLdParser();
         ITripleStore tStore = new TripleStore();
@@ -229,10 +230,10 @@ public class JsonLdParserTests : IDisposable
     {
         var jsonLd = @"
 {
-    '@id': 'urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6',
-    'http://example.org/p': {
-        '@value': 'o',
-        '@type': 'urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6'
+    ""@id"": ""urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6"",
+    ""http://example.org/p"": {
+        ""@value"": ""o"",
+        ""@type"": ""urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6""
     }
 }";
         var jsonLdParser = new JsonLdParser();
@@ -254,18 +255,18 @@ public class JsonLdParserTests : IDisposable
     public void ItShouldRaiseAWarningIfAnIdCannotBeResolveToAnIri()
     {
         var jsonLd = @"{
-              '@graph': [
+              ""@graph"": [
             {
-                '@id': 'Row1',
-                '@type': 'MelRow',
-                'rdfs:label': 'An empty MEL Row'
+                ""@id"": ""Row1"",
+                ""@type"": ""MelRow"",
+                ""rdfs:label"": ""An empty MEL Row""
             }
             ],
-            '@context': {
-                'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
-                '@vocab': 'http://example.com/ontology/mel#',
-                'sor': 'http://example.com/ontology/sor#',
-                '@version': '1.1'
+            ""@context"": {
+                ""rdfs"": ""http://www.w3.org/2000/01/rdf-schema#"",
+                ""@vocab"": ""http://example.com/ontology/mel#"",
+                ""sor"": ""http://example.com/ontology/sor#"",
+                ""@version"": ""1.1""
             }
         }";
         var warnings = new List<string>();
@@ -305,12 +306,12 @@ public class JsonLdParserTests : IDisposable
   ""@id"": ""http://localhost:8080/outline/http%3A%2F%2Flocalhost%3A8080%2Fknowledge-graph%2Fengine_01""
 }";
 
-        var input = JToken.Parse(inputJson);
-        var frame = JToken.Parse(frameJson);
-        JObject frameResult = JsonLdProcessor.Frame(input, frame, new JsonLdProcessorOptions());
+        var input = JsonNode.Parse(inputJson);
+        var frame = JsonNode.Parse(frameJson);
+        JsonObject frameResult = JsonLdProcessor.Frame(input, frame, new JsonLdProcessorOptions());
         frameResult["@id"]?.ToString().Should()
             .Be("http://localhost:8080/outline/http%3A%2F%2Flocalhost%3A8080%2Fknowledge-graph%2Fengine_01");
-        frameResult["@type"]?.Children().Count().Should().Be(2);
+        frameResult["@type"]?.AsArray().Count.Should().Be(2);
         frameResult["ex:id"]?.ToString().Should().Be("engine_01");
         _output.WriteLine(frameResult.ToString());
     }
