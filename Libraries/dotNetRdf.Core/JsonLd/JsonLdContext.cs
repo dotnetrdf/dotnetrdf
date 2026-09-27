@@ -24,9 +24,9 @@
 // </copyright>
 */
 
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Nodes;
 using System.Linq;
 using VDS.RDF.JsonLd.Processors;
 using VDS.RDF.JsonLd.Syntax;
@@ -43,7 +43,7 @@ public class JsonLdContext
     /// </summary>
     private readonly Dictionary<string, JsonLdTermDefinition> _termDefinitions;
 
-    private JObject _inverseContext;
+    private JsonObject _inverseContext;
 
     /// <summary>
     /// Create a new empty context.
@@ -126,7 +126,7 @@ public class JsonLdContext
     /// <summary>
     /// Get the inverse context for this context.
     /// </summary>
-    public JObject InverseContext => _inverseContext ??= CreateInverseContext();
+    public JsonObject InverseContext => _inverseContext ??= CreateInverseContext();
 
     /// <summary>
     /// Remove the base IRI from this context.
@@ -256,7 +256,7 @@ public class JsonLdContext
         // 1 - If the active context has a null inverse context, set inverse context in active context to the result of calling the Inverse Context Creation algorithm using active context.
         // 2 - Initialize inverse context to the value of inverse context in active context.
         // 3 - Initialize container map to the value associated with iri in the inverse context.
-        var containerMap = InverseContext[iri] as JObject;
+        var containerMap = InverseContext[iri] as JsonObject;
 
         // 4 - For each item container in containers:
         foreach (var container in containers)
@@ -265,10 +265,10 @@ public class JsonLdContext
             if (!containerMap.ContainsKey(container)) continue;
 
             // 4.2 - Initialize type/language map to the value associated with the container entry in container map.
-            JToken typeLanguageMap = containerMap[container];
+            JsonNode typeLanguageMap = containerMap[container];
 
             // 4.3 - Initialize value map to the value associated with type/language entry in type/language map.
-            var valueMap = typeLanguageMap[typeLanguage] as JObject;
+            var valueMap = typeLanguageMap[typeLanguage] as JsonObject;
 
             // 4.4 - For each item in preferred values:
             foreach (var item in preferredValues)
@@ -276,17 +276,17 @@ public class JsonLdContext
                 // 4.4.1 - If item is not an entry of value map, then there is no term with a matching type mapping or language mapping, so continue to the next item.
                 if (!valueMap.ContainsKey(item)) continue;
                 // 4.4.2 - Otherwise, a matching term has been found, return the value associated with the item member in value map.
-                return valueMap[item].Value<string>();
+                return valueMap[item].GetValue<string>();
             }
         }
         // 5 - No matching term has been found. Return null.
         return null;
     }
 
-    private JObject CreateInverseContext()
+    private JsonObject CreateInverseContext()
     {
         // 1. Initialize result to an empty map.
-        var result = new JObject();
+        var result = new JsonObject();
 
         // 2. Initialize default language to @none. If the active context has a default language, set default language to the default language from the active context normalized to lower case.
         var defaultLanguage = "@none";
@@ -312,39 +312,41 @@ public class JsonLdContext
             var iri = termDefinition.IriMapping;
 
             // 3.4 - If var is not an entry of result, add an entry where the key is var and the value is an empty map to result.
-            if (result.Property(iri) == null)
+            if (!result.ContainsKey(iri))
             {
-                result.Add(iri, new JObject());
+                result.Add(iri, new JsonObject());
             }
 
             // 3.5 - Reference the value associated with the iri member in result using the variable container map.
-            var containerMap = result[iri] as JObject;
+            var containerMap = result[iri] as JsonObject;
 
             // 3.6 - If container map has no container entry, create one and set its value to a new map with three entries.
             // The first entry is @language and its value is a new empty map, the second entry is @type and its value is a new empty map,
             // and the third entry is @any and its value is a new map with the entry @none set to the term being processed.
-            if (containerMap.Property(container) == null)
+            if (!containerMap.ContainsKey(container))
             {
-                containerMap.Add(container, new JObject(
-                    new JProperty("@language", new JObject()),
-                    new JProperty("@type", new JObject()),
-                    new JProperty("@any", new JObject(new JProperty("@none", term)))));
+                containerMap.Add(container, new JsonObject
+                {
+                    { "@language", new JsonObject() },
+                    { "@type", new JsonObject() },
+                    { "@any", new JsonObject{["@none"] = term} },
+                });
             }
 
             // 3.7 - Reference the value associated with the container member in container map using the variable type/language map.
-            var typeLanguageMap = containerMap[container] as JObject;
+            var typeLanguageMap = containerMap[container] as JsonObject;
 
             // 3.8 - Reference the value associated with the @type member in type/language map using the variable type map.
-            var typeMap = typeLanguageMap["@type"] as JObject;
+            var typeMap = typeLanguageMap["@type"] as JsonObject;
 
             // 3.9 - Reference the value associated with the @language entry in type/language map using the variable language map.
-            var languageMap = typeLanguageMap["@language"] as JObject;
+            var languageMap = typeLanguageMap["@language"] as JsonObject;
 
             // 3.10 - If the term definition indicates that the term represents a reverse property:
             if (termDefinition.Reverse)
             {
                 // 3.10.1 - If type map does not have an @reverse entry, create one and set its value to the term being processed.
-                if (typeMap.Property("@reverse") == null)
+                if (!typeMap.ContainsKey("@reverse"))
                 {
                     typeMap.Add("@reverse", term);
                 }
@@ -355,19 +357,19 @@ public class JsonLdContext
                 // 3.11.1 - If language map does not have an @any entry, create one and set its value to the term being processed.
                 if (!languageMap.ContainsKey("@any"))
                 {
-                    languageMap.Add(new JProperty("@any", term));
+                    languageMap.Add("@any", term);
                 }
                 // 3.11.2 - If type map does not have an @any entry, create one and set its value to the term being processed.
                 if (!typeMap.ContainsKey("@any"))
                 {
-                    typeMap.Add(new JProperty("@any", term));
+                    typeMap.Add("@any", term);
                 }
             }
             // 3.12 - Otherwise, if term definition has a type mapping:
             else if (termDefinition.TypeMapping != null)
             {
                 // 3.12.1 - If type map does not have an entry corresponding to the type mapping in term definition, create one and set its value to the term being processed.
-                if (typeMap.Property(termDefinition.TypeMapping) == null)
+                if (!typeMap.ContainsKey(termDefinition.TypeMapping))
                 {
                     typeMap.Add(termDefinition.TypeMapping, term);
                 }
@@ -397,7 +399,7 @@ public class JsonLdContext
 
                 if (!languageMap.ContainsKey(langDir))
                 {
-                    languageMap.Add(new JProperty(langDir, term));
+                    languageMap.Add(langDir, term);
                 }
             }
             // 3.14 - Otherwise, if term definition has a language mapping (might be null):
@@ -406,7 +408,7 @@ public class JsonLdContext
                 // 3.14.1 - If the language mapping equals null, set language to @null; otherwise set it to the language code in language mapping,  normalized to lower case.
                 var language = termDefinition.LanguageMapping?.ToLowerInvariant() ?? "@null";
                 // 3.14.2 - If language map does not have a language member, create one and set its value to the term being processed.
-                if (languageMap.Property(language) == null)
+                if (!languageMap.ContainsKey(language))
                 {
                     languageMap.Add(language, term);
                 }
@@ -420,7 +422,7 @@ public class JsonLdContext
                     : "_" + JsonLdUtils.SerializeLanguageDirection(termDefinition.DirectionMapping.Value);
                 if (!languageMap.ContainsKey(direction))
                 {
-                    languageMap.Add(new JProperty(direction, term));
+                    languageMap.Add(direction, term);
                 }
             }
             // 3.16 - Otherwise, if active context has a default base direction: 
@@ -432,17 +434,17 @@ public class JsonLdContext
                 // 3.16.2 - If language map does not have a lang dir entry, create one and set its value to the term being processed.
                 if (!languageMap.ContainsKey(langDir))
                 {
-                    languageMap.Add(new JProperty(langDir, term));
+                    languageMap.Add(langDir, term);
                 }
                 // 3.16.3 - If language map does not have an @none entry, create one and set its value to the term being processed.
                 if (!languageMap.ContainsKey("@none"))
                 {
-                    languageMap.Add(new JProperty("@none", term));
+                    languageMap.Add("@none", term);
                 }
                 // 3.16.4 - If type map does not have an @none entry, create one and set its value to the term being processed.
                 if (!typeMap.ContainsKey("@none"))
                 {
-                    typeMap.Add(new JProperty("@none", term));
+                    typeMap.Add("@none", term);
                 }
             }
             // 3.17 - Otherwise
@@ -451,19 +453,19 @@ public class JsonLdContext
                 // 3.17.1 - If language map does not have a default language entry (after being normalized to lower case), create one and set its value to the term being processed.
                 if (!languageMap.ContainsKey(defaultLanguage.ToLowerInvariant()))
                 {
-                    languageMap.Add(new JProperty(defaultLanguage.ToLowerInvariant(), term));
+                    languageMap.Add(defaultLanguage.ToLowerInvariant(), term);
                 }
 
                 // 3.17.2 - If language map does not have an @none member, create one and set its value to the term being processed.
                 if (!languageMap.ContainsKey("@none"))
                 {
-                    languageMap.Add(new JProperty("@none", term));
+                    languageMap.Add("@none", term);
                 }
 
                 // 3.17.3 - If type map does not have an @none member, create one and set its value to the term being processed.
                 if (!typeMap.ContainsKey("@none"))
                 {
-                    typeMap.Add(new JProperty("@none", term));
+                    typeMap.Add("@none", term);
                 }
             }
         }

@@ -45,12 +45,12 @@
     <PackageReference Include="StyleCop.Analyzers">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="AngleSharp" />
     <PackageReference Include="System.ComponentModel.TypeConverter" />
     <PackageReference Include="System.Configuration.ConfigurationManager" />
     <PackageReference Include="System.Globalization.Extensions" />
     <PackageReference Include="System.Net.Http" />
     <PackageReference Include="System.Reflection.TypeExtensions" />
+    <PackageReference Include="System.Text.Json" />
     <PackageReference Include="System.Threading.Thread" />
     <PackageReference Include="System.Collections.Specialized" />
     <PackageReference Include="Microsoft.Extensions.Configuration" />

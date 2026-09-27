@@ -26,7 +26,8 @@
 
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using VDS.RDF.JsonLd.Syntax;
 
 namespace VDS.RDF.JsonLd;
@@ -58,8 +59,8 @@ public class RemoteContextProvider: IRemoteContextProvider
             RemoteDocument remoteDoc = LoadJson(reference,
                 new JsonLdLoaderOptions
                     { Profile = JsonLdVocabulary.Context, RequestProfile = JsonLdVocabulary.Context }, _options);
-            JToken jsonRepresentation = GetJsonRepresentation(remoteDoc);
-            if (jsonRepresentation is not JObject remoteJsonObject)
+            JsonNode jsonRepresentation = GetJsonRepresentation(remoteDoc);
+            if (jsonRepresentation is not JsonObject remoteJsonObject)
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext,
                     $"Remote document at {reference} could not be parsed as a JSON object.");
@@ -95,18 +96,18 @@ public class RemoteContextProvider: IRemoteContextProvider
             : DefaultDocumentLoader.LoadJson(remoteRef, loaderOptions);
     }
 
-    private static JToken GetJsonRepresentation(RemoteDocument remoteDoc)
+    private static JsonNode GetJsonRepresentation(RemoteDocument remoteDoc)
     {
         switch (remoteDoc.Document)
         {
-            case JToken representation:
+            case JsonNode representation:
                 return representation;
             case string docStr:
             {
                 try
                 {
 
-                    return JToken.Parse(docStr);
+                    return JsonNode.Parse(docStr);
                 }
                 catch (Exception ex)
                 {

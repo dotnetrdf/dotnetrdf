@@ -24,8 +24,10 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace VDS.RDF.JsonLd.Processors;
 
@@ -41,23 +43,23 @@ public class NodeMapGenerator : INodeMapGenerator
     /// </summary>
     /// <param name="element">The element to be processed.</param>
     /// <param name="identifierGenerator">The identifier generator instance to use when creating new blank node identifiers. Defaults to a new instance of <see cref="BlankNodeGenerator"/>.</param>
-    /// <returns>The generated node map dictionary as a JObject instance.</returns>
-    public JObject GenerateNodeMap(JToken element, IBlankNodeGenerator identifierGenerator = null)
+    /// <returns>The generated node map dictionary as a JsonObject instance.</returns>
+    public JsonObject GenerateNodeMap(JsonNode element, IBlankNodeGenerator identifierGenerator = null)
     {
         _blankNodeGenerator = identifierGenerator ?? new BlankNodeGenerator();
-        var nodeMap = new JObject(new JProperty("@default", new JObject()));
+        var nodeMap = new JsonObject([new KeyValuePair<string, JsonNode>("@default", new JsonObject())]);
         GenerateNodeMapAlgorithm(element, nodeMap);
         return nodeMap;
     }
 
-    private void GenerateNodeMapAlgorithm(JToken element, JObject nodeMap,
-        string activeGraph = "@default", JToken activeSubject = null,
-        string activeProperty = null, JObject list = null)
+    private void GenerateNodeMapAlgorithm(JsonNode element, JsonObject nodeMap,
+        string activeGraph = "@default", JsonNode activeSubject = null,
+        string activeProperty = null, JsonObject list = null)
     {
         // 1 - If element is an array, process each item in element as follows and then return:
-        if (element is JArray elementArray)
+        if (element is JsonArray elementArray)
         {
-            foreach (JToken item in elementArray)
+            foreach (JsonNode item in elementArray)
             {
                 // 1.1 - Run this algorithm recursively by passing item for element, node map, active graph, active subject, active property, and list.
                 GenerateNodeMapAlgorithm(item, nodeMap, activeGraph, activeSubject, activeProperty, list);
@@ -68,32 +70,32 @@ public class NodeMapGenerator : INodeMapGenerator
         // Reference the map which is the value of the active graph entry of node map using the variable graph.
         // If the active subject is null, set node to null otherwise reference the active subject entry of graph
         // using the variable subject node.
-        var elementObject = element as JObject;
-        var graph = nodeMap[activeGraph] as JObject;
-        JObject node = null, subjectNode = null;
-        if (activeSubject != null && activeSubject is JValue)
+        var elementObject = element as JsonObject;
+        var graph = nodeMap[activeGraph] as JsonObject;
+        JsonObject node = null, subjectNode = null;
+        if (activeSubject != null && activeSubject.SafeValueKind() == JsonValueKind.String)
         {
-            subjectNode = node = graph[activeSubject.Value<string>()] as JObject;
+            subjectNode = node = graph[activeSubject.GetValue<string>()] as JsonObject;
         }
 
         // 3 - For each item in the @type entry of element, if any, or for the value of @type, if the value of @type exists and is not an array: 
         if (elementObject.ContainsKey("@type"))
         {
             // 3.1 - If item is a blank node identifier, replace it with a newly generated blank node identifier passing item for identifier.
-            if (elementObject["@type"] is JArray typeArray)
+            if (elementObject["@type"] is JsonArray typeArray)
             {
                 for (var ix = 0; ix < typeArray.Count; ix++)
                 {
-                    var typeId = typeArray[ix].Value<string>();
+                    var typeId = typeArray[ix].GetValue<string>();
                     if (JsonLdUtils.IsBlankNodeIdentifier(typeId))
                     {
                         typeArray[ix] = _blankNodeGenerator.GenerateBlankNodeIdentifier(typeId);
                     }
                 }
             }
-            else if (elementObject["@type"] is JValue)
+            else if (elementObject["@type"].SafeValueKind() == JsonValueKind.String)
             {
-                var typeId = elementObject["@type"].Value<string>();
+                var typeId = elementObject["@type"].GetValue<string>();
                 if (JsonLdUtils.IsBlankNodeIdentifier(typeId))
                 {
                     elementObject["@type"] = _blankNodeGenerator.GenerateBlankNodeIdentifier(typeId);
@@ -111,27 +113,30 @@ public class NodeMapGenerator : INodeMapGenerator
                 // create one and initialize its value to an array containing element.
                 if (!subjectNode.ContainsKey(activeProperty))
                 {
-                    subjectNode[activeProperty] = new JArray(element);
+                    subjectNode[activeProperty] = new JsonArray(element.DeepClone());
                 }
                 // 4.1.2 - Otherwise, compare element against every item in the array associated with the active property member of node. If there is no item equivalent to element, append element to the array. Two dictionaries are considered equal if they have equivalent key-value pairs.
-                var existingItems = node[activeProperty] as JArray;
-                if (!existingItems.Any(x => JToken.DeepEquals(x, element)))
+                var existingItems = node[activeProperty] as JsonArray;
+                if (!existingItems.Any(x => JsonNode.DeepEquals(x, element)))
                 {
-                    existingItems.Add(element);
+                    existingItems.Add(element.DeepClone());
                 }
             }
             else
             {
                 // 4.2 - Otherwise, append element to the @list member of list.
-                var listArray = list["@list"] as JArray;
-                listArray.Add(element);
+                var listArray = list["@list"] as JsonArray;
+                listArray.Add(element.DeepClone());
             }
         }
         // 5 - Otherwise, if element has an @list member, perform the following steps:
         else if (elementObject.ContainsKey("@list"))
         {
             // 5.1 - Initialize a new map result consisting of a single entry @list whose value is initialized to an empty array.
-            var result = new JObject(new JProperty("@list", new JArray()));
+            var result = new JsonObject
+            {
+                ["@list"] = new JsonArray(),
+            };
 
             // 5.2 - Recursively call this algorithm passing the value of element's @list entry for element,
             // node map, active graph, active subject, active property, and result for list.
@@ -140,12 +145,12 @@ public class NodeMapGenerator : INodeMapGenerator
             // 5.3 - If list is null, append result to the value of the active property entry of subject node.
             if (list == null)
             {
-                (subjectNode[activeProperty] as JArray).Add(result);
+                (subjectNode[activeProperty] as JsonArray).Add(result);
             }
             else
             {
                 // 5.4 - Otherwise, append result to the @list entry of list.
-                (list["@list"] as JArray).Add(result);
+                (list["@list"] as JsonArray).Add(result);
             }
         }
         // 6 - Otherwise element is a node object, perform the following steps:
@@ -155,7 +160,7 @@ public class NodeMapGenerator : INodeMapGenerator
             // 6.1 - If element has an @id member, set id to its value and remove the member from element. If id is a blank node identifier, replace it with a newly generated blank node identifier passing id for identifier.
             if (elementObject.ContainsKey("@id"))
             {
-                id = elementObject["@id"]?.Value<string>();
+                id = elementObject["@id"]?.GetValue<string>();
                 elementObject.Remove("@id");
                 if (id == null) return; // Required to pass W3C test e122
                 if (JsonLdUtils.IsBlankNodeIdentifier(id))
@@ -171,46 +176,46 @@ public class NodeMapGenerator : INodeMapGenerator
             // 6.3 - If graph does not contain a member id, create one and initialize its value to a dictionary consisting of a single member @id whose value is id.
             if (!graph.ContainsKey(id))
             {
-                graph[id] = new JObject(new JProperty("@id", id));
+                graph[id] = new JsonObject{["@id"] = id};
             }
             // 6.4 - Reference the value of the id member of graph using the variable node.
-            node = graph[id] as JObject;
+            node = graph[id] as JsonObject;
             // 6.5 - If active subject is a dictionary, a reverse property relationship is being processed. Perform the following steps:
-            if (activeSubject is JObject)
+            if (activeSubject is JsonObject)
             {
                 // 6.5.1 - If node does not have an active property member, create one and initialize its value to an array containing active subject.
                 if (!node.ContainsKey(activeProperty))
                 {
-                    node[activeProperty] = new JArray(activeSubject);
+                    node[activeProperty] = new JsonArray(activeSubject.DeepClone());
                 }
                 // 6.5.2 - Otherwise, compare active subject against every item in the array associated with the active property member of node.
                 // If there is no item equivalent to active subject, append active subject to the array.
                 // Two dictionaries are considered equal if they have equivalent key-value pairs.
                 else
                 {
-                    AppendUniqueElement(activeSubject, node[activeProperty] as JArray);
+                    AppendUniqueElement(activeSubject, node[activeProperty] as JsonArray);
                 }
             }
             // 6.6 - Otherwise, if active property is not null, perform the following steps:
             else if (activeProperty != null)
             {
                 // 6.6.1 - Create a new dictionary reference consisting of a single member @id whose value is id.
-                var reference = new JObject(new JProperty("@id", id));
+                var reference = new JsonObject{["@id"] = id};
                 // 6.6.2 - If list is null:
                 if (list == null)
                 {
                     // 6.6.2.1 - If subject node does not have an active property member, create one and initialize its value to an array containing reference.
                     if (!subjectNode.ContainsKey(activeProperty))
                     {
-                        subjectNode[activeProperty] = new JArray(reference);
+                        subjectNode[activeProperty] = new JsonArray(reference);
                     }
                     // 6.6.2.2 - Otherwise, compare reference against every item in the array associated with the active property member of node. If there is no item equivalent to reference, append reference to the array. Two dictionaries are considered equal if they have equivalent key-value pairs.
-                    AppendUniqueElement(reference, subjectNode[activeProperty] as JArray);
+                    AppendUniqueElement(reference, subjectNode[activeProperty] as JsonArray);
                 }
                 else
                 {
                     // 6.6.3 - Otherwise, append reference to the @list member of list.
-                    var listArray = list["@list"] as JArray;
+                    var listArray = list["@list"] as JsonArray;
                     listArray.Add(reference);
                 }
             }
@@ -218,13 +223,13 @@ public class NodeMapGenerator : INodeMapGenerator
             // Finally remove the @type entry from element.
             if (elementObject.ContainsKey("@type"))
             {
-                if (node.Property("@type") == null)
+                if (!node.ContainsKey("@type"))
                 {
-                    node["@type"] = new JArray();
+                    node["@type"] = new JsonArray();
                 }
-                foreach (JToken item in JsonLdUtils.EnsureArray(elementObject["@type"]))
+                foreach (JsonNode item in JsonLdUtils.EnsureArray(elementObject["@type"]))
                 {
-                    AppendUniqueElement(item, node["@type"] as JArray);
+                    AppendUniqueElement(item, node["@type"] as JsonArray);
                 }
                 elementObject.Remove("@type");
             }
@@ -234,12 +239,12 @@ public class NodeMapGenerator : INodeMapGenerator
             // Otherwise, continue by removing the @index entry from element.
             if (elementObject.ContainsKey("@index"))
             {
-                if (node.ContainsKey("@index") && !JToken.DeepEquals(elementObject["@index"], node["@index"]))
+                if (node.ContainsKey("@index") && !JsonNode.DeepEquals(elementObject["@index"], node["@index"]))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.ConflictingIndexes,
                         $"Conflicting indexes for node with id {id}.");
                 }
-                node["@index"] = elementObject["@index"];
+                node["@index"] = elementObject["@index"].DeepClone();
                 elementObject.Remove("@index");
             }
 
@@ -247,16 +252,16 @@ public class NodeMapGenerator : INodeMapGenerator
             if (elementObject.ContainsKey("@reverse"))
             {
                 // 6.9.1 - Create a map referenced node with a single entry @id whose value is id.
-                var referencedNode = new JObject(new JProperty("@id", id));
+                var referencedNode = new JsonObject{["@id"] = id};
                 // 6.9.2 - Initialize reverse map to the value of the @reverse entry of element.
-                var reverseMap = elementObject["@reverse"] as JObject;
+                var reverseMap = elementObject["@reverse"] as JsonObject;
                 // 6.9.3 - For each key-value pair property-values in reverse map:
-                foreach (JProperty p in reverseMap.Properties())
+                foreach (var p in reverseMap)
                 {
-                    var property = p.Name;
-                    var values = p.Value as JArray;
+                    var property = p.Key;
+                    var values = p.Value as JsonArray;
                     // 6.9.3.1 - For each value of values:
-                    foreach (JToken value in values)
+                    foreach (JsonNode value in values)
                     {
                         // 6.9.3.1.1 - Recursively invoke this algorithm passing value for element, node map,
                         // active graph, referenced node for active subject, and property for active property.
@@ -275,7 +280,7 @@ public class NodeMapGenerator : INodeMapGenerator
                 // KA: Ensure nodeMap contains a dictionary for the graph
                 if (!nodeMap.ContainsKey(id))
                 {
-                    nodeMap.Add(id, new JObject());
+                    nodeMap.Add(id, new JsonObject());
                 }
                 GenerateNodeMapAlgorithm(elementObject["@graph"], nodeMap, id);
                 elementObject.Remove("@graph");
@@ -288,10 +293,10 @@ public class NodeMapGenerator : INodeMapGenerator
                 elementObject.Remove("@included");
             }
             // 6.12 - Finally, for each key-value pair property-value in element ordered by property perform the following steps:
-            foreach (JProperty p in elementObject.Properties().OrderBy(p => p.Name).ToList())
+            foreach (var p in elementObject.OrderBy(p => p.Key).ToList())
             {
-                var property = p.Name;
-                JToken value = p.Value;
+                var property = p.Key;
+                JsonNode value = p.Value;
                 // 6.12.1 - If property is a blank node identifier, replace it with a newly generated blank node identifier passing property for identifier.
                 if (JsonLdUtils.IsBlankNodeIdentifier(property))
                 {
@@ -300,7 +305,7 @@ public class NodeMapGenerator : INodeMapGenerator
                 // 6.12.2 - If node does not have a property entry, create one and initialize its value to an empty array.
                 if (!node.ContainsKey(property))
                 {
-                    node[property] = new JArray();
+                    node[property] = new JsonArray();
                 }
                 // 6.12.3 - Recursively invoke this algorithm passing value for element, node map, active graph, id for active subject, and property for active property.
                 GenerateNodeMapAlgorithm(value, nodeMap, activeGraph, id, property);
@@ -309,30 +314,30 @@ public class NodeMapGenerator : INodeMapGenerator
     }
 
     /// <inheritdoc />
-    public JObject GenerateMergedNodeMap(JObject graphMap)
+    public JsonObject GenerateMergedNodeMap(JsonObject graphMap)
     {
-        var result = new JObject();
-        foreach (JProperty p in graphMap.Properties())
+        var result = new JsonObject();
+        foreach (var p in graphMap)
         {
-            var graphName = p.Name;
-            var nodeMap = p.Value as JObject;
-            foreach (JProperty np in nodeMap.Properties())
+            var graphName = p.Key;
+            var nodeMap = p.Value as JsonObject;
+            foreach (var np in nodeMap)
             {
-                var id = np.Name;
-                var node = np.Value as JObject;
-                if (result[id] is not JObject mergedNode)
+                var id = np.Key;
+                var node = np.Value as JsonObject;
+                if (result[id] is not JsonObject mergedNode)
                 {
-                    result[id] = mergedNode = new JObject(new JProperty("@id", id));
+                    result[id] = mergedNode = new JsonObject { ["@id"] = id };
                 }
-                foreach (JProperty nodeProperty in node.Properties())
+                foreach (var nodeProperty in node)
                 {
-                    if (!JsonLdUtils.IsKeyword(nodeProperty.Name) || nodeProperty.Name.Equals("@type"))
+                    if (!JsonLdUtils.IsKeyword(nodeProperty.Key) || nodeProperty.Key.Equals("@type"))
                     {
-                        MergeValues(mergedNode, nodeProperty.Name, nodeProperty.Value);
+                        MergeValues(mergedNode, nodeProperty.Key, nodeProperty.Value);
                     }
                     else
                     {
-                        mergedNode[nodeProperty.Name] = nodeProperty.Value.DeepClone();
+                        mergedNode[nodeProperty.Key] = nodeProperty.Value.DeepClone();
                     }
                 }
             }
@@ -341,31 +346,31 @@ public class NodeMapGenerator : INodeMapGenerator
         return result;
     }
 
-    private static void MergeValues(JObject parent, string property, JToken values)
+    private static void MergeValues(JsonObject parent, string property, JsonNode values)
     {
         if (parent[property] == null)
         {
-            parent[property] = new JArray();
+            parent[property] = new JsonArray();
         }
-        var target = parent[property] as JArray;
-        if (values is JArray array)
+        var target = parent[property] as JsonArray;
+        if (values is JsonArray array)
         {
-            foreach (JToken item in array)
+            foreach (JsonNode item in array)
             {
-                target.Add(item);
+                target.Add(item.DeepClone());
             }
         }
         else
         {
-            target.Add(values);
+            target.Add(values.DeepClone());
         }
     }
 
-    private static void AppendUniqueElement(JToken element, JArray toArray)
+    private static void AppendUniqueElement(JsonNode element, JsonArray toArray)
     {
-        if (!toArray.Any(x => JToken.DeepEquals(x, element)))
+        if (!toArray.Any(x => JsonNode.DeepEquals(x, element)))
         {
-            toArray.Add(element);
+            toArray.Add(element.DetachedClone());
         }
     }
 }

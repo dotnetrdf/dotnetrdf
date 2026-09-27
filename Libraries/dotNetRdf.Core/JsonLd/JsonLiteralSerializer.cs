@@ -28,9 +28,9 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
+using System.Text.Json.Nodes;
+using System.Text.Json;
+using System.Globalization;
 namespace VDS.RDF.JsonLd;
 
 /// <summary>
@@ -44,43 +44,47 @@ internal class JsonLiteralSerializer
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    public string Serialize(JToken token)
+    public string Serialize(JsonNode token)
     {
-        var sb = new StringBuilder();
-        var sw = new StringWriter(sb);
-        using (var writer = new JsonTextWriter(sw))
+        var memoryStream = new MemoryStream();
+        
+        using (var writer = new Utf8JsonWriter(memoryStream, new JsonWriterOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping }))
         {
-            writer.Formatting = Formatting.None;
             Serialize(writer, token);
         }
 
-        return sb.ToString();
+        return Encoding.UTF8.GetString(memoryStream.ToArray());
     }
 
-    private static void Serialize(JsonWriter writer, JToken token)
+    private static void Serialize(Utf8JsonWriter writer, JsonNode token)
     {
-        switch (token.Type)
+        if (token == null)
         {
-            case JTokenType.Object:
+            writer.WriteRawValue("null");
+            return;
+        }
+        switch (token.GetValueKind())
+        {
+            case JsonValueKind.Object:
                 writer.WriteStartObject();
-                foreach (JProperty property in (token as JObject).Properties().OrderBy(p=>p.Name, StringComparer.Ordinal))
+                foreach (var property in (token as JsonObject).OrderBy(p => p.Key, StringComparer.Ordinal))
                 {
-                    writer.WritePropertyName(property.Name);
+                    writer.WritePropertyName(property.Key);
                     Serialize(writer, property.Value);
                 }
                 writer.WriteEndObject();
                 break;
-            case JTokenType.Array:
+            case JsonValueKind.Array:
                 writer.WriteStartArray();
-                foreach (JToken item in (token as JArray))
+                foreach (JsonNode item in (token as JsonArray))
                 {
                     Serialize(writer, item);
                 }
                 writer.WriteEndArray();
                 break;
-            case JTokenType.Float:
+            case JsonValueKind.Number:
 
-                var doubleValue = token.Value<double>();
+                var doubleValue = token.GetValue<double>();
                 switch (doubleValue)
                 {
                     case double.NaN:
@@ -94,7 +98,7 @@ internal class JsonLiteralSerializer
                         break;
                     default:
                     {
-                        var v = token.ToString(Formatting.None);
+                        var v = token.GetValue<double>().ToString("G", CultureInfo.InvariantCulture);
                         if (v.EndsWith(".0"))
                         {
                             v = v.Substring(0, v.Length - 2);
@@ -104,8 +108,20 @@ internal class JsonLiteralSerializer
                     }
                 };
                 break;
+            case JsonValueKind.True:
+                writer.WriteRawValue("true");
+                break;
+            case JsonValueKind.False:
+                writer.WriteRawValue("false");
+                break;
+            case JsonValueKind.Null:
+                writer.WriteRawValue("null");
+                break;
+            case JsonValueKind.String:
+                writer.WriteStringValue(token.GetValue<string>());
+                break;
             default:
-                writer.WriteRawValue(token.ToString(Formatting.None));
+                writer.WriteRawValue(token.GetValue<string>());
                 break;
         }
     }

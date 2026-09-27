@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using AngleSharp.Text;
 using System;
 using System.Text.RegularExpressions;
 using VDS.RDF.Parsing.Tokens;
@@ -378,7 +377,7 @@ public class TurtleSpecsHelper
                     if (portions[p].Length == 0) continue;
 
                     // If we see any of the escape sequence starters or a leading digit then this must be the start of the local name
-                    if (portions[p].Contains("%") || portions[p].Contains("\\") || char.IsDigit(portions[p][0])) break;
+                    if (portions[p].Contains("%") || portions[p].Contains("\\") || IsAsciiDigit(portions[p][0])) break;
 
                     // Otherwise must be a valid prefix
                     if (!IsPNPrefix(portions[p], syntax)) return false;
@@ -450,7 +449,7 @@ public class TurtleSpecsHelper
         int start = 1, temp = 0;
 
         // Validate first character
-        if (cs[0] != ':' && !char.IsDigit(cs[0]) && !IsPLX(cs, 0, out temp) && !IsPNCharsU(cs[0]))
+        if (cs[0] != ':' && !IsAsciiDigit(cs[0]) && !IsPLX(cs, 0, out temp) && !IsPNCharsU(cs[0]))
         {
             // Handle surrogate pairs for UTF-32 characters
             if (UnicodeSpecsHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
@@ -584,6 +583,11 @@ public class TurtleSpecsHelper
         }
     }
 
+    private static bool IsAsciiDigit(char c)
+    {
+        return c >= 0x30 && c <= 0x39;
+    }
+    
     /// <summary>
     /// Gets whether a character is a Hex character.
     /// </summary>
@@ -591,7 +595,7 @@ public class TurtleSpecsHelper
     /// <returns></returns>
     public static bool IsHex(char c)
     {
-        if (char.IsDigit(c))
+        if (IsAsciiDigit(c))
         {
             return true;
         }
@@ -756,7 +760,7 @@ public class TurtleSpecsHelper
         {
             return true;
         }
-        else if (char.IsDigit(c))
+        else if (IsAsciiDigit(c))
         {
             return true;
         }
@@ -855,7 +859,7 @@ public class TurtleSpecsHelper
         {
             return true;
         }
-        else if (c.IsDigit())
+        else if (IsAsciiDigit(c))
         {
             return true;
         }
@@ -896,7 +900,7 @@ public class TurtleSpecsHelper
         {
             return true;
         }
-        else if (char.IsDigit(c))
+        else if (IsAsciiDigit(c))
         {
             return true;
         }

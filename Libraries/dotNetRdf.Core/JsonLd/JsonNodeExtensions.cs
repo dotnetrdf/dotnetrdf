@@ -24,29 +24,34 @@
 // </copyright>
 */
 
-using System;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace VDS.RDF.JsonLd;
-
-/// <summary>
-/// Represents a JSON-LD context loaded from a remote document.
-/// </summary>
-public class JsonLdRemoteContext
+internal static class JsonNodeExtensions
 {
-    internal JsonLdRemoteContext(Uri documentUrl, JsonNode loadedContext)
+    /// <summary>
+    /// Creates a detached clone of the given JsonNode.
+    /// </summary>
+    /// <remarks>
+    /// If the node is null, returns null.
+    /// If the node has no parent, returns the node itself.
+    /// Otherwise, returns a deep clone of the node.
+    /// </remarks>
+    public static JsonNode DetachedClone(this JsonNode node)
     {
-        DocumentUrl = documentUrl;
-        Context = loadedContext;
+        if (node == null) return null;
+        if (node.Parent == null) return node;
+        return node.DeepClone();
     }
 
     /// <summary>
-    /// Get the document URL of the context document.
+    /// Gets the value kind of the given JsonNode, returning JsonValueKind.Null if the node is null.
     /// </summary>
-    public Uri DocumentUrl { get; }
-
-    /// <summary>
-    /// Get the context value as a JSON representation.
-    /// </summary>
-    public JsonNode Context { get; }
+    /// <param name="node">The JsonNode to get the value kind of.</param>
+    /// <returns>The value kind of the JsonNode, or JsonValueKind.Null if the node is null.</returns>
+    public static JsonValueKind SafeValueKind(this JsonNode node)
+    {
+        if (node == null) return JsonValueKind.Null;
+        return node.GetValueKind();
+    }
 }

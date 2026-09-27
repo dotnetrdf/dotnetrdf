@@ -28,7 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using VDS.RDF.JsonLd.Syntax;
 
 namespace VDS.RDF.JsonLd.Processors;
@@ -49,10 +50,10 @@ internal class JsonLdUtils
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    public static JArray EnsureArray(JToken token)
+    public static JsonArray EnsureArray(JsonNode token)
     {
-        if (token is JArray array) return array;
-        return new JArray(token);
+        if (token is JsonArray array) return array;
+        return new JsonArray(token.DetachedClone());
     }
 
     /// <summary>
@@ -60,9 +61,10 @@ internal class JsonLdUtils
     /// </summary>
     /// <param name="token">The token to test.</param>
     /// <returns>True if <paramref name="token"/> represents a JSON object and has no child properties, false otherwise.</returns>
-    public static bool IsEmptyMap(JToken token)
+    [Obsolete("Use IsEmptyObject(JsonNode) instead.")]
+    public static bool IsEmptyMap(JsonNode token)
     {
-        return token.Type == JTokenType.Object && !token.Children().Any();
+        return IsEmptyObject(token);
     }
 
     /// <summary>
@@ -80,117 +82,128 @@ internal class JsonLdUtils
     /// </summary>
     /// <param name="token">The token to check.</param>
     /// <returns>True if the token represents a JSON object with no properties, false otherwise.</returns>
-    public static bool IsEmptyObject(JToken token)
+    public static bool IsEmptyObject(JsonNode token)
     {
-        return (token is JObject obj && obj.Count == 0);
+        return token is JsonObject obj && obj.Count == 0;
     }
 
     /// <summary>
     /// Determine if the specified token is a JSON-LD default object.
     /// </summary>
-    /// <param name="token">The token to check.</param>
-    /// <returns>True if <paramref name="token"/> is JSON object with an @default property, false otherwise.</returns>
-    public static bool IsDefaultObject(JToken token)
+    /// <param name="node">The node to check.</param>
+    /// <returns>True if <paramref name="node"/> is JSON object with an @default property, false otherwise.</returns>
+    public static bool IsDefaultObject(JsonNode node)
     {
-        return token is JObject o && o.ContainsKey("@default");
+        return node is JsonObject obj && obj.ContainsKey("@default");
+    }
+
+    public static bool HasNonNullProperty(JsonObject obj, string propertyName)
+    {
+        return obj.TryGetPropertyValue(propertyName, out JsonNode value) && value != null;
     }
 
     /// <summary>
     /// Determine if a JSON token is a JSON-LD value object.
     /// </summary>
-    /// <param name="token"></param>
-    /// <returns>True of <paramref name="token"/> is a <see cref="JObject"/> with a. <code>@value</code> property, false otherwise.</returns>
-    public static bool IsValueObject(JToken token)
+    /// <param name="node">The node to check.</param>
+    /// <returns>True of <paramref name="node"/> is a <see cref="JsonObject"/> with a non-null @value property, false otherwise.</returns>
+    public static bool IsValueObject(JsonNode node)
     {
-        return ((token as JObject)?.Property("@value")) != null;
+        if (node is not JsonObject obj) return false;
+        return obj.ContainsKey("@value");
+        
+//        return node is JsonObject obj && HasNonNullProperty(obj, "@value");
+    }
+
+
+    /// <summary>
+    /// Determine if a JSON node is a JSON-LD list object.
+    /// </summary>
+    /// <param name="node"></param>
+    /// <returns>True of <paramref name="node"/> is a <see cref="JsonObject"/> with a non-null @list property, false otherwise.</returns>
+    public static bool IsListObject(JsonNode node)
+    {
+        return node is JsonObject obj && HasNonNullProperty(obj, "@list");
     }
 
     /// <summary>
-    /// Determine if a JSON token is a JSON-LD list object.
+    /// Determine if a JSON node represents a JSON-LD node reference object.
     /// </summary>
-    /// <param name="token"></param>
-    /// <returns>True of <paramref name="token"/> is a <see cref="JObject"/> with a. <code>@list</code> property, false otherwise.</returns>
-    public static bool IsListObject(JToken token)
+    /// <param name="node">The node to check.</param>
+    /// <returns>True if <paramref name="node"/> is an object with a non-null @id property, false otherwise.</returns>
+    public static bool IsNodeReference(JsonNode node)
     {
-        return ((token as JObject)?.Property("@list")) != null;
+        return node is JsonObject obj && HasNonNullProperty(obj, "@id");
     }
 
     /// <summary>
-    /// Determine if a JSON token represents a JSON-LD node reference object.
+    /// Checks if a JSON node represents a subject.
     /// </summary>
-    /// <param name="token">The token to check.</param>
-    /// <returns>True if <paramref name="token"/> is an object wth an @id property, false otherwise.</returns>
-    public static bool IsNodeReference(JToken token)
+    /// <param name="node">The node to check.</param>
+    /// <returns>True if <paramref name="node"/> is an object, is not an @value, @set or @list, and either has more than one key or does not have an @id key.</returns>
+    public static bool IsSubject(JsonNode node)
     {
-        return (token as JObject)?.Property("@id") != null;
+        return node is JsonObject obj &&
+               !(HasNonNullProperty(obj, "@value") || HasNonNullProperty(obj, "@set") || HasNonNullProperty(obj, "@list")) &&
+               (obj.Count > 1 || !HasNonNullProperty(obj, "@id"));
     }
 
     /// <summary>
-    /// Checks if a JSON token represents a subject.
+    /// Checks if a JSON node represents a subject reference.
     /// </summary>
-    /// <param name="token">The token to check.</param>
-    /// <returns>True if <paramref name="token"/> is an object, is not an @vale, @set or @list, and either has more than one key or does not have an @id key.</returns>
-    public static bool IsSubject(JToken token)
+    /// <param name="node">The node to check.</param>
+    /// <returns>True if <paramref name="node"/> is an object with a single @id property.</returns>
+    public static bool IsSubjectReference(JsonNode node)
     {
-        return token is JObject t &&
-               !(t.ContainsKey("@value") || t.ContainsKey("@set") || t.ContainsKey("@list")) &&
-               (t.Count > 1 || !t.ContainsKey("@id"));
+        return node is JsonObject obj && obj.Count == 1 && HasNonNullProperty(obj, "@id");
     }
 
     /// <summary>
-    /// Checks if a JSON token represents a subject reference.
+    /// Determine if a JSON node is a JSON-LD graph object.
     /// </summary>
-    /// <param name="token">The token to check.</param>
-    /// <returns>True if <paramref name="token"/> is an object with a single @id property.</returns>
-    public static bool IsSubjectReference(JToken token)
+    /// <param name="node"></param>
+    /// <returns>True if <paramref name="node"/> is a JsonObject with an @graph property and optionally @id and @index properties and no other properties; false otherwise.</returns>
+    public static bool IsGraphObject(JsonNode node)
     {
-        return token is JObject t && t.Count == 1 && t.ContainsKey("@id");
-    }
-
-    /// <summary>
-    /// Determine if a JSON token is a JSON-LD graph object.
-    /// </summary>
-    /// <param name="token"></param>
-    /// <returns>True if <paramref name="token"/> is a JObject with an @graph property and optionally @id and @index properties and no other properties; false otherwise.</returns>
-    public static bool IsGraphObject(JToken token)
-    {
-        if (token is not JObject o) return false;
+        if (node is not JsonObject o) return false;
+        if (o.Count > 3) return false;
         if (!o.ContainsKey("@graph")) return false;
-        return o.Properties().All(p => JsonLdKeywords.GraphObjectKeys.Contains(p.Name));
+        return o.All(p => JsonLdKeywords.GraphObjectKeys.Contains(p.Key));
     }
 
     /// <summary>
-    /// Determines if a JSON token is a JSON-LD simple graph object.
+    /// Determines if a JSON node is a JSON-LD simple graph object.
     /// </summary>
-    /// <param name="token">The token to test.</param>
-    /// <returns>True if <paramref name="token"/> is a JObject with an @graph property and optionally an @index property and no other properties; false otherwise.</returns>
-    public static bool IsSimpleGraphObject(JToken token)
+    /// <param name="node">The node to test.</param>
+    /// <returns>True if <paramref name="node"/> is a JsonObject with an @graph property and optionally an @index property and no other properties; false otherwise.</returns>
+    public static bool IsSimpleGraphObject(JsonNode node)
     {
-        if (token is not JObject o) return false;
+        if (node is not JsonObject o) return false;
+        if (o.Count > 2) return false;
         if (!o.ContainsKey("@graph")) return false;
-        return (o.Properties().All(p => p.Name == "@graph" || p.Name == "@index"));
+        return o.All(p => p.Key == "@graph" || p.Key == "@index");
     }
 
     /// <summary>
-    /// Determine if a JSON token is an array, optionally testing each item in the array.
+    /// Determine if a JSON node is an array, optionally testing each item in the array.
     /// </summary>
-    /// <param name="token">The token to test.</param>
-    /// <param name="itemTest">The test to be applied to each child item of <paramref name="token"/>.</param>
-    /// <returns>True if <paramref name="token"/> is a array and either <paramref name="itemTest"/> is null or returns true for all items in the array, false otherwise.</returns>
-    public static bool IsArray(JToken token, Func<JToken, bool> itemTest = null)
+    /// <param name="node">The node to test.</param>
+    /// <param name="itemTest">The test to be applied to each child item of <paramref name="node"/>.</param>
+    /// <returns>True if <paramref name="node"/> is a array and either <paramref name="node"/> is null or returns true for all items in the array, false otherwise.</returns>
+    public static bool IsArray(JsonNode node, Func<JsonNode, bool> itemTest = null)
     {
-        if (token.Type != JTokenType.Array) return false;
-        return itemTest == null || token.Children().All(itemTest);
+        if (node is not JsonArray array) return false;
+        return itemTest == null || array.All(itemTest);
     }
 
     /// <summary>
-    /// Determine if the specified token is an empty array token.
+    /// Determine if the specified node is an empty array node.
     /// </summary>
-    /// <param name="token">The token to check.</param>
-    /// <returns>True if <paramref name="token"/> is an array with no items, false otherwise.</returns>
-    public static bool IsEmptyArray(JToken token)
+    /// <param name="node">The node to check.</param>
+    /// <returns>True if <paramref name="node"/> is an array with no items, false otherwise.</returns>
+    public static bool IsEmptyArray(JsonNode node)
     {
-        return token is JArray array && array.Count == 0;
+        return node is JsonArray array && array.Count == 0;
     }
 
     private static readonly Regex FragmentRegex = new Regex("^([a-zA-Z0-9-._~!$&'()*+,;=:@/?]|%[0-9A-Fa-f]{2})*$");
@@ -214,13 +227,16 @@ internal class JsonLdUtils
     }
 
     /// <summary>
-    /// Determine if the specified token is an IRI string.
+    /// Determine if the specified node is an IRI string.
     /// </summary>
-    /// <param name="token">The token to check.</param>
-    /// <returns>True if <paramref name="token"/> is a string whose value is a valid IRI, false otherwise.</returns>
-    public static bool IsIri(JToken token)
+    /// <param name="node">The node to check.</param>
+    /// <returns>True if <paramref name="node"/> is a string whose value is a valid IRI, false otherwise.</returns>
+    public static bool IsIri(JsonNode node)
     {
-        return (token.Type == JTokenType.String && IsIri(token.Value<string>()));
+        return node is JsonValue value &&
+            value.SafeValueKind() == JsonValueKind.String &&
+            value.GetValue<string>() is string s &&
+            IsIri(s);
     }
 
     /// <summary>
@@ -233,42 +249,54 @@ internal class JsonLdUtils
         return value != null && value.StartsWith("_:");
     }
 
-    public static bool IsScalar(JToken token)
+    public static bool IsScalar(JsonNode node)
     {
-        return !(token == null || token.Type == JTokenType.Array || token.Type == JTokenType.Object);
+        return !(node == null || node is JsonArray || node is JsonObject);
+    }
+
+    public static bool IsScalarOrNull(JsonNode node)
+    {
+        return node == null || IsScalar(node);
     }
 
     /// <summary>
-    /// Determine if a JSON token represents a string value.
+    /// Determine if a JSON node represents a string value.
     /// </summary>
-    /// <param name="token">The token to test.</param>
-    /// <returns>True if <paramref name="token"/> represents a string value, false otherwise.</returns>
-    public static bool IsString(JToken token)
+    /// <param name="node">The node to test.</param>
+    /// <returns>True if <paramref name="node"/> represents a string value, false otherwise.</returns>
+    public static bool IsString(JsonNode node)
     {
-        return token.Type == JTokenType.String;
+        return node.SafeValueKind() == JsonValueKind.String;
     }
 
-    public static bool IsValidBaseDirection(JToken token)
+    public static bool IsValidBaseDirection(JsonNode token)
     {
-        if (token.Type != JTokenType.String) return false;
-        return token.Value<string>() == "ltr" || token.Value<string>() == "rtl";
+        if (token.SafeValueKind() != JsonValueKind.String) return false;
+        var value = token.GetValue<string>();
+        return value == "ltr" || value == "rtl";
     }
 
 
     /// <summary>
-    /// Determine if a JSON token represents the null value.
+    /// Determine if a JSON node represents the null value.
     /// </summary>
-    /// <param name="token">The token to test.</param>
+    /// <param name="node">The node to test.</param>
     /// <returns>True if the token represents JSON null, false otherwise.</returns>
-    public static bool IsNull(JToken token)
+    public static bool IsNull(JsonNode node)
     {
-        return token.Type == JTokenType.Null;
+        return node.SafeValueKind() == JsonValueKind.Null;
     }
 
-    public static bool IsAbsoluteIri(JToken token)
+    /// <summary>
+    /// Determine if a JSON node is a string whose value can be parsed as an absolute IRI.
+    /// </summary>
+    /// <param name="node">The node to tests.</param>
+    /// <returns>True if <paramref name="node"/> represents a JSON string and the value of the string can be parsed as an absolute IRI, false otherwise.</returns>
+    public static bool IsAbsoluteIri(JsonNode node)
     {
-        if (token is not JValue value) return false;
-        return value.Type == JTokenType.String && IsAbsoluteIri(value.Value<string>());
+        if (node.SafeValueKind() != JsonValueKind.String) return false;
+        var value = node.GetValue<string>();
+        return IsAbsoluteIri(value);
     }
 
     /// <summary>
@@ -290,12 +318,13 @@ internal class JsonLdUtils
     /// <summary>
     /// Determine if a JSON token is a string whose value can be parsed as a relative IRI.
     /// </summary>
-    /// <param name="token">The token to check.</param>
-    /// <returns>True if <paramref name="token"/> is a string token and the value of the string can be parsed as a relative IRI.</returns>
-    public static bool IsRelativeIri(JToken token)
+    /// <param name="node">The node to check.</param>
+    /// <returns>True if <paramref name="node"/> is a string node and the value of the string can be parsed as a relative IRI.</returns>
+    public static bool IsRelativeIri(JsonNode node)
     {
-        if (token is not JValue value) return false;
-        return value.Type == JTokenType.String && IsRelativeIri(value.Value<string>());
+        if (node.SafeValueKind() != JsonValueKind.String) return false;
+        var value = node.GetValue<string>();
+        return IsRelativeIri(value);
     }
 
     /// <summary>
@@ -321,15 +350,15 @@ internal class JsonLdUtils
     /// <summary>
     /// Determines if a token represents a JSON-LD node object.
     /// </summary>
-    /// <param name="token"></param>
+    /// <param name="node"></param>
     /// <param name="isTopmostMap"></param>
     /// <returns></returns>
-    public static bool IsNodeObject(JToken token, bool isTopmostMap = false)
+    public static bool IsNodeObject(JsonNode node, bool isTopmostMap = false)
     {
         // A map is a node object if it exists outside of the JSON-LD context and:
         //   - it does not contain the @value, @list, or @set keywords, or
         //   - it is not the top - most map in the JSON-LD document consisting of no other entries than @graph and @context.
-        if (token is not JObject o) return false;
+        if (node is not JsonObject o) return false;
         if (!(o.ContainsKey("@value") || o.ContainsKey("@list") || o.ContainsKey("@set"))) return true;
         if (!isTopmostMap)
         {
@@ -348,10 +377,10 @@ internal class JsonLdUtils
     /// <returns>True if <paramref name="t1"/> and <paramref name="t2"/> are equal primitives;
     /// or are both value objects with matching @value, @type, @language and @index values;
     /// or are both subject or subject references with matching @id values.</returns>
-    public static bool CompareValues(JToken t1, JToken t2)
+    public static bool CompareValues(JsonNode t1, JsonNode t2)
     {
-        if (t1.Equals(t2)) return true;
-        if (t1 is JObject o1 && t2 is JObject o2)
+        if (JsonNode.DeepEquals(t1, t2)) return true;
+        if (t1 is JsonObject o1 && t2 is JsonObject o2)
         {
             if (IsValueObject(o1) && IsValueObject(o2))
             {
@@ -376,7 +405,7 @@ internal class JsonLdUtils
     /// <param name="v1"></param>
     /// <param name="v2"></param>
     /// <returns></returns>
-    public static bool SafeEquals(JToken v1, JToken v2)
+    public static bool SafeEquals(JsonNode v1, JsonNode v2)
     {
         if (v1 == null) return v2 == null;
         return CompareValues(v1, v2);
@@ -389,14 +418,14 @@ internal class JsonLdUtils
     /// <param name="entry">The name of the property to receive the value.</param>
     /// <param name="value">The value to be added.</param>
     /// <param name="asArray">If true, the property created on the subject is always an array. If false the property created on the subject will be an array only if required to hold mutiple values.</param>
-    public static void AddValue(JObject o, string entry, JToken value, bool asArray = false)
+    public static void AddValue(JsonObject o, string entry, JsonNode value, bool asArray = false)
     {
         if (asArray)
         {
             // Ensure target property is an array
             if (!o.ContainsKey(entry))
             {
-                o[entry] = new JArray();
+                o[entry] = new JsonArray();
             }
             else
             {
@@ -404,10 +433,10 @@ internal class JsonLdUtils
             }
         }
 
-        if (value is JArray valueArray)
+        if (value is JsonArray valueArray)
         {
             // Call this method to add each individual item
-            foreach (JToken item in valueArray)
+            foreach (JsonNode item in valueArray)
             {
                 AddValue(o, entry, item, asArray);
             }
@@ -415,6 +444,7 @@ internal class JsonLdUtils
         else
         {
             // Adding a single item
+            value = value.DetachedClone();
 
             // If the property doesn't exist, add value as the single value of the property
             if (!o.ContainsKey(entry))
@@ -424,18 +454,20 @@ internal class JsonLdUtils
             else
             {
                 // If property exists and its value is an array, append value to the array
-                if (o[entry] is JArray entryArray)
+                if (o[entry] is JsonArray entryArray)
                 {
                     entryArray.Add(value);
                 }
                 else
                 {
                     // Otherwise convert the target property value to an array and then append value
-                    entryArray = new JArray(o[entry])
+                    JsonNode existingValue = o[entry];
+                    o.Remove(entry);
+                    o[entry] = new JsonArray
                     {
+                        existingValue,
                         value,
                     };
-                    o[entry] = entryArray;
                 }
             }
         }
@@ -448,8 +480,9 @@ internal class JsonLdUtils
     /// <param name="property">The property that relates the value to the subject.</param>
     /// <param name="value">The value to remove.</param>
     /// <param name="propertyIsArray">True if the value of the property is always an array.</param>
-    public static void RemoveValue(JObject subject, string property, JToken value, bool propertyIsArray = false)
+    public static void RemoveValue(JsonObject subject, string property, JsonNode value, bool propertyIsArray = false)
     {
+        if (!subject.ContainsKey(property)) return;
         var values = EnsureArray(subject[property]).Where(t => !CompareValues(t, value)).ToList();
         switch (values.Count)
         {
@@ -461,31 +494,31 @@ internal class JsonLdUtils
                 break;
             default:
             {
-                var array = new JArray();
-                foreach (JToken v in values) array.Add(v);
-                subject[property] = array;
+                var newArray = new JsonArray();
+                foreach (JsonNode v in values) newArray.Add(v.DetachedClone());
+                subject[property] = newArray;
                 break;
             }
         }
     }
 
     /// <summary>
-    /// Creates a new array which is a concatenation of the values of token1 and token2.
+    /// Creates a new array which is a concatenation of the provided inputs.
     /// </summary>
-    /// <param name="token1"></param>
-    /// <param name="token2"></param>
+    /// <param name="node1">The first input.</param>
+    /// <param name="node2">The second input.</param>
     /// <remarks>This method flattens any input arrays.</remarks>
-    /// <returns></returns>
-    public static JArray ConcatenateValues(JToken token1, JToken token2)
+    /// <returns>An array consisting of the (flattened) concatenation of <paramref name="node1"/> and <paramref name="node2"/>.</returns>
+    public static JsonArray ConcatenateValues(JsonNode node1, JsonNode node2)
     {
-        JArray result = EnsureArray(token1);
-        if (token2 is JArray)
+        JsonArray result = EnsureArray(node1);
+        if (node2 is JsonArray array)
         {
-            foreach (JToken c in token2.Children()) result.Add(c);
+            foreach (JsonNode c in array) result.Add(c.DeepClone());
         }
         else
         {
-            result.Add(token2);
+            result.Add(node2);
         }
 
         return result;
@@ -499,14 +532,51 @@ internal class JsonLdUtils
     /// <param name="parent">The subject node to retrieve a property from.</param>
     /// <param name="propertyName">The name of the property whose value is to be retrieved.</param>
     /// <returns>The property value if found, null otherwise.</returns>
-    public static JToken GetPropertyValue(JsonLdContext activeContext, JObject parent, string propertyName)
+    [Obsolete("This method will incorrectly return null if the property exists but has a null value. Use TryGetPropertyValue instead.", true)]
+    public static JsonNode GetPropertyValue(JsonLdContext activeContext, JsonObject parent, string propertyName)
     {
-        if (parent.TryGetValue(propertyName, out JToken ret)) return ret;
+        if (parent.TryGetPropertyValue(propertyName, out JsonNode ret)) return ret;
         foreach (var alias in activeContext.GetAliases(propertyName))
         {
-            if (parent.TryGetValue(alias, out ret)) return ret;
+            if (parent.TryGetPropertyValue(alias, out ret)) return ret;
         }
         return null;
+    }
+
+    /// <summary>
+    /// Tries to get the value of a property from a subject node, taking into account possible aliases defined in the active context.
+    /// </summary>
+    /// <param name="activeContext">The context to use.</param>
+    /// <param name="parent">The subject node to retrieve a property from.</param>
+    /// <param name="propertyName">The name of the property whose value is to be retrieved.</param>
+    /// <param name="value">The property value if found, null otherwise.</param>
+    /// <returns>True if the property value was found, false otherwise.</returns>
+    public static bool TryGetPropertyValue(JsonLdContext activeContext, JsonObject parent, string propertyName, out JsonNode value)
+    {
+        if (parent.TryGetPropertyValue(propertyName, out value)) return true;
+        foreach (var alias in activeContext.GetAliases(propertyName))
+        {
+            if (parent.TryGetPropertyValue(alias, out value)) return true;
+        }
+        value = null;
+        return false;
+    }
+
+    /// <summary>
+    /// Determine if a subject node has a property, taking into account possible aliases defined in the active context.
+    /// </summary>
+    /// <param name="activeContext">The context to use.</param>
+    /// <param name="parent">The subject node to check for the property.</param>
+    /// <param name="propertyName">The name of the property to check for.</param>
+    /// <returns>True if the property exists, false otherwise.</returns>
+    public static bool HasProperty(JsonLdContext activeContext, JsonObject parent, string propertyName)
+    {
+        if (parent.ContainsKey(propertyName)) return true;
+        foreach (var alias in activeContext.GetAliases(propertyName))
+        {
+            if (parent.ContainsKey(alias)) return true;
+        }
+        return false;
     }
 
     /// <summary>
@@ -518,14 +588,14 @@ internal class JsonLdUtils
     /// <paramref name="value"/> is a string token with the value 'ltr' or 'rtl' respectively.</returns>
     /// <exception cref="JsonLdProcessorException"> raised if <paramref name="value"/> is not a JSON string or null token,
     /// or if <paramref name="value"/> is a string but its value is neither 'ltr' nor 'rtl'.</exception>
-    public static LanguageDirection ParseLanguageDirection(JToken value)
+    public static LanguageDirection ParseLanguageDirection(JsonNode value)
     {
-        switch (value.Type)
+        switch (value.SafeValueKind())
         {
-            case JTokenType.Null:
+            case JsonValueKind.Null:
                 return LanguageDirection.Unspecified;
-            case JTokenType.String:
-                var directionStr = value.Value<string>();
+            case JsonValueKind.String:
+                var directionStr = value.GetValue<string>();
                 switch (directionStr)
                 {
                     case "ltr":
@@ -554,6 +624,47 @@ internal class JsonLdUtils
                 return "rtl";
             default:
                 return null;
+        }
+    }
+
+    public static bool IsBooleanNode(JsonNode value)
+    {
+        return value.SafeValueKind() == JsonValueKind.True || value.SafeValueKind() == JsonValueKind.False;
+    }
+
+    /// <summary>
+    /// Merges two JSON objects into a new object, using properties from <paramref name="obj1"/> as the base.
+    /// </summary>
+    /// <param name="obj1">The first JSON object.</param>
+    /// <param name="obj2">The second JSON object.</param>
+    /// <returns>A new JSON object containing merged properties from both input objects. Properties from <paramref name="obj2"/> will not overwrite those from <paramref name="obj1"/>.</returns>
+    public static JsonObject MergeObjects(JsonObject obj1, JsonObject obj2)
+    {
+        var result = obj1.DeepClone() as JsonObject;
+        foreach (KeyValuePair<string, JsonNode> kvp in obj2)
+        {
+            result.TryAdd(kvp.Key, kvp.Value.DeepClone());
+        }
+        return result;
+    }
+
+    public static void ReplaceInParent(JsonNode node, JsonNode newValue)
+    {
+        if (node.Parent is JsonArray array)
+        {
+            int index = array.IndexOf(node);
+            if (index >= 0)
+            {
+                array[index] = newValue.DetachedClone();
+            }
+        }
+        else if (node.Parent is JsonObject obj)
+        {
+            var property = obj.FirstOrDefault(p => p.Value == node);
+            if (property.Key != null)
+            {
+                obj[property.Key] = newValue.DetachedClone();
+            }
         }
     }
 

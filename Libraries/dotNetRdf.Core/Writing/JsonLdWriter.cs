@@ -28,8 +28,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
 using VDS.RDF.JsonLd;
 using VDS.RDF.JsonLd.Processors;
 using VDS.RDF.JsonLd.Syntax;
@@ -67,8 +69,16 @@ public class JsonLdWriter : BaseStoreWriter
     {
         if (store == null) throw new ArgumentNullException(nameof(store), "Cannot write a null store");
         if(output == null) throw new ArgumentNullException(nameof(output), "Cannot write to a null writer");
-        JArray jsonArray = SerializeStore(store);
-        output.Write(jsonArray.ToString(_options.JsonFormatting));
+        JsonArray jsonArray = SerializeStore(store);
+        using (MemoryStream ms = new MemoryStream())
+        {
+            var jsonWriter = new Utf8JsonWriter(ms, new JsonWriterOptions());
+            jsonArray.WriteTo(jsonWriter);
+            jsonWriter.Flush();
+            ms.Position = 0;
+            var jsonString = Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)ms.Length);
+            output.Write(jsonString);
+        }
         output.Flush();
         if (!leaveOpen)
         {
@@ -81,16 +91,17 @@ public class JsonLdWriter : BaseStoreWriter
     /// </summary>
     /// <param name="store"></param>
     /// <returns></returns>
-    public JArray SerializeStore(ITripleStore store)
+    public JsonArray SerializeStore(ITripleStore store)
     {
         // 1 - Initialize default graph to an empty dictionary.
-        var defaultGraph = new JObject();
+        var defaultGraph = new JsonObject();
         // 2 - Initialize graph map to a dictionary consisting of a single member @default whose value references default graph.
-        var graphMap = new JObject(new JProperty("@default", defaultGraph));
+        var graphMap = new Dictionary<string, JsonNode>{ ["@default"] = defaultGraph };
         // 3 - Initialize referenced once to an empty map.
         var referencedOnce =new Dictionary<string, Usage>();
         // 4 - Initialize compound literal subjects to an empty map.
-        var compoundLiteralSubjects = new JObject();
+        var compoundLiteralSubjects = new Dictionary<string, JsonNode>();
+        var usages = new Dictionary<JsonNode, List<Usage>>();
         // 5 - For each graph in RDF dataset:
         foreach (IGraph graph in store.Graphs)
         {
@@ -100,13 +111,13 @@ public class JsonLdWriter : BaseStoreWriter
             // 5.2 - If graph map has no name entry, create one and set its value to an empty map.
             if (!graphMap.ContainsKey(name))
             {
-                graphMap.Add(name, new JObject());
+                graphMap.Add(name, new JsonObject());
             }
 
             // 5.3 - If compound literal subjects has no name entry, create one and set its value to an empty map.
             if (!compoundLiteralSubjects.ContainsKey(name))
             {
-                compoundLiteralSubjects[name] = new JObject();
+                compoundLiteralSubjects[name] = new JsonObject();
             }
 
             // 5.4 - If graph is not the default graph and default graph does not have a name entry,
@@ -115,15 +126,15 @@ public class JsonLdWriter : BaseStoreWriter
             {
                 if (!defaultGraph.ContainsKey(name))
                 {
-                    defaultGraph.Add(name, new JObjectWithUsages(new JProperty("@id", name)));
+                    defaultGraph.Add(name, new JsonObject { ["@id"] = name });
                 }
             }
 
             // 5.5 - Reference the value of the name entry in graph map using the variable node map.
-            var nodeMap = graphMap[name] as JObject;
+            var nodeMap = graphMap[name] as JsonObject;
 
             // 5.6 - Reference the value of the name entry in compound literal subjects using the variable compound map.
-            JToken compoundMap = compoundLiteralSubjects[name];
+            JsonNode compoundMap = compoundLiteralSubjects[name];
 
             // 5.7 - For each triple in graph consisting of subject, predicate, and object:
             foreach (Triple triple in graph.Triples)
@@ -135,11 +146,11 @@ public class JsonLdWriter : BaseStoreWriter
                 // 5.7.1 - If node map does not have a subject entry, create one and initialize its value to a new map consisting of a single entry @id whose value is set to subject.
                 if (!nodeMap.ContainsKey(subject))
                 {
-                    nodeMap.Add(subject, new JObjectWithUsages(new JProperty("@id", subject)));
+                    nodeMap.Add(subject, new JsonObject { ["@id"] = subject });
                 }
 
                 // 5.7.2 - Reference the value of the subject entry in node map using the variable node.
-                var node = nodeMap[subject] as JObjectWithUsages;
+                var node = nodeMap[subject] as JsonObject;
 
                 // 5.7.3 - If the rdfDirection option is compound-literal and predicate is rdf:direction, add an entry in compound map for subject with the value true.
                 if (_options.RdfDirection.HasValue && _options.RdfDirection == JsonLdRdfDirectionMode.CompoundLiteral && RdfSpecsHelper.RdfDirection.Equals(predicate))
@@ -154,7 +165,7 @@ public class JsonLdWriter : BaseStoreWriter
                 {
                     if (!nodeMap.ContainsKey(@object))
                     {
-                        nodeMap.Add(@object, new JObjectWithUsages(new JProperty("@id", @object)));
+                        nodeMap.Add(@object, new JsonObject { ["@id"] = @object });
                     }
                 }
 
@@ -165,12 +176,12 @@ public class JsonLdWriter : BaseStoreWriter
                     // Append object to the value of the @type entry of node; unless such an item already exists. 
                     if (node.ContainsKey("@type"))
                     {
-                        AppendUniqueElement(@object, node["@type"] as JArray);
+                        AppendUniqueElement(@object, node["@type"] as JsonArray);
                     }
                     else
                     {
                         // If no such entry exists, create one and initialize it to an array whose only item is object.
-                        node.Add("@type", new JArray(@object));
+                        node.Add("@type", new JsonArray(@object));
                     }
 
                     // Finally, continue to the next triple.
@@ -178,24 +189,28 @@ public class JsonLdWriter : BaseStoreWriter
                 }
 
                 // 5.7.6 - Initialize value to the result of using the RDF to Object Conversion algorithm, passing object, rdfDirection, and useNativeTypes.
-                JToken value = RdfToObject(triple.Object);
+                JsonNode value = RdfToObject(triple.Object);
 
                 // 5.7.7 -If node does not have a predicate entry, create one and initialize its value to an empty array.
                 if (!node.ContainsKey(predicate))
                 {
-                    node[predicate] = new JArray();
+                    node[predicate] = new JsonArray();
                 }
 
                 // 5.7.8 - If there is no item equivalent to value in the array associated with the predicate entry of node, append a reference to value to the array. Two maps are considered equal if they have equivalent map entries.
-                AppendUniqueElement(value, node[predicate] as JArray);
+                AppendUniqueElement(value, node[predicate] as JsonArray);
 
                 // 5.7.9 - If object is rdf:nil, it represents the termination of an RDF collection:
                 if (triple.Object is IUriNode u && u.Uri.ToString().Equals(RdfSpecsHelper.RdfListNil))
                 {
                     // 5.7.9.1 - Reference the usages entry of the object entry of node map using the variable usages.
                     // 5.7.9.2 - Append a new map consisting of three entries, node, property, and value to the usages array. The node entry is set to a reference to node, property to predicate, and value to a reference to value.
-                    var objectMap = nodeMap[@object] as JObjectWithUsages;
-                    objectMap.Usages.Add(new Usage(node, predicate, value));
+                    var objectMap = nodeMap[@object] as JsonObject;
+                    if (!usages.ContainsKey(objectMap))
+                    {
+                        usages[objectMap] = new List<Usage>();
+                    }
+                    usages[objectMap].Add(new Usage(node, predicate, value));
                 }
                 else if (@object != null && referencedOnce.ContainsKey(@object))
                 {
@@ -213,45 +228,45 @@ public class JsonLdWriter : BaseStoreWriter
         }
 
         // 6 - For each name and graph object in graph map:
-        foreach (KeyValuePair<string, JToken> gp in graphMap)
+        foreach (KeyValuePair<string, JsonNode> gp in graphMap)
         {
             var name = gp.Key;
-            var graphObject = gp.Value as JObject;
+            var graphObject = gp.Value as JsonObject;
 
             // 6.1 - If compound literal subjects has an entry for name, then for each cl which is a key in that entry:
             if (compoundLiteralSubjects.ContainsKey(name))
             {
-                if (compoundLiteralSubjects[name] is JObject compoundMap)
+                if (compoundLiteralSubjects[name] is JsonObject compoundMap)
                 {
-                    foreach (JProperty clProp in compoundMap.Properties())
+                    foreach (KeyValuePair<string, JsonNode> clProp in compoundMap)
                     {
-                        var cl = clProp.Name;
+                        var cl = clProp.Key;
                         // 6.1.1 - Initialize cl entry to the value of cl in referenced once, continuing to the next cl if cl entry is not a map.
                         Usage clEntry = referencedOnce[cl];
                         if (clEntry == null) continue;
                         // 6.1.2 - Initialize node to the value of node in cl entry.
                         // 6.1.3 - Initialize property to value of property in cl entry.
                         // 6.1.4 - Initialize value to value of value in cl entry.
-                        JObjectWithUsages node = clEntry.Node;
+                        JsonObject node = clEntry.Node;
                         var property = clEntry.Property;
-                        JToken value = clEntry.Value;
+                        JsonNode value = clEntry.Value;
                         // 6.1.5 - Initialize cl node to the value of cl in graph object, and remove that entry from graph object, continuing to the next cl if cl node is not a map.
-                        var clNode = graphObject[cl] as JObject;
+                        var clNode = graphObject[cl] as JsonObject;
                         graphObject.Remove(cl);
                         if (clNode == null) continue;
                         // 6.1.6 - For each cl reference in the value of property in node where the value of @id in cl reference is cl:
-                        foreach (JObject clReference in node[property].OfType<JObject>()
-                            .Where(n => cl.Equals(n["@id"].Value<string>())))
+                        foreach (JsonObject clReference in node[property].AsArray().OfType<JsonObject>()
+                            .Where(n => cl.Equals(n["@id"].GetValue<string>())))
                         {
                             // 6.1.6.1 - Delete the @id entry in cl reference.
                             clReference.Remove("@id");
                             // 6.1.6.2 - Add an entry to cl reference for @value with the value taken from the rdf:value entry in cl node.
-                            clReference["@value"] = clNode[RdfSpecsHelper.RdfValue][0]["@value"];
+                            clReference["@value"] = clNode[RdfSpecsHelper.RdfValue][0]["@value"].GetValue<string>();
                             // 6.1.6.3 - Add an entry to cl reference for @language with the value taken from the rdf:language entry in cl node, if any.
                             // If that value is not well-formed according to section 2.2.9 of [BCP47], an invalid language-tagged string error has been detected and processing is aborted.
                             if (clNode.ContainsKey(RdfSpecsHelper.RdfLanguage))
                             {
-                                var language = clNode[RdfSpecsHelper.RdfLanguage][0]["@value"].Value<string>();
+                                var language = clNode[RdfSpecsHelper.RdfLanguage][0]["@value"].GetValue<string>();
                                 if (!LanguageTag.IsWellFormed(language))
                                 {
                                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageTaggedString,
@@ -265,7 +280,7 @@ public class JsonLdWriter : BaseStoreWriter
                             // If that value is not "ltr" or "rtl", an invalid base direction error has been detected and processing is aborted.
                             if (clNode.ContainsKey(RdfSpecsHelper.RdfDirection))
                             {
-                                var direction = clNode[RdfSpecsHelper.RdfDirection][0]["@value"].Value<string>();
+                                var direction = clNode[RdfSpecsHelper.RdfDirection][0]["@value"].GetValue<string>();
                                 if (!("ltr".Equals(direction) || "rtl".Equals(direction)))
                                 {
                                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidBaseDirection,
@@ -286,106 +301,115 @@ public class JsonLdWriter : BaseStoreWriter
             }
 
             // 6.3 - Initialize nil to the value of the rdf:nil member of graph object.
-            var nil = graphObject[RdfSpecsHelper.RdfListNil] as JObjectWithUsages;
+            var nil = graphObject[RdfSpecsHelper.RdfListNil] as JsonObject;
 
             // 6.4 - For each item usage in the usages member of nil, perform the following steps:
-
-            foreach (Usage usage in nil.Usages)
+            if (usages.ContainsKey(nil))
             {
-                // 6.4.1 - Initialize node to the value of the value of the node entry of usage,
-                // property to the value of the property entry of usage,
-                // and head to the value of the value entry of usage.
-                JObjectWithUsages node = usage.Node;
-                var property = usage.Property;
-                var head = usage.Value as JObject;
-                // 6.4.2 - Initialize two empty arrays list and list nodes.
-                var list = new JArray();
-                var listNodes = new JArray();
-                // 6.4.3 - While property equals rdf:rest, the value of the @id entry of node is a blank node identifier,
-                // the value of the entry of referenced once associated with the @id entry of node is a map,
-                // node has rdf:first and rdf:rest entries, both of which have as value an array consisting of a single element,
-                // and node has no other entries apart from an optional @type entry whose value is an array with a single item equal to rdf:List,
-                // node represents a well-formed list node.
-                // Perform the following steps to traverse the list backwards towards its head:
-                while (IsWellFormedListNode(node, property, referencedOnce))
+                foreach (Usage usage in usages[nil])
                 {
-                    // 6.4.3.1 - Append the only item of rdf:first member of node to the list array.
-                    list.Add((node[RdfSpecsHelper.RdfListFirst] as JArray)[0]);
-                    // 6.4.3.2 - Append the value of the @id member of node to the list nodes array.
-                    listNodes.Add(node["@id"]);
-                    // 6.4.3.3 - Initialize node usage to the value of the entry of referenced once associated with the @id entry of node.
-                    Usage nodeUsage = referencedOnce[node["@id"].Value<string>()];
+                    // 6.4.1 - Initialize node to the value of the value of the node entry of usage,
+                    // property to the value of the property entry of usage,
+                    // and head to the value of the value entry of usage.
+                    JsonObject node = usage.Node;
+                    var property = usage.Property;
+                    var head = usage.Value as JsonObject;
+                    // 6.4.2 - Initialize two empty arrays list and list nodes.
+                    var list = new List<JsonNode>();
+                    var listNodes = new List<string>();
+                    // 6.4.3 - While property equals rdf:rest, the value of the @id entry of node is a blank node identifier,
+                    // the value of the entry of referenced once associated with the @id entry of node is a map,
+                    // node has rdf:first and rdf:rest entries, both of which have as value an array consisting of a single element,
+                    // and node has no other entries apart from an optional @type entry whose value is an array with a single item equal to rdf:List,
+                    // node represents a well-formed list node.
+                    // Perform the following steps to traverse the list backwards towards its head:
+                    while (IsWellFormedListNode(node, property, referencedOnce))
+                    {
+                        // 6.4.3.1 - Append the only item of rdf:first member of node to the list array.
+                        JsonArray listArray = node[RdfSpecsHelper.RdfListFirst] as JsonArray;
+                        JsonNode firstItem = listArray[0];
+                        listArray.RemoveAt(0);
+                        list.Add(firstItem);
 
-                    // 6.4.3.4 - Set node to the value of the node entry of node usage,
-                    // property to the value of the property entry of node usage,
-                    // and head to the value of the value entry of node usage.
-                    node = nodeUsage.Node;
-                    property = nodeUsage.Property;
-                    head = nodeUsage.Value as JObject;
-                    // 6.4.3.5 - If the @id entry of node is an IRI instead of a blank node identifier, exit the while loop.
-                    if (!JsonLdUtils.IsBlankNodeIdentifier(node["@id"].Value<string>())) break;
-                }
+                        // 6.4.3.2 - Append the value of the @id member of node to the list nodes array.
+                        listNodes.Add(node["@id"].GetValue<string>());
 
-                // 6.4.4 - Remove the @id entry from head.
-                head.Remove("@id");
-                // 6.4.5 - Reverse the order of the list array.
-                list = new JArray(list.Reverse());
-                // 6.4.6 - Add an @list entry to head and initialize its value to the list array.
-                head["@list"] = list;
-                // 6.5.7 - For each item node id in list nodes, remove the node id entry from graph object.
-                foreach (var nodeId in listNodes.Select(item => item.Value<string>()))
-                {
-                    graphObject.Remove(nodeId);
+                        // 6.4.3.3 - Initialize node usage to the value of the entry of referenced once associated with the @id entry of node.
+                        Usage nodeUsage = referencedOnce[node["@id"].GetValue<string>()];
+
+                        // 6.4.3.4 - Set node to the value of the node entry of node usage,
+                        // property to the value of the property entry of node usage,
+                        // and head to the value of the value entry of node usage.
+                        node = nodeUsage.Node;
+                        property = nodeUsage.Property;
+                        head = nodeUsage.Value as JsonObject;
+                        // 6.4.3.5 - If the @id entry of node is an IRI instead of a blank node identifier, exit the while loop.
+                        if (!JsonLdUtils.IsBlankNodeIdentifier(node["@id"].GetValue<string>())) break;
+                    }
+
+                    // 6.4.4 - Remove the @id entry from head.
+                    head.Remove("@id");
+                    // 6.4.5 - Reverse the order of the list array.
+                    list.Reverse();
+                    // list = [.. listNodes.Reverse()];
+                    // 6.4.6 - Add an @list entry to head and initialize its value to the list array.
+                    head["@list"] = new JsonArray(list.ToArray());
+                    // 6.5.7 - For each item node id in list nodes, remove the node id entry from graph object.
+                    foreach (var nodeId in listNodes)
+                    {
+                        graphObject.Remove(nodeId);
+                    }
                 }
             }
 
         }
 
         // 7 - Initialize an empty array result.
-        var result = new JArray();
+        var result = new JsonArray();
         // 8 - For each subject and node in default graph ordered lexicographically by subject if ordered is true:
-        IEnumerable<JProperty> defaultGraphProperties = defaultGraph.Properties();
-        if (_options.Ordered) defaultGraphProperties = defaultGraphProperties.OrderBy(x => x.Name, StringComparer.Ordinal);
-        foreach (JProperty defaultGraphProperty in defaultGraphProperties)
+        IEnumerable<KeyValuePair<string, JsonNode>> defaultGraphProperties = defaultGraph;
+        if (_options.Ordered) defaultGraphProperties = defaultGraphProperties.OrderBy(x => x.Key, StringComparer.Ordinal);
+        foreach (KeyValuePair<string, JsonNode> defaultGraphProperty in defaultGraphProperties)
         {
-            var subject = defaultGraphProperty.Name;
-            var node = defaultGraphProperty.Value as JObject;
+            var subject = defaultGraphProperty.Key;
+            var node = defaultGraphProperty.Value as JsonObject;
             // 8.1 - If graph map has a subject member:
             if (graphMap.ContainsKey(subject))
             {
                 // 8.1.1 - Add an @graph member to node and initialize its value to an empty array.
-                var graphArray = new JArray();
+                var graphArray = new JsonArray();
                 node["@graph"] = graphArray;
                 // 8.1.2 - For each key-value pair s-n in the subject entry of graph map ordered lexicographically by s if ordered is true,
                 // append n to the @graph entry of node after removing its usages entry, unless the only remaining entry of n is @id.
-                IEnumerable<JProperty> subjectMapProperties = (graphMap[subject] as JObject).Properties();
+                IEnumerable<KeyValuePair<string, JsonNode>> subjectMapProperties = (graphMap[subject] as JsonObject);
                 if (_options.Ordered)
                 {
-                    subjectMapProperties = subjectMapProperties.OrderBy(x => x.Name, StringComparer.Ordinal);
+                    subjectMapProperties = subjectMapProperties.OrderBy(x => x.Key, StringComparer.Ordinal);
                 }
-                foreach (JProperty subjectMapProperty in subjectMapProperties)
+                foreach (KeyValuePair<string, JsonNode> subjectMapProperty in subjectMapProperties.ToList())
                 {
-                    var s = subjectMapProperty.Name;
-                    var n = subjectMapProperty.Value as JObject;
+                    var s = subjectMapProperty.Key;
+                    var n = subjectMapProperty.Value as JsonObject;
                     n.Remove("usages");
-                    if (n.Properties().Any(np => !np.Name.Equals("@id")))
+                    if (n.Any(np => !np.Key.Equals("@id")))
                     {
+                        graphMap[subject].AsObject().Remove(s);
                         graphArray.Add(n);
                     }
                 }
             }
             // 8.2 - Append node to result after removing its usages member, unless the only remaining member of node is @id.
             node.Remove("usages");
-            if (node.Properties().Any(p => !p.Name.Equals("@id")))
+            if (node.Any(p => !p.Key.Equals("@id")))
             {
-                result.Add(node);
+                result.Add(node.DeepClone());
             }
         }
         // 9 - Return result.
         return result;
     }
 
-    private static bool IsWellFormedListNode(JObject node, string property, Dictionary<string, Usage> nodeUsagesMap)
+    private static bool IsWellFormedListNode(JsonObject node, string property, Dictionary<string, Usage> nodeUsagesMap)
     {
         // If property equals rdf:rest, the value of the @id entry of node is a blank node identifier,
         // the value of the entry of referenced once associated with the @id entry of node is a map,
@@ -393,40 +417,40 @@ public class JsonLdWriter : BaseStoreWriter
         // and node has no other entries apart from an optional @type entry whose value is an array with a single item equal to rdf: List,
         // node represents a well-formed list node. 
         if (!RdfSpecsHelper.RdfListRest.Equals(property)) return false;
-        var nodeId = node["@id"].Value<string>();
+        var nodeId = node["@id"].GetValue<string>();
         if (nodeId == null || !JsonLdUtils.IsBlankNodeIdentifier(nodeId)) return false;
         if (!nodeUsagesMap.TryGetValue(nodeId, out Usage usage)) return false;
         if (usage == null) return false;
 
-        var first = node[RdfSpecsHelper.RdfListFirst] as JArray;
-        var rest = node[RdfSpecsHelper.RdfListRest] as JArray;
+        var first = node[RdfSpecsHelper.RdfListFirst] as JsonArray;
+        var rest = node[RdfSpecsHelper.RdfListRest] as JsonArray;
         if (first == null || rest == null) return false;
         if (first.Count != 1 || rest.Count != 1) return false;
 
-        var type = node["@type"] as JArray;
+        var type = node["@type"] as JsonArray;
         if (type != null && (type.Count != 1 ||
-                             type.Count == 1 && !type[0].Value<string>().Equals(RdfSpecsHelper.RdfList)))
+                             type.Count == 1 && !type[0].GetValue<string>().Equals(RdfSpecsHelper.RdfList)))
             return false;
-        var propCount = node.Properties().Count();
-        if (type == null && propCount != 3 || type != null && propCount != 4) return false;
+        var propCount = node.Count();
+        if ((type == null && propCount != 3) || (type != null && propCount != 4)) return false;
         return true;
     }
 
-    private JToken RdfToObject(INode value)
+    private JsonNode RdfToObject(INode value)
     {
         switch (value)
         {
             // 1 - If value is an IRI or a blank node identifier, return a new dictionary consisting of a single member @id whose value is set to value.
             case IUriNode uriNode:
-                return new JObject(new JProperty("@id", uriNode.Uri.OriginalString));
+                return new JsonObject{["@id"] = uriNode.Uri.OriginalString};
             case IBlankNode bNode:
-                return new JObject(new JProperty("@id", "_:" + bNode.InternalID));
+                return new JsonObject{["@id"] = "_:" + bNode.InternalID};
             case ILiteralNode literal:
                 // 2 - Otherwise value is an RDF literal:
                 // 2.1 - Initialize a new empty dictionary result.
-                var result = new JObject();
+                var result = new JsonObject();
                 // 2.2 - Initialize converted value to value.
-                JToken convertedValue = new JValue(literal.Value);
+                JsonNode convertedValue = JsonValue.Create(literal.Value);
                 // 2.3 - Initialize type to null
                 string type = null;
                 // 2.4 - If use native types is true
@@ -435,7 +459,7 @@ public class JsonLdWriter : BaseStoreWriter
                     // 2.4.1 - If the datatype IRI of value equals xsd:string, set converted value to the lexical form of value.
                     if (literal.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                     {
-                        convertedValue = new JValue(literal.Value);
+                        convertedValue = JsonValue.Create(literal.Value);
                     }
                     // 2.4.2 - Otherwise, if the datatype IRI of value equals xsd:boolean, set converted value to true if the lexical form of value matches true, or false if it matches false. If it matches neither, set type to xsd:boolean.
                     else if (literal.DataType.ToString()
@@ -443,11 +467,11 @@ public class JsonLdWriter : BaseStoreWriter
                     {
                         if (literal.Value.Equals("true"))
                         {
-                            convertedValue = new JValue(true);
+                            convertedValue = JsonValue.Create(true);
                         }
                         else if (literal.Value.Equals("false"))
                         {
-                            convertedValue = new JValue(false);
+                            convertedValue = JsonValue.Create(false);
                         }
                         else
                         {
@@ -459,14 +483,14 @@ public class JsonLdWriter : BaseStoreWriter
                     {
                         if (IsWellFormedInteger(literal.Value))
                         {
-                            convertedValue = new JValue(long.Parse(literal.Value));
+                            convertedValue = JsonValue.Create(long.Parse(literal.Value));
                         }
                     }
                     else if (literal.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
                     {
                         if (IsWellFormedDouble(literal.Value))
                         {
-                            convertedValue = new JValue(double.Parse(literal.Value));
+                            convertedValue = JsonValue.Create(double.Parse(literal.Value));
                         }
                     }
                     // KA: Step missing from spec - otherwise set type to the datatype IRI
@@ -481,7 +505,7 @@ public class JsonLdWriter : BaseStoreWriter
                 {
                     try
                     {
-                        convertedValue = JToken.Parse(literal.Value);
+                        convertedValue = JsonNode.Parse(literal.Value);
                     }
                     catch (Exception ex)
                     {
@@ -545,9 +569,9 @@ public class JsonLdWriter : BaseStoreWriter
         return DoubleLexicalRepresentation.IsMatch(literal);
     }
 
-    private static void AppendUniqueElement(JToken element, JArray toArray)
+    private static void AppendUniqueElement(JsonNode element, JsonArray toArray)
     {
-        if (!toArray.Any(x => JToken.DeepEquals(x, element)))
+        if (!toArray.Any(x => JsonNode.DeepEquals(x, element)))
         {
             toArray.Add(element);
         }
@@ -569,22 +593,16 @@ public class JsonLdWriter : BaseStoreWriter
     public override event StoreWriterWarning Warning;
 #pragma warning restore CS0067
 
-    private class JObjectWithUsages : JObject
-    {
-        public readonly List<Usage> Usages = [];
-        public JObjectWithUsages(params object[] content) : base(content) { }
-    }
-
     private class Usage
     {
-        public Usage(JObjectWithUsages node, string property, JToken value)
+        public Usage(JsonObject node, string property, JsonNode value)
         {
             Node = node;
             Property = property;
             Value = value;
         }
-        public JObjectWithUsages Node { get; }
+        public JsonObject Node { get; }
         public string Property { get; }
-        public JToken Value { get; }
+        public JsonNode Value { get; }
     }
 }
