@@ -39,21 +39,37 @@ public class BlankNodeMapper
     private Dictionary<string, string> _remappings = [];
     private static long _nextid = 0;
     private static long _nextremap = 0;
-    private string _prefix = "autos";
+    private readonly string _prefix;
+
+    /// <summary>
+    /// The default used when no prefix is given.
+    /// </summary>
+    public const string DefaultPrefix = "autos";
 
     /// <summary>
     /// Creates a new Blank Node Mapper.
     /// </summary>
-    public BlankNodeMapper()
+    public BlankNodeMapper() : this(DefaultPrefix)
     { }
 
     /// <summary>
     /// Creates a new Blank Node Mapper that uses a custom Prefix.
     /// </summary>
     /// <param name="prefix">Prefix.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="prefix"/> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="prefix"/> is empty or whitespace.</exception>
     public BlankNodeMapper(string prefix)
     {
-        if (prefix == null || prefix.EndsWith(string.Empty)) prefix = "autos";
+        if (prefix is null)
+        {
+            throw new ArgumentNullException(nameof(prefix));
+        }
+
+        if (string.IsNullOrWhiteSpace(prefix))
+        {
+            throw new ArgumentException("Prefix cannot be empty or whitespace.", nameof(prefix));
+        }
+
         _prefix = prefix;
     }
 
