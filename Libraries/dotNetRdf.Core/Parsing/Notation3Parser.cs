@@ -28,7 +28,6 @@ using System;
 using System.IO;
 using System.Text;
 using VDS.RDF.Parsing.Contexts;
-using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF.Parsing;
@@ -40,7 +39,7 @@ namespace VDS.RDF.Parsing;
 /// </remarks>
 /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue.</threadsafety>
 public class Notation3Parser 
-    : IRdfReader, ITraceableParser, ITraceableTokeniser, ITokenisingParser
+    : BaseRdfParser, ITraceableParser, ITraceableTokeniser, ITokenisingParser
 {
     private bool _traceParsing = false;
     private bool _traceTokeniser = false;
@@ -106,57 +105,12 @@ public class Notation3Parser
     public TokenQueueMode TokenQueueMode { get; set; } = TokenQueueMode.SynchronousBufferDuringParsing;
 
     /// <summary>
-    /// Loads a Graph by reading Notation 3 syntax from the given input.
-    /// </summary>
-    /// <param name="g">Graph to load into.</param>
-    /// <param name="input">Stream to read from.</param>
-    public void Load(IGraph g, StreamReader input)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-        Load(new GraphHandler(g), input, g.UriFactory);
-    }
-
-    /// <summary>
-    /// Loads a Graph by reading Notation 3 syntax from the given input.
-    /// </summary>
-    /// <param name="g">Graph to load into.</param>
-    /// <param name="input">Input to read from.</param>
-    public void Load(IGraph g, TextReader input)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-        Load(new GraphHandler(g), input, g.UriFactory);
-    }
-
-    /// <summary>
-    /// Loads a Graph by reading Notation 3 syntax from the given file.
-    /// </summary>
-    /// <param name="g">Graph to load into.</param>
-    /// <param name="filename">File to read from.</param>
-    public void Load(IGraph g, string filename)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-        if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-        using var reader = new StreamReader(File.OpenRead(filename), Encoding.UTF8);
-        Load(g, reader);
-    }
-
-    /// <summary>
-    /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given input.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="input">Stream to read from.</param>
-    public void Load(IRdfHandler handler, StreamReader input)
-    {
-        Load(handler, input, UriFactory.Root);
-    }
-
-    /// <summary>
     /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given input.
     /// </summary>
     /// <param name="handler">RDF Handler to use.</param>
     /// <param name="input">Stream to read from.</param>
     /// <param name="uriFactory">URI Factory to use.</param>
-    public void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
@@ -178,7 +132,7 @@ public class Notation3Parser
     /// </summary>
     /// <param name="handler">RDF Handler to use.</param>
     /// <param name="input">Input to read from.</param>
-    public void Load(IRdfHandler handler, TextReader input)
+    public override void Load(IRdfHandler handler, TextReader input)
     {
         Load(handler, input, UriFactory.Root);
     }
@@ -189,7 +143,7 @@ public class Notation3Parser
     /// <param name="handler">RDF Handler to use.</param>
     /// <param name="input">Input to read from.</param>
     /// <param name="uriFactory">URI Factory to use.</param>
-    public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
     {
 
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -220,16 +174,6 @@ public class Notation3Parser
     }
 
     /// <summary>
-    /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given file.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="filename">File to read from.</param>
-    public void Load(IRdfHandler handler, string filename)
-    {
-        Load(handler, filename, UriFactory.Root);
-    }
-
-    /// <summary>
     /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax from a given File.
     /// </summary>
     /// <param name="handler">RDF Handler to use.</param>
@@ -238,7 +182,7 @@ public class Notation3Parser
     /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
     /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
     /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
-    public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");

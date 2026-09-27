@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.IO;
 using VDS.RDF.Parsing.Handlers;
 
@@ -35,6 +36,7 @@ namespace VDS.RDF.Parsing;
 /// <see cref="IRdfReader"/> that take an <see cref="IGraph"/> argument, the adapter will use the <see cref="GraphHandler"/>
 /// implementation which populates the graph with all triples from all graphs read by the underlying <see cref="IStoreReader"/>.
 /// </summary>
+[Obsolete("This class is an adapter for the obsolete IStoreReader interface and may be removed in future versions.")]
 public class StoreReaderAdapter : IRdfReader
 {
     private readonly IStoreReader _storeReader;
@@ -130,6 +132,24 @@ public class StoreReaderAdapter : IRdfReader
     public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
     {
         _storeReader.Load(handler, filename, uriFactory);
+    }
+
+    /// <inheritdoc/>
+    public void Load(ITripleStore store, StreamReader input)
+    {
+        _storeReader.Load(new TripleStoreHandler(store), input);
+    }
+
+    /// <inheritdoc/>
+    public void Load(ITripleStore store, TextReader input)
+    {
+        _storeReader.Load(new TripleStoreHandler(store), input);
+    }
+
+    /// <inheritdoc/>
+    public void Load(ITripleStore store, string filename)
+    {
+        _storeReader.Load(new TripleStoreHandler(store), filename);
     }
 
     /// <inheritdoc />

@@ -84,7 +84,7 @@ public enum RdfXmlParserMode
 /// Parser for RDF/XML syntax.
 /// </summary>
 public class RdfXmlParser
-    : IRdfReader, ITraceableParser
+    : BaseRdfParser, ITraceableParser
 {
 
     #region Variables and Properties
@@ -141,60 +141,12 @@ public class RdfXmlParser
     #region Load Method Implementations
 
     /// <summary>
-    /// Reads RDF/XML syntax from some Stream into the given Graph.
-    /// </summary>
-    /// <param name="g">Graph to create Triples in.</param>
-    /// <param name="input">Input Stream.</param>
-    public void Load(IGraph g, StreamReader input)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-        Load(new GraphHandler(g), input, g.UriFactory);
-    }
-
-    /// <summary>
-    /// Reads RDF/XML syntax from some Input into the given Graph.
-    /// </summary>
-    /// <param name="g">Graph to create Triples in.</param>
-    /// <param name="input">Input to read from.</param>
-    public void Load(IGraph g, TextReader input)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-        Load(new GraphHandler(g), input, g.UriFactory);
-    }
-
-    /// <summary>
-    /// Reads RDF/XML syntax from some File into the given Graph.
-    /// </summary>
-    /// <param name="g">Graph to create Triples in.</param>
-    /// <param name="filename">Filename of File containg XML/RDF.</param>
-    /// <remarks>Simply opens a Stream for the File then calls the other version of Load to do the actual parsing.</remarks>
-    public void Load(IGraph g, string filename)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-        if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-
-        // Open a Stream for the File and call other variant of Load
-        var input = new StreamReader(File.OpenRead(filename), Encoding.UTF8);
-        Load(g, input);
-    }
-
-    /// <summary>
-    /// Reads RDF/XML syntax from some Stream using a RDF Handler.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="input">Input Stream.</param>
-    public void Load(IRdfHandler handler, StreamReader input)
-    {
-        Load(handler, input, UriFactory.Root);
-    }
-
-    /// <summary>
     /// Reads RDF/XML syntax from some Stream using a RDF Handler.
     /// </summary>
     /// <param name="handler">RDF Handler to use.</param>
     /// <param name="input">Input Stream.</param>
     /// <param name="uriFactory">URI Factory to use.</param>
-    public void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
@@ -214,18 +166,8 @@ public class RdfXmlParser
     /// </summary>
     /// <param name="handler">RDF Handler to use.</param>
     /// <param name="input">Input to read from.</param>
-    public void Load(IRdfHandler handler, TextReader input)
-    {
-        Load(handler, input, UriFactory.Root);
-    }
-
-    /// <summary>
-    /// Reads RDF/XML syntax from some Input using a RDF Handler.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="input">Input to read from.</param>
     /// <param name="uriFactory">URI factory to use.</param>
-    public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (input == null) throw new RdfParseException("Cannot read RDF from a null TextReader");
@@ -274,15 +216,6 @@ public class RdfXmlParser
         }
     }
 
-    /// <summary>
-    /// Reads RDF/XML syntax from a file using a RDF Handler.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="filename">File to read from.</param>
-    public void Load(IRdfHandler handler, string filename)
-    {
-        Load(handler, filename, UriFactory.Root);
-    }
 
     /// <summary>
     /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax from a given File.
@@ -293,7 +226,7 @@ public class RdfXmlParser
     /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
     /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
     /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
-    public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
@@ -335,24 +268,6 @@ public class RdfXmlParser
     }
 
     #endregion
-
-    /// <summary>
-    /// Helper Method for raising the <see cref="RdfXmlParser.Warning">Warning</see> event.
-    /// </summary>
-    /// <param name="warning">Warning Message.</param>
-    private void RaiseWarning(string warning)
-    {
-        RdfReaderWarning d = Warning;
-        if (d != null)
-        {
-            d(warning);
-        }
-    }
-
-    /// <summary>
-    /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed
-    /// </summary>
-    public event RdfReaderWarning Warning;
 
     /// <summary>
     /// Function which does the actual Parsing by invoking the various steps of the Parser.

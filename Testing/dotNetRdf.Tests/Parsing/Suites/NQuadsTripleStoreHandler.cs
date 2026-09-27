@@ -1,15 +1,14 @@
-﻿using System.IO;
+using System.IO;
 using Xunit;
 
 namespace VDS.RDF.Parsing.Suites;
 
-
-public class NQuads
-    : BaseRdfParserSuite
+public class NQuadsTripleStoreHandler
+    : BaseDatasetRdfParserSuite
 {
     private readonly ITestOutputHelper _testOutputHelper;
 
-    public NQuads(ITestOutputHelper testOutputHelper)
+    public NQuadsTripleStoreHandler(ITestOutputHelper testOutputHelper)
         : base(new NQuadsParser(), new NQuadsParser(), "nquads11")
     {
         _testOutputHelper = testOutputHelper;

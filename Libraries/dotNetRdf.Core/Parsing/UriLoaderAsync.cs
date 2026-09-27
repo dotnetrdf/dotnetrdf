@@ -426,9 +426,9 @@ public static partial class UriLoader
                                     catch (RdfParserSelectionException)
                                     {
                                         var data = new StreamReader(response.GetResponseStream()).ReadToEnd();
-                                        parser = StringParser.GetDatasetParser(data);
-                                        parser.Warning += RaiseStoreWarning;
-                                        parser.Load(handler, new StringReader(data));
+                                        var rdfParser = StringParser.GetDatasetParser(data);
+                                        rdfParser.Warning += RaiseStoreWarning;
+                                        rdfParser.Load(handler, new StringReader(data));
                                     }
                                 }
                             }

@@ -48,7 +48,20 @@ public static class EmbeddedResourceLoader
     public static void Load(IGraph g, string resource, IRdfReader parser)
     {
         if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-        Load(new GraphHandler(g), resource, (IRdfReader)null);
+        Load(new GraphHandler(g), resource, parser);
+    }
+
+    /// <summary>
+    /// Loads a RDF Dataset from an Embedded Resource into a Triple Store.
+    /// </summary>
+    /// <param name="store">Triple Store to load into.</param>
+    /// <param name="resource">Assembly Qualified Name of the Resource to load.</param>
+    /// <param name="parser">Parser to use (leave null for auto-selection).</param>
+    /// <exception cref="RdfParseException"></exception>
+    public static void Load(ITripleStore store, string resource, IRdfReader parser)
+    {
+        if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Triple Store");
+        Load(new TripleStoreHandler(store), resource, parser);
     }
 
     /// <summary>
@@ -182,6 +195,7 @@ public static class EmbeddedResourceLoader
     /// <param name="store">Store to load into.</param>
     /// <param name="resource">Assembly Qualified Name of the Resource to load.</param>
     /// <param name="parser">Parser to use (leave null for auto-selection).</param>
+    [Obsolete("Use Load(ITripleStore, string, IRdfReader)")]
     public static void Load(ITripleStore store, string resource, IStoreReader parser)
     {
         if (store == null) throw new RdfParseException("Cannot read RDF Dataset into a null Store");
@@ -198,7 +212,7 @@ public static class EmbeddedResourceLoader
     /// </remarks>
     public static void Load(ITripleStore store, string resource)
     {
-        Load(store, resource, null);
+        Load(store, resource, (IRdfReader)null);
     }
 
     /// <summary>
@@ -207,6 +221,7 @@ public static class EmbeddedResourceLoader
     /// <param name="handler">RDF Handler to use.</param>
     /// <param name="resource">Assembly Qualified Name of the Resource to load.</param>
     /// <param name="parser">Parser to use (leave null for auto-selection).</param>
+    [Obsolete("Use the overload that specifies an IRdfReader parser instead.")]
     public static void Load(IRdfHandler handler, string resource, IStoreReader parser)
     {
         if (resource == null) throw new RdfParseException("Cannot read a RDF Dataset from a null Resource");
@@ -255,9 +270,10 @@ public static class EmbeddedResourceLoader
     /// </summary>
     /// <param name="handler">RDF Handler to use.</param>
     /// <param name="resource">Assembly Qualified Name of the Resource to load.</param>
+    [Obsolete("Use Load(IRdfHandler, string) instead")]
     public static void LoadDataset(IRdfHandler handler, string resource)
     {
-        Load(handler, resource, (IStoreReader)null);
+        Load(handler, resource, (IRdfReader)null);
     }
 
     /// <summary>
@@ -314,8 +330,8 @@ public static class EmbeddedResourceLoader
                             data = reader.ReadToEnd();
                             reader.Close();
                         }
-                        parser = StringParser.GetDatasetParser(data);
-                        parser.Load(handler, new StringReader(data));
+                        var stringParser = StringParser.GetDatasetParser(data);
+                        stringParser.Load(handler, new StringReader(data));
                     }
                 }
             }

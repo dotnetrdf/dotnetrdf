@@ -603,9 +603,9 @@ public static partial class UriLoader
                     {
                         // Finally fall back to assuming a dataset and trying format guessing
                         var data = new StreamReader(httpResponse.GetResponseStream()).ReadToEnd();
-                        parser = StringParser.GetDatasetParser(data);
-                        parser.Warning += RaiseStoreWarning;
-                        parser.Load(handler, new StringReader(data));
+                        var rdfParser = StringParser.GetDatasetParser(data);
+                        rdfParser.Warning += RaiseStoreWarning;
+                        rdfParser.Load(handler, new StringReader(data));
                     }
                 }
             }

@@ -45,7 +45,7 @@ public class EmptyFileParsing
          Assert.True(g.IsEmpty, "Graph should be empty");
      }
 
-     private void TestEmptyDatasetParsing(IStoreReader reader)
+     private void TestEmptyDatasetParsing(IRdfReader reader)
      {
          if (!File.Exists("empty.test"))
          {

@@ -40,7 +40,7 @@ namespace VDS.RDF.Parsing;
 /// </para>
 /// </remarks>
 public abstract class BaseGZipParser
-    : IRdfReader
+    : BaseRdfParser
 {
     private IRdfReader _parser;
 
@@ -55,51 +55,6 @@ public abstract class BaseGZipParser
     }
 
     /// <summary>
-    /// Loads a Graph from GZipped input.
-    /// </summary>
-    /// <param name="g">Graph to load into.</param>
-    /// <param name="input">Stream to load from.</param>
-    public void Load(IGraph g, StreamReader input)
-    {
-        if (g == null) throw new RdfParseException("Cannot parse RDF into a null Graph");
-        Load(new GraphHandler(g), input, g.UriFactory);
-    }
-
-    /// <summary>
-    /// Loads a Graph from GZipped input.
-    /// </summary>
-    /// <param name="g">Graph to load into.</param>
-    /// <param name="input">Reader to load from.</param>
-    public void Load(IGraph g, TextReader input)
-    {
-        if (g == null) throw new RdfParseException("Cannot parse RDF into a null Graph");
-        Load(new GraphHandler(g), input, g.UriFactory);
-    }
-
-    /// <summary>
-    /// Loads a Graph from GZipped input.
-    /// </summary>
-    /// <param name="g">Graph to load into.</param>
-    /// <param name="filename">File to load from.</param>
-    public void Load(IGraph g, string filename)
-    {
-        if (g == null) throw new RdfParseException("Cannot parse RDF into a null Graph");
-        Load(new GraphHandler(g), filename, g.UriFactory);
-    }
-
-    /// <summary>
-    /// Loads RDF using a RDF Handler from GZipped input.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="input">Stream to load from.</param>
-    public void Load(IRdfHandler handler, StreamReader input)
-    {
-        if (handler == null) throw new RdfParseException("Cannot parse RDF using a null Handler");
-        if (input == null) throw new RdfParseException("Cannot parse RDF from a null input");
-        Load(handler, input, UriFactory.Root);
-    }
-
-    /// <summary>
     /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream.
     /// </summary>
     /// <param name="handler">RDF Handler to use.</param>
@@ -108,7 +63,7 @@ public abstract class BaseGZipParser
     /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
     /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
     /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
-    public void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot parse RDF using a null Handler");
         if (input == null) throw new RdfParseException("Cannot parse RDF from a null input");
@@ -131,7 +86,7 @@ public abstract class BaseGZipParser
     /// </summary>
     /// <param name="handler">RDF Handler to use.</param>
     /// <param name="input">Reader to load from.</param>
-    public void Load(IRdfHandler handler, TextReader input)
+    public override void Load(IRdfHandler handler, TextReader input)
     {
         if (input is StreamReader reader)
         {
@@ -152,7 +107,7 @@ public abstract class BaseGZipParser
     /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
     /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
     /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
-    public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
     {
         if (input is StreamReader reader)
         {
@@ -165,16 +120,6 @@ public abstract class BaseGZipParser
     }
 
     /// <summary>
-    /// Loads RDF using a RDF Handler from GZipped input.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="filename">File to load from.</param>
-    public void Load(IRdfHandler handler, string filename)
-    {
-        Load(handler, filename, UriFactory.Root);
-    }
-
-    /// <summary>
     /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax from a given File.
     /// </summary>
     /// <param name="handler">RDF Handler to use.</param>
@@ -183,27 +128,12 @@ public abstract class BaseGZipParser
     /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
     /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
     /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
-    public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
     { 
         if (filename == null) throw new RdfParseException("Cannot parse RDF from a null file");
         if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
         Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)), uriFactory);
     }
-
-    /// <summary>
-    /// Helper method for raising warning events.
-    /// </summary>
-    /// <param name="message"></param>
-    private void RaiseWarning(string message)
-    {
-        RdfReaderWarning d = Warning;
-        if (d != null) d(message);
-    }
-
-    /// <summary>
-    /// Warning event which is raised when non-fatal errors are encounted parsing RDF
-    /// </summary>
-    public event RdfReaderWarning Warning;
 
     /// <summary>
     /// Gets the description of the parser.

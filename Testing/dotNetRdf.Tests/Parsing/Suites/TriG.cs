@@ -31,7 +31,7 @@ namespace VDS.RDF.Parsing.Suites;
 
 
 public class TriG
-    : BaseDatasetParserSuite
+    : BaseRdfParserSuite
 {
     private readonly ITestOutputHelper _testOutputHelper;
 

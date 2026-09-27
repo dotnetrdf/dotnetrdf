@@ -59,7 +59,7 @@ public enum NTriplesSyntax
 /// </summary>
 /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue.</threadsafety>
 public class NTriplesParser
-    : IRdfReader, ITraceableParser, ITraceableTokeniser, ITokenisingParser
+    : BaseRdfParser, ITraceableParser, ITraceableTokeniser, ITokenisingParser
 {
     #region Initialisation, Variables and Properties
 
@@ -127,38 +127,14 @@ public class NTriplesParser
     #endregion
 
     /// <summary>
-    /// Parses NTriples Syntax from the given Input Stream into Triples in the given Graph.
-    /// </summary>
-    /// <param name="g">Graph to create Triples in.</param>
-    /// <param name="input">Arbitrary Input Stream to read input from.</param>
-    public void Load(IGraph g, StreamReader input)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-
-        Load(new GraphHandler(g), input, g.UriFactory);
-    }
-
-    /// <summary>
-    /// Parses NTriples Syntax from the given Input into Triples in the given Graph.
-    /// </summary>
-    /// <param name="g">Graph to create Triples in.</param>
-    /// <param name="input">Arbitrary Input to read input from.</param>
-    public void Load(IGraph g, TextReader input)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-
-        Load(new GraphHandler(g), input, g.UriFactory);
-    }
-
-    /// <summary>
     /// Parses NTriples Syntax from the given File into Triples in the given Graph.
     /// </summary>
-    /// <param name="g">Graph to create Triples in.</param>
+    /// <param name="handler">RDF Handler to use.</param>
     /// <param name="filename">Name of the file containing Turtle Syntax.</param>
     /// <remarks>Simply opens an StreamReader and uses the overloaded version of this function.</remarks>
-    public void Load(IGraph g, string filename)
+    public override void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
     {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+        if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
 
         // Can only open Streams as ASCII when not running under Silverlight as Silverlight has no ASCII support
@@ -175,17 +151,7 @@ public class NTriplesParser
                 input = new StreamReader(File.OpenRead(filename), Encoding.UTF8);
                 break;
         }
-        Load(new GraphHandler(g), input, g.UriFactory);
-    }
-
-    /// <summary>
-    /// Parses NTriples Syntax from the given Input Stream using a RDF Handler.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="input">Input Stream to read input from.</param>
-    public void Load(IRdfHandler handler, StreamReader input)
-    {
-       Load(handler, input, UriFactory.Root);
+        Load(handler, input, uriFactory);
     }
 
     /// <summary>
@@ -194,7 +160,7 @@ public class NTriplesParser
     /// <param name="handler">RDF Handler to use.</param>
     /// <param name="input">Input Stream to read input from.</param>
     /// <param name="uriFactory">URI Factory to use.</param>
-    public void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
@@ -221,22 +187,12 @@ public class NTriplesParser
     }
 
     /// <summary>
-    /// Parses NTriples Syntax from the given Input using a RDF Handler.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="input">Input to read input from.</param>
-    public void Load(IRdfHandler handler, TextReader input)
-    {
-        Load(handler, input, UriFactory.Root);
-    }
-
-    /// <summary>
     /// Parses NTriples syntax from the given input using the specified RDF handler and URI factory.
     /// </summary>
     /// <param name="handler">RDF Handler to use.</param>
     /// <param name="input">Input to read from.</param>
     /// <param name="uriFactory">URI factory to use.</param>
-    public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (input == null) throw new RdfParseException("Cannot read RDF from a null TextReader");
@@ -259,33 +215,6 @@ public class NTriplesParser
                 // This error can be ignored
             }
         }
-    }
-
-    /// <summary>
-    /// Parses NTriples Syntax from the given file using a RDF Handler.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="filename">File to read from.</param>
-    public void Load(IRdfHandler handler, string filename)
-    {
-        Load(handler, filename, UriFactory.Root);
-    }
-
-    /// <summary>
-    /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax from a given File.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="filename">The Filename of the File to read from.</param>
-    /// <param name="uriFactory">URI factory to use.</param>
-    /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
-    /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
-    /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
-    public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
-    {
-        if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-        if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-        Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8), uriFactory);
     }
 
     private void Parse(TokenisingParserContext context)

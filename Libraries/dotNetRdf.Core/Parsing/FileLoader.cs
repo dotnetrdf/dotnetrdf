@@ -281,10 +281,10 @@ public static class FileLoader
             var reader = new StreamReader(File.OpenRead(filename));
             var data = reader.ReadToEnd();
             reader.Close();
-            parser = StringParser.GetDatasetParser(data);
-            RaiseWarning("Used the StringParser to guess the parser to use - it guessed " + parser.GetType().Name);
-            parser.Warning += RaiseStoreWarning;
-            parser.Load(handler, new StringReader(data));
+            var rdfParser = StringParser.GetDatasetParser(data);
+            RaiseWarning("Used the StringParser to guess the parser to use - it guessed " + rdfParser.GetType().Name);
+            rdfParser.Warning += RaiseStoreWarning;
+            rdfParser.Load(handler, new StringReader(data));
         }
         else
         {

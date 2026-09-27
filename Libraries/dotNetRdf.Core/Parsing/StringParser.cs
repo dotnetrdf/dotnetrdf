@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.IO;
 using VDS.RDF.Query;
 
@@ -165,6 +166,36 @@ public static class StringParser
     /// <param name="store">Store to load into.</param>
     /// <param name="data">Raw RDF Dataset String.</param>
     /// <param name="reader">Parser to use.</param>
+    public static void ParseDataset(ITripleStore store, string data, IRdfReader reader)
+    {
+        if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Graph");
+        if (data == null) return;
+
+        if (reader == null)
+        {
+            // If no parser supplied then should auto-detect syntax
+            ParseDataset(store, data);
+        }
+        else
+        {
+            try
+            {
+                reader.Load(store, new StringReader(data));
+            }
+            catch
+            {
+                throw;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Parses a raw RDF Dataset String using the given Parser.
+    /// </summary>
+    /// <param name="store">Store to load into.</param>
+    /// <param name="data">Raw RDF Dataset String.</param>
+    /// <param name="reader">Parser to use.</param>
+    [Obsolete("Use ParseDataset(ITripleStore store, string data, IRdfReader reader) instead.")]
     public static void ParseDataset(ITripleStore store, string data, IStoreReader reader)
     {
         if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Graph");
@@ -330,6 +361,11 @@ public static class StringParser
             // Probably RDF/XML
             return new RdfXmlParser();
         }
+        else if (data.Contains("<?xml") && data.Contains("<TriX"))
+        {
+            // Probably TriX
+            return new TriXParser();
+        }
         else if (data.Contains("<html"))
         {
             // HTML (possibly containing RDFa)
@@ -372,7 +408,7 @@ public static class StringParser
     /// </summary>
     /// <param name="data">Raw RDF Dataset String.</param>
     /// <returns></returns>
-    public static IStoreReader GetDatasetParser(string data)
+    public static IRdfReader GetDatasetParser(string data)
     {
         if (data == null) throw new RdfParserSelectionException("Cannot select a Dataset parser for a null String");
 

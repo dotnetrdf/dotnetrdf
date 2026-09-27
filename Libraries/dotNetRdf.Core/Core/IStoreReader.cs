@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.IO;
 
 namespace VDS.RDF;
@@ -31,6 +32,7 @@ namespace VDS.RDF;
 /// <summary>
 /// Interface to be implemented by Triple Store Readers.
 /// </summary>
+[Obsolete("The IStoreReader interface is obsolete and will be removed in future versions. Use the updated IRdfReader reading APIs instead.")]
 public interface IStoreReader
 {
 
@@ -39,6 +41,7 @@ public interface IStoreReader
     /// </summary>
     /// <param name="store">Triple Store.</param>
     /// <param name="filename">File to load from.</param>
+    [Obsolete("Use IRdfReader.Load passing a StoreHandler instance")]
     void Load(ITripleStore store, string filename);
 
     /// <summary>
@@ -46,6 +49,7 @@ public interface IStoreReader
     /// </summary>
     /// <param name="store">Triple Store.</param>
     /// <param name="input">Input to load from.</param>
+    [Obsolete("Use IRdfReader.Load passing a StoreHandler instance")]
     void Load(ITripleStore store, TextReader input);
 
     /// <summary>

@@ -33,6 +33,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Writing;
@@ -1293,11 +1294,22 @@ public static class TripleStoreExtensions
     /// <remarks>
     /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="FileLoader">FileLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
     /// </remarks>
+    [Obsolete("Use LoadFromFile(ITripleStore, string, IRdfReader instead)")]
     public static void LoadFromFile(this ITripleStore store, string file, IStoreReader parser)
     {
         FileLoader.Load(store, file, parser);
     }
 
+    /// <summary>
+    /// Loads an RDF dataset from a file into a Triple Store using the specified RDF parser.
+    /// </summary>
+    /// <param name="store">Triple Store to load into.</param>
+    /// <param name="file">File to load from.</param>
+    /// <param name="parser">Parser to use.</param>
+    public static void LoadFromFile(this ITripleStore store, string file, IRdfReader parser)
+    {
+        FileLoader.Load(new TripleStoreHandler(store), file, parser);
+    }
     /// <summary>
     /// Loads an RDF dataset from a file into a Triple Store.
     /// </summary>
@@ -1320,11 +1332,16 @@ public static class TripleStoreExtensions
     /// <remarks>
     /// This is just a shortcut to using the static <strong>LoadDataset()</strong> methods from the <see cref="Loader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
     /// </remarks>
+    [Obsolete("Use the overload that takes an IRdfReader instead of an IStoreReader.")]
     public static void LoadFromUri(this ITripleStore store, Uri u, IStoreReader parser)
     {
         LoadFromUri(store, u, parser, new Loader());
     }
 
+    public static void LoadFromUri(this ITripleStore store, Uri u, IRdfReader parser)
+    {
+        LoadFromUri(store, u, parser, new Loader());
+    }
     /// <summary>
     /// Loads an RDF dataset from a URI into a Triple Store.
     /// </summary>
@@ -1335,7 +1352,7 @@ public static class TripleStoreExtensions
     /// </remarks>
     public static void LoadFromUri(this ITripleStore store, Uri u)
     {
-        LoadFromUri(store, u, null, new Loader());
+        LoadFromUri(store, u, (IRdfReader)null, new Loader());
     }
 
     /// <summary>
@@ -1348,8 +1365,23 @@ public static class TripleStoreExtensions
     /// <remarks>
     /// This is just a shortcut to using the static <strong>LoadDataset()</strong> methods from the <see cref="Loader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
     /// </remarks>
-
+    [Obsolete("Use the override that takes an IRdfReader instead of an IStoreReader")]
     public static void LoadFromUri(this ITripleStore store, Uri u, IStoreReader parser, Loader loader)
+    {
+        loader.LoadDataset(store, u, parser);
+    }
+
+    /// <summary>
+    /// Loads an RDF dataset from a URI into a Triple Store.
+    /// </summary>
+    /// <param name="store">Triple Store to load into.</param>
+    /// <param name="u">URI to load from.</param>
+    /// <param name="parser">Parser to use.</param>
+    /// <param name="loader">Loader to use.</param>
+    /// <remarks>
+    /// This is just a shortcut to using the static <strong>LoadDataset()</strong> methods from the <see cref="Loader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
+    /// </remarks>
+    public static void LoadFromUri(this ITripleStore store, Uri u, IRdfReader parser, Loader loader)
     {
         loader.LoadDataset(store, u, parser);
     }
@@ -1363,7 +1395,13 @@ public static class TripleStoreExtensions
     /// <remarks>
     /// This is just a shortcut to using the static <strong>ParseDataset()</strong> methods from the <see cref="StringParser">StringParser</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
     /// </remarks>
+    [Obsolete("Use the override that takes an IRdfReader instead of an IStoreReader")]
     public static void LoadFromString(this ITripleStore store, string data, IStoreReader parser)
+    {
+        StringParser.ParseDataset(store, data, parser);
+    }
+
+    public static void LoadFromString(this ITripleStore store, string data, IRdfReader parser)
     {
         StringParser.ParseDataset(store, data, parser);
     }

@@ -75,7 +75,7 @@ public enum NQuadsSyntax
 /// </para>
 /// </remarks>
 public class NQuadsParser
-    : IStoreReader, ITraceableTokeniser, ITokenisingParser
+    : ITraceableTokeniser, ITokenisingParser, IRdfReader
 {
     /// <summary>
     /// Creates a new NQuads parser.
@@ -116,6 +116,21 @@ public class NQuadsParser
         TokenQueueMode = queueMode;
     }
 
+    private event RdfReaderWarning _warning;
+
+    event RdfReaderWarning IRdfReader.Warning
+    {
+        add
+        {
+            _warning += value;
+        }
+
+        remove
+        {
+            _warning -= value;
+        }
+    }
+
     /// <summary>
     /// Gets/Sets whether Tokeniser Tracing is used.
     /// </summary>
@@ -132,9 +147,9 @@ public class NQuadsParser
     public NQuadsSyntax Syntax { get; set; }
 
     /// <summary>
-    /// Loads a RDF Dataset from the NQuads input into the given Triple Store.
+    /// Loads a RDF Dataset from the NQuads input into the given triple store.
     /// </summary>
-    /// <param name="store">Triple Store to load into.</param>
+    /// <param name="store">Triple store to load into.</param>
     /// <param name="filename">File to load from.</param>
     public void Load(ITripleStore store, string filename)
     {
@@ -145,11 +160,24 @@ public class NQuadsParser
     }
 
     /// <summary>
-    /// Loads a RDF Dataset from the NQuads input into the given Triple Store.
+    /// Loads a RDF Dataset from the NQuads input into the given triple store.
     /// </summary>
-    /// <param name="store">Triple Store to load into.</param>
+    /// <param name="store">Triple store to load into.</param>
     /// <param name="input">Input to load from.</param>
     public void Load(ITripleStore store, TextReader input)
+    {
+        if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
+        if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+        Load(new StoreHandler(store), input, store.UriFactory);
+    }
+
+    /// <summary>
+    /// Loads a RDF Dataset from the NQuads input into the given triple store.
+    /// </summary>
+    /// <param name="store">Triple store to load into.</param>
+    /// <param name="input">Input to load from.</param>
+    /// <exception cref="RdfParseException">Thrown if the parser cannot parse the input or the store is null.</exception>
+    public void Load(ITripleStore store, StreamReader input)
     {
         if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
         if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
@@ -412,11 +440,8 @@ public class NQuadsParser
     /// <param name="message">Warning message.</param>
     private void RaiseWarning(string message)
     {
-        StoreReaderWarning d = Warning;
-        if (d != null)
-        {
-            d(message);
-        }
+        Warning?.Invoke(message);
+        _warning?.Invoke(message);
     }
 
     /// <summary>
@@ -432,4 +457,67 @@ public class NQuadsParser
     {
         return "NQuads";
     }
+
+    #region IRdfReader Members
+    /// <inheritdoc/>
+    public void Load(IGraph g, StreamReader input)
+    {
+        Load(new GraphHandler(g), input);
+    }
+
+    /// <inheritdoc/>
+    public void Load(IGraph g, TextReader input)
+    {
+        Load(new GraphHandler(g), input);
+    }
+
+    /// <inheritdoc/>
+    public void Load(IGraph g, string filename)
+    {
+        Load(new GraphHandler(g), filename);
+    }
+
+    /// <inheritdoc/>
+    public void Load(IRdfHandler handler, StreamReader input)
+    {
+        Load(handler, input, UriFactory.Root);
+    }
+
+    /// <inheritdoc/>
+    public void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
+    {
+        if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
+        if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+        // Check for incorrect stream encoding and issue warning if appropriate
+        if (input is StreamReader reader)
+        {
+            switch (Syntax)
+            {
+                case NQuadsSyntax.Original:
+                    // Issue a Warning if the Encoding of the Stream is not ASCII
+                    if (!reader.CurrentEncoding.Equals(Encoding.ASCII))
+                    {
+                        RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " +
+                                     reader.CurrentEncoding.EncodingName +
+                                     " - Please be aware that parsing errors may occur as a result");
+                    }
+
+                    break;
+                default:
+                    if (!reader.CurrentEncoding.Equals(Encoding.UTF8))
+                    {
+                        RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " +
+                                     reader.CurrentEncoding.EncodingName +
+                                     " - Please be aware that parsing errors may occur as a result");
+                    }
+
+                    break;
+            }
+        }
+
+        LoadInternal(handler, input, uriFactory);    
+    }
+
+#endregion
 }

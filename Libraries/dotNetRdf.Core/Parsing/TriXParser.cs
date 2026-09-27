@@ -32,7 +32,6 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Xsl;
-using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing;
@@ -49,7 +48,7 @@ namespace VDS.RDF.Parsing;
 /// </para>
 /// </remarks>
 public class TriXParser
-    : IStoreReader
+    : BaseRdfParser
 {
     /// <summary>
     /// Current W3C Namespace Uri for TriX.
@@ -73,48 +72,32 @@ public class TriXParser
     };
 
     /// <summary>
-    /// Loads the RDF Dataset from the TriX input into the given Triple Store.
-    /// </summary>
-    /// <param name="store">Triple Store to load into.</param>
-    /// <param name="filename">File to load from.</param>
-    public void Load(ITripleStore store, string filename)
-    {
-        if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-        Load(store, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
-    }
-
-    /// <summary>
-    /// Loads the RDF Dataset from the TriX input into the given Triple Store.
-    /// </summary>
-    /// <param name="store">Triple Store to load into.</param>
-    /// <param name="input">Input to load from.</param>
-    public void Load(ITripleStore store, TextReader input)
-    {
-        if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
-        if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-        Load(new StoreHandler(store), input, store.UriFactory);
-    }
-
-    /// <summary>
-    /// Loads the RDF Dataset from the TriX input using a RDF Handler.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="filename">File to load from.</param>
-    public void Load(IRdfHandler handler, string filename)
-    {
-        Load(handler, filename, UriFactory.Root);
-    }
-
-    /// <summary>
     /// Loads an RDF dataset using an RDF handler.
     /// </summary>
     /// <param name="handler">RDF handler to use.</param>
     /// <param name="filename">File to load from.</param>
     /// <param name="uriFactory">URI factory to use.</param>
-    public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
     {
         if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
         Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8), uriFactory);
+    }
+
+    /// <inheritdoc/>
+    public override void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
+    {
+        if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
+        if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+        try {
+            using var xmlReader = XmlReader.Create(input, XmlReaderSettings);
+            Load(handler, xmlReader, uriFactory);
+        }
+        catch (XmlException xmlEx)
+        {
+            // Wrap in a RDF Parse Exception
+            throw new RdfParseException("Unable to Parse this TriX document since System.Xml was unable to parse the document, see Inner Exception for details of the XML exception that occurred", new PositionInfo(xmlEx.LineNumber, xmlEx.LinePosition), xmlEx);
+        }
     }
 
     private void TryParseGraphset(XmlReader reader, IRdfHandler handler, IUriFactory uriFactory)
@@ -392,13 +375,7 @@ public class TriXParser
     }
 
     /// <inheritdoc />
-    public void Load(IRdfHandler handler, TextReader input)
-    {
-        Load(handler, input, UriFactory.Root);
-    }
-
-    /// <inheritdoc />
-    public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
     {
         if (handler == null)
         {
@@ -418,15 +395,7 @@ public class TriXParser
             try
             {
                 using var xmlReader = XmlReader.Create(input, XmlReaderSettings);
-                var source = XDocument.Load(xmlReader);
-                foreach (XProcessingInstruction pi in source.Nodes().OfType<XProcessingInstruction>()
-                             .Where(pi => pi.Target.Equals("xml-stylesheet")))
-                {
-                    source = ApplyTransform(source, pi);
-                }
-
-                using XmlReader transformedXmlReader = source.CreateReader();
-                TryParseGraphset(transformedXmlReader, handler, uriFactory);
+                Load(handler, xmlReader, uriFactory);
             }
             catch (XmlException xmlEx)
             {
@@ -440,6 +409,26 @@ public class TriXParser
         }
     }
 
+    private void Load(IRdfHandler handler, XmlReader xmlReader, IUriFactory uriFactory)
+    {
+        try
+        {
+            var source = XDocument.Load(xmlReader);
+            foreach (XProcessingInstruction pi in source.Nodes().OfType<XProcessingInstruction>()
+                            .Where(pi => pi.Target.Equals("xml-stylesheet")))
+            {
+                source = ApplyTransform(source, pi);
+            }
+
+            using XmlReader transformedXmlReader = source.CreateReader();
+            TryParseGraphset(transformedXmlReader, handler, uriFactory);
+        }
+        catch (XmlException xmlEx)
+        {
+            // Wrap in a RDF Parse Exception
+            throw new RdfParseException("Unable to Parse this TriX document since System.Xml was unable to parse the document, see Inner Exception for details of the XML exception that occurred", new PositionInfo(xmlEx.LineNumber, xmlEx.LinePosition), xmlEx);
+        }
+    }
     private XDocument ApplyTransform(XDocument input, XProcessingInstruction pi)
     {
         Match match = Regex.Match(pi.Data, @"href\s*=\s*""([^""]*)""");

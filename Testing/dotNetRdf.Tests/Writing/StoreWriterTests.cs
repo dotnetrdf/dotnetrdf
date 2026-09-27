@@ -32,7 +32,7 @@ namespace VDS.RDF.Writing;
 
 public class StoreWriterTests
 {
-    private void TestWriter(IStoreWriter writer, IStoreReader reader, bool useMultiThreaded, int compressionLevel = WriterCompressionLevel.More)
+    private void TestWriter(IStoreWriter writer, IRdfReader reader, bool useMultiThreaded, int compressionLevel = WriterCompressionLevel.More)
     {
         var store = new TripleStore();
         var g = new Graph();

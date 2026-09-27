@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using Xunit;
 using Xunit.Sdk;
+using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing.Suites;
 
@@ -42,7 +43,7 @@ public class Trig11 : RdfTestSuite
         _output.WriteLine($"Load from {t.Manifest.ResolveResourcePath(t.Action)}");
         var parser = new TriGParser(TriGSyntax.Rdf11);
         var store = new TripleStore();
-        parser.Load(store, t.Manifest.ResolveResourcePath(t.Action));
+        parser.Load(new TripleStoreHandler(store), t.Manifest.ResolveResourcePath(t.Action));
     }
 
     [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTrigNegativeSyntax")]
@@ -56,7 +57,7 @@ public class Trig11 : RdfTestSuite
 
         var parser = new TriGParser(TriGSyntax.Rdf11);
         var store = new TripleStore();
-        Assert.ThrowsAny<RdfException>(() => parser.Load(store, t.Manifest.ResolveResourcePath(t.Action)));
+        Assert.ThrowsAny<RdfException>(() => parser.Load(new TripleStoreHandler(store), t.Manifest.ResolveResourcePath(t.Action)));
     }
 
     [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTrigEval")]
@@ -66,12 +67,12 @@ public class Trig11 : RdfTestSuite
         var actual = new TripleStore();
         using (var reader = new StreamReader(t.Manifest.ResolveResourcePath(t.Action)))
         {
-            trigParser.Load(actual, reader, t.Action);
+            trigParser.Load(new TripleStoreHandler(actual), reader, t.Action, UriFactory.Root);
         }
 
         var nqParser = new NQuadsParser(NQuadsSyntax.Rdf11Star);
         var expected = new TripleStore();
-        nqParser.Load(expected, t.Manifest.ResolveResourcePath(t.Result));
+        nqParser.Load(new TripleStoreHandler(expected), t.Manifest.ResolveResourcePath(t.Result));
         TestTools.AssertEqual(expected, actual, _output);
     }
 
@@ -81,7 +82,7 @@ public class Trig11 : RdfTestSuite
         var trigParser = new TriGParser(TriGSyntax.Rdf11Star) { ValidateIris = true };
         var actual = new TripleStore();
         using var reader = new StreamReader(t.Manifest.ResolveResourcePath(t.Action));
-        Assert.ThrowsAny<RdfException> (()=>trigParser.Load(actual, reader, t.Action));
+        Assert.ThrowsAny<RdfException> (()=>trigParser.Load(new TripleStoreHandler(actual), reader, t.Action, UriFactory.Root));
     }
 
 

@@ -28,39 +28,33 @@ using Xunit;
 
 namespace VDS.RDF.Parsing.Suites;
 
-public class TriX
-    : BaseRdfParserSuite
+/// <summary>
+/// Test suite for parsing TriG files using a Triple Store handler.
+/// </summary>
+public class TriGTripleStoreHandler : BaseDatasetRdfParserSuite
 {
     private readonly ITestOutputHelper _testOutputHelper;
 
-    public TriX(ITestOutputHelper testOutputHelper)
-        : base(new TriXParser(), new NQuadsParser(), "trix")
+    public TriGTripleStoreHandler(ITestOutputHelper testOutputHelper) : base(new TriGParser(TriGSyntax.MemberSubmission), new NQuadsParser(), "trig")
     {
         _testOutputHelper = testOutputHelper;
         CheckResults = false;
     }
 
     [Fact]
-    public void ParsingSuiteTriX()
+    public void ParsingSuiteTriG()
     {
-        RunManifests();
+        //Run manifests
+        RunDirectory(f => Path.GetExtension(f).Equals(".trig") && !f.Contains("bad"), true);
+        RunDirectory(f => Path.GetExtension(f).Equals(".trig") && f.Contains("bad"), false);
 
         if (Count == 0) Assert.Fail("No tests found");
 
         _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
-        _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
+        _testOutputHelper.WriteLine((((double)Passed / (double)Count) * 100) + "% Passed");
 
-        if (Failed > 0)
-        {
-            foreach(var failure in FailedTests) { _testOutputHelper.WriteLine(failure.ToString());}
-            Assert.Fail(Failed + " Tests failed");
-        }
+        if (Failed > 0) Assert.Fail(Failed + " Tests failed");
         Assert.SkipWhen(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
     }
 
-    private void RunManifests()
-    {
-        RunDirectory(f => Path.GetExtension(f).Equals(".xml") && !f.Contains("bad"), true);
-        RunDirectory(f => Path.GetExtension(f).Equals(".xml") && f.Contains("bad"), false);
-    }
 }

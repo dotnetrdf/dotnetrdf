@@ -454,7 +454,7 @@ public sealed class MimeTypeDefinition
             }
             else
             {
-                if (EnsureInterface("RDF Dataset Parser", value, typeof(IStoreReader)))
+                if (EnsureInterface("RDF Dataset Parser", value, typeof(IRdfReader)))
                 {
                     _rdfDatasetParserType = value;
                 }

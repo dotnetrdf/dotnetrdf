@@ -14,7 +14,7 @@ public abstract class RdfStarStoreWriterTests
     }
 
     public abstract IStoreWriter GetWriter();
-    public abstract IStoreReader GetReader();
+    public abstract IRdfReader GetReader();
 
     public static IEnumerable<TheoryDataRow<string, string>> RoundTripTestData = [
         new(
@@ -55,7 +55,7 @@ public abstract class RdfStarStoreWriterTests
         var store = new TripleStore();
         var stringWriter = new System.IO.StringWriter();
         IStoreWriter writer = GetWriter();
-        IStoreReader reader = GetReader();
+        IRdfReader reader = GetReader();
 
         store.LoadFromString(input, new NQuadsParser(NQuadsSyntax.Rdf11Star));
         writer.Save(store, stringWriter);
@@ -70,7 +70,7 @@ public class TriGMinimalCompressionWriterTests : RdfStarStoreWriterTests
 {
     public TriGMinimalCompressionWriterTests(ITestOutputHelper output):base(output){}
 
-    public override IStoreReader GetReader()
+    public override IRdfReader GetReader()
     {
         return new TriGParser(TriGSyntax.Rdf11Star);
     }
@@ -96,7 +96,7 @@ public class TriGThreadedMinimalCompressionWriterTests : RdfStarStoreWriterTests
 {
     public TriGThreadedMinimalCompressionWriterTests(ITestOutputHelper output) : base(output) { }
 
-    public override IStoreReader GetReader()
+    public override IRdfReader GetReader()
     {
         return new TriGParser(TriGSyntax.Rdf11Star);
     }
@@ -136,7 +136,7 @@ public class TriGHighCompressionWriterTests : RdfStarStoreWriterTests
         };
     }
 
-    public override IStoreReader GetReader()
+    public override IRdfReader GetReader()
     {
         return new TriGParser(TriGSyntax.Rdf11Star);
     }
@@ -167,7 +167,7 @@ public class TriGThreadedHighCompressionWriterTests : RdfStarStoreWriterTests
         };
     }
 
-    public override IStoreReader GetReader()
+    public override IRdfReader GetReader()
     {
         return new TriGParser(TriGSyntax.Rdf11Star);
     }

@@ -348,7 +348,7 @@ public class Loader
     /// </remarks>
     public async Task LoadDatasetAsync(ITripleStore store, Uri uri)
     {
-        await LoadDatasetAsync(store, uri, null, CancellationToken.None);
+        await LoadDatasetAsync(store, uri, (IRdfReader)null, CancellationToken.None);
     }
 
     /// <summary>
@@ -363,7 +363,7 @@ public class Loader
     /// </remarks>
     public void LoadDataset(ITripleStore store, Uri uri)
     {
-        LoadDataset(store, uri, null);
+        LoadDataset(store, uri, (IRdfReader)null);
     }
 
     /// <summary>
@@ -373,12 +373,12 @@ public class Loader
     /// <param name="u">URI to attempt to get a RDF dataset from.</param>
     /// <remarks>
     /// <para>
-    /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+    /// Attempts to select the relevant parser based on the Content Type header returned in the HTTP Response.
     /// </para>
     /// </remarks>
     public async Task LoadDatasetAsync(IRdfHandler handler, Uri u)
     {
-        await LoadDatasetAsync(handler, u, (IStoreReader) null, CancellationToken.None);
+        await LoadDatasetAsync(handler, u, (IRdfReader) null, CancellationToken.None);
     }
 
     /// <summary>
@@ -395,6 +395,7 @@ public class Loader
     /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
     /// </para>
     /// </remarks>
+    [Obsolete("Use the overload that takes an IRdfReader instead of an IStoreReader.")]
     public async Task LoadDatasetAsync(ITripleStore store, Uri uri, IStoreReader parser)
     {
         await LoadDatasetAsync(store, uri, parser, CancellationToken.None);
@@ -414,7 +415,46 @@ public class Loader
     /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
     /// </para>
     /// </remarks>
+    public async Task LoadDatasetAsync(ITripleStore store, Uri uri, IRdfReader parser)
+    {
+        await LoadDatasetAsync(store, uri, parser, CancellationToken.None);
+    }
+
+    /// <summary>
+    /// Attempts to load a RDF dataset from the given URI into the given Triple Store.
+    /// </summary>
+    /// <param name="store">Triple Store to load into.</param>
+    /// <param name="uri">URI to attempt to get a RDF dataset from.</param>
+    /// <param name="parser">Parser to use to parse the RDF dataset.</param>
+    /// <remarks>
+    /// <para>
+    /// If the <paramref name="parser"/> parameter is set to null then this method attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+    /// </para>
+    /// <para>
+    /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
+    /// </para>
+    /// </remarks>
+    [Obsolete("Use the overload that takes an IRdfReader instead of an IStoreReader.")]
     public void LoadDataset(ITripleStore store, Uri uri, IStoreReader parser)
+    {
+        Task.Run(()=>LoadDatasetAsync(store, uri, parser, CancellationToken.None)).Wait();
+    }
+
+    /// <summary>
+    /// Attempts to load a RDF dataset from the given URI into the given Triple Store.
+    /// </summary>
+    /// <param name="store">Triple Store to load into.</param>
+    /// <param name="uri">URI to attempt to get a RDF dataset from.</param>
+    /// <param name="parser">Parser to use to parse the RDF dataset.</param>
+    /// <remarks>
+    /// <para>
+    /// If the <paramref name="parser"/> parameter is set to null then this method attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+    /// </para>
+    /// <para>
+    /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
+    /// </para>
+    /// </remarks>
+    public void LoadDataset(ITripleStore store, Uri uri, IRdfReader parser)
     {
         Task.Run(()=>LoadDatasetAsync(store, uri, parser, CancellationToken.None)).Wait();
     }
@@ -433,11 +473,11 @@ public class Loader
     /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
     /// </para>
     /// </remarks>
+    [Obsolete("Use the overload that takes an IRdfReader instead of an IStoreReader.")]
     public async Task LoadDatasetAsync(IRdfHandler handler, Uri uri, IStoreReader parser)
     {
         await LoadDatasetAsync(handler, uri, parser, CancellationToken.None);
     }
-
 
     /// <summary>
     /// Attempts to load a RDF dataset from the given URI using a RDF Handler.
@@ -453,7 +493,46 @@ public class Loader
     /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
     /// </para>
     /// </remarks>
+    public async Task LoadDatasetAsync(IRdfHandler handler, Uri uri, IRdfReader parser)
+    {
+        await LoadDatasetAsync(handler, uri, parser, CancellationToken.None);
+    }
+
+    /// <summary>
+    /// Attempts to load a RDF dataset from the given URI using a RDF Handler.
+    /// </summary>
+    /// <param name="handler">RDF Handler to use.</param>
+    /// <param name="uri">URI to attempt to get a RDF dataset from.</param>
+    /// <param name="parser">Parser to use to parse the RDF dataset.</param>
+    /// <remarks>
+    /// <para>
+    /// If the <paramref name="parser"/> parameter is set to null then this method attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+    /// </para>
+    /// <para>
+    /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
+    /// </para>
+    /// </remarks>
+    [Obsolete("Use the overload that takes an IRdfReader instead of an IStoreReader.")]
     public void LoadDataset(IRdfHandler handler, Uri uri, IStoreReader parser)
+    {
+        Task.Run(() => LoadDatasetAsync(handler, uri, parser, CancellationToken.None)).Wait();
+    }
+
+    /// <summary>
+    /// Attempts to load a RDF dataset from the given URI using a RDF Handler.
+    /// </summary>
+    /// <param name="handler">RDF Handler to use.</param>
+    /// <param name="uri">URI to attempt to get a RDF dataset from.</param>
+    /// <param name="parser">Parser to use to parse the RDF dataset.</param>
+    /// <remarks>
+    /// <para>
+    /// If the <paramref name="parser"/> parameter is set to null then this method attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+    /// </para>
+    /// <para>
+    /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
+    /// </para>
+    /// </remarks>
+    public void LoadDataset(IRdfHandler handler, Uri uri, IRdfReader parser)
     {
         Task.Run(() => LoadDatasetAsync(handler, uri, parser, CancellationToken.None)).Wait();
     }
@@ -473,7 +552,30 @@ public class Loader
     /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
     /// </para>
     /// </remarks>
+    [Obsolete("Use the overload that takes an IRdfReader instead of an IStoreReader.")]
     public async Task LoadDatasetAsync(ITripleStore store, Uri uri, IStoreReader parser, CancellationToken cancellationToken)
+    {
+        if (store == null) throw new ArgumentNullException(nameof(store), "Cannot read an RDF dataset into a null Triple Store");
+        if (uri == null) throw new ArgumentNullException(nameof(parser), "Cannot read an RDF dataset from a null URI");
+        await LoadDatasetAsync(new StoreHandler(store), uri, parser, cancellationToken);
+    }
+
+    /// <summary>
+    /// Attempts to load a RDF dataset from the given URI into the given Triple Store.
+    /// </summary>
+    /// <param name="store">Triple Store to load into.</param>
+    /// <param name="uri">URI to attempt to get a RDF dataset from.</param>
+    /// <param name="parser">Parser to use to parse the RDF dataset.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+    /// <remarks>
+    /// <para>
+    /// If the <paramref name="parser"/> parameter is set to null then this method attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+    /// </para>
+    /// <para>
+    /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
+    /// </para>
+    /// </remarks>
+    public async Task LoadDatasetAsync(ITripleStore store, Uri uri, IRdfReader parser, CancellationToken cancellationToken)
     {
         if (store == null) throw new ArgumentNullException(nameof(store), "Cannot read an RDF dataset into a null Triple Store");
         if (uri == null) throw new ArgumentNullException(nameof(parser), "Cannot read an RDF dataset from a null URI");
@@ -495,6 +597,7 @@ public class Loader
     /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
     /// </para>
     /// </remarks>
+    [Obsolete("Use the overload that takes an IRdfReader instead of an IStoreReader.")]
     public async Task LoadDatasetAsync(IRdfHandler handler, Uri uri, IStoreReader parser,
         CancellationToken cancellationToken)
     {
@@ -563,7 +666,109 @@ public class Loader
                                           " - attempting to determine RDF Dataset format from content.");
                         var data = await responseMessage.Content.ReadAsStringAsync();
                         cancellationToken.ThrowIfCancellationRequested();
-                        parser = StringParser.GetDatasetParser(data);
+                        var rdfParser = StringParser.GetDatasetParser(data);
+                        rdfParser.Warning += RaiseStoreWarning;
+                        rdfParser.Load(handler, new StringReader(data));
+                    }
+                }
+            }
+            else
+            {
+                parser.Warning += RaiseStoreWarning;
+                parser.Load(handler, new StreamReader(await responseMessage.Content.ReadAsStreamAsync()));
+            }
+        }
+        catch (UriFormatException uriEx)
+        {
+            throw new RdfException($"Unable to load from the given URI '" + uri.AbsoluteUri + "' since its format was invalid. See inner exception for details.", uriEx);
+        }
+    }
+
+    
+    /// <summary>
+    /// Attempts to load a RDF dataset from the given URI using a RDF Handler.
+    /// </summary>
+    /// <param name="handler">RDF Handler to use.</param>
+    /// <param name="uri">URI to attempt to get a RDF dataset from.</param>
+    /// <param name="parser">Parser to use to parse the RDF dataset.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+    /// <remarks>
+    /// <para>
+    /// If the <paramref name="parser"/> parameter is set to null then this method attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+    /// </para>
+    /// <para>
+    /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
+    /// </para>
+    /// </remarks>
+    public async Task LoadDatasetAsync(IRdfHandler handler, Uri uri, IRdfReader parser,
+        CancellationToken cancellationToken)
+    {
+        if (handler == null) throw new ArgumentNullException(nameof(handler) ,"Cannot read an RDF dataset using a null RDF handler");
+        if (uri == null) throw new ArgumentNullException(nameof(uri), "Cannot read an RDF dataset from a null URI");
+
+        try
+        {
+            if (uri.IsFile)
+            {
+                // Use the FileLoader instead
+                RaiseWarning("This is a file: URI so invoking the FileLoader instead");
+                var path = GetFilePath(uri);
+                FileLoader.Load(handler, path, parser);
+                return;
+            }
+
+            if (uri.Scheme.Equals("data"))
+            {
+                // Invoke DataUriLoader instead
+                RaiseWarning("This is a data: URI so invoking the DataUriLoader instead");
+                DataUriLoader.Load(handler, uri);
+                return;
+            }
+
+            // Sanitize request URI by removing any fragment ID
+            uri = Tools.StripUriFragment(uri);
+
+            // Set Accept header
+            KeyValuePair<string, string>[] headers =
+            [
+                new KeyValuePair<string, string>("Accept", parser != null
+                    ? MimeTypesHelper.CustomHttpAcceptHeader(parser)
+                    : MimeTypesHelper.HttpRdfDatasetAcceptHeader),
+            ];
+            using HttpResponseMessage responseMessage = await GetFollowingRedirects(uri, headers, cancellationToken);
+            AssertResponseSuccess(uri, responseMessage);
+
+            if (parser == null)
+            {
+                try
+                {
+                    parser = MimeTypesHelper.GetParser(responseMessage.Content.Headers.ContentType.MediaType);
+                    parser.Warning += RaiseStoreWarning;
+                    Stream stream = await responseMessage.Content.ReadAsStreamAsync();
+                    cancellationToken.ThrowIfCancellationRequested();
+                    parser.Load(handler, new StreamReader(stream));
+                }
+                catch (RdfParserSelectionException)
+                {
+                    RaiseStoreWarning("Unable to select an RDF Dataset parser based on Content-Type: " +
+                                      responseMessage.Content.Headers.ContentType +
+                                      " - seeing if the content is an RDF Graph instead.");
+                    try
+                    {
+                        IRdfReader rdfParser = MimeTypesHelper.GetParser(responseMessage.Content.Headers.ContentType.MediaType);
+                        Stream stream = await responseMessage.Content.ReadAsStreamAsync();
+                        cancellationToken.ThrowIfCancellationRequested();
+                        rdfParser.Load(handler, new StreamReader(stream));
+                    }
+                    catch (RdfParserSelectionException)
+                    {
+                        // Fall back to assuming a dataset and trying format guessing
+                        RaiseStoreWarning("Unable to select and RDF Graph parser based on Content-Type: " +
+                                          responseMessage.Content.Headers.ContentType +
+                                          " - attempting to determine RDF Dataset format from content.");
+                        var data = await responseMessage.Content.ReadAsStringAsync();
+                        cancellationToken.ThrowIfCancellationRequested();
+                        parser = StringParser.GetParser(data);
                         parser.Warning += RaiseStoreWarning;
                         parser.Load(handler, new StringReader(data));
                     }

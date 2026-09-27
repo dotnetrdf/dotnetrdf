@@ -33,7 +33,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using VDS.RDF.Parsing.Contexts;
-using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing;
 
@@ -44,7 +43,7 @@ namespace VDS.RDF.Parsing;
 /// <typeparam name="TElement"></typeparam>
 /// <typeparam name="TNode"></typeparam>
 /// <typeparam name="TAttribute"></typeparam>
-public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute> : IRdfReader
+public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute> : BaseRdfParser
     where TElement : class, TNode
 {
     /// <summary>
@@ -104,52 +103,6 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
     }
 
     /// <summary>
-    /// Parses RDFa by extracting it from the HTML from the given input.
-    /// </summary>
-    /// <param name="g">Graph to load into.</param>
-    /// <param name="input">Stream to read from.</param>
-    public void Load(IGraph g, StreamReader input)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-        Load(new GraphHandler(g), input);
-    }
-
-    /// <summary>
-    /// Parses RDFa by extracting it from the HTML from the given input.
-    /// </summary>
-    /// <param name="g">Graph to load into.</param>
-    /// <param name="input">Input to read from.</param>
-    public void Load(IGraph g, TextReader input)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-        Load(new GraphHandler(g), input);
-    }
-
-    /// <summary>
-    /// Parses RDFa by extracting it from the HTML from the given file.
-    /// </summary>
-    /// <param name="g">Graph to load into.</param>
-    /// <param name="filename">File to read from.</param>
-    public void Load(IGraph g, string filename)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-        if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-        Load(new GraphHandler(g), filename);
-    }
-
-    /// <summary>
-    /// Parses RDFa by extracting it from the HTML from the given input.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="input">Stream to read from.</param>
-    public void Load(IRdfHandler handler, StreamReader input)
-    {
-        if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-        if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
-        Load(handler, (TextReader)input, UriFactory.Root);
-    }
-
-    /// <summary>
     /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream.
     /// </summary>
     /// <param name="handler">RDF Handler to use.</param>
@@ -158,25 +111,16 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
     /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
     /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
     /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
-    public void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
         if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-        Load(handler, (TextReader)input, uriFactory);
-
-    }
-
-    /// <summary>
-    /// Parses RDFa by extracting it from the HTML from the given input.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="input">Input to read from.</param>
-    public void Load(IRdfHandler handler, TextReader input)
-    {
-        if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-        if (input == null) throw new RdfParseException("Cannot read RDF from a null TextReader");
-        Load(handler, input, UriFactory.Root);
+        if (input is not TextReader textReader)
+        {
+            throw new RdfParseException("Cannot read RDF from a StreamReader that is not a TextReader");
+        }
+        Load(handler, textReader, uriFactory);
     }
 
     /// <summary>
@@ -188,7 +132,7 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
     /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
     /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
     /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
-    public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (input == null) throw new RdfParseException("Cannot read RDF from a null TextReader");
@@ -227,20 +171,8 @@ public abstract class RdfAParserBase<THtmlDocument, TElement, TNode, TAttribute>
     /// </summary>
     /// <param name="handler">RDF Handler to use.</param>
     /// <param name="filename">File to read from.</param>
-    public void Load(IRdfHandler handler, string filename)
-    {
-        if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-        if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-        Load(handler, filename, UriFactory.Root);
-    }
-
-    /// <summary>
-    /// Parses RDFa by extracting it from the HTML from the given input.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="filename">File to read from.</param>
     /// <param name="uriFactory">URI Factory to use.</param>
-    public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");

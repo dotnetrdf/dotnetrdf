@@ -38,7 +38,7 @@ namespace VDS.RDF.Parsing;
 /// </summary>
 /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue.</threadsafety>
 public class TurtleParser 
-    : IRdfReader, ITraceableParser, ITraceableTokeniser, ITokenisingParser
+    : BaseRdfParser, ITraceableParser, ITraceableTokeniser, ITokenisingParser
 {
     private bool _traceParsing;
     private bool _traceTokeniser;
@@ -129,49 +129,6 @@ public class TurtleParser
     /// </summary>
     public TokenQueueMode TokenQueueMode { get; set; } = TokenQueueMode.SynchronousBufferDuringParsing;
 
-    /// <summary>
-    /// Loads a Graph by reading Turtle syntax from the given input.
-    /// </summary>
-    /// <param name="g">Graph to load into.</param>
-    /// <param name="input">Stream to read from.</param>
-    public void Load(IGraph g, StreamReader input)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-        Load(new GraphHandler(g), input, g.UriFactory);
-    }
-
-    /// <summary>
-    /// Loads a Graph by reading Turtle syntax from the given input.
-    /// </summary>
-    /// <param name="g">Graph to load into.</param>
-    /// <param name="input">Input to read from.</param>
-    public void Load(IGraph g, TextReader input)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-        Load(new GraphHandler(g), input, g.UriFactory);
-    }
-
-    /// <summary>
-    /// Loads a Graph by reading Turtle syntax from the given file.
-    /// </summary>
-    /// <param name="g">Graph to load into.</param>
-    /// <param name="filename">File to read from.</param>
-    public void Load(IGraph g, string filename)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-        if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-        Load(g, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
-    }
-
-    /// <summary>
-    /// Loads RDF by reading Turtle syntax from the given input using a RDF Handler.
-    /// </summary>
-    /// <param name="handler">RDF Handle to use.</param>
-    /// <param name="input">Stream to read from.</param>
-    public void Load(IRdfHandler handler, StreamReader input)
-    {
-        Load(handler, input, UriFactory.Root);
-    }
 
     /// <summary>
     /// Loads RDF by reading Turtle syntax from the given input using a RDF Handler.
@@ -179,7 +136,7 @@ public class TurtleParser
     /// <param name="handler">RDF Handle to use.</param>
     /// <param name="input">Stream to read from.</param>
     /// <param name="uriFactory">URI factory to use.</param>
-    public void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
@@ -199,18 +156,8 @@ public class TurtleParser
     /// </summary>
     /// <param name="handler">RDF Handle to use.</param>
     /// <param name="input">Input to read from.</param>
-    public void Load(IRdfHandler handler, TextReader input)
-    {
-        Load(handler, input, UriFactory.Root);
-    }
-
-    /// <summary>
-    /// Loads RDF by reading Turtle syntax from the given input using a RDF Handler.
-    /// </summary>
-    /// <param name="handler">RDF Handle to use.</param>
-    /// <param name="input">Input to read from.</param>
     /// <param name="uriFactory">URI factory to use.</param>
-    public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (input == null) throw new RdfParseException("Cannot read RDF from a null TextReader");
@@ -240,18 +187,8 @@ public class TurtleParser
     /// </summary>
     /// <param name="handler">RDF Handle to use.</param>
     /// <param name="filename">File to read from.</param>
-    public void Load(IRdfHandler handler, string filename)
-    {
-        Load(handler, filename, UriFactory.Root);
-    }
-
-    /// <summary>
-    /// Loads RDF by reading Turtle syntax from the given file using a RDF Handler.
-    /// </summary>
-    /// <param name="handler">RDF Handle to use.</param>
-    /// <param name="filename">File to read from.</param>
     /// <param name="uriFactory">URI factory to use.</param>
-    public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
@@ -1130,24 +1067,6 @@ public class TurtleParser
                 throw ParserHelper.Error("Unexpected Token '" + lit.GetType() + "' encountered, expected a valid Literal Token to convert to a Node", lit);
         }
     }
-
-    /// <summary>
-    /// Helper method which raises the Warning event if there is an event handler registered.
-    /// </summary>
-    /// <param name="message"></param>
-    private void RaiseWarning(string message)
-    {
-        RdfReaderWarning d = Warning;
-        if (d != null)
-        {
-            d(message);
-        }
-    }
-
-    /// <summary>
-    /// Event which is raised when the parser detects issues with the input which are non-fatal
-    /// </summary>
-    public event RdfReaderWarning Warning;
 
     /// <summary>
     /// Gets the String representation of the Parser which is a description of the syntax it parses.

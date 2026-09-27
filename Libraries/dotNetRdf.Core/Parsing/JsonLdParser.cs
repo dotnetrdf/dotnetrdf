@@ -42,14 +42,8 @@ namespace VDS.RDF.Parsing;
 /// <summary>
 /// Parser for JSON-LD 1.0/1.1.
 /// </summary>
-public class JsonLdParser : IStoreReader
+public class JsonLdParser : BaseRdfParser
 {
-    /// <inheritdoc/>
-    /// <remarks>This class does not raise this event.</remarks>
-#pragma warning disable CS0067
-    public event StoreReaderWarning Warning; // TODO: Enable passing up of JsonLdProcessor warnings through this event
-#pragma warning restore CS0067
-
     /// <summary>
     /// Get the current parser options.
     /// </summary>
@@ -69,47 +63,9 @@ public class JsonLdParser : IStoreReader
         ParserOptions = parserOptions;
     }
 
-    /// <summary>
-    /// Read JSON-LD from the specified file and add the RDF quads found in the JSON-LD to the specified store.
-    /// </summary>
-    /// <param name="store">The store to add the parsed RDF quads to.</param>
-    /// <param name="filename">The path to the JSON file to be parsed.</param>
-    public void Load(ITripleStore store, string filename)
-    {
-        if (store == null) throw new ArgumentNullException(nameof(store));
-        if (filename == null) throw new ArgumentNullException(nameof(filename));
-        using var reader = File.OpenText(filename);
-        Load(new StoreHandler(store), reader, store.UriFactory);
-    }
-    
-    /// <summary>
-    /// Adds the RDF quads found in the JSON-LD to the specified store.
-    /// </summary>
-    /// <param name="store">The store to add the parsed RDF quads to.</param>
-    /// <param name="input">The expanded JSON-LD document.</param>
-    internal void Load(ITripleStore store, JsonArray input)
-    {
-        if (store == null) throw new ArgumentNullException(nameof(store));
-        if (input == null) throw new ArgumentNullException(nameof(input));
-        Load(new StoreHandler(store), input, store.UriFactory);
-    }
-
-    /// <inheritdoc/>
-    public void Load(ITripleStore store, TextReader input)
-    {
-        if (store == null) throw new ArgumentNullException(nameof(store));
-        if (input == null) throw new ArgumentNullException(nameof(input));
-        Load(new StoreHandler(store), input, store.UriFactory);
-    }
-
-    /// <inheritdoc/>
-    public void Load(IRdfHandler handler, string filename)
-    {
-        Load(handler, filename, UriFactory.Root);
-    }
 
     /// <inheritdoc />
-    public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
     {
         if (handler == null) throw new ArgumentNullException(nameof(handler));
         if (filename == null) throw new ArgumentNullException(nameof(filename));
@@ -120,13 +76,18 @@ public class JsonLdParser : IStoreReader
     }
 
     /// <inheritdoc/>
-    public void Load(IRdfHandler handler, TextReader input)
+    public override void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
     {
-        Load(handler, input, UriFactory.Root);
+        if (handler == null) throw new ArgumentNullException(nameof(handler));
+        if (input == null) throw new ArgumentNullException(nameof(input));
+        if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+
+        var jsonString = input.ReadToEnd();
+        LoadFromString(handler, jsonString, uriFactory);
     }
 
     /// <inheritdoc />
-    public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory) {
+    public override void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory) {
         // System.Text.Json does not support parsing from a TextReader and in any case the whole DOM is needed for JSON-LD processing
         // so we read the whole input into a string and parse that into a JsonNode.
         string jsonString;
@@ -135,7 +96,11 @@ public class JsonLdParser : IStoreReader
         } finally {
             input.Close();
         }
-        
+        LoadFromString(handler, jsonString, uriFactory);
+    }
+
+    private void LoadFromString(IRdfHandler handler, string jsonString, IUriFactory uriFactory)
+    {
         var element = JsonNode.Parse(jsonString);
         var warnings = new List<JsonLdProcessorWarning>();
         JsonArray expandedElement = JsonLdProcessor.Expand(element, ParserOptions, warnings);
@@ -148,6 +113,19 @@ public class JsonLdParser : IStoreReader
         }
         Load(handler, expandedElement, uriFactory);
     }
+
+    /// <summary>
+    /// Adds the RDF quads found in the JSON-LD to the specified store.
+    /// </summary>
+    /// <param name="store">The store to add the parsed RDF quads to.</param>
+    /// <param name="input">The expanded JSON-LD document.</param>
+    internal void Load(ITripleStore store, JsonArray input)
+    {
+        if (store == null) throw new ArgumentNullException(nameof(store));
+        if (input == null) throw new ArgumentNullException(nameof(input));
+        Load(new StoreHandler(store), input, store.UriFactory);
+    }
+
     
     private void Load(IRdfHandler handler, JsonArray input, IUriFactory uriFactory) {
         if (handler == null) throw new ArgumentNullException(nameof(handler));
@@ -439,10 +417,5 @@ public class JsonLdParser : IStoreReader
     private static bool IsBlankNodeIdentifier(string id)
     {
         return id.StartsWith("_:");
-    }
-
-    private void RaiseWarning(string message)
-    {
-        Warning?.Invoke(message);
     }
 }

@@ -40,7 +40,7 @@ namespace VDS.RDF.Parsing;
 /// </summary>
 /// <remarks>The Default Graph (if any) will be given the special Uri. <strong>trig:default-graph</strong></remarks>
 public class TriGParser
-    : IStoreReader, ITraceableTokeniser, ITokenisingParser
+    :BaseRdfParser, ITraceableTokeniser, ITokenisingParser
 {
     // private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
 
@@ -81,26 +81,6 @@ public class TriGParser
     /// </summary>
     public TokenQueueMode TokenQueueMode { get; set; } = TokenQueueMode.SynchronousBufferDuringParsing;
 
-    /// <summary>
-    /// Loads the named Graphs from the TriG input into the given Triple Store.
-    /// </summary>
-    /// <param name="store">Triple Store to load into.</param>
-    /// <param name="filename">File to load from.</param>
-    public void Load(ITripleStore store, string filename)
-    {
-        if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-        Load(store, new StreamReader(File.OpenRead(filename), Encoding.UTF8), new Uri(Path.GetFullPath(filename)));
-    }
-
-    /// <summary>
-    /// Loads the named Graphs from the TriG input into the given Triple Store.
-    /// </summary>
-    /// <param name="store">Triple Store to load into.</param>
-    /// <param name="input">Input to load from.</param>
-    public void Load(ITripleStore store, TextReader input)
-    {
-        Load(store, input, null);
-    }
 
     /// <summary>
     /// Loads the named Graphs from the TriG input into the given Triple Store.
@@ -120,7 +100,7 @@ public class TriGParser
     /// </summary>
     /// <param name="handler">RDF Handler to use.</param>
     /// <param name="filename">File to load from.</param>
-    public void Load(IRdfHandler handler, string filename)
+    public override void Load(IRdfHandler handler, string filename)
     {
         Load(handler, filename, new Uri(Path.GetFullPath(filename)), UriFactory.Root);
     }
@@ -131,11 +111,10 @@ public class TriGParser
     /// <param name="handler">RDF handler to use.</param>
     /// <param name="filename">File to load from.</param>
     /// <param name="uriFactory">URI factory to use.</param>
-    public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
     {
         Load(handler, filename, new Uri(Path.GetFullPath(filename)), uriFactory);
     }
-
 
     /// <summary>
     /// Loads an RDF dataset using an RDF handler.
@@ -150,23 +129,15 @@ public class TriGParser
         Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8), baseUri, uriFactory);
     }
 
-    /// <summary>
-    /// Loads the named Graphs from the TriG input using the given RDF Handler.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="input">Input to load from.</param>
-    public void Load(IRdfHandler handler, TextReader input)
+    /// <inheritdoc/>
+    public override void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
     {
-        Load(handler, input, UriFactory.Root);
+        Load(handler, input, null, uriFactory);
     }
 
-    /// <summary>
-    /// Loads an RDF dataset using and RDF handler.
-    /// </summary>
-    /// <param name="handler">RDF handler to use.</param>
-    /// <param name="input">File to load from.</param>
-    /// <param name="uriFactory">URI factory to use.</param>
-    public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+
+    /// <inheritdoc/>
+    public override void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
     {
         Load(handler, input, null, uriFactory);
     }
@@ -1429,20 +1400,6 @@ public class TriGParser
     };
 
     /// <summary>
-    /// Helper method used to raise the Warning event if there is an event handler registered.
-    /// </summary>
-    /// <param name="message">Warning message.</param>
-    private void RaiseWarning(string message)
-    {
-        Warning?.Invoke(message);
-    }
-
-    /// <summary>
-    /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed
-    /// </summary>
-    public event StoreReaderWarning Warning;
-
-    /// <summary>
     /// Gets the String representation of the Parser which is a description of the syntax it parses.
     /// </summary>
     /// <returns></returns>
@@ -1450,4 +1407,5 @@ public class TriGParser
     {
         return "TriG";
     }
+
 }

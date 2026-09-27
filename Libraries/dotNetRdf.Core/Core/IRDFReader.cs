@@ -65,6 +65,36 @@ namespace VDS.RDF
         void Load(IGraph g, string filename);
 
         /// <summary>
+        /// Method for Loading a triple store from some Concrete RDF Syntax via some arbitrary Stream.
+        /// </summary>
+        /// <param name="store">Triple Store to load RDF into.</param>
+        /// <param name="input">The reader to read input from.</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
+
+        void Load(ITripleStore store, StreamReader input);
+        /// <summary>
+        /// Method for Loading a triple store from some Concrete RDF Syntax via some arbitrary text reader.
+        /// </summary>
+        /// <param name="store">Triple Store to load RDF into.</param>
+        /// <param name="input">The reader to read input from.</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
+        void Load(ITripleStore store, TextReader input);
+
+        /// <summary>
+        /// Method for Loading a triple store from some Concrete RDF Syntax from a given File.
+        /// </summary>
+        /// <param name="store">Triple Store to load RDF into.</param>
+        /// <param name="filename">The Filename of the File to read from.</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the File.</exception>
+        void Load(ITripleStore store, string filename);
+
+        /// <summary>
         /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream.
         /// </summary>
         /// <param name="handler">RDF Handler to use.</param>

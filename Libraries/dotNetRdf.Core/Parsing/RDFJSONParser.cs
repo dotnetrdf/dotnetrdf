@@ -38,54 +38,8 @@ namespace VDS.RDF.Parsing;
 /// Parser for RDF/JSON Syntax.
 /// </summary>
 /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue.</threadsafety>
-public class RdfJsonParser : IRdfReader 
+public class RdfJsonParser : BaseRdfParser
 {
-    /// <summary>
-    /// Read RDF/JSON Syntax from some Stream into a Graph.
-    /// </summary>
-    /// <param name="g">Graph to read into.</param>
-    /// <param name="input">Stream to read from.</param>
-    public void Load(IGraph g, StreamReader input)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-
-        Load(new GraphHandler(g), input, g.UriFactory);
-    }
-
-    /// <summary>
-    /// Read RDF/JSON Syntax from some Input into a Graph.
-    /// </summary>
-    /// <param name="g">Graph to read into.</param>
-    /// <param name="input">Input to read from.</param>
-    public void Load(IGraph g, TextReader input)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-
-        Load(new GraphHandler(g), input, g.UriFactory);
-    }
-
-    /// <summary>
-    /// Read RDF/Json Syntax from some File into a Graph.
-    /// </summary>
-    /// <param name="g">Graph to read into.</param>
-    /// <param name="filename">File to read from.</param>
-    public void Load(IGraph g, string filename)
-    {
-        if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-        if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-        Load(new GraphHandler(g), filename, g.UriFactory);
-    }
-
-    /// <summary>
-    /// Read RDF/JSON Syntax from some Stream using a RDF Handler.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="input">Stream to read from.</param>
-    public void Load(IRdfHandler handler, StreamReader input)
-    {
-        Load(handler, input, UriFactory.Root);
-    }
-
     /// <summary>
     /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream.
     /// </summary>
@@ -95,7 +49,7 @@ public class RdfJsonParser : IRdfReader
     /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
     /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
     /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
-    public void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
@@ -111,16 +65,6 @@ public class RdfJsonParser : IRdfReader
     }
 
     /// <summary>
-    /// Read RDF/JSON Syntax from some Input using a RDF Handler.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="input">Input to read from.</param>
-    public void Load(IRdfHandler handler, TextReader input)
-    {
-        Load(handler, input, UriFactory.Root);
-    }
-
-    /// <summary>
     /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream.
     /// </summary>
     /// <param name="handler">RDF Handler to use.</param>
@@ -129,7 +73,7 @@ public class RdfJsonParser : IRdfReader
     /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
     /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
     /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
-    public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
@@ -154,16 +98,6 @@ public class RdfJsonParser : IRdfReader
     }
 
     /// <summary>
-    /// Read RDF/JSON Syntax from a file using a RDF Handler.
-    /// </summary>
-    /// <param name="handler">RDF Handler to use.</param>
-    /// <param name="filename">File to read from.</param>
-    public void Load(IRdfHandler handler, string filename)
-    {
-        Load(handler, filename, UriFactory.Root);
-    }
-
-    /// <summary>
     /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax from a given File.
     /// </summary>
     /// <param name="handler">RDF Handler to use.</param>
@@ -172,7 +106,7 @@ public class RdfJsonParser : IRdfReader
     /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
     /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
     /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
-    public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+    public override void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
     {
         if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
         if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
@@ -538,24 +472,6 @@ public class RdfJsonParser : IRdfReader
         error.AppendLine(message);
         throw new RdfParseException(error.ToString(), info);
     }
-
-    /// <summary>
-    /// Helper Method for raising the <see cref="RdfJsonParser.Warning">Warning</see> event.
-    /// </summary>
-    /// <param name="message">Warning Message.</param>
-    private void RaiseWarning(string message)
-    {
-        RdfReaderWarning d = Warning;
-        if (d != null)
-        {
-            d(message);
-        }
-    }
-
-    /// <summary>
-    /// Event which is raised if there's a non-fatal issue with the RDF/Json Syntax
-    /// </summary>
-    public event RdfReaderWarning Warning;
 
     /// <summary>
     /// Gets the String representation of the Parser which is a description of the syntax it parses.

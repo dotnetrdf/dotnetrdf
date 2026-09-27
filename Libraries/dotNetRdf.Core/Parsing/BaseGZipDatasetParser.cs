@@ -172,7 +172,7 @@ public abstract class BaseGZipDatasetParser
 /// Parser for loading GZipped NQuads.
 /// </summary>
 public class GZippedNQuadsParser
-    : BaseGZipDatasetParser
+    : BaseGZipParser
 {
     /// <summary>
     /// Creates a new GZipped NQuads Parser.
@@ -185,7 +185,7 @@ public class GZippedNQuadsParser
 /// Parser for loading GZipped TriG.
 /// </summary>
 public class GZippedTriGParser
-    : BaseGZipDatasetParser
+    : BaseGZipParser
 {
     /// <summary>
     /// Creates a new GZipped TriG Parser.
@@ -198,7 +198,7 @@ public class GZippedTriGParser
 /// Parser for loading GZipped TriX.
 /// </summary>
 public class GZippedTriXParser
-    : BaseGZipDatasetParser
+    : BaseGZipParser
 {
     /// <summary>
     /// Creates a new GZipped TriX Parser.
@@ -210,7 +210,7 @@ public class GZippedTriXParser
 /// <summary>
 /// Parser for oading GZipped JSON-LD.
 /// </summary>
-public class GZippedJsonLdParser : BaseGZipDatasetParser
+public class GZippedJsonLdParser : BaseGZipParser
 {
     /// <summary>
     /// Creates a new GZipped JSON-LD parser.

@@ -313,7 +313,7 @@ public class LoaderTests
         var cts = new CancellationTokenSource();
         cts.CancelAfter(500);
         await Assert.ThrowsAsync<TaskCanceledException>(() =>
-            loader.LoadDatasetAsync(store, resourceUri, null, cts.Token));
+            loader.LoadDatasetAsync(store, resourceUri, (IRdfReader)null, cts.Token));
     }
 
     [Fact]
