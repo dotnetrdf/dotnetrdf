@@ -32,6 +32,12 @@ namespace VDS.RDF.Writing;
 
 public class CompressingTurtleWriterTests
 {
+    private readonly ITestOutputHelper _outputHelper;
+
+    public CompressingTurtleWriterTests(ITestOutputHelper outputHelper)
+    {
+        _outputHelper = outputHelper;
+    }
     [Fact]
     public void CollectionItemsShouldAppearOnSeparateLinesWhenPrettyPrinted()
     {
@@ -48,5 +54,32 @@ public class CompressingTurtleWriterTests
         expectedOutput.AppendLine("           ex:b");
         expectedOutput.AppendLine("           ex:c).");
         output.Should().Contain(expectedOutput.ToString());
+    }
+
+    [Fact]
+    public void Bug903HighCompressionTurtleWriterProducingAnEmptyList()
+    {
+        const string input = @"
+@prefix ex: <http://example.org/>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+_:x rdf:first rdf:type; 
+    rdf:rest rdf:nil;
+    a rdf:List ;
+. 
+ex:s ex:p _:x .
+        ";
+        var g = new Graph();
+        g.LoadFromString(input);
+        var writer = new CompressingTurtleWriter(TurtleSyntax.W3C) { CompressionLevel = WriterCompressionLevel.High };
+        var stringWriter = new System.IO.StringWriter();
+        writer.Save(g, stringWriter);
+        var output = stringWriter.ToString();
+        _outputHelper.WriteLine("Serialized output:");
+        _outputHelper.WriteLine(output);
+        _outputHelper.WriteLine("---END---");
+        var writtenGraph = new Graph();
+        writtenGraph.LoadFromString(output);
+        TestTools.AssertIsomorphic(g, writtenGraph, _outputHelper);
     }
 }

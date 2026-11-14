@@ -1,6 +1,5 @@
 ﻿Change Log
 ==========
-
 4.0.0
 -----
 This is a major version update to the dotNetRDF library. 
@@ -11,6 +10,11 @@ BREAKING: In line with our deprecation policy, all APIS previously flagged as Ob
 NEW: Introduced `VDS.RDF.Utils.RdfGraphContent` - an `HttpContent` implementation for writing the content of a `Graph` to the body of an HTTP request.
 ENHANCEMENT: Removed dependency on AngleSharp that was left in one small corner of the codebase. Thanks to @langsamu for the report and fix.
 BREAKING: The blank node mapper now validates a given prefix, uses it when valid and throws when it is not. Previously the mapper would never use the given prefix. Thanks to @langsamu for the report and fix (#895).
+
+3.5.3
+-----
+
+FIX: Fix an issue in the CompressingTurtleWriter where an RDF collection with an explicit type was being incorrectly compressed due to the additional rdf:type triple. This fix means that such collections are *NOT* compressed by the writer as the compressed syntax does not allow the additional rdf:type triple to be round-tripped. Thanks to @StephanLupp for the report. (#903)
 
 3.5.2
 -----
