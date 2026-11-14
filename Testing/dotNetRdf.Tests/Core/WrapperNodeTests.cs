@@ -369,4 +369,29 @@ public class WrapperNodeTests
         Assert.Equal(expected, actual);
     }
 
+    [Fact]
+    public void Fails_invalid_SubGraph()
+    {
+        IBlankNode node = _factory.CreateBlankNode();
+        var wrapper = new MockWrapperNode(node);
+
+        Assert.Throws<InvalidCastException>(() =>
+            ((IGraphLiteralNode)wrapper).SubGraph);
+    }
+
+    [Fact]
+    public void Delegates_SubGraph()
+    {
+        IGraph expected = new Graph();
+        expected.Assert(
+            expected.CreateUriNode(expected.UriFactory.Create($"urn:{Guid.NewGuid()}")),
+            expected.CreateUriNode(expected.UriFactory.Create($"urn:{Guid.NewGuid()}")),
+            expected.CreateUriNode(expected.UriFactory.Create($"urn:{Guid.NewGuid()}")));
+        IGraphLiteralNode node = _factory.CreateGraphLiteralNode(expected);
+        var wrapper = new MockWrapperNode(node);
+
+        IGraph actual = ((IGraphLiteralNode)wrapper).SubGraph;
+
+        Assert.Equal(expected, actual);
+    }
 }
