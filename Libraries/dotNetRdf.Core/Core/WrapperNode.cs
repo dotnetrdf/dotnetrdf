@@ -34,7 +34,7 @@ namespace VDS.RDF;
 /// <summary>
 /// Abstract decorator for Nodes to make it easier to layer functionality on top of existing implementations.
 /// </summary>
-public abstract class WrapperNode : IBlankNode, IUriNode, ILiteralNode
+public abstract class WrapperNode : IBlankNode, IUriNode, ILiteralNode, IGraphLiteralNode
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="WrapperNode"/> class.
@@ -123,6 +123,19 @@ public abstract class WrapperNode : IBlankNode, IUriNode, ILiteralNode
             }
 
             return ((ILiteralNode)Node).DataType;
+        }
+    }
+
+    IGraph IGraphLiteralNode.SubGraph
+    {
+        get
+        {
+            if (Node.NodeType != NodeType.GraphLiteral)
+            {
+                throw new InvalidCastException();
+            }
+
+            return ((IGraphLiteralNode)Node).SubGraph;
         }
     }
 

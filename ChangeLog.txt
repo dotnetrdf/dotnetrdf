@@ -1,6 +1,5 @@
 ﻿Change Log
 ==========
-
 4.0.0
 -----
 This is a major version update to the dotNetRDF library. 
@@ -12,6 +11,13 @@ NEW: Introduced `VDS.RDF.Utils.RdfGraphContent` - an `HttpContent` implementatio
 ENHANCEMENT: Removed dependency on AngleSharp that was left in one small corner of the codebase. Thanks to @langsamu for the report and fix.
 BREAKING: The blank node mapper now validates a given prefix, uses it when valid and throws when it is not. Previously the mapper would never use the given prefix. Thanks to @langsamu for the report and fix (#895).
 FIX: Fix EXISTS intermittently being true over a cross product whose FILTER removes every row. This was caused by concurrent removals from a partitioned multiset in the Leviathan Query Processor. Thanks to @langsamu for the fix (#916).
+FIX: Fix concurrent indexing by independent Lucene full-text indexers failing with a CryptographicException because a single SHA256 instance was shared across all indexers in dotNetRdf.Query.FullText. Hash values are unchanged, so existing indexes remain compatible (#913).
+ENHANCEMENT: `WrapperNode` now implements `IGraphLiteralNode`, delegating `SubGraph` to the wrapped node. Thanks to @langsamu for the fix (#915).
+
+3.5.3
+-----
+
+FIX: Fix an issue in the CompressingTurtleWriter where an RDF collection with an explicit type was being incorrectly compressed due to the additional rdf:type triple. This fix means that such collections are *NOT* compressed by the writer as the compressed syntax does not allow the additional rdf:type triple to be round-tripped. Thanks to @StephanLupp for the report. (#903)
 
 3.5.2
 -----
