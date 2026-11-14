@@ -10,6 +10,7 @@ BREAKING: In line with our deprecation policy, all APIS previously flagged as Ob
 NEW: Introduced `VDS.RDF.Utils.RdfGraphContent` - an `HttpContent` implementation for writing the content of a `Graph` to the body of an HTTP request.
 ENHANCEMENT: Removed dependency on AngleSharp that was left in one small corner of the codebase. Thanks to @langsamu for the report and fix.
 BREAKING: The blank node mapper now validates a given prefix, uses it when valid and throws when it is not. Previously the mapper would never use the given prefix. Thanks to @langsamu for the report and fix (#895).
+FIX: Fix concurrent indexing by independent Lucene full-text indexers failing with a CryptographicException because a single SHA256 instance was shared across all indexers in dotNetRdf.Query.FullText. Hash values are unchanged, so existing indexes remain compatible (#913).
 
 3.5.3
 -----

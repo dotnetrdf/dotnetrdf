@@ -45,7 +45,9 @@ namespace VDS.RDF.Query;
 static class FullTextExtensions
 {
     private static readonly NodeFactory NodeFactory = new(new NodeFactoryOptions());
-    private static SHA256Managed _sha256;
+
+    [ThreadStatic]
+    private static SHA256 _sha256;
 
     internal static ISet ToSet(this IFullTextSearchResult result, String matchVar, String scoreVar)
     {
@@ -178,11 +180,10 @@ static class FullTextExtensions
     {
         if (s == null) throw new ArgumentNullException(nameof(s));
 
-        //Only instantiate the SHA256 class when we first use it
-        _sha256 ??= new SHA256Managed();
-
-        var input = Encoding.UTF8.GetBytes(s);
-        var output = _sha256.ComputeHash(input);
+        // HashAlgorithm instances are not thread-safe, so each thread lazily creates and keeps its own hasher
+        // instead of sharing one between independent indexers running on different threads.
+        _sha256 ??= SHA256.Create();
+        var output = _sha256.ComputeHash(Encoding.UTF8.GetBytes(s));
 
         var hash = new StringBuilder();
         foreach (var b in output)
