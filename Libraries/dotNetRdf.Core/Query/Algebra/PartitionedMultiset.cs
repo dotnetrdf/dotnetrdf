@@ -222,12 +222,15 @@ public class PartitionedMultiset
     public override void Remove(int id)
     {
         var p = id / _partitionSize;
-        _partitions[p].Remove(id);
-        if (_orderedIDs != null)
+        lock (_partitions)
         {
-            _orderedIDs.Remove(id);
+            _partitions[p].Remove(id);
+            if (_orderedIDs != null)
+            {
+                _orderedIDs.Remove(id);
+            }
+            _cacheInvalid = true;
         }
-        _cacheInvalid = true;
     }
 
     /// <summary>
