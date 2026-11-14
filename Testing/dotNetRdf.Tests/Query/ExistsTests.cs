@@ -114,4 +114,37 @@ WHERE
         Assert.NotNull(results);
         Assert.Equal(expectCount, results.Count);
     }
+
+    [Fact]
+    public void SparqlExistsWithFilteredProductIsDeterministic()
+    {
+        var g = new Graph();
+        g.LoadFromString("""
+            @prefix : <http://example.org/> .
+
+            :s
+              :p
+                :o1,
+                :o2,
+                :o3 .
+            """);
+
+        const string query = """
+            ASK
+            {
+              FILTER EXISTS
+              {
+                ?s1 ?p1 ?o1 .
+                ?s2 ?p2 ?o2 .
+                FILTER (false)
+              }
+            }
+            """;
+
+        for (var i = 0; i < 5000; i++)
+        {
+            var results = (SparqlResultSet)g.ExecuteQuery(query);
+            Assert.False(results.Result);
+        }
+    }
 }
