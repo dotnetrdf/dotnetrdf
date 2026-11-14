@@ -23,10 +23,13 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Resolvers;
+using System.Xml.Schema;
 using Xunit;
 
 namespace VDS.RDF.Writing;
@@ -130,14 +133,49 @@ _:s2 <urn:p> ""o"" .
     [Fact]
     public void Output_conforms_to_XSD()
     {
+        ValidateGraphML(fixture.Output.ToString());
+    }
+
+    [Fact]
+    public void Schema_rejects_graph_without_edge_default()
+    {
+        var invalidGraph = $@"<graphml xmlns=""{GraphMLSpecsHelper.NS}""><graph /></graphml>";
+
+        Assert.Throws<XmlSchemaValidationException>(() => ValidateGraphML(invalidGraph));
+    }
+
+    private static void ValidateGraphML(string graphML)
+    {
         var settings = new XmlReaderSettings
         {
-            ValidationType = ValidationType.Schema, Schemas = {XmlResolver = new XmlUrlResolver()}
+            ValidationType = ValidationType.Schema,
+            Schemas = GraphMLSchemaSet()
         };
-        settings.Schemas.Add(GraphMLSpecsHelper.NS, GraphMLSpecsHelper.XsdUri);
-        using var reader = XmlReader.Create(new StringReader(fixture.Output.ToString()), settings);
+        settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
+        settings.ValidationEventHandler += (_, e) => throw e.Exception;
+
+        using var reader = XmlReader.Create(new StringReader(graphML), settings);
         while (reader.Read())
         {
         }
+    }
+
+    private static XmlSchemaSet GraphMLSchemaSet()
+    {
+        var resources = Path.Combine(AppContext.BaseDirectory, "resources");
+        var resolver = new XmlPreloadedResolver(XmlKnownDtds.None);
+        var structurePath = Path.Combine(resources, "graphml-structure.xsd");
+        resolver.Add(new Uri(structurePath), File.ReadAllBytes(structurePath));
+        resolver.Add(new Uri("https://www.w3.org/XML/2008/06/xlink.xsd"),
+            File.ReadAllBytes(Path.Combine(resources, "xlink.xsd")));
+        resolver.Add(new Uri("http://www.w3.org/2001/xml.xsd"),
+            File.ReadAllBytes(Path.Combine(resources, "xml.xsd")));
+
+        var schemas = new XmlSchemaSet { XmlResolver = resolver };
+        schemas.ValidationEventHandler += (_, e) => throw e.Exception;
+        using var reader = XmlReader.Create(Path.Combine(resources, "graphml.xsd"));
+        schemas.Add(GraphMLSpecsHelper.NS, reader);
+        schemas.Compile();
+        return schemas;
     }
 }
