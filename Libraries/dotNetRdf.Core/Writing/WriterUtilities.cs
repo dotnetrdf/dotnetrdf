@@ -605,6 +605,12 @@ public static class WriterHelper
                 {
                     context.Collections.Remove(kvp.Key);
                 }
+                // An implicit collection cannot be compressed if the root node has outgoing triples other than rdf:first, rdf:rest
+                var outgoing = context.Graph.GetTriplesWithSubject(kvp.Key).Count(t => !t.Predicate.Equals(first) && !t.Predicate.Equals(rest));
+                if (outgoing > 0)
+                {
+                    context.Collections.Remove(kvp.Key);
+                }
             }
         }
         if (context.Collections.Count == 0)
