@@ -1,0 +1,851 @@
+<xs:schema xmlns:g="http://graphml.graphdrawing.org/xmlns" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://graphml.graphdrawing.org/xmlns" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://graphml.graphdrawing.org/xmlns" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:import namespace="http://www.w3.org/1999/xlink" schemaLocation="https://www.w3.org/XML/2008/06/xlink.xsd">
+        <xs:annotation>
+            <xs:documentation source="???" xml:lang="en">
+       Get access to the xlink attribute groups for the attributes
+       xlink:href and xlink:type of locator.type.
+    </xs:documentation>
+        </xs:annotation>
+    </xs:import>
+    <xs:annotation>
+        <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+     The schema corresponding to this document defines the structural
+     layer of the Graph Markup Language (GraphML).
+     Although a DTD is provided, this schema is, together with its extensions
+     http://graphml.graphdrawing.org/xmlns/1.1/graphml-attributes.xsd
+     and
+     http://graphml.graphdrawing.org/xmlns/1.1/graphml-parseinfo.xsd,
+     the only normative reference.
+    </xs:documentation>
+    </xs:annotation>
+    <xs:annotation>
+        <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      The attribute groups &lt;element_name&gt;.extra.attrib may be used
+      for adding user defined attributes to the elements
+      &lt;element_name&gt;.
+      The attribute group common.extra.attrib may be used for adding
+      user defined attributes to all elements.
+    </xs:documentation>
+    </xs:annotation>
+    <xs:attributeGroup name="common.extra.attrib" />
+    <xs:attributeGroup name="graphml.extra.attrib">
+        <xs:attributeGroup ref="common.extra.attrib" />
+    </xs:attributeGroup>
+    <xs:attributeGroup name="data.extra.attrib">
+        <xs:attributeGroup ref="common.extra.attrib" />
+    </xs:attributeGroup>
+    <xs:attributeGroup name="key.extra.attrib">
+        <xs:attributeGroup ref="common.extra.attrib" />
+    </xs:attributeGroup>
+    <xs:attributeGroup name="default.extra.attrib">
+        <xs:attributeGroup ref="common.extra.attrib" />
+    </xs:attributeGroup>
+    <xs:attributeGroup name="graph.extra.attrib">
+        <xs:attributeGroup ref="common.extra.attrib" />
+    </xs:attributeGroup>
+    <xs:attributeGroup name="node.extra.attrib">
+        <xs:attributeGroup ref="common.extra.attrib" />
+    </xs:attributeGroup>
+    <xs:attributeGroup name="edge.extra.attrib">
+        <xs:attributeGroup ref="common.extra.attrib" />
+    </xs:attributeGroup>
+    <xs:attributeGroup name="port.extra.attrib">
+        <xs:attributeGroup ref="common.extra.attrib" />
+    </xs:attributeGroup>
+    <xs:attributeGroup name="hyperedge.extra.attrib">
+        <xs:attributeGroup ref="common.extra.attrib" />
+    </xs:attributeGroup>
+    <xs:attributeGroup name="endpoint.extra.attrib">
+        <xs:attributeGroup ref="common.extra.attrib" />
+    </xs:attributeGroup>
+    <xs:attributeGroup name="locator.extra.attrib">
+        <xs:attributeGroup ref="common.extra.attrib" />
+    </xs:attributeGroup>
+    <xs:annotation>
+        <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Complex type definitions for the GraphML structural layer elements:
+      &lt;data&gt;, &lt;default&gt;, &lt;key&gt;, &lt;graphml&gt;, &lt;graph&gt;, 
+      &lt;node&gt;, &lt;port&gt;, 
+      &lt;edge&gt;, &lt;hyperedge&gt;, &lt;endpoint&gt; and &lt;locator&gt;.
+      The names of the complex types are constructed corresponding
+      to the pattern element_name.type.
+      (The only remaining GraphML structural layer element
+      &lt;desc&gt; is of simple type xs:string.)
+    </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true" name="data-extension.type">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Extension mechanism for the content of &lt;data&gt; and &lt;default&gt;.
+      The complex type data-extension.type is empty per default.
+      Users may redefine this type in order to add content to 
+      the complex types data.type and default.type which are 
+      extensions of data-extension.type.
+    </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+    <xs:complexType final="#all" name="data.type">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Complex type for the &lt;data&gt; element.
+      data.type is mixed, that is, &lt;data&gt; may contain #PCDATA.
+      Content type: extension of data-extension.type which is empty
+                    per default.
+    </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent mixed="true">
+            <xs:extension base="data-extension.type">
+                <xs:attribute name="key" type="xs:NMTOKEN" use="required">
+                    <xs:annotation>
+                        <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">refers to the id attribute of a &lt;key&gt;.
+          </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="time" default="0" type="xs:long">
+                    <xs:annotation>
+                        <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+          </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="id" type="xs:NMTOKEN" use="optional">
+                    <xs:annotation>
+                        <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">identifies this &lt;data&gt;.
+          </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attributeGroup ref="data.extra.attrib">
+                    <xs:annotation>
+                        <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                 user defined extra attributes for &lt;data&gt; elements
+          </xs:documentation>
+                    </xs:annotation>
+                </xs:attributeGroup>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType final="#all" name="default.type">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Complex type for the &lt;default&gt; element.
+      default.type is mixed, that is, data may contain #PCDATA.
+      Content type: extension of data-extension.type which is empty
+                    per default.
+    </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent mixed="true">
+            <xs:extension base="data-extension.type">
+                <xs:attributeGroup ref="default.extra.attrib">
+                    <xs:annotation>
+                        <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                 user defined extra attributes for &lt;default&gt; elements
+          </xs:documentation>
+                    </xs:annotation>
+                </xs:attributeGroup>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:simpleType name="key.for.type" final="#all">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Simple type for the for attribute of &lt;key&gt;.
+      key.for.type is a restriction of xs:NMTOKEN
+      Allowed values: all, graphml, graph, node, edge, hyperedge, port and endpoint.
+    </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="all" />
+            <xs:enumeration value="graphml" />
+            <xs:enumeration value="graph" />
+            <xs:enumeration value="node" />
+            <xs:enumeration value="edge" />
+            <xs:enumeration value="hyperedge" />
+            <xs:enumeration value="port" />
+            <xs:enumeration value="endpoint" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType final="#all" name="key.type">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Complex type for the &lt;key&gt; element.
+    </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element ref="desc" minOccurs="0" />
+            <xs:element ref="default" minOccurs="0" />
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:NMTOKEN" use="required">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">identifies this &lt;key&gt;.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="dynamic" default="false" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="for" default="all" type="key.for.type">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                 describes the domain of definition for 
+                 the corresponding graph attribute. 
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="key.extra.attrib">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                  user defined extra attributes for &lt;key&gt; elements.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType final="#all" name="graphml.type">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Complex type for the &lt;graphml&gt; element.
+    </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element ref="desc" minOccurs="0" />
+            <xs:element ref="key" minOccurs="0" maxOccurs="unbounded" />
+            <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element ref="graph" />
+                    <xs:element ref="data" />
+                </xs:choice>
+            </xs:sequence>
+        </xs:sequence>
+        <xs:attributeGroup ref="graphml.extra.attrib">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                user defined extra attributes for &lt;graphml&gt; elements.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attributeGroup>
+    </xs:complexType>
+    <xs:simpleType name="graph.edgedefault.type" final="#all">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Simple type for the edgedefault attribute of &lt;graph&gt;.
+      graph.edgedefault.type is a restriction of xs:NMTOKEN
+      Allowed values: directed, undirected.
+    </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="directed" />
+            <xs:enumeration value="undirected" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType final="#all" name="graph.type">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Complex type for the &lt;graph&gt; element.
+    </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element ref="desc" minOccurs="0" />
+            <xs:choice>
+                <xs:sequence>
+                    <xs:choice minOccurs="0" maxOccurs="unbounded">
+                        <xs:element ref="data" />
+                        <xs:element ref="node" />
+                        <xs:element ref="edge" />
+                        <xs:element ref="hyperedge" />
+                    </xs:choice>
+                </xs:sequence>
+                <xs:element ref="locator" />
+            </xs:choice>
+        </xs:sequence>
+        <xs:attributeGroup ref="graph.extra.attrib">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                user defined extra attributes for &lt;graph&gt; elements.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attributeGroup>
+        <xs:attribute name="id" type="xs:NMTOKEN">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                  identifies this graph .
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="edgedefault" type="graph.edgedefault.type" use="required">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                        describes whether edges of this graph are considered
+                        as directed or undirected per default (unless 
+                        specified by the attribute directed of &lt;edge&gt;).
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType final="#all" name="node.type">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Complex type for the &lt;node&gt; element.
+    </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element ref="desc" minOccurs="0" />
+            <xs:choice>
+                <xs:sequence>
+                    <xs:choice minOccurs="0" maxOccurs="unbounded">
+                        <xs:element ref="data" />
+                        <xs:element ref="port" />
+                    </xs:choice>
+                    <xs:element ref="graph" minOccurs="0" />
+                </xs:sequence>
+                <xs:element ref="locator" />
+            </xs:choice>
+        </xs:sequence>
+        <xs:attributeGroup ref="node.extra.attrib">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                user defined extra attributes for &lt;node elements.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attributeGroup>
+        <xs:attribute name="id" type="xs:NMTOKEN" use="required">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                 identifies this node.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType final="#all" name="port.type">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Complex type for the &lt;port&gt; element.
+    </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element ref="desc" minOccurs="0" />
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="data" />
+                <xs:element ref="port" />
+            </xs:choice>
+        </xs:sequence>
+        <xs:attributeGroup ref="port.extra.attrib">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                 user defined extra attributes for &lt;port&gt; elements.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attributeGroup>
+        <xs:attribute name="name" type="xs:NMTOKEN" use="required">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                   identifies this port, within the node it is contained in.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType final="#all" name="edge.type">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Complex type for the &lt;edge&gt; element.
+    </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element ref="desc" minOccurs="0" />
+            <xs:element ref="data" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element ref="graph" minOccurs="0" />
+        </xs:sequence>
+        <xs:attributeGroup ref="edge.extra.attrib">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                 user defined extra attributes for &lt;edge&gt; elements.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attributeGroup>
+        <xs:attribute name="id" type="xs:NMTOKEN">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                identifies this edge .
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="directed" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                overwrites the edgedefault attribute of &lt;graph&gt; .
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="source" type="xs:NMTOKEN" use="required">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                  points to the id attribute of the source &lt;node&gt;.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="target" type="xs:NMTOKEN" use="required">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                   points to the id attribute of the target &lt;node&gt;.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="sourceport" type="xs:NMTOKEN">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                 points to the name attribute of the source &lt;port&gt;.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="targetport" type="xs:NMTOKEN">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                    points to the name attribute of the target &lt;port&gt;.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType final="#all" name="hyperedge.type">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Complex type for the &lt;hyperedge&gt; element.
+    </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element ref="desc" minOccurs="0" />
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="data" />
+                <xs:element ref="endpoint" />
+            </xs:choice>
+            <xs:element ref="graph" minOccurs="0" />
+        </xs:sequence>
+        <xs:attributeGroup ref="hyperedge.extra.attrib">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+               user defined extra attributes for &lt;hyperedge&gt; elements.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attributeGroup>
+        <xs:attribute name="id" type="xs:NMTOKEN">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                  identifies this &lt;hyperedge&gt; .
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:simpleType name="endpoint.type.type" final="#all">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Simple type for the type attribute of &lt;endpoint&gt;.
+      endpoint.type.type is a restriction of xs:NMTOKEN
+      Allowed values: in, out, undir.
+    </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="in" />
+            <xs:enumeration value="out" />
+            <xs:enumeration value="undir" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType final="#all" name="endpoint.type">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Complex type for the &lt;endpoint&gt; element.
+    </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element ref="desc" minOccurs="0" />
+        </xs:sequence>
+        <xs:attributeGroup ref="endpoint.extra.attrib">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                 user defined extra attributes for &lt;endpoint&gt; elements.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attributeGroup>
+        <xs:attribute name="id" type="xs:NMTOKEN">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                  identifies this &lt;endpoint&gt; .
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="port" type="xs:NMTOKEN">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                points to the name of the port, to which this endpoint is 
+                 connected .
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="node" type="xs:NMTOKEN" use="required">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en"> 
+            points to the id of the node, to which this endpoint is connected. 
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="type" default="undir" type="endpoint.type.type">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+               defines the direction on this endpoint (undirected per default).
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType final="#all" name="locator.type">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+      Complex type for the &lt;locator&gt; element.
+      Content type: (empty)
+    </xs:documentation>
+        </xs:annotation>
+        <xs:attributeGroup ref="locator.extra.attrib">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+               user defined extra attributes for &lt;locator&gt; elements.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attributeGroup>
+        <xs:attribute ref="xlink:href" use="required">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+                points to the resource of this locator.
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <!-- xs:attribute ref="xlink:type" fixed="simple"-->
+        <xs:attribute ref="xlink:type">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+               type of the hyperlink (fixed as simple).
+          </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <!--========================================================-->
+    <xs:element name="desc" type="xs:string" block="#all">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+           Description: Provides human-readable descriptions for the GraphML
+                        element containing this &lt;desc&gt; as its first child.
+           Occurence:   &lt;key&gt;, &lt;graphml&gt;, &lt;graph&gt;, 
+                        &lt;node&gt;, &lt;port&gt;, &lt;edge&gt;, &lt;hyperedge&gt;, and
+                        &lt;endpoint&gt;. 
+      </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="locator" type="locator.type" block="#all">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+           Description: Graphs and nodes are declared by the elements
+                        &lt;graph&gt; and &lt;node&gt;, respectively. The optional
+                        &lt;locator&gt;-child of these elements point to 
+                        their definition. (If there is no &lt;locator&gt;-child
+                        the graphs/nodes are defined by their content).
+           Occurence:   &lt;graph&gt;, and &lt;node&gt;. 
+      </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="data" type="data.type" block="#all">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+           Description: In GraphML there may be data-functions attached
+                        to graphs, nodes, ports, edges, hyperedges and
+                        endpoint and to the whole collection of 
+                        graphs described by the content of &lt;graphml&gt;. 
+                        These functions are declared by &lt;key&gt; elements
+                        (children of &lt;graphml&gt;) and defined by &lt;data&gt;
+                        elements.
+           Occurence: &lt;graphml&gt;, &lt;graph&gt;, &lt;node&gt;, &lt;port&gt;, 
+                      &lt;edge&gt;, &lt;hyperedge&gt;, and &lt;endpoint&gt;. 
+      </xs:documentation>
+        </xs:annotation>
+        <xs:unique name="data_data_key_unique">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">        
+        Ensures: uniqueness of the key attributes of &lt;data&gt; children
+                 of this &lt;data&gt; element.
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath="./g:data" />
+            <xs:field xpath="@key" />
+            <xs:field xpath="@time" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="key" type="key.type" block="#all">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+           Description: In GraphML there may be data-functions attached
+                        to graphs, nodes, ports, edges, hyperedges and
+                        endpoint and to the whole collection of 
+                        graphs described by the content of &lt;graphml&gt;. 
+                        These functions are declared by &lt;key&gt; elements
+                        (children of &lt;graphml&gt;) and defined by &lt;data&gt;
+                        elements.
+           Occurence: &lt;graphml&gt;. 
+      </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="default" type="default.type" block="#all">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+           Description: In GraphML there may be data-functions attached
+                        to graphs, nodes, ports, edges, hyperedges and
+                        endpoint and to the whole collection of 
+                        graphs described by the content of &lt;graphml&gt;. 
+                        These functions are declared by &lt;key&gt; elements
+                        (children of &lt;graphml&gt;) and defined by &lt;data&gt;
+                        elements.
+                        The (optional) &lt;default&gt; child of &lt;key&gt; gives 
+                        the default value for the corresponding function. 
+           Occurence: &lt;key&gt;. 
+      </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="graphml" type="graphml.type" block="#all">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+           Description: &lt;graphml&gt; is the root element of each GraphML 
+                      document.
+           Occurence: root. 
+      </xs:documentation>
+        </xs:annotation>
+        <xs:unique name="graphml_data_key_unique">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: uniqueness of the key attributes of &lt;data&gt; children
+                 of this &lt;graphml&gt; element.
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath="./g:data" />
+            <xs:field xpath="@key" />
+            <xs:field xpath="@time" />
+        </xs:unique>
+        <xs:key name="key_id_key">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: existence and uniqueness of the id attributes of 
+                 each &lt;key&gt; element in this document.
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath=".//g:key" />
+            <xs:field xpath="@id" />
+        </xs:key>
+        <xs:unique name="graph_id_unique">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: uniqueness of the id attributes of 
+                 each &lt;graph&gt; element in this document.
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath=".//g:graph" />
+            <xs:field xpath="@id" />
+        </xs:unique>
+        <xs:keyref name="data_key_ref" refer="key_id_key">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: for the key attribute of each &lt;data&gt; in this document, 
+                 the existence of an id attribute of 
+                 &lt;key&gt; which matches the value of it. 
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath=".//g:data" />
+            <xs:field xpath="@key" />
+        </xs:keyref>
+    </xs:element>
+    <xs:element name="graph" type="graph.type" block="#all">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+          Description: Describes one graph in this document.
+          Occurence: &lt;graphml&gt;, &lt;node&gt;, &lt;edge&gt;, &lt;hyperedge&gt;.
+      </xs:documentation>
+        </xs:annotation>
+        <xs:unique name="graph_data_key_unique">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: uniqueness of the key attributes of &lt;data&gt; children
+                 of this &lt;graph&gt; element.
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath="./g:data" />
+            <xs:field xpath="@key" />
+            <xs:field xpath="@time" />
+        </xs:unique>
+        <xs:key name="node_id_key">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: existence and uniqueness of the id attributes of 
+                 each &lt;node&gt; element in this graph.
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath=".//g:node" />
+            <xs:field xpath="@id" />
+        </xs:key>
+        <xs:unique name="edge_id_unique">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: uniqueness of the id attributes of 
+                 each &lt;edge&gt; element in this graph.
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath=".//g:edge" />
+            <xs:field xpath="@id" />
+        </xs:unique>
+        <xs:unique name="hyperedge_id_unique">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: uniqueness of the id attributes of 
+                 each &lt;hyperedge&gt; element in this graph.
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath=".//g:hyperedge" />
+            <xs:field xpath="@id" />
+        </xs:unique>
+        <xs:unique name="endpoint_id_unique">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: uniqueness of the id attributes of 
+                 each &lt;endpoint&gt; element in this graph.
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath=".//g:endpoint" />
+            <xs:field xpath="@id" />
+        </xs:unique>
+        <xs:keyref name="edge_source_ref" refer="node_id_key">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: for the source attribute of each &lt;edge&gt; in this graph, 
+                 the existence of an id attribute of 
+                 &lt;node&gt; which matches the value of it. 
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath=".//g:edge" />
+            <xs:field xpath="@source" />
+        </xs:keyref>
+        <xs:keyref name="edge_target_ref" refer="node_id_key">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: for the target attribute of each &lt;edge&gt; in this graph, 
+                 the existence of an id attribute of 
+                 &lt;node&gt; which matches the value of it. 
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath=".//g:edge" />
+            <xs:field xpath="@target" />
+        </xs:keyref>
+        <xs:keyref name="endpoint_node_ref" refer="node_id_key">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: for the node attribute of each &lt;endpoint&gt; in this graph,
+                 the existence of an id attribute of 
+                 &lt;node&gt; which matches the value of it. 
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath=".//g:endpoint" />
+            <xs:field xpath="@node" />
+        </xs:keyref>
+    </xs:element>
+    <xs:element name="node" type="node.type" block="#all">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+           Description: Describes one node in the &lt;graph&gt;
+                        containing this &lt;node&gt;.
+           Occurence: &lt;graph&gt;. 
+      </xs:documentation>
+        </xs:annotation>
+        <xs:key name="port_name_key">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: existence and uniqueness of the name attributes of 
+                 each &lt;port&gt; element within this &lt;node&gt;.
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath=".//g:port" />
+            <xs:field xpath="@name" />
+        </xs:key>
+        <xs:unique name="node_data_key_unique">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: uniqueness of the key attributes of &lt;data&gt; children
+                 of this &lt;node&gt; element.
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath="./g:data" />
+            <xs:field xpath="@key" />
+            <xs:field xpath="@time" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="port" type="port.type" block="#all">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+           Description: Nodes may be structured by ports; thus edges
+                        are not only attached to a node but to a certain
+                        port in this node.
+           Occurence: &lt;node&gt;, &lt;port&gt;. 
+      </xs:documentation>
+        </xs:annotation>
+        <xs:unique name="port_data_key_unique">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: uniqueness of the key attributes of &lt;data&gt; children
+                 of this &lt;port&gt; element.
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath="./g:data" />
+            <xs:field xpath="@key" />
+            <xs:field xpath="@time" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="edge" type="edge.type" block="#all">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+           Description: Describes an edge in the &lt;graph&gt; which contains this
+                        &lt;edge&gt;.
+           Occurence: &lt;graph&gt;. 
+      </xs:documentation>
+        </xs:annotation>
+        <xs:unique name="edge_data_key_unique">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: uniqueness of the key attributes of &lt;data&gt; children
+                 of this &lt;edge&gt; element.
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath="./g:data" />
+            <xs:field xpath="@key" />
+            <xs:field xpath="@time" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="hyperedge" type="hyperedge.type" block="#all">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+           Description: While edges describe relations between two nodes, 
+                        a hyperedge describes a relation between an arbitrary
+                        number of nodes.
+           Occurence: &lt;graph&gt;. 
+      </xs:documentation>
+        </xs:annotation>
+        <xs:unique name="hyperedge_data_key_unique">
+            <xs:annotation>
+                <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+        Ensures: uniqueness of the key attributes of &lt;data&gt; children
+                 of this &lt;hyperedge&gt; element.
+      </xs:documentation>
+            </xs:annotation>
+            <xs:selector xpath="./g:data" />
+            <xs:field xpath="@key" />
+            <xs:field xpath="@time" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="endpoint" type="endpoint.type" block="#all">
+        <xs:annotation>
+            <xs:documentation source="http://graphml.graphdrawing.org/" xml:lang="en">
+           Description: The list of &lt;endpoints&gt; within a hyperedge
+                        points to the nodes contained in this hyperedge.
+           Occurence: &lt;hyperedge&gt;. 
+      </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+</xs:schema>

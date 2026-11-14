@@ -1,5 +1,9 @@
 ﻿Change Log
 ==========
+3.5.3
+-----
+
+FIX: Fix an issue in the CompressingTurtleWriter where an RDF collection with an explicit type was being incorrectly compressed due to the additional rdf:type triple. This fix means that such collections are *NOT* compressed by the writer as the compressed syntax does not allow the additional rdf:type triple to be round-tripped. Thanks to @StephanLupp for the report. (#903)
 
 4.0.0
 -----
