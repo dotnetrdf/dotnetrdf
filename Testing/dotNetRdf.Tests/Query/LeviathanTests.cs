@@ -139,7 +139,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         ILiteralNode o2 = g.CreateLiteralNode("1", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
         //Create an ID and Null Multiset
-        var id = new IdentityMultiset();
+        var id = new IdentityMultiset(usePLinqEvaluation: true);
         var nullset = new NullMultiset();
 
         //Create and Populate a Multiset

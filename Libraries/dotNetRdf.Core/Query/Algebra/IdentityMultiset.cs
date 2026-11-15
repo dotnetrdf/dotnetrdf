@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Nodes;
@@ -40,9 +41,15 @@ public class IdentityMultiset
     /// <summary>
     /// Creates an identity multiset.
     /// </summary>
+    /// <remarks>Parallel evaluation is enabled by default.</remarks>
+    [Obsolete("Use IdentityMultiset(bool) to specify whether parallel evaluation is enabled.")]
     public IdentityMultiset() : this(true) { }
 
-    internal IdentityMultiset(bool usePLinqEvaluation) : base(usePLinqEvaluation) { }
+    /// <summary>
+    /// Creates an identity multiset with the given PLINQ setting.
+    /// </summary>
+    /// <param name="usePLinqEvaluation">Whether parallel evaluation is enabled.</param>
+    public IdentityMultiset(bool usePLinqEvaluation) : base(usePLinqEvaluation) { }
 
     /// <summary>
     /// Joins the Multiset to another Multiset.

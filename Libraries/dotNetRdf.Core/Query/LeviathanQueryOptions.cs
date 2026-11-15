@@ -100,6 +100,15 @@ public class LeviathanQueryOptions
     /// </remarks>
     public bool UsePLinqEvaluation { get; set; } = true;
 
+    internal LeviathanQueryOptions WithPLinqEvaluationEnabled()
+    {
+        if (UsePLinqEvaluation) return this;
+
+        var options = (LeviathanQueryOptions)MemberwiseClone();
+        options.UsePLinqEvaluation = true;
+        return options;
+    }
+
     /// <summary>
     /// Gets/Sets whether to use rigorous query evaluation.
     /// </summary>
