@@ -10,7 +10,7 @@
     <!-- NuGet Package Metadata. Additional values are inherited from ../Directory.Build.props -->
     <PackageId>dotNetRdf.Query.Spin</PackageId>
     <Title>dotNetRDF SPIN Support</Title>
-    <Description>A library which provides a full SPIN implementation using dotNetRDF's Leviathan SPARQL engine</Description>
+    <Description>SPIN-backed SPARQL query and update support for dotNetRDF</Description>
     <PackageTags>RDF;Semantic;Web;SPARQL;Inference;SPIN</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
