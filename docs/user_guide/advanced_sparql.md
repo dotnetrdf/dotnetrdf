@@ -8,6 +8,7 @@ Currently, the following topics are covered:
 * [Result Formatting](result_formatting.md)
 * [Full Text Querying with SPARQL](full_text_querying_with_sparql.md)
 * [Advanced SPARQL Operations](advanced_sparql_operations.md)
+* [SPIN Integration](spin_integration.md)
 
 There may also be some useful topics for advanced users in the [Developer Guide](/developer_guide/index.md)
 

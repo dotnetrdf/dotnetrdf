@@ -89,6 +89,8 @@
      href: full_text_querying_with_sparql.md
    - name: Advanced SPARQL Operations
      href: advanced_sparql_operations.md
+   - name: SPIN Integration
+     href: spin_integration.md
 - name: Ontology API
   href: ontology_api.md
 - name: Inference and Reasoning
