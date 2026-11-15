@@ -145,7 +145,7 @@ public class ParallelEvaluation
             new INode[] { one, one, one }
         };
 
-        BaseMultiset multiset = new Multiset();
+        BaseMultiset multiset = new Multiset(usePLinqEvaluation: true);
         foreach (INode[] row in data)
         {
             var s = new Set();
@@ -163,7 +163,7 @@ public class ParallelEvaluation
             var context = new SparqlEvaluationContext(null, new LeviathanQueryOptions())
             {
                 InputMultiset = multiset,
-                OutputMultiset = new Multiset()
+                OutputMultiset = new Multiset(usePLinqEvaluation: true)
             };
 
             context.InputMultiset.SetIDs.AsParallel().ForAll(id => EvalExtend(processor, context, context.InputMultiset, expr, "actual", id));

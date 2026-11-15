@@ -38,6 +38,13 @@ public class IdentityMultiset
     : BaseMultiset
 {
     /// <summary>
+    /// Creates an identity multiset.
+    /// </summary>
+    public IdentityMultiset() : this(true) { }
+
+    internal IdentityMultiset(bool usePLinqEvaluation) : base(usePLinqEvaluation) { }
+
+    /// <summary>
     /// Joins the Multiset to another Multiset.
     /// </summary>
     /// <param name="other">Other Multiset.</param>

@@ -197,7 +197,10 @@ public abstract class BaseMultiset
         if (other is NullMultiset) return this;
         if (other.IsEmpty) return this;
 
-        var joinedSet = new Multiset(baseContext.Options.UsePLinqEvaluation);
+        var usePLinqEvaluation = expressionProcessor is LeviathanExpressionProcessor leviathan
+            ? leviathan.UsesPLinqEvaluation(baseContext)
+            : baseContext.Options.UsePLinqEvaluation;
+        var joinedSet = new Multiset(usePLinqEvaluation);
         var binder = new LeviathanLeftJoinBinder(joinedSet);
         var subcontext = new SparqlEvaluationContext(binder, baseContext.Options);
 
@@ -207,7 +210,7 @@ public abstract class BaseMultiset
         var joinVars = Variables.Where(v => other.Variables.Contains(v)).ToList();
         if (joinVars.Count == 0)
         {
-            if (subcontext.Options.UsePLinqEvaluation && expr.CanParallelise)
+            if (usePLinqEvaluation && expr.CanParallelise)
             {
                 var partitionedSet = new PartitionedMultiset(Count, other.Count + 1);
                 Sets.AsParallel().ForAll(x => EvalLeftJoinProduct(x, other, partitionedSet, expr, baseContext, expressionProcessor));
@@ -285,7 +288,7 @@ public abstract class BaseMultiset
             }
 
             // Then do a pass over the LHS and work out the intersections
-            if (subcontext.Options.UsePLinqEvaluation && expr.CanParallelise)
+            if (usePLinqEvaluation && expr.CanParallelise)
             {
                 Sets.AsParallel().ForAll(x => EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr, expressionProcessor));
             }

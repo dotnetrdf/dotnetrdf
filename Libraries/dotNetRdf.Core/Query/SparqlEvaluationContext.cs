@@ -296,14 +296,12 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
     /// </summary>
     /// <param name="algebra">Algebra.</param>
     /// <returns></returns>
-    public BaseMultiset Evaluate(ISparqlAlgebra algebra)
-    {
-        return Processor == null ? GetDefaultQueryProcessor().ProcessAlgebra(algebra, this) : Processor.ProcessAlgebra(algebra, this);
-    }
+    public BaseMultiset Evaluate(ISparqlAlgebra algebra) => Evaluate(algebra, false);
 
-    private LeviathanQueryProcessor GetDefaultQueryProcessor()
+    internal BaseMultiset Evaluate(ISparqlAlgebra algebra, bool enablePLinqEvaluation)
     {
-        return new LeviathanQueryProcessor(Data, Options);
+        var processor = Processor ?? new LeviathanQueryProcessor(Data, Options, enablePLinqEvaluation);
+        return processor.ProcessAlgebra(algebra, this);
     }
 
     /// <summary>

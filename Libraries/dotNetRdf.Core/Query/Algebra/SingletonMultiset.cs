@@ -32,14 +32,14 @@ namespace VDS.RDF.Query.Algebra;
 
 internal class SingletonMultiset : Multiset
 {
-    public SingletonMultiset()
-        : base()
+    public SingletonMultiset(bool usePLinqEvaluation)
+        : base(usePLinqEvaluation)
     {
         Add(new Set());
     }
 
-    public SingletonMultiset(IEnumerable<string> vars)
-        : base(vars)
+    public SingletonMultiset(IEnumerable<string> vars, bool usePLinqEvaluation = true)
+        : base(vars, usePLinqEvaluation)
     {
         Add(new Set());
     }

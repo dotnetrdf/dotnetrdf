@@ -194,7 +194,7 @@ public class FullTextMatchPropertyFunction
         IEnumerable<IRefNode> graphUris = context.Data.ActiveGraphNames;
 
         //Now we can use the full text search provider to start getting results
-        context.OutputMultiset = new Multiset();
+        context.OutputMultiset = new Multiset(context.Options.UsePLinqEvaluation);
         IEnumerable<IFullTextSearchResult> results = applyLimitDirect ? GetResults(graphUris, provider, search, _limit.Value) : GetResults(graphUris, provider, search);
         var r = 0;
         var matchVar = _matchVar.Variables.First();

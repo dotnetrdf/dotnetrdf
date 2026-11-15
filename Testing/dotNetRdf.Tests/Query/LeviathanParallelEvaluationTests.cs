@@ -28,6 +28,7 @@ using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Patterns;
 using Xunit;
 
 namespace VDS.RDF.Query;
@@ -69,12 +70,59 @@ public class LeviathanParallelEvaluationTests
         Assert.All(processor.JoinResults.Concat(processor.LeftJoinResults), result => Assert.Equal(usePLinqEvaluation, result.UsePLinqEvaluation));
     }
 
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void AlgebraUsesPLinqWhenEitherTheProcessorOrContextEnablesIt(bool processorParallel, bool contextParallel)
+    {
+        using var graph = new Graph();
+        using var dataset = new InMemoryDataset(graph);
+        using var processor = new JoinTrackingProcessor(dataset, processorParallel);
+        SparqlQuery query = new SparqlQueryParser().ParseFromString("""
+            SELECT DISTINCT * WHERE {
+                { VALUES ?item { 1 2 } }
+                OPTIONAL { VALUES (?item ?label) { (1 "one") } }
+                { SELECT ?tag WHERE { VALUES ?tag { "A" "B" } } }
+            }
+            """);
+        var context = new SparqlEvaluationContext(query, dataset, new LeviathanQueryOptions { UsePLinqEvaluation = contextParallel });
+
+        BaseMultiset results = processor.ProcessAlgebra(query.ToAlgebra(optimise: false), context);
+
+        var expectedParallel = processorParallel || contextParallel;
+        Assert.Equal(4, results.Count);
+        Assert.Equal(expectedParallel, results.UsePLinqEvaluation);
+        Assert.Equal(expectedParallel, Assert.Single(processor.LeftJoinResults).UsePLinqEvaluation);
+        Assert.Equal(expectedParallel, Assert.Single(processor.JoinResults, result => result.Count == 4) is PartitionedMultiset);
+        Assert.Equal(contextParallel, context.Options.UsePLinqEvaluation);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void SubqueryInheritsTheProcessorSetting(bool processorParallel)
+    {
+        using var graph = new Graph();
+        using var dataset = new InMemoryDataset(graph);
+        using var processor = new LeviathanQueryProcessor(dataset, options => options.UsePLinqEvaluation = processorParallel);
+        SparqlQuery query = new SparqlQueryParser().ParseFromString("SELECT ?value WHERE { VALUES ?value { 1 } }");
+        var context = new SparqlEvaluationContext(query, dataset, new LeviathanQueryOptions { UsePLinqEvaluation = false });
+
+        BaseMultiset results = processor.ProcessSubQuery(new SubQuery(query), context);
+
+        Assert.Equal(processorParallel, results.UsePLinqEvaluation);
+        Assert.Equal(1, results.Count);
+        Assert.False(context.Options.UsePLinqEvaluation);
+    }
+
     [Fact]
     public void CachedBindingsRespectTheEvaluationContext()
     {
         using var graph = new Graph();
-        var dataset = new InMemoryDataset(graph);
-        var processor = new LeviathanQueryProcessor(dataset);
+        using var dataset = new InMemoryDataset(graph);
+        using var processor = new LeviathanQueryProcessor(dataset, options => options.UsePLinqEvaluation = false);
         SparqlQuery query = new SparqlQueryParser().ParseFromString("SELECT ?value WHERE { } VALUES ?value { 1 }");
         var bindings = new Bindings(query.Bindings);
         var parallelContext = new SparqlEvaluationContext(query, dataset, new LeviathanQueryOptions { UsePLinqEvaluation = true });
@@ -87,6 +135,18 @@ public class LeviathanParallelEvaluationTests
         Assert.False(serial.UsePLinqEvaluation);
         Assert.Equal(parallel.Sets.Single()["value"], serial.Sets.Single()["value"]);
         Assert.Same(parallel, processor.ProcessBindings(bindings, parallelContext));
+        Assert.Same(serial, processor.ProcessBindings(bindings, null));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void EmptyBindingsRetainTheExplicitParallelSetting(bool usePLinqEvaluation)
+    {
+        BaseMultiset bindings = new BindingsPattern().ToMultiset(usePLinqEvaluation);
+
+        Assert.IsType<IdentityMultiset>(bindings);
+        Assert.Equal(usePLinqEvaluation, bindings.UsePLinqEvaluation);
     }
 
     private sealed class JoinTrackingProcessor(ISparqlDataset dataset, bool usePLinqEvaluation)

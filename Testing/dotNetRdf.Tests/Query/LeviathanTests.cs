@@ -143,7 +143,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         var nullset = new NullMultiset();
 
         //Create and Populate a Multiset
-        var m = new Multiset();
+        var m = new Multiset(usePLinqEvaluation: true);
         var s = new Set();
         s.Add("s", s1);
         s.Add("p", p1);
@@ -156,14 +156,14 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         m.Add(s);
 
         //Create and Populate another Multiset
-        var n = new Multiset();
+        var n = new Multiset(usePLinqEvaluation: true);
         s = new Set();
         s.Add("s", s1);
         s.Add("label", o1);
         n.Add(s);
 
         //Create and Populate another Multiset
-        var d = new Multiset();
+        var d = new Multiset(usePLinqEvaluation: true);
         s = new Set();
         s.Add("s1", s1);
         s.Add("p1", p1);
