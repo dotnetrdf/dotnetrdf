@@ -140,7 +140,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
         var context = new SparqlEvaluationContext(origContext.Query, origContext.Data, origContext.Options)
         {
             InputMultiset = origContext.InputMultiset,
-            OutputMultiset = new Multiset(),
+            OutputMultiset = new Multiset(origContext.Options.UsePLinqEvaluation),
         };
         var cacheEntry = new ExistsCacheEntry
         {

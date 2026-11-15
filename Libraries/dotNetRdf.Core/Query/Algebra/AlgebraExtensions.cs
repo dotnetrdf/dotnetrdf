@@ -71,7 +71,7 @@ public static class AlgebraExtensions
         }
         else
         {
-            productSet = new Multiset();
+            productSet = new Multiset(multiset.UsePLinqEvaluation);
         }
 
         var stop = new StopToken();
@@ -140,11 +140,13 @@ public static class AlgebraExtensions
     /// Converts a Bindings Clause to a Multiset.
     /// </summary>
     /// <returns></returns>
-    public static BaseMultiset ToMultiset(this BindingsPattern pattern)
+    public static BaseMultiset ToMultiset(this BindingsPattern pattern) => pattern.ToMultiset(true);
+
+    internal static BaseMultiset ToMultiset(this BindingsPattern pattern, bool usePLinqEvaluation)
     {
         if (pattern.Variables.Any())
         {
-            var m = new Multiset();
+            var m = new Multiset(usePLinqEvaluation);
             foreach (var var in pattern.Variables)
             {
                 m.AddVariable(var);

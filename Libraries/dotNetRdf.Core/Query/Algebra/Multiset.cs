@@ -53,13 +53,17 @@ public class Multiset
     /// <summary>
     /// Creates a new Empty Multiset.
     /// </summary>
-    public Multiset() { }
+    public Multiset() : this(true) { }
+
+    internal Multiset(bool usePLinqEvaluation) : base(usePLinqEvaluation) { }
 
     /// <summary>
     /// Creates a new Empty Mutliset that has the list of given Variables.
     /// </summary>
     /// <param name="variables"></param>
-    public Multiset(IEnumerable<string> variables)
+    public Multiset(IEnumerable<string> variables) : this(variables, true) { }
+
+    internal Multiset(IEnumerable<string> variables, bool usePLinqEvaluation) : this(usePLinqEvaluation)
     {
         foreach (var var in variables)
         {
@@ -87,7 +91,7 @@ public class Multiset
     /// Creates a new Multiset by flattening a Group Multiset.
     /// </summary>
     /// <param name="multiset">Group Multiset.</param>
-    internal Multiset(GroupMultiset multiset)
+    internal Multiset(GroupMultiset multiset) : this(multiset.UsePLinqEvaluation)
     {
         foreach (var var in multiset.Variables)
         {

@@ -88,7 +88,7 @@ public abstract class BaseMultiset
         if (joinVars.Count == 0) return Product(other);
 
         // Start building the Joined Set
-        var joinedSet = new Multiset();
+        var joinedSet = new Multiset(UsePLinqEvaluation);
 
         // This is the new Join algorithm which is O(2n) so much faster and scalable
         // Downside is that it does require more memory than the old algorithm
@@ -197,7 +197,7 @@ public abstract class BaseMultiset
         if (other is NullMultiset) return this;
         if (other.IsEmpty) return this;
 
-        var joinedSet = new Multiset();
+        var joinedSet = new Multiset(baseContext.Options.UsePLinqEvaluation);
         var binder = new LeviathanLeftJoinBinder(joinedSet);
         var subcontext = new SparqlEvaluationContext(binder, baseContext.Options);
 
@@ -446,7 +446,7 @@ public abstract class BaseMultiset
         }
 
         // Start building the Joined Set
-        var joinedSet = new Multiset();
+        var joinedSet = new Multiset(UsePLinqEvaluation);
 
         // This is the new algorithm which is also correct but is O(3n) so much faster and scalable
         // Downside is that it does require more memory than the old algorithm
@@ -583,7 +583,7 @@ public abstract class BaseMultiset
         if (joinVars.Count == 0) return Product(other);
 
         // Start building the Joined Set
-        var joinedSet = new Multiset();
+        var joinedSet = new Multiset(UsePLinqEvaluation);
 
         // This is the new algorithm which is also correct but is O(3n) so much faster and scalable
         // Downside is that it does require more memory than the old algorithm
@@ -715,7 +715,7 @@ public abstract class BaseMultiset
         else
         {
             // Use serial calculation which is likely to really suck for big products
-            var productSet = new Multiset();
+            var productSet = new Multiset(UsePLinqEvaluation);
             foreach (ISet x in Sets)
             {
                 foreach (ISet y in other.Sets)
