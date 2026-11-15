@@ -68,7 +68,7 @@ public class LeviathanQueryProcessor
     private readonly LeviathanQueryOptions _options = new();
     private readonly ISparqlExpressionProcessor<IValuedNode, SparqlEvaluationContext, int> _expressionProcessor;
     private readonly ISparqlAggregateProcessor<IValuedNode, SparqlEvaluationContext, int> _aggregateProcessor;
-    private readonly IDictionary<Bindings, BaseMultiset> _bindingsCache = new Dictionary<Bindings, BaseMultiset>();
+    private readonly IDictionary<(Bindings, bool), BaseMultiset> _bindingsCache = new Dictionary<(Bindings, bool), BaseMultiset>();
 
     /// <summary>
     /// Creates a new Leviathan Query Processor.
@@ -256,7 +256,7 @@ public class LeviathanQueryProcessor
                             }
 
                             // Construct the Triples for each Solution
-                            if (context.OutputMultiset is IdentityMultiset) context.OutputMultiset = new SingletonMultiset();
+                            if (context.OutputMultiset is IdentityMultiset) context.OutputMultiset = new SingletonMultiset(UsesPLinqEvaluation(context));
                             foreach (ISet s in context.OutputMultiset.Sets)
                             {
                                 var constructContext = new ConstructContext(rdfHandler, false);
@@ -411,6 +411,11 @@ public class LeviathanQueryProcessor
             });
     }
 
+    internal bool UsesPLinqEvaluation(SparqlEvaluationContext context)
+    {
+        return _options.UsePLinqEvaluation || context?.Options.UsePLinqEvaluation == true;
+    }
+
     /// <summary>
     /// Creates a new Evaluation Context.
     /// </summary>
@@ -483,7 +488,7 @@ public class LeviathanQueryProcessor
             }
             else
             {
-                context.OutputMultiset = new IdentityMultiset();
+                context.OutputMultiset = new IdentityMultiset(UsesPLinqEvaluation(context));
             }
         }
 
@@ -495,7 +500,7 @@ public class LeviathanQueryProcessor
     {
         context ??= GetContext();
         context.OutputMultiset =
-            context.Data.HasTriples ? (BaseMultiset)new IdentityMultiset() : new NullMultiset();
+            context.Data.HasTriples ? (BaseMultiset)new IdentityMultiset(UsesPLinqEvaluation(context)) : new NullMultiset();
         return context.OutputMultiset;
     }
 
@@ -548,13 +553,13 @@ public class LeviathanQueryProcessor
                         }
                         else
                         {
-                            context.InputMultiset = new IdentityMultiset();
+                            context.InputMultiset = new IdentityMultiset(UsesPLinqEvaluation(context));
                         }
                     }
                 }
 
                 // Create a new Output Multiset
-                context.OutputMultiset = new Multiset();
+                context.OutputMultiset = new Multiset(UsesPLinqEvaluation(context));
 
                 triplePatterns[i].Accept(this, context);
 
@@ -594,7 +599,7 @@ public class LeviathanQueryProcessor
         else
         {
             // For an Empty BGP we just return the Identity Multiset
-            context.OutputMultiset = new IdentityMultiset();
+            context.OutputMultiset = new IdentityMultiset(UsesPLinqEvaluation(context));
         }
 
         // If we've ended with an Empty Multiset then we turn it into the Null Multiset
@@ -613,10 +618,12 @@ public class LeviathanQueryProcessor
     /// <param name="context">SPARQL Evaluation Context.</param>
     public virtual BaseMultiset ProcessBindings(Bindings b, SparqlEvaluationContext context)
     {
-        if (!_bindingsCache.TryGetValue(b, out BaseMultiset multiSet))
+        var usePLinqEvaluation = UsesPLinqEvaluation(context);
+        var cacheKey = (b, usePLinqEvaluation);
+        if (!_bindingsCache.TryGetValue(cacheKey, out BaseMultiset multiSet))
         {
-            multiSet = b.BindingsPattern.ToMultiset();
-            _bindingsCache[b] = multiSet;
+            multiSet = b.BindingsPattern.ToMultiset(usePLinqEvaluation);
+            _bindingsCache[cacheKey] = multiSet;
         }
 
         return multiSet;
@@ -644,7 +651,7 @@ public class LeviathanQueryProcessor
         }
 
         // Apply distinctness
-        context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
+        context.OutputMultiset = new Multiset(context.InputMultiset.Variables, UsesPLinqEvaluation(context));
         IEnumerable<ISet> sets = context.InputMultiset.Sets.Distinct();
         foreach (ISet s in sets)
         {
@@ -663,7 +670,7 @@ public class LeviathanQueryProcessor
         context ??= GetContext();
         // First evaluate the inner algebra
         BaseMultiset results = extend.InnerAlgebra.Accept(this, context);
-        context.OutputMultiset = new Multiset();
+        context.OutputMultiset = new Multiset(UsesPLinqEvaluation(context));
 
         if (results is NullMultiset)
         {
@@ -694,7 +701,7 @@ public class LeviathanQueryProcessor
 
             context.InputMultiset = results;
             context.OutputMultiset.AddVariable(extend.VariableName);
-            if (context.Options.UsePLinqEvaluation && extend.AssignExpression.CanParallelise)
+            if (UsesPLinqEvaluation(context) && extend.AssignExpression.CanParallelise)
             {
                 results.SetIDs.AsParallel().ForAll(id => EvalExtend(extend, context, results, id));
             }
@@ -902,7 +909,7 @@ public class LeviathanQueryProcessor
 
             // Evaluate the inner pattern
             BaseMultiset initialInput = context.InputMultiset;
-            BaseMultiset finalResult = new Multiset();
+            BaseMultiset finalResult = new Multiset(UsesPLinqEvaluation(context));
 
             // Evaluate for each Graph URI and union the results
             foreach (var uri in activeGraphs)
@@ -1009,7 +1016,7 @@ public class LeviathanQueryProcessor
         // Identity/Null yields an empty multiset
         if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
         {
-            results = new Multiset();
+            results = new Multiset(UsesPLinqEvaluation(context));
         }
         var groupSet = new GroupMultiset(results);
         List<BindingGroup> groups;
@@ -1261,7 +1268,7 @@ public class LeviathanQueryProcessor
         // Need to be careful about whether we linearize (CORE-406)
         if (!CanLinearizeLhs(leftJoin, context))
         {
-            context.InputMultiset = new IdentityMultiset();
+            context.InputMultiset = new IdentityMultiset(UsesPLinqEvaluation(context));
         }
 
         BaseMultiset lhsResult = leftJoin.Lhs.Accept(this, context);
@@ -1279,7 +1286,7 @@ public class LeviathanQueryProcessor
         {
             // Only execute the RHS if the LHS had some results
             // Need to be careful about whether we linearize (CORE-406)
-            context.InputMultiset = CanFlowResultsToRhs(leftJoin) && !IsCrossProduct(leftJoin) ? lhsResult : new IdentityMultiset();
+            context.InputMultiset = CanFlowResultsToRhs(leftJoin) && !IsCrossProduct(leftJoin) ? lhsResult : new IdentityMultiset(UsesPLinqEvaluation(context));
             BaseMultiset rhsResult = leftJoin.Rhs.Accept(this, context);
             context.CheckTimeout();
 
@@ -1406,7 +1413,7 @@ public class LeviathanQueryProcessor
             ts = context.Data.Triples;
         }
 
-        context.OutputMultiset = new Multiset();
+        context.OutputMultiset = new Multiset(UsesPLinqEvaluation(context));
         ISet<INode> properties = new HashSet<INode>(negPropSet.Properties);
 
         // Q: Should this not go at the start of evaluation?
@@ -1433,7 +1440,7 @@ public class LeviathanQueryProcessor
             }
             else
             {
-                context.OutputMultiset = new IdentityMultiset();
+                context.OutputMultiset = new IdentityMultiset(UsesPLinqEvaluation(context));
             }
         }
 
@@ -1574,7 +1581,7 @@ public class LeviathanQueryProcessor
         }
         else
         {
-            context.OutputMultiset = new Multiset();
+            context.OutputMultiset = new Multiset(UsesPLinqEvaluation(context));
 
             // Evaluate the Paths to check that are acceptable
             var returnedPaths = new HashSet<ISet>();
@@ -1621,7 +1628,7 @@ public class LeviathanQueryProcessor
                 }
                 else
                 {
-                    context.OutputMultiset = new IdentityMultiset();
+                    context.OutputMultiset = new IdentityMultiset(UsesPLinqEvaluation(context));
                 }
             }
         }
@@ -1670,12 +1677,12 @@ public class LeviathanQueryProcessor
         else
         {
             BaseMultiset initialInput = context.InputMultiset;
-            context.InputMultiset = new IdentityMultiset();
+            context.InputMultiset = new IdentityMultiset(UsesPLinqEvaluation(context));
             var x = new VariablePattern("?x");
             var y = new VariablePattern("?y");
             var bgp = new Bgp(new PropertyPathPattern(x, pathOperator.Path, y));
 
-            BaseMultiset results = context.Evaluate(bgp); //bgp.Evaluate(context);
+            BaseMultiset results = context.Evaluate(bgp, UsesPLinqEvaluation(context)); //bgp.Evaluate(context);
             context.InputMultiset = initialInput;
 
             if (!results.IsEmpty)
@@ -1741,7 +1748,7 @@ public class LeviathanQueryProcessor
             var nodes = new HashSet<INode>();
 
             BaseMultiset initialInput = context.InputMultiset;
-            var currInput = new Multiset();
+            var currInput = new Multiset(UsesPLinqEvaluation(context));
             var x = new VariablePattern("?x");
             var y = new VariablePattern("?y");
             var temp = new Set();
@@ -1757,7 +1764,7 @@ public class LeviathanQueryProcessor
             context.InputMultiset = currInput;
 
             var bgp = new Bgp(new PropertyPathPattern(x, pathOperator.Path, y));
-            BaseMultiset results = context.Evaluate(bgp); //bgp.Evaluate(context);
+            BaseMultiset results = context.Evaluate(bgp, UsesPLinqEvaluation(context)); //bgp.Evaluate(context);
             context.InputMultiset = initialInput;
 
             if (!results.IsEmpty)
@@ -1964,7 +1971,7 @@ public class LeviathanQueryProcessor
             // into an algebra at a time and may need to do further nested translate calls we do
             // need to do this here
             context.TrimTemporaryVariables = false;
-            BaseMultiset result = context.Evaluate(algebra);
+            BaseMultiset result = context.Evaluate(algebra, UsesPLinqEvaluation(context));
 
             // Also note that we don't trim temporary variables here even if we've set the setting back
             // to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
@@ -1999,7 +2006,7 @@ public class LeviathanQueryProcessor
 
         if (context.Query.Limit > 0)
         {
-            context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
+            context.OutputMultiset = new Multiset(context.InputMultiset.Variables, UsesPLinqEvaluation(context));
             foreach (ISet s in context.InputMultiset.Sets.Distinct())
             {
                 context.OutputMultiset.Add(s.Copy());
@@ -2034,11 +2041,11 @@ public class LeviathanQueryProcessor
         var vars = new HashSet<SparqlVariable>(select.SparqlVariables);
         if (context.InputMultiset is NullMultiset)
         {
-            context.InputMultiset = new Multiset(vars.Select(v => v.Name));
+            context.InputMultiset = new Multiset(vars.Select(v => v.Name), UsesPLinqEvaluation(context));
         }
         else if (context.InputMultiset is IdentityMultiset)
         {
-            context.InputMultiset = new Multiset(vars.Select(v => v.Name));
+            context.InputMultiset = new Multiset(vars.Select(v => v.Name), UsesPLinqEvaluation(context));
             context.InputMultiset.Add(new Set());
         }
         else if (context.InputMultiset.IsEmpty)
@@ -2089,7 +2096,7 @@ public class LeviathanQueryProcessor
     public virtual BaseMultiset ProcessSelectDistinctGraphs(SelectDistinctGraphs selDistGraphs, SparqlEvaluationContext context)
     {
         if (context == null) context = GetContext();
-        context.OutputMultiset = new Multiset();
+        context.OutputMultiset = new Multiset(UsesPLinqEvaluation(context));
         var var = context.Query != null ? context.Query.Variables.First(v => v.IsResultVariable).Name : selDistGraphs.GraphVariable;
 
         foreach (IRefNode graphName in context.Data.GraphNames)
@@ -2113,7 +2120,7 @@ public class LeviathanQueryProcessor
         ISparqlQueryClient endpoint = GetRemoteEndpoint(service.EndpointSpecifier, context);
         try
         {
-            context.OutputMultiset = new Multiset();
+            context.OutputMultiset = new Multiset(UsesPLinqEvaluation(context));
             foreach (SparqlQuery query in GetRemoteQueries(context, service.Pattern, GetBindings(context, service.Pattern)))
             {
                 // Try and get a Result Set from the Service
@@ -2307,7 +2314,7 @@ public class LeviathanQueryProcessor
         if (limit == 0)
         {
             // If Limit is Zero we can skip evaluation
-            context.OutputMultiset = new Multiset(vars);
+            context.OutputMultiset = new Multiset(vars, UsesPLinqEvaluation(context));
             return context.OutputMultiset;
         }
         else
@@ -2323,7 +2330,7 @@ public class LeviathanQueryProcessor
                 if (offset > context.InputMultiset.Count)
                 {
                     // If the Offset is greater than the count return nothing
-                    context.OutputMultiset = new Multiset(vars);
+                    context.OutputMultiset = new Multiset(vars, UsesPLinqEvaluation(context));
                     return context.OutputMultiset;
                 }
                 else
@@ -2395,7 +2402,7 @@ public class LeviathanQueryProcessor
             try
             {
                 // Evaluate the Subquery
-                context.OutputMultiset = subcontext.Evaluate(query);
+                context.OutputMultiset = subcontext.Evaluate(query, UsesPLinqEvaluation(context));
 
                 // If the Subquery contains a GROUP BY it may return a Group Multiset in which case we must flatten this to a Multiset
                 if (context.OutputMultiset is GroupMultiset groupMultiset)
@@ -2437,7 +2444,7 @@ public class LeviathanQueryProcessor
     private BaseMultiset EvaluateLazyUnion(LazyUnion union, SparqlEvaluationContext context)
     {
         BaseMultiset initialInput = context.InputMultiset;
-        if (union.Lhs is Extend || union.Rhs is Extend) initialInput = new IdentityMultiset();
+        if (union.Lhs is Extend || union.Rhs is Extend) initialInput = new IdentityMultiset(UsesPLinqEvaluation(context));
 
         context.InputMultiset = initialInput;
         BaseMultiset lhsResult = union.Lhs.Accept(this, context);
@@ -2465,7 +2472,7 @@ public class LeviathanQueryProcessor
     private BaseMultiset EvaluateDefaultUnion(IUnion union, SparqlEvaluationContext context)
     {
         BaseMultiset initialInput = context.InputMultiset;
-        if (union.Lhs is Extend || union.Rhs is Extend) initialInput = new IdentityMultiset();
+        if (union.Lhs is Extend || union.Rhs is Extend) initialInput = new IdentityMultiset(UsesPLinqEvaluation(context));
         if (union is AskUnion)
         {
             context.InputMultiset = initialInput;
@@ -2522,7 +2529,7 @@ public class LeviathanQueryProcessor
         {
             if (path.AreSameTerms())
             {
-                return new IdentityMultiset();
+                return new IdentityMultiset(UsesPLinqEvaluation(context));
             }
 
             return new NullMultiset();
@@ -2530,7 +2537,7 @@ public class LeviathanQueryProcessor
 
         var subjVars = path.PathStart.Variables.ToList();
         var objVars = path.PathEnd.Variables.ToList();
-        context.OutputMultiset = new Multiset();
+        context.OutputMultiset = new Multiset(UsesPLinqEvaluation(context));
 
         // Determine the Triples to which this applies
         if (!path.PathStart.IsFixed)
@@ -2785,7 +2792,7 @@ public class LeviathanQueryProcessor
         }
         else
         {
-            context.OutputMultiset = new Multiset();
+            context.OutputMultiset = new Multiset(UsesPLinqEvaluation(context));
 
             // Evaluate the Paths to check that are acceptable
             var returnedPaths = new HashSet<ISet>();
@@ -2832,7 +2839,7 @@ public class LeviathanQueryProcessor
                 }
                 else
                 {
-                    context.OutputMultiset = new IdentityMultiset();
+                    context.OutputMultiset = new IdentityMultiset(UsesPLinqEvaluation(context));
                 }
             }
 
@@ -2840,8 +2847,8 @@ public class LeviathanQueryProcessor
             context.InputMultiset = initialInput;
             var zeroPath = new ZeroLengthPath(zeroOrMorePath.PathStart, zeroOrMorePath.PathEnd, zeroOrMorePath.Path);
             BaseMultiset currResults = context.OutputMultiset;
-            context.OutputMultiset = new Multiset();
-            BaseMultiset results = context.Evaluate(zeroPath);
+            context.OutputMultiset = new Multiset(UsesPLinqEvaluation(context));
+            BaseMultiset results = context.Evaluate(zeroPath, UsesPLinqEvaluation(context));
             context.OutputMultiset = currResults;
             context.OutputMultiset.Merge(results);
         }
@@ -2862,7 +2869,7 @@ public class LeviathanQueryProcessor
         }
 
         // BOUND is always safe to parallelise
-        if (context.Options.UsePLinqEvaluation)
+        if (UsesPLinqEvaluation(context))
         {
             context.InputMultiset.SetIDs.ToList().AsParallel().ForAll(i => EvalBoundFilter(filter, context, i));
         }
@@ -2921,7 +2928,7 @@ public class LeviathanQueryProcessor
                 break;
             default:
                 // Remember that not all expressions are safe to parallelise
-                if (context.Options.UsePLinqEvaluation && filter.Expression.CanParallelise)
+                if (UsesPLinqEvaluation(context) && filter.Expression.CanParallelise)
                 {
                     context.InputMultiset.SetIDs.ToList().AsParallel()
                         .ForAll(i => EvalUnaryExpressionFilter(filter, context, i));
@@ -2978,7 +2985,7 @@ public class LeviathanQueryProcessor
         {
             // If the Input is Identity switch the input to be a Multiset containing a single Set
             // where the variable is bound to the term
-            context.InputMultiset = new Multiset();
+            context.InputMultiset = new Multiset(UsesPLinqEvaluation(context));
             var s = new Set();
             s.Add(filter.RestrictionVariable, term);
             context.InputMultiset.Add(s);
@@ -3027,7 +3034,7 @@ public class LeviathanQueryProcessor
         }
 
         // Then evaluate the inner algebra
-        BaseMultiset results = context.Evaluate(filter.InnerAlgebra);
+        BaseMultiset results = context.Evaluate(filter.InnerAlgebra, UsesPLinqEvaluation(context));
         if (results is NullMultiset || results is IdentityMultiset) return results;
 
         // Filter the results to ensure that the variable is indeed bound to the term
@@ -3142,7 +3149,7 @@ public class LeviathanQueryProcessor
         {
             filterPattern.Filter.Accept(this, context);
         }
-        context.OutputMultiset = new IdentityMultiset();
+        context.OutputMultiset = new IdentityMultiset(UsesPLinqEvaluation(context));
         return context.OutputMultiset;
     }
 
@@ -3206,7 +3213,7 @@ public class LeviathanQueryProcessor
                     }
                 }
             }
-            context.OutputMultiset = new IdentityMultiset();
+            context.OutputMultiset = new IdentityMultiset(UsesPLinqEvaluation(context));
         }
 
         return context.OutputMultiset;
@@ -3253,7 +3260,7 @@ public class LeviathanQueryProcessor
             // into an algebra at a time and may need to do further nested translate calls we do
             // need to do this here
             context.TrimTemporaryVariables = false;
-            BaseMultiset result = context.Evaluate(algebra);//algebra.Evaluate(context);
+            BaseMultiset result = context.Evaluate(algebra, UsesPLinqEvaluation(context));//algebra.Evaluate(context);
             // Also note that we don't trim temporary variables here even if we've set the setting back
             // to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
 
@@ -3308,7 +3315,7 @@ public class LeviathanQueryProcessor
             try
             {
                 // Evaluate the Subquery
-                context.OutputMultiset = subcontext.Evaluate(query);
+                context.OutputMultiset = subcontext.Evaluate(query, UsesPLinqEvaluation(context));
 
                 // If the Subquery contains a GROUP BY it may return a Group Multiset in which case we must flatten this to a Multiset
                 if (context.OutputMultiset is GroupMultiset groupMultiset)
@@ -3379,7 +3386,7 @@ public class LeviathanQueryProcessor
         // Handle Empty BGPs
         if (pattern == 0 && !triplePatterns.Any())
         {
-            context.OutputMultiset = new IdentityMultiset();
+            context.OutputMultiset = new IdentityMultiset(UsesPLinqEvaluation(context));
             return context.OutputMultiset;
         }
 
@@ -3391,13 +3398,13 @@ public class LeviathanQueryProcessor
             case 0:
                 // Input is as given and Output is new empty multiset
                 initialInput = context.InputMultiset;
-                localOutput = new Multiset();
+                localOutput = new Multiset(UsesPLinqEvaluation(context));
                 break;
 
             case 1:
                 // Input becomes current Output and Output is new empty multiset
                 initialInput = context.OutputMultiset;
-                localOutput = new Multiset();
+                localOutput = new Multiset(UsesPLinqEvaluation(context));
                 break;
 
             default:
@@ -3412,7 +3419,7 @@ public class LeviathanQueryProcessor
                     // Normal Join
                     initialInput = context.InputMultiset.Join(context.OutputMultiset);
                 }
-                localOutput = new Multiset();
+                localOutput = new Multiset(UsesPLinqEvaluation(context));
                 break;
         }
         context.InputMultiset = initialInput;
@@ -3451,7 +3458,7 @@ public class LeviathanQueryProcessor
                         // Otherwise we need to keep going here
                         // So must reset our input and outputs before continuing
                         context.InputMultiset = initialInput;
-                        context.OutputMultiset = new Multiset();
+                        context.OutputMultiset = new Multiset(UsesPLinqEvaluation(context));
                         resultsFound--;
                     }
                     else
@@ -3490,7 +3497,7 @@ public class LeviathanQueryProcessor
                     // the Identity/Null Multiset depending on whether the Expression evaluates to true
                     if (expr.Accept(_expressionProcessor, context, 0).AsSafeBoolean())
                     {
-                        context.OutputMultiset = new IdentityMultiset();
+                        context.OutputMultiset = new IdentityMultiset(UsesPLinqEvaluation(context));
                     }
                     else
                     {
@@ -3528,7 +3535,7 @@ public class LeviathanQueryProcessor
                                 // Otherwise we need to keep going here
                                 // So must reset our input and outputs before continuing
                                 context.InputMultiset = initialInput;
-                                context.OutputMultiset = new Multiset();
+                                context.OutputMultiset = new Multiset(UsesPLinqEvaluation(context));
                                 resultsFound--;
                             }
                             else
@@ -3574,7 +3581,7 @@ public class LeviathanQueryProcessor
         // Handle Empty BGPs
         if (pattern == 0 && triplePatterns.Count == 0)
         {
-            context.OutputMultiset = new IdentityMultiset();
+            context.OutputMultiset = new IdentityMultiset(UsesPLinqEvaluation(context));
             return context.OutputMultiset;
         }
 
@@ -3586,13 +3593,13 @@ public class LeviathanQueryProcessor
             case 0:
                 // Input is as given and Output is new empty multiset
                 initialInput = context.InputMultiset;
-                localOutput = new Multiset();
+                localOutput = new Multiset(UsesPLinqEvaluation(context));
                 break;
 
             case 1:
                 // Input becomes current Output and Output is new empty multiset
                 initialInput = context.OutputMultiset;
-                localOutput = new Multiset();
+                localOutput = new Multiset(UsesPLinqEvaluation(context));
                 break;
 
             default:
@@ -3607,7 +3614,7 @@ public class LeviathanQueryProcessor
                     // Normal Join
                     initialInput = context.InputMultiset.Join(context.OutputMultiset);
                 }
-                localOutput = new Multiset();
+                localOutput = new Multiset(UsesPLinqEvaluation(context));
                 break;
         }
         context.InputMultiset = initialInput;
@@ -3643,7 +3650,7 @@ public class LeviathanQueryProcessor
                         // Otherwise we need to keep going here
                         // So must reset our input and outputs before continuing
                         context.InputMultiset = initialInput;
-                        context.OutputMultiset = new Multiset();
+                        context.OutputMultiset = new Multiset(UsesPLinqEvaluation(context));
                         resultsFound--;
                     }
                     else
@@ -3682,7 +3689,7 @@ public class LeviathanQueryProcessor
                     // the Identity/Null Multiset depending on whether the Expression evaluates to true
                     if (expr.Accept(_expressionProcessor, context, 0).AsSafeBoolean())
                     {
-                        context.OutputMultiset = new IdentityMultiset();
+                        context.OutputMultiset = new IdentityMultiset(UsesPLinqEvaluation(context));
                     }
                     else
                     {
@@ -3720,7 +3727,7 @@ public class LeviathanQueryProcessor
                                 // Otherwise we need to keep going here
                                 // So must reset our input and outputs before continuing
                                 context.InputMultiset = initialInput;
-                                context.OutputMultiset = new Multiset();
+                                context.OutputMultiset = new Multiset(UsesPLinqEvaluation(context));
                                 resultsFound--;
                             }
                             else
@@ -3842,7 +3849,7 @@ public class LeviathanQueryProcessor
         // Handle Empty BGPs
         if (pattern == 0 && bgp.TriplePatterns.Count == 0)
         {
-            context.OutputMultiset = new IdentityMultiset();
+            context.OutputMultiset = new IdentityMultiset(UsesPLinqEvaluation(context));
             return context.OutputMultiset;
         }
 
@@ -3866,15 +3873,15 @@ public class LeviathanQueryProcessor
                 {
                     // If the Pattern will modify the Input and is the first thing in the BGP then it actually modifies a new empty input
                     // This takes care of FILTERs being out of scope
-                    initialInput = new Multiset();
+                    initialInput = new Multiset(UsesPLinqEvaluation(context));
                 }
-                localOutput = new Multiset();
+                localOutput = new Multiset(UsesPLinqEvaluation(context));
                 break;
 
             case 1:
                 // Input becomes current Output and Output is new empty multiset
                 initialInput = context.OutputMultiset;
-                localOutput = new Multiset();
+                localOutput = new Multiset(UsesPLinqEvaluation(context));
                 break;
 
             default:
@@ -3896,7 +3903,7 @@ public class LeviathanQueryProcessor
                 {
                     initialInput = context.OutputMultiset;
                 }
-                localOutput = new Multiset();
+                localOutput = new Multiset(UsesPLinqEvaluation(context));
                 break;
         }
         context.InputMultiset = initialInput;
@@ -3946,7 +3953,7 @@ public class LeviathanQueryProcessor
                     resultsFound++;
                     if (tp.IndexType == TripleIndexType.NoVariables)
                     {
-                        localOutput = new IdentityMultiset();
+                        localOutput = new IdentityMultiset(UsesPLinqEvaluation(context));
                         context.OutputMultiset = localOutput;
                     }
                     else
@@ -3972,7 +3979,7 @@ public class LeviathanQueryProcessor
                         // If recursing leads to no results then eliminate all outputs
                         // Also reset to prevResults to -1
                         resultsFound = 0;
-                        localOutput = new Multiset();
+                        localOutput = new Multiset(UsesPLinqEvaluation(context));
                         prevResults = -1;
                     }
                     else if (prevResults > -1)
@@ -3996,7 +4003,7 @@ public class LeviathanQueryProcessor
                     // Otherwise we need to keep going here
                     // So must reset our input and outputs before continuing
                     context.InputMultiset = initialInput;
-                    context.OutputMultiset = new Multiset();
+                    context.OutputMultiset = new Multiset(UsesPLinqEvaluation(context));
                     resultsFound--;
                 }
             }
@@ -4076,7 +4083,7 @@ public class LeviathanQueryProcessor
                     catch (RdfQueryException)
                     {
                         // Evaluates to false so eliminates all solutions (use an empty Multiset)
-                        return new Multiset();
+                        return new Multiset(UsesPLinqEvaluation(context));
                     }
                 }
             }
@@ -4242,7 +4249,7 @@ public class LeviathanQueryProcessor
             else
             {
                 // Calculate the product applying the filter as we go
-                if (context.Options.UsePLinqEvaluation && fp.FilterExpression.CanParallelise)
+                if (UsesPLinqEvaluation(context) && fp.FilterExpression.CanParallelise)
                 {
                     PartitionedMultiset partitionedSet;
                     SparqlResultBinder binder = context.Binder;
@@ -4264,7 +4271,7 @@ public class LeviathanQueryProcessor
                 }
                 else
                 {
-                    BaseMultiset productSet = new Multiset();
+                    BaseMultiset productSet = new Multiset(UsesPLinqEvaluation(context));
                     SparqlResultBinder binder = context.Binder;
                     context.Binder = new LeviathanLeftJoinBinder(productSet);
                     foreach (ISet x in lhsResults.Sets)
@@ -4335,7 +4342,7 @@ public class LeviathanQueryProcessor
             new SparqlEvaluationContext(context.Query, context.Data, context.Processor, context.Options);
         if (context.InputMultiset is not IdentityMultiset)
         {
-            context2.InputMultiset = new Multiset();
+            context2.InputMultiset = new Multiset(UsesPLinqEvaluation(context));
             foreach (ISet s in context.InputMultiset.Sets)
             {
                 context2.InputMultiset.Add(s.Copy());
@@ -4454,7 +4461,7 @@ public class LeviathanQueryProcessor
             }
 
             // Evaluate the algebra and return the result
-            return context.Evaluate(algebra);
+            return context.Evaluate(algebra, UsesPLinqEvaluation(context));
         }
         finally
         {
@@ -4493,7 +4500,7 @@ public class LeviathanQueryProcessor
         var context2 = new SparqlEvaluationContext(context.Query, context.Data, context.Processor, context.Options);
         if (context.InputMultiset is not IdentityMultiset)
         {
-            context2.InputMultiset = new Multiset();
+            context2.InputMultiset = new Multiset(UsesPLinqEvaluation(context));
             foreach (ISet s in context.InputMultiset.Sets)
             {
                 context2.InputMultiset.Add(s.Copy());

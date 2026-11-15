@@ -56,7 +56,7 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
     {
         Query = q;
         Data = data;
-        InputMultiset = new IdentityMultiset();
+        InputMultiset = new IdentityMultiset(options.UsePLinqEvaluation);
         Binder = new LeviathanResultBinder(this);
         Options = options;
         NodeComparer = Options.NodeComparer;
@@ -296,14 +296,15 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
     /// </summary>
     /// <param name="algebra">Algebra.</param>
     /// <returns></returns>
-    public BaseMultiset Evaluate(ISparqlAlgebra algebra)
-    {
-        return Processor == null ? GetDefaultQueryProcessor().ProcessAlgebra(algebra, this) : Processor.ProcessAlgebra(algebra, this);
-    }
+    public BaseMultiset Evaluate(ISparqlAlgebra algebra) => Evaluate(algebra, false);
 
-    private LeviathanQueryProcessor GetDefaultQueryProcessor()
+    internal BaseMultiset Evaluate(ISparqlAlgebra algebra, bool enablePLinqEvaluation)
     {
-        return new LeviathanQueryProcessor(Data, Options);
+        if (Processor != null) return Processor.ProcessAlgebra(algebra, this);
+
+        // A nested evaluation can inherit PLINQ from its processor while sharing this context's options.
+        LeviathanQueryOptions options = enablePLinqEvaluation ? Options.WithPLinqEvaluationEnabled() : Options;
+        return new LeviathanQueryProcessor(Data, options).ProcessAlgebra(algebra, this);
     }
 
     /// <summary>
@@ -682,7 +683,7 @@ public class SparqlEvaluationContext : IPatternEvaluationContext, ISparqlDescrib
             INode o = ((NodeMatchPattern)triplePattern.Object).Node;
             if (Data.ContainsTriple(new Triple(s, p, o)))
             {
-                OutputMultiset = new IdentityMultiset();
+                OutputMultiset = new IdentityMultiset(Options.UsePLinqEvaluation);
             }
             else
             {

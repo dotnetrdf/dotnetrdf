@@ -96,7 +96,7 @@ public class SetTests
 
         Assert.NotEqual(x, y);
 
-        var data = new Multiset();
+        var data = new Multiset(usePLinqEvaluation: true);
         data.Add(x);
         data.Add(y);
         Assert.Equal(2, data.Count);
@@ -130,7 +130,7 @@ public class SetTests
 
         Assert.NotEqual(x, y);
 
-        var data = new Multiset();
+        var data = new Multiset(usePLinqEvaluation: true);
         data.Add(x);
         data.Add(y);
         Assert.Equal(2, data.Count);

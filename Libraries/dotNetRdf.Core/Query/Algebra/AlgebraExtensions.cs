@@ -71,7 +71,7 @@ public static class AlgebraExtensions
         }
         else
         {
-            productSet = new Multiset();
+            productSet = new Multiset(multiset.UsePLinqEvaluation);
         }
 
         var stop = new StopToken();
@@ -137,14 +137,25 @@ public static class AlgebraExtensions
     }
 
     /// <summary>
-    /// Converts a Bindings Clause to a Multiset.
+    /// Converts a bindings clause to a multiset.
     /// </summary>
-    /// <returns></returns>
-    public static BaseMultiset ToMultiset(this BindingsPattern pattern)
+    /// <param name="pattern">The bindings clause to convert.</param>
+    /// <returns>The multiset containing the bindings.</returns>
+    /// <remarks>Parallel evaluation is enabled by default.</remarks>
+    [Obsolete("Use ToMultiset(bool) to specify whether parallel evaluation is enabled.")]
+    public static BaseMultiset ToMultiset(this BindingsPattern pattern) => pattern.ToMultiset(true);
+
+    /// <summary>
+    /// Converts a bindings clause to a multiset.
+    /// </summary>
+    /// <param name="pattern">The bindings clause to convert.</param>
+    /// <param name="usePLinqEvaluation">Whether to use PLINQ for supported operations.</param>
+    /// <returns>The multiset containing the bindings.</returns>
+    public static BaseMultiset ToMultiset(this BindingsPattern pattern, bool usePLinqEvaluation)
     {
         if (pattern.Variables.Any())
         {
-            var m = new Multiset();
+            var m = new Multiset(usePLinqEvaluation);
             foreach (var var in pattern.Variables)
             {
                 m.AddVariable(var);
@@ -162,7 +173,7 @@ public static class AlgebraExtensions
         }
         else
         {
-            return new IdentityMultiset();
+            return new IdentityMultiset(usePLinqEvaluation);
         }
     }
 }

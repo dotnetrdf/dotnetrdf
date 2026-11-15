@@ -86,7 +86,7 @@ public class PartitionedMultiset
         if (other is NullMultiset) return this;
         if (other.IsEmpty) return this;
 
-        var m = new Multiset();
+        var m = new Multiset(UsePLinqEvaluation);
         foreach (ISet s in Sets)
         {
             m.Add(s.Copy());

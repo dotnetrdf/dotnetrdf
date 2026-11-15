@@ -92,12 +92,22 @@ public class LeviathanQueryOptions
     public bool StrictOperators { get; set; } = false;
 
     /// <summary>
-    /// Gets/Sets whether the query engine will try to use PLinq where applicable to evaluate suitable SPARQL constructs in parallel.
+    /// Gets or sets whether the query engine can use PLINQ to evaluate suitable SPARQL constructs in parallel.
     /// </summary>
     /// <remarks>
-    /// Defaults to true.
+    /// Defaults to true. When a caller supplies a separate evaluation context, PLINQ is enabled
+    /// if either the processor or the context enables it.
     /// </remarks>
     public bool UsePLinqEvaluation { get; set; } = true;
+
+    internal LeviathanQueryOptions WithPLinqEvaluationEnabled()
+    {
+        if (UsePLinqEvaluation) return this;
+
+        var options = (LeviathanQueryOptions)MemberwiseClone();
+        options.UsePLinqEvaluation = true;
+        return options;
+    }
 
     /// <summary>
     /// Gets/Sets whether to use rigorous query evaluation.

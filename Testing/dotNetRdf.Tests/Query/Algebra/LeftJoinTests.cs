@@ -28,10 +28,10 @@ public class LeftJoinTests
         y3.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x/x4")));
         y3.Add("b", _factory.CreateLiteralNode("1"));
 
-        var lhs = new Multiset();
+        var lhs = new Multiset(usePLinqEvaluation: true);
         lhs.Add(x1);
         lhs.Add(x2);
-        var rhs = new Multiset();
+        var rhs = new Multiset(usePLinqEvaluation: true);
         rhs.Add(y2);
         rhs.Add(y3);
         // The matching set in the right hand side should have an index higher than the count of the left hand side to 

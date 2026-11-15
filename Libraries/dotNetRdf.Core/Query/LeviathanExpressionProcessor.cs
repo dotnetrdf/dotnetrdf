@@ -61,6 +61,11 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
 
     public ISparqlAggregateProcessor<IValuedNode, SparqlEvaluationContext, int> AggregateProcessor { get; }
 
+    internal bool UsesPLinqEvaluation(SparqlEvaluationContext context)
+    {
+        return _algebraProcessor?.UsesPLinqEvaluation(context) ?? context.Options.UsePLinqEvaluation;
+    }
+
     protected override IValuedNode GetBoundValue(string variableName, SparqlEvaluationContext context, int binding)
     {
         INode value = context.Binder.Value(variableName, binding);
@@ -140,7 +145,7 @@ internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEval
         var context = new SparqlEvaluationContext(origContext.Query, origContext.Data, origContext.Options)
         {
             InputMultiset = origContext.InputMultiset,
-            OutputMultiset = new Multiset(),
+            OutputMultiset = new Multiset(UsesPLinqEvaluation(origContext)),
         };
         var cacheEntry = new ExistsCacheEntry
         {

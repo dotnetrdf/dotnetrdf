@@ -41,7 +41,7 @@ public class GroupMultiset
     /// Creates a new Group Multiset.
     /// </summary>
     /// <param name="contents">Multiset which contains the sets that are being grouped.</param>
-    public GroupMultiset(BaseMultiset contents)
+    public GroupMultiset(BaseMultiset contents) : base(contents.UsePLinqEvaluation)
     {
         _contents = contents;
     }

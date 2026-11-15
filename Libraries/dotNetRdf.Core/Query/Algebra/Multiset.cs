@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -53,13 +54,30 @@ public class Multiset
     /// <summary>
     /// Creates a new Empty Multiset.
     /// </summary>
-    public Multiset() { }
+    /// <remarks>Parallel evaluation is enabled by default.</remarks>
+    [Obsolete("Use Multiset(bool) to specify whether parallel evaluation is enabled.")]
+    public Multiset() : this(true) { }
 
     /// <summary>
-    /// Creates a new Empty Mutliset that has the list of given Variables.
+    /// Creates an empty multiset.
     /// </summary>
-    /// <param name="variables"></param>
-    public Multiset(IEnumerable<string> variables)
+    /// <param name="usePLinqEvaluation">Whether to use PLINQ for supported operations.</param>
+    public Multiset(bool usePLinqEvaluation) : base(usePLinqEvaluation) { }
+
+    /// <summary>
+    /// Creates an empty multiset with the given variables.
+    /// </summary>
+    /// <param name="variables">The variables in the multiset.</param>
+    /// <remarks>Parallel evaluation is enabled by default.</remarks>
+    [Obsolete("Use Multiset(IEnumerable<string>, bool) to specify whether parallel evaluation is enabled.")]
+    public Multiset(IEnumerable<string> variables) : this(variables, true) { }
+
+    /// <summary>
+    /// Creates an empty multiset with the given variables.
+    /// </summary>
+    /// <param name="variables">The variables in the multiset.</param>
+    /// <param name="usePLinqEvaluation">Whether to use PLINQ for supported operations.</param>
+    public Multiset(IEnumerable<string> variables, bool usePLinqEvaluation) : this(usePLinqEvaluation)
     {
         foreach (var var in variables)
         {
@@ -87,7 +105,7 @@ public class Multiset
     /// Creates a new Multiset by flattening a Group Multiset.
     /// </summary>
     /// <param name="multiset">Group Multiset.</param>
-    internal Multiset(GroupMultiset multiset)
+    internal Multiset(GroupMultiset multiset) : this(multiset.UsePLinqEvaluation)
     {
         foreach (var var in multiset.Variables)
         {

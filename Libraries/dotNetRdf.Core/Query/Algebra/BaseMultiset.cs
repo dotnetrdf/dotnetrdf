@@ -88,7 +88,7 @@ public abstract class BaseMultiset
         if (joinVars.Count == 0) return Product(other);
 
         // Start building the Joined Set
-        var joinedSet = new Multiset();
+        var joinedSet = new Multiset(UsePLinqEvaluation);
 
         // This is the new Join algorithm which is O(2n) so much faster and scalable
         // Downside is that it does require more memory than the old algorithm
@@ -197,7 +197,10 @@ public abstract class BaseMultiset
         if (other is NullMultiset) return this;
         if (other.IsEmpty) return this;
 
-        var joinedSet = new Multiset();
+        var usePLinqEvaluation = expressionProcessor is LeviathanExpressionProcessor leviathan
+            ? leviathan.UsesPLinqEvaluation(baseContext)
+            : baseContext.Options.UsePLinqEvaluation;
+        var joinedSet = new Multiset(usePLinqEvaluation);
         var binder = new LeviathanLeftJoinBinder(joinedSet);
         var subcontext = new SparqlEvaluationContext(binder, baseContext.Options);
 
@@ -207,7 +210,7 @@ public abstract class BaseMultiset
         var joinVars = Variables.Where(v => other.Variables.Contains(v)).ToList();
         if (joinVars.Count == 0)
         {
-            if (subcontext.Options.UsePLinqEvaluation && expr.CanParallelise)
+            if (usePLinqEvaluation && expr.CanParallelise)
             {
                 var partitionedSet = new PartitionedMultiset(Count, other.Count + 1);
                 Sets.AsParallel().ForAll(x => EvalLeftJoinProduct(x, other, partitionedSet, expr, baseContext, expressionProcessor));
@@ -285,7 +288,7 @@ public abstract class BaseMultiset
             }
 
             // Then do a pass over the LHS and work out the intersections
-            if (subcontext.Options.UsePLinqEvaluation && expr.CanParallelise)
+            if (usePLinqEvaluation && expr.CanParallelise)
             {
                 Sets.AsParallel().ForAll(x => EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr, expressionProcessor));
             }
@@ -446,7 +449,7 @@ public abstract class BaseMultiset
         }
 
         // Start building the Joined Set
-        var joinedSet = new Multiset();
+        var joinedSet = new Multiset(UsePLinqEvaluation);
 
         // This is the new algorithm which is also correct but is O(3n) so much faster and scalable
         // Downside is that it does require more memory than the old algorithm
@@ -583,7 +586,7 @@ public abstract class BaseMultiset
         if (joinVars.Count == 0) return Product(other);
 
         // Start building the Joined Set
-        var joinedSet = new Multiset();
+        var joinedSet = new Multiset(UsePLinqEvaluation);
 
         // This is the new algorithm which is also correct but is O(3n) so much faster and scalable
         // Downside is that it does require more memory than the old algorithm
@@ -715,7 +718,7 @@ public abstract class BaseMultiset
         else
         {
             // Use serial calculation which is likely to really suck for big products
-            var productSet = new Multiset();
+            var productSet = new Multiset(UsePLinqEvaluation);
             foreach (ISet x in Sets)
             {
                 foreach (ISet y in other.Sets)

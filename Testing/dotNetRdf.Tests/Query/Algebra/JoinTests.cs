@@ -38,9 +38,9 @@ public class JoinTests
         ISet x = new Set();
         x.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x")));
 
-        BaseMultiset lhs = new Multiset();
+        BaseMultiset lhs = new Multiset(usePLinqEvaluation: true);
         lhs.Add(x);
-        BaseMultiset rhs = new Multiset();
+        BaseMultiset rhs = new Multiset(usePLinqEvaluation: true);
         rhs.Add(x);
 
         BaseMultiset joined = lhs.Join(rhs);
@@ -58,9 +58,9 @@ public class JoinTests
         ISet y2 = new Set();
         y2.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x")));
 
-        BaseMultiset lhs = new Multiset();
+        BaseMultiset lhs = new Multiset(usePLinqEvaluation: true);
         lhs.Add(x);
-        BaseMultiset rhs = new Multiset();
+        BaseMultiset rhs = new Multiset(usePLinqEvaluation: true);
         rhs.Add(y1);
         rhs.Add(y2);
 
@@ -83,9 +83,9 @@ public class JoinTests
         y2.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x")));
         y2.Add("b", _factory.CreateUriNode(UriFactory.Root.Create("http://y")));
 
-        BaseMultiset lhs = new Multiset();
+        BaseMultiset lhs = new Multiset(usePLinqEvaluation: true);
         lhs.Add(x);
-        BaseMultiset rhs = new Multiset();
+        BaseMultiset rhs = new Multiset(usePLinqEvaluation: true);
         rhs.Add(y1);
         rhs.Add(y2);
 
@@ -111,10 +111,10 @@ public class JoinTests
         y2.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x")));
         y2.Add("b", _factory.CreateUriNode(UriFactory.Root.Create("http://y2")));
 
-        BaseMultiset lhs = new Multiset();
+        BaseMultiset lhs = new Multiset(usePLinqEvaluation: true);
         lhs.Add(x1);
         lhs.Add(x2);
-        BaseMultiset rhs = new Multiset();
+        BaseMultiset rhs = new Multiset(usePLinqEvaluation: true);
         rhs.Add(y1);
         rhs.Add(y2);
 
@@ -140,10 +140,10 @@ public class JoinTests
         y2.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x2")));
         y2.Add("b", _factory.CreateUriNode(UriFactory.Root.Create("http://y2")));
 
-        BaseMultiset lhs = new Multiset();
+        BaseMultiset lhs = new Multiset(usePLinqEvaluation: true);
         lhs.Add(x1);
         lhs.Add(x2);
-        BaseMultiset rhs = new Multiset();
+        BaseMultiset rhs = new Multiset(usePLinqEvaluation: true);
         rhs.Add(y1);
         rhs.Add(y2);
 
@@ -169,10 +169,10 @@ public class JoinTests
         y2.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x2")));
         y2.Add("b", _factory.CreateUriNode(UriFactory.Root.Create("http://y1")));
 
-        BaseMultiset lhs = new Multiset();
+        BaseMultiset lhs = new Multiset(usePLinqEvaluation: true);
         lhs.Add(x1);
         lhs.Add(x2);
-        BaseMultiset rhs = new Multiset();
+        BaseMultiset rhs = new Multiset(usePLinqEvaluation: true);
         rhs.Add(y1);
         rhs.Add(y2);
 

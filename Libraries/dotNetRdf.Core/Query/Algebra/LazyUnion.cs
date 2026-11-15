@@ -73,7 +73,7 @@ public class LazyUnion : IUnion
     public BaseMultiset Evaluate(SparqlEvaluationContext context)
     {
         BaseMultiset initialInput = context.InputMultiset;
-        if (Lhs is Extend || Rhs is Extend) initialInput = new IdentityMultiset();
+        if (Lhs is Extend || Rhs is Extend) initialInput = new IdentityMultiset(context.Options.UsePLinqEvaluation);
 
         context.InputMultiset = initialInput;
         BaseMultiset lhsResult = context.Evaluate(Lhs); //this._lhs.Evaluate(context);

@@ -139,11 +139,11 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         ILiteralNode o2 = g.CreateLiteralNode("1", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
         //Create an ID and Null Multiset
-        var id = new IdentityMultiset();
+        var id = new IdentityMultiset(usePLinqEvaluation: true);
         var nullset = new NullMultiset();
 
         //Create and Populate a Multiset
-        var m = new Multiset();
+        var m = new Multiset(usePLinqEvaluation: true);
         var s = new Set();
         s.Add("s", s1);
         s.Add("p", p1);
@@ -156,14 +156,14 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         m.Add(s);
 
         //Create and Populate another Multiset
-        var n = new Multiset();
+        var n = new Multiset(usePLinqEvaluation: true);
         s = new Set();
         s.Add("s", s1);
         s.Add("label", o1);
         n.Add(s);
 
         //Create and Populate another Multiset
-        var d = new Multiset();
+        var d = new Multiset(usePLinqEvaluation: true);
         s = new Set();
         s.Add("s1", s1);
         s.Add("p1", p1);

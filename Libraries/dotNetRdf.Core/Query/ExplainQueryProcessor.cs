@@ -449,7 +449,7 @@ public class ExplainQueryProcessor
         BaseMultiset results; // = evaluator(algebra, context);
         if (HasFlag(ExplanationLevel.Simulate))
         {
-            results = (algebra is ITerminalOperator) ? new SingletonMultiset(algebra.Variables) : evaluator(algebra, context);
+            results = (algebra is ITerminalOperator) ? new SingletonMultiset(algebra.Variables, UsesPLinqEvaluation(context)) : evaluator(algebra, context);
         }
         else
         {
